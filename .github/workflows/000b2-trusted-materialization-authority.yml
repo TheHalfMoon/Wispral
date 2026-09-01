@@ -7,13 +7,6 @@ on:
       - '.github/workflows/000b2-trusted-materialization-authority.yml'
   pull_request_target:
     types: [opened, synchronize, reopened, edited]
-    paths:
-      - 'research/000b1/qualified-candidates.json'
-      - 'research/000b2-entry/artifact-size-amendment.json'
-      - 'research/000b2-entry/materialized-artifacts.json'
-      - 'research/000b2-entry/materialize_artifacts.py'
-      - 'research/000b2-entry/verify_materialization.py'
-      - '.github/workflows/000b2-entry-materialization.yml'
   push:
     branches:
       - main
@@ -40,7 +33,7 @@ jobs:
         run: python .github/trusted/verify_000b2_materialization.py --self-test
 
   verify-pr-head-artifact-identity:
-    if: github.event_name == 'pull_request_target'
+    if: github.event_name == 'pull_request_target' && github.event.pull_request.number == 10
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -90,6 +83,7 @@ jobs:
           python - <<'PY'
           import json
           import os
+          import re
           import urllib.request
 
           repo = os.environ["REPOSITORY"]
@@ -106,6 +100,8 @@ jobs:
               pr = json.load(response)
           active = pr.get("state") == "open" and pr.get("base", {}).get("ref") == "main"
           head_sha = pr.get("head", {}).get("sha", "") if active else ""
+          if active and not re.fullmatch(r"[0-9a-f]{40}", head_sha):
+              raise SystemExit("active PR #10 head SHA is malformed")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
               output.write(f"active={'true' if active else 'false'}\n")
               output.write(f"head_sha={head_sha}\n")
