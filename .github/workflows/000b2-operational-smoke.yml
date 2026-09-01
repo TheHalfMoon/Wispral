@@ -1,0 +1,222 @@
+name: 000B2 Operational Smoke
+
+on:
+  push:
+    branches:
+      - research/000b2-entry-preparation
+    paths:
+      - 'research/000b2-entry/operational_smoke.py'
+      - 'research/000b2-entry/aggregate_operational_smoke.py'
+      - 'research/000b2-entry/materialized-artifacts.json'
+      - 'research/000b2-entry/artifact-size-amendment.json'
+      - 'research/000b1/qualified-candidates.json'
+      - '.github/workflows/000b2-operational-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  moonshine:
+    name: Moonshine non-primary smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install exact Moonshine release
+        run: |
+          python -m pip install --disable-pip-version-check --no-input 'moonshine-voice==0.1.5'
+          python - <<'PY'
+          import importlib.metadata
+          assert importlib.metadata.version('moonshine-voice') == '0.1.5'
+          print('MOONSHINE_RUNTIME=0.1.5')
+          PY
+      - name: Run compact smoke
+        run: |
+          mkdir -p "$RUNNER_TEMP/smoke/moonshine"
+          python research/000b2-entry/operational_smoke.py moonshine \
+            --candidate moonshine-compact \
+            --wav "$RUNNER_TEMP/smoke/moonshine/smoke.wav" \
+            --work-dir "$RUNNER_TEMP/smoke/moonshine/compact" \
+            --output "$RUNNER_TEMP/smoke/moonshine/moonshine-compact.json"
+      - name: Run balanced smoke
+        run: |
+          python research/000b2-entry/operational_smoke.py moonshine \
+            --candidate moonshine-balanced \
+            --wav "$RUNNER_TEMP/smoke/moonshine/smoke.wav" \
+            --work-dir "$RUNNER_TEMP/smoke/moonshine/balanced" \
+            --output "$RUNNER_TEMP/smoke/moonshine/moonshine-balanced.json"
+      - name: Upload Moonshine evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-moonshine
+          path: ${{ runner.temp }}/smoke/moonshine/*.json
+          if-no-files-found: error
+          retention-days: 14
+
+  whisper:
+    name: whisper.cpp non-primary smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fetch exact whisper.cpp source and build CPU CLI
+        env:
+          WHISPER_REV: 371b5a7561823ab2bb32142d2751e35e7534727b
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/whisper.cpp"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/ggml-org/whisper.cpp.git
+          git -C "$SRC" fetch --depth=1 origin "$WHISPER_REV"
+          git -C "$SRC" checkout --detach FETCH_HEAD
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$WHISPER_REV"
+          cmake -S "$SRC" -B "$SRC/build" \
+            -DGGML_CUDA=OFF \
+            -DGGML_METAL=OFF \
+            -DWHISPER_BUILD_TESTS=OFF \
+            -DWHISPER_BUILD_EXAMPLES=ON \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$SRC/build" --target whisper-cli -j2
+          "$SRC/build/bin/whisper-cli" --version
+      - name: Download exact pinned whisper model cells
+        env:
+          MODEL_REV: 80da2d8bfee42b0e836fc3a9890373e5defc00a6
+        run: |
+          set -euo pipefail
+          MODELS="$RUNNER_TEMP/whisper-models"
+          mkdir -p "$MODELS"
+          BASE="https://huggingface.co/ggerganov/whisper.cpp/resolve/$MODEL_REV"
+          curl --fail --location --retry 3 --retry-all-errors \
+            "$BASE/ggml-base.en.bin" -o "$MODELS/ggml-base.en.bin"
+          curl --fail --location --retry 3 --retry-all-errors \
+            "$BASE/ggml-small.en.bin" -o "$MODELS/ggml-small.en.bin"
+      - name: Run compact and balanced smoke
+        env:
+          WHISPER_REV: 371b5a7561823ab2bb32142d2751e35e7534727b
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/smoke/whisper"
+          MODELS="$RUNNER_TEMP/whisper-models"
+          CLI="$RUNNER_TEMP/whisper.cpp/build/bin/whisper-cli"
+          mkdir -p "$OUT"
+          python research/000b2-entry/operational_smoke.py whisper \
+            --candidate whispercpp-compact \
+            --wav "$OUT/smoke.wav" \
+            --model "$MODELS/ggml-base.en.bin" \
+            --cli "$CLI" \
+            --source-revision "$WHISPER_REV" \
+            --output "$OUT/whispercpp-compact.json"
+          python research/000b2-entry/operational_smoke.py whisper \
+            --candidate whispercpp-balanced \
+            --wav "$OUT/smoke.wav" \
+            --model "$MODELS/ggml-small.en.bin" \
+            --cli "$CLI" \
+            --source-revision "$WHISPER_REV" \
+            --output "$OUT/whispercpp-balanced.json"
+      - name: Upload whisper.cpp evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-whisper
+          path: ${{ runner.temp }}/smoke/whisper/*.json
+          if-no-files-found: error
+          retention-days: 14
+
+  sherpa:
+    name: sherpa-onnx non-primary smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install exact sherpa-onnx release
+        run: |
+          python -m pip install --disable-pip-version-check --no-input 'sherpa-onnx==1.13.7' numpy
+          python - <<'PY'
+          import importlib.metadata
+          assert importlib.metadata.version('sherpa-onnx') == '1.13.7'
+          print('SHERPA_RUNTIME=1.13.7')
+          PY
+      - name: Download exact pinned sherpa model cells
+        env:
+          ONNX_REV: 6037ea07e3abfe599ad00d418968bcf9656e7472
+          AUX_REV: 672fbf1b30579d6585301139bb363f42a0ad4a24
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/sherpa-models"
+          COMPACT="$ROOT/compact"
+          BALANCED="$ROOT/balanced"
+          mkdir -p "$COMPACT" "$BALANCED"
+          BASE="https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-en-2023-06-26/resolve"
+          fetch() {
+            local rev="$1"; local name="$2"; local out="$3"
+            curl --fail --location --retry 3 --retry-all-errors \
+              "$BASE/$rev/$name" -o "$out/$name"
+          }
+          fetch "$ONNX_REV" encoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx "$COMPACT"
+          fetch "$ONNX_REV" decoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx "$COMPACT"
+          fetch "$ONNX_REV" joiner-epoch-99-avg-1-chunk-16-left-128.int8.onnx "$COMPACT"
+          fetch "$AUX_REV" bpe.model "$COMPACT"
+          fetch "$ONNX_REV" tokens.txt "$COMPACT"
+          fetch "$ONNX_REV" encoder-epoch-99-avg-1-chunk-16-left-128.onnx "$BALANCED"
+          fetch "$ONNX_REV" decoder-epoch-99-avg-1-chunk-16-left-128.onnx "$BALANCED"
+          fetch "$ONNX_REV" joiner-epoch-99-avg-1-chunk-16-left-128.onnx "$BALANCED"
+          fetch "$AUX_REV" bpe.model "$BALANCED"
+          fetch "$ONNX_REV" tokens.txt "$BALANCED"
+      - name: Run compact and balanced smoke
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/smoke/sherpa"
+          mkdir -p "$OUT"
+          python research/000b2-entry/operational_smoke.py sherpa \
+            --candidate sherpa-onnx-compact \
+            --wav "$OUT/smoke.wav" \
+            --model-root "$RUNNER_TEMP/sherpa-models/compact" \
+            --output "$OUT/sherpa-onnx-compact.json"
+          python research/000b2-entry/operational_smoke.py sherpa \
+            --candidate sherpa-onnx-balanced \
+            --wav "$OUT/smoke.wav" \
+            --model-root "$RUNNER_TEMP/sherpa-models/balanced" \
+            --output "$OUT/sherpa-onnx-balanced.json"
+      - name: Upload sherpa evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-sherpa
+          path: ${{ runner.temp }}/smoke/sherpa/*.json
+          if-no-files-found: error
+          retention-days: 14
+
+  aggregate:
+    name: Aggregate fail-closed smoke evidence
+    needs: [moonshine, whisper, sherpa]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: smoke-*
+          path: ${{ runner.temp }}/smoke-cells
+      - name: Aggregate exact six-cell evidence
+        run: |
+          python research/000b2-entry/aggregate_operational_smoke.py \
+            --input-dir "$RUNNER_TEMP/smoke-cells" \
+            --output "$RUNNER_TEMP/000b2-operational-smoke.json"
+      - name: Upload aggregate evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: 000b2-operational-smoke-${{ github.sha }}
+          path: ${{ runner.temp }}/000b2-operational-smoke.json
+          if-no-files-found: error
+          retention-days: 14
