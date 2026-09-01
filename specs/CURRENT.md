@@ -51,6 +51,8 @@ Purpose: produce reproducible local STT and developer-entity/context evidence wi
 
 State: `VERIFIED`
 
+Canonical 000B refinement/base merge: `6b5696a6becc360948282712cc9339df9cb3a67c`
+
 Canonical evidence merge: `8df69835349f85d5ae6af9d6a62ef3af24f65f43` from PR #7.
 
 Disposition:
