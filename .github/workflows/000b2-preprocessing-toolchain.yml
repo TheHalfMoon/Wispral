@@ -1,0 +1,88 @@
+name: 000B2 Preprocessing Toolchain
+
+on:
+  push:
+    branches:
+      - research/000b2-entry-preparation
+    paths:
+      - 'research/000b2-entry/preprocessing/**'
+      - '.github/workflows/000b2-preprocessing-toolchain.yml'
+  pull_request:
+    paths:
+      - 'research/000b2-entry/preprocessing/**'
+      - '.github/workflows/000b2-preprocessing-toolchain.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify-ffmpeg:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch exact FFmpeg source revision
+        env:
+          FFMPEG_REV: bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/FFmpeg"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/FFmpeg/FFmpeg.git
+          git -C "$SRC" fetch --depth=1 origin "$FFMPEG_REV"
+          git -C "$SRC" checkout --detach FETCH_HEAD
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$FFMPEG_REV"
+      - name: Build bounded exact FFmpeg binary
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/FFmpeg"
+          PREFIX="$RUNNER_TEMP/ffmpeg-9.0.1"
+          cd "$SRC"
+          ./configure \
+            --prefix="$PREFIX" \
+            --disable-doc \
+            --disable-debug \
+            --disable-ffplay \
+            --disable-ffprobe \
+            --disable-network \
+            --disable-autodetect \
+            --enable-protocol=file \
+            --enable-demuxer=wav \
+            --enable-muxer=wav \
+            --enable-decoder=pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le \
+            --enable-encoder=pcm_s16le \
+            --enable-filter=aresample,aformat \
+            --enable-swresample
+          make -j2 ffmpeg
+          make install
+          "$PREFIX/bin/ffmpeg" -version | head -n 1
+      - name: Capture exact preprocessing identity
+        run: |
+          python research/000b2-entry/preprocessing/capture.py \
+            --ffmpeg "$RUNNER_TEMP/ffmpeg-9.0.1/bin/ffmpeg" \
+            --output "$RUNNER_TEMP/000b2-ffmpeg-toolchain.json"
+      - name: Prove qualification is not attempt-time resolution
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          contract = json.loads(Path('research/000b2-entry/preprocessing/contract.json').read_text())
+          assert contract['status'] == 'PREPARED_ATTEMPT_CAPTURE_REQUIRED'
+          assert contract['resolved'] is False
+          evidence = json.loads(Path('${{ runner.temp }}/000b2-ffmpeg-toolchain.json').read_text())
+          assert evidence['tool_version'] == '9.0.1'
+          assert evidence['primary_test_decoding_started'] is False
+          print('FFMPEG_TOOLCHAIN_QUALIFIED=YES')
+          print('ATTEMPT_TIME_PREPROCESSING_RESOLVED=NO')
+          PY
+      - name: Upload toolchain identity evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: 000b2-ffmpeg-toolchain-${{ github.sha }}
+          path: ${{ runner.temp }}/000b2-ffmpeg-toolchain.json
+          if-no-files-found: error
+          retention-days: 14
