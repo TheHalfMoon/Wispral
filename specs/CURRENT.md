@@ -1,12 +1,12 @@
 # Wispral Specification Frontier
 
-**Status:** founding candidate; effective only after the founding-authority PR becomes canonical
+**Status:** canonical research frontier after founding authority merge `3cbe212bf7202c37ec322f114c0e5486e5218d9b`
 
 ## Active parent specification
 
 `000-founding-research`
 
-Proposed state after canonical founding merge: `REFINING`
+State: `REFINING`
 
 Purpose: replace founding technical assumptions with reproducible evidence sufficient to select the first product implementation Grain.
 
@@ -14,7 +14,9 @@ Purpose: replace founding technical assumptions with reproducible evidence suffi
 
 `000A-acp-qualification`
 
-Proposed state after canonical founding merge: `GRAIN` only if its exact readiness conditions remain satisfied on canonical `main`; otherwise `REFINING`.
+State: `GRAIN`
+
+Readiness: must be rechecked against live canonical repository state and current ACP/registry/distribution truth before transitioning to `READY`.
 
 No product implementation is authorized by this frontier.
 
@@ -30,9 +32,20 @@ The parent specification currently anticipates these bounded research outcomes, 
 - `000F` — dependency, licensing, provenance, and distribution decision inputs;
 - `000G` — founding synthesis and first product-Grain selection.
 
-Only `000A` is refined to task-level execution in the founding authority. The other children remain intentionally coarse until prior evidence can change their shape.
+Only `000A` is refined to task-level execution. The other children remain intentionally coarse until prior canonical evidence can change their shape.
 
-## Global gate
+## 000A readiness gate
+
+Before `000A` enters `READY`:
+
+- re-read the current ACP specification, official Rust SDK, and registry;
+- verify representative distributions can be pinned;
+- verify a disposable synthetic fixture can isolate real repositories;
+- verify live probes do not require bypassing agent/provider permission protections;
+- verify trace capture can avoid committing credentials or sensitive content;
+- amend the spec explicitly if the initially selected representative agents are no longer appropriate.
+
+## Global evidence gate
 
 Before any child is marked `VERIFIED`:
 
