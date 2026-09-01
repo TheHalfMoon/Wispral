@@ -62,6 +62,14 @@ def main() -> int:
     require(evidence["canonical_wispral_revision"] == revision, "revision drift")
     require(evidence["performance_mode"] == "DIAGNOSTIC", "performance-mode drift")
     require(
+        evidence["performance_mode_claim_source"] == "OPERATOR_DECLARED",
+        "performance-mode claim source drift",
+    )
+    require(
+        evidence["independent_control_attestation"] is False,
+        "operator-declared control became independent attestation",
+    )
+    require(
         evidence["comparative_performance_authorized"] is False,
         "comparative performance became authorized",
     )
@@ -116,6 +124,18 @@ def main() -> int:
             "GITHUB_ACTIONS=false misclassified as hosted",
         )
         require(
+            non_hosted["performance_mode_claim_source"] == "OPERATOR_DECLARED",
+            "local CONTROLLED declaration became stronger than operator metadata",
+        )
+        require(
+            non_hosted["independent_control_attestation"] is False,
+            "local CONTROLLED declaration became independently attested",
+        )
+        require(
+            non_hosted["comparative_performance_authorized"] is False,
+            "local CONTROLLED declaration authorized comparative performance",
+        )
+        require(
             non_hosted["runner"]["github_actions"] is False,
             "false GitHub Actions marker misparsed",
         )
@@ -148,6 +168,8 @@ def main() -> int:
     print("VERIFY_000B2_ENVIRONMENT_CAPTURE=PASS")
     print("ATTEMPT_STATE_BOUND=YES")
     print("INDEPENDENT_CHRONOLOGY_ATTESTATION=NO")
+    print("PERFORMANCE_MODE_CLAIM_SOURCE=OPERATOR_DECLARED")
+    print("INDEPENDENT_CONTROL_ATTESTATION=NO")
     print("DUPLICATE_JSON_KEYS=REJECTED")
     print("ASSERT_OPTIMIZATION_SAFE=YES")
     print("GITHUB_HOSTED_CONTROLLED=REJECTED")
