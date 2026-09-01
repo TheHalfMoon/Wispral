@@ -85,7 +85,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
-          GITHUB_OUTPUT: ${{ github.output }}
         run: |
           python - <<'PY'
           import json
