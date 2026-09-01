@@ -89,13 +89,22 @@ jobs:
           git -C "$SRC" fetch --depth=1 origin "$WHISPER_REV"
           git -C "$SRC" checkout --detach FETCH_HEAD
           test "$(git -C "$SRC" rev-parse HEAD)" = "$WHISPER_REV"
+          git -C "$SRC" diff --quiet HEAD --
           cmake -S "$SRC" -B "$SRC/build" \
             -DGGML_CUDA=OFF \
             -DGGML_METAL=OFF \
             -DWHISPER_BUILD_TESTS=OFF \
             -DWHISPER_BUILD_EXAMPLES=ON \
             -DCMAKE_BUILD_TYPE=Release
+          # whisper.cpp's standalone configure step intentionally rewrites only
+          # bindings/javascript/package.json from package-tmpl.json. The JS package
+          # file is not part of whisper-cli compilation, so restore that one known
+          # source-tree side effect before compiling and reject any other mutation.
+          test "$(git -C "$SRC" diff --name-only HEAD --)" = "bindings/javascript/package.json"
+          git -C "$SRC" checkout -- bindings/javascript/package.json
+          git -C "$SRC" diff --quiet HEAD --
           cmake --build "$SRC/build" --target whisper-cli -j2
+          git -C "$SRC" diff --quiet HEAD --
           "$SRC/build/bin/whisper-cli" --version
           python - <<'PY'
           import hashlib
