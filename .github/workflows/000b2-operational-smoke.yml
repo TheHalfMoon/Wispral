@@ -12,6 +12,15 @@ on:
       - 'research/000b2-entry/artifact-size-amendment.json'
       - 'research/000b1/qualified-candidates.json'
       - '.github/workflows/000b2-operational-smoke.yml'
+  pull_request:
+    paths:
+      - 'research/000b2-entry/operational_smoke.py'
+      - 'research/000b2-entry/operational_smoke_entry.py'
+      - 'research/000b2-entry/aggregate_operational_smoke.py'
+      - 'research/000b2-entry/materialized-artifacts.json'
+      - 'research/000b2-entry/artifact-size-amendment.json'
+      - 'research/000b1/qualified-candidates.json'
+      - '.github/workflows/000b2-operational-smoke.yml'
   workflow_dispatch:
 
 permissions:
