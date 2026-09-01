@@ -18,7 +18,7 @@
   "finalization_zero_pad_ms": 660,
   "capture_requirements": {
     "binary_sha256": true,
-    "full_version_output_sha256": true,
+    "version_output_sha256": true,
     "contract_sha256": true,
     "capture_before_primary_decode_in_same_attempt_environment": true
   },
