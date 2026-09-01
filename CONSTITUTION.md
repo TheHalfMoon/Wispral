@@ -1,8 +1,9 @@
 # Wispral Constitution
 
 **Version:** 0.1.0  
-**Status:** Founding candidate  
-**Ratified:** pending canonical merge
+**Status:** Active  
+**Ratified:** 2026-09-01  
+**Canonical ratification merge:** `3cbe212bf7202c37ec322f114c0e5486e5218d9b`
 
 ## Preamble
 

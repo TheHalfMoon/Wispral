@@ -3,27 +3,50 @@
 **Repository:** `TheHalfMoon/Wispral`  
 **Canonical branch:** `main`  
 **Bootstrap commit:** `894644c102a77b65bf53bfab21a3fdd258272ac9`  
-**Program status:** `FOUNDING_AUTHORITY_CANDIDATE`  
+**Founding authority merge:** `3cbe212bf7202c37ec322f114c0e5486e5218d9b`  
+**Founding authority PR:** `#1`  
+**Program status:** `SPEC_000_RESEARCH_ACTIVE`  
 **Active product implementation:** none  
-**Active specification:** `000-founding-research` once this authority becomes canonical  
+**Active parent specification:** `000-founding-research` — `REFINING`  
+**Near frontier:** `000A-acp-qualification` — `GRAIN`, readiness recheck required before execution  
 **Published release:** none
 
 Live GitHub and repository truth override this document.
 
+## Canonical founding proof
+
+PR #1 merged by guarded squash with exact expected head `9a8e014cb1693058e03e43b59ea1c3a4eb068a4b` into canonical merge `3cbe212bf7202c37ec322f114c0e5486e5218d9b`.
+
+The founding PR changed exactly 20 documentation/research/governance paths and added no product code, dependency manifest, workflow, release artifact, package metadata, speech engine, or agent adapter.
+
+At the final pre-merge reconciliation:
+
+- GitHub reported the PR mergeable;
+- canonical `main` remained at bootstrap commit `894644c102a77b65bf53bfab21a3fdd258272ac9`;
+- the exact head was unchanged;
+- there were no submitted reviews and no inline review threads;
+- Qodo was billing-blocked;
+- CodeRabbit automatic review was skipped by repository-star policy; a manual review was requested but no submitted review was present at the merge gate;
+- CodeRabbit status existed but was not treated as independent review evidence;
+- product tests were not applicable because no product code existed;
+- the repository had no configured required CI checks or branch protection.
+
+No unavailable/skipped review system was represented as PASS. The merge commit is GitHub-signature verified.
+
 ## What is established
 
-The repository exists and has a minimal bootstrap README. No product implementation, compatibility matrix, speech engine, ACP integration, PTY integration, benchmark result, latency claim, accuracy claim, release, package, installer, security qualification, or supported-platform claim exists yet.
+Canonical `main` now contains:
 
-The founding authority branch is intended to establish:
-
-- project constitution and operating discipline;
-- architecture invariants and explicit hypotheses;
-- a progressive program roadmap;
-- the first research specification;
-- benchmark and security contracts;
-- a truthful category and adoption strategy.
-
-None of those candidate documents become canonical merely because they exist on a branch.
+- the active Wispral Constitution v0.1.0;
+- repository operating discipline derived from proof-before-done and progressive SpecGrain principles;
+- architecture invariants without premature dependency selection;
+- a progressive H0–H15 program roadmap;
+- a source-backed founding research register;
+- the WispralBench methodology contract with zero qualifying results;
+- a founding voice/agent threat model;
+- category/adoption strategy with 200k+ stars recorded as ambition rather than engineering evidence;
+- Specification 000 as the active research parent;
+- Specification 000A as the only task-refined near-term Grain.
 
 ## Current product thesis
 
@@ -37,7 +60,7 @@ This thesis is a program direction, not a benchmark result or compatibility clai
 
 ## Current architecture posture
 
-The following are hypotheses pending Specification 000 evidence:
+The following remain hypotheses pending Specification 000 evidence:
 
 - Rust is the preferred product runtime.
 - ACP is the preferred structured agent integration path when it exposes sufficient lifecycle, streaming, permission, and cancellation semantics.
@@ -64,21 +87,14 @@ Until evidence exists, Wispral does NOT claim:
 - any release-readiness state;
 - any GitHub growth outcome.
 
-## Execution gate
+## Immediate execution gate
 
-No product code is authorized before the founding authority is canonical and Specification 000 selects a bounded first implementation unit from reproducible research evidence.
+The next research unit is `000A-acp-qualification`.
 
-The immediate frontier is research, protocol qualification, benchmark design, threat modeling, licensing/provenance, and architecture decision preparation.
+It is `GRAIN`, not automatically `READY`. Before execution, re-read current ACP specification/SDK/registry truth and recheck the readiness conditions in `specs/000A-acp-qualification/tasks.md`.
 
-## Completion condition for founding authority
+No product code is authorized. Product implementation remains blocked until Specification 000 synthesis selects a bounded first implementation Grain from reproducible evidence.
 
-This founding authority becomes canonical only when:
+## Next canonical action
 
-1. the exact candidate diff is reviewed for internal consistency;
-2. the branch head and changed paths are reconciled;
-3. any configured repository checks for the exact head succeed, or their absence is recorded truthfully;
-4. no unresolved review finding blocks merge;
-5. the candidate merges without overwriting a moved head; and
-6. canonical `main` is re-read after merge.
-
-After that, `specs/CURRENT.md` governs the executable frontier.
+Execute or further refine 000A only after its readiness recheck. After each completed research child, merge exact evidence first, re-read canonical authority, and only then refine the next child.
