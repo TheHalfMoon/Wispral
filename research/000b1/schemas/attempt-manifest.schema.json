@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TheHalfMoon/Wispral/research/000b1/schemas/attempt-manifest.schema.json",
+  "title": "Wispral 000B2 Attempt Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "attempt_id", "canonical_wispral_revision", "b1_contract_version", "frozen", "freeze_digest_sha256", "primary_test_decoding_started", "candidates", "corpus", "preprocessing", "scorer", "execution_environment", "claims"],
+  "properties": {
+    "schema_version": {"const": "000b2-attempt-manifest-v1"},
+    "attempt_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{2,127}$"},
+    "canonical_wispral_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "b1_contract_version": {"const": "000b1-contract-v1"},
+    "frozen": {"type": "boolean"},
+    "freeze_digest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "primary_test_decoding_started": {"type": "boolean"},
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["candidate_id", "tier", "runtime_revision", "c0", "artifacts"],
+        "properties": {
+          "candidate_id": {"type": "string", "minLength": 1},
+          "tier": {"enum": ["COMPACT", "BALANCED"]},
+          "runtime_revision": {"type": "string", "minLength": 1},
+          "c0": {"type": "object"},
+          "artifacts": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "size_bytes", "sha256"],
+              "properties": {
+                "path": {"type": "string", "minLength": 1},
+                "size_bytes": {"type": "integer", "minimum": 1},
+                "sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "corpus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority_status", "consent_records_sha256", "primary_test_manifest_sha256", "synthetic_primary_ranking"],
+      "properties": {
+        "authority_status": {"enum": ["NOT_AUTHORIZED", "AUTHORIZED"]},
+        "consent_records_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "primary_test_manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "synthetic_primary_ranking": {"const": false}
+      }
+    },
+    "preprocessing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "config_sha256", "sample_rate_hz", "channels", "sample_format", "denoising", "semantic_silence_trim"],
+      "properties": {
+        "revision": {"type": ["string", "null"]},
+        "config_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "sample_rate_hz": {"const": 16000},
+        "channels": {"const": 1},
+        "sample_format": {"const": "PCM_S16LE"},
+        "denoising": {"const": "NONE"},
+        "semantic_silence_trim": {"const": "NONE"}
+      }
+    },
+    "scorer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "config_sha256"],
+      "properties": {
+        "revision": {"type": ["string", "null"]},
+        "config_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "execution_environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["environment_id", "performance_mode", "hardware_fingerprint_sha256"],
+      "properties": {
+        "environment_id": {"type": ["string", "null"]},
+        "performance_mode": {"enum": ["DIAGNOSTIC", "CONTROLLED"]},
+        "hardware_fingerprint_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["comparative_performance_authorized", "human_developer_speech_ranking_authorized"],
+      "properties": {
+        "comparative_performance_authorized": {"type": "boolean"},
+        "human_developer_speech_ranking_authorized": {"type": "boolean"}
+      }
+    }
+  }
+}
