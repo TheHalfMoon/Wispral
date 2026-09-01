@@ -60,6 +60,10 @@
     "human_developer_speech_authority": {
       "status": "BLOCKED_EXTERNAL",
       "resolved": false,
+      "authority_schema_path": "research/000b2-entry/authority/authority-package.schema.json",
+      "authority_package_path": "research/000b2-entry/authority/authority-package.json",
+      "authority_template_path": "research/000b2-entry/authority/authority-package.template.json",
+      "authority_verifier_path": "research/000b2-entry/authority/verify_authority.py",
       "required": [
         "participant consent scope",
         "recording purpose",
@@ -71,7 +75,7 @@
         "privacy constraints",
         "prohibited-content policy"
       ],
-      "note": "Repository-owner approval is not participant/media authority and cannot substitute for the required human-recording evidence."
+      "note": "Fail-closed authority intake tooling is prepared, but the canonical package remains NOT_AUTHORIZED. Repository-owner approval is not participant/media authority and cannot substitute for the required human-recording evidence."
     },
     "human_corpus_and_splits": {
       "status": "BLOCKED_EXTERNAL",
