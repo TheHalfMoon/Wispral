@@ -26,12 +26,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Verify committed materialization authority
+        run: python research/000b2-entry/verify_materialization.py
       - name: Materialize pending B2 artifact SHA-256 values
         run: |
           python research/000b2-entry/materialize_artifacts.py \
             --output "$RUNNER_TEMP/000b2-materialization.json" \
             --work-dir "$RUNNER_TEMP/000b2-materialized-payloads"
-      - name: Upload materialization evidence only
+      - name: Compare live materialization with committed evidence
+        run: python research/000b2-entry/verify_materialization.py --live-report "$RUNNER_TEMP/000b2-materialization.json"
+      - name: Upload live materialization report only
         uses: actions/upload-artifact@v4
         with:
           name: 000b2-materialization-${{ github.sha }}
