@@ -27,7 +27,7 @@ def sha256_bytes(data: bytes) -> str:
 
 def command_output(argv: list[str]) -> str:
     try:
-        return subprocess.run(
+        output = subprocess.run(
             argv,
             check=True,
             stdout=subprocess.PIPE,
@@ -37,6 +37,7 @@ def command_output(argv: list[str]) -> str:
         ).stdout.strip()
     except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
         return "UNAVAILABLE"
+    return output or "UNAVAILABLE"
 
 
 def linux_cpu_model() -> str:
@@ -45,7 +46,8 @@ def linux_cpu_model() -> str:
         return platform.processor() or "UNAVAILABLE"
     for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
         if line.lower().startswith("model name") and ":" in line:
-            return line.split(":", 1)[1].strip()
+            value = line.split(":", 1)[1].strip()
+            return value or "UNAVAILABLE"
     return platform.processor() or "UNAVAILABLE"
 
 
@@ -74,16 +76,36 @@ def canonical_fingerprint_fields(evidence: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def require_complete_identity(evidence: dict[str, Any]) -> None:
+    if evidence["kernel"] == "UNAVAILABLE":
+        raise ValueError("uname identity unavailable")
+    if not evidence["machine"]:
+        raise ValueError("machine architecture unavailable")
+    if evidence["cpu_model"] == "UNAVAILABLE":
+        raise ValueError("CPU model unavailable")
+    if not isinstance(evidence["logical_cpu_count"], int) or evidence["logical_cpu_count"] <= 0:
+        raise ValueError("logical CPU count unavailable")
+    if not isinstance(evidence["memory_bytes"], int) or evidence["memory_bytes"] <= 0:
+        raise ValueError("memory identity unavailable")
+    for name in ("git", "cmake"):
+        value = evidence["toolchain"].get(name)
+        if not isinstance(value, str) or not value or value == "UNAVAILABLE":
+            raise ValueError(f"required toolchain identity unavailable: {name}")
+
+
 def capture(canonical_revision: str, performance_mode: str) -> dict[str, Any]:
     if not SHA40.fullmatch(canonical_revision):
         raise ValueError("canonical revision must be a 40-character lowercase Git SHA")
     if performance_mode not in {"DIAGNOSTIC", "CONTROLLED"}:
         raise ValueError("performance_mode must be DIAGNOSTIC or CONTROLLED")
 
-    github_hosted = bool(os.environ.get("GITHUB_ACTIONS"))
+    github_actions = os.environ.get("GITHUB_ACTIONS", "").strip().lower() == "true"
+    runner_environment = os.environ.get("RUNNER_ENVIRONMENT", "").strip().lower()
+    github_hosted = github_actions and runner_environment != "self-hosted"
     if github_hosted and performance_mode == "CONTROLLED":
-        raise ValueError("GitHub Actions environment cannot be declared CONTROLLED")
+        raise ValueError("GitHub-hosted Actions environment cannot be declared CONTROLLED")
 
+    cmake_output = command_output(["cmake", "--version"])
     evidence: dict[str, Any] = {
         "schema_version": "000b2-execution-environment-v1",
         "canonical_wispral_revision": canonical_revision,
@@ -101,7 +123,8 @@ def capture(canonical_revision: str, performance_mode: str) -> dict[str, Any]:
         "logical_cpu_count": os.cpu_count(),
         "memory_bytes": linux_memory_bytes(),
         "runner": {
-            "github_actions": github_hosted,
+            "github_actions": github_actions,
+            "github_hosted": github_hosted,
             "runner_os": os.environ.get("RUNNER_OS"),
             "runner_arch": os.environ.get("RUNNER_ARCH"),
             "runner_environment": os.environ.get("RUNNER_ENVIRONMENT"),
@@ -111,9 +134,10 @@ def capture(canonical_revision: str, performance_mode: str) -> dict[str, Any]:
         "toolchain": {
             "python": platform.python_version(),
             "git": command_output(["git", "--version"]),
-            "cmake": command_output(["cmake", "--version"]).splitlines()[0],
+            "cmake": cmake_output.splitlines()[0] if cmake_output != "UNAVAILABLE" else "UNAVAILABLE",
         },
     }
+    require_complete_identity(evidence)
     canonical = json.dumps(
         canonical_fingerprint_fields(evidence),
         sort_keys=True,
