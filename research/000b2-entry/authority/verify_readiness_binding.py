@@ -70,11 +70,22 @@ def verify() -> None:
 
     authority = load_authority_verifier()
     package = authority.load(ROOT / EXPECTED_PATHS["authority_package_path"])
-    errors = authority.verify_package(package, require_authorized=False)
-    if errors:
-        fail("canonical authority package is invalid: " + "; ".join(errors))
+    package_errors = authority.verify_package(package, require_authorized=False)
+    if package_errors:
+        fail("canonical authority package is invalid: " + "; ".join(package_errors))
     if package.get("authority_status") != "NOT_AUTHORIZED":
         fail("current readiness ledger cannot claim blocked authority while package is AUTHORIZED")
+
+    template = authority.load(ROOT / EXPECTED_PATHS["authority_template_path"])
+    template_errors = authority.verify_package(template, require_authorized=False)
+    if template_errors:
+        fail("authority template is invalid: " + "; ".join(template_errors))
+    if template.get("authority_status") != "NOT_AUTHORIZED":
+        fail("authority template must never ship as AUTHORIZED")
+    if template.get("participant_count") != 0 or template.get("consent_records_sha256") is not None:
+        fail("authority template must not contain participant or consent evidence")
+    if template.get("authority_effective_before_recording") is not False:
+        fail("authority template cannot claim pre-recording authority")
 
     blockers = record.get("remaining_blockers")
     if not isinstance(blockers, list) or "human developer-speech participant/media authority is absent" not in blockers:
@@ -93,6 +104,7 @@ def main() -> int:
         return 1
     print("VERIFY_000B2_AUTHORITY_READINESS=PASS")
     print("AUTHORITY_PACKAGE=NOT_AUTHORIZED")
+    print("AUTHORITY_TEMPLATE=NOT_AUTHORIZED")
     print("B2_READY=NO")
     print("PRIMARY_MEDIA_ACCEPTANCE=NO")
     return 0
