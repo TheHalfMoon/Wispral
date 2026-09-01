@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TheHalfMoon/Wispral/research/000b2-entry/corpus/corpus-manifest.schema.json",
+  "title": "Wispral 000B2 Human Corpus Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "corpus_status",
+    "frozen",
+    "freeze_digest_sha256",
+    "primary_test_manifest_sha256",
+    "authority_status",
+    "consent_records_sha256",
+    "direct_identifiers_present",
+    "synthetic_primary_ranking",
+    "microphone_environment_profiles",
+    "speakers",
+    "utterances"
+  ],
+  "properties": {
+    "schema_version": {"const": "000b2-human-corpus-manifest-v1"},
+    "corpus_status": {"enum": ["NOT_COLLECTED", "PARTIAL", "COMPLETE"]},
+    "frozen": {"type": "boolean"},
+    "freeze_digest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "primary_test_manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "authority_status": {"enum": ["NOT_AUTHORIZED", "AUTHORIZED"]},
+    "consent_records_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "direct_identifiers_present": {"const": false},
+    "synthetic_primary_ranking": {"const": false},
+    "microphone_environment_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["profile_id", "metadata_sha256"],
+        "properties": {
+          "profile_id": {"type": "string", "pattern": "^env-[0-9a-f]{8}$"},
+          "metadata_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "speakers": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["speaker_id", "split", "cadence_assignment"],
+        "properties": {
+          "speaker_id": {"type": "string", "pattern": "^spk-[0-9a-f]{8}$"},
+          "split": {"enum": ["development", "qualification", "test"]},
+          "cadence_assignment": {"type": ["string", "null"], "enum": ["SLOW", "CONVERSATIONAL", "FAST_INTELLIGIBLE", null]}
+        }
+      }
+    },
+    "utterances": {
+      "type": "array",
+      "maxItems": 720,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "utterance_id",
+          "speaker_id",
+          "split",
+          "panel",
+          "canonical_audio_sha256",
+          "annotation_sha256",
+          "canonical_duration_ms",
+          "microphone_environment_profile_id"
+        ],
+        "properties": {
+          "utterance_id": {"type": "string", "pattern": "^utt-[0-9a-f]{12}$"},
+          "speaker_id": {"type": "string", "pattern": "^spk-[0-9a-f]{8}$"},
+          "split": {"enum": ["development", "qualification", "test"]},
+          "panel": {"enum": ["DEVELOPER_ENTITY", "GENERAL_COLLATERAL"]},
+          "canonical_audio_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "annotation_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "canonical_duration_ms": {"type": "integer", "minimum": 1, "maximum": 12000},
+          "microphone_environment_profile_id": {"type": "string", "pattern": "^env-[0-9a-f]{8}$"}
+        }
+      }
+    }
+  }
+}
