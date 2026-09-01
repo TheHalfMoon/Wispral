@@ -13,14 +13,19 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 HERE = ROOT / "research" / "000b2-entry"
 READINESS = HERE / "readiness.json"
+CLOSEOUT = HERE / "canonical-closeout.json"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
-EXPECTED_MAIN = "db0a10ab4c9ee2436a5b921d0ff8af96f58cef38"
+PREPARATION_START_MAIN = "db0a10ab4c9ee2436a5b921d0ff8af96f58cef38"
+ENTRY_EVIDENCE_MERGE = "49d0f31408ab36f285f5e61228b54a72ca0aec07"
+QUALIFIED_CANDIDATE_HEAD = "69b66bc433a146c2146e2b7fec264a8f4ed50ae9"
+TRUSTED_BASE_SHA = "248208cffa666a485fe58b7467fdbb2ec7e8b820"
+TRUSTED_RUN_ID = 33537242680
+TRUSTED_JOB_ID = 99954441750
 EXPECTED_BLOCKERS = {
     "human developer-speech participant/media authority is absent",
     "authorized human corpus, consent records, speaker-disjoint split manifests, and frozen primary test manifest are absent",
-    "scorer canonical revision is pending entry-preparation merge",
-    "same-attempt FFmpeg 9.0.1 binary/version/config capture is absent",
-    "same-attempt execution environment and hardware fingerprint are absent",
+    "accepted attempt-bound FFmpeg 9.0.1 binary/version/config identity and preprocessing execution evidence is absent",
+    "accepted attempt-bound execution environment and hardware fingerprint evidence is absent",
     "final B2 attempt manifest is not frozen",
 }
 NONCLAIMS = {
@@ -50,6 +55,12 @@ CONTENT_VERIFIERS = {
     "research/000b2-entry/verify_operational_smoke.py": "VERIFY_000B2_OPERATIONAL_SMOKE=PASS",
     "research/000b2-entry/verify_scorer.py": "VERIFY_000B2_SCORER=PASS",
 }
+STALE_BLOCKER_TEXT = (
+    "Moonshine payload SHA-256 materialization remains incomplete",
+    "sherpa-onnx `tokens.txt` SHA-256 materialization remains incomplete",
+    "each selected candidate still needs bounded non-primary operational smoke PASS",
+    "scorer implementation/revision/configuration is not frozen",
+)
 
 
 def load(path: Path) -> Any:
@@ -110,6 +121,64 @@ def require_gate(gates: dict[str, Any], name: str) -> dict[str, Any]:
     return gate
 
 
+def verify_closeout() -> None:
+    closeout = load(CLOSEOUT)
+    if not isinstance(closeout, dict):
+        fail("entry closeout must be an object")
+    if closeout.get("schema_version") != "000b2-entry-closeout-v1":
+        fail("entry closeout schema drift")
+    if closeout.get("recorded_date") != "2026-09-01":
+        fail("entry closeout date drift")
+    if closeout.get("disposition") != "BLOCKED_EXTERNAL" or closeout.get("b2_ready") is not False:
+        fail("entry closeout must preserve B2 BLOCKED_EXTERNAL")
+    if closeout.get("primary_test_decoding_authorized") is not False:
+        fail("entry closeout cannot authorize primary decoding")
+    if closeout.get("entry_preparation_evidence_merge") != ENTRY_EVIDENCE_MERGE:
+        fail("entry closeout evidence merge drift")
+    if closeout.get("qualified_candidate_head") != QUALIFIED_CANDIDATE_HEAD:
+        fail("entry closeout qualified head drift")
+
+    authority = closeout.get("trusted_authority_merges")
+    if not isinstance(authority, dict):
+        fail("entry closeout trusted authority missing")
+    if authority.get("trusted_base_authority") != "32135294675a372653843560623067d9ad3822d6":
+        fail("trusted-base authority merge drift")
+    if authority.get("live_base_refresh_fix") != TRUSTED_BASE_SHA:
+        fail("live-base refresh authority drift")
+
+    proof = closeout.get("trusted_runtime_proof")
+    if not isinstance(proof, dict):
+        fail("entry closeout trusted runtime proof missing")
+    expected_proof = {
+        "workflow": "000B2 Trusted Materialization Authority",
+        "run_id": TRUSTED_RUN_ID,
+        "job_id": TRUSTED_JOB_ID,
+        "trusted_base_sha": TRUSTED_BASE_SHA,
+        "candidate_head_sha": QUALIFIED_CANDIDATE_HEAD,
+        "artifact_identity_status": "PASS",
+        "materialized_artifact_records": 18,
+        "process_attestation": "NOT_PROVIDED_BY_THIS_GATE",
+    }
+    for key, expected in expected_proof.items():
+        if proof.get(key) != expected:
+            fail(f"entry closeout trusted proof drift: {key}")
+
+    blockers = closeout.get("remaining_blockers")
+    if not isinstance(blockers, list) or set(blockers) != EXPECTED_BLOCKERS:
+        fail("entry closeout blocker set drift")
+    if len(blockers) != len(set(blockers)):
+        fail("entry closeout blockers contain duplicates")
+
+    nonclaims = closeout.get("non_claims")
+    if not isinstance(nonclaims, dict):
+        fail("entry closeout non-claims missing")
+    for field, expected in NONCLAIMS.items():
+        if nonclaims.get(field) is not expected:
+            fail(f"entry closeout non-claim drift: {field}")
+    if nonclaims.get("stt_winner_selected") is not False:
+        fail("entry closeout selected an STT winner")
+
+
 def verify() -> None:
     record = load(READINESS)
     if not isinstance(record, dict):
@@ -118,10 +187,10 @@ def verify() -> None:
         fail("readiness schema drift")
     if record.get("recorded_date") != "2026-09-01":
         fail("readiness recorded date drift")
-    if record.get("canonical_main_at_preparation_start") != EXPECTED_MAIN:
+    if record.get("canonical_main_at_preparation_start") != PREPARATION_START_MAIN:
         fail("preparation canonical main drift")
     if not SHA40.fullmatch(str(record.get("canonical_main_at_preparation_start", ""))):
-        fail("canonical main is not a full lowercase Git SHA")
+        fail("preparation main is not a full lowercase Git SHA")
     if record.get("b1_disposition") != "VERIFIED":
         fail("B1 must remain VERIFIED")
     if record.get("b2_disposition") != "BLOCKED_EXTERNAL" or record.get("b2_ready") is not False:
@@ -160,6 +229,12 @@ def verify() -> None:
         fail("artifact materialization run drift")
     if materialization.get("workflow_head_sha") != "3d4325b7c9b13e6696326f3d2c8a6cfe501d9e12":
         fail("artifact materialization head drift")
+    if materialization.get("canonical_trusted_reproduction_run_id") != TRUSTED_RUN_ID:
+        fail("canonical trusted materialization run drift")
+    if materialization.get("canonical_trusted_base_sha") != TRUSTED_BASE_SHA:
+        fail("canonical trusted materialization base drift")
+    if materialization.get("canonical_candidate_head_sha") != QUALIFIED_CANDIDATE_HEAD:
+        fail("canonical trusted materialization candidate drift")
     require_file(materialization.get("evidence_path"), "materialization evidence")
     require_file(materialization.get("factual_amendment_path"), "artifact amendment")
     run_content_verifier("research/000b2-entry/verify_materialization.py")
@@ -181,22 +256,24 @@ def verify() -> None:
     run_content_verifier("research/000b2-entry/verify_operational_smoke.py")
 
     scorer = require_gate(gates, "scorer")
-    if scorer.get("status") != "CANONICAL_REVISION_PENDING_MERGE":
-        fail("scorer must remain pending canonical merge")
+    if scorer.get("status") != "CANONICAL":
+        fail("scorer must be canonical after entry-preparation merge")
+    if scorer.get("canonical_revision") != ENTRY_EVIDENCE_MERGE:
+        fail("scorer canonical revision drift")
     if scorer.get("verification_baseline_workflow_run_id") != 33523779606:
         fail("scorer verification baseline provenance drift")
     if "latest_verified_workflow_run_id" in scorer:
         fail("self-updating latest-run scorer provenance was reintroduced")
     note = scorer.get("note")
-    if not isinstance(note, str) or "stable verification baseline" not in note:
-        fail("scorer verification baseline semantics missing")
+    if not isinstance(note, str) or "became canonical" not in note:
+        fail("scorer canonical semantics missing")
     for key in ("implementation_path", "config_path", "verifier_path"):
         require_file(scorer.get(key), f"scorer {key}")
     run_content_verifier("research/000b2-entry/verify_scorer.py")
 
     preprocessing = require_gate(gates, "preprocessing")
     if preprocessing.get("status") != "SAME_ATTEMPT_CAPTURE_REQUIRED" or preprocessing.get("resolved") is not False:
-        fail("preprocessing must remain unresolved pending same-attempt capture")
+        fail("preprocessing must remain unresolved pending accepted attempt evidence")
     if preprocessing.get("required_tool") != "FFmpeg 9.0.1":
         fail("preprocessing tool drift")
     require_file(preprocessing.get("contract_path"), "preprocessing contract")
@@ -204,7 +281,7 @@ def verify() -> None:
 
     environment = require_gate(gates, "execution_environment")
     if environment.get("status") != "SAME_ATTEMPT_CAPTURE_REQUIRED" or environment.get("resolved") is not False:
-        fail("execution environment must remain unresolved pending same-attempt capture")
+        fail("execution environment must remain unresolved pending accepted attempt evidence")
     if environment.get("github_hosted_performance_mode") != "DIAGNOSTIC_ONLY":
         fail("hosted-runner performance boundary drift")
     require_file(environment.get("contract_path"), "environment contract")
@@ -235,9 +312,19 @@ def verify() -> None:
     if not isinstance(next_action, str) or "Do not execute B2 primary human-speech decoding" not in next_action:
         fail("readiness next action no longer fails closed")
 
+    verify_closeout()
+
     current = (ROOT / "specs" / "CURRENT.md").read_text(encoding="utf-8")
     if "`000B2-unbiased-stt-bakeoff`\n\nState: `BLOCKED_EXTERNAL`" not in current:
         fail("canonical CURRENT.md no longer records B2 BLOCKED_EXTERNAL")
+    for stale in STALE_BLOCKER_TEXT:
+        if stale in current:
+            fail(f"canonical CURRENT.md retains resolved blocker: {stale}")
+
+    current_state = (ROOT / "docs" / "canonical" / "CURRENT_STATE.md").read_text(encoding="utf-8")
+    for stale in STALE_BLOCKER_TEXT:
+        if stale in current_state:
+            fail(f"canonical CURRENT_STATE.md retains resolved blocker: {stale}")
 
 
 def main() -> int:
@@ -255,6 +342,8 @@ def main() -> int:
         print(f"VERIFY_000B2_ENTRY_READINESS=FAIL: {exc}", file=sys.stderr)
         return 1
     print("VERIFY_000B2_ENTRY_READINESS=PASS")
+    print("ENTRY_PREPARATION=CLOSED_CANONICAL")
+    print("SCORER=CANONICAL")
     print("B2_DISPOSITION=BLOCKED_EXTERNAL")
     print("B2_READY=NO")
     print("PRIMARY_TEST_DECODING=NO")
