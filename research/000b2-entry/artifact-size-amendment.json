@@ -1,0 +1,33 @@
+{
+  "schema_version": "000b2-entry-artifact-amendment-v1",
+  "status": "PRE_ATTEMPT_CORRECTION",
+  "recorded_date": "2026-09-01",
+  "primary_test_decoding_performed": false,
+  "comparative_ranking_present": false,
+  "reason": "The first exact-source materialization run observed 5048 bytes for sherpa-onnx tokens.txt at pinned source revision 6037ea07e3abfe599ad00d418968bcf9656e7472, while the historical B1 registry recorded 5050 bytes. The run failed closed before producing materialization evidence. This amendment preserves the historical B1 value and corrects only B2 pre-attempt materialization/attempt authority.",
+  "discovery_evidence": {
+    "workflow": "000B2 Entry Materialization",
+    "run_id": 33519166017,
+    "run_number": 1,
+    "head_sha": "db0d9376cb8c054c71816f8ad02423d8f98b9f95",
+    "conclusion": "failure",
+    "failure": "size mismatch for sherpa-onnx-compact:tokens.txt: expected 5050, observed 5048"
+  },
+  "corrections": [
+    {
+      "candidate_id": "sherpa-onnx-compact",
+      "path": "tokens.txt",
+      "source_revision": "6037ea07e3abfe599ad00d418968bcf9656e7472",
+      "historical_b1_size_bytes": 5050,
+      "b2_entry_size_bytes": 5048
+    },
+    {
+      "candidate_id": "sherpa-onnx-balanced",
+      "path": "tokens.txt",
+      "source_revision": "6037ea07e3abfe599ad00d418968bcf9656e7472",
+      "historical_b1_size_bytes": 5050,
+      "b2_entry_size_bytes": 5048
+    }
+  ],
+  "scope": "No model configuration, candidate membership, source revision, decoding parameter, corpus rule, scoring rule, or primary evidence is changed."
+}
