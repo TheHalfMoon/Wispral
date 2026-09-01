@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
-"""Capture exact FFmpeg attempt-time identity before any primary decode."""
+"""Capture exact FFmpeg identity for B2 qualification or an authorized attempt."""
 
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 HERE = Path(__file__).resolve().parent
 CONTRACT = HERE / "contract.json"
+SHA40 = re.compile(r"^[0-9a-f]{40}$")
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -22,9 +25,28 @@ def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def capture(binary: Path) -> dict:
+def load_attempt_state(path: Path) -> dict[str, Any]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError("attempt state must be a JSON object")
+    attempt_id = value.get("attempt_id")
+    revision = value.get("canonical_wispral_revision")
+    if not isinstance(attempt_id, str) or not attempt_id.strip():
+        raise ValueError("attempt state attempt_id missing")
+    if not isinstance(revision, str) or not SHA40.fullmatch(revision):
+        raise ValueError("attempt state canonical revision missing/malformed")
+    if value.get("phase") != "PRE_PRIMARY_CAPTURE":
+        raise ValueError("attempt state phase must be PRE_PRIMARY_CAPTURE")
+    if value.get("primary_test_decoding_started") is not False:
+        raise ValueError("preprocessing identity must be captured before primary decoding")
+    return value
+
+
+def capture(binary: Path, *, attempt_state_path: Path | None, qualification_only: bool) -> dict[str, Any]:
+    if qualification_only == (attempt_state_path is not None):
+        raise ValueError("select exactly one of qualification-only or attempt-state-bound capture")
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
-    if contract.get("tool_version") != "9.0.1":
+    if not isinstance(contract, dict) or contract.get("tool_version") != "9.0.1":
         raise ValueError("preprocessing contract version drift")
     resolved = binary.resolve(strict=True)
     version = subprocess.run(
@@ -32,10 +54,36 @@ def capture(binary: Path) -> dict:
         check=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        timeout=30,
     ).stdout
-    first_line = version.decode("utf-8", errors="strict").splitlines()[0]
-    if not first_line.startswith("ffmpeg version 9.0.1"):
+    decoded = version.decode("utf-8", errors="strict")
+    lines = decoded.splitlines()
+    if not lines:
+        raise ValueError("FFmpeg version output is empty")
+    first_line = lines[0].strip()
+    fields = first_line.split()
+    if len(fields) < 3 or fields[0] != "ffmpeg" or fields[1] != "version" or fields[2] != "9.0.1":
         raise ValueError(f"FFmpeg version mismatch: {first_line}")
+
+    ordering: dict[str, Any]
+    if qualification_only:
+        ordering = {
+            "mode": "QUALIFICATION_ONLY",
+            "attempt_time_authority": False,
+            "primary_decode_ordering_claim": False,
+        }
+    else:
+        assert attempt_state_path is not None
+        state = load_attempt_state(attempt_state_path)
+        ordering = {
+            "mode": "ATTEMPT_STATE_BOUND",
+            "attempt_time_authority": True,
+            "attempt_id": state["attempt_id"],
+            "canonical_wispral_revision": state["canonical_wispral_revision"],
+            "attempt_state_sha256": file_sha256(attempt_state_path),
+            "primary_test_decoding_started": False,
+        }
+
     return {
         "schema_version": "000b2-preprocessing-evidence-v1",
         "tool": "FFmpeg",
@@ -46,7 +94,7 @@ def capture(binary: Path) -> dict:
         "version_output_sha256": sha256_bytes(version),
         "version_first_line": first_line,
         "contract_sha256": file_sha256(CONTRACT),
-        "primary_test_decoding_started": False,
+        "ordering": ordering,
     }
 
 
@@ -54,16 +102,24 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--ffmpeg", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--qualification-only", action="store_true")
+    mode.add_argument("--attempt-state", type=Path)
     args = parser.parse_args()
     try:
-        evidence = capture(args.ffmpeg)
-    except (OSError, ValueError, subprocess.CalledProcessError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        evidence = capture(
+            args.ffmpeg,
+            attempt_state_path=args.attempt_state,
+            qualification_only=args.qualification_only,
+        )
+    except (OSError, ValueError, subprocess.CalledProcessError, subprocess.TimeoutExpired, UnicodeDecodeError, json.JSONDecodeError) as exc:
         print(f"CAPTURE_000B2_PREPROCESSING=FAIL: {exc}", file=sys.stderr)
         return 1
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print("CAPTURE_000B2_PREPROCESSING=PASS")
-    print("PRIMARY_TEST_DECODING_STARTED=NO")
+    print(f"CAPTURE_MODE={evidence['ordering']['mode']}")
+    print(f"ATTEMPT_TIME_AUTHORITY={'YES' if evidence['ordering']['attempt_time_authority'] else 'NO'}")
     return 0
 
 
