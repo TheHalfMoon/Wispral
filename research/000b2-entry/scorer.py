@@ -23,6 +23,7 @@ ALLOWED_OUTCOMES = {
     "INVALID_OUTPUT",
     "MISSING_OUTPUT",
 }
+FALSE_ENTITY_INSERTION_RATE_RULE = "FALSE_ENTITY_INSERTIONS_OVER_TOTAL_REFERENCE_ENTITIES"
 
 
 def load_json(path: Path) -> Any:
@@ -137,7 +138,21 @@ def annotation_entities(annotation: dict[str, Any]) -> list[dict[str, Any]]:
     entities = annotation.get("entities")
     if not isinstance(entities, list):
         raise ValueError(f"{annotation.get('utterance_id')} entities must be a list")
-    ordered = sorted(entities, key=lambda e: (e["start_char"], e["end_char"], e["entity_id"]))
+
+    seen_ids: set[str] = set()
+    validated: list[dict[str, Any]] = []
+    for entity in entities:
+        if not isinstance(entity, dict):
+            raise ValueError(f"{annotation.get('utterance_id')} entity must be an object")
+        entity_id = entity.get("entity_id")
+        if not isinstance(entity_id, str) or not entity_id:
+            raise ValueError(f"{annotation.get('utterance_id')} entity_id missing")
+        if entity_id in seen_ids:
+            raise ValueError(f"{annotation.get('utterance_id')} entity_id duplicate: {entity_id}")
+        seen_ids.add(entity_id)
+        validated.append(entity)
+
+    ordered = sorted(validated, key=lambda e: (e["start_char"], e["end_char"], e["entity_id"]))
     transcript = annotation["reference_transcript"]
     for entity in ordered:
         start = entity["start_char"]
@@ -175,6 +190,13 @@ def score(annotations: list[dict[str, Any]], predictions: list[dict[str, Any]]) 
     config = load_json(CONFIG_PATH)
     if config.get("implementation_id") != "wispral-000b2-deterministic-scorer-v1":
         raise ValueError("scorer config implementation_id drift")
+    entity_scoring = config.get("entity_scoring")
+    if not isinstance(entity_scoring, dict):
+        raise ValueError("scorer config entity_scoring missing")
+    if entity_scoring.get("false_entity_insertion_rate") != FALSE_ENTITY_INSERTION_RATE_RULE:
+        raise ValueError("false entity insertion rate definition drift")
+    if entity_scoring.get("zero_reference_entity_rate") is not None:
+        raise ValueError("zero-reference false entity insertion rate policy drift")
 
     annotation_by_id: dict[str, dict[str, Any]] = {}
     for annotation in annotations:
@@ -273,6 +295,7 @@ def score(annotations: list[dict[str, Any]], predictions: list[dict[str, Any]]) 
         "entity_substitutions": entity_substitutions,
         "entity_deletions": entity_deletions,
         "false_entity_insertions": false_entity_insertions,
+        "false_entity_insertion_rate": ratio(false_entity_insertions, reference_entities),
         "collateral_reference_words": collateral_reference_words,
         "collateral_substitutions": collateral_substitutions,
         "collateral_deletions": collateral_deletions,
