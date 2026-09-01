@@ -1,0 +1,110 @@
+name: 000A ACP Qualification
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/000a-acp-probe.yml'
+      - 'research/000a/**'
+      - 'fixtures/acp-probe/**'
+      - 'specs/000A-acp-qualification/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  protocol-probe:
+    name: ACP v1 probe (${{ matrix.agent.id }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        agent:
+          - id: gemini
+            package: '@google/gemini-cli@0.57.0'
+            args: '--acp'
+          - id: codex-acp
+            package: '@agentclientprotocol/codex-acp@1.7.0'
+            args: ''
+
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate research probe syntax
+        run: python -m py_compile research/000a/acp_probe.py
+
+      - name: Record environment and pinned package metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "artifacts/000a/${{ matrix.agent.id }}"
+          {
+            echo "runner_os=${RUNNER_OS}"
+            echo "runner_arch=${RUNNER_ARCH}"
+            echo "git_sha=${GITHUB_SHA}"
+            echo "node=$(node --version)"
+            echo "npm=$(npm --version)"
+            echo "python=$(python --version 2>&1)"
+            echo "uname=$(uname -a)"
+          } > "artifacts/000a/${{ matrix.agent.id }}/environment.txt"
+          npm view "${{ matrix.agent.package }}" version dist.integrity dist.shasum --json \
+            > "artifacts/000a/${{ matrix.agent.id }}/package-metadata.json"
+
+      - name: Run unauthenticated ACP probe
+        id: probe
+        shell: bash
+        run: |
+          set +e
+          python research/000a/acp_probe.py \
+            --agent-id "${{ matrix.agent.id }}" \
+            --fixture fixtures/acp-probe \
+            --output "artifacts/000a/${{ matrix.agent.id }}/probe.json" \
+            --timeout 120 \
+            -- npx -y "${{ matrix.agent.package }}" ${{ matrix.agent.args }}
+          status=$?
+          echo "status=${status}" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Validate structured probe artifact
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("artifacts/000a/${{ matrix.agent.id }}/probe.json")
+          data = json.loads(path.read_text())
+          assert data["schema_version"] == 1
+          assert data["agent_id"] == "${{ matrix.agent.id }}"
+          assert data["protocol_version_requested"] == 1
+          assert data["fixture"]["tree_sha256"]
+          assert isinstance(data["trace"], list)
+          print(json.dumps(data["outcomes"], sort_keys=True))
+          PY
+
+      - name: Upload exact evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 000a-acp-${{ matrix.agent.id }}
+          path: artifacts/000a/${{ matrix.agent.id }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Enforce initialize qualification
+        if: always()
+        shell: bash
+        run: |
+          test "${{ steps.probe.outputs.status }}" = "0"
