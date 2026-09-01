@@ -1,0 +1,63 @@
+name: 000B2 Trusted Materialization Authority
+
+on:
+  pull_request:
+    paths:
+      - '.github/trusted/verify_000b2_materialization.py'
+      - '.github/workflows/000b2-trusted-materialization-authority.yml'
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'research/000b1/qualified-candidates.json'
+      - 'research/000b2-entry/artifact-size-amendment.json'
+      - 'research/000b2-entry/materialized-artifacts.json'
+      - 'research/000b2-entry/materialize_artifacts.py'
+      - 'research/000b2-entry/verify_materialization.py'
+      - '.github/workflows/000b2-entry-materialization.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap-self-test:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile trusted verifier
+        run: python -m py_compile .github/trusted/verify_000b2_materialization.py
+      - name: Exercise fail-closed local self-test
+        run: python .github/trusted/verify_000b2_materialization.py --self-test
+
+  verify-pr-head-materialization:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout canonical base authority
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted-base
+          persist-credentials: false
+      - name: Checkout untrusted PR head as data only
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: candidate
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reproduce exact pending artifact identities from canonical authority
+        run: |
+          python trusted-base/.github/trusted/verify_000b2_materialization.py \
+            --base-root trusted-base \
+            --candidate-root candidate
