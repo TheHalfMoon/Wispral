@@ -124,7 +124,7 @@ jobs:
           grep -Fx 'B2_PRIMARY_RECORDING_AUTHORIZED_BY_THIS_RUNBOOK=NO' "$RUNBOOK"
           grep -Fx 'PRIMARY_MEDIA_ACCEPTANCE=NO' "$RUNBOOK"
           grep -Fx 'PRIMARY_TEST_DECODING_AUTHORIZED=NO' "$RUNBOOK"
-          grep -Fq 'identity-bearing consent artifacts' "$RUNBOOK"
+          grep -Fiq 'identity-bearing consent artifacts' "$RUNBOOK"
           grep -Fq 'outside the repository' "$RUNBOOK"
           echo 'EXTERNAL_AUTHORITY_RUNBOOK_BOUNDARY=PASS'
       - name: Verify preprocessing capture boundary
