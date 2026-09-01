@@ -28,25 +28,41 @@ def load_consent_verifier():
     return module
 
 
+def fingerprint(module, package: dict) -> str:
+    module.verify_schema_contract()
+    authority = module.load_authority_verifier()
+    errors = authority.verify_package(package, require_authorized=False)
+    if errors:
+        raise ValueError("authority package invalid: " + "; ".join(errors))
+    return module.authority_policy_fingerprint(package)
+
+
+def must_reject(module, package: dict, label: str) -> None:
+    try:
+        fingerprint(module, package)
+    except ValueError:
+        return
+    raise AssertionError(f"{label} was fingerprinted")
+
+
 def self_test(module) -> None:
     package = module.synthetic_package()
-    digest = module.authority_policy_fingerprint(package)
+    digest = fingerprint(module, package)
     if len(digest) != 64 or any(ch not in "0123456789abcdef" for ch in digest):
         raise AssertionError("authority policy fingerprint is not lowercase SHA-256")
 
     mutated = dict(package)
     mutated["recording_purpose"] = package["recording_purpose"] + " Material change."
-    if module.authority_policy_fingerprint(mutated) == digest:
+    if fingerprint(module, mutated) == digest:
         raise AssertionError("material policy drift did not change authority fingerprint")
 
-    invalid = dict(package)
-    invalid["retention_rule"] = None
-    try:
-        module.authority_policy_fingerprint(invalid)
-    except ValueError:
-        pass
-    else:
-        raise AssertionError("incomplete authority policy was fingerprinted")
+    incomplete = dict(package)
+    incomplete["retention_rule"] = None
+    must_reject(module, incomplete, "incomplete authority policy")
+
+    extra = dict(package)
+    extra["unexpected_field"] = "not allowed"
+    must_reject(module, extra, "authority package with extra field")
 
     print("AUTHORITY_POLICY_FINGERPRINT_HELPER_SELF_TEST=PASS")
     print("PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_HELPER")
@@ -66,7 +82,7 @@ def main() -> int:
             self_test(module)
             return 0
         package = module.load(args.authority_package, "authority package")
-        digest = module.authority_policy_fingerprint(package)
+        digest = fingerprint(module, package)
     except (AssertionError, OSError, TypeError, ValueError) as exc:
         print(f"AUTHORITY_POLICY_FINGERPRINT=FAIL: {exc}", file=sys.stderr)
         return 1
