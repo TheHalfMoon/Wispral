@@ -5,7 +5,8 @@ The B2 manifest remains schema-compatible with the frozen B1 manifest shape. The
 bounded artifact amendment and materialization evidence stay separate files; the
 manifest carries their effective artifact bytes/SHA values and is anchored by its
 canonical Wispral revision. This wrapper additionally refuses B2 readiness while
-the live checkout's canonical specification frontier is anything other than READY.
+the live checkout's canonical specification frontier is anything other than READY
+and binds any AUTHORIZED human-speech claim to the canonical B2 authority sidecar.
 """
 
 from __future__ import annotations
@@ -27,6 +28,8 @@ HERE = ROOT / "research" / "000b2-entry"
 REGISTRY = B1 / "qualified-candidates.json"
 SCHEMA = B1 / "schemas" / "attempt-manifest.schema.json"
 AMENDMENT = HERE / "artifact-size-amendment.json"
+AUTHORITY_PACKAGE = HERE / "authority" / "authority-package.json"
+AUTHORITY_VERIFIER = HERE / "authority" / "verify_authority.py"
 CURRENT = ROOT / "specs" / "CURRENT.md"
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 B2_FRONTIER_MARKER = "`000B2-unbiased-stt-bakeoff`"
@@ -52,6 +55,19 @@ def load_b1_validator():
     spec = importlib.util.spec_from_file_location("wispral_b1_attempt_validator", path)
     if spec is None or spec.loader is None:
         raise RuntimeError("cannot load B1 attempt validator")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_authority_verifier():
+    if AUTHORITY_VERIFIER.is_symlink() or not AUTHORITY_VERIFIER.is_file():
+        raise RuntimeError("canonical human authority verifier missing or symlinked")
+    spec = importlib.util.spec_from_file_location(
+        "wispral_b2_authority_verifier", AUTHORITY_VERIFIER
+    )
+    if spec is None or spec.loader is None:
+        raise RuntimeError("cannot load B2 human authority verifier")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -197,8 +213,6 @@ def materialized_map() -> dict[tuple[str, str], dict[str, Any]]:
 
 
 def corrections() -> dict[tuple[str, str], dict[str, Any]]:
-    # verify_static() binds amendment schema/scope/provenance and every materialized
-    # row to the current B1 registry. It proves facts, not candidate-authored chronology.
     verify_static()
     amendment = load(AMENDMENT)
     if not isinstance(amendment, dict):
@@ -212,6 +226,38 @@ def corrections() -> dict[tuple[str, str], dict[str, Any]]:
 def add_blocker(blockers: list[str], message: str) -> None:
     if message not in blockers:
         blockers.append(message)
+
+
+def bind_human_authority(
+    manifest: dict[str, Any], errors: list[str], blockers: list[str]
+) -> None:
+    corpus = manifest.get("corpus")
+    if not isinstance(corpus, dict):
+        return
+    if AUTHORITY_PACKAGE.is_symlink() or not AUTHORITY_PACKAGE.is_file():
+        errors.append("canonical human authority package missing or symlinked")
+        return
+
+    authority = load_authority_verifier()
+    package = authority.load(AUTHORITY_PACKAGE)
+    manifest_authorized = corpus.get("authority_status") == "AUTHORIZED"
+    authority_errors = authority.verify_package(
+        package, require_authorized=manifest_authorized
+    )
+    errors.extend(f"AUTHORITY: {message}" for message in authority_errors)
+
+    package_status = package.get("authority_status")
+    if manifest_authorized:
+        if package_status != "AUTHORIZED":
+            add_blocker(blockers, "canonical human authority package not AUTHORIZED")
+        if corpus.get("consent_records_sha256") != package.get("consent_records_sha256"):
+            errors.append(
+                "manifest consent_records_sha256 differs from canonical human authority package"
+            )
+    elif package_status == "AUTHORIZED":
+        errors.append(
+            "manifest authority_status is NOT_AUTHORIZED while canonical human authority package is AUTHORIZED"
+        )
 
 
 def validate_entry(manifest: dict[str, Any], require_ready: bool = False):
@@ -289,6 +335,8 @@ def validate_entry(manifest: dict[str, Any], require_ready: bool = False):
     ]
     if seen_materialized != expected_pending:
         add_blocker(blockers, "materialized artifact evidence incomplete")
+
+    bind_human_authority(manifest, errors, blockers)
 
     frontier_state = canonical_b2_frontier_state()
     if frontier_state != "READY":

@@ -17,6 +17,7 @@ on:
       - 'research/000b2-entry/canonical-closeout.json'
       - 'research/000b2-entry/verify_closeout.py'
       - 'research/000b2-entry/verify_readiness.py'
+      - 'research/000b2-entry/authority/**'
       - 'research/000b2-entry/preprocessing/**'
       - 'research/000b2-entry/environment/**'
       - 'specs/CURRENT.md'
@@ -36,6 +37,7 @@ on:
       - 'research/000b2-entry/canonical-closeout.json'
       - 'research/000b2-entry/verify_closeout.py'
       - 'research/000b2-entry/verify_readiness.py'
+      - 'research/000b2-entry/authority/**'
       - 'research/000b2-entry/preprocessing/**'
       - 'research/000b2-entry/environment/**'
       - 'specs/CURRENT.md'
@@ -59,6 +61,21 @@ jobs:
         run: python research/000b2-entry/verify_scorer.py
       - name: Verify durable six-cell operational smoke evidence
         run: python research/000b2-entry/verify_operational_smoke.py
+      - name: Verify human authority contract remains fail-closed
+        run: |
+          python research/000b2-entry/authority/verify_authority.py --self-test
+          python research/000b2-entry/authority/verify_readiness_binding.py
+          OUTPUT="$(python research/000b2-entry/authority/verify_authority.py research/000b2-entry/authority/authority-package.json)"
+          printf '%s\n' "$OUTPUT"
+          printf '%s\n' "$OUTPUT" | grep -Fx 'AUTHORITY_PACKAGE=NOT_AUTHORIZED'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PRIMARY_MEDIA_ACCEPTANCE=NO'
+          if python research/000b2-entry/authority/verify_authority.py \
+            research/000b2-entry/authority/authority-package.json \
+            --require-authorized; then
+            echo 'blocked authority package was incorrectly accepted as AUTHORIZED' >&2
+            exit 1
+          fi
+          echo 'AUTHORITY_REQUIRE_AUTHORIZED=BLOCKED_AS_EXPECTED'
       - name: Verify preprocessing capture boundary
         run: |
           python research/000b2-entry/preprocessing/verify_capture.py
