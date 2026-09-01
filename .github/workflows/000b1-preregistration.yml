@@ -30,7 +30,11 @@ jobs:
           python-version: '3.12'
       - name: Verify 000B1 machine-readable preregistration evidence
         run: python research/000b1/verify_preregistration.py
+      - name: Verify frozen candidate and schema contract semantics
+        run: python research/000b1/verify_frozen_contracts.py
       - name: Verify 000B2 frozen registry readiness gate
         run: python research/000b1/verify_b2_registry_gate.py
+      - name: Verify entity annotation semantic invariants
+        run: python research/000b1/verify_entity_annotation_gate.py
       - name: Verify 000B1 cross-document authority alignment
         run: python research/000b1/verify_documents.py
