@@ -1,0 +1,95 @@
+{
+  "schema_version": "000b2-attempt-manifest-v1",
+  "attempt_id": "B2-DRAFT-NOT-AUTHORIZED",
+  "canonical_wispral_revision": "6b5696a6becc360948282712cc9339df9cb3a67c",
+  "b1_contract_version": "000b1-contract-v1",
+  "qualified_candidates_sha256": null,
+  "frozen_methodology_sha256": null,
+  "frozen": false,
+  "freeze_digest_sha256": null,
+  "primary_test_decoding_started": false,
+  "candidates": [
+    {
+      "candidate_id": "moonshine-compact",
+      "family": "moonshine",
+      "tier": "COMPACT",
+      "runtime_revision": "234f60faa0eb388b01cdf7e60aca232af37aefda",
+      "c0": {
+        "common": {"language":"en","device":"CPU_ONLY","repository_context":"OFF","test_specific_context":"OFF","post_decode_entity_correction":"OFF","external_language_model":"OFF","candidate_specific_audio_transform":"OFF","feed_chunk_ms":500,"finalization_zero_pad_ms":660},
+        "family": {"runtime_revision":"234f60faa0eb388b01cdf7e60aca232af37aefda","integration":"Pinned Moonshine Transcriber streaming API; feed samples decoded deterministically from canonical WAV in 500 ms chunks and finalize after universal zero pad.","threads":"RUNTIME_DEFAULT_NO_DOCUMENTED_STT_THREAD_OPTION","ort_providers":"UNSET_CPU_DEFAULT","max_tokens_per_second":6.5,"use_speculative_decoding":true,"keyterms":"OFF","context":"OFF","keyterm_boost":2.0,"context_max_terms":200,"transcription_interval_seconds":0.5,"vad_threshold":0.0,"vad_window_duration_seconds":0.5,"vad_hop_size_samples":512,"vad_look_behind_sample_count":8192,"vad_max_segment_duration_seconds":15,"word_timestamps":false,"decode_incomplete_lines":true,"identify_speakers":false,"return_audio_data":true,"spelling_model":"OFF","search":"PINNED_RUNTIME_STREAMING_DECODER_DEFAULT","temperature":"NOT_EXPOSED_AS_STT_OPTION_AT_PINNED_API","punctuation":"MODEL_NATIVE_NO_POSTPROCESSING","timestamps":"WORD_TIMESTAMPS_OFF","previous_text_carryover":"PINNED_RUNTIME_STREAMING_STATE_ONLY_NO_REPOSITORY_PROMPT","endpointing":"VAD_THRESHOLD_0_AND_EXPLICIT_INPUT_END","max_primary_utterance_seconds":12}
+      },
+      "artifacts": [
+        {"path":"adapter.ort","size_bytes":2870368,"sha256":null},{"path":"cross_kv.ort","size_bytes":5356536,"sha256":null},{"path":"decoder_kv.ort","size_bytes":81878600,"sha256":null},{"path":"encoder.ort","size_bytes":44148576,"sha256":null},{"path":"frontend.model.ort","size_bytes":26944,"sha256":null},{"path":"frontend.weights.ort","size_bytes":7769464,"sha256":null},{"path":"streaming_config.json","size_bytes":512,"sha256":null},{"path":"tokenizer.bin","size_bytes":249974,"sha256":null}
+      ],
+      "operational_qualification": {"status":"NOT_RUN","evidence_sha256":null,"canonical_waiver_revision":null}
+    },
+    {
+      "candidate_id": "moonshine-balanced",
+      "family": "moonshine",
+      "tier": "BALANCED",
+      "runtime_revision": "234f60faa0eb388b01cdf7e60aca232af37aefda",
+      "c0": {
+        "common": {"language":"en","device":"CPU_ONLY","repository_context":"OFF","test_specific_context":"OFF","post_decode_entity_correction":"OFF","external_language_model":"OFF","candidate_specific_audio_transform":"OFF","feed_chunk_ms":500,"finalization_zero_pad_ms":660},
+        "family": {"runtime_revision":"234f60faa0eb388b01cdf7e60aca232af37aefda","integration":"Pinned Moonshine Transcriber streaming API; feed samples decoded deterministically from canonical WAV in 500 ms chunks and finalize after universal zero pad.","threads":"RUNTIME_DEFAULT_NO_DOCUMENTED_STT_THREAD_OPTION","ort_providers":"UNSET_CPU_DEFAULT","max_tokens_per_second":6.5,"use_speculative_decoding":true,"keyterms":"OFF","context":"OFF","keyterm_boost":2.0,"context_max_terms":200,"transcription_interval_seconds":0.5,"vad_threshold":0.0,"vad_window_duration_seconds":0.5,"vad_hop_size_samples":512,"vad_look_behind_sample_count":8192,"vad_max_segment_duration_seconds":15,"word_timestamps":false,"decode_incomplete_lines":true,"identify_speakers":false,"return_audio_data":true,"spelling_model":"OFF","search":"PINNED_RUNTIME_STREAMING_DECODER_DEFAULT","temperature":"NOT_EXPOSED_AS_STT_OPTION_AT_PINNED_API","punctuation":"MODEL_NATIVE_NO_POSTPROCESSING","timestamps":"WORD_TIMESTAMPS_OFF","previous_text_carryover":"PINNED_RUNTIME_STREAMING_STATE_ONLY_NO_REPOSITORY_PROMPT","endpointing":"VAD_THRESHOLD_0_AND_EXPLICIT_INPUT_END","max_primary_utterance_seconds":12}
+      },
+      "artifacts": [
+        {"path":"adapter.ort","size_bytes":3651296,"sha256":null},{"path":"cross_kv.ort","size_bytes":11643776,"sha256":null},{"path":"decoder_kv.ort","size_bytes":146972408,"sha256":null},{"path":"encoder.ort","size_bytes":94705376,"sha256":null},{"path":"frontend.model.ort","size_bytes":28720,"sha256":null},{"path":"frontend.weights.ort","size_bytes":11889560,"sha256":null},{"path":"streaming_config.json","size_bytes":513,"sha256":null},{"path":"tokenizer.bin","size_bytes":249974,"sha256":null}
+      ],
+      "operational_qualification": {"status":"NOT_RUN","evidence_sha256":null,"canonical_waiver_revision":null}
+    },
+    {
+      "candidate_id": "whispercpp-compact",
+      "family": "whisper.cpp",
+      "tier": "COMPACT",
+      "runtime_revision": "371b5a7561823ab2bb32142d2751e35e7534727b",
+      "c0": {
+        "common": {"language":"en","device":"CPU_ONLY","repository_context":"OFF","test_specific_context":"OFF","post_decode_entity_correction":"OFF","external_language_model":"OFF","candidate_specific_audio_transform":"OFF","feed_chunk_ms":500,"finalization_zero_pad_ms":660},
+        "family": {"runtime_revision":"371b5a7561823ab2bb32142d2751e35e7534727b","integration":"Research adapter reproduces pinned examples/stream non-VAD fixed-step decode semantics over samples decoded deterministically from canonical WAV; no microphone capture dependency in evidence harness.","threads":4,"step_ms":500,"length_ms":5000,"keep_ms":200,"max_tokens":0,"audio_ctx":0,"beam_size":-1,"sampling":"GREEDY","temperature_fallback":"OFF","no_fallback":true,"language":"en","translate":false,"keep_context":false,"initial_prompt":"OFF","prompt_carryover":"OFF","vad":"OFF_BY_NONZERO_STEP","vad_threshold":"NOT_USED","timestamps":"OFF_BY_NON_VAD_STREAM_PATH","single_segment":true,"use_gpu":false,"flash_attention":false,"punctuation":"MODEL_NATIVE_NO_POSTPROCESSING","streaming_semantics_expected_from_docs":"DOCUMENTED_NOT_OBSERVED_CHUNKED_REDECODE"}
+      },
+      "artifacts": [{"path":"ggml-base.en.bin","size_bytes":147964211,"sha256":"a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002"}],
+      "operational_qualification": {"status":"NOT_RUN","evidence_sha256":null,"canonical_waiver_revision":null}
+    },
+    {
+      "candidate_id": "whispercpp-balanced",
+      "family": "whisper.cpp",
+      "tier": "BALANCED",
+      "runtime_revision": "371b5a7561823ab2bb32142d2751e35e7534727b",
+      "c0": {
+        "common": {"language":"en","device":"CPU_ONLY","repository_context":"OFF","test_specific_context":"OFF","post_decode_entity_correction":"OFF","external_language_model":"OFF","candidate_specific_audio_transform":"OFF","feed_chunk_ms":500,"finalization_zero_pad_ms":660},
+        "family": {"runtime_revision":"371b5a7561823ab2bb32142d2751e35e7534727b","integration":"Research adapter reproduces pinned examples/stream non-VAD fixed-step decode semantics over samples decoded deterministically from canonical WAV; no microphone capture dependency in evidence harness.","threads":4,"step_ms":500,"length_ms":5000,"keep_ms":200,"max_tokens":0,"audio_ctx":0,"beam_size":-1,"sampling":"GREEDY","temperature_fallback":"OFF","no_fallback":true,"language":"en","translate":false,"keep_context":false,"initial_prompt":"OFF","prompt_carryover":"OFF","vad":"OFF_BY_NONZERO_STEP","vad_threshold":"NOT_USED","timestamps":"OFF_BY_NON_VAD_STREAM_PATH","single_segment":true,"use_gpu":false,"flash_attention":false,"punctuation":"MODEL_NATIVE_NO_POSTPROCESSING","streaming_semantics_expected_from_docs":"DOCUMENTED_NOT_OBSERVED_CHUNKED_REDECODE"}
+      },
+      "artifacts": [{"path":"ggml-small.en.bin","size_bytes":487614201,"sha256":"c6138d6d58ecc8322097e0f987c32f1be8bb0a18532a3f88f734d1bbf9c41e5d"}],
+      "operational_qualification": {"status":"NOT_RUN","evidence_sha256":null,"canonical_waiver_revision":null}
+    },
+    {
+      "candidate_id": "sherpa-onnx-compact",
+      "family": "sherpa-onnx",
+      "tier": "COMPACT",
+      "runtime_revision": "917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e",
+      "c0": {
+        "common": {"language":"en","device":"CPU_ONLY","repository_context":"OFF","test_specific_context":"OFF","post_decode_entity_correction":"OFF","external_language_model":"OFF","candidate_specific_audio_transform":"OFF","feed_chunk_ms":500,"finalization_zero_pad_ms":660},
+        "family": {"runtime_revision":"917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e","integration":"OnlineRecognizer.from_transducer; feed samples decoded deterministically from canonical WAV in 500 ms chunks, decode while ready, feed universal zero pad, call input_finished, then drain ready states.","threads":4,"provider":"cpu","sample_rate_hz":16000,"feature_dim":80,"decoding_method":"greedy_search","max_active_paths":4,"lm":"OFF","lm_scale":0.1,"lodr_fst":"OFF","lodr_scale":-0.1,"hotwords_file":"OFF","hotwords_score":1.5,"modeling_unit":"OFF","bpe_vocab":"OFF","blank_penalty":0.0,"endpoint_detection":"OFF_PRESEGMENTED_INPUT_FINISHED","punctuation":"MODEL_NATIVE_NO_POSTPROCESSING","timestamps":"PRESERVE_RAW_RESULT_WHERE_EXPOSED_NO_SCORING_DEPENDENCE"}
+      },
+      "artifacts": [{"path":"encoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx","size_bytes":71083163,"sha256":"563fde436d16cf7607cf408cd6b30909819d03162652ef389c2450ced3f45ac1"},{"path":"decoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx","size_bytes":1307236,"sha256":"98da299f471e38bb4e1a8df579b8cc9122d6039576a77e357b3c60f17dd83b02"},{"path":"joiner-epoch-99-avg-1-chunk-16-left-128.int8.onnx","size_bytes":259335,"sha256":"d944208d660d67c8d72cd2acaeac971fa5ceb8c80e76c1968148846fedd6e297"},{"path":"bpe.model","size_bytes":244865,"sha256":"c53433de083c4a6ad12d034550ef22de68cec62c4f58932a7b6b8b2f1e743fa5"},{"path":"tokens.txt","size_bytes":5050,"sha256":null}],
+      "operational_qualification": {"status":"NOT_RUN","evidence_sha256":null,"canonical_waiver_revision":null}
+    },
+    {
+      "candidate_id": "sherpa-onnx-balanced",
+      "family": "sherpa-onnx",
+      "tier": "BALANCED",
+      "runtime_revision": "917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e",
+      "c0": {
+        "common": {"language":"en","device":"CPU_ONLY","repository_context":"OFF","test_specific_context":"OFF","post_decode_entity_correction":"OFF","external_language_model":"OFF","candidate_specific_audio_transform":"OFF","feed_chunk_ms":500,"finalization_zero_pad_ms":660},
+        "family": {"runtime_revision":"917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e","integration":"OnlineRecognizer.from_transducer; feed samples decoded deterministically from canonical WAV in 500 ms chunks, decode while ready, feed universal zero pad, call input_finished, then drain ready states.","threads":4,"provider":"cpu","sample_rate_hz":16000,"feature_dim":80,"decoding_method":"greedy_search","max_active_paths":4,"lm":"OFF","lm_scale":0.1,"lodr_fst":"OFF","lodr_scale":-0.1,"hotwords_file":"OFF","hotwords_score":1.5,"modeling_unit":"OFF","bpe_vocab":"OFF","blank_penalty":0.0,"endpoint_detection":"OFF_PRESEGMENTED_INPUT_FINISHED","punctuation":"MODEL_NATIVE_NO_POSTPROCESSING","timestamps":"PRESERVE_RAW_RESULT_WHERE_EXPOSED_NO_SCORING_DEPENDENCE"}
+      },
+      "artifacts": [{"path":"encoder-epoch-99-avg-1-chunk-16-left-128.onnx","size_bytes":262127043,"sha256":"a423883ce5754507fd941755ab0b5bc426a84ac670cbe21cf060e9e2c66dc660"},{"path":"decoder-epoch-99-avg-1-chunk-16-left-128.onnx","size_bytes":2092621,"sha256":"7bf787f90b194b307e5a4ad6a34fadb4e748304c35f78a8d66358a05b13ee6ef"},{"path":"joiner-epoch-99-avg-1-chunk-16-left-128.onnx","size_bytes":1026405,"sha256":"210591f72b3c56b8364f85f345dca240bc2b4c00632848f4aa923630d5639d3b"},{"path":"bpe.model","size_bytes":244865,"sha256":"c53433de083c4a6ad12d034550ef22de68cec62c4f58932a7b6b8b2f1e743fa5"},{"path":"tokens.txt","size_bytes":5050,"sha256":null}],
+      "operational_qualification": {"status":"NOT_RUN","evidence_sha256":null,"canonical_waiver_revision":null}
+    }
+  ],
+  "exclusions": [],
+  "corpus": {"authority_status":"NOT_AUTHORIZED","consent_records_sha256":null,"primary_test_manifest_sha256":null,"synthetic_primary_ranking":false},
+  "preprocessing": {"revision":null,"config_sha256":null,"binary_sha256":null,"version_output_sha256":null,"tool":"FFmpeg","tool_version":"9.0.1","tool_source_commit":"bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa","canonical_format":"PCM_WAV","sample_rate_hz":16000,"channels":1,"sample_format":"PCM_S16LE","denoising":"NONE","loudness_normalization":"NONE","semantic_silence_trim":"NONE","feed_chunk_ms":500,"finalization_zero_pad_ms":660},
+  "scorer": {"revision":null,"config_sha256":null},
+  "execution_environment": {"environment_id":null,"performance_mode":"DIAGNOSTIC","hardware_fingerprint_sha256":null},
+  "claims": {"comparative_performance_authorized":false,"human_developer_speech_ranking_authorized":false}
+}

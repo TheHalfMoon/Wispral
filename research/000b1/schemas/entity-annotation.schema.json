@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TheHalfMoon/Wispral/research/000b1/schemas/entity-annotation.schema.json",
+  "title": "Wispral 000B1 Developer Entity Annotation",
+  "description": "Structural schema. Cross-field span invariants (0 <= start_char < end_char <= len(reference_transcript), exact_text == reference_transcript[start_char:end_char], and unique entity_id) are normative and fail-closed in research/000b1/validate_entity_annotation.py; CI regressions are in verify_entity_annotation_gate.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["utterance_id", "panel", "split", "speaker_id", "reference_transcript", "entities"],
+  "properties": {
+    "utterance_id": {"type": "string", "pattern": "^[A-Za-z0-9._-]+$"},
+    "panel": {"enum": ["DEVELOPER_ENTITY", "GENERAL_COLLATERAL", "SMOKE"]},
+    "split": {"enum": ["development", "qualification", "test"]},
+    "speaker_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "reference_transcript": {"type": "string", "minLength": 1},
+    "repository_archetype": {"type": ["string", "null"]},
+    "ambiguity_notes": {"type": ["string", "null"]},
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "start_char/end_char are additionally cross-validated against reference_transcript by validate_entity_annotation.py; JSON Schema draft 2020-12 cannot compare sibling numeric properties directly.",
+        "additionalProperties": false,
+        "required": ["entity_id", "class", "start_char", "end_char", "exact_text", "normalization", "binding", "distractors"],
+        "properties": {
+          "entity_id": {"type": "string", "pattern": "^[A-Za-z0-9._-]+$"},
+          "class": {"enum": ["FILE_PATH", "DIRECTORY_PATH", "IDENTIFIER", "FUNCTION", "TYPE", "PACKAGE_MODULE", "FRAMEWORK", "CLI_FLAG", "GIT_REF", "GIT_SHA", "VERSION", "TEST_NAME", "DATABASE_IDENTIFIER", "LINE_RANGE", "OTHER_DEVELOPER_ENTITY"]},
+          "start_char": {"type": "integer", "minimum": 0},
+          "end_char": {"type": "integer", "minimum": 1},
+          "exact_text": {"type": "string", "minLength": 1},
+          "spoken_form": {"type": ["string", "null"]},
+          "normalization": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["allowed", "rule"],
+            "properties": {"allowed": {"type": "boolean"}, "rule": {"type": ["string", "null"]}}
+          },
+          "binding": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["expected_repository_entity", "ambiguous"],
+            "properties": {"expected_repository_entity": {"type": ["string", "null"]}, "ambiguous": {"type": "boolean"}}
+          },
+          "distractors": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        }
+      }
+    }
+  }
+}

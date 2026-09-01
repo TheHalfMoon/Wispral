@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TheHalfMoon/Wispral/research/000b1/schemas/attempt-manifest.schema.json",
+  "title": "Wispral 000B2 Attempt Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "attempt_id", "canonical_wispral_revision", "b1_contract_version",
+    "qualified_candidates_sha256", "frozen_methodology_sha256", "frozen",
+    "freeze_digest_sha256", "primary_test_decoding_started", "candidates", "exclusions",
+    "corpus", "preprocessing", "scorer", "execution_environment", "claims"
+  ],
+  "properties": {
+    "schema_version": {"const": "000b2-attempt-manifest-v1"},
+    "attempt_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{2,127}$"},
+    "canonical_wispral_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "b1_contract_version": {"const": "000b1-contract-v1"},
+    "qualified_candidates_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "frozen_methodology_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "frozen": {"type": "boolean"},
+    "freeze_digest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "primary_test_decoding_started": {"type": "boolean"},
+    "candidates": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["candidate_id", "family", "tier", "runtime_revision", "c0", "artifacts", "operational_qualification"],
+        "properties": {
+          "candidate_id": {"enum": ["moonshine-compact", "moonshine-balanced", "whispercpp-compact", "whispercpp-balanced", "sherpa-onnx-compact", "sherpa-onnx-balanced"]},
+          "family": {"enum": ["moonshine", "whisper.cpp", "sherpa-onnx"]},
+          "tier": {"enum": ["COMPACT", "BALANCED"]},
+          "runtime_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+          "c0": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["common", "family"],
+            "properties": {
+              "common": {"type": "object"},
+              "family": {"type": "object"}
+            }
+          },
+          "artifacts": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "size_bytes", "sha256"],
+              "properties": {
+                "path": {"type": "string", "minLength": 1},
+                "size_bytes": {"type": "integer", "minimum": 1},
+                "sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+              }
+            }
+          },
+          "operational_qualification": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["status", "evidence_sha256", "canonical_waiver_revision"],
+            "properties": {
+              "status": {"enum": ["NOT_RUN", "FAILED", "SMOKE_PASS", "CANONICAL_WAIVER"]},
+              "evidence_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+              "canonical_waiver_revision": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"}
+            }
+          }
+        }
+      }
+    },
+    "exclusions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["candidate_id", "reason_code", "rationale", "evidence_sha256", "canonical_revision"],
+        "properties": {
+          "candidate_id": {"enum": ["moonshine-compact", "moonshine-balanced", "whispercpp-compact", "whispercpp-balanced", "sherpa-onnx-compact", "sherpa-onnx-balanced"]},
+          "reason_code": {"enum": ["LICENSE_OR_PROVENANCE_UNRESOLVED", "ARTIFACT_IDENTITY_UNRESOLVED", "ARTIFACT_UNAVAILABLE", "NO_LOCAL_ENGLISH_PATH", "BUILD_OR_INSTALL_UNREPRODUCIBLE", "OUTSIDE_PRODUCT_ENVELOPE", "HOSTED_INFERENCE_REQUIRED", "C0_FAIRNESS_UNRESOLVABLE", "OPERATIONAL_QUALIFICATION_FAILED"]},
+          "rationale": {"type": "string", "minLength": 1},
+          "evidence_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+          "canonical_revision": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"}
+        }
+      }
+    },
+    "corpus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority_status", "consent_records_sha256", "primary_test_manifest_sha256", "synthetic_primary_ranking"],
+      "properties": {
+        "authority_status": {"enum": ["NOT_AUTHORIZED", "AUTHORIZED"]},
+        "consent_records_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "primary_test_manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "synthetic_primary_ranking": {"const": false}
+      }
+    },
+    "preprocessing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "config_sha256", "binary_sha256", "version_output_sha256", "tool", "tool_version", "tool_source_commit", "canonical_format", "sample_rate_hz", "channels", "sample_format", "denoising", "loudness_normalization", "semantic_silence_trim", "feed_chunk_ms", "finalization_zero_pad_ms"],
+      "properties": {
+        "revision": {"type": ["string", "null"]},
+        "config_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "binary_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "version_output_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "tool": {"const": "FFmpeg"},
+        "tool_version": {"const": "9.0.1"},
+        "tool_source_commit": {"const": "bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa"},
+        "canonical_format": {"const": "PCM_WAV"},
+        "sample_rate_hz": {"const": 16000},
+        "channels": {"const": 1},
+        "sample_format": {"const": "PCM_S16LE"},
+        "denoising": {"const": "NONE"},
+        "loudness_normalization": {"const": "NONE"},
+        "semantic_silence_trim": {"const": "NONE"},
+        "feed_chunk_ms": {"const": 500},
+        "finalization_zero_pad_ms": {"const": 660}
+      }
+    },
+    "scorer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "config_sha256"],
+      "properties": {
+        "revision": {"type": ["string", "null"]},
+        "config_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "execution_environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["environment_id", "performance_mode", "hardware_fingerprint_sha256"],
+      "properties": {
+        "environment_id": {"type": ["string", "null"]},
+        "performance_mode": {"enum": ["DIAGNOSTIC", "CONTROLLED"]},
+        "hardware_fingerprint_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["comparative_performance_authorized", "human_developer_speech_ranking_authorized"],
+      "properties": {
+        "comparative_performance_authorized": {"type": "boolean"},
+        "human_developer_speech_ranking_authorized": {"type": "boolean"}
+      }
+    }
+  }
+}

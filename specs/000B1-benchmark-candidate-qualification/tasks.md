@@ -14,27 +14,29 @@
 
 A readiness failure must be recorded rather than bypassed.
 
+Readiness disposition for the current B1 evidence unit: `PASS` for preregistration/qualification work only. This does not authorize B2 primary decoding.
+
 ## Grain tasks
 
-- [ ] **B101 — Revalidate canonical and external authority.** Record current Wispral base plus exact candidate repository/release/model-source revisions; preserve material drift from `docs/research/stt/000b-refinement-inputs.md`.
-- [ ] **B102 — Define product configuration envelope.** Freeze justified artifact/resource/license/local-inference tiers and maximum configurations per family before primary test decoding.
-- [ ] **B103 — Qualify Moonshine configurations.** Apply the B102 rule to current streaming English models; pin exact runtime/model artifacts, digests, license/provenance, C0 settings, and native context capabilities without ranking developer accuracy.
-- [ ] **B104 — Qualify whisper.cpp configurations.** Resolve source-versus-release choice, apply B102, pin exact Whisper model artifact(s)/digests/configuration, record real-time integration semantics and prompt-context capability without ranking developer accuracy.
-- [ ] **B105 — Qualify sherpa-onnx configurations.** Apply B102 to an exact current English online model path, pin runtime/model artifacts/digests/license/provenance/configuration, and record hotword capability where supported without ranking developer accuracy.
-- [ ] **B106 — Run bounded qualification smoke if needed.** Use only public/license-clear non-primary audio to prove selected paths install/load/decode and produce parseable evidence. Preserve failures and do not score candidates against one another.
-- [ ] **B107 — Define corpus and speaker contract.** Freeze primary developer-entity, collateral/general, and smoke panel rules; minimum sample/speaker rationale; diversity targets; recording instructions; consent; retention; redistribution; withdrawal-before-freeze; and prohibited content.
-- [ ] **B108 — Define entity annotation schema.** Create deterministic machine-readable representation for references, entity spans/classes, exact target text, allowed normalization, spoken forms, repository bindings, ambiguity/distractors, panel, and split.
-- [ ] **B109 — Define split and anti-tuning contract.** Freeze development/qualification/test rules, manifest hashing, configuration freeze ordering, and new-attempt requirements after primary test observation.
-- [ ] **B110 — Define canonical audio preprocessing.** Pin sample rate/channel/sample representation, resampling implementation/version, amplitude/silence policy, per-file digests, and real-time feed semantics so C0 candidates receive identical canonical audio.
-- [ ] **B111 — Define C0 unbiased configuration contract.** Freeze prompt/keyterm/hotword/grammar/context, previous-text, language, search/temperature, VAD/endpointing, punctuation, and partial/timestamp settings for each candidate.
-- [ ] **B112 — Define streaming semantics and measurement schema.** Freeze observable criteria for `NATIVE_INCREMENTAL`, `CHUNKED_REDECODE`, `BATCH_ONLY`, and `UNKNOWN`, plus any comparable partial/final timing fields without turning B1 into turn-detection research.
-- [ ] **B113 — Define C1 repository-resolution contract.** Freeze engine-agnostic resolver inputs, bounded candidate extraction, ambiguity and unsafe-binding requirements, anti-answer-leakage rules, and future B3 freeze boundary.
-- [ ] **B114 — Define C2 native-context contract.** Record backend-native bias/context mechanisms and freeze the future within-backend uplift/degradation methodology; do not enable them in C0.
-- [ ] **B115 — Define scoring and failure contract.** Freeze developer entity exact/normalized scoring, edit counts, ordinary WER/collateral error, false insertion, timeout/failure treatment, and future C1 binding metrics.
-- [ ] **B116 — Define performance evidence contract.** Freeze hardware/OS/runtime/repetition/warm-cold records and explicitly separate hosted-runner diagnostic timing from controlled comparative performance evidence.
-- [ ] **B117 — Define recommendation rule.** Freeze hard gates and transparent Pareto/non-dominance logic plus exact meanings of `LEADING`, `CONTENDER`, `REJECTED`, and `INSUFFICIENT_EVIDENCE` before B2 results exist.
-- [ ] **B118 — Define B2 attempt manifest and validator.** Create a machine-readable or deterministically validated schema binding Wispral revision, candidate/model digests, corpus/preprocessing/scorer revisions, C0 configuration, environment, freeze timestamp, and invalidation rules.
-- [ ] **B119 — Adversarial preregistration review.** Challenge whether the contract permits model switching, test leakage, normalization inflation, hidden context bias, synthetic-audio overclaim, hosted-runner performance claims, dropped failures, or post-hoc weighting.
+- [x] **B101 — Revalidate canonical and external authority.** Recorded in `docs/research/stt/000b1-qualification-report.md`.
+- [x] **B102 — Define product configuration envelope.** COMPACT/BALANCED ceilings and mechanical selection rule frozen in the qualification report and benchmark contract.
+- [x] **B103 — Qualify Moonshine configurations.** Exact current runtime/asset paths, sizes, licenses, C0 state, and pending B2 SHA-256 materialization gate recorded without ranking developer accuracy.
+- [x] **B104 — Qualify whisper.cpp configurations.** Release `b4938`, exact model artifacts/digests, C0 state, and documented-not-observed streaming posture recorded without ranking developer accuracy.
+- [x] **B105 — Qualify sherpa-onnx configurations.** Exact runtime/model revisions, chunk-16/left-128 INT8/FP32 artifacts, digests, license/provenance, and C0 state recorded without ranking developer accuracy.
+- [x] **B106 — Run bounded qualification smoke if needed.** Disposition: `NOT_RUN_NOT_REQUIRED`; B1 contract/provenance completion does not require a decode. B2 still requires smoke or an explicit canonical waiver.
+- [x] **B107 — Define corpus and speaker contract.** Twenty-speaker, speaker-disjoint 4/4/12 split and 720-utterance design frozen in `research/000b1/frozen-methodology.json` and explained in `docs/research/stt/000b1-frozen-methodology.md`; recording authority remains external and absent.
+- [x] **B108 — Define entity annotation schema.** `research/000b1/schemas/entity-annotation.schema.json`.
+- [x] **B109 — Define split and anti-tuning contract.** Frozen in the benchmark contract, frozen methodology, and attempt validator.
+- [x] **B110 — Define canonical audio preprocessing.** FFmpeg `9.0.1` / tag `n9.0.1` / commit `bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa`, exact conversion command, raw mono 16 kHz PCM_S16LE representation, digest rules, 500 ms feed chunks, and universal 660 ms zero finalization suffix are machine-frozen.
+- [x] **B111 — Define C0 unbiased configuration contract.** Exact per-family CPU-only Moonshine/whisper.cpp/sherpa-onnx C0 settings are frozen in `research/000b1/frozen-methodology.json` and machine-checked; repository/test-specific context remains OFF.
+- [x] **B112 — Define streaming semantics and measurement schema.** `NATIVE_INCREMENTAL`, `CHUNKED_REDECODE`, `BATCH_ONLY`, and `UNKNOWN` criteria frozen in the benchmark contract.
+- [x] **B113 — Define C1 repository-resolution contract.** Engine-agnostic bounded resolver and anti-answer-leakage contract frozen.
+- [x] **B114 — Define C2 native-context contract.** Within-backend uplift/degradation methodology frozen; C2 remains excluded from C0.
+- [x] **B115 — Define scoring and failure contract.** Entity exact/normalized views, WER/collateral evidence, failures, and C1 metrics frozen.
+- [x] **B116 — Define performance evidence contract.** Controlled hardware requirements and hosted-runner diagnostic-only boundary frozen.
+- [x] **B117 — Define recommendation rule.** Hard gates plus Pareto/non-dominance and disposition vocabulary frozen before B2 results.
+- [x] **B118 — Define B2 attempt manifest and validator.** `research/000b1/schemas/attempt-manifest.schema.json` and `research/000b1/validate_attempt_manifest.py`.
+- [x] **B119 — Adversarial preregistration review.** `docs/research/stt/000b1-adversarial-review.md`; manipulation paths challenged before any primary decoding.
 - [ ] **B120 — Canonical B1 closeout.** Only after exact-head qualification/review/merge, reread canonical truth, mark B1 with its justified disposition, and evaluate whether B2 is `GRAIN`/`READY`, `BLOCKED_EXTERNAL`, or still requires refinement.
 
 ## Stop conditions

@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TheHalfMoon/Wispral/research/000b1/schemas/frozen-methodology.schema.json",
+  "title": "Wispral 000B1 Frozen Methodology",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "contract_version", "canonical_wispral_base", "speaker_design", "preprocessing", "common_c0", "c0_by_family", "fairness_notes"],
+  "properties": {
+    "schema_version": {"const": "000b1-frozen-methodology-v1"},
+    "contract_version": {"const": "000b1-contract-v1"},
+    "canonical_wispral_base": {"const": "6b5696a6becc360948282712cc9339df9cb3a67c"},
+    "speaker_design": {
+      "type": "object",
+      "required": ["total_human_speakers", "speaker_disjoint_splits", "speakers_by_split", "utterances_per_speaker", "planned_total_utterances", "planned_test_utterances", "max_primary_utterance_seconds", "minimum_test_microphone_environment_profiles", "cadence_requirement", "identity_minimization", "rationale"],
+      "properties": {
+        "total_human_speakers": {"const": 20},
+        "speaker_disjoint_splits": {"const": true},
+        "speakers_by_split": {
+          "const": {"development": 4, "qualification": 4, "test": 12}
+        },
+        "utterances_per_speaker": {
+          "const": {"developer_entity": 24, "general_collateral": 12}
+        },
+        "planned_total_utterances": {"const": 720},
+        "planned_test_utterances": {
+          "const": {"developer_entity": 288, "general_collateral": 144, "total": 432}
+        },
+        "max_primary_utterance_seconds": {"const": 12},
+        "minimum_test_microphone_environment_profiles": {"minimum": 4},
+        "cadence_requirement": {"type": "string", "minLength": 1},
+        "identity_minimization": {"type": "string", "minLength": 1},
+        "rationale": {"type": "string", "minLength": 1}
+      }
+    },
+    "preprocessing": {
+      "type": "object",
+      "required": ["tool", "version", "source_repository", "source_tag", "tag_object", "source_commit", "tag_signature_verified_upstream", "attempt_binary_sha256_required", "attempt_version_output_sha256_required", "canonical_format", "sample_rate_hz", "channels", "sample_format", "denoising", "loudness_normalization", "semantic_silence_trim", "command_template", "canonical_output_sha256_required", "float32_adapter_rule", "feed_chunk_ms", "feed_chunk_samples", "finalization_zero_pad_ms", "finalization_zero_pad_samples", "timing_markers"],
+      "properties": {
+        "tool": {"const": "FFmpeg"},
+        "version": {"const": "9.0.1"},
+        "source_repository": {"const": "FFmpeg/FFmpeg"},
+        "source_tag": {"const": "n9.0.1"},
+        "tag_object": {"const": "501bb49457b9dfb25d6a208832e0a6e6cd53108d"},
+        "source_commit": {"const": "bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa"},
+        "tag_signature_verified_upstream": {"const": true},
+        "attempt_binary_sha256_required": {"const": true},
+        "attempt_version_output_sha256_required": {"const": true},
+        "canonical_format": {"const": "PCM_WAV"},
+        "sample_rate_hz": {"const": 16000},
+        "channels": {"const": 1},
+        "sample_format": {"const": "PCM_S16LE"},
+        "denoising": {"const": "NONE"},
+        "loudness_normalization": {"const": "NONE"},
+        "semantic_silence_trim": {"const": "NONE"},
+        "command_template": {"const": "ffmpeg -nostdin -hide_banner -loglevel error -i INPUT -map_metadata -1 -vn -sn -dn -ac 1 -ar 16000 -c:a pcm_s16le OUTPUT.wav"},
+        "canonical_output_sha256_required": {"const": true},
+        "float32_adapter_rule": {"type": "string", "minLength": 1},
+        "feed_chunk_ms": {"const": 500},
+        "feed_chunk_samples": {"const": 8000},
+        "finalization_zero_pad_ms": {"const": 660},
+        "finalization_zero_pad_samples": {"const": 10560},
+        "timing_markers": {"const": ["speech_audio_start", "speech_audio_end", "feed_end_after_zero_pad"]}
+      }
+    },
+    "common_c0": {
+      "const": {
+        "language": "en",
+        "device": "CPU_ONLY",
+        "repository_context": "OFF",
+        "test_specific_context": "OFF",
+        "post_decode_entity_correction": "OFF",
+        "external_language_model": "OFF",
+        "candidate_specific_audio_transform": "OFF",
+        "feed_chunk_ms": 500,
+        "finalization_zero_pad_ms": 660
+      }
+    },
+    "c0_by_family": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["moonshine", "whisper.cpp", "sherpa-onnx"],
+      "properties": {
+        "moonshine": {
+          "type": "object",
+          "required": ["runtime_revision", "keyterms", "context", "ort_providers", "vad_threshold", "transcription_interval_seconds", "word_timestamps"],
+          "properties": {
+            "runtime_revision": {"const": "234f60faa0eb388b01cdf7e60aca232af37aefda"},
+            "keyterms": {"const": "OFF"},
+            "context": {"const": "OFF"},
+            "ort_providers": {"const": "UNSET_CPU_DEFAULT"},
+            "vad_threshold": {"const": 0.0},
+            "transcription_interval_seconds": {"const": 0.5},
+            "word_timestamps": {"const": false}
+          }
+        },
+        "whisper.cpp": {
+          "type": "object",
+          "required": ["runtime_revision", "threads", "initial_prompt", "prompt_carryover", "use_gpu", "flash_attention", "sampling"],
+          "properties": {
+            "runtime_revision": {"const": "371b5a7561823ab2bb32142d2751e35e7534727b"},
+            "threads": {"const": 4},
+            "initial_prompt": {"const": "OFF"},
+            "prompt_carryover": {"const": "OFF"},
+            "use_gpu": {"const": false},
+            "flash_attention": {"const": false},
+            "sampling": {"const": "GREEDY"}
+          }
+        },
+        "sherpa-onnx": {
+          "type": "object",
+          "required": ["runtime_revision", "threads", "provider", "decoding_method", "lm", "hotwords_file", "modeling_unit", "bpe_vocab", "endpoint_detection"],
+          "properties": {
+            "runtime_revision": {"const": "917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e"},
+            "threads": {"const": 4},
+            "provider": {"const": "cpu"},
+            "decoding_method": {"const": "greedy_search"},
+            "lm": {"const": "OFF"},
+            "hotwords_file": {"const": "OFF"},
+            "modeling_unit": {"const": "OFF"},
+            "bpe_vocab": {"const": "OFF"},
+            "endpoint_detection": {"const": "OFF_PRESEGMENTED_INPUT_FINISHED"}
+          }
+        }
+      }
+    },
+    "fairness_notes": {"type": "array", "minItems": 4, "items": {"type": "string", "minLength": 1}}
+  }
+}
