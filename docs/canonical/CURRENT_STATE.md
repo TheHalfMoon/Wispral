@@ -9,6 +9,8 @@
 **000B refinement merge:** `6b5696a6becc360948282712cc9339df9cb3a67c`  
 **000B1 evidence merge:** `8df69835349f85d5ae6af9d6a62ef3af24f65f43`  
 **000B2 entry-preparation evidence merge:** `49d0f31408ab36f285f5e61228b54a72ca0aec07`  
+**000B2 authority-intake merge:** `f71df132f963056b3321fe38b94ed88d6a0dfd89`  
+**000B2 trusted authority-structure merge:** `8cc8b1a22edd9268a49b3ad16c4d3ee8c0d6d586`  
 **Program status:** `SPEC_000_RESEARCH_ACTIVE`  
 **Active product implementation:** none  
 **Active parent specification:** `000-founding-research` — `REFINING`  
@@ -16,6 +18,7 @@
 **Active research parent:** `000B-stt-entity-bakeoff` — `REFINING`  
 **Verified speech child:** `000B1-benchmark-candidate-qualification` — `VERIFIED`  
 **000B2 entry preparation:** `CLOSED_CANONICAL`  
+**000B2 authority structure:** `CANONICAL`, participant authority still `EXTERNAL`  
 **Blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
 **Published release:** none
 
@@ -106,7 +109,26 @@ The entry-preparation unit canonically establishes:
 
 This does not create participant/media authority, primary human-speech evidence, independent process chronology, controlled-environment attestation, comparative ranking, or a frozen final B2 attempt.
 
-The current closeout record is `research/000b2-entry/canonical-closeout.json`; current readiness is `research/000b2-entry/readiness.json`.
+The historical entry-preparation closeout record is `research/000b2-entry/canonical-closeout.json`; current readiness is `research/000b2-entry/readiness.json`.
+
+## Canonical B2 human-authority structure proof
+
+PR #14 added the fail-closed, non-identifying authority-intake contract and merged from exact head `20961174b5b4603806a6d79963e3bc9e624f5995` as canonical commit `f71df132f963056b3321fe38b94ed88d6a0dfd89`. Exact-head `000B2 Entry Contracts` run `33541279600` passed; post-merge run `33541475726` passed. The canonical authority package and template remain `NOT_AUTHORIZED`.
+
+PR #15 added the trusted structural authority gate and merged from exact head `1516f65cb763a7b50e3f2fa9ebd98ea53d253771` as canonical commit `8cc8b1a22edd9268a49b3ad16c4d3ee8c0d6d586`. Exact-head bootstrap run `33542254408` passed. Post-merge trusted run `33542411499` passed, verified the canonical blocked state, and reverified open main-targeting PRs against the refreshed base.
+
+The trusted structural gate:
+
+- executes verifier code only from live canonical `main`;
+- does not check out or execute candidate code;
+- reads fixed authority/readiness/state files from immutable candidate head SHAs through the GitHub Contents API;
+- validates structural authority metadata without claiming that underlying private consent evidence is genuine;
+- emits `PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE` and `PRIMARY_MEDIA_ACCEPTANCE=NO`;
+- preserves B2 as `BLOCKED_EXTERNAL`.
+
+Durable proof is `research/000b2-entry/authority/canonical-structural-gate.json`.
+
+This is trust-boundary preparation, not participant/media authority. No participant consent was created or verified, no human recording was accepted, and no primary decoding was authorized.
 
 ## B2 blocked successor
 
@@ -120,7 +142,7 @@ Primary developer-speech decoding must not begin until all remaining gates are s
 - accepted attempt-bound execution-environment and hardware-fingerprint evidence under separately reviewable chronology/control evidence is absent;
 - no final B2 attempt manifest exists with `frozen=true` and a matching freeze digest.
 
-Synthetic/TTS audio may support smoke/harness/regression only. It cannot satisfy the human developer-speech authority gate and cannot enter the primary human ranking. Repository-owner approval cannot substitute for participant/media authority.
+Synthetic/TTS audio may support smoke/harness/regression only. It cannot satisfy the human developer-speech authority gate and cannot enter the primary human ranking. Repository-owner approval, structural authority metadata, or a consent-record digest cannot substitute for real participant/media authority.
 
 ## What is established
 
@@ -136,6 +158,7 @@ Canonical research authority now contains:
 - verified 000A ACP evidence (`PARTIAL` / `MODERATE`);
 - verified 000B1 local-STT preregistration/candidate qualification;
 - canonical B2 entry-preparation evidence for artifact identities, bounded smoke qualification, and scorer revision;
+- canonical fail-closed B2 authority-intake and trusted structural verification surfaces;
 - explicit remaining B2 external/attempt-time readiness blockers.
 
 ## Current product thesis
@@ -177,8 +200,8 @@ Wispral does NOT currently claim:
 
 No Rust product implementation, Cargo workspace, permanent speech-engine integration, ACP production client, PTY adapter, TUI, installer, or release is authorized until Specification 000 synthesis reaches `000G`, selects a bounded first implementation Grain from reproducible evidence, and that Grain independently satisfies readiness.
 
-Verified 000A, verified 000B1, and canonical B2 entry preparation do not weaken this gate.
+Verified 000A, verified 000B1, canonical B2 entry preparation, and canonical B2 authority structure do not weaken this gate.
 
 ## Next canonical action
 
-Preserve B2 as `BLOCKED_EXTERNAL`. Establish real participant/media authority and an authorized frozen human developer-speech corpus first. Only then prepare a separately reviewable B2 attempt that captures preprocessing and execution-environment evidence before primary decoding, freezes the final manifest, and rechecks readiness from canonical `main`. If those gates cannot be satisfied, preserve the block rather than substitute synthetic primary evidence or prematurely advance B3/B4.
+Preserve B2 as `BLOCKED_EXTERNAL`. Establish real participant/media authority and an authorized frozen human developer-speech corpus first. Authority intake and trusted structural verification are prepared, but structural metadata is not consent. Only then prepare a separately reviewable B2 attempt that captures preprocessing and execution-environment evidence before primary decoding, freezes the final manifest, and rechecks readiness from canonical `main`. If those gates cannot be satisfied, preserve the block rather than substitute synthetic primary evidence or prematurely advance B3/B4.

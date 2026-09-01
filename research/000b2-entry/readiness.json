@@ -64,6 +64,13 @@
       "authority_package_path": "research/000b2-entry/authority/authority-package.json",
       "authority_template_path": "research/000b2-entry/authority/authority-package.template.json",
       "authority_verifier_path": "research/000b2-entry/authority/verify_authority.py",
+      "canonical_structure_proof_path": "research/000b2-entry/authority/canonical-structural-gate.json",
+      "trusted_structure_verifier_path": ".github/trusted/verify_000b2_human_authority.py",
+      "trusted_structure_workflow_path": ".github/workflows/000b2-trusted-human-authority.yml",
+      "authority_intake_canonical_revision": "f71df132f963056b3321fe38b94ed88d6a0dfd89",
+      "trusted_structure_canonical_revision": "8cc8b1a22edd9268a49b3ad16c4d3ee8c0d6d586",
+      "trusted_structure_postmerge_run_id": 33542411499,
+      "structural_verification_scope": "NO_PARTICIPANT_CONSENT_ATTESTATION",
       "required": [
         "participant consent scope",
         "recording purpose",
@@ -75,7 +82,7 @@
         "privacy constraints",
         "prohibited-content policy"
       ],
-      "note": "Fail-closed authority intake tooling is prepared, but the canonical package remains NOT_AUTHORIZED. Repository-owner approval is not participant/media authority and cannot substitute for the required human-recording evidence."
+      "note": "Fail-closed authority intake and trusted structural verification are canonical, but the package remains NOT_AUTHORIZED and the trusted gate explicitly provides no participant-consent attestation. Repository-owner approval is not participant/media authority and cannot substitute for the required human-recording evidence."
     },
     "human_corpus_and_splits": {
       "status": "BLOCKED_EXTERNAL",
@@ -99,5 +106,5 @@
     "accepted attempt-bound execution environment and hardware fingerprint evidence is absent",
     "final B2 attempt manifest is not frozen"
   ],
-  "next_action": "Entry preparation is canonical, but B2 remains BLOCKED_EXTERNAL. Establish real participant/media authority and an authorized frozen human corpus first; then create a separately reviewable authorized attempt that captures preprocessing and execution-environment evidence before primary decoding, freezes the final manifest, and rechecks readiness from canonical main. Do not execute B2 primary human-speech decoding before those gates are real."
+  "next_action": "Authority intake and trusted structural verification are canonical, but B2 remains BLOCKED_EXTERNAL. Establish real participant/media authority and an authorized frozen human corpus first; then create a separately reviewable authorized attempt that captures preprocessing and execution-environment evidence before primary decoding, freezes the final manifest, and rechecks readiness from canonical main. Do not treat structural metadata or repository-owner approval as participant consent. Do not execute B2 primary human-speech decoding before those external and attempt-time gates are real."
 }

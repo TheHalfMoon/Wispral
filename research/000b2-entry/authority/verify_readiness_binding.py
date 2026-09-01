@@ -7,11 +7,13 @@ import importlib.util
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[3]
 HERE = ROOT / "research" / "000b2-entry"
 READINESS = HERE / "readiness.json"
 VERIFIER = HERE / "authority" / "verify_authority.py"
+STRUCTURE_PROOF = HERE / "authority" / "canonical-structural-gate.json"
 EXPECTED_REQUIRED = [
     "participant consent scope",
     "recording purpose",
@@ -28,11 +30,33 @@ EXPECTED_PATHS = {
     "authority_package_path": "research/000b2-entry/authority/authority-package.json",
     "authority_template_path": "research/000b2-entry/authority/authority-package.template.json",
     "authority_verifier_path": "research/000b2-entry/authority/verify_authority.py",
+    "canonical_structure_proof_path": "research/000b2-entry/authority/canonical-structural-gate.json",
+    "trusted_structure_verifier_path": ".github/trusted/verify_000b2_human_authority.py",
+    "trusted_structure_workflow_path": ".github/workflows/000b2-trusted-human-authority.yml",
 }
+AUTHORITY_INTAKE_MERGE = "f71df132f963056b3321fe38b94ed88d6a0dfd89"
+TRUSTED_STRUCTURE_MERGE = "8cc8b1a22edd9268a49b3ad16c4d3ee8c0d6d586"
+TRUSTED_STRUCTURE_PUSH_RUN = 33542411499
 
 
 def fail(message: str) -> None:
     raise AssertionError(message)
+
+
+def reject_duplicate_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON object member: {key}")
+        result[key] = value
+    return result
+
+
+def load_json(path: Path) -> dict[str, Any]:
+    value = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=reject_duplicate_pairs)
+    if not isinstance(value, dict):
+        fail(f"JSON object required: {path}")
+    return value
 
 
 def load_authority_verifier():
@@ -44,8 +68,82 @@ def load_authority_verifier():
     return module
 
 
+def verify_structure_proof() -> None:
+    proof = load_json(STRUCTURE_PROOF)
+    if proof.get("schema_version") != "000b2-authority-structure-closeout-v1":
+        fail("authority structure proof schema drift")
+    if proof.get("recorded_date") != "2026-09-01":
+        fail("authority structure proof date drift")
+    if proof.get("disposition") != "STRUCTURE_CANONICAL_AUTHORITY_EXTERNAL":
+        fail("authority structure proof disposition drift")
+    for field in ("b2_ready", "primary_media_acceptance", "participant_consent_attested"):
+        if proof.get(field) is not False:
+            fail(f"authority structure proof advanced forbidden field: {field}")
+
+    intake = proof.get("authority_intake")
+    if not isinstance(intake, dict):
+        fail("authority intake proof missing")
+    expected_intake = {
+        "pull_request": 14,
+        "exact_head_sha": "20961174b5b4603806a6d79963e3bc9e624f5995",
+        "exact_head_entry_contracts_run_id": 33541279600,
+        "canonical_merge_sha": AUTHORITY_INTAKE_MERGE,
+        "postmerge_entry_contracts_run_id": 33541475726,
+        "canonical_package_status": "NOT_AUTHORIZED",
+    }
+    for key, expected in expected_intake.items():
+        if intake.get(key) != expected:
+            fail(f"authority intake proof drift: {key}")
+
+    trusted = proof.get("trusted_structure_gate")
+    if not isinstance(trusted, dict):
+        fail("trusted structure proof missing")
+    expected_trusted = {
+        "pull_request": 15,
+        "exact_head_sha": "1516f65cb763a7b50e3f2fa9ebd98ea53d253771",
+        "exact_head_bootstrap_run_id": 33542254408,
+        "canonical_merge_sha": TRUSTED_STRUCTURE_MERGE,
+        "postmerge_push_run_id": TRUSTED_STRUCTURE_PUSH_RUN,
+        "candidate_code_execution": False,
+        "candidate_data_transport": "GITHUB_CONTENTS_API_EXACT_HEAD_SHA",
+        "base_refresh": "EVERY_MAIN_PUSH_REVERIFIES_OPEN_MAIN_TARGETING_PRS",
+        "participant_consent_attestation": "NOT_PROVIDED_BY_THIS_GATE",
+    }
+    for key, expected in expected_trusted.items():
+        if trusted.get(key) != expected:
+            fail(f"trusted structure proof drift: {key}")
+
+    review = proof.get("review_reconciliation")
+    expected_review = {
+        "review_submissions_on_final_heads": 0,
+        "inline_review_threads_on_final_heads": 0,
+        "qodo_status": "BILLING_BLOCKED",
+        "coderabbit_status": "REQUESTED_NO_SUBMISSION",
+        "copilot_status": "REQUESTED_NO_SUBMISSION",
+        "unavailable_or_silent_review_represented_as_approval": False,
+    }
+    if review != expected_review:
+        fail("authority structure review reconciliation drift")
+
+    nonclaims = proof.get("non_claims")
+    expected_nonclaims = {
+        "participant_consent_created": False,
+        "participant_consent_verified": False,
+        "human_recordings_accepted": False,
+        "primary_test_decoding_authorized": False,
+        "primary_test_decoding_performed": False,
+        "comparative_ranking_present": False,
+        "product_code_added": False,
+    }
+    if nonclaims != expected_nonclaims:
+        fail("authority structure non-claims drift")
+    next_action = proof.get("next_action")
+    if not isinstance(next_action, str) or "Structural verification alone cannot authorize primary media" not in next_action:
+        fail("authority structure proof lost structural-only boundary")
+
+
 def verify() -> None:
-    record = json.loads(READINESS.read_text(encoding="utf-8"))
+    record = load_json(READINESS)
     gates = record.get("gates")
     if not isinstance(gates, dict):
         fail("readiness gates missing")
@@ -62,9 +160,19 @@ def verify() -> None:
         path = ROOT / expected
         if path.is_symlink() or not path.is_file():
             fail(f"human authority path missing or symlinked: {expected}")
+    if human.get("authority_intake_canonical_revision") != AUTHORITY_INTAKE_MERGE:
+        fail("authority intake canonical revision drift")
+    if human.get("trusted_structure_canonical_revision") != TRUSTED_STRUCTURE_MERGE:
+        fail("trusted authority structure canonical revision drift")
+    if human.get("trusted_structure_postmerge_run_id") != TRUSTED_STRUCTURE_PUSH_RUN:
+        fail("trusted authority structure postmerge run drift")
+    if human.get("structural_verification_scope") != "NO_PARTICIPANT_CONSENT_ATTESTATION":
+        fail("trusted authority structure scope drift")
     note = human.get("note")
-    if not isinstance(note, str) or "remains NOT_AUTHORIZED" not in note:
+    if not isinstance(note, str) or "package remains NOT_AUTHORIZED" not in note:
         fail("human authority note no longer records blocked package state")
+    if "no participant-consent attestation" not in note:
+        fail("human authority note lost structural-only trust boundary")
     if "Repository-owner approval is not participant/media authority" not in note:
         fail("repository-owner non-substitution boundary missing")
 
@@ -87,6 +195,8 @@ def verify() -> None:
     if template.get("authority_effective_before_recording") is not False:
         fail("authority template cannot claim pre-recording authority")
 
+    verify_structure_proof()
+
     blockers = record.get("remaining_blockers")
     if not isinstance(blockers, list) or "human developer-speech participant/media authority is absent" not in blockers:
         fail("human authority blocker disappeared from readiness ledger")
@@ -104,7 +214,8 @@ def main() -> int:
         return 1
     print("VERIFY_000B2_AUTHORITY_READINESS=PASS")
     print("AUTHORITY_PACKAGE=NOT_AUTHORIZED")
-    print("AUTHORITY_TEMPLATE=NOT_AUTHORIZED")
+    print("AUTHORITY_STRUCTURE=CANONICAL")
+    print("PARTICIPANT_CONSENT_ATTESTATION=NO")
     print("B2_READY=NO")
     print("PRIMARY_MEDIA_ACCEPTANCE=NO")
     return 0
