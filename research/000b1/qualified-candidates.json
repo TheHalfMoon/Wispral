@@ -1,0 +1,123 @@
+{
+  "schema_version": "000b1-qualified-candidates-v1",
+  "recorded_date": "2026-09-01",
+  "canonical_wispral_base": "6b5696a6becc360948282712cc9339df9cb3a67c",
+  "contract_version": "000b1-contract-v1",
+  "primary_test_decoding_performed": false,
+  "comparative_ranking_present": false,
+  "qualification_smoke": {"status": "NOT_RUN_NOT_REQUIRED", "comparative": false},
+  "tiers": {
+    "COMPACT": {"min_exclusive_bytes": 0, "max_inclusive_bytes": 167772160},
+    "BALANCED": {"min_exclusive_bytes": 167772160, "max_inclusive_bytes": 536870912}
+  },
+  "selection_rule": "For each family and tier, select at most one configuration: the largest qualifying English configuration that does not exceed the tier ceiling using pre-result metadata only.",
+  "families": [
+    {
+      "family": "moonshine",
+      "runtime": {"repository": "moonshine-ai/moonshine", "release": "v0.1.5", "revision": "234f60faa0eb388b01cdf7e60aca232af37aefda", "license": "MIT"},
+      "model_source": {"asset_revision": "quantized_26_08_21", "license": "MIT"},
+      "configurations": [
+        {
+          "id": "moonshine-compact",
+          "tier": "COMPACT",
+          "status": "QUALIFIED_PREREGISTERED",
+          "model": "small-streaming-en",
+          "artifact_base_url": "https://download.moonshine.ai/model/small-streaming-en/quantized_26_08_21",
+          "payload_total_bytes": 142300974,
+          "artifacts": [
+            {"path": "adapter.ort", "size_bytes": 2870368, "crc32c_base64": "XlWjTg==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "cross_kv.ort", "size_bytes": 5356536, "crc32c_base64": "5ySK8g==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "decoder_kv.ort", "size_bytes": 81878600, "crc32c_base64": "Rn/VUA==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "encoder.ort", "size_bytes": 44148576, "crc32c_base64": "41D2jQ==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "frontend.model.ort", "size_bytes": 26944, "crc32c_base64": "WW2/2g==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "frontend.weights.ort", "size_bytes": 7769464, "crc32c_base64": "9pROuQ==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "streaming_config.json", "size_bytes": 512, "crc32c_base64": "dPbFiw==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "tokenizer.bin", "size_bytes": 249974, "crc32c_base64": "B7s10Q==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"}
+          ],
+          "c0": {"language": "en", "repository_context": "OFF", "keyterms": "OFF", "grammar": "OFF", "word_timestamps": "OFF", "attention_decoder_in_primary_payload": false},
+          "streaming_evidence_state": "DOCUMENTED_NOT_OBSERVED",
+          "observed_streaming_class": "UNKNOWN"
+        },
+        {
+          "id": "moonshine-balanced",
+          "tier": "BALANCED",
+          "status": "QUALIFIED_PREREGISTERED",
+          "model": "medium-streaming-en",
+          "artifact_base_url": "https://download.moonshine.ai/model/medium-streaming-en/quantized_26_08_21",
+          "payload_total_bytes": 269141623,
+          "artifacts": [
+            {"path": "adapter.ort", "size_bytes": 3651296, "crc32c_base64": "Ds3Hsg==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "cross_kv.ort", "size_bytes": 11643776, "crc32c_base64": "liqlOg==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "decoder_kv.ort", "size_bytes": 146972408, "crc32c_base64": "GPnzeQ==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "encoder.ort", "size_bytes": 94705376, "crc32c_base64": "yWvDwA==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "frontend.model.ort", "size_bytes": 28720, "crc32c_base64": "k1kKsQ==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "frontend.weights.ort", "size_bytes": 11889560, "crc32c_base64": "w5QjIA==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "streaming_config.json", "size_bytes": 513, "crc32c_base64": "+1bE9Q==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"},
+            {"path": "tokenizer.bin", "size_bytes": 249974, "crc32c_base64": "B7s10Q==", "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION"}
+          ],
+          "c0": {"language": "en", "repository_context": "OFF", "keyterms": "OFF", "grammar": "OFF", "word_timestamps": "OFF", "attention_decoder_in_primary_payload": false},
+          "streaming_evidence_state": "DOCUMENTED_NOT_OBSERVED",
+          "observed_streaming_class": "UNKNOWN"
+        }
+      ]
+    },
+    {
+      "family": "whisper.cpp",
+      "runtime": {"repository": "ggml-org/whisper.cpp", "release": "b4938", "revision": "371b5a7561823ab2bb32142d2751e35e7534727b", "license": "MIT"},
+      "model_source": {"repository": "ggerganov/whisper.cpp", "license": "MIT", "base_url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main"},
+      "configurations": [
+        {
+          "id": "whispercpp-compact", "tier": "COMPACT", "status": "QUALIFIED_PREREGISTERED", "model": "ggml-base.en.bin", "payload_total_bytes": 147964211,
+          "artifacts": [{"path": "ggml-base.en.bin", "size_bytes": 147964211, "sha256": "a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002", "sha256_status": "PINNED"}],
+          "c0": {"language": "en", "initial_prompt": "OFF", "prompt_carryover": "OFF", "repository_context": "OFF", "grammar": "OFF"},
+          "streaming_evidence_state": "DOCUMENTED_NOT_OBSERVED", "observed_streaming_class": "UNKNOWN"
+        },
+        {
+          "id": "whispercpp-balanced", "tier": "BALANCED", "status": "QUALIFIED_PREREGISTERED", "model": "ggml-small.en.bin", "payload_total_bytes": 487614201,
+          "artifacts": [{"path": "ggml-small.en.bin", "size_bytes": 487614201, "sha256": "c6138d6d58ecc8322097e0f987c32f1be8bb0a18532a3f88f734d1bbf9c41e5d", "sha256_status": "PINNED"}],
+          "c0": {"language": "en", "initial_prompt": "OFF", "prompt_carryover": "OFF", "repository_context": "OFF", "grammar": "OFF"},
+          "streaming_evidence_state": "DOCUMENTED_NOT_OBSERVED", "observed_streaming_class": "UNKNOWN"
+        }
+      ]
+    },
+    {
+      "family": "sherpa-onnx",
+      "runtime": {"repository": "k2-fsa/sherpa-onnx", "release": "v1.13.7", "revision": "917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e", "license": "Apache-2.0"},
+      "model_source": {"repository": "csukuangfj/sherpa-onnx-streaming-zipformer-en-2023-06-26", "head_observed": "672fbf1b30579d6585301139bb363f42a0ad4a24", "onnx_revision": "6037ea07e3abfe599ad00d418968bcf9656e7472", "license": "Apache-2.0", "base_url": "https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-en-2023-06-26/resolve", "chunk_size": 16, "left_context_frames": 128},
+      "configurations": [
+        {
+          "id": "sherpa-onnx-compact", "tier": "COMPACT", "status": "QUALIFIED_PREREGISTERED", "model": "INT8 ONNX", "payload_total_bytes": 72899649,
+          "artifacts": [
+            {"path": "encoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx", "size_bytes": 71083163, "sha256": "563fde436d16cf7607cf408cd6b30909819d03162652ef389c2450ced3f45ac1", "sha256_status": "PINNED", "source_revision": "6037ea07e3abfe599ad00d418968bcf9656e7472"},
+            {"path": "decoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx", "size_bytes": 1307236, "sha256": "98da299f471e38bb4e1a8df579b8cc9122d6039576a77e357b3c60f17dd83b02", "sha256_status": "PINNED", "source_revision": "6037ea07e3abfe599ad00d418968bcf9656e7472"},
+            {"path": "joiner-epoch-99-avg-1-chunk-16-left-128.int8.onnx", "size_bytes": 259335, "sha256": "d944208d660d67c8d72cd2acaeac971fa5ceb8c80e76c1968148846fedd6e297", "sha256_status": "PINNED", "source_revision": "6037ea07e3abfe599ad00d418968bcf9656e7472"},
+            {"path": "bpe.model", "size_bytes": 244865, "sha256": "c53433de083c4a6ad12d034550ef22de68cec62c4f58932a7b6b8b2f1e743fa5", "sha256_status": "PINNED", "source_revision": "672fbf1b30579d6585301139bb363f42a0ad4a24"},
+            {"path": "tokens.txt", "size_bytes": 5050, "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION", "source_revision": "6037ea07e3abfe599ad00d418968bcf9656e7472"}
+          ],
+          "c0": {"language": "en", "hotwords": "OFF", "repository_context": "OFF", "grammar": "OFF"},
+          "streaming_evidence_state": "DOCUMENTED_NOT_OBSERVED", "observed_streaming_class": "UNKNOWN"
+        },
+        {
+          "id": "sherpa-onnx-balanced", "tier": "BALANCED", "status": "QUALIFIED_PREREGISTERED", "model": "FP32 ONNX", "payload_total_bytes": 265495984,
+          "artifacts": [
+            {"path": "encoder-epoch-99-avg-1-chunk-16-left-128.onnx", "size_bytes": 262127043, "sha256": "a423883ce5754507fd941755ab0b5bc426a84ac670cbe21cf060e9e2c66dc660", "sha256_status": "PINNED", "source_revision": "6037ea07e3abfe599ad00d418968bcf9656e7472"},
+            {"path": "decoder-epoch-99-avg-1-chunk-16-left-128.onnx", "size_bytes": 2092621, "sha256": "7bf787f90b194b307e5a4ad6a34fadb4e748304c35f78a8d66358a05b13ee6ef", "sha256_status": "PINNED", "source_revision": "6037ea07e3abfe599ad00d418968bcf9656e7472"},
+            {"path": "joiner-epoch-99-avg-1-chunk-16-left-128.onnx", "size_bytes": 1026405, "sha256": "210591f72b3c56b8364f85f345dca240bc2b4c00632848f4aa923630d5639d3b", "sha256_status": "PINNED", "source_revision": "6037ea07e3abfe599ad00d418968bcf9656e7472"},
+            {"path": "bpe.model", "size_bytes": 244865, "sha256": "c53433de083c4a6ad12d034550ef22de68cec62c4f58932a7b6b8b2f1e743fa5", "sha256_status": "PINNED", "source_revision": "672fbf1b30579d6585301139bb363f42a0ad4a24"},
+            {"path": "tokens.txt", "size_bytes": 5050, "sha256": null, "sha256_status": "PENDING_B2_MATERIALIZATION", "source_revision": "6037ea07e3abfe599ad00d418968bcf9656e7472"}
+          ],
+          "c0": {"language": "en", "hotwords": "OFF", "repository_context": "OFF", "grammar": "OFF"},
+          "streaming_evidence_state": "DOCUMENTED_NOT_OBSERVED", "observed_streaming_class": "UNKNOWN"
+        }
+      ]
+    }
+  ],
+  "b2_entry_gates": [
+    "all material payload files have attempt-time SHA-256",
+    "exact runtime/source pins resolve and licenses/provenance are rechecked",
+    "bounded non-primary operational smoke passes or a canonical waiver exists",
+    "human developer-speech authority, consent, retention, redistribution, and frozen corpus manifests satisfy the contract",
+    "canonical preprocessing, C0 settings, scorer, and execution environment are frozen",
+    "attempt manifest validates with frozen=true before primary test decoding"
+  ]
+}
