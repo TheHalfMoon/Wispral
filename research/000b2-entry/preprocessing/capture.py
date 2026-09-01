@@ -20,6 +20,15 @@ EXPECTED_SOURCE_TAG = "n9.0.1"
 EXPECTED_SOURCE_COMMIT = "bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa"
 
 
+def reject_duplicate_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON object member: {key}")
+        result[key] = value
+    return result
+
+
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -28,10 +37,17 @@ def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def load_attempt_state_bytes(raw: bytes) -> dict[str, Any]:
-    value = json.loads(raw.decode("utf-8"))
+def load_json_object(raw: bytes, label: str) -> dict[str, Any]:
+    value = json.loads(
+        raw.decode("utf-8"), object_pairs_hook=reject_duplicate_pairs
+    )
     if not isinstance(value, dict):
-        raise ValueError("attempt state must be a JSON object")
+        raise ValueError(f"{label} must be a JSON object")
+    return value
+
+
+def load_attempt_state_bytes(raw: bytes) -> dict[str, Any]:
+    value = load_json_object(raw, "attempt state")
     attempt_id = value.get("attempt_id")
     revision = value.get("canonical_wispral_revision")
     if not isinstance(attempt_id, str) or not attempt_id.strip():
@@ -52,9 +68,7 @@ def capture(
         raise ValueError(
             "select exactly one of qualification-only or attempt-state-bound capture"
         )
-    contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
-    if not isinstance(contract, dict):
-        raise ValueError("preprocessing contract must be a JSON object")
+    contract = load_json_object(CONTRACT.read_bytes(), "preprocessing contract")
     if contract.get("tool_version") != EXPECTED_TOOL_VERSION:
         raise ValueError("preprocessing contract version drift")
     if contract.get("source_tag") != EXPECTED_SOURCE_TAG:
@@ -63,6 +77,8 @@ def capture(
         raise ValueError("preprocessing contract source commit drift")
 
     resolved = binary.resolve(strict=True)
+    if not resolved.is_file():
+        raise ValueError("FFmpeg binary must be a regular file")
     version = subprocess.run(
         [str(resolved), "-version"],
         check=True,
@@ -93,9 +109,11 @@ def capture(
         }
     else:
         assert attempt_state_path is not None
+        if attempt_state_path.is_symlink():
+            raise ValueError("attempt state must not be a symlink")
         state_path = attempt_state_path.resolve(strict=True)
-        if state_path.is_symlink() or not state_path.is_file():
-            raise ValueError("attempt state must be a regular non-symlink file")
+        if not state_path.is_file():
+            raise ValueError("attempt state must be a regular file")
         # One immutable byte snapshot is both validated and hashed. A concurrent file
         # replacement after this read cannot make the emitted digest describe unseen bytes.
         state_raw = state_path.read_bytes()
