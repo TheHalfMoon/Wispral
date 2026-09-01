@@ -1,0 +1,230 @@
+{
+  "agent_id": "gemini",
+  "attempt_kind": "unauthenticated-acp-v1",
+  "command": [
+    "npx",
+    "-y",
+    "@google/gemini-cli@0.57.0",
+    "--acp"
+  ],
+  "credential_policy": "known API-key/token environment variables removed; NO_BROWSER=1",
+  "duration_seconds": 11.814,
+  "fixture": {
+    "files": [
+      {
+        "path": "README.md",
+        "sha256": "cb91a2675914dae5790725c958e5aff5cc479cb1b44760a85f529aab01009c4c"
+      },
+      {
+        "path": "probe.txt",
+        "sha256": "b6bdaa63dd0617104e34bd442fe329f8372ea3d11ae22017d185bdc8cfc7ad3b"
+      }
+    ],
+    "tree_sha256": "83ecabe8dedba88d5a208927e09e035f2b591b7c3ca259e315937880e070028e"
+  },
+  "initialize_result": {
+    "agentCapabilities": {
+      "loadSession": true,
+      "mcpCapabilities": {
+        "http": true,
+        "sse": true
+      },
+      "promptCapabilities": {
+        "audio": true,
+        "embeddedContext": true,
+        "image": true
+      }
+    },
+    "agentInfo": {
+      "name": "gemini-cli",
+      "title": "Gemini CLI",
+      "version": "0.57.0"
+    },
+    "authMethods": [
+      {
+        "description": "Log in with your Google account",
+        "id": "oauth-personal",
+        "name": "Log in with Google"
+      },
+      {
+        "_meta": {
+          "api-key": {
+            "provider": "google"
+          }
+        },
+        "description": "Use an API key with Gemini Developer API",
+        "id": "gemini-api-key",
+        "name": "Gemini API key"
+      },
+      {
+        "description": "Use an API key with Vertex AI GenAI API",
+        "id": "vertex-ai",
+        "name": "Vertex AI"
+      },
+      {
+        "_meta": {
+          "gateway": {
+            "protocol": "google",
+            "restartRequired": "false"
+          }
+        },
+        "description": "Use a custom AI API Gateway",
+        "id": "gateway",
+        "name": "AI API Gateway"
+      }
+    ],
+    "protocolVersion": 1
+  },
+  "outcomes": {
+    "cancel_notification": "NOT_TESTED",
+    "cancel_semantics": "NOT_TESTED",
+    "initialize": "SUCCESS",
+    "permission_semantics": "NOT_TESTED_NO_AUTHENTICATED_SAFE_ACTION",
+    "session_list": "METHOD_NOT_FOUND",
+    "session_new": "AUTH_REQUIRED"
+  },
+  "process": {
+    "exit_code": -15,
+    "probe_error": null,
+    "stderr_tail": "Skipping project agents due to untrusted folder. To enable, ensure that the project root is trusted. Ripgrep is not available. Falling back to GrepTool. Project hooks disabled because the folder is not trusted. Error handling request { jsonrpc: '2.0', id: 2, method: 'session/new', params: { cwd: '<FIXTURE_CWD>', mcpServers: [] } } { code: -32000, message: 'Gemini API key is missing or not configured.', data: undefined } Error handling request { jsonrpc: '2.0', id: 3, method: 'session/list', params: {} } { code: -32601, message: '\"Method not found\": session/list', data: { method: 'session/list' } }"
+  },
+  "protocol_version_requested": 1,
+  "schema_version": 1,
+  "started_unix": 1788261650.863428,
+  "trace": [
+    {
+      "direction": "client_to_agent",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "initialize",
+        "params": {
+          "clientCapabilities": {
+            "fs": {
+              "readTextFile": false,
+              "writeTextFile": false
+            },
+            "terminal": false
+          },
+          "clientInfo": {
+            "name": "Wispral 000A Research Probe",
+            "version": "0.1.0"
+          },
+          "protocolVersion": 1
+        }
+      },
+      "sequence": 1
+    },
+    {
+      "direction": "agent_to_client",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "agentCapabilities": {
+            "loadSession": true,
+            "mcpCapabilities": {
+              "http": true,
+              "sse": true
+            },
+            "promptCapabilities": {
+              "audio": true,
+              "embeddedContext": true,
+              "image": true
+            }
+          },
+          "agentInfo": {
+            "name": "gemini-cli",
+            "title": "Gemini CLI",
+            "version": "0.57.0"
+          },
+          "authMethods": [
+            {
+              "description": "Log in with your Google account",
+              "id": "oauth-personal",
+              "name": "Log in with Google"
+            },
+            {
+              "_meta": {
+                "api-key": {
+                  "provider": "google"
+                }
+              },
+              "description": "Use an API key with Gemini Developer API",
+              "id": "gemini-api-key",
+              "name": "Gemini API key"
+            },
+            {
+              "description": "Use an API key with Vertex AI GenAI API",
+              "id": "vertex-ai",
+              "name": "Vertex AI"
+            },
+            {
+              "_meta": {
+                "gateway": {
+                  "protocol": "google",
+                  "restartRequired": "false"
+                }
+              },
+              "description": "Use a custom AI API Gateway",
+              "id": "gateway",
+              "name": "AI API Gateway"
+            }
+          ],
+          "protocolVersion": 1
+        }
+      },
+      "sequence": 2
+    },
+    {
+      "direction": "client_to_agent",
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "method": "session/new",
+        "params": {
+          "cwd": "<FIXTURE_CWD>",
+          "mcpServers": []
+        }
+      },
+      "sequence": 3
+    },
+    {
+      "direction": "agent_to_client",
+      "message": {
+        "error": {
+          "code": -32000,
+          "message": "Gemini API key is missing or not configured."
+        },
+        "id": 2,
+        "jsonrpc": "2.0"
+      },
+      "sequence": 4
+    },
+    {
+      "direction": "client_to_agent",
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "method": "session/list",
+        "params": {}
+      },
+      "sequence": 5
+    },
+    {
+      "direction": "agent_to_client",
+      "message": {
+        "error": {
+          "code": -32601,
+          "data": {
+            "method": "session/list"
+          },
+          "message": "\"Method not found\": session/list"
+        },
+        "id": 3,
+        "jsonrpc": "2.0"
+      },
+      "sequence": 6
+    }
+  ]
+}

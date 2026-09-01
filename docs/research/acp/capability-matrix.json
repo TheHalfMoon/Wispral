@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "attempt_id": "WISPRAL-000A-ATTEMPT-001",
+  "allowed_evidence_states": [
+    "OBSERVED",
+    "DOCUMENTED_NOT_OBSERVED",
+    "UNSUPPORTED",
+    "NOT_TESTED",
+    "BLOCKED_EXTERNAL",
+    "UNKNOWN"
+  ],
+  "recommendation": {
+    "classification": "PARTIAL",
+    "confidence": "MODERATE",
+    "reason": "Two independent pinned registry distributions completed real ACP v1 initialization and exposed structured capability/authentication metadata, but authentication blocked session creation and therefore prompt, streaming, cancellation, and permission semantics were not behaviorally qualified. ACP remains the leading structured path, but PRIMARY is not justified by this attempt alone."
+  },
+  "protocol": {
+    "v1_wire_handshake": {
+      "state": "OBSERVED",
+      "evidence": [
+        "evidence/000a-attempt-001/gemini-probe.json",
+        "evidence/000a-attempt-001/codex-acp-probe.json"
+      ]
+    },
+    "v2_current_schema": {
+      "state": "DOCUMENTED_NOT_OBSERVED",
+      "evidence": [
+        "qualification-inputs.md"
+      ],
+      "note": "Current ACP authority contains a materially different v2 initialization/lifecycle schema; no v2 representative runtime was probed in Attempt 001."
+    },
+    "version_compatibility_requirement": {
+      "state": "OBSERVED",
+      "note": "Both current representative distributions negotiated protocolVersion 1 while current ACP authority also defines v2. Wispral cannot assume registry recency implies one wire schema."
+    },
+    "newline_delimited_stdio": {
+      "state": "OBSERVED",
+      "note": "Both representatives exchanged newline-delimited JSON-RPC over stdio using the Wispral probe."
+    }
+  },
+  "agents": {
+    "gemini": {
+      "distribution": "npx -y @google/gemini-cli@0.57.0 --acp",
+      "integration_mode": "native-acp",
+      "protocol_version": {
+        "state": "OBSERVED",
+        "value": 1
+      },
+      "initialize": {
+        "state": "OBSERVED",
+        "result": "SUCCESS"
+      },
+      "authentication_methods": {
+        "state": "OBSERVED",
+        "values": [
+          "oauth-personal",
+          "gemini-api-key",
+          "vertex-ai",
+          "gateway"
+        ]
+      },
+      "load_session_advertised": {
+        "state": "OBSERVED",
+        "value": true
+      },
+      "session_new": {
+        "state": "BLOCKED_EXTERNAL",
+        "result": "AUTH_REQUIRED",
+        "message": "Gemini API key is missing or not configured."
+      },
+      "session_list": {
+        "state": "UNSUPPORTED",
+        "result": "METHOD_NOT_FOUND"
+      },
+      "prompt": {
+        "state": "BLOCKED_EXTERNAL",
+        "note": "No authenticated session could be created in this no-secret attempt."
+      },
+      "streaming_updates": {
+        "state": "NOT_TESTED"
+      },
+      "permission_request_behavior": {
+        "state": "NOT_TESTED"
+      },
+      "cancellation_behavior": {
+        "state": "NOT_TESTED"
+      },
+      "mcp_capabilities_advertised": {
+        "state": "OBSERVED",
+        "values": {
+          "http": true,
+          "sse": true
+        }
+      },
+      "prompt_modalities_advertised": {
+        "state": "OBSERVED",
+        "values": {
+          "image": true,
+          "audio": true,
+          "embeddedContext": true
+        }
+      },
+      "protocol_shutdown": {
+        "state": "NOT_TESTED",
+        "note": "The research harness terminated the child process after evidence capture; this is not an ACP graceful-shutdown qualification."
+      }
+    },
+    "codex-acp": {
+      "distribution": "npx -y @agentclientprotocol/codex-acp@1.7.0",
+      "integration_mode": "adapter-mediated-acp",
+      "protocol_version": {
+        "state": "OBSERVED",
+        "value": 1
+      },
+      "initialize": {
+        "state": "OBSERVED",
+        "result": "SUCCESS"
+      },
+      "authentication_methods": {
+        "state": "OBSERVED",
+        "values": [
+          "api-key"
+        ]
+      },
+      "load_session_advertised": {
+        "state": "OBSERVED",
+        "value": true
+      },
+      "session_list_advertised": {
+        "state": "OBSERVED",
+        "value": true
+      },
+      "session_resume_advertised": {
+        "state": "OBSERVED",
+        "value": true
+      },
+      "steering_advertised": {
+        "state": "OBSERVED",
+        "value": true,
+        "wire_location": "initialize.result._meta.steering.supported"
+      },
+      "session_new": {
+        "state": "BLOCKED_EXTERNAL",
+        "result": "AUTH_REQUIRED"
+      },
+      "session_list": {
+        "state": "BLOCKED_EXTERNAL",
+        "result": "AUTH_REQUIRED",
+        "note": "Method presence is advertised, but behavior is authentication-gated."
+      },
+      "prompt": {
+        "state": "BLOCKED_EXTERNAL",
+        "note": "No authenticated session could be created in this no-secret attempt."
+      },
+      "streaming_updates": {
+        "state": "NOT_TESTED"
+      },
+      "permission_request_behavior": {
+        "state": "NOT_TESTED"
+      },
+      "cancellation_behavior": {
+        "state": "NOT_TESTED"
+      },
+      "steering_behavior": {
+        "state": "NOT_TESTED"
+      },
+      "mcp_capabilities_advertised": {
+        "state": "OBSERVED",
+        "values": {
+          "acp": false,
+          "http": true,
+          "sse": false
+        }
+      },
+      "prompt_modalities_advertised": {
+        "state": "OBSERVED",
+        "values": {
+          "image": true,
+          "embeddedContext": true
+        }
+      },
+      "protocol_shutdown": {
+        "state": "NOT_TESTED",
+        "note": "The research harness terminated the child process after evidence capture; this is not an ACP graceful-shutdown qualification."
+      }
+    }
+  },
+  "scope_limits": [
+    "No authenticated provider session was used.",
+    "No session/prompt completed.",
+    "No streaming update was observed.",
+    "No structured permission request was triggered.",
+    "No active prompt cancellation was observed.",
+    "No ACP v2 representative runtime was executed.",
+    "No untested registry agent is classified as supported."
+  ]
+}
