@@ -64,6 +64,7 @@ jobs:
       - name: Verify human authority contract remains fail-closed
         run: |
           python research/000b2-entry/authority/verify_authority.py --self-test
+          python research/000b2-entry/authority/verify_readiness_binding.py
           OUTPUT="$(python research/000b2-entry/authority/verify_authority.py research/000b2-entry/authority/authority-package.json)"
           printf '%s\n' "$OUTPUT"
           printf '%s\n' "$OUTPUT" | grep -Fx 'AUTHORITY_PACKAGE=NOT_AUTHORIZED'
