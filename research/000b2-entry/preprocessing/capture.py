@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Capture exact FFmpeg identity for B2 qualification or an authorized attempt."""
+"""Capture exact FFmpeg identity for B2 qualification or an authorized attempt.
+
+An attempt-bound capture proves that the emitted evidence refers to one immutable
+attempt-state snapshot. It does not independently prove when that snapshot was
+created or whether prohibited work occurred before it; chronology remains a
+separate execution/review gate.
+"""
 
 from __future__ import annotations
 
@@ -57,7 +63,7 @@ def load_attempt_state_bytes(raw: bytes) -> dict[str, Any]:
     if value.get("phase") != "PRE_PRIMARY_CAPTURE":
         raise ValueError("attempt state phase must be PRE_PRIMARY_CAPTURE")
     if value.get("primary_test_decoding_started") is not False:
-        raise ValueError("preprocessing identity must be captured before primary decoding")
+        raise ValueError("preprocessing identity state declares primary decoding started")
     return value
 
 
@@ -104,7 +110,9 @@ def capture(
     if qualification_only:
         ordering = {
             "mode": "QUALIFICATION_ONLY",
+            "attempt_state_bound": False,
             "attempt_time_authority": False,
+            "independent_chronology_attestation": False,
             "primary_decode_ordering_claim": False,
         }
     else:
@@ -114,17 +122,19 @@ def capture(
         state_path = attempt_state_path.resolve(strict=True)
         if not state_path.is_file():
             raise ValueError("attempt state must be a regular file")
-        # One immutable byte snapshot is both validated and hashed. A concurrent file
-        # replacement after this read cannot make the emitted digest describe unseen bytes.
+        # One immutable byte snapshot is both validated and hashed. This proves binding
+        # to those bytes, not independent chronology or when the snapshot was authored.
         state_raw = state_path.read_bytes()
         state = load_attempt_state_bytes(state_raw)
         ordering = {
             "mode": "ATTEMPT_STATE_BOUND",
-            "attempt_time_authority": True,
+            "attempt_state_bound": True,
+            "attempt_time_authority": False,
+            "independent_chronology_attestation": False,
             "attempt_id": state["attempt_id"],
             "canonical_wispral_revision": state["canonical_wispral_revision"],
             "attempt_state_sha256": sha256_bytes(state_raw),
-            "primary_test_decoding_started": False,
+            "declared_primary_test_decoding_started": False,
         }
 
     return {
@@ -173,9 +183,10 @@ def main() -> int:
     print("CAPTURE_000B2_PREPROCESSING=PASS")
     print(f"CAPTURE_MODE={evidence['ordering']['mode']}")
     print(
-        "ATTEMPT_TIME_AUTHORITY="
-        f"{'YES' if evidence['ordering']['attempt_time_authority'] else 'NO'}"
+        "ATTEMPT_STATE_BOUND="
+        f"{'YES' if evidence['ordering']['attempt_state_bound'] else 'NO'}"
     )
+    print("INDEPENDENT_CHRONOLOGY_ATTESTATION=NO")
     return 0
 
 
