@@ -11,7 +11,9 @@
     "sequence_alignment": "UNIT_COST_LEVENSHTEIN",
     "tie_break": "MATCH_THEN_SUBSTITUTION_THEN_DELETION_THEN_INSERTION",
     "normalization": "DISABLED_EXACT_EQUALS_NORMALIZED",
-    "required_annotation_normalization_allowed": false
+    "required_annotation_normalization_allowed": false,
+    "false_entity_insertion_rate": "FALSE_ENTITY_INSERTIONS_OVER_TOTAL_REFERENCE_ENTITIES",
+    "zero_reference_entity_rate": null
   },
   "ordinary_wer": {
     "panels": ["GENERAL_COLLATERAL"],
@@ -38,6 +40,7 @@
     "entity_substitutions",
     "entity_deletions",
     "false_entity_insertions",
+    "false_entity_insertion_rate",
     "collateral_reference_words",
     "collateral_substitutions",
     "collateral_deletions",
