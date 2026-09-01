@@ -18,8 +18,17 @@ EVIDENCE = ROOT / "research" / "000b2-entry" / "materialized-artifacts.json"
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
+def reject_duplicate_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise AssertionError(f"duplicate JSON object member: {key}")
+        result[key] = value
+    return result
+
+
 def load(path: Path) -> dict[str, Any]:
-    value = json.loads(path.read_text(encoding="utf-8"))
+    value = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=reject_duplicate_pairs)
     if not isinstance(value, dict):
         raise AssertionError(f"{path} must be a JSON object")
     return value
@@ -113,10 +122,7 @@ def flattened_evidence(evidence: dict[str, Any]) -> dict[tuple[str, str], dict[s
         for path, row in paths.items():
             if not isinstance(row, dict):
                 raise AssertionError(f"artifact evidence not a mapping: {candidate_id}:{path}")
-            key = (candidate_id, path)
-            if key in result:
-                raise AssertionError(f"duplicate artifact evidence: {key}")
-            result[key] = row
+            result[(candidate_id, path)] = row
     return result
 
 
