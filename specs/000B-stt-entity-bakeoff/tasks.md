@@ -22,7 +22,7 @@ Entry-preparation work may only remove non-primary readiness blockers without we
 
 B2 primary developer-speech decoding MUST NOT begin while any current readiness gate remains unsatisfied. Synthetic/TTS media may support smoke/harness/regression only and cannot substitute for the required human developer-speech authority or frozen primary corpus.
 
-`specs/CURRENT.md`, `research/000b2-entry/readiness.json`, and `research/000b2-entry/canonical-closeout.json` own the current executable frontier and blocker set. `research/000b1/canonical-closeout.json` remains historical B1 authority and must not be rewritten to pretend its original blocker snapshot is current.
+`specs/CURRENT.md` owns the executable frontier. `research/000b2-entry/readiness.json` and `research/000b2-entry/canonical-closeout.json` provide the machine-readable current blocker and closeout evidence supporting that frontier. `research/000b1/canonical-closeout.json` remains historical B1 authority and must not be rewritten to pretend its original blocker snapshot is current.
 
 ## 000B2 entry-preparation closeout
 
