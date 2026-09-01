@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 
 import operational_smoke as smoke
@@ -15,6 +16,7 @@ EXPECTED_CORRECTIONS = {
     ("sherpa-onnx-compact", "tokens.txt"),
     ("sherpa-onnx-balanced", "tokens.txt"),
 }
+ORIGINAL_RUN_WHISPER = smoke.run_whisper
 
 
 def canonical_amendment_sizes() -> dict[tuple[str, str], int]:
@@ -34,7 +36,59 @@ def canonical_amendment_sizes() -> dict[tuple[str, str], int]:
     return result
 
 
+def observed_whisper_source_revision(cli_path: Path) -> str:
+    cli = cli_path.resolve(strict=True)
+    if cli.name != "whisper-cli" or cli.parent.name != "bin" or cli.parent.parent.name != "build":
+        raise RuntimeError("whisper CLI path is not the canonical source-tree build/bin/whisper-cli path")
+    source_root = cli.parents[2]
+    git_dir = source_root / ".git"
+    if not git_dir.exists():
+        raise RuntimeError("whisper CLI source checkout has no Git identity")
+    observed = subprocess.run(
+        ["git", "-C", str(source_root), "rev-parse", "HEAD"],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        timeout=30,
+    ).stdout.strip()
+    if len(observed) != 40 or any(char not in "0123456789abcdef" for char in observed):
+        raise RuntimeError("whisper CLI source revision is malformed")
+    clean = subprocess.run(
+        ["git", "-C", str(source_root), "diff", "--quiet", "HEAD", "--"],
+        check=False,
+        timeout=30,
+    )
+    if clean.returncode != 0:
+        raise RuntimeError("whisper source checkout has tracked modifications after pinned checkout")
+    cache = source_root / "build" / "CMakeCache.txt"
+    if cache.is_symlink() or not cache.is_file():
+        raise RuntimeError("whisper CMake build identity is missing")
+    expected_home = f"CMAKE_HOME_DIRECTORY:INTERNAL={source_root}"
+    if expected_home not in cache.read_text(encoding="utf-8", errors="strict").splitlines():
+        raise RuntimeError("whisper CMake build is not bound to the observed source checkout")
+    return observed
+
+
+def bound_run_whisper(
+    candidate_id: str,
+    model_path: Path,
+    cli_path: Path,
+    wav_path: Path,
+    source_revision: str,
+) -> dict:
+    family, _ = smoke.candidate_record(candidate_id)
+    expected = family.get("runtime", {}).get("revision")
+    observed = observed_whisper_source_revision(cli_path)
+    if observed != expected:
+        raise RuntimeError("whisper CLI source checkout differs from frozen B1 runtime revision")
+    if source_revision != observed:
+        raise RuntimeError("caller-supplied whisper revision differs from independently observed CLI source")
+    return ORIGINAL_RUN_WHISPER(candidate_id, model_path, cli_path, wav_path, observed)
+
+
 smoke.amendment_sizes = canonical_amendment_sizes
+smoke.run_whisper = bound_run_whisper
 
 if __name__ == "__main__":
     raise SystemExit(smoke.main())
