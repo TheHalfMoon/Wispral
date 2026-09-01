@@ -125,8 +125,13 @@ def verify() -> None:
     scorer = require_gate(gates, "scorer")
     if scorer.get("status") != "CANONICAL_REVISION_PENDING_MERGE":
         fail("scorer must remain pending canonical merge")
-    if scorer.get("latest_verified_workflow_run_id") != 33523779606:
-        fail("scorer verification workflow provenance drift")
+    if scorer.get("verification_baseline_workflow_run_id") != 33523779606:
+        fail("scorer verification baseline provenance drift")
+    if "latest_verified_workflow_run_id" in scorer:
+        fail("self-updating latest-run scorer provenance was reintroduced")
+    note = scorer.get("note")
+    if not isinstance(note, str) or "stable verification baseline" not in note:
+        fail("scorer verification baseline semantics missing")
     for key in ("implementation_path", "config_path", "verifier_path"):
         require_file(str(scorer.get(key)), f"scorer {key}")
 
