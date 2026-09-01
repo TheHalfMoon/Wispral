@@ -27,13 +27,22 @@
     "failures_remain_in_denominators": true
   },
   "metrics": [
+    "utterance_count",
+    "failure_count",
+    "failure_rate",
+    "developer_entity_reference_count",
+    "developer_entity_exact_correct",
     "developer_entity_exact_accuracy",
+    "developer_entity_normalized_correct",
     "developer_entity_normalized_accuracy",
     "entity_substitutions",
     "entity_deletions",
     "false_entity_insertions",
-    "collateral_wer",
-    "failure_rate"
+    "collateral_reference_words",
+    "collateral_substitutions",
+    "collateral_deletions",
+    "collateral_insertions",
+    "collateral_wer"
   ],
   "anti_leakage": {
     "scorer_vocabulary_may_not_be_provided_to_decoder": true,
