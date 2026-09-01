@@ -10,6 +10,8 @@ on:
       - 'research/000b2-entry/verify_scorer.py'
       - 'research/000b2-entry/prepare_attempt_manifest.py'
       - 'research/000b2-entry/validate_entry_manifest.py'
+      - 'research/000b2-entry/operational-smoke-evidence.json'
+      - 'research/000b2-entry/verify_operational_smoke.py'
       - 'research/000b2-entry/readiness.json'
       - 'research/000b2-entry/verify_readiness.py'
       - 'research/000b2-entry/preprocessing/**'
@@ -22,6 +24,8 @@ on:
       - 'research/000b2-entry/verify_scorer.py'
       - 'research/000b2-entry/prepare_attempt_manifest.py'
       - 'research/000b2-entry/validate_entry_manifest.py'
+      - 'research/000b2-entry/operational-smoke-evidence.json'
+      - 'research/000b2-entry/verify_operational_smoke.py'
       - 'research/000b2-entry/readiness.json'
       - 'research/000b2-entry/verify_readiness.py'
       - 'research/000b2-entry/preprocessing/**'
@@ -42,6 +46,8 @@ jobs:
           python-version: '3.12'
       - name: Verify deterministic B2 scorer
         run: python research/000b2-entry/verify_scorer.py
+      - name: Verify durable six-cell operational smoke evidence
+        run: python research/000b2-entry/verify_operational_smoke.py
       - name: Verify execution-environment capture boundary
         run: python research/000b2-entry/environment/verify_capture.py
       - name: Generate amendment-aware non-frozen B2 entry draft
