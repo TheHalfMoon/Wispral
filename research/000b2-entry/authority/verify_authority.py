@@ -103,6 +103,21 @@ def verify_package(package: dict[str, Any], require_authorized: bool = False) ->
     if package.get("package_contains_direct_identifiers") is not False:
         errors.append("authority package must not contain direct participant identifiers")
 
+    for field in REQUIRED_TEXT:
+        value = package.get(field)
+        if value is not None and not _nonempty_text(value):
+            errors.append(f"{field} must be null or a non-empty string")
+
+    for field in (
+        "public_redistribution_decision",
+        "derivative_benchmark_artifact_permission",
+    ):
+        if package.get(field) not in {None, "ALLOWED", "PROHIBITED"}:
+            errors.append(f"{field} must be null, ALLOWED, or PROHIBITED")
+
+    if not isinstance(package.get("authority_effective_before_recording"), bool):
+        errors.append("authority_effective_before_recording must be boolean")
+
     participant_count = package.get("participant_count")
     if not isinstance(participant_count, int) or isinstance(participant_count, bool) or participant_count < 0:
         errors.append("participant_count must be a non-negative integer")
@@ -178,6 +193,14 @@ def self_test() -> None:
     mutated["consent_records_sha256"] = None
     if not verify_package(mutated, require_authorized=True):
         raise AssertionError("missing consent digest must fail")
+    mutated = dict(base)
+    mutated["authority_status"] = "NOT_AUTHORIZED"
+    mutated["participant_count"] = 0
+    mutated["consent_records_sha256"] = None
+    mutated["authority_effective_before_recording"] = False
+    mutated["recording_purpose"] = 7
+    if not verify_package(mutated):
+        raise AssertionError("NOT_AUTHORIZED type drift must fail")
     print("SYNTHETIC_AUTHORITY_CONTRACT_SELF_TEST=PASS")
 
 
