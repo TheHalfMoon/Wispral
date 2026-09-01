@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Cross-document verifier for Wispral 000B1 preregistration authority."""
+"""Cross-document verifier for Wispral 000B1 preregistration and closeout authority."""
 
 from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+CLOSEOUT = ROOT / "research" / "000b1" / "canonical-closeout.json"
 
 
 def text(path: str) -> str:
@@ -60,13 +61,29 @@ def main() -> int:
 
         tasks = text("specs/000B1-benchmark-candidate-qualification/tasks.md")
         require(tasks, (
-            "Readiness disposition for the current B1 evidence unit: `PASS` for preregistration/qualification work only.",
             "- [x] **B119 — Adversarial preregistration review.",
-            "- [ ] **B120 — Canonical B1 closeout.",
             "B1 completion contains no primary benchmark ranking.",
         ), "B1 task ledger")
-        if "- [x] **B120" in tasks:
-            raise AssertionError("B120 must remain open before canonical post-merge closeout")
+
+        closeout_mode = CLOSEOUT.is_file()
+        if closeout_mode:
+            require(tasks, (
+                "- [x] **B120 — Canonical B1 closeout.",
+                "B1 disposition: `VERIFIED`",
+                "B2 disposition: `BLOCKED_EXTERNAL`",
+                "PCM WAV mono 16 kHz PCM_S16LE canonical representation",
+            ), "B1 canonical closeout ledger")
+            forbid(tasks, (
+                "- [ ] **B120 — Canonical B1 closeout.",
+                "raw mono 16 kHz PCM_S16LE representation",
+            ), "B1 canonical closeout ledger")
+        else:
+            require(tasks, (
+                "Readiness disposition for the current B1 evidence unit: `PASS` for preregistration/qualification work only.",
+                "- [ ] **B120 — Canonical B1 closeout.",
+            ), "B1 premerge ledger")
+            if "- [x] **B120" in tasks:
+                raise AssertionError("B120 must remain open before canonical post-merge closeout")
 
         adversarial = text("docs/research/stt/000b1-adversarial-review.md")
         require_unique_label_line(adversarial, "B1_CONTRACT_REVIEW:", "`B1_CONTRACT_REVIEW: PASS`", "adversarial review")
@@ -78,7 +95,8 @@ def main() -> int:
         return 1
 
     print("VERIFY_000B1_DOCUMENTS=PASS")
-    print("B120_OPEN=YES")
+    print(f"B120_OPEN={'NO' if CLOSEOUT.is_file() else 'YES'}")
+    print(f"B1_CLOSEOUT={'YES' if CLOSEOUT.is_file() else 'NO'}")
     print("B2_READY=NO")
     return 0
 
