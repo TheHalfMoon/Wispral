@@ -49,7 +49,9 @@ jobs:
       - name: Verify durable six-cell operational smoke evidence
         run: python research/000b2-entry/verify_operational_smoke.py
       - name: Verify execution-environment capture boundary
-        run: python research/000b2-entry/environment/verify_capture.py
+        run: |
+          python research/000b2-entry/environment/verify_capture.py
+          python -O research/000b2-entry/environment/verify_capture.py
       - name: Generate amendment-aware non-frozen B2 entry draft
         run: |
           git fetch --no-tags --depth=1 origin main
@@ -63,10 +65,10 @@ jobs:
           printf '%s\n' "$OUTPUT"
           printf '%s\n' "$OUTPUT" | grep -Fx 'ENTRY_STRUCTURE=PASS'
           printf '%s\n' "$OUTPUT" | grep -Fx 'B2_READY=NO'
-      - name: Verify current B2 readiness record when present
+      - name: Verify current B2 readiness record
         run: |
-          if [ -f research/000b2-entry/readiness.json ]; then
-            python research/000b2-entry/verify_readiness.py
-          else
-            echo 'B2_ENTRY_READINESS_RECORD=NOT_YET_PRESENT'
-          fi
+          test -f research/000b2-entry/readiness.json || {
+            echo 'B2_ENTRY_READINESS_RECORD=MISSING' >&2
+            exit 1
+          }
+          python research/000b2-entry/verify_readiness.py
