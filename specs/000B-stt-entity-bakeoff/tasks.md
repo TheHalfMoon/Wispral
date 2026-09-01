@@ -4,22 +4,24 @@ This file tracks recursive child progression. It is not permission to execute la
 
 ## Parent state
 
-- [ ] `000B1` benchmark/candidate qualification — refined to Grain below.
-- [ ] `000B2` unbiased local STT bakeoff — intentionally coarse until B1 is canonical.
+- [x] `000B1` benchmark/candidate qualification — `VERIFIED`; evidence merge `8df69835349f85d5ae6af9d6a62ef3af24f65f43`, canonical closeout merge `ed05ad9b0ef80ae4f6838e783188cf306c20391a`.
+- [ ] `000B2` unbiased local STT bakeoff — `BLOCKED_EXTERNAL`; primary execution is not authorized.
 - [ ] `000B3` repository-context uplift — intentionally coarse until B2 is canonical.
 - [ ] `000B4` STT synthesis — intentionally coarse until prior evidence selects its exact inputs.
 
-## Immediate authorized child
+## Current child frontier
 
-`000B1-benchmark-candidate-qualification`
+`000B1-benchmark-candidate-qualification` is canonically `VERIFIED`.
 
-State after this refinement becomes canonical: `GRAIN`.
+`000B2-unbiased-stt-bakeoff` is the dependency-ordered successor but remains `BLOCKED_EXTERNAL`, not `GRAIN`, `READY`, or `RUNNING`.
 
-000B1 must independently recheck readiness before `READY` and execution. Its purpose is to freeze a reproducible benchmark/candidate contract, not run the primary comparison.
+B2 primary developer-speech decoding MUST NOT begin while any B1 entry gate remains unsatisfied. Entry-preparation work may only remove non-primary readiness blockers without weakening the frozen B1 contract, inspecting the primary test split, or substituting synthetic/TTS media for the required human developer-speech authority.
+
+The earlier `spec.md` sentence stating that only 000B1 was task-refined describes the refinement state created by the 000B refinement merge `6b5696a6becc360948282712cc9339df9cb3a67c`; canonical B1 evidence and closeout now supersede that statement for execution ordering. `specs/CURRENT.md` owns the executable frontier.
 
 ## 000B2 entry gate
 
-Do not refine 000B2 to executable tasks until canonical B1 evidence establishes at minimum:
+Canonical B1 now establishes the required methodology inputs:
 
 - candidate inclusion/exclusion rules;
 - exact attempt-manifest schema;
@@ -32,6 +34,19 @@ Do not refine 000B2 to executable tasks until canonical B1 evidence establishes 
 - test-set freeze/no-tuning rule;
 - controlled performance-environment rule;
 - human developer-speech availability requirements.
+
+B2 nevertheless remains blocked until the concrete attempt-time readiness evidence required by the B1 contract exists. Current blockers are canonical in `research/000b1/canonical-closeout.json` and include:
+
+- human developer-speech consent, retention, redistribution, withdrawal, and frozen-corpus authority;
+- Moonshine material payload SHA-256 values;
+- sherpa-onnx `tokens.txt` SHA-256;
+- per-candidate bounded non-primary operational smoke PASS or an explicit canonical waiver;
+- frozen scorer implementation/revision/configuration;
+- attempt-time FFmpeg binary/version-output and preprocessing execution evidence;
+- frozen execution environment/hardware fingerprint;
+- a final B2 attempt manifest with `frozen=true` and matching freeze digest.
+
+Do not refine B2 into primary decoding tasks or execute C0 until every required gate is satisfied and readiness is rechecked from canonical `main`.
 
 ## 000B3 entry gate
 
