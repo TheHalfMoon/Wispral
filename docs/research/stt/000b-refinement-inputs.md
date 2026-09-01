@@ -161,7 +161,7 @@ No C2 result may replace the C0 raw STT result in cross-backend ranking.
 
 ## Human-audio requirement
 
-The founding WispralBench contract already requires consent and redistribution rules for recorded human audio. B1 should strengthen that into a readiness gate: synthetic/TTS audio is acceptable for smoke tests but cannot be the sole evidence for ranking human developer-speech recognition.
+The founding WispralBench contract already requires consent and redistribution rules for recorded human audio. B1 strengthens that into a readiness gate: synthetic/TTS audio is acceptable only for smoke tests, schema validation, and deterministic regression; it cannot contribute to the primary human developer-speech ranking.
 
 If a redistributable human developer-speech panel is unavailable, the primary bakeoff must remain blocked rather than creating a public comparative claim from synthetic voices.
 
