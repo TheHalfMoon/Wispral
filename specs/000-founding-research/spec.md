@@ -1,18 +1,32 @@
 # Specification 000 — Founding Research and Qualification
 
-**State:** `REFINING` candidate  
+**State:** `REFINING`  
 **Type:** research / architecture-selection parent specification
 
 ## Outcome
 
 Produce enough reproducible technical, security, platform, licensing, and benchmark evidence to select Wispral's first bounded product implementation Grain without relying on unverified market assumptions or preferred technologies.
 
+## Canonical progress after 000A
+
+Specification `000A-acp-qualification` is `VERIFIED` at canonical merge `354695c9f4d406147cbdc425d8f59e841a2f96a3`.
+
+Its evidence classifies ACP as `PARTIAL` with `MODERATE` confidence:
+
+- two pinned current representative distributions completed real ACP v1 initialization;
+- structured capability/authentication discovery is therefore established for those exact representatives;
+- authenticated session/prompt, streaming, cancellation, structured permission, steering, and representative ACP v2 runtime behavior remain unverified;
+- ACP is a leading structured-path candidate, not a permanent production selection;
+- a version-aware integration boundary is likely required, but production architecture remains unauthorized.
+
+This evidence closes the first child and permits the next coarse child, `000B`, to be refined. It does not authorize 000B execution or product code.
+
 ## Problem
 
-Wispral has a strong product thesis but no product evidence yet. Several major choices remain hypotheses:
+Wispral has a strong product thesis but no product implementation evidence yet. Several major choices remain hypotheses:
 
-- structured agent protocol versus PTY boundaries;
-- exact ACP semantics and representative-agent behavior;
+- structured agent protocol versus PTY boundaries beyond the bounded 000A result;
+- authenticated ACP lifecycle, streaming, permission, cancellation, and v1/v2 portability;
 - local speech backend selection;
 - developer context value;
 - turn-taking and interruption architecture;
@@ -92,7 +106,7 @@ Primary risks:
 
 - benchmark leakage or tuning to known fixtures;
 - confusing prototype behavior with supported product behavior;
-- overfitting architecture to one agent;
+- overfitting architecture to one agent or one protocol version;
 - adopting a speech engine based on vendor-provided numbers rather than Wispral workloads;
 - treating protocol documentation as proof of a specific agent implementation;
 - expanding research until no product decision is ever made.
