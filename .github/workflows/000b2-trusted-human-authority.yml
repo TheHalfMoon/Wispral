@@ -3,6 +3,7 @@ name: 000B2 Trusted Human Authority Structure
 on:
   pull_request:
     paths:
+      - '.github/trusted/verify_000b2_human_authority.py'
       - '.github/workflows/000b2-trusted-human-authority.yml'
       - 'research/000b2-entry/authority/**'
       - 'research/000b2-entry/readiness.json'
@@ -12,6 +13,7 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened, edited]
     paths:
+      - '.github/trusted/verify_000b2_human_authority.py'
       - '.github/workflows/000b2-trusted-human-authority.yml'
       - 'research/000b2-entry/authority/**'
       - 'research/000b2-entry/readiness.json'
@@ -21,13 +23,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - '.github/workflows/000b2-trusted-human-authority.yml'
-      - 'research/000b2-entry/authority/**'
-      - 'research/000b2-entry/readiness.json'
-      - 'research/000b2-entry/validate_entry_manifest.py'
-      - 'specs/CURRENT.md'
-      - 'docs/canonical/CURRENT_STATE.md'
 
 permissions:
   contents: read
@@ -45,13 +40,21 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
-      - name: Compile canonical authority verifier candidate
-        run: python -m py_compile research/000b2-entry/authority/verify_authority.py
+      - name: Compile trusted authority verifier candidates
+        run: |
+          python -m py_compile research/000b2-entry/authority/verify_authority.py
+          python -m py_compile .github/trusted/verify_000b2_human_authority.py
       - name: Exercise fail-closed authority contract self-test
         run: python research/000b2-entry/authority/verify_authority.py --self-test
+      - name: Exercise trusted structural verifier on current blocked state
+        run: |
+          python .github/trusted/verify_000b2_human_authority.py \
+            --base-root . \
+            --candidate-root .
       - name: Verify trusted workflow bootstrap invariants
         run: |
           python - <<'PY'
+          import re
           from pathlib import Path
 
           path = Path('.github/workflows/000b2-trusted-human-authority.yml')
@@ -60,18 +63,25 @@ jobs:
               'pull_request_target:',
               "github.event.pull_request.base.ref == 'main'",
               'Checkout live canonical base authority',
-              'Checkout exact candidate head as untrusted data',
-              'trusted-base/research/000b2-entry/authority/verify_authority.py',
+              'trusted-base/.github/trusted/verify_000b2_human_authority.py',
               'PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE',
-              'PRIMARY_MEDIA_ACCEPTANCE=NO',
+              '--reverify-open-prs',
               'actions/checkout@11d5960a326750d5838078e36cf38b85af677262',
               'actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065',
           )
           missing = [item for item in required if item not in text]
           if missing:
               raise SystemExit(f'trusted authority workflow bootstrap drift: {missing}')
-          if 'actions/checkout@v' in text or 'actions/setup-python@v' in text:
-              raise SystemExit('mutable action tag reintroduced into trusted authority workflow')
+          uses = []
+          for line in text.splitlines():
+              stripped = line.strip()
+              if stripped.startswith('- uses:'):
+                  uses.append(stripped.split('uses:', 1)[1].strip())
+          if not uses:
+              raise SystemExit('trusted authority workflow has no action uses entries')
+          bad = [item for item in uses if re.fullmatch(r'[^@\s]+@[0-9a-f]{40}', item) is None]
+          if bad:
+              raise SystemExit(f'trusted authority workflow has non-pinned action uses: {bad}')
           print('TRUSTED_AUTHORITY_BOOTSTRAP=PASS')
           PY
 
@@ -86,13 +96,6 @@ jobs:
           ref: ${{ github.event.pull_request.base.ref }}
           path: trusted-base
           persist-credentials: false
-      - name: Checkout exact candidate head as untrusted data
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.sha }}
-          path: candidate
-          persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
@@ -101,87 +104,54 @@ jobs:
           EVENT_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           BASE_SHA="$(git -C trusted-base rev-parse HEAD)"
-          HEAD_SHA="$(git -C candidate rev-parse HEAD)"
           if [[ ! "$BASE_SHA" =~ ^[0-9a-f]{40}$ ]]; then
             echo "live canonical base SHA malformed: $BASE_SHA" >&2
             exit 1
           fi
-          if [ "$HEAD_SHA" != "$EVENT_HEAD_SHA" ]; then
-            echo "candidate checkout SHA mismatch: event=$EVENT_HEAD_SHA checkout=$HEAD_SHA" >&2
+          if [[ ! "$EVENT_HEAD_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "candidate event head SHA malformed: $EVENT_HEAD_SHA" >&2
             exit 1
           fi
           echo "TRUSTED_BASE_SHA=$BASE_SHA"
-          echo "CANDIDATE_HEAD_SHA=$HEAD_SHA"
-      - name: Verify candidate authority package with live canonical verifier
+          echo "CANDIDATE_HEAD_SHA=$EVENT_HEAD_SHA"
+      - name: Verify exact candidate data with live canonical verifier
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          CANDIDATE_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          PACKAGE='candidate/research/000b2-entry/authority/authority-package.json'
-          VERIFIER='trusted-base/research/000b2-entry/authority/verify_authority.py'
-          test -f "$PACKAGE" || { echo 'candidate authority package missing' >&2; exit 1; }
-          test ! -L "$PACKAGE" || { echo 'candidate authority package must not be a symlink' >&2; exit 1; }
-          test -f "$VERIFIER" || { echo 'trusted-base authority verifier missing' >&2; exit 1; }
-          test ! -L "$VERIFIER" || { echo 'trusted-base authority verifier must not be a symlink' >&2; exit 1; }
-          OUTPUT="$(python "$VERIFIER" "$PACKAGE")"
-          printf '%s\n' "$OUTPUT"
-          if printf '%s\n' "$OUTPUT" | grep -Fxq 'AUTHORITY_PACKAGE=AUTHORIZED'; then
-            python "$VERIFIER" "$PACKAGE" --require-authorized
-            echo 'STRUCTURAL_AUTHORITY_PACKAGE=PASS'
-          elif printf '%s\n' "$OUTPUT" | grep -Fxq 'AUTHORITY_PACKAGE=NOT_AUTHORIZED'; then
-            echo 'STRUCTURAL_AUTHORITY_PACKAGE=BLOCKED'
-          else
-            echo 'trusted verifier emitted unknown authority status' >&2
-            exit 1
-          fi
+          python trusted-base/.github/trusted/verify_000b2_human_authority.py \
+            --base-root trusted-base \
+            --repo "$REPOSITORY" \
+            --head-sha "$CANDIDATE_HEAD_SHA"
           echo 'PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE'
           echo 'PRIMARY_MEDIA_ACCEPTANCE=NO'
-      - name: Require candidate frontier to remain blocked by external authority
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
 
-          root = Path('candidate')
-          record = json.loads((root / 'research/000b2-entry/readiness.json').read_text(encoding='utf-8'))
-          if record.get('b2_disposition') != 'BLOCKED_EXTERNAL' or record.get('b2_ready') is not False:
-              raise SystemExit('candidate advanced B2 before independent participant authority')
-          if record.get('primary_test_decoding_performed') is not False:
-              raise SystemExit('candidate claims primary decoding before independent participant authority')
-          gates = record.get('gates')
-          if not isinstance(gates, dict):
-              raise SystemExit('candidate readiness gates missing')
-          human = gates.get('human_developer_speech_authority')
-          if not isinstance(human, dict):
-              raise SystemExit('candidate human authority gate missing')
-          if human.get('status') != 'BLOCKED_EXTERNAL' or human.get('resolved') is not False:
-              raise SystemExit('candidate human authority gate advanced without independent attestation')
-          blockers = record.get('remaining_blockers')
-          required = 'human developer-speech participant/media authority is absent'
-          if not isinstance(blockers, list) or required not in blockers:
-              raise SystemExit('candidate removed the external human authority blocker')
-          current = (root / 'specs/CURRENT.md').read_text(encoding='utf-8')
-          if '`000B2-unbiased-stt-bakeoff`\n\nState: `BLOCKED_EXTERNAL`' not in current:
-              raise SystemExit('candidate canonical frontier no longer records B2 BLOCKED_EXTERNAL')
-          print('CANDIDATE_B2_EXTERNAL_BLOCK=PASS')
-          print('B2_READY=NO')
-          print('PRIMARY_MEDIA_ACCEPTANCE=NO')
-          PY
-
-  verify-canonical-blocked-state:
+  verify-canonical-and-open-prs-after-base-push:
     if: github.event_name == 'push'
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ github.sha }}
+          path: trusted-base
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
-      - name: Verify canonical package and readiness remain blocked
+      - name: Verify new canonical base remains blocked
         run: |
-          OUTPUT="$(python research/000b2-entry/authority/verify_authority.py research/000b2-entry/authority/authority-package.json)"
-          printf '%s\n' "$OUTPUT"
-          printf '%s\n' "$OUTPUT" | grep -Fx 'AUTHORITY_PACKAGE=NOT_AUTHORIZED'
-          printf '%s\n' "$OUTPUT" | grep -Fx 'PRIMARY_MEDIA_ACCEPTANCE=NO'
-          python research/000b2-entry/authority/verify_readiness_binding.py
+          python trusted-base/.github/trusted/verify_000b2_human_authority.py \
+            --base-root trusted-base \
+            --candidate-root trusted-base
           echo 'PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE'
+      - name: Reverify every open main-targeting PR against the new canonical base
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          python trusted-base/.github/trusted/verify_000b2_human_authority.py \
+            --base-root trusted-base \
+            --repo "$REPOSITORY" \
+            --reverify-open-prs
