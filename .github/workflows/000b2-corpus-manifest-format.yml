@@ -73,7 +73,7 @@ jobs:
           uses = []
           for line in text.splitlines():
               stripped = line.strip()
-              if stripped.startswith('- uses:'):
+              if stripped.startswith(('- uses:', 'uses:')):
                   uses.append(stripped.split('uses:', 1)[1].strip())
           bad = [item for item in uses if re.fullmatch(r'[^@\s]+@[0-9a-f]{40}', item) is None]
           if not uses or bad:
