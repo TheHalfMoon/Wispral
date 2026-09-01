@@ -44,21 +44,21 @@ Attempt-time evidence must additionally record SHA-256 for the actual FFmpeg bin
 Canonical conversion command:
 
 ```text
-ffmpeg -nostdin -hide_banner -loglevel error -i INPUT -map_metadata -1 -vn -sn -dn -ac 1 -ar 16000 -c:a pcm_s16le -f s16le OUTPUT.s16le
+ffmpeg -nostdin -hide_banner -loglevel error -i INPUT -map_metadata -1 -vn -sn -dn -ac 1 -ar 16000 -c:a pcm_s16le OUTPUT.wav
 ```
 
 Canonical representation:
 
-- raw headerless PCM;
+- PCM WAV container;
 - mono;
 - 16,000 Hz;
-- signed 16-bit little-endian samples;
+- signed 16-bit little-endian PCM samples;
 - no denoising;
 - no loudness normalization;
 - no semantic silence trimming;
 - SHA-256 of every canonical output required.
 
-Adapters convert each little-endian signed int16 sample to float32 using `sample / 32768.0` only. No candidate-specific gain, resampling, denoising, or cleanup is permitted.
+Adapters decode the canonical WAV PCM payload and convert each little-endian signed int16 sample to float32 using `sample / 32768.0` only. No candidate-specific gain, resampling, denoising, or cleanup is permitted.
 
 The feed schedule is also frozen:
 
@@ -130,7 +130,7 @@ Pinned source surfaces:
 - `examples/stream/README.md`;
 - `examples/stream/stream.cpp`.
 
-The research adapter reproduces the pinned non-VAD fixed-step `stream.cpp` decode semantics over canonical samples rather than depending on a physical microphone.
+The research adapter reproduces the pinned non-VAD fixed-step `stream.cpp` decode semantics over samples decoded deterministically from canonical WAV rather than depending on a physical microphone.
 
 Frozen settings:
 
@@ -161,7 +161,7 @@ Pinned runtime: `k2-fsa/sherpa-onnx@917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e` (`
 
 Pinned source surface: `python-api-examples/online-decode-files.py`.
 
-The research adapter uses `OnlineRecognizer.from_transducer`, supplies the selected chunk-16/left-128 model, feeds canonical float32 samples in 500 ms chunks, decodes whenever the stream is ready, feeds the universal zero suffix, calls `input_finished`, and drains remaining ready states.
+The research adapter uses `OnlineRecognizer.from_transducer`, supplies the selected chunk-16/left-128 model, feeds float32 samples decoded deterministically from canonical WAV in 500 ms chunks, decodes whenever the stream is ready, feeds the universal zero suffix, calls `input_finished`, and drains remaining ready states.
 
 Frozen settings:
 
