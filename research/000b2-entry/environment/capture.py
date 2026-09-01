@@ -4,8 +4,8 @@
 The capture binds environment identity to one immutable PRE_PRIMARY_CAPTURE state
 snapshot. It does not independently prove when that snapshot was authored or that
 no prohibited work occurred before it; chronology remains a separate execution and
-review gate. GitHub-hosted or otherwise uncontrolled captures are DIAGNOSTIC and
-cannot authorize comparative performance claims.
+review gate. The requested performance mode is operator-declared metadata, not an
+independent control attestation. GitHub-hosted captures are forced to DIAGNOSTIC.
 """
 
 from __future__ import annotations
@@ -144,6 +144,8 @@ def capture(attempt_state_raw: bytes, performance_mode: str) -> dict[str, Any]:
         "schema_version": "000b2-execution-environment-v1",
         "canonical_wispral_revision": canonical_revision,
         "performance_mode": performance_mode,
+        "performance_mode_claim_source": "OPERATOR_DECLARED",
+        "independent_control_attestation": False,
         "comparative_performance_authorized": False,
         "ordering": {
             "mode": "ATTEMPT_STATE_BOUND",
@@ -222,6 +224,8 @@ def main() -> int:
     print("ATTEMPT_STATE_BOUND=YES")
     print("INDEPENDENT_CHRONOLOGY_ATTESTATION=NO")
     print(f"PERFORMANCE_MODE={evidence['performance_mode']}")
+    print("PERFORMANCE_MODE_CLAIM_SOURCE=OPERATOR_DECLARED")
+    print("INDEPENDENT_CONTROL_ATTESTATION=NO")
     print("COMPARATIVE_PERFORMANCE_AUTHORIZED=NO")
     return 0
 
