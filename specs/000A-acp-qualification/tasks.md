@@ -24,7 +24,7 @@
 - [x] **A008 — Run safe permission fixture.** Structured permission behavior was `NOT_TESTED` because the no-secret attempt could not create a safe authenticated action. No provider permission protection was disabled.
 - [x] **A009 — Reconcile capability matrix.** Every behavioral `OBSERVED`/blocked/unsupported state points to committed raw Attempt 001 evidence; untested registry agents remain untested.
 - [x] **A010 — Produce ACP recommendation.** `docs/research/acp/qualification-report.md` classifies ACP `PARTIAL` with `MODERATE` confidence and explicit promotion conditions.
-- [ ] **A011 — Independent evidence review.** Re-read protocol/registry authority, inspect raw artifacts for claim drift and secrets, and challenge the recommendation before closeout.
+- [x] **A011 — Independent evidence review.** Current ACP authority was freshly reread; `research/000a/verify_evidence.py` passed against committed raw evidence/matrix; manual reconciliation and bounded secret/provenance review passed. External automated reviewers were unavailable/skipped/summary-only and are not represented as approval. See `docs/research/acp/evidence-review.md`.
 - [ ] **A012 — Canonical closeout.** Update `specs/CURRENT.md` and parent Specification 000 only after exact-head evidence is merged and canonical truth is re-read.
 
 ## Attempt 001 evidence
@@ -35,6 +35,7 @@
 - Gemini workflow artifact `9798068210`: `sha256:d8781662cf11d78e59d90d7a1b8f010854a462942f928ecf007f5902e93469cd`.
 - Codex ACP workflow artifact `9798065060`: `sha256:23cc0841cf961f03205c5bc39e32b3a95386c8c2ad277fc9cc0a54bdde0756c1`.
 - Extracted artifact text received a bounded credential-pattern scan; no common credential-like value was detected. This does not claim perfect secret detection.
+- Exact-head verification workflow `33502702519` on head `f96f0777aa4266cf1d033295d6b21d51bcec1219` completed `success` across the committed-evidence verifier plus both representative probe cells.
 
 ## Stop conditions
 
