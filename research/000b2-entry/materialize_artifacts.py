@@ -49,6 +49,8 @@ def correction_map(amendment: dict[str, Any]) -> dict[tuple[str, str], dict[str,
         raise RuntimeError("artifact-size amendment is not pre-attempt")
     if amendment.get("primary_test_decoding_performed") is not False:
         raise RuntimeError("artifact-size amendment cannot follow primary decoding")
+    if amendment.get("comparative_ranking_present") is not False:
+        raise RuntimeError("artifact-size amendment cannot follow comparative ranking")
     corrections = amendment.get("corrections")
     if not isinstance(corrections, list) or not corrections:
         raise RuntimeError("artifact-size amendment corrections missing")
@@ -105,19 +107,43 @@ def effective_size(
     return corrected
 
 
-def download(url: str, destination: Path) -> tuple[int, str]:
+def download(url: str, destination: Path, expected_size: int) -> tuple[int, str]:
     request = urllib.request.Request(url, headers={"User-Agent": "Wispral-000B2-entry-materializer/1"})
     h = hashlib.sha256()
     observed = 0
-    with urllib.request.urlopen(request, timeout=120) as response, destination.open("wb") as out:
-        while True:
-            chunk = response.read(1024 * 1024)
-            if not chunk:
-                break
-            out.write(chunk)
-            h.update(chunk)
-            observed += len(chunk)
-    return observed, h.hexdigest()
+    try:
+        with urllib.request.urlopen(request, timeout=120) as response, destination.open("wb") as out:
+            content_length = response.headers.get("Content-Length")
+            if content_length is not None:
+                try:
+                    declared = int(content_length)
+                except ValueError as exc:
+                    raise RuntimeError(f"invalid Content-Length from {url}: {content_length!r}") from exc
+                if declared > expected_size:
+                    raise RuntimeError(
+                        f"declared artifact size exceeds expected size for {url}: "
+                        f"expected {expected_size}, declared {declared}"
+                    )
+            while True:
+                chunk = response.read(min(1024 * 1024, expected_size - observed + 1))
+                if not chunk:
+                    break
+                observed += len(chunk)
+                if observed > expected_size:
+                    raise RuntimeError(
+                        f"artifact exceeded expected size while downloading {url}: "
+                        f"expected {expected_size}, observed > {expected_size}"
+                    )
+                out.write(chunk)
+                h.update(chunk)
+        if observed != expected_size:
+            raise RuntimeError(
+                f"artifact size mismatch for {url}: expected {expected_size}, observed {observed}"
+            )
+        return observed, h.hexdigest()
+    finally:
+        if destination.exists():
+            destination.unlink()
 
 
 def main() -> int:
@@ -134,15 +160,10 @@ def main() -> int:
 
     rows: list[dict[str, Any]] = []
     for family_name, cfg, artifact, url in pending_entries(registry):
+        expected_size = effective_size(cfg["id"], artifact, corrections, used_corrections)
         safe = f"{cfg['id']}--{artifact['path'].replace('/', '__')}"
         destination = args.work_dir / safe
-        observed_size, sha256 = download(url, destination)
-        expected_size = effective_size(cfg["id"], artifact, corrections, used_corrections)
-        if observed_size != expected_size:
-            raise RuntimeError(
-                f"size mismatch for {cfg['id']}:{artifact['path']}: "
-                f"expected {expected_size}, observed {observed_size}"
-            )
+        observed_size, sha256 = download(url, destination, expected_size)
         rows.append(
             {
                 "candidate_id": cfg["id"],
@@ -159,7 +180,6 @@ def main() -> int:
                 "pre_attempt_size_amended": expected_size != artifact["size_bytes"],
             }
         )
-        destination.unlink()
 
     if used_corrections != set(corrections):
         unused = sorted(set(corrections) - used_corrections)
