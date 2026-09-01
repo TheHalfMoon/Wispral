@@ -28,5 +28,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Verify 000B1 preregistration evidence
+      - name: Verify 000B1 machine-readable preregistration evidence
         run: python research/000b1/verify_preregistration.py
+      - name: Verify 000B1 cross-document authority alignment
+        run: python research/000b1/verify_documents.py
