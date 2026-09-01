@@ -51,6 +51,16 @@ jobs:
           python .github/trusted/verify_000b2_human_authority.py \
             --base-root . \
             --candidate-root .
+      - name: Exercise immutable remote candidate-data path
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          CANDIDATE_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python .github/trusted/verify_000b2_human_authority.py \
+            --base-root . \
+            --repo "$REPOSITORY" \
+            --head-sha "$CANDIDATE_HEAD_SHA"
       - name: Verify trusted workflow bootstrap invariants
         run: |
           python - <<'PY'
@@ -66,6 +76,7 @@ jobs:
               'trusted-base/.github/trusted/verify_000b2_human_authority.py',
               'PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE',
               '--reverify-open-prs',
+              'Exercise immutable remote candidate-data path',
               'actions/checkout@11d5960a326750d5838078e36cf38b85af677262',
               'actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065',
           )
