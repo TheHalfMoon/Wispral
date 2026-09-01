@@ -48,6 +48,10 @@ jobs:
         run: python research/000b2-entry/verify_scorer.py
       - name: Verify durable six-cell operational smoke evidence
         run: python research/000b2-entry/verify_operational_smoke.py
+      - name: Verify preprocessing capture boundary
+        run: |
+          python research/000b2-entry/preprocessing/verify_capture.py
+          python -O research/000b2-entry/preprocessing/verify_capture.py
       - name: Verify execution-environment capture boundary
         run: |
           python research/000b2-entry/environment/verify_capture.py
