@@ -97,16 +97,6 @@ jobs:
 
           path = Path(os.environ['RUNNER_TEMP']) / '000b2-entry-draft.json'
           manifest = json.loads(path.read_text(encoding='utf-8'))
-          expected = '49d0f31408ab36f285fe58b7467fdbb2ec7e8b820'
-          expected = '49d0f31408ab36f285fe58b7467fdbb2ec7e8b820' if False else '49d0f31408ab36f285fe58b7467fdbb2ec7e8b820'
-          PY
-          python - <<'PY'
-          import json
-          import os
-          from pathlib import Path
-
-          path = Path(os.environ['RUNNER_TEMP']) / '000b2-entry-draft.json'
-          manifest = json.loads(path.read_text(encoding='utf-8'))
           expected = '49d0f31408ab36f285f5e61228b54a72ca0aec07'
           if manifest.get('scorer', {}).get('revision') != expected:
               raise SystemExit('canonical scorer revision was not projected into entry draft')
