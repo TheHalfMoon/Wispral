@@ -1,0 +1,81 @@
+name: 000B2 Entry Contracts
+
+on:
+  push:
+    branches:
+      - research/000b2-entry-preparation
+    paths:
+      - 'research/000b2-entry/scorer.py'
+      - 'research/000b2-entry/scorer-config.json'
+      - 'research/000b2-entry/verify_scorer.py'
+      - 'research/000b2-entry/prepare_attempt_manifest.py'
+      - 'research/000b2-entry/validate_entry_manifest.py'
+      - 'research/000b2-entry/operational-smoke-evidence.json'
+      - 'research/000b2-entry/verify_operational_smoke.py'
+      - 'research/000b2-entry/readiness.json'
+      - 'research/000b2-entry/verify_readiness.py'
+      - 'research/000b2-entry/preprocessing/**'
+      - 'research/000b2-entry/environment/**'
+      - 'specs/CURRENT.md'
+      - '.github/workflows/000b2-entry-contracts.yml'
+  pull_request:
+    paths:
+      - 'research/000b2-entry/scorer.py'
+      - 'research/000b2-entry/scorer-config.json'
+      - 'research/000b2-entry/verify_scorer.py'
+      - 'research/000b2-entry/prepare_attempt_manifest.py'
+      - 'research/000b2-entry/validate_entry_manifest.py'
+      - 'research/000b2-entry/operational-smoke-evidence.json'
+      - 'research/000b2-entry/verify_operational_smoke.py'
+      - 'research/000b2-entry/readiness.json'
+      - 'research/000b2-entry/verify_readiness.py'
+      - 'research/000b2-entry/preprocessing/**'
+      - 'research/000b2-entry/environment/**'
+      - 'specs/CURRENT.md'
+      - '.github/workflows/000b2-entry-contracts.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-entry-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify deterministic B2 scorer
+        run: python research/000b2-entry/verify_scorer.py
+      - name: Verify durable six-cell operational smoke evidence
+        run: python research/000b2-entry/verify_operational_smoke.py
+      - name: Verify preprocessing capture boundary
+        run: |
+          python research/000b2-entry/preprocessing/verify_capture.py
+          python -O research/000b2-entry/preprocessing/verify_capture.py
+      - name: Verify execution-environment capture boundary
+        run: |
+          python research/000b2-entry/environment/verify_capture.py
+          python -O research/000b2-entry/environment/verify_capture.py
+      - name: Generate amendment-aware non-frozen B2 entry draft
+        run: |
+          git fetch --no-tags --depth=1 origin main
+          CANONICAL_REVISION="$(git rev-parse FETCH_HEAD)"
+          python research/000b2-entry/prepare_attempt_manifest.py \
+            --canonical-revision "$CANONICAL_REVISION" \
+            --output "$RUNNER_TEMP/000b2-entry-draft.json"
+      - name: Prove B2 entry draft validates but canonical frontier remains blocked
+        run: |
+          OUTPUT="$(python research/000b2-entry/validate_entry_manifest.py "$RUNNER_TEMP/000b2-entry-draft.json")"
+          printf '%s\n' "$OUTPUT"
+          printf '%s\n' "$OUTPUT" | grep -Fx 'ENTRY_STRUCTURE=PASS'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'B2_READY=NO'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'BLOCKER=canonical B2 frontier is BLOCKED_EXTERNAL, not READY'
+      - name: Verify current B2 readiness record
+        run: |
+          test -f research/000b2-entry/readiness.json || {
+            echo 'B2_ENTRY_READINESS_RECORD=MISSING' >&2
+            exit 1
+          }
+          python research/000b2-entry/verify_readiness.py

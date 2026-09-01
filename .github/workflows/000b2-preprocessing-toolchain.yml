@@ -1,0 +1,107 @@
+name: 000B2 Preprocessing Toolchain
+
+on:
+  push:
+    branches:
+      - research/000b2-entry-preparation
+    paths:
+      - 'research/000b2-entry/preprocessing/**'
+      - '.github/workflows/000b2-preprocessing-toolchain.yml'
+  pull_request:
+    paths:
+      - 'research/000b2-entry/preprocessing/**'
+      - '.github/workflows/000b2-preprocessing-toolchain.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify-ffmpeg:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch exact FFmpeg release tag and source revision
+        env:
+          FFMPEG_TAG: n9.0.1
+          FFMPEG_REV: bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/FFmpeg"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/FFmpeg/FFmpeg.git
+          git -C "$SRC" fetch --depth=1 origin "refs/tags/$FFMPEG_TAG:refs/tags/$FFMPEG_TAG"
+          test "$(git -C "$SRC" rev-list -n1 "$FFMPEG_TAG")" = "$FFMPEG_REV"
+          git -C "$SRC" checkout --detach "$FFMPEG_REV"
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$FFMPEG_REV"
+          test "$(git -C "$SRC" describe --tags --always)" = "$FFMPEG_TAG"
+      - name: Build bounded exact FFmpeg binary
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/FFmpeg"
+          PREFIX="$RUNNER_TEMP/ffmpeg-9.0.1"
+          cd "$SRC"
+          ./configure \
+            --prefix="$PREFIX" \
+            --disable-doc \
+            --disable-debug \
+            --disable-ffplay \
+            --disable-ffprobe \
+            --disable-network \
+            --disable-autodetect \
+            --disable-x86asm \
+            --enable-protocol=file \
+            --enable-demuxer=wav \
+            --enable-muxer=wav \
+            --enable-decoder=pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le \
+            --enable-encoder=pcm_s16le \
+            --enable-filter=aresample,aformat \
+            --enable-swresample
+          make -j2 ffmpeg
+          make install
+          "$PREFIX/bin/ffmpeg" -version | head -n 1
+      - name: Capture exact preprocessing qualification identity
+        run: |
+          python research/000b2-entry/preprocessing/capture.py \
+            --ffmpeg "$RUNNER_TEMP/ffmpeg-9.0.1/bin/ffmpeg" \
+            --qualification-only \
+            --output "$RUNNER_TEMP/000b2-ffmpeg-toolchain.json"
+      - name: Prove qualification is not attempt-time resolution
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          contract = json.loads(Path('research/000b2-entry/preprocessing/contract.json').read_text())
+          if contract.get('status') != 'PREPARED_ATTEMPT_CAPTURE_REQUIRED':
+              raise SystemExit('preprocessing contract status drift')
+          if contract.get('resolved') is not False:
+              raise SystemExit('preprocessing contract incorrectly resolved')
+          evidence = json.loads((Path(os.environ['RUNNER_TEMP']) / '000b2-ffmpeg-toolchain.json').read_text())
+          if evidence.get('tool_version') != '9.0.1':
+              raise SystemExit('FFmpeg tool version drift')
+          if evidence.get('source_tag') != 'n9.0.1':
+              raise SystemExit('FFmpeg source tag drift')
+          if evidence.get('source_commit') != 'bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa':
+              raise SystemExit('FFmpeg source commit drift')
+          ordering = evidence.get('ordering')
+          if not isinstance(ordering, dict) or ordering.get('mode') != 'QUALIFICATION_ONLY':
+              raise SystemExit('qualification ordering mode drift')
+          if ordering.get('attempt_time_authority') is not False:
+              raise SystemExit('qualification evidence became attempt-time authority')
+          if ordering.get('primary_decode_ordering_claim') is not False:
+              raise SystemExit('qualification evidence made a primary-decode ordering claim')
+          print('FFMPEG_TOOLCHAIN_QUALIFIED=YES')
+          print('ATTEMPT_TIME_PREPROCESSING_RESOLVED=NO')
+          PY
+      - name: Upload toolchain identity evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: 000b2-ffmpeg-toolchain-${{ github.sha }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/000b2-ffmpeg-toolchain.json
+          if-no-files-found: error
+          retention-days: 14

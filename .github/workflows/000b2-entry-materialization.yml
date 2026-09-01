@@ -1,0 +1,50 @@
+name: 000B2 Entry Materialization
+
+on:
+  push:
+    branches:
+      - research/000b2-entry-preparation
+    paths:
+      - 'research/000b2-entry/materialize_artifacts.py'
+      - 'research/000b2-entry/artifact-size-amendment.json'
+      - 'research/000b2-entry/materialized-artifacts.json'
+      - 'research/000b2-entry/verify_materialization.py'
+      - 'research/000b1/qualified-candidates.json'
+      - '.github/workflows/000b2-entry-materialization.yml'
+  pull_request:
+    paths:
+      - 'research/000b2-entry/materialize_artifacts.py'
+      - 'research/000b2-entry/artifact-size-amendment.json'
+      - 'research/000b2-entry/materialized-artifacts.json'
+      - 'research/000b2-entry/verify_materialization.py'
+      - 'research/000b1/qualified-candidates.json'
+      - '.github/workflows/000b2-entry-materialization.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  materialize-pending-artifacts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify committed materialization authority
+        run: python research/000b2-entry/verify_materialization.py
+      - name: Materialize pending B2 artifact SHA-256 values
+        run: |
+          python research/000b2-entry/materialize_artifacts.py \
+            --output "$RUNNER_TEMP/000b2-materialization.json" \
+            --work-dir "$RUNNER_TEMP/000b2-materialized-payloads"
+      - name: Compare live materialization with committed evidence
+        run: python research/000b2-entry/verify_materialization.py --live-report "$RUNNER_TEMP/000b2-materialization.json"
+      - name: Upload live materialization report only
+        uses: actions/upload-artifact@v4
+        with:
+          name: 000b2-materialization-${{ github.sha }}
+          path: ${{ runner.temp }}/000b2-materialization.json
+          if-no-files-found: error
+          retention-days: 14

@@ -1,0 +1,27 @@
+{
+  "schema_version": "000b2-preprocessing-capture-v1",
+  "status": "PREPARED_ATTEMPT_CAPTURE_REQUIRED",
+  "tool": "FFmpeg",
+  "tool_version": "9.0.1",
+  "source_repository": "FFmpeg/FFmpeg",
+  "source_tag": "n9.0.1",
+  "source_commit": "bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa",
+  "canonical_format": "PCM_WAV",
+  "sample_rate_hz": 16000,
+  "channels": 1,
+  "sample_format": "PCM_S16LE",
+  "denoising": "NONE",
+  "loudness_normalization": "NONE",
+  "semantic_silence_trim": "NONE",
+  "command_template": "ffmpeg -nostdin -hide_banner -loglevel error -i INPUT -map_metadata -1 -vn -sn -dn -ac 1 -ar 16000 -c:a pcm_s16le OUTPUT.wav",
+  "feed_chunk_ms": 500,
+  "finalization_zero_pad_ms": 660,
+  "capture_requirements": {
+    "binary_sha256": true,
+    "version_output_sha256": true,
+    "contract_sha256": true,
+    "capture_before_primary_decode_in_same_attempt_environment": true
+  },
+  "resolved": false,
+  "reason_unresolved": "No attempt-time FFmpeg 9.0.1 binary/version capture exists yet; tooling alone is not execution evidence."
+}

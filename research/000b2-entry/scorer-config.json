@@ -1,0 +1,55 @@
+{
+  "schema_version": "000b2-scorer-config-v1",
+  "implementation_id": "wispral-000b2-deterministic-scorer-v1",
+  "unicode_representation": "NFC",
+  "entity_scoring": {
+    "reference_order": "start_char,end_char,entity_id",
+    "hypothesis_vocabulary_source": "FROZEN_ANNOTATION_EXACT_TEXT_AND_DISTRACTORS_SCORER_ONLY",
+    "decoder_visibility": false,
+    "match": "LITERAL_NFC_WITH_WORD_EDGE_GUARDS",
+    "overlap_resolution": "LONGEST_THEN_EARLIEST_START_THEN_LEXICOGRAPHIC",
+    "sequence_alignment": "UNIT_COST_LEVENSHTEIN",
+    "tie_break": "MATCH_THEN_SUBSTITUTION_THEN_DELETION_THEN_INSERTION",
+    "normalization": "DISABLED_EXACT_EQUALS_NORMALIZED",
+    "required_annotation_normalization_allowed": false,
+    "false_entity_insertion_rate": "FALSE_ENTITY_INSERTIONS_OVER_TOTAL_REFERENCE_ENTITIES",
+    "zero_reference_entity_rate": null
+  },
+  "ordinary_wer": {
+    "panels": ["GENERAL_COLLATERAL"],
+    "unicode_representation": "NFC",
+    "casefold": true,
+    "punctuation_and_symbol_categories_to_space": ["P", "S"],
+    "whitespace": "COLLAPSE_AND_SPLIT",
+    "algorithm": "UNIT_COST_LEVENSHTEIN"
+  },
+  "failure_handling": {
+    "allowed_outcomes": ["SUCCESS", "TIMEOUT", "RUNTIME_ERROR", "INVALID_OUTPUT", "MISSING_OUTPUT"],
+    "non_success_hypothesis": "EMPTY",
+    "failures_remain_in_denominators": true
+  },
+  "metrics": [
+    "utterance_count",
+    "failure_count",
+    "failure_rate",
+    "developer_entity_reference_count",
+    "developer_entity_exact_correct",
+    "developer_entity_exact_accuracy",
+    "developer_entity_normalized_correct",
+    "developer_entity_normalized_accuracy",
+    "entity_substitutions",
+    "entity_deletions",
+    "false_entity_insertions",
+    "false_entity_insertion_rate",
+    "collateral_reference_words",
+    "collateral_substitutions",
+    "collateral_deletions",
+    "collateral_insertions",
+    "collateral_wer"
+  ],
+  "anti_leakage": {
+    "scorer_vocabulary_may_not_be_provided_to_decoder": true,
+    "reference_annotations_may_not_change_after_attempt_freeze": true,
+    "scorer_config_may_not_change_after_attempt_freeze": true
+  }
+}
