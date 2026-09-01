@@ -23,6 +23,15 @@ def forbid(haystack: str, needles: tuple[str, ...], label: str) -> None:
             raise AssertionError(f"{label} contains superseded text: {needle}")
 
 
+def require_unique_label_line(haystack: str, label: str, expected_line: str, source: str) -> None:
+    matching = [line.strip() for line in haystack.splitlines() if label in line]
+    if matching != [expected_line]:
+        raise AssertionError(
+            f"{source} must contain exactly one authoritative {label} line equal to "
+            f"{expected_line!r}; got {matching!r}"
+        )
+
+
 def main() -> int:
     try:
         methodology = text("docs/research/stt/000b1-frozen-methodology.md")
@@ -60,12 +69,10 @@ def main() -> int:
             raise AssertionError("B120 must remain open before canonical post-merge closeout")
 
         adversarial = text("docs/research/stt/000b1-adversarial-review.md")
-        require(adversarial, (
-            "`B1_CONTRACT_REVIEW: PASS`",
-            "`PRIMARY_TEST_DECODING: NO`",
-            "`COMPARATIVE_RANKING: NO`",
-            "`B2_READY: NO`",
-        ), "adversarial review")
+        require_unique_label_line(adversarial, "B1_CONTRACT_REVIEW:", "`B1_CONTRACT_REVIEW: PASS`", "adversarial review")
+        require_unique_label_line(adversarial, "PRIMARY_TEST_DECODING:", "`PRIMARY_TEST_DECODING: NO`", "adversarial review")
+        require_unique_label_line(adversarial, "COMPARATIVE_RANKING:", "`COMPARATIVE_RANKING: NO`", "adversarial review")
+        require_unique_label_line(adversarial, "B2_READY:", "`B2_READY: NO`", "adversarial review")
     except (AssertionError, OSError) as exc:
         print(f"VERIFY_000B1_DOCUMENTS=FAIL: {exc}", file=sys.stderr)
         return 1
