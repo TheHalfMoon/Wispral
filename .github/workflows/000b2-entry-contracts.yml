@@ -1,0 +1,47 @@
+name: 000B2 Entry Contracts
+
+on:
+  push:
+    branches:
+      - research/000b2-entry-preparation
+    paths:
+      - 'research/000b2-entry/scorer.py'
+      - 'research/000b2-entry/scorer-config.json'
+      - 'research/000b2-entry/verify_scorer.py'
+      - 'research/000b2-entry/readiness.json'
+      - 'research/000b2-entry/verify_readiness.py'
+      - 'research/000b2-entry/preprocessing/**'
+      - 'research/000b2-entry/environment/**'
+      - '.github/workflows/000b2-entry-contracts.yml'
+  pull_request:
+    paths:
+      - 'research/000b2-entry/scorer.py'
+      - 'research/000b2-entry/scorer-config.json'
+      - 'research/000b2-entry/verify_scorer.py'
+      - 'research/000b2-entry/readiness.json'
+      - 'research/000b2-entry/verify_readiness.py'
+      - 'research/000b2-entry/preprocessing/**'
+      - 'research/000b2-entry/environment/**'
+      - '.github/workflows/000b2-entry-contracts.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-entry-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify deterministic B2 scorer
+        run: python research/000b2-entry/verify_scorer.py
+      - name: Verify current B2 readiness record when present
+        run: |
+          if [ -f research/000b2-entry/readiness.json ]; then
+            python research/000b2-entry/verify_readiness.py
+          else
+            echo 'B2_ENTRY_READINESS_RECORD=NOT_YET_PRESENT'
+          fi
