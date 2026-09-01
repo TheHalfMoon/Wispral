@@ -24,6 +24,7 @@ SCHEMA = HERE / "consent-records.schema.json"
 DEFAULT_AUTHORITY = HERE / "authority-package.json"
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 PARTICIPANT_ID = re.compile(r"^spk-[0-9a-f]{8}$")
+RFC3339_UTC = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$")
 EXPECTED_TOTAL = 20
 EXPECTED_SPLITS = {"development": 4, "qualification": 4, "test": 12}
 TEXT_POLICY_FIELDS = (
@@ -167,7 +168,7 @@ def bundle_digest(bundle: dict[str, Any]) -> str:
 
 
 def valid_utc_timestamp(value: Any) -> bool:
-    if not isinstance(value, str) or not value.endswith("Z"):
+    if not isinstance(value, str) or not RFC3339_UTC.fullmatch(value):
         return False
     try:
         parsed = datetime.fromisoformat(value[:-1] + "+00:00")
@@ -278,7 +279,7 @@ def verify_bundle(
         if record.get("authority_policy_sha256") != policy_digest:
             errors.append(f"{label}.authority_policy_sha256 must equal the bundle policy digest")
         if not valid_utc_timestamp(record.get("consent_obtained_at_utc")):
-            errors.append(f"{label}.consent_obtained_at_utc must be explicit UTC ending in Z")
+            errors.append(f"{label}.consent_obtained_at_utc must be explicit RFC 3339 UTC ending in Z")
         if record.get("record_status") != "ACTIVE":
             errors.append(f"{label}.record_status must be ACTIVE; withdrawn records are removed from the active bundle")
 
@@ -399,6 +400,9 @@ def self_test() -> None:
     identifying = json.loads(json.dumps(bundle))
     identifying["direct_identifiers_present"] = True
     mutations.append((identifying, package, "direct identifiers"))
+    bad_timestamp = json.loads(json.dumps(bundle))
+    bad_timestamp["records"][0]["consent_obtained_at_utc"] = "2026-09-01X12:00:00Z"
+    mutations.append((bad_timestamp, package, "non-RFC3339 timestamp separator"))
     bad_binding = json.loads(json.dumps(bound_package))
     bad_binding["consent_records_sha256"] = "0" * 64
     if not verify_bundle(bundle, bad_binding, require_authority_binding=True):
