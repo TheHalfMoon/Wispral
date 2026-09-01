@@ -1,1 +1,0 @@
-000B1 canonical closeout is verified by canonical-closeout.json and verify_closeout.py. B2 remains BLOCKED_EXTERNAL. No primary decoding or comparative ranking is authorized.
