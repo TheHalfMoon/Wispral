@@ -1,0 +1,12 @@
+{
+  "schema_version": "000b2-consent-records-v1",
+  "bundle_status": "NOT_COLLECTED",
+  "authority_policy_sha256": null,
+  "participant_count": 0,
+  "expected_participant_count": 20,
+  "direct_identifiers_present": false,
+  "consent_artifacts_stored_outside_repository": true,
+  "chronology_attestation": "NOT_PROVIDED_BY_THIS_FORMAT",
+  "primary_media_acceptance": false,
+  "records": []
+}
