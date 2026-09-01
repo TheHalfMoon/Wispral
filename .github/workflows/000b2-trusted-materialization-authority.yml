@@ -31,16 +31,40 @@ jobs:
         run: python -m py_compile .github/trusted/verify_000b2_materialization.py
       - name: Exercise fail-closed local self-test
         run: python .github/trusted/verify_000b2_materialization.py --self-test
+      - name: Prove PR refresh resolves the live base ref
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('.github/workflows/000b2-trusted-materialization-authority.yml')
+          text = path.read_text(encoding='utf-8')
+          stale_token = '.'.join(('pull_request', 'base', 'sha'))
+          if stale_token in text:
+              raise SystemExit('stale event base-SHA authority reference remains')
+          required = (
+              "github.event.pull_request.base.ref == 'main'",
+              'github.event.pull_request.base.ref',
+              'Checkout live canonical base authority',
+              'git -C trusted-base rev-parse HEAD',
+              'git -C candidate rev-parse HEAD',
+          )
+          missing = [item for item in required if item not in text]
+          if missing:
+              raise SystemExit(f'live-base refresh regression: missing {missing}')
+          if text.count('github.event.pull_request.base.ref') < 2:
+              raise SystemExit('live base ref is not both constrained and used')
+          print('LIVE_BASE_REFRESH_CONTRACT=PASS')
+          PY
 
   verify-pr-head-artifact-identity:
-    if: github.event_name == 'pull_request_target' && github.event.pull_request.number == 10
+    if: github.event_name == 'pull_request_target' && github.event.pull_request.number == 10 && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - name: Checkout canonical base authority
+      - name: Checkout live canonical base authority
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: ${{ github.event.pull_request.base.sha }}
+          ref: ${{ github.event.pull_request.base.ref }}
           path: trusted-base
           persist-credentials: false
       - name: Checkout untrusted PR head as data only
@@ -53,11 +77,26 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
-      - name: Record exact trust boundary
+      - id: boundary
+        name: Resolve and validate exact trust boundary
+        env:
+          EVENT_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          echo "TRUSTED_BASE_SHA=${{ github.event.pull_request.base.sha }}"
-          echo "CANDIDATE_HEAD_SHA=${{ github.event.pull_request.head.sha }}"
-      - name: Reproduce exact pending artifact identities from canonical authority
+          BASE_SHA="$(git -C trusted-base rev-parse HEAD)"
+          HEAD_SHA="$(git -C candidate rev-parse HEAD)"
+          if [[ ! "$BASE_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "live canonical base SHA malformed: $BASE_SHA" >&2
+            exit 1
+          fi
+          if [ "$HEAD_SHA" != "$EVENT_HEAD_SHA" ]; then
+            echo "candidate checkout SHA mismatch: event=$EVENT_HEAD_SHA checkout=$HEAD_SHA" >&2
+            exit 1
+          fi
+          echo "base_sha=$BASE_SHA" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+          echo "TRUSTED_BASE_SHA=$BASE_SHA"
+          echo "CANDIDATE_HEAD_SHA=$HEAD_SHA"
+      - name: Reproduce exact pending artifact identities from live canonical authority
         run: |
           python trusted-base/.github/trusted/verify_000b2_materialization.py \
             --base-root trusted-base \
