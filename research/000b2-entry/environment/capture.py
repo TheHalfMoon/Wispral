@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Capture a B2 execution-environment fingerprint before primary decoding.
+"""Capture a B2 execution-environment fingerprint for one declared attempt state.
 
-This tool records identity only. An attempt-time capture must be bound to one
-immutable PRE_PRIMARY_CAPTURE attempt-state snapshot. A GitHub-hosted or otherwise
-uncontrolled capture is DIAGNOSTIC and cannot authorize comparative performance claims.
+The capture binds environment identity to one immutable PRE_PRIMARY_CAPTURE state
+snapshot. It does not independently prove when that snapshot was authored or that
+no prohibited work occurred before it; chronology remains a separate execution and
+review gate. GitHub-hosted or otherwise uncontrolled captures are DIAGNOSTIC and
+cannot authorize comparative performance claims.
 """
 
 from __future__ import annotations
@@ -50,7 +52,7 @@ def load_attempt_state_bytes(raw: bytes) -> dict[str, Any]:
     if value.get("phase") != "PRE_PRIMARY_CAPTURE":
         raise ValueError("attempt state phase must be PRE_PRIMARY_CAPTURE")
     if value.get("primary_test_decoding_started") is not False:
-        raise ValueError("environment identity must be captured before primary decoding")
+        raise ValueError("environment identity state declares primary decoding started")
     return value
 
 
@@ -143,14 +145,15 @@ def capture(attempt_state_raw: bytes, performance_mode: str) -> dict[str, Any]:
         "canonical_wispral_revision": canonical_revision,
         "performance_mode": performance_mode,
         "comparative_performance_authorized": False,
-        "primary_test_decoding_started": False,
         "ordering": {
             "mode": "ATTEMPT_STATE_BOUND",
-            "attempt_time_authority": True,
+            "attempt_state_bound": True,
+            "attempt_time_authority": False,
+            "independent_chronology_attestation": False,
             "attempt_id": state["attempt_id"],
             "canonical_wispral_revision": canonical_revision,
             "attempt_state_sha256": sha256_bytes(attempt_state_raw),
-            "primary_test_decoding_started": False,
+            "declared_primary_test_decoding_started": False,
         },
         "os": {
             "system": platform.system(),
@@ -216,10 +219,10 @@ def main() -> int:
     )
     print("CAPTURE_000B2_ENVIRONMENT=PASS")
     print(f"ATTEMPT_ID={evidence['ordering']['attempt_id']}")
-    print(f"PERFORMANCE_MODE={evidence['performance_mode']}")
     print("ATTEMPT_STATE_BOUND=YES")
+    print("INDEPENDENT_CHRONOLOGY_ATTESTATION=NO")
+    print(f"PERFORMANCE_MODE={evidence['performance_mode']}")
     print("COMPARATIVE_PERFORMANCE_AUTHORIZED=NO")
-    print("PRIMARY_TEST_DECODING_STARTED=NO")
     return 0
 
 
