@@ -34,8 +34,8 @@
       "implementation_path": "research/000b2-entry/scorer.py",
       "config_path": "research/000b2-entry/scorer-config.json",
       "verifier_path": "research/000b2-entry/verify_scorer.py",
-      "latest_verified_workflow_run_id": 33523779606,
-      "note": "Implementation and configuration are deterministic and CI-verified, but the canonical scorer revision cannot be named until this entry-preparation evidence merges."
+      "verification_baseline_workflow_run_id": 33523779606,
+      "note": "Implementation and configuration are deterministic and CI-verified. The recorded run is a stable verification baseline, not a self-updating latest-run claim. The canonical scorer revision cannot be named until this entry-preparation evidence merges."
     },
     "preprocessing": {
       "status": "SAME_ATTEMPT_CAPTURE_REQUIRED",
