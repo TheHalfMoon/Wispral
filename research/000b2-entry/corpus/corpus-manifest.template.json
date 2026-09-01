@@ -1,0 +1,14 @@
+{
+  "schema_version": "000b2-human-corpus-manifest-v1",
+  "corpus_status": "NOT_COLLECTED",
+  "frozen": false,
+  "freeze_digest_sha256": null,
+  "primary_test_manifest_sha256": null,
+  "authority_status": "NOT_AUTHORIZED",
+  "consent_records_sha256": null,
+  "direct_identifiers_present": false,
+  "synthetic_primary_ranking": false,
+  "microphone_environment_profiles": [],
+  "speakers": [],
+  "utterances": []
+}
