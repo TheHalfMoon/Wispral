@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -12,6 +13,8 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 from scorer import score  # noqa: E402
+
+EXPECTED_CONFIG_SHA256 = "b088d041246d6399481baf165f8bd0ac027b400ece8df8dcd42ac4e74b0c31b0"
 
 
 def entity(entity_id: str, cls: str, transcript: str, exact: str, distractors: list[str]):
@@ -82,6 +85,11 @@ def fail(message: str):
     raise AssertionError(message)
 
 
+def config_digest(config: dict) -> str:
+    payload = (json.dumps(config, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
 def main() -> int:
     try:
         annotations, predictions = fixture()
@@ -98,6 +106,7 @@ def main() -> int:
             "entity_substitutions": 2,
             "entity_deletions": 0,
             "false_entity_insertions": 1,
+            "false_entity_insertion_rate": 1 / 3,
             "collateral_reference_words": 4,
             "collateral_substitutions": 1,
             "collateral_deletions": 2,
@@ -131,6 +140,16 @@ def main() -> int:
         else:
             fail("normalization inflation bypass accepted")
 
+        # B1 annotation authority requires entity_id uniqueness within each utterance.
+        duplicate_entity_id = copy.deepcopy(annotations)
+        duplicate_entity_id[0]["entities"][1]["entity_id"] = duplicate_entity_id[0]["entities"][0]["entity_id"]
+        try:
+            score(duplicate_entity_id, predictions)
+        except ValueError:
+            pass
+        else:
+            fail("duplicate annotation entity_id was accepted")
+
         # Missing predictions and unknown candidate output must fail rather than disappear.
         try:
             score(annotations, predictions[:-1])
@@ -149,18 +168,27 @@ def main() -> int:
             fail("unknown prediction was accepted")
 
         config = json.loads((HERE / "scorer-config.json").read_text(encoding="utf-8"))
+        if config_digest(config) != EXPECTED_CONFIG_SHA256:
+            fail("scorer config semantic digest drift")
         if config.get("entity_scoring", {}).get("decoder_visibility") is not False:
             fail("scorer-only vocabulary became decoder-visible")
         if config.get("entity_scoring", {}).get("normalization") != "DISABLED_EXACT_EQUALS_NORMALIZED":
             fail("entity normalization policy drift")
+        if config.get("entity_scoring", {}).get("false_entity_insertion_rate") != "FALSE_ENTITY_INSERTIONS_OVER_TOTAL_REFERENCE_ENTITIES":
+            fail("false entity insertion rate denominator drift")
+        if config.get("entity_scoring", {}).get("zero_reference_entity_rate") is not None:
+            fail("zero-reference entity rate policy drift")
         if config.get("ordinary_wer", {}).get("panels") != ["GENERAL_COLLATERAL"]:
             fail("ordinary WER panel drift")
-    except (AssertionError, ValueError, KeyError, TypeError, OSError, json.JSONDecodeError) as exc:
+        if "false_entity_insertion_rate" not in config.get("metrics", []):
+            fail("false entity insertion rate missing from metric contract")
+    except (AssertionError, ValueError, KeyError, TypeError, OSError, json.JSONDecodeError, StopIteration) as exc:
         print(f"VERIFY_000B2_SCORER=FAIL: {exc}", file=sys.stderr)
         return 1
 
     print("VERIFY_000B2_SCORER=PASS")
     print("ENTITY_NORMALIZATION=OFF")
+    print("FALSE_ENTITY_INSERTION_RATE=FALSE_ENTITY_INSERTIONS_OVER_TOTAL_REFERENCE_ENTITIES")
     print("SCORER_VOCABULARY_DECODER_VISIBILITY=NO")
     print("PRIMARY_TEST_DECODING=NO")
     return 0
