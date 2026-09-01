@@ -125,7 +125,7 @@ def verify_frozen_methodology():
         "tool": "FFmpeg", "version": "9.0.1", "source_tag": "n9.0.1",
         "tag_object": "501bb49457b9dfb25d6a208832e0a6e6cd53108d",
         "source_commit": "bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa",
-        "canonical_format": "RAW_PCM_S16LE", "sample_rate_hz": 16000,
+        "canonical_format": "PCM_WAV", "sample_rate_hz": 16000,
         "channels": 1, "sample_format": "PCM_S16LE", "denoising": "NONE",
         "loudness_normalization": "NONE", "semantic_silence_trim": "NONE",
         "feed_chunk_ms": 500, "feed_chunk_samples": 8000,
@@ -136,7 +136,7 @@ def verify_frozen_methodology():
             fail(f"preprocessing.{key} drift")
     if not p.get("attempt_binary_sha256_required") or not p.get("attempt_version_output_sha256_required") or not p.get("canonical_output_sha256_required"):
         fail("preprocessing integrity requirements weakened")
-    if p.get("command_template") != "ffmpeg -nostdin -hide_banner -loglevel error -i INPUT -map_metadata -1 -vn -sn -dn -ac 1 -ar 16000 -c:a pcm_s16le -f s16le OUTPUT.s16le":
+    if p.get("command_template") != "ffmpeg -nostdin -hide_banner -loglevel error -i INPUT -map_metadata -1 -vn -sn -dn -ac 1 -ar 16000 -c:a pcm_s16le OUTPUT.wav":
         fail("preprocessing command drift")
 
     common = m["common_c0"]
