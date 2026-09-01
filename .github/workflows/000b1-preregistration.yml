@@ -5,11 +5,14 @@ on:
     branches:
       - research/000b1-benchmark-candidate-qualification
       - research/000b1-canonical-closeout
+      - docs/000b-parent-reconciliation
     paths:
       - 'docs/research/stt/000b1-*'
       - 'docs/canonical/CURRENT_STATE.md'
       - 'research/000b1/**'
       - 'specs/CURRENT.md'
+      - 'specs/000-founding-research/tasks.md'
+      - 'specs/000B-stt-entity-bakeoff/tasks.md'
       - 'specs/000B1-benchmark-candidate-qualification/**'
       - '.github/workflows/000b1-preregistration.yml'
   pull_request:
@@ -18,6 +21,8 @@ on:
       - 'docs/canonical/CURRENT_STATE.md'
       - 'research/000b1/**'
       - 'specs/CURRENT.md'
+      - 'specs/000-founding-research/tasks.md'
+      - 'specs/000B-stt-entity-bakeoff/tasks.md'
       - 'specs/000B1-benchmark-candidate-qualification/**'
       - '.github/workflows/000b1-preregistration.yml'
 
@@ -51,3 +56,5 @@ jobs:
           else
             echo 'B1_CLOSEOUT=NO'
           fi
+      - name: Verify 000B parent and founding frontier reconciliation
+        run: python research/000b1/verify_parent_reconciliation.py
