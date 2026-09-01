@@ -15,6 +15,7 @@ on:
       - 'research/000b2-entry/verify_operational_smoke.py'
       - 'research/000b2-entry/readiness.json'
       - 'research/000b2-entry/canonical-closeout.json'
+      - 'research/000b2-entry/verify_closeout.py'
       - 'research/000b2-entry/verify_readiness.py'
       - 'research/000b2-entry/preprocessing/**'
       - 'research/000b2-entry/environment/**'
@@ -33,6 +34,7 @@ on:
       - 'research/000b2-entry/verify_operational_smoke.py'
       - 'research/000b2-entry/readiness.json'
       - 'research/000b2-entry/canonical-closeout.json'
+      - 'research/000b2-entry/verify_closeout.py'
       - 'research/000b2-entry/verify_readiness.py'
       - 'research/000b2-entry/preprocessing/**'
       - 'research/000b2-entry/environment/**'
@@ -105,4 +107,5 @@ jobs:
             echo 'B2_ENTRY_CLOSEOUT_RECORD=MISSING' >&2
             exit 1
           }
+          python research/000b2-entry/verify_closeout.py
           python research/000b2-entry/verify_readiness.py
