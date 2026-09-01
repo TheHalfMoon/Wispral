@@ -73,7 +73,7 @@ Native context features do not replace C0 in cross-backend comparison.
 
 The benchmark also distinguishes observed streaming semantics such as `NATIVE_INCREMENTAL` versus `CHUNKED_REDECODE` rather than treating every upstream `streaming` label as equivalent behavior.
 
-Synthetic/TTS audio may validate the harness but may not be the sole evidence for ranking human developer-speech accuracy. Primary developer-speech evidence requires suitable human recordings under explicit consent/retention/redistribution rules; otherwise later primary execution must remain blocked.
+Synthetic/TTS audio may validate the harness and support smoke/regression only; it may not be used as primary ranking evidence for human developer-speech accuracy. Primary developer-speech evidence requires suitable human recordings under explicit consent/retention/redistribution rules; otherwise later primary execution must remain blocked.
 
 Shared hosted-runner timings are diagnostic by default and do not establish general latency/resource superiority.
 
