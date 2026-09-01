@@ -1,0 +1,17 @@
+{
+  "schema_version": "000b2-human-authority-v1",
+  "authority_status": "NOT_AUTHORIZED",
+  "participant_consent_scope": null,
+  "recording_purpose": null,
+  "public_redistribution_decision": null,
+  "repository_storage_policy": null,
+  "retention_rule": null,
+  "deletion_withdrawal_procedure": null,
+  "derivative_benchmark_artifact_permission": null,
+  "privacy_constraints": [],
+  "prohibited_content_policy": [],
+  "consent_records_sha256": null,
+  "participant_count": 0,
+  "package_contains_direct_identifiers": false,
+  "authority_effective_before_recording": false
+}
