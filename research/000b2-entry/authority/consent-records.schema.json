@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TheHalfMoon/Wispral/research/000b2-entry/authority/consent-records.schema.json",
+  "title": "Wispral 000B2 Pseudonymous Active Consent Evidence Bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bundle_status",
+    "authority_policy_sha256",
+    "participant_count",
+    "expected_participant_count",
+    "direct_identifiers_present",
+    "consent_artifacts_stored_outside_repository",
+    "chronology_attestation",
+    "primary_media_acceptance",
+    "records"
+  ],
+  "properties": {
+    "schema_version": {"const": "000b2-consent-records-v1"},
+    "bundle_status": {"enum": ["NOT_COLLECTED", "PARTIAL", "COMPLETE"]},
+    "authority_policy_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "participant_count": {"type": "integer", "minimum": 0, "maximum": 20},
+    "expected_participant_count": {"const": 20},
+    "direct_identifiers_present": {"const": false},
+    "consent_artifacts_stored_outside_repository": {"const": true},
+    "chronology_attestation": {"const": "NOT_PROVIDED_BY_THIS_FORMAT"},
+    "primary_media_acceptance": {"const": false},
+    "records": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "participant_id",
+          "split",
+          "consent_artifact_sha256",
+          "authority_policy_sha256",
+          "consent_obtained_at_utc",
+          "record_status"
+        ],
+        "properties": {
+          "participant_id": {"type": "string", "pattern": "^spk-[0-9a-f]{8}$"},
+          "split": {"enum": ["development", "qualification", "test"]},
+          "consent_artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "authority_policy_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "consent_obtained_at_utc": {"type": "string", "format": "date-time"},
+          "record_status": {"const": "ACTIVE"}
+        }
+      }
+    }
+  }
+}

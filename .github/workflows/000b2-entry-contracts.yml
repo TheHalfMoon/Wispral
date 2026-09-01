@@ -53,8 +53,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout exact workflow subject
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Verify exact PR head when applicable
+        if: github.event_name == 'pull_request'
+        env:
+          EVENT_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          HEAD_SHA="$(git rev-parse HEAD)"
+          if [ "$HEAD_SHA" != "$EVENT_HEAD_SHA" ]; then
+            echo "entry-contract checkout mismatch: event=$EVENT_HEAD_SHA checkout=$HEAD_SHA" >&2
+            exit 1
+          fi
+          echo "EXACT_PR_HEAD=$HEAD_SHA"
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
       - name: Verify deterministic B2 scorer
@@ -76,6 +91,30 @@ jobs:
             exit 1
           fi
           echo 'AUTHORITY_REQUIRE_AUTHORIZED=BLOCKED_AS_EXPECTED'
+      - name: Verify consent record format remains non-authorizing
+        run: |
+          python research/000b2-entry/authority/verify_consent_records.py --self-test
+          OUTPUT="$(python research/000b2-entry/authority/verify_consent_records.py \
+            research/000b2-entry/authority/consent-records.template.json)"
+          printf '%s\n' "$OUTPUT"
+          printf '%s\n' "$OUTPUT" | grep -Fx 'CONSENT_RECORDS=NOT_COLLECTED'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PARTICIPANT_COUNT=0'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_FORMAT'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PRIMARY_MEDIA_ACCEPTANCE=NO'
+          if python research/000b2-entry/authority/verify_consent_records.py \
+            research/000b2-entry/authority/consent-records.template.json \
+            --require-complete; then
+            echo 'empty consent template was incorrectly accepted as complete' >&2
+            exit 1
+          fi
+          if python research/000b2-entry/authority/verify_consent_records.py \
+            research/000b2-entry/authority/consent-records.template.json \
+            --require-authority-binding; then
+            echo 'empty consent template was incorrectly accepted as authority-bound' >&2
+            exit 1
+          fi
+          echo 'CONSENT_TEMPLATE_COMPLETE=BLOCKED_AS_EXPECTED'
+          echo 'CONSENT_TEMPLATE_AUTHORITY_BINDING=BLOCKED_AS_EXPECTED'
       - name: Verify preprocessing capture boundary
         run: |
           python research/000b2-entry/preprocessing/verify_capture.py
