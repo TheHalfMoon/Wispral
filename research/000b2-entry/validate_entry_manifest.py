@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
-"""Amendment-aware validator layered over the immutable B1 attempt validator."""
+"""Amendment-aware validator layered over the immutable B1 attempt validator.
+
+The B2 manifest remains schema-compatible with the frozen B1 manifest shape. The
+pre-attempt amendment and materialization evidence are separate canonical files;
+the manifest carries their effective artifact bytes/SHA values and is anchored by
+its canonical Wispral revision.
+"""
 
 from __future__ import annotations
 
 import argparse
 import copy
-import hashlib
 import importlib.util
 import json
 import re
@@ -25,10 +30,6 @@ def load(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def file_sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
 def load_b1_validator():
     path = B1 / "validate_attempt_manifest.py"
     spec = importlib.util.spec_from_file_location("wispral_b1_attempt_validator", path)
@@ -41,6 +42,8 @@ def load_b1_validator():
 
 def materialized_map() -> dict[tuple[str, str], dict[str, Any]]:
     evidence = load(MATERIALIZED)
+    if not isinstance(evidence, dict):
+        raise ValueError("materialized evidence must be a JSON object")
     result = {}
     for candidate_id, paths in evidence["artifacts"].items():
         for path, row in paths.items():
@@ -50,19 +53,23 @@ def materialized_map() -> dict[tuple[str, str], dict[str, Any]]:
 
 def corrections() -> dict[tuple[str, str], dict[str, Any]]:
     amendment = load(AMENDMENT)
+    if not isinstance(amendment, dict):
+        raise ValueError("artifact-size amendment must be a JSON object")
     return {(row["candidate_id"], row["path"]): row for row in amendment["corrections"]}
 
 
 def validate_entry(manifest: dict[str, Any], require_ready: bool = False):
     errors: list[str] = []
-    extra_blockers: list[str] = []
     materialized = materialized_map()
     amended = corrections()
 
-    if manifest.get("entry_amendment_sha256") != file_sha256(AMENDMENT):
-        errors.append("entry_amendment_sha256 missing or drifted")
-    if manifest.get("materialized_artifacts_sha256") != file_sha256(MATERIALIZED):
-        errors.append("materialized_artifacts_sha256 missing or drifted")
+    # No B2-entry-only top-level fields are allowed: the final manifest remains the
+    # exact B1 schema shape and is anchored to amendment/evidence by canonical revision.
+    b1_schema = load(B1 / "schemas" / "attempt-manifest.schema.json")
+    allowed_top = set(b1_schema.get("properties", {}))
+    extra_top = sorted(set(manifest) - allowed_top)
+    if extra_top:
+        errors.append(f"entry manifest adds fields outside frozen B1 schema: {', '.join(extra_top)}")
 
     candidates = manifest.get("candidates")
     if not isinstance(candidates, list):
@@ -95,10 +102,8 @@ def validate_entry(manifest: dict[str, Any], require_ready: bool = False):
         errors.append("entry manifest does not carry the complete materialized pending-artifact set")
 
     # Preserve the historical B1 validator exactly. For its structural comparison only,
-    # project documented pre-attempt size corrections back to the historical B1 sizes.
+    # project documented pre-attempt size corrections back to historical B1 sizes.
     historical = copy.deepcopy(manifest)
-    historical.pop("entry_amendment_sha256", None)
-    historical.pop("materialized_artifacts_sha256", None)
     for candidate in historical.get("candidates", []):
         candidate_id = candidate.get("candidate_id")
         for artifact in candidate.get("artifacts", []):
@@ -111,15 +116,11 @@ def validate_entry(manifest: dict[str, Any], require_ready: bool = False):
     errors.extend(f"B1: {message}" for message in b1_errors)
     blockers = list(b1_blockers)
 
-    # Materialization blockers are superseded only when the durable evidence matches.
-    blockers = [
-        blocker
-        for blocker in blockers
-        if not blocker.endswith("SHA-256 not materialized")
-    ]
-    if len(seen_materialized) != len(materialized):
-        extra_blockers.append("materialized artifact evidence incomplete")
-    blockers.extend(item for item in extra_blockers if item not in blockers)
+    # The historical B1 validator necessarily reports the originally pending hashes.
+    # Suppress only those materialization blockers after exact durable evidence matches.
+    blockers = [blocker for blocker in blockers if not blocker.endswith("SHA-256 not materialized")]
+    if seen_materialized != set(materialized):
+        blockers.append("materialized artifact evidence incomplete")
 
     if require_ready and blockers:
         errors.extend(f"BLOCKER: {blocker}" for blocker in blockers)
