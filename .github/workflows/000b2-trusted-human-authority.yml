@@ -34,9 +34,21 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Checkout exact PR head for bootstrap qualification
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
+      - name: Verify bootstrap checkout matches exact PR head
+        env:
+          EVENT_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          CHECKED_OUT_SHA="$(git rev-parse HEAD)"
+          if [ "$CHECKED_OUT_SHA" != "$EVENT_HEAD_SHA" ]; then
+            echo "bootstrap exact-head mismatch: event=$EVENT_HEAD_SHA checkout=$CHECKED_OUT_SHA" >&2
+            exit 1
+          fi
+          echo "EXACT_PR_HEAD_SHA=$CHECKED_OUT_SHA"
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
@@ -73,6 +85,8 @@ jobs:
               'pull_request_target:',
               "github.event.pull_request.base.ref == 'main'",
               'Checkout live canonical base authority',
+              'Checkout exact PR head for bootstrap qualification',
+              'Verify bootstrap checkout matches exact PR head',
               'trusted-base/.github/trusted/verify_000b2_human_authority.py',
               'PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE',
               '--reverify-open-prs',
