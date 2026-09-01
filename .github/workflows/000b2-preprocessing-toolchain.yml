@@ -61,10 +61,11 @@ jobs:
           make -j2 ffmpeg
           make install
           "$PREFIX/bin/ffmpeg" -version | head -n 1
-      - name: Capture exact preprocessing identity
+      - name: Capture exact preprocessing qualification identity
         run: |
           python research/000b2-entry/preprocessing/capture.py \
             --ffmpeg "$RUNNER_TEMP/ffmpeg-9.0.1/bin/ffmpeg" \
+            --qualification-only \
             --output "$RUNNER_TEMP/000b2-ffmpeg-toolchain.json"
       - name: Prove qualification is not attempt-time resolution
         run: |
@@ -73,18 +74,27 @@ jobs:
           import os
           from pathlib import Path
           contract = json.loads(Path('research/000b2-entry/preprocessing/contract.json').read_text())
-          assert contract['status'] == 'PREPARED_ATTEMPT_CAPTURE_REQUIRED'
-          assert contract['resolved'] is False
+          if contract.get('status') != 'PREPARED_ATTEMPT_CAPTURE_REQUIRED':
+              raise SystemExit('preprocessing contract status drift')
+          if contract.get('resolved') is not False:
+              raise SystemExit('preprocessing contract incorrectly resolved')
           evidence = json.loads((Path(os.environ['RUNNER_TEMP']) / '000b2-ffmpeg-toolchain.json').read_text())
-          assert evidence['tool_version'] == '9.0.1'
-          assert evidence['primary_test_decoding_started'] is False
+          if evidence.get('tool_version') != '9.0.1':
+              raise SystemExit('FFmpeg tool version drift')
+          ordering = evidence.get('ordering')
+          if not isinstance(ordering, dict) or ordering.get('mode') != 'QUALIFICATION_ONLY':
+              raise SystemExit('qualification ordering mode drift')
+          if ordering.get('attempt_time_authority') is not False:
+              raise SystemExit('qualification evidence became attempt-time authority')
+          if ordering.get('primary_decode_ordering_claim') is not False:
+              raise SystemExit('qualification evidence made a primary-decode ordering claim')
           print('FFMPEG_TOOLCHAIN_QUALIFIED=YES')
           print('ATTEMPT_TIME_PREPROCESSING_RESOLVED=NO')
           PY
       - name: Upload toolchain identity evidence only
         uses: actions/upload-artifact@v4
         with:
-          name: 000b2-ffmpeg-toolchain-${{ github.sha }}
+          name: 000b2-ffmpeg-toolchain-${{ github.sha }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/000b2-ffmpeg-toolchain.json
           if-no-files-found: error
           retention-days: 14
