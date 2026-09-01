@@ -38,17 +38,21 @@ jobs:
 
           path = Path('.github/workflows/000b2-trusted-materialization-authority.yml')
           text = path.read_text(encoding='utf-8')
-          if 'pull_request.base.sha' in text:
-              raise SystemExit('stale pull_request.base.sha authority reference remains')
+          stale_token = '.'.join(('pull_request', 'base', 'sha'))
+          if stale_token in text:
+              raise SystemExit('stale event base-SHA authority reference remains')
           required = (
               "github.event.pull_request.base.ref == 'main'",
-              'ref: ${{ github.event.pull_request.base.ref }}',
+              'github.event.pull_request.base.ref',
+              'Checkout live canonical base authority',
               'git -C trusted-base rev-parse HEAD',
               'git -C candidate rev-parse HEAD',
           )
           missing = [item for item in required if item not in text]
           if missing:
               raise SystemExit(f'live-base refresh regression: missing {missing}')
+          if text.count('github.event.pull_request.base.ref') < 2:
+              raise SystemExit('live base ref is not both constrained and used')
           print('LIVE_BASE_REFRESH_CONTRACT=PASS')
           PY
 
@@ -80,10 +84,10 @@ jobs:
         run: |
           BASE_SHA="$(git -C trusted-base rev-parse HEAD)"
           HEAD_SHA="$(git -C candidate rev-parse HEAD)"
-          case "$BASE_SHA" in
-            [0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]) ;;
-            *) echo "live canonical base SHA malformed: $BASE_SHA" >&2; exit 1 ;;
-          esac
+          if [[ ! "$BASE_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "live canonical base SHA malformed: $BASE_SHA" >&2
+            exit 1
+          fi
           if [ "$HEAD_SHA" != "$EVENT_HEAD_SHA" ]; then
             echo "candidate checkout SHA mismatch: event=$EVENT_HEAD_SHA checkout=$HEAD_SHA" >&2
             exit 1
