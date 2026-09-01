@@ -10,6 +10,8 @@ import os
 from pathlib import Path
 from typing import Any
 
+from verify_operational_smoke import expected_artifacts
+
 EXPECTED = {
     "moonshine-compact": ("moonshine", "COMPACT"),
     "moonshine-balanced": ("moonshine", "BALANCED"),
@@ -20,6 +22,15 @@ EXPECTED = {
 }
 CELL_SCHEMA = "000b2-operational-smoke-cell-v1"
 AGGREGATE_SCHEMA = "000b2-operational-smoke-evidence-v1"
+EXPECTED_SYNTHETIC = {
+    "channels": 1,
+    "generator": "wispral-deterministic-multitone-v1",
+    "sample_format": "PCM_S16LE",
+    "sample_rate_hz": 16000,
+    "samples": 32000,
+    "sha256": "860debf008a4702098968ca7b113ea8df7ee0188c9ca08c7c1e9437466876c38",
+    "synthetic_non_speech": True,
+}
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -33,6 +44,23 @@ def payload_digest(obj: dict[str, Any], field: str) -> str:
     return sha256_bytes(raw)
 
 
+def require_execution(candidate_id: str, family: str, cell: dict[str, Any]) -> None:
+    execution = cell.get("execution")
+    if not isinstance(execution, dict) or execution.get("decode_completed") is not True:
+        raise RuntimeError(f"decode path did not complete for {candidate_id}")
+    if family == "moonshine":
+        if execution.get("stream_api_executed") is not True:
+            raise RuntimeError(f"Moonshine stream execution marker missing for {candidate_id}")
+    elif family == "sherpa-onnx":
+        if execution.get("online_transducer_api_executed") is not True:
+            raise RuntimeError(f"sherpa online transducer execution marker missing for {candidate_id}")
+    elif family == "whisper.cpp":
+        if execution.get("whisper_cli_executed") is not True or execution.get("exit_code") != 0:
+            raise RuntimeError(f"whisper CLI execution marker missing/failed for {candidate_id}")
+    else:
+        raise RuntimeError(f"unexpected family: {family}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-dir", type=Path, required=True)
@@ -42,7 +70,7 @@ def main() -> int:
     cells: dict[str, dict[str, Any]] = {}
     for path in sorted(args.input_dir.rglob("*.json")):
         obj = json.loads(path.read_text(encoding="utf-8"))
-        if obj.get("schema_version") != CELL_SCHEMA:
+        if not isinstance(obj, dict) or obj.get("schema_version") != CELL_SCHEMA:
             continue
         candidate_id = obj.get("candidate_id")
         if candidate_id in cells:
@@ -54,7 +82,7 @@ def main() -> int:
         extra = sorted(set(cells) - set(EXPECTED))
         raise RuntimeError(f"smoke candidate set mismatch: missing={missing}, extra={extra}")
 
-    synthetic_digests: set[str] = set()
+    frozen_artifacts = expected_artifacts()
     normalized: list[dict[str, Any]] = []
     for candidate_id in sorted(cells):
         cell = cells[candidate_id]
@@ -74,31 +102,33 @@ def main() -> int:
         ):
             if cell.get(field) is not False:
                 raise RuntimeError(f"{candidate_id} violates non-primary boundary: {field}")
-        synthetic = cell.get("synthetic_input")
-        if not isinstance(synthetic, dict) or synthetic.get("synthetic_non_speech") is not True:
-            raise RuntimeError(f"{candidate_id} lacks synthetic non-speech attestation")
-        digest = synthetic.get("sha256")
-        if not isinstance(digest, str) or len(digest) != 64:
-            raise RuntimeError(f"{candidate_id} synthetic digest malformed")
-        synthetic_digests.add(digest)
+        if cell.get("synthetic_input") != EXPECTED_SYNTHETIC:
+            raise RuntimeError(f"{candidate_id} synthetic input differs from frozen smoke identity")
         expected_payload = payload_digest(cell, "evidence_payload_sha256")
         if cell.get("evidence_payload_sha256") != expected_payload:
             raise RuntimeError(f"{candidate_id} evidence payload digest mismatch")
+
         artifacts = cell.get("artifacts")
-        if not isinstance(artifacts, list) or not artifacts:
+        if not isinstance(artifacts, list):
             raise RuntimeError(f"{candidate_id} artifact evidence missing")
+        observed: dict[str, tuple[int, str]] = {}
         for artifact in artifacts:
             if not isinstance(artifact, dict):
                 raise RuntimeError(f"{candidate_id} malformed artifact evidence")
+            path = artifact.get("path")
             digest = artifact.get("sha256")
+            size = artifact.get("size_bytes")
+            if not isinstance(path, str) or path in observed:
+                raise RuntimeError(f"{candidate_id} duplicate/missing artifact path")
             if not isinstance(digest, str) or len(digest) != 64:
-                raise RuntimeError(f"{candidate_id}:{artifact.get('path')} SHA-256 malformed")
-            if not isinstance(artifact.get("size_bytes"), int) or artifact["size_bytes"] <= 0:
-                raise RuntimeError(f"{candidate_id}:{artifact.get('path')} size invalid")
+                raise RuntimeError(f"{candidate_id}:{path} SHA-256 malformed")
+            if not isinstance(size, int) or size <= 0:
+                raise RuntimeError(f"{candidate_id}:{path} size invalid")
+            observed[path] = (size, digest)
+        if observed != frozen_artifacts[candidate_id]:
+            raise RuntimeError(f"{candidate_id} artifacts differ from frozen/materialized authority")
+        require_execution(candidate_id, family, cell)
         normalized.append(cell)
-
-    if len(synthetic_digests) != 1:
-        raise RuntimeError("all candidates must use byte-identical synthetic smoke WAV")
 
     report: dict[str, Any] = {
         "schema_version": AGGREGATE_SCHEMA,
@@ -113,7 +143,7 @@ def main() -> int:
             "status": "SMOKE_PASS",
             "candidate_count": len(normalized),
             "candidate_ids": sorted(cells),
-            "synthetic_input_sha256": next(iter(synthetic_digests)),
+            "synthetic_input_sha256": EXPECTED_SYNTHETIC["sha256"],
         },
         "primary_test_decoding_performed": False,
         "human_speech_used": False,
