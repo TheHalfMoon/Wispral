@@ -1,129 +1,133 @@
 # Specification 000A — ACP Capability and Representative-Agent Qualification
 
-**State:** `VERIFYING`  
+**State:** `VERIFIED`  
 **Parent:** `000-founding-research`  
 **Type:** research / protocol qualification
 
-## Verification frontier
+## Canonical disposition
 
-Attempt `WISPRAL-000A-ATTEMPT-001` completed its unauthenticated execution at workflow run `33501999725`, which succeeded across both representative matrix cells. Raw sanitized traces, package integrity, fixture digests, a capability matrix, and the `PARTIAL` recommendation are now committed on the research branch.
+Specification 000A is canonically `VERIFIED` at Wispral merge `354695c9f4d406147cbdc425d8f59e841a2f96a3`, produced by guarded squash merge of PR #3 from exact qualified head `6882bc8fac6925e068d40b2b68d46a18e8b03f2f`.
 
-Execution tasks A001–A010 are complete within their evidence limits. A011 independent evidence review and A012 canonical closeout remain open. `VERIFYING` does not authorize product code and does not convert authentication-blocked behavior into support claims.
+The verified recommendation is:
 
-## Execution activation
+- ACP classification: `PARTIAL`
+- confidence: `MODERATE`
+- first structured-path posture: **leading candidate, not yet unconditional `PRIMARY`**
+
+The result establishes real ACP v1 initialization and structured capability/authentication discovery for two pinned representative distributions. It does not establish authenticated prompt portability, streaming portability, active-turn cancellation, permission-request behavior, steering behavior, ACP v2 runtime interoperability, or broad named-agent support.
+
+### Exact qualification proof
+
+- initial behavioral workflow: `33501999725` — `completed/success` across Gemini and Codex ACP cells;
+- initial evidence head: `4880c9d2d1d5091bdb4f4ee6acc998826a3bdde4`;
+- exact final PR head: `6882bc8fac6925e068d40b2b68d46a18e8b03f2f`;
+- final exact-head workflow: `33502915021` — `completed/success` across `Committed evidence verifier`, `ACP v1 probe (gemini)`, and `ACP v1 probe (codex-acp)`;
+- PR #3 at merge gate: base `25acbcc29bab262223315a55826e77396cc35822`, exact 14-path scope, `mergeable=true`, submitted reviews `0`, inline review threads `0`;
+- Qodo was billing-blocked, CodeRabbit automatic review was skipped by repository-star policy, a manual CodeRabbit review was requested but produced no submitted review, and Cubic supplied summary-only metadata; none was treated as approval;
+- guarded merge used expected head `6882bc8fac6925e068d40b2b68d46a18e8b03f2f`;
+- canonical merge `354695c9f4d406147cbdc425d8f59e841a2f96a3` is GitHub-signature verified.
+
+## Execution activation history
 
 Readiness was rechecked against canonical Wispral `main` at `25acbcc29bab262223315a55826e77396cc35822` and live ACP authority on 2026-09-01.
 
 The execution gate passed because:
 
-- the active Constitution, architecture invariants, parent Specification 000, and this Grain are canonical;
-- ACP specification, official Rust SDK, and registry revisions are publicly accessible and pinned in `docs/research/acp/qualification-inputs.md`;
-- Gemini CLI `0.57.0` and Codex ACP `1.7.0` remain current pinned representative distributions in the official registry;
-- `fixtures/acp-probe` is synthetic and isolated from user repositories;
-- the first behavioral probe is unauthenticated, receives no repository secrets, strips known API-key/token environment variables, and does not bypass provider permissions;
-- trace capture is limited to the synthetic fixture and sanitized ACP messages.
-
-This activation authorizes only the research tasks already defined by 000A. It does not authorize product code.
+- the active Constitution, architecture invariants, parent Specification 000, and this Grain were canonical;
+- ACP specification, official Rust SDK, and registry revisions were publicly accessible and pinned in `docs/research/acp/qualification-inputs.md`;
+- Gemini CLI `0.57.0` and Codex ACP `1.7.0` remained current pinned representative distributions in the official registry;
+- `fixtures/acp-probe` was synthetic and isolated from user repositories;
+- the behavioral probe was unauthenticated, received no repository secrets, stripped known API-key/token environment variables, and did not bypass provider permissions;
+- trace capture was limited to the synthetic fixture and sanitized ACP messages.
 
 ## Outcome
 
 Produce a reproducible ACP capability matrix and representative-agent observations sufficient to decide whether ACP should be Wispral's primary structured agent-control path for the first product implementation.
 
-## Why this is first
+## Verified findings
 
-Wispral's central value depends on session control, streaming, permission visibility, and interruption. Those semantics should be established before speech/runtime code is shaped around a transport that may not expose them.
+### Native representative — Gemini CLI `0.57.0`
 
-## In scope
+Observed:
 
-- pin and inspect the current ACP specification and official Rust SDK versions;
-- record protocol lifecycle relevant to Wispral;
-- inspect the current official ACP registry;
-- qualify two representative agent paths where executable access is available:
-  - one native ACP implementation, initially Gemini CLI (`gemini --acp`) unless current registry truth changes;
-  - one adapter-mediated implementation, initially Codex via the current ACP registry adapter unless current registry truth changes;
-- record handshake/authentication behavior;
-- exercise or otherwise qualify new session, prompt dispatch, streaming update, permission request shape, cancellation, error propagation, and shutdown to the extent the implementation exposes them;
-- preserve sanitized traces/command logs sufficient to reproduce observations;
-- identify semantic gaps Wispral must bridge or expose as limitations;
-- recommend `PRIMARY`, `PARTIAL`, or `REJECTED` for ACP as the first structured integration path.
+- ACP v1 `initialize=SUCCESS`;
+- structured agent identity/authentication/capability metadata;
+- `loadSession` advertisement;
+- prompt modality and MCP capability advertisements;
+- `session/new=AUTH_REQUIRED`;
+- `session/list=METHOD_NOT_FOUND`.
 
-## Out of scope
+Not observed:
 
-- production ACP client code;
-- permanent crate/dependency adoption;
-- a Wispral Cargo workspace;
-- speech/audio code;
-- PTY implementation;
-- broad compatibility claims for untested registry agents;
-- automatic destructive agent actions;
-- bypassing agent permission systems;
-- benchmarking model reasoning quality;
-- comparing Codex versus Gemini as coding models.
+- authenticated session/prompt;
+- streaming updates;
+- permission behavior;
+- active cancellation;
+- graceful ACP shutdown semantics.
 
-## Representative-agent rationale
+### Adapter-mediated representative — Codex ACP `1.7.0`
 
-The initial pair intentionally exercises different integration modes:
+Observed:
 
-- Gemini CLI is currently documented/registered with native ACP invocation;
-- Codex is currently represented through an ACP adapter in the registry ecosystem.
+- ACP v1 `initialize=SUCCESS`;
+- structured agent identity/authentication/capability metadata;
+- `loadSession`, session list/resume/close/delete/subagent capability advertisements;
+- `_meta.steering.supported=true` advertisement;
+- `session/new=AUTH_REQUIRED`;
+- `session/list=AUTH_REQUIRED`.
 
-This creates better portability evidence than testing two adapters with the same packaging model.
+Not observed:
 
-If canonical registry or upstream documentation changes before execution, replace the pair only through a documented pre-execution amendment rather than silently changing the experiment.
+- authenticated session/prompt;
+- streaming updates;
+- permission behavior;
+- active cancellation;
+- steering behavior;
+- graceful ACP shutdown semantics.
 
-## Required capability fields
+### Protocol-version constraint
 
-For ACP itself and each representative implementation, record:
+Current ACP authority exposes materially different v1 and v2 surfaces while both pinned current representatives negotiated v1. Wispral therefore must treat protocol-version compatibility as a first-order requirement and must not equate registry recency with one wire schema.
 
-- protocol/package version;
-- launch command/distribution;
-- authentication methods exposed;
-- initialization/handshake;
-- session creation;
-- session resume if available;
-- prompt dispatch;
-- streaming content/update events;
-- tool/action visibility;
-- structured permission requests;
-- permission response binding;
-- cancellation request;
-- cancellation acknowledgement or observable stop semantics;
-- client capabilities required by agent;
-- filesystem/context requests relevant to Wispral;
-- graceful shutdown;
-- malformed/error behavior encountered;
-- unsupported/unknown fields.
+## Why the recommendation is `PARTIAL`
 
-## Acceptance conditions
+A stronger `PRIMARY` classification is unsupported because core Wispral semantics remain authentication-gated or unobserved: prompt/session execution, streaming, cancellation, structured permissions, steering behavior, and a representative v2 runtime.
 
-000A is `VERIFIED` only when:
+A weaker `REJECTED` classification is unsupported because two independent current distributions completed real ACP v1 initialization and exposed meaningful structured capability/authentication surfaces.
 
-1. the exact ACP spec/SDK/registry revisions used are pinned;
-2. a machine-readable or tabular capability matrix exists;
-3. at least one executable representative-agent ACP path completes initialization and a non-destructive session/prompt flow, unless an external authorization/access blocker is recorded explicitly;
-4. cancellation semantics are observed experimentally where access permits, or marked `NOT TESTED`/`UNSUPPORTED` without inference;
-5. permission semantics are observed experimentally where a safe non-destructive fixture can trigger them, or marked `NOT TESTED`/`UNSUPPORTED`;
-6. no untested registry agent is labeled supported;
-7. the final recommendation states limitations and confidence;
-8. all commands/traces are sanitized for credentials before commit;
-9. the evidence is sufficient to shape 000B/000C without inventing protocol behavior.
+## Conditions to promote ACP to `PRIMARY`
 
-## Risk
+Before a production ACP runtime Grain is selected, evidence should establish at minimum:
 
-- authentication may require subscriptions or interactive browser state not available in CI;
-- registry adapters can change quickly;
-- live agent/model behavior can introduce nondeterministic content unrelated to protocol qualification;
-- a session may request filesystem/tool access with side effects.
+1. one authenticated non-destructive session/prompt flow on a native ACP agent;
+2. one authenticated non-destructive session/prompt flow on an adapter-mediated ACP path, or an explicit evidence-backed reason to defer that representative class;
+3. observed streaming/update behavior;
+4. observed active-turn cancellation and terminal stop semantics;
+5. observed structured permission behavior on a safe synthetic action, or a bounded design for agents that do not expose it;
+6. an explicit v1/v2 compatibility decision backed by current ecosystem evidence.
 
-## Safety constraints
+Provider credentials or interactive provider authorization are external evidence inputs. Ordinary repository approval does not substitute for them.
 
-- use a disposable fixture repository;
-- do not point agents at sensitive repositories;
-- no production credentials beyond the normal provider authentication required for the user's own authorized account;
-- do not disable permission/sandbox protections merely to make the probe pass;
-- prefer non-destructive prompts;
-- if a permission request cannot be triggered safely, record `NOT TESTED`.
+## Product-code authority
 
-## Recovery
+None.
 
-All work is research-only. If an adapter or protocol version changes mid-run, invalidate comparability, preserve the prior attempt, pin the new version, and start a new attempt. Do not rewrite old evidence to match the new implementation.
+This verified research result does not authorize a Cargo product workspace, production ACP client, PTY adapter, speech engine, TUI, installer, release, or public named-agent support claim. Product implementation remains blocked until Specification 000 synthesis selects a bounded first implementation Grain.
+
+## Evidence
+
+Canonical artifacts include:
+
+- `docs/research/acp/qualification-inputs.md`
+- `docs/research/acp/capability-matrix.json`
+- `docs/research/acp/qualification-report.md`
+- `docs/research/acp/evidence-review.md`
+- `docs/research/acp/evidence/000a-attempt-001/manifest.json`
+- `docs/research/acp/evidence/000a-attempt-001/gemini-probe.json`
+- `docs/research/acp/evidence/000a-attempt-001/codex-acp-probe.json`
+- `research/000a/acp_probe.py`
+- `research/000a/verify_evidence.py`
+
+## Recovery / future evidence
+
+A later ACP experiment may supersede or strengthen this recommendation, but it must preserve this attempt rather than rewriting it. If agent versions, registry state, protocol versions, or authentication conditions materially change, use a new pinned attempt and reconcile the delta explicitly.
