@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
+REPO_NAME = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 PACKAGE_PATH = "research/000b2-entry/authority/authority-package.json"
 READINESS_PATH = "research/000b2-entry/readiness.json"
 CURRENT_PATH = "specs/CURRENT.md"
@@ -87,7 +88,13 @@ def github_request(url: str, token: str) -> Any:
         return json.load(response)
 
 
+def validate_repo_name(repo: str) -> None:
+    if REPO_NAME.fullmatch(repo) is None:
+        fail("repository name must be owner/name using GitHub-safe characters")
+
+
 def read_remote_file(repo: str, head_sha: str, relative: str, token: str) -> str:
+    validate_repo_name(repo)
     if not SHA40.fullmatch(head_sha):
         fail("candidate head SHA malformed")
     quoted = urllib.parse.quote(relative, safe="/")
@@ -98,7 +105,8 @@ def read_remote_file(repo: str, head_sha: str, relative: str, token: str) -> str
     if payload.get("encoding") != "base64" or not isinstance(payload.get("content"), str):
         fail(f"candidate file encoding unsupported: {relative}")
     try:
-        raw = base64.b64decode(payload["content"], validate=True)
+        compact = "".join(payload["content"].split())
+        raw = base64.b64decode(compact, validate=True)
         return raw.decode("utf-8")
     except (ValueError, UnicodeDecodeError) as exc:
         fail(f"candidate file decoding failed for {relative}: {exc}")
@@ -167,20 +175,34 @@ def verify_remote(base_root: Path, repo: str, head_sha: str, token: str) -> str:
     )
 
 
-def list_open_prs(repo: str, token: str) -> list[tuple[int, str]]:
+def list_open_prs(repo: str, token: str) -> list[tuple[int, str, str]]:
+    validate_repo_name(repo)
     url = f"https://api.github.com/repos/{repo}/pulls?state=open&base=main&per_page=100"
     payload = github_request(url, token)
     if not isinstance(payload, list):
         fail("open PR response malformed")
-    result: list[tuple[int, str]] = []
+    if len(payload) == 100:
+        fail("open PR list reached pagination limit; refusing incomplete revalidation")
+    result: list[tuple[int, str, str]] = []
     for item in payload:
         if not isinstance(item, dict):
             fail("open PR item malformed")
         number = item.get("number")
-        head_sha = item.get("head", {}).get("sha") if isinstance(item.get("head"), dict) else None
-        if not isinstance(number, int) or not isinstance(head_sha, str) or not SHA40.fullmatch(head_sha):
+        head = item.get("head")
+        if not isinstance(head, dict):
+            fail("open PR head metadata malformed")
+        head_sha = head.get("sha")
+        head_repo = head.get("repo")
+        head_repo_name = head_repo.get("full_name") if isinstance(head_repo, dict) else None
+        if (
+            not isinstance(number, int)
+            or not isinstance(head_sha, str)
+            or not SHA40.fullmatch(head_sha)
+            or not isinstance(head_repo_name, str)
+        ):
             fail("open PR identity malformed")
-        result.append((number, head_sha))
+        validate_repo_name(head_repo_name)
+        result.append((number, head_repo_name, head_sha))
     return result
 
 
@@ -211,8 +233,9 @@ def main() -> int:
             return 0
 
         repo = args.repo
-        if not isinstance(repo, str) or "/" not in repo:
+        if not isinstance(repo, str):
             fail("--repo owner/name is required for remote verification")
+        validate_repo_name(repo)
         token = os.environ.get(args.token_env, "")
         if not token:
             fail(f"token environment variable is empty: {args.token_env}")
@@ -220,10 +243,11 @@ def main() -> int:
         if args.reverify_open_prs:
             prs = list_open_prs(repo, token)
             print(f"OPEN_PR_COUNT={len(prs)}")
-            for number, head_sha in prs:
+            for number, head_repo, head_sha in prs:
                 print(f"REVERIFY_PR={number}")
+                print(f"CANDIDATE_REPOSITORY={head_repo}")
                 print(f"CANDIDATE_HEAD_SHA={head_sha}")
-                status = verify_remote(base_root, repo, head_sha, token)
+                status = verify_remote(base_root, head_repo, head_sha, token)
                 emit(status)
             print("OPEN_PR_REVERIFICATION=PASS")
             return 0
