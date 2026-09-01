@@ -15,6 +15,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+HERE = Path(__file__).resolve().parent
+SCHEMA = HERE / "authority-package.schema.json"
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 EXPECTED_KEYS = {
     "schema_version",
@@ -60,11 +62,30 @@ def load(path: Path) -> dict[str, Any]:
     return value
 
 
+def verify_schema_contract() -> None:
+    schema = load(SCHEMA)
+    if schema.get("type") != "object" or schema.get("additionalProperties") is not False:
+        raise ValueError("authority schema root must be closed object")
+    required = schema.get("required")
+    properties = schema.get("properties")
+    if not isinstance(required, list) or set(required) != EXPECTED_KEYS:
+        raise ValueError("authority schema required-field set drift")
+    if not isinstance(properties, dict) or set(properties) != EXPECTED_KEYS:
+        raise ValueError("authority schema property set drift")
+    if properties.get("schema_version", {}).get("const") != "000b2-human-authority-v1":
+        raise ValueError("authority schema version const drift")
+    if set(properties.get("authority_status", {}).get("enum", [])) != {"NOT_AUTHORIZED", "AUTHORIZED"}:
+        raise ValueError("authority schema status enum drift")
+    if properties.get("package_contains_direct_identifiers", {}).get("const") is not False:
+        raise ValueError("authority schema direct-identifier boundary drift")
+
+
 def _nonempty_text(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
 def verify_package(package: dict[str, Any], require_authorized: bool = False) -> list[str]:
+    verify_schema_contract()
     errors: list[str] = []
     if set(package) != EXPECTED_KEYS:
         missing = sorted(EXPECTED_KEYS - set(package))
@@ -129,6 +150,7 @@ def verify_package(package: dict[str, Any], require_authorized: bool = False) ->
 
 
 def self_test() -> None:
+    verify_schema_contract()
     base = {
         "schema_version": "000b2-human-authority-v1",
         "authority_status": "AUTHORIZED",
