@@ -106,5 +106,5 @@
     "accepted attempt-bound execution environment and hardware fingerprint evidence is absent",
     "final B2 attempt manifest is not frozen"
   ],
-  "next_action": "Authority intake and trusted structural verification are canonical, but B2 remains BLOCKED_EXTERNAL. Establish real participant/media authority and an authorized frozen human corpus first; then create a separately reviewable authorized attempt that captures preprocessing and execution-environment evidence before primary decoding, freezes the final manifest, and rechecks readiness from canonical main. Do not treat structural metadata or repository-owner approval as participant consent."
+  "next_action": "Authority intake and trusted structural verification are canonical, but B2 remains BLOCKED_EXTERNAL. Establish real participant/media authority and an authorized frozen human corpus first; then create a separately reviewable authorized attempt that captures preprocessing and execution-environment evidence before primary decoding, freezes the final manifest, and rechecks readiness from canonical main. Do not treat structural metadata or repository-owner approval as participant consent. Do not execute B2 primary human-speech decoding before those external and attempt-time gates are real."
 }
