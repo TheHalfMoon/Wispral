@@ -42,6 +42,8 @@ jobs:
           python-version: '3.12'
       - name: Verify deterministic B2 scorer
         run: python research/000b2-entry/verify_scorer.py
+      - name: Verify execution-environment capture boundary
+        run: python research/000b2-entry/environment/verify_capture.py
       - name: Generate amendment-aware non-frozen B2 entry draft
         run: |
           git fetch --no-tags --depth=1 origin main
