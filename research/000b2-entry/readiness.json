@@ -18,7 +18,7 @@
       "workflow_run_id": 33519579512,
       "workflow_head_sha": "3d4325b7c9b13e6696326f3d2c8a6cfe501d9e12",
       "factual_amendment_path": "research/000b2-entry/artifact-size-amendment.json",
-      "note": "All B1-pending Moonshine SHA-256 values and sherpa-onnx tokens.txt SHA-256 were materialized. The historical 5050-byte tokens.txt typo is preserved in B1 and corrected for B2 entry to observed 5048 bytes through an explicit pre-attempt amendment."
+      "note": "All B1-pending Moonshine SHA-256 values and sherpa-onnx tokens.txt SHA-256 were materialized. The historical 5050-byte tokens.txt value is preserved in B1 and the B2 entry evidence records the reproduced 5048-byte source fact through an explicit bounded amendment. This gate does not attest amendment chronology."
     },
     "operational_qualification": {
       "status": "RESOLVED_SMOKE_PASS",
@@ -43,7 +43,7 @@
       "capture_tool_path": "research/000b2-entry/preprocessing/capture.py",
       "required_tool": "FFmpeg 9.0.1",
       "resolved": false,
-      "note": "Toolchain qualification does not substitute for binary/version/config identity captured before primary decoding in the same authorized B2 attempt environment."
+      "note": "Toolchain qualification does not substitute for an authorized attempt's FFmpeg binary/version/config evidence. The capture tool binds identity to one declared PRE_PRIMARY_CAPTURE state snapshot but does not independently attest chronology."
     },
     "execution_environment": {
       "status": "SAME_ATTEMPT_CAPTURE_REQUIRED",
@@ -51,7 +51,7 @@
       "capture_tool_path": "research/000b2-entry/environment/capture.py",
       "resolved": false,
       "github_hosted_performance_mode": "DIAGNOSTIC_ONLY",
-      "note": "No final attempt exists, so no same-attempt environment/hardware fingerprint exists. Hosted-runner timing cannot authorize comparative performance claims."
+      "note": "No authorized final attempt exists, so no accepted attempt-bound environment/hardware fingerprint exists. The capture tool binds to a declared PRE_PRIMARY_CAPTURE state snapshot but does not independently attest chronology; hosted-runner timing cannot authorize comparative performance claims."
     },
     "human_developer_speech_authority": {
       "status": "BLOCKED_EXTERNAL",
@@ -81,7 +81,7 @@
       "validator_path": "research/000b2-entry/validate_entry_manifest.py",
       "frozen": false,
       "primary_test_decoding_started": false,
-      "note": "A final manifest can freeze only after external human authority/corpus evidence and same-attempt preprocessing/environment identities exist."
+      "note": "A final manifest can freeze only after external human authority/corpus evidence and accepted attempt-bound preprocessing/environment identities exist under a separately reviewed execution chronology."
     }
   },
   "remaining_blockers": [
@@ -92,5 +92,5 @@
     "same-attempt execution environment and hardware fingerprint are absent",
     "final B2 attempt manifest is not frozen"
   ],
-  "next_action": "Merge qualified B2 entry-preparation evidence after exact-head CI and review reconciliation. Then reread canonical governance. Do not execute B2 primary human-speech decoding unless external participant/media authority and corpus evidence become real and every same-attempt gate validates."
+  "next_action": "Merge qualified B2 entry-preparation evidence after exact-head CI and review reconciliation. Then reread canonical governance. Do not execute B2 primary human-speech decoding unless external participant/media authority and corpus evidence become real and every attempt-bound gate validates under separately reviewed execution chronology."
 }
