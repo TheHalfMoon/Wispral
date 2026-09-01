@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from verify_operational_smoke import expected_artifacts
+from verify_operational_smoke import expected_artifacts, verify as verify_aggregate
 
 EXPECTED = {
     "moonshine-compact": ("moonshine", "COMPACT"),
@@ -156,7 +156,14 @@ def main() -> int:
     report["evidence_payload_sha256"] = sha256_bytes(raw)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    workflow = report["source_workflow"]
+    if not isinstance(workflow.get("head_sha"), str) or workflow.get("run_id") is None or workflow.get("run_number") is None:
+        raise RuntimeError("workflow provenance is incomplete; aggregate publication is forbidden")
+    verify_aggregate(args.output, workflow)
+
     print("OPERATIONAL_SMOKE=PASS")
+    print("AGGREGATE_VERIFICATION=PASS")
     print("CANDIDATES=6")
     print("PRIMARY_TEST_DECODING=NO")
     print("HUMAN_SPEECH=NO")
