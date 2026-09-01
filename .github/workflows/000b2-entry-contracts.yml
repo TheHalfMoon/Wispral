@@ -76,6 +76,30 @@ jobs:
             exit 1
           fi
           echo 'AUTHORITY_REQUIRE_AUTHORIZED=BLOCKED_AS_EXPECTED'
+      - name: Verify consent record format remains non-authorizing
+        run: |
+          python research/000b2-entry/authority/verify_consent_records.py --self-test
+          OUTPUT="$(python research/000b2-entry/authority/verify_consent_records.py \
+            research/000b2-entry/authority/consent-records.template.json)"
+          printf '%s\n' "$OUTPUT"
+          printf '%s\n' "$OUTPUT" | grep -Fx 'CONSENT_RECORDS=NOT_COLLECTED'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PARTICIPANT_COUNT=0'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_FORMAT'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PRIMARY_MEDIA_ACCEPTANCE=NO'
+          if python research/000b2-entry/authority/verify_consent_records.py \
+            research/000b2-entry/authority/consent-records.template.json \
+            --require-complete; then
+            echo 'empty consent template was incorrectly accepted as complete' >&2
+            exit 1
+          fi
+          if python research/000b2-entry/authority/verify_consent_records.py \
+            research/000b2-entry/authority/consent-records.template.json \
+            --require-authority-binding; then
+            echo 'empty consent template was incorrectly accepted as authority-bound' >&2
+            exit 1
+          fi
+          echo 'CONSENT_TEMPLATE_COMPLETE=BLOCKED_AS_EXPECTED'
+          echo 'CONSENT_TEMPLATE_AUTHORITY_BINDING=BLOCKED_AS_EXPECTED'
       - name: Verify preprocessing capture boundary
         run: |
           python research/000b2-entry/preprocessing/verify_capture.py
