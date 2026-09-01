@@ -64,7 +64,7 @@
     {
       "family": "whisper.cpp",
       "runtime": {"repository": "ggml-org/whisper.cpp", "release": "b4938", "revision": "371b5a7561823ab2bb32142d2751e35e7534727b", "license": "MIT"},
-      "model_source": {"repository": "ggerganov/whisper.cpp", "license": "MIT", "base_url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main"},
+      "model_source": {"repository": "ggerganov/whisper.cpp", "revision": "80da2d8bfee42b0e836fc3a9890373e5defc00a6", "license": "MIT", "base_url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/80da2d8bfee42b0e836fc3a9890373e5defc00a6"},
       "configurations": [
         {
           "id": "whispercpp-compact", "tier": "COMPACT", "status": "QUALIFIED_PREREGISTERED", "model": "ggml-base.en.bin", "payload_total_bytes": 147964211,
