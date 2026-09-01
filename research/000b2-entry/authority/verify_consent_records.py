@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Fail-closed verifier for pseudonymous 000B2 consent evidence records.
+"""Fail-closed verifier for pseudonymous 000B2 active consent evidence records.
 
-This format binds non-identifying repository metadata to off-repository consent
-artifact digests and to the exact authority policy terms. Structural completeness
-is not participant-consent attestation and never authorizes primary media.
+Identity-bearing consent artifacts stay outside the repository. This verifier
+binds only pseudonymous metadata, artifact digests, and the frozen authority
+policy. Structural completeness is never participant-consent attestation and
+never authorizes primary media.
 """
 
 from __future__ import annotations
@@ -25,13 +26,16 @@ SHA256 = re.compile(r"^[0-9a-f]{64}$")
 PARTICIPANT_ID = re.compile(r"^spk-[0-9a-f]{8}$")
 EXPECTED_TOTAL = 20
 EXPECTED_SPLITS = {"development": 4, "qualification": 4, "test": 12}
-POLICY_FIELDS = (
+TEXT_POLICY_FIELDS = (
     "participant_consent_scope",
     "recording_purpose",
-    "public_redistribution_decision",
     "repository_storage_policy",
     "retention_rule",
     "deletion_withdrawal_procedure",
+)
+POLICY_FIELDS = (
+    *TEXT_POLICY_FIELDS,
+    "public_redistribution_decision",
     "derivative_benchmark_artifact_permission",
     "privacy_constraints",
     "prohibited_content_policy",
@@ -94,55 +98,53 @@ def load_authority_verifier():
 
 def verify_schema_contract() -> None:
     schema = load(SCHEMA, "consent records schema")
-    if schema.get("type") != "object" or schema.get("additionalProperties") is not False:
-        raise ValueError("consent records schema root must be closed object")
-    required = schema.get("required")
     properties = schema.get("properties")
+    required = schema.get("required")
+    if schema.get("type") != "object" or schema.get("additionalProperties") is not False:
+        raise ValueError("consent records schema root must be a closed object")
     if not isinstance(required, list) or set(required) != ROOT_KEYS:
         raise ValueError("consent records schema required-field set drift")
     if not isinstance(properties, dict) or set(properties) != ROOT_KEYS:
         raise ValueError("consent records schema property set drift")
-    if properties.get("schema_version", {}).get("const") != "000b2-consent-records-v1":
-        raise ValueError("consent records schema version drift")
+    expected_root = {
+        "schema_version": ("const", "000b2-consent-records-v1"),
+        "expected_participant_count": ("const", EXPECTED_TOTAL),
+        "direct_identifiers_present": ("const", False),
+        "consent_artifacts_stored_outside_repository": ("const", True),
+        "chronology_attestation": ("const", "NOT_PROVIDED_BY_THIS_FORMAT"),
+        "primary_media_acceptance": ("const", False),
+    }
+    for field, (kind, expected) in expected_root.items():
+        if properties.get(field, {}).get(kind) != expected:
+            raise ValueError(f"consent records schema boundary drift: {field}")
     if set(properties.get("bundle_status", {}).get("enum", [])) != {
         "NOT_COLLECTED",
         "PARTIAL",
         "COMPLETE",
     }:
         raise ValueError("consent records status enum drift")
-    if properties.get("expected_participant_count", {}).get("const") != EXPECTED_TOTAL:
-        raise ValueError("consent records expected participant count drift")
-    if properties.get("direct_identifiers_present", {}).get("const") is not False:
-        raise ValueError("direct-identifier boundary drift")
-    if properties.get("consent_artifacts_stored_outside_repository", {}).get("const") is not True:
-        raise ValueError("off-repository consent artifact boundary drift")
-    if properties.get("chronology_attestation", {}).get("const") != "NOT_PROVIDED_BY_THIS_FORMAT":
-        raise ValueError("chronology non-attestation boundary drift")
-    if properties.get("primary_media_acceptance", {}).get("const") is not False:
-        raise ValueError("primary-media non-acceptance boundary drift")
     records = properties.get("records")
     if not isinstance(records, dict) or records.get("maxItems") != EXPECTED_TOTAL:
         raise ValueError("consent record array bound drift")
     items = records.get("items")
     if not isinstance(items, dict) or items.get("additionalProperties") is not False:
         raise ValueError("consent record item must be a closed object")
-    item_required = items.get("required")
-    item_properties = items.get("properties")
-    if not isinstance(item_required, list) or set(item_required) != RECORD_KEYS:
+    if set(items.get("required", [])) != RECORD_KEYS:
         raise ValueError("consent record item required-field set drift")
+    item_properties = items.get("properties")
     if not isinstance(item_properties, dict) or set(item_properties) != RECORD_KEYS:
         raise ValueError("consent record item property set drift")
     if item_properties.get("record_status", {}).get("const") != "ACTIVE":
         raise ValueError("active-only consent record boundary drift")
 
 
-def _nonempty_text(value: Any) -> bool:
+def nonempty_text(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
 def authority_policy_fingerprint(package: dict[str, Any]) -> str:
-    for field in POLICY_FIELDS[:5]:
-        if not _nonempty_text(package.get(field)):
+    for field in TEXT_POLICY_FIELDS:
+        if not nonempty_text(package.get(field)):
             raise ValueError(f"authority policy requires non-empty {field}")
     if package.get("public_redistribution_decision") not in {"ALLOWED", "PROHIBITED"}:
         raise ValueError("authority policy requires explicit redistribution decision")
@@ -150,28 +152,18 @@ def authority_policy_fingerprint(package: dict[str, Any]) -> str:
         raise ValueError("authority policy requires explicit derivative-artifact permission")
     for field in ("privacy_constraints", "prohibited_content_policy"):
         value = package.get(field)
-        if not isinstance(value, list) or not value or any(not _nonempty_text(item) for item in value):
+        if not isinstance(value, list) or not value or any(not nonempty_text(item) for item in value):
             raise ValueError(f"authority policy requires non-empty {field}")
         if len(value) != len(set(value)):
             raise ValueError(f"authority policy {field} contains duplicates")
     projection = {field: package[field] for field in POLICY_FIELDS}
-    encoded = json.dumps(
-        projection,
-        ensure_ascii=False,
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode("utf-8")
-    return hashlib.sha256(encoded).hexdigest()
+    raw = json.dumps(projection, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
 
 
 def bundle_digest(bundle: dict[str, Any]) -> str:
-    encoded = json.dumps(
-        bundle,
-        ensure_ascii=False,
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode("utf-8")
-    return hashlib.sha256(encoded).hexdigest()
+    raw = json.dumps(bundle, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
 
 
 def valid_utc_timestamp(value: Any) -> bool:
@@ -196,8 +188,7 @@ def verify_bundle(
     errors: list[str] = []
 
     package_errors = authority.verify_package(authority_package, require_authorized=False)
-    if package_errors:
-        errors.extend(f"authority package invalid: {item}" for item in package_errors)
+    errors.extend(f"authority package invalid: {item}" for item in package_errors)
 
     if set(bundle) != ROOT_KEYS:
         missing = sorted(ROOT_KEYS - set(bundle))
@@ -214,7 +205,7 @@ def verify_bundle(
     if bundle.get("expected_participant_count") != EXPECTED_TOTAL:
         errors.append("expected_participant_count must remain 20")
     if bundle.get("direct_identifiers_present") is not False:
-        errors.append("consent record bundle must not contain direct participant identifiers")
+        errors.append("consent bundle must not contain direct participant identifiers")
     if bundle.get("consent_artifacts_stored_outside_repository") is not True:
         errors.append("identity-bearing consent artifacts must remain outside the repository")
     if bundle.get("chronology_attestation") != "NOT_PROVIDED_BY_THIS_FORMAT":
@@ -222,17 +213,17 @@ def verify_bundle(
     if bundle.get("primary_media_acceptance") is not False:
         errors.append("consent record format cannot accept primary media")
 
-    records = bundle.get("records")
-    if not isinstance(records, list):
+    records_value = bundle.get("records")
+    records = records_value if isinstance(records_value, list) else []
+    if not isinstance(records_value, list):
         errors.append("records must be an array")
-        records = []
     participant_count = bundle.get("participant_count")
-    if (
-        not isinstance(participant_count, int)
-        or isinstance(participant_count, bool)
-        or participant_count < 0
-        or participant_count > EXPECTED_TOTAL
-    ):
+    valid_count = (
+        isinstance(participant_count, int)
+        and not isinstance(participant_count, bool)
+        and 0 <= participant_count <= EXPECTED_TOTAL
+    )
+    if not valid_count:
         errors.append("participant_count must be an integer from 0 through 20")
     elif participant_count != len(records):
         errors.append("participant_count must equal the active record count")
@@ -253,7 +244,7 @@ def verify_bundle(
             errors.append("non-empty bundle requires lowercase authority_policy_sha256")
         elif computed_policy is not None and policy_digest != computed_policy:
             errors.append("authority_policy_sha256 does not match canonical policy projection")
-        if status == "PARTIAL" and not (isinstance(participant_count, int) and 0 < participant_count < EXPECTED_TOTAL):
+        if status == "PARTIAL" and not (valid_count and 0 < participant_count < EXPECTED_TOTAL):
             errors.append("PARTIAL bundle requires 1 through 19 active participant records")
         if status == "COMPLETE" and participant_count != EXPECTED_TOTAL:
             errors.append("COMPLETE bundle requires exactly 20 active participant records")
@@ -287,9 +278,9 @@ def verify_bundle(
         if record.get("authority_policy_sha256") != policy_digest:
             errors.append(f"{label}.authority_policy_sha256 must equal the bundle policy digest")
         if not valid_utc_timestamp(record.get("consent_obtained_at_utc")):
-            errors.append(f"{label}.consent_obtained_at_utc must be an explicit UTC date-time ending in Z")
+            errors.append(f"{label}.consent_obtained_at_utc must be explicit UTC ending in Z")
         if record.get("record_status") != "ACTIVE":
-            errors.append(f"{label}.record_status must be ACTIVE; withdrawn records are removed from this bundle")
+            errors.append(f"{label}.record_status must be ACTIVE; withdrawn records are removed from the active bundle")
 
     if participant_ids != sorted(participant_ids):
         errors.append("consent records must be sorted by participant_id")
@@ -318,9 +309,10 @@ def verify_bundle(
             errors.append("authority package participant_count does not match consent bundle")
         if authority_package.get("authority_effective_before_recording") is not True:
             errors.append("authority package must claim pre-recording effectiveness for structural binding")
-        authorized_errors = authority.verify_package(authority_package, require_authorized=True)
-        errors.extend(f"authority binding invalid: {item}" for item in authorized_errors)
-
+        errors.extend(
+            f"authority binding invalid: {item}"
+            for item in authority.verify_package(authority_package, require_authorized=True)
+        )
     return errors
 
 
@@ -346,19 +338,18 @@ def synthetic_package() -> dict[str, Any]:
 
 def synthetic_complete_bundle(package: dict[str, Any]) -> dict[str, Any]:
     policy = authority_policy_fingerprint(package)
-    records: list[dict[str, Any]] = []
     splits = ["development"] * 4 + ["qualification"] * 4 + ["test"] * 12
-    for index, split in enumerate(splits):
-        records.append(
-            {
-                "participant_id": f"spk-{index:08x}",
-                "split": split,
-                "consent_artifact_sha256": hashlib.sha256(f"synthetic-consent-{index}".encode()).hexdigest(),
-                "authority_policy_sha256": policy,
-                "consent_obtained_at_utc": f"2026-09-01T12:{index:02d}:00Z",
-                "record_status": "ACTIVE",
-            }
-        )
+    records = [
+        {
+            "participant_id": f"spk-{index:08x}",
+            "split": split,
+            "consent_artifact_sha256": hashlib.sha256(f"synthetic-consent-{index}".encode()).hexdigest(),
+            "authority_policy_sha256": policy,
+            "consent_obtained_at_utc": f"2026-09-01T12:{index:02d}:00Z",
+            "record_status": "ACTIVE",
+        }
+        for index, split in enumerate(splits)
+    ]
     return {
         "schema_version": "000b2-consent-records-v1",
         "bundle_status": "COMPLETE",
@@ -387,25 +378,34 @@ def self_test() -> None:
     if verify_bundle(bundle, package, require_complete=True):
         raise AssertionError("synthetic structurally complete consent bundle should validate")
 
+    bound_package = json.loads(json.dumps(package))
+    bound_package["authority_status"] = "AUTHORIZED"
+    bound_package["consent_records_sha256"] = bundle_digest(bundle)
+    bound_package["participant_count"] = EXPECTED_TOTAL
+    bound_package["authority_effective_before_recording"] = True
+    if verify_bundle(bundle, bound_package, require_authority_binding=True):
+        raise AssertionError("synthetic authority binding should validate structurally")
+
+    mutations = []
     duplicate = json.loads(json.dumps(bundle))
     duplicate["records"][1]["participant_id"] = duplicate["records"][0]["participant_id"]
-    if not verify_bundle(duplicate, package):
-        raise AssertionError("duplicate participant id must fail")
-
+    mutations.append((duplicate, package, "duplicate participant id"))
     mismatched = json.loads(json.dumps(bundle))
     mismatched["records"][0]["authority_policy_sha256"] = "0" * 64
-    if not verify_bundle(mismatched, package):
-        raise AssertionError("record policy mismatch must fail")
-
+    mutations.append((mismatched, package, "policy mismatch"))
     inactive = json.loads(json.dumps(bundle))
     inactive["records"][0]["record_status"] = "WITHDRAWN"
-    if not verify_bundle(inactive, package):
-        raise AssertionError("withdrawn record must fail active bundle")
-
+    mutations.append((inactive, package, "withdrawn active record"))
     identifying = json.loads(json.dumps(bundle))
     identifying["direct_identifiers_present"] = True
-    if not verify_bundle(identifying, package):
-        raise AssertionError("direct identifiers must fail")
+    mutations.append((identifying, package, "direct identifiers"))
+    bad_binding = json.loads(json.dumps(bound_package))
+    bad_binding["consent_records_sha256"] = "0" * 64
+    if not verify_bundle(bundle, bad_binding, require_authority_binding=True):
+        raise AssertionError("mismatched authority binding digest must fail")
+    for mutated_bundle, mutated_package, label in mutations:
+        if not verify_bundle(mutated_bundle, mutated_package):
+            raise AssertionError(f"{label} must fail")
 
     print("SYNTHETIC_CONSENT_RECORD_FORMAT_SELF_TEST=PASS")
     print("PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_FORMAT")
@@ -441,7 +441,6 @@ def main() -> int:
         for error in errors:
             print(f"CONSENT_RECORDS=FAIL: {error}", file=sys.stderr)
         return 1
-
     status = bundle["bundle_status"]
     output_status = "STRUCTURALLY_COMPLETE" if status == "COMPLETE" else status
     print(f"CONSENT_RECORDS={output_status}")
