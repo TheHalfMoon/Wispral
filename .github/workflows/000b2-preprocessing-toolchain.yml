@@ -50,6 +50,7 @@ jobs:
             --disable-ffprobe \
             --disable-network \
             --disable-autodetect \
+            --disable-x86asm \
             --enable-protocol=file \
             --enable-demuxer=wav \
             --enable-muxer=wav \
@@ -69,11 +70,12 @@ jobs:
         run: |
           python - <<'PY'
           import json
+          import os
           from pathlib import Path
           contract = json.loads(Path('research/000b2-entry/preprocessing/contract.json').read_text())
           assert contract['status'] == 'PREPARED_ATTEMPT_CAPTURE_REQUIRED'
           assert contract['resolved'] is False
-          evidence = json.loads(Path('${{ runner.temp }}/000b2-ffmpeg-toolchain.json').read_text())
+          evidence = json.loads((Path(os.environ['RUNNER_TEMP']) / '000b2-ffmpeg-toolchain.json').read_text())
           assert evidence['tool_version'] == '9.0.1'
           assert evidence['primary_test_decoding_started'] is False
           print('FFMPEG_TOOLCHAIN_QUALIFIED=YES')
