@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 HERE = ROOT / "research" / "000b1"
 SHA = re.compile(r"^[0-9a-f]{64}$")
 OFF = {False, None, "OFF", "NONE", "", 0}
+WHISPER_MODEL_REVISION = "80da2d8bfee42b0e836fc3a9890373e5defc00a6"
 
 
 def load(path: Path):
@@ -54,6 +55,15 @@ def verify_candidates():
     families = {f["family"]: f for f in m["families"]}
     if set(families) != {"moonshine", "whisper.cpp", "sherpa-onnx"}:
         fail("candidate family set drift")
+
+    whisper = families["whisper.cpp"]
+    source = whisper.get("model_source", {})
+    if source.get("revision") != WHISPER_MODEL_REVISION:
+        fail("whisper model source revision drift")
+    expected_whisper_url = f"https://huggingface.co/ggerganov/whisper.cpp/resolve/{WHISPER_MODEL_REVISION}"
+    if source.get("base_url") != expected_whisper_url:
+        fail("whisper model source must be immutable")
+
     cells = set()
     pending = set()
     for family, data in families.items():
