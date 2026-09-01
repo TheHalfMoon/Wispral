@@ -114,16 +114,29 @@ def verify_structure_proof() -> None:
             fail(f"trusted structure proof drift: {key}")
 
     review = proof.get("review_reconciliation")
-    if not isinstance(review, dict):
-        fail("authority structure review reconciliation missing")
-    if review.get("unavailable_or_silent_review_represented_as_approval") is not False:
-        fail("authority structure proof misrepresents unavailable review as approval")
+    expected_review = {
+        "review_submissions_on_final_heads": 0,
+        "inline_review_threads_on_final_heads": 0,
+        "qodo_status": "BILLING_BLOCKED",
+        "coderabbit_status": "REQUESTED_NO_SUBMISSION",
+        "copilot_status": "REQUESTED_NO_SUBMISSION",
+        "unavailable_or_silent_review_represented_as_approval": False,
+    }
+    if review != expected_review:
+        fail("authority structure review reconciliation drift")
 
     nonclaims = proof.get("non_claims")
-    if not isinstance(nonclaims, dict) or not nonclaims:
-        fail("authority structure non-claims missing")
-    if any(value is not False for value in nonclaims.values()):
-        fail("authority structure proof contains a positive forbidden claim")
+    expected_nonclaims = {
+        "participant_consent_created": False,
+        "participant_consent_verified": False,
+        "human_recordings_accepted": False,
+        "primary_test_decoding_authorized": False,
+        "primary_test_decoding_performed": False,
+        "comparative_ranking_present": False,
+        "product_code_added": False,
+    }
+    if nonclaims != expected_nonclaims:
+        fail("authority structure non-claims drift")
     next_action = proof.get("next_action")
     if not isinstance(next_action, str) or "Structural verification alone cannot authorize primary media" not in next_action:
         fail("authority structure proof lost structural-only boundary")
