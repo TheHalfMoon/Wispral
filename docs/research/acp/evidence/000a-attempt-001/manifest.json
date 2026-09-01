@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "attempt_id": "WISPRAL-000A-ATTEMPT-001",
+  "date": "2026-09-01",
+  "wispral": {
+    "canonical_base": "25acbcc29bab262223315a55826e77396cc35822",
+    "branch_head_under_test": "4880c9d2d1d5091bdb4f4ee6acc998826a3bdde4",
+    "pull_request": 3,
+    "github_pr_test_merge": "378e1192837ec02733419fb077e8101d37cd292c",
+    "workflow_run_id": 33501999725,
+    "workflow_conclusion": "success"
+  },
+  "runner": {
+    "os": "Linux",
+    "arch": "X64",
+    "node": "v22.23.2",
+    "npm": "10.9.8",
+    "python": "Python 3.12.14",
+    "uname": "Linux runnervmgx7h7 6.17.0-1022-azure #22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux"
+  },
+  "fixture": {
+    "tree_sha256": "83ecabe8dedba88d5a208927e09e035f2b591b7c3ca259e315937880e070028e",
+    "files": {
+      "README.md": "cb91a2675914dae5790725c958e5aff5cc479cb1b44760a85f529aab01009c4c",
+      "probe.txt": "b6bdaa63dd0617104e34bd442fe329f8372ea3d11ae22017d185bdc8cfc7ad3b"
+    }
+  },
+  "artifacts": {
+    "gemini": {
+      "artifact_id": 9798068210,
+      "name": "000a-acp-gemini",
+      "zip_sha256": "d8781662cf11d78e59d90d7a1b8f010854a462942f928ecf007f5902e93469cd",
+      "package": "@google/gemini-cli@0.57.0",
+      "npm_integrity": "sha512-I0V03d3k0J0ZN2m9u54XhN3VcMG+VjyPzoy7E9QV8lhzd39C6UgaZGLZNsOgODOtDhK8YMijHJWJn+Qxop2umw==",
+      "npm_shasum": "268673f86b27482cdfe14234af1413f600f40357"
+    },
+    "codex-acp": {
+      "artifact_id": 9798065060,
+      "name": "000a-acp-codex-acp",
+      "zip_sha256": "23cc0841cf961f03205c5bc39e32b3a95386c8c2ad277fc9cc0a54bdde0756c1",
+      "package": "@agentclientprotocol/codex-acp@1.7.0",
+      "npm_integrity": "sha512-+nUhAJyunx8Zc7r3jjLPoMPPUkkk02TmBIosln4l+ugRNUOdNQAMm6toZo7xb+mF1yM5zxJB83qvy/bPmOTaaw==",
+      "npm_shasum": "d8e98601ba80c14eab3e06fc99dc8b646eb3f73f"
+    }
+  },
+  "upstream_pins": {
+    "acp_spec": "01b9d6e9c094d31cdea6d88768a9dd31b089ccef",
+    "acp_rust_sdk": "754d5aa1ce2cfa54ba2c2a6d3edc7e7b6bce28eb",
+    "acp_registry": "c7f1825666fb0008172e5fb93a58071a9618041e",
+    "gemini_cli_tag_commit": "6b0ae9a6c37aa117cc8b070d8b41c5bb4fa6d253",
+    "codex_acp_tag_commit": "2b48e9822330fc09f3a94a81563e5c4bb779601a"
+  },
+  "secret_scan": {
+    "performed_on_extracted_artifact_text": true,
+    "common_credential_patterns_detected": false,
+    "note": "This is a bounded pattern scan, not a proof that arbitrary sensitive text could never be present."
+  }
+}
