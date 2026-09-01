@@ -47,6 +47,7 @@ jobs:
         run: |
           if [ -f research/000b1/canonical-closeout.json ]; then
             python research/000b1/verify_closeout.py
+            python research/000b1/verify_closeout_regressions.py
           else
             echo 'B1_CLOSEOUT=NO'
           fi
