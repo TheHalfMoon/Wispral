@@ -12,7 +12,7 @@ Produce reproducible evidence about local speech-to-text configurations and boun
 
 ## Canonical input
 
-000B is refined only after Specification `000A-acp-qualification` became canonical `VERIFIED` at closeout merge `99dd6290ee01ce566d32b92df6d469b66b56520a`.
+000B is refined only after Specification `000A-acp-qualification` became canonical `VERIFIED` at merge `354695c9f4d406147cbdc425d8f59e841a2f96a3` and its closeout was reconciled at `99dd6290ee01ce566d32b92df6d469b66b56520a`.
 
 The 000A result does not directly select an STT engine. It does, however, reinforce two architectural constraints relevant here:
 
