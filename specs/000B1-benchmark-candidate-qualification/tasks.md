@@ -24,11 +24,11 @@ Readiness disposition for the current B1 evidence unit: `PASS` for preregistrati
 - [x] **B104 — Qualify whisper.cpp configurations.** Release `b4938`, exact model artifacts/digests, C0 state, and documented-not-observed streaming posture recorded without ranking developer accuracy.
 - [x] **B105 — Qualify sherpa-onnx configurations.** Exact runtime/model revisions, chunk-16/left-128 INT8/FP32 artifacts, digests, license/provenance, and C0 state recorded without ranking developer accuracy.
 - [x] **B106 — Run bounded qualification smoke if needed.** Disposition: `NOT_RUN_NOT_REQUIRED`; B1 contract/provenance completion does not require a decode. B2 still requires smoke or an explicit canonical waiver.
-- [x] **B107 — Define corpus and speaker contract.** Frozen in `docs/research/stt/000b1-benchmark-contract.md`.
+- [x] **B107 — Define corpus and speaker contract.** Twenty-speaker, speaker-disjoint 4/4/12 split and 720-utterance design frozen in `research/000b1/frozen-methodology.json` and explained in `docs/research/stt/000b1-frozen-methodology.md`; recording authority remains external and absent.
 - [x] **B108 — Define entity annotation schema.** `research/000b1/schemas/entity-annotation.schema.json`.
-- [x] **B109 — Define split and anti-tuning contract.** Frozen in the benchmark contract and attempt validator.
-- [x] **B110 — Define canonical audio preprocessing.** PCM WAV / mono / 16 kHz / PCM_S16LE baseline and digest rules frozen in the benchmark contract and attempt schema.
-- [x] **B111 — Define C0 unbiased configuration contract.** Context/prompt/keyterm/hotword/grammar rules frozen and machine-checked by the verifier.
+- [x] **B109 — Define split and anti-tuning contract.** Frozen in the benchmark contract, frozen methodology, and attempt validator.
+- [x] **B110 — Define canonical audio preprocessing.** FFmpeg `9.0.1` / tag `n9.0.1` / commit `bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa`, exact conversion command, raw mono 16 kHz PCM_S16LE representation, digest rules, 500 ms feed chunks, and universal 660 ms zero finalization suffix are machine-frozen.
+- [x] **B111 — Define C0 unbiased configuration contract.** Exact per-family CPU-only Moonshine/whisper.cpp/sherpa-onnx C0 settings are frozen in `research/000b1/frozen-methodology.json` and machine-checked; repository/test-specific context remains OFF.
 - [x] **B112 — Define streaming semantics and measurement schema.** `NATIVE_INCREMENTAL`, `CHUNKED_REDECODE`, `BATCH_ONLY`, and `UNKNOWN` criteria frozen in the benchmark contract.
 - [x] **B113 — Define C1 repository-resolution contract.** Engine-agnostic bounded resolver and anti-answer-leakage contract frozen.
 - [x] **B114 — Define C2 native-context contract.** Within-backend uplift/degradation methodology frozen; C2 remains excluded from C0.
