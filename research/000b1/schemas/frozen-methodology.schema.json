@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TheHalfMoon/Wispral/research/000b1/schemas/frozen-methodology.schema.json",
+  "title": "Wispral 000B1 Frozen Methodology",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "contract_version", "canonical_wispral_base", "speaker_design", "preprocessing", "common_c0", "c0_by_family", "fairness_notes"],
+  "properties": {
+    "schema_version": {"const": "000b1-frozen-methodology-v1"},
+    "contract_version": {"const": "000b1-contract-v1"},
+    "canonical_wispral_base": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "speaker_design": {"type": "object"},
+    "preprocessing": {"type": "object"},
+    "common_c0": {"type": "object"},
+    "c0_by_family": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["moonshine", "whisper.cpp", "sherpa-onnx"],
+      "properties": {"moonshine": {"type": "object"}, "whisper.cpp": {"type": "object"}, "sherpa-onnx": {"type": "object"}}
+    },
+    "fairness_notes": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  }
+}
