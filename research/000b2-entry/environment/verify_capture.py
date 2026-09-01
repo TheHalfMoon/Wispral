@@ -65,14 +65,12 @@ def main() -> int:
         evidence["comparative_performance_authorized"] is False,
         "comparative performance became authorized",
     )
-    require(
-        evidence["primary_test_decoding_started"] is False,
-        "capture claims primary decoding started",
-    )
     ordering = evidence.get("ordering")
     require(isinstance(ordering, dict), "ordering evidence missing")
     require(ordering.get("mode") == "ATTEMPT_STATE_BOUND", "ordering mode drift")
-    require(ordering.get("attempt_time_authority") is True, "attempt binding missing")
+    require(ordering.get("attempt_state_bound") is True, "attempt binding missing")
+    require(ordering.get("attempt_time_authority") is False, "snapshot binding became chronology authority")
+    require(ordering.get("independent_chronology_attestation") is False, "snapshot binding fabricated chronology")
     require(ordering.get("attempt_id") == "B2-ATTEMPT-TEST", "attempt id drift")
     require(
         ordering.get("canonical_wispral_revision") == revision,
@@ -83,8 +81,8 @@ def main() -> int:
         "attempt-state digest drift",
     )
     require(
-        ordering.get("primary_test_decoding_started") is False,
-        "ordering claims primary decoding started",
+        ordering.get("declared_primary_test_decoding_started") is False,
+        "declared ordering drift",
     )
     require(
         bool(SHA256.fullmatch(evidence["hardware_fingerprint_sha256"])),
@@ -149,6 +147,7 @@ def main() -> int:
 
     print("VERIFY_000B2_ENVIRONMENT_CAPTURE=PASS")
     print("ATTEMPT_STATE_BOUND=YES")
+    print("INDEPENDENT_CHRONOLOGY_ATTESTATION=NO")
     print("DUPLICATE_JSON_KEYS=REJECTED")
     print("ASSERT_OPTIMIZATION_SAFE=YES")
     print("GITHUB_HOSTED_CONTROLLED=REJECTED")
