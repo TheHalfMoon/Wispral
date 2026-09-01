@@ -51,7 +51,7 @@
       "capture_tool_path": "research/000b2-entry/environment/capture.py",
       "resolved": false,
       "github_hosted_performance_mode": "DIAGNOSTIC_ONLY",
-      "note": "No authorized final attempt exists, so no accepted attempt-bound environment/hardware fingerprint exists. The capture tool binds to a declared PRE_PRIMARY_CAPTURE state snapshot but does not independently attest chronology; hosted-runner timing cannot authorize comparative performance claims."
+      "note": "No authorized final attempt exists, so no accepted attempt-bound environment/hardware fingerprint exists. The capture tool binds to a declared PRE_PRIMARY_CAPTURE state snapshot but does not independently attest chronology. Its CONTROLLED/DIAGNOSTIC mode is operator-declared metadata and is not an independent control attestation; hosted-runner timing cannot authorize comparative performance claims."
     },
     "human_developer_speech_authority": {
       "status": "BLOCKED_EXTERNAL",
@@ -81,7 +81,7 @@
       "validator_path": "research/000b2-entry/validate_entry_manifest.py",
       "frozen": false,
       "primary_test_decoding_started": false,
-      "note": "A final manifest can freeze only after external human authority/corpus evidence and accepted attempt-bound preprocessing/environment identities exist under a separately reviewed execution chronology."
+      "note": "A final manifest can freeze only after external human authority/corpus evidence and accepted attempt-bound preprocessing/environment identities exist under separately reviewed execution chronology and environment-control evidence."
     }
   },
   "remaining_blockers": [
@@ -92,5 +92,5 @@
     "same-attempt execution environment and hardware fingerprint are absent",
     "final B2 attempt manifest is not frozen"
   ],
-  "next_action": "Merge qualified B2 entry-preparation evidence after exact-head CI and review reconciliation. Then reread canonical governance. Do not execute B2 primary human-speech decoding unless external participant/media authority and corpus evidence become real and every attempt-bound gate validates under separately reviewed execution chronology."
+  "next_action": "Merge qualified B2 entry-preparation evidence after exact-head CI and review reconciliation. Then reread canonical governance. Do not execute B2 primary human-speech decoding unless external participant/media authority and corpus evidence become real and every attempt-bound gate validates under separately reviewed execution chronology and environment-control evidence."
 }
