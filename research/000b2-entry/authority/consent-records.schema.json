@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/TheHalfMoon/Wispral/research/000b2-entry/authority/consent-records.schema.json",
-  "title": "Wispral 000B2 Pseudonymous Consent Evidence Bundle",
+  "title": "Wispral 000B2 Pseudonymous Active Consent Evidence Bundle",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -38,7 +38,7 @@
           "consent_artifact_sha256",
           "authority_policy_sha256",
           "consent_obtained_at_utc",
-          "withdrawal_state"
+          "record_status"
         ],
         "properties": {
           "participant_id": {"type": "string", "pattern": "^spk-[0-9a-f]{8}$"},
@@ -46,7 +46,7 @@
           "consent_artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
           "authority_policy_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
           "consent_obtained_at_utc": {"type": "string", "format": "date-time"},
-          "withdrawal_state": {"enum": ["ACTIVE", "WITHDRAWN"]}
+          "record_status": {"const": "ACTIVE"}
         }
       }
     }
