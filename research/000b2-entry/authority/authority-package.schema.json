@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TheHalfMoon/Wispral/research/000b2-entry/authority/authority-package.schema.json",
+  "title": "Wispral 000B2 Human Developer-Speech Authority Package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "authority_status",
+    "participant_consent_scope",
+    "recording_purpose",
+    "public_redistribution_decision",
+    "repository_storage_policy",
+    "retention_rule",
+    "deletion_withdrawal_procedure",
+    "derivative_benchmark_artifact_permission",
+    "privacy_constraints",
+    "prohibited_content_policy",
+    "consent_records_sha256",
+    "participant_count",
+    "package_contains_direct_identifiers",
+    "authority_effective_before_recording"
+  ],
+  "properties": {
+    "schema_version": {"const": "000b2-human-authority-v1"},
+    "authority_status": {"enum": ["NOT_AUTHORIZED", "AUTHORIZED"]},
+    "participant_consent_scope": {"type": ["string", "null"], "minLength": 1},
+    "recording_purpose": {"type": ["string", "null"], "minLength": 1},
+    "public_redistribution_decision": {"type": ["string", "null"], "enum": ["ALLOWED", "PROHIBITED", null]},
+    "repository_storage_policy": {"type": ["string", "null"], "minLength": 1},
+    "retention_rule": {"type": ["string", "null"], "minLength": 1},
+    "deletion_withdrawal_procedure": {"type": ["string", "null"], "minLength": 1},
+    "derivative_benchmark_artifact_permission": {"type": ["string", "null"], "enum": ["ALLOWED", "PROHIBITED", null]},
+    "privacy_constraints": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "prohibited_content_policy": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "consent_records_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "participant_count": {"type": "integer", "minimum": 0},
+    "package_contains_direct_identifiers": {"const": false},
+    "authority_effective_before_recording": {"type": "boolean"}
+  }
+}
