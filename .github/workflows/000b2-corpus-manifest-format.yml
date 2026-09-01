@@ -1,0 +1,91 @@
+name: 000B2 Corpus Manifest Format
+
+on:
+  pull_request:
+    paths:
+      - 'research/000b2-entry/corpus/**'
+      - '.github/workflows/000b2-corpus-manifest-format.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'research/000b2-entry/corpus/**'
+      - '.github/workflows/000b2-corpus-manifest-format.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-corpus-manifest-format:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact workflow subject
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Verify exact PR head when applicable
+        if: github.event_name == 'pull_request'
+        env:
+          EVENT_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          HEAD_SHA="$(git rev-parse HEAD)"
+          if [ "$HEAD_SHA" != "$EVENT_HEAD_SHA" ]; then
+            echo "corpus-format checkout mismatch: event=$EVENT_HEAD_SHA checkout=$HEAD_SHA" >&2
+            exit 1
+          fi
+          echo "EXACT_PR_HEAD=$HEAD_SHA"
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compile corpus verifier
+        run: python -m py_compile research/000b2-entry/corpus/verify_corpus_manifest.py
+      - name: Exercise deterministic synthetic structural self-test
+        run: python research/000b2-entry/corpus/verify_corpus_manifest.py --self-test
+      - name: Prove canonical empty template remains blocked
+        run: |
+          OUTPUT="$(python research/000b2-entry/corpus/verify_corpus_manifest.py \
+            research/000b2-entry/corpus/corpus-manifest.template.json)"
+          printf '%s\n' "$OUTPUT"
+          printf '%s\n' "$OUTPUT" | grep -Fx 'CORPUS_MANIFEST=NOT_COLLECTED'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'FROZEN=NO'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'SPEAKERS=0'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'UTTERANCES=0'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'HUMAN_CORPUS_AUTHORITY_ATTESTATION=NOT_PROVIDED_BY_THIS_FORMAT'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PRIMARY_MEDIA_ACCEPTANCE=NO'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PRIMARY_TEST_DECODING_AUTHORIZED=NO'
+          if python research/000b2-entry/corpus/verify_corpus_manifest.py \
+            research/000b2-entry/corpus/corpus-manifest.template.json \
+            --require-frozen-structure; then
+            echo 'empty corpus template was incorrectly accepted as frozen structure' >&2
+            exit 1
+          fi
+          echo 'CORPUS_TEMPLATE_FROZEN_STRUCTURE=BLOCKED_AS_EXPECTED'
+      - name: Verify workflow action pins and non-claim markers
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          path = Path('.github/workflows/000b2-corpus-manifest-format.yml')
+          text = path.read_text(encoding='utf-8')
+          uses = []
+          for line in text.splitlines():
+              stripped = line.strip()
+              if stripped.startswith('- uses:'):
+                  uses.append(stripped.split('uses:', 1)[1].strip())
+          bad = [item for item in uses if re.fullmatch(r'[^@\s]+@[0-9a-f]{40}', item) is None]
+          if not uses or bad:
+              raise SystemExit(f'corpus workflow has missing or non-pinned actions: {bad}')
+          required = (
+              'Verify exact PR head when applicable',
+              'HUMAN_CORPUS_AUTHORITY_ATTESTATION=NOT_PROVIDED_BY_THIS_FORMAT',
+              'PRIMARY_MEDIA_ACCEPTANCE=NO',
+              'PRIMARY_TEST_DECODING_AUTHORIZED=NO',
+          )
+          missing = [item for item in required if item not in text]
+          if missing:
+              raise SystemExit(f'corpus workflow non-claim drift: {missing}')
+          print('CORPUS_MANIFEST_WORKFLOW_CONTRACT=PASS')
+          PY
