@@ -161,7 +161,7 @@ B1 is `GRAIN`, not automatically `READY`. Before execution, re-read the current 
 
 No primary benchmark decoding is authorized by B1 readiness alone; B1 itself exists to preregister the later B2 comparison.
 
-No product code is authorized. Product implementation remains blocked until Specification 000 synthesis and 000G select a bounded first implementation Grain from reproducible evidence.
+No product code is authorized. Product implementation remains blocked until `000G` selects a bounded first implementation Grain from reproducible evidence.
 
 ## Next canonical action
 
