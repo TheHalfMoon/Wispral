@@ -18,18 +18,28 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from verify_materialization import correction_map, verify_static
+
 ROOT = Path(__file__).resolve().parents[2]
 B1 = ROOT / "research" / "000b1"
 HERE = ROOT / "research" / "000b2-entry"
 REGISTRY = B1 / "qualified-candidates.json"
 SCHEMA = B1 / "schemas" / "attempt-manifest.schema.json"
-MATERIALIZED = HERE / "materialized-artifacts.json"
 AMENDMENT = HERE / "artifact-size-amendment.json"
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
+def reject_duplicate_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON object member: {key}")
+        result[key] = value
+    return result
+
+
 def load(path: Path):
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=reject_duplicate_pairs)
 
 
 def load_b1_validator():
@@ -141,43 +151,21 @@ def expected_pending_keys() -> set[tuple[str, str]]:
 
 
 def materialized_map() -> dict[tuple[str, str], dict[str, Any]]:
-    evidence = load(MATERIALIZED)
-    if not isinstance(evidence, dict):
-        raise ValueError("materialized evidence must be a JSON object")
-    result: dict[tuple[str, str], dict[str, Any]] = {}
-    artifacts = evidence.get("artifacts")
-    if not isinstance(artifacts, dict):
-        raise ValueError("materialized artifact mapping missing")
-    for candidate_id, paths in artifacts.items():
-        if not isinstance(paths, dict):
-            raise ValueError(f"materialized candidate mapping malformed: {candidate_id}")
-        for path, row in paths.items():
-            if not isinstance(row, dict):
-                raise ValueError(f"materialized row malformed: {candidate_id}:{path}")
-            key = (candidate_id, path)
-            if key in result:
-                raise ValueError(f"duplicate materialized artifact: {key}")
-            result[key] = row
+    verified, _ = verify_static()
     expected = expected_pending_keys()
-    if set(result) != expected:
-        raise ValueError(
-            f"materialized evidence does not cover frozen pending set: "
-            f"missing={sorted(expected - set(result))}, extra={sorted(set(result) - expected)}"
-        )
-    return result
+    if set(verified) != expected:
+        raise ValueError("verified materialization authority differs from frozen pending set")
+    return verified
 
 
 def corrections() -> dict[tuple[str, str], dict[str, Any]]:
+    # verify_static() binds amendment schema/scope/provenance and every materialized
+    # row to the current B1 registry before the amendment is used as historical authority.
+    verify_static()
     amendment = load(AMENDMENT)
     if not isinstance(amendment, dict):
         raise ValueError("artifact-size amendment must be a JSON object")
-    if amendment.get("status") != "PRE_ATTEMPT_CORRECTION":
-        raise ValueError("artifact-size amendment status drift")
-    if amendment.get("primary_test_decoding_performed") is not False:
-        raise ValueError("artifact-size amendment follows primary decoding")
-    if amendment.get("comparative_ranking_present") is not False:
-        raise ValueError("artifact-size amendment follows comparative ranking")
-    result = {(row["candidate_id"], row["path"]): row for row in amendment["corrections"]}
+    result = correction_map(amendment)
     if set(result) - expected_pending_keys():
         raise ValueError("artifact-size amendment targets non-pending artifact")
     return result
@@ -213,9 +201,9 @@ def validate_entry(manifest: dict[str, Any], require_ready: bool = False):
                 continue
             seen_materialized.add(key)
             if artifact.get("size_bytes") != evidence["size_bytes"]:
-                errors.append(f"{key} size differs from materialized evidence")
+                errors.append(f"{key} size differs from verified materialized evidence")
             if artifact.get("sha256") != evidence["sha256"]:
-                errors.append(f"{key} SHA-256 differs from materialized evidence")
+                errors.append(f"{key} SHA-256 differs from verified materialized evidence")
             if not SHA256.fullmatch(str(artifact.get("sha256", ""))):
                 errors.append(f"{key} materialized SHA-256 malformed")
 
@@ -255,7 +243,7 @@ def main() -> int:
         if not isinstance(manifest, dict):
             raise ValueError("manifest must be a JSON object")
         errors, blockers = validate_entry(manifest, require_ready=args.require_ready)
-    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+    except (AssertionError, OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
     if errors:
