@@ -1,0 +1,45 @@
+{
+  "schema_version": "000b2-authority-structure-closeout-v1",
+  "recorded_date": "2026-09-01",
+  "disposition": "STRUCTURE_CANONICAL_AUTHORITY_EXTERNAL",
+  "b2_ready": false,
+  "primary_media_acceptance": false,
+  "participant_consent_attested": false,
+  "authority_intake": {
+    "pull_request": 14,
+    "exact_head_sha": "20961174b5b4603806a6d79963e3bc9e624f5995",
+    "exact_head_entry_contracts_run_id": 33541279600,
+    "canonical_merge_sha": "f71df132f963056b3321fe38b94ed88d6a0dfd89",
+    "postmerge_entry_contracts_run_id": 33541475726,
+    "canonical_package_status": "NOT_AUTHORIZED"
+  },
+  "trusted_structure_gate": {
+    "pull_request": 15,
+    "exact_head_sha": "1516f65cb763a7b50e3f2fa9ebd98ea53d253771",
+    "exact_head_bootstrap_run_id": 33542254408,
+    "canonical_merge_sha": "8cc8b1a22edd9268a49b3ad16c4d3ee8c0d6d586",
+    "postmerge_push_run_id": 33542411499,
+    "candidate_code_execution": false,
+    "candidate_data_transport": "GITHUB_CONTENTS_API_EXACT_HEAD_SHA",
+    "base_refresh": "EVERY_MAIN_PUSH_REVERIFIES_OPEN_MAIN_TARGETING_PRS",
+    "participant_consent_attestation": "NOT_PROVIDED_BY_THIS_GATE"
+  },
+  "review_reconciliation": {
+    "review_submissions_on_final_heads": 0,
+    "inline_review_threads_on_final_heads": 0,
+    "qodo_status": "BILLING_BLOCKED",
+    "coderabbit_status": "REQUESTED_NO_SUBMISSION",
+    "copilot_status": "REQUESTED_NO_SUBMISSION",
+    "unavailable_or_silent_review_represented_as_approval": false
+  },
+  "non_claims": {
+    "participant_consent_created": false,
+    "participant_consent_verified": false,
+    "human_recordings_accepted": false,
+    "primary_test_decoding_authorized": false,
+    "primary_test_decoding_performed": false,
+    "comparative_ranking_present": false,
+    "product_code_added": false
+  },
+  "next_action": "Keep B2 BLOCKED_EXTERNAL. Collect real participant/media authority and consent evidence outside repository identity-bearing surfaces, then bind only non-identifying evidence digests through a separately reviewable canonical transition. Structural verification alone cannot authorize primary media."
+}
