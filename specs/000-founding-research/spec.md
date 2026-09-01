@@ -19,7 +19,20 @@ Its evidence classifies ACP as `PARTIAL` with `MODERATE` confidence:
 - ACP is a leading structured-path candidate, not a permanent production selection;
 - a version-aware integration boundary is likely required, but production architecture remains unauthorized.
 
-This evidence closes the first child and permits the next coarse child, `000B`, to be refined. It does not authorize 000B execution or product code.
+This evidence closed the first child and allowed the local speech research frontier to be refined.
+
+## 000B refinement posture
+
+`000B-stt-entity-bakeoff` is now shaped as a recursive research parent because corpus design, model/runtime qualification, unbiased decoding, context uplift, performance evidence, and synthesis are too broad to execute credibly as one Grain.
+
+The planned child sequence is:
+
+1. `000B1-benchmark-candidate-qualification` — benchmark/candidate preregistration and qualification;
+2. `000B2-unbiased-stt-bakeoff` — primary local STT comparison with repository-specific decoder context disabled;
+3. `000B3-context-uplift` — engine-agnostic repository resolution plus separately reported backend-native context conditions;
+4. `000B4-stt-synthesis` — evidence reconciliation and shortlist/insufficient-evidence recommendation.
+
+Only 000B1 is task-refined by the current authority. It becomes a `GRAIN` only after the refinement PR is canonical and must independently pass readiness before execution. No primary benchmark run, model winner, permanent speech dependency, or product code is authorized by this refinement.
 
 ## Problem
 
