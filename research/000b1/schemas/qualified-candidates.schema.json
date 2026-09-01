@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TheHalfMoon/Wispral/research/000b1/schemas/qualified-candidates.schema.json",
+  "title": "Wispral 000B1 Qualified Candidate Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "recorded_date", "canonical_wispral_base", "contract_version", "primary_test_decoding_performed", "comparative_ranking_present", "qualification_smoke", "tiers", "selection_rule", "families", "b2_entry_gates"],
+  "properties": {
+    "schema_version": {"const": "000b1-qualified-candidates-v1"},
+    "recorded_date": {"type": "string", "format": "date"},
+    "canonical_wispral_base": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "contract_version": {"const": "000b1-contract-v1"},
+    "primary_test_decoding_performed": {"const": false},
+    "comparative_ranking_present": {"const": false},
+    "qualification_smoke": {"type": "object"},
+    "tiers": {"type": "object"},
+    "selection_rule": {"type": "string", "minLength": 1},
+    "families": {"type": "array", "minItems": 3},
+    "b2_entry_gates": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  }
+}
