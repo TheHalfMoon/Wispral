@@ -1,6 +1,6 @@
 # Specification 000B1 — STT Benchmark and Candidate Qualification
 
-**State:** `GRAIN` candidate after 000B refinement authority becomes canonical  
+**State:** `VERIFIED`  
 **Parent:** `000B-stt-entity-bakeoff`  
 **Type:** research / preregistration / candidate qualification
 
@@ -379,3 +379,9 @@ Before B1 itself can move from `GRAIN` to `READY`, recheck:
 - no primary test decoding is required to complete B1.
 
 If a condition fails, record `BLOCKED` and refine rather than silently broadening B1.
+
+## Canonical closeout
+
+B1 satisfied its acceptance conditions without primary developer-speech decoding or comparative ranking. PR #7 was qualified at exact head `262c8cc6dd6fadfcd782ce5beee2f3ca443c77b5`, passed `000B1 Preregistration` workflow run `33514521301`, reconciled independent CodeRabbit/Cubic findings, and merged by guarded expected-head squash as canonical commit `8df69835349f85d5ae6af9d6a62ef3af24f65f43`.
+
+The verified outcome is a frozen preregistration and candidate-qualification contract, not an STT recommendation. B2 is **not ready**. Its canonical disposition after B1 closeout is `BLOCKED_EXTERNAL` because human developer-speech authority/corpus freeze is absent and additional artifact materialization, operational qualification, scorer/preprocessing, execution-environment, and final attempt-freeze gates remain unsatisfied. Exact closeout evidence is recorded in `research/000b1/canonical-closeout.json`.
