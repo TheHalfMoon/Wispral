@@ -66,9 +66,20 @@ def safe_bytes(root: Path, relative: Path) -> bytes:
     return resolved.read_bytes()
 
 
+def reject_duplicate_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise VerificationError(f"duplicate JSON object key: {key}")
+        result[key] = value
+    return result
+
+
 def load_object(raw: bytes, label: str) -> dict[str, Any]:
     try:
-        value = json.loads(raw.decode("utf-8"))
+        value = json.loads(
+            raw.decode("utf-8"), object_pairs_hook=reject_duplicate_pairs
+        )
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise VerificationError(f"{label} is not valid UTF-8 JSON: {exc}") from exc
     if not isinstance(value, dict):
@@ -389,6 +400,16 @@ def self_test() -> None:
             pass
         else:
             raise VerificationError("self-test failed to reject size mismatch")
+
+        try:
+            load_object(b'{"key": 1, "key": 2}', "duplicate-key self-test")
+        except VerificationError:
+            pass
+        else:
+            raise VerificationError("self-test failed to reject duplicate JSON keys")
+        nested = load_object(b'{"outer": {"key": 1}}', "nested JSON self-test")
+        if nested != {"outer": {"key": 1}}:
+            raise VerificationError("self-test strict JSON parse mismatch")
 
         validate_remote_url(
             "https://huggingface.co/example/model", "huggingface"
