@@ -15,6 +15,9 @@ from typing import Any
 HERE = Path(__file__).resolve().parent
 CONTRACT = HERE / "contract.json"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
+EXPECTED_TOOL_VERSION = "9.0.1"
+EXPECTED_SOURCE_TAG = "n9.0.1"
+EXPECTED_SOURCE_COMMIT = "bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa"
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -42,12 +45,23 @@ def load_attempt_state_bytes(raw: bytes) -> dict[str, Any]:
     return value
 
 
-def capture(binary: Path, *, attempt_state_path: Path | None, qualification_only: bool) -> dict[str, Any]:
+def capture(
+    binary: Path, *, attempt_state_path: Path | None, qualification_only: bool
+) -> dict[str, Any]:
     if qualification_only == (attempt_state_path is not None):
-        raise ValueError("select exactly one of qualification-only or attempt-state-bound capture")
+        raise ValueError(
+            "select exactly one of qualification-only or attempt-state-bound capture"
+        )
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
-    if not isinstance(contract, dict) or contract.get("tool_version") != "9.0.1":
+    if not isinstance(contract, dict):
+        raise ValueError("preprocessing contract must be a JSON object")
+    if contract.get("tool_version") != EXPECTED_TOOL_VERSION:
         raise ValueError("preprocessing contract version drift")
+    if contract.get("source_tag") != EXPECTED_SOURCE_TAG:
+        raise ValueError("preprocessing contract source tag drift")
+    if contract.get("source_commit") != EXPECTED_SOURCE_COMMIT:
+        raise ValueError("preprocessing contract source commit drift")
+
     resolved = binary.resolve(strict=True)
     version = subprocess.run(
         [str(resolved), "-version"],
@@ -62,8 +76,13 @@ def capture(binary: Path, *, attempt_state_path: Path | None, qualification_only
         raise ValueError("FFmpeg version output is empty")
     first_line = lines[0].strip()
     fields = first_line.split()
-    if len(fields) < 3 or fields[0] != "ffmpeg" or fields[1] != "version" or fields[2] != "9.0.1":
-        raise ValueError(f"FFmpeg version mismatch: {first_line}")
+    if (
+        len(fields) < 3
+        or fields[0] != "ffmpeg"
+        or fields[1] != "version"
+        or fields[2] != EXPECTED_SOURCE_TAG
+    ):
+        raise ValueError(f"FFmpeg release-tag identity mismatch: {first_line}")
 
     ordering: dict[str, Any]
     if qualification_only:
@@ -93,8 +112,9 @@ def capture(binary: Path, *, attempt_state_path: Path | None, qualification_only
     return {
         "schema_version": "000b2-preprocessing-evidence-v1",
         "tool": "FFmpeg",
-        "tool_version": "9.0.1",
-        "source_commit": contract["source_commit"],
+        "tool_version": EXPECTED_TOOL_VERSION,
+        "source_tag": EXPECTED_SOURCE_TAG,
+        "source_commit": EXPECTED_SOURCE_COMMIT,
         "binary_path": str(resolved),
         "binary_sha256": file_sha256(resolved),
         "version_output_sha256": sha256_bytes(version),
@@ -118,14 +138,26 @@ def main() -> int:
             attempt_state_path=args.attempt_state,
             qualification_only=args.qualification_only,
         )
-    except (OSError, ValueError, subprocess.CalledProcessError, subprocess.TimeoutExpired, UnicodeDecodeError, json.JSONDecodeError) as exc:
+    except (
+        OSError,
+        ValueError,
+        subprocess.CalledProcessError,
+        subprocess.TimeoutExpired,
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+    ) as exc:
         print(f"CAPTURE_000B2_PREPROCESSING=FAIL: {exc}", file=sys.stderr)
         return 1
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    args.output.write_text(
+        json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     print("CAPTURE_000B2_PREPROCESSING=PASS")
     print(f"CAPTURE_MODE={evidence['ordering']['mode']}")
-    print(f"ATTEMPT_TIME_AUTHORITY={'YES' if evidence['ordering']['attempt_time_authority'] else 'NO'}")
+    print(
+        "ATTEMPT_TIME_AUTHORITY="
+        f"{'YES' if evidence['ordering']['attempt_time_authority'] else 'NO'}"
+    )
     return 0
 
 
