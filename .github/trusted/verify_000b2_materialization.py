@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Trusted-base verifier for 000B2 materialization evidence.
+"""Trusted-base verifier for 000B2 artifact identity.
 
-This verifier is intended to execute from canonical base authority (for example via
-``pull_request_target``). It treats the pull-request checkout as untrusted data:
-it never imports or executes code from that checkout. Exact pending artifacts are
-derived from the canonical B1 registry, the narrowly bounded pre-attempt size
-amendment is validated, and every committed SHA-256 is reproduced from its pinned
-source URL with strict byte bounds.
+This verifier executes from canonical base authority and treats the pull-request
+checkout strictly as untrusted data. It proves only cryptographic artifact identity:
+that the candidate preserves the canonical B1 registry, applies the narrowly bounded
+sherpa ``tokens.txt`` size correction facts, and records SHA-256 values that reproduce
+from approved pinned sources under strict byte and redirect bounds.
+
+It intentionally does NOT attest chronology, primary-decoding state, comparative-
+ranking state, consent, corpus authority, or any other process claim authored by the
+candidate checkout. Those remain separate canonical/review gates.
 """
 
 from __future__ import annotations
@@ -19,6 +22,7 @@ import tempfile
 import urllib.request
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 REGISTRY_REL = Path("research/000b1/qualified-candidates.json")
 AMENDMENT_REL = Path("research/000b2-entry/artifact-size-amendment.json")
@@ -29,11 +33,24 @@ EXPECTED_CORRECTIONS = {
     ("sherpa-onnx-balanced", "tokens.txt"),
 }
 EXPECTED_PENDING_COUNT = 18
-MAX_REDIRECTED_URL_BYTES = 536_870_912
+MAX_ARTIFACT_BYTES = 536_870_912
+SHERPA_SOURCE_REVISION = "6037ea07e3abfe599ad00d418968bcf9656e7472"
+TRUSTED_REDIRECT_HOSTS = {
+    "moonshine": {
+        "download.moonshine.ai",
+        "storage.googleapis.com",
+    },
+    "huggingface": {
+        "huggingface.co",
+        ".huggingface.co",
+        "hf.co",
+        ".hf.co",
+    },
+}
 
 
 class VerificationError(RuntimeError):
-    """Fail-closed materialization verification error."""
+    """Fail-closed trusted artifact-identity verification error."""
 
 
 def safe_bytes(root: Path, relative: Path) -> bytes:
@@ -66,16 +83,9 @@ def sha256_bytes(raw: bytes) -> str:
 def correction_map(
     amendment: dict[str, Any], registry: dict[str, Any]
 ) -> dict[tuple[str, str], dict[str, Any]]:
+    """Validate correction facts only; do not infer chronology from candidate labels."""
     if amendment.get("schema_version") != "000b2-entry-artifact-amendment-v1":
         raise VerificationError("amendment schema drift")
-    if amendment.get("status") != "PRE_ATTEMPT_CORRECTION":
-        raise VerificationError("amendment status drift")
-    if amendment.get("recorded_date") != "2026-09-01":
-        raise VerificationError("amendment recorded date drift")
-    if amendment.get("primary_test_decoding_performed") is not False:
-        raise VerificationError("amendment follows primary decoding")
-    if amendment.get("comparative_ranking_present") is not False:
-        raise VerificationError("amendment follows comparative ranking")
 
     rows = amendment.get("corrections")
     if not isinstance(rows, list) or len(rows) != len(EXPECTED_CORRECTIONS):
@@ -116,8 +126,7 @@ def correction_map(
             raise VerificationError(f"B2 corrected size drift for {key}")
         if (
             row.get("source_revision") != artifact.get("source_revision")
-            or row.get("source_revision")
-            != "6037ea07e3abfe599ad00d418968bcf9656e7472"
+            or row.get("source_revision") != SHERPA_SOURCE_REVISION
         ):
             raise VerificationError(f"source revision drift for {key}")
     return result
@@ -163,6 +172,7 @@ def expected_pending(
                     ):
                         raise VerificationError(f"Moonshine base URL drift for {candidate_id}")
                     source_url = f"{base_url.rstrip('/')}/{path}"
+                    source_group = "moonshine"
                 elif family_name == "sherpa-onnx":
                     model_source = family.get("model_source")
                     if not isinstance(model_source, dict):
@@ -175,6 +185,7 @@ def expected_pending(
                     if not isinstance(source_revision, str) or not source_revision:
                         raise VerificationError(f"sherpa source revision missing for {key}")
                     source_url = f"{base_url.rstrip('/')}/{source_revision}/{path}"
+                    source_group = "huggingface"
                 else:
                     raise VerificationError(
                         f"unexpected family with pending SHA-256: {family_name}"
@@ -183,7 +194,7 @@ def expected_pending(
                     "size_bytes": size,
                     "source_revision": source_revision,
                     "source_url": source_url,
-                    "pre_attempt_size_amended": correction is not None,
+                    "source_group": source_group,
                 }
 
     if len(expected) != EXPECTED_PENDING_COUNT:
@@ -213,16 +224,52 @@ def flatten_evidence(evidence: dict[str, Any]) -> dict[tuple[str, str], dict[str
     return flattened
 
 
-def download_digest(url: str, expected_size: int) -> str:
-    if expected_size <= 0 or expected_size > MAX_REDIRECTED_URL_BYTES:
+def host_allowed(host: str, source_group: str) -> bool:
+    rules = TRUSTED_REDIRECT_HOSTS[source_group]
+    host = host.lower().rstrip(".")
+    for rule in rules:
+        if rule.startswith("."):
+            if host.endswith(rule) and host != rule[1:]:
+                return True
+        elif host == rule:
+            return True
+    return False
+
+
+def validate_remote_url(url: str, source_group: str) -> None:
+    parsed = urlparse(url)
+    host = parsed.hostname
+    if parsed.scheme != "https" or not host or not host_allowed(host, source_group):
+        raise VerificationError(
+            f"unapproved {source_group} source/redirect destination: {url}"
+        )
+    if parsed.username is not None or parsed.password is not None:
+        raise VerificationError(f"userinfo is forbidden in source URL: {url}")
+
+
+class TrustedRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def __init__(self, source_group: str):
+        super().__init__()
+        self.source_group = source_group
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # noqa: ANN001
+        validate_remote_url(newurl, self.source_group)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def download_digest(url: str, expected_size: int, source_group: str) -> str:
+    if expected_size <= 0 or expected_size > MAX_ARTIFACT_BYTES:
         raise VerificationError(f"download size outside trusted bound: {expected_size}")
+    validate_remote_url(url, source_group)
     request = urllib.request.Request(
-        url, headers={"User-Agent": "Wispral-trusted-materialization/1"}
+        url, headers={"User-Agent": "Wispral-trusted-artifact-identity/1"}
     )
+    opener = urllib.request.build_opener(TrustedRedirectHandler(source_group))
     digest = hashlib.sha256()
     observed = 0
     try:
-        with urllib.request.urlopen(request, timeout=60) as response:
+        with opener.open(request, timeout=60) as response:
+            validate_remote_url(response.geturl(), source_group)
             content_length = response.headers.get("Content-Length")
             if content_length is not None:
                 try:
@@ -253,6 +300,22 @@ def download_digest(url: str, expected_size: int) -> str:
     return digest.hexdigest()
 
 
+def digest_local_bounded(path: Path, expected_size: int) -> str:
+    if path.stat().st_size != expected_size:
+        raise VerificationError("local self-test size mismatch")
+    digest = hashlib.sha256()
+    observed = 0
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            observed += len(chunk)
+            if observed > expected_size:
+                raise VerificationError("local self-test payload exceeded expected size")
+            digest.update(chunk)
+    if observed != expected_size:
+        raise VerificationError("local self-test payload size mismatch")
+    return digest.hexdigest()
+
+
 def verify(base_root: Path, candidate_root: Path) -> None:
     base_registry_raw = safe_bytes(base_root, REGISTRY_REL)
     candidate_registry_raw = safe_bytes(candidate_root, REGISTRY_REL)
@@ -262,21 +325,13 @@ def verify(base_root: Path, candidate_root: Path) -> None:
 
     amendment_raw = safe_bytes(candidate_root, AMENDMENT_REL)
     evidence_raw = safe_bytes(candidate_root, EVIDENCE_REL)
-    amendment = load_object(amendment_raw, "B2 artifact-size amendment")
-    evidence = load_object(evidence_raw, "B2 materialized evidence")
+    amendment = load_object(amendment_raw, "B2 artifact-size correction record")
+    evidence = load_object(evidence_raw, "B2 materialized artifact record")
     corrections = correction_map(amendment, registry)
     expected = expected_pending(registry, corrections)
 
     if evidence.get("schema_version") != "000b2-materialized-artifacts-v1":
         raise VerificationError("materialized evidence schema drift")
-    if evidence.get("purpose") != "B2_ENTRY_PREPARATION_NON_DECODING":
-        raise VerificationError("materialized evidence purpose drift")
-    if evidence.get("recorded_date") != "2026-09-01":
-        raise VerificationError("materialized evidence recorded date drift")
-    if evidence.get("primary_test_decoding_performed") is not False:
-        raise VerificationError("materialized evidence implies primary decoding")
-    if evidence.get("comparative_ranking_present") is not False:
-        raise VerificationError("materialized evidence implies comparative ranking")
     if evidence.get("registry_sha256") != sha256_bytes(base_registry_raw):
         raise VerificationError("materialized evidence registry digest drift")
     if evidence.get("amendment_sha256") != sha256_bytes(amendment_raw):
@@ -291,18 +346,15 @@ def verify(base_root: Path, candidate_root: Path) -> None:
     for key in sorted(expected):
         wanted = expected[key]
         row = actual[key]
-        for field in (
-            "size_bytes",
-            "source_revision",
-            "source_url",
-            "pre_attempt_size_amended",
-        ):
+        for field in ("size_bytes", "source_revision", "source_url"):
             if row.get(field) != wanted[field]:
                 raise VerificationError(f"materialized evidence {field} drift for {key}")
         committed_sha = row.get("sha256")
         if not isinstance(committed_sha, str) or not SHA256.fullmatch(committed_sha):
             raise VerificationError(f"materialized evidence SHA-256 malformed for {key}")
-        live_sha = download_digest(wanted["source_url"], wanted["size_bytes"])
+        live_sha = download_digest(
+            wanted["source_url"], wanted["size_bytes"], wanted["source_group"]
+        )
         if live_sha != committed_sha:
             raise VerificationError(f"trusted live SHA-256 mismatch for {key}")
 
@@ -328,15 +380,38 @@ def self_test() -> None:
         inside = root / "inside.bin"
         inside.write_bytes(b"abcd")
         expected = hashlib.sha256(b"abcd").hexdigest()
-        observed = download_digest(inside.as_uri(), 4)
+        observed = digest_local_bounded(inside, 4)
         if observed != expected:
             raise VerificationError("self-test digest mismatch")
         try:
-            download_digest(inside.as_uri(), 3)
+            digest_local_bounded(inside, 3)
         except VerificationError:
             pass
         else:
-            raise VerificationError("self-test failed to reject oversized payload")
+            raise VerificationError("self-test failed to reject size mismatch")
+
+        validate_remote_url(
+            "https://huggingface.co/example/model", "huggingface"
+        )
+        validate_remote_url(
+            "https://cas-bridge.xethub.hf.co/example", "huggingface"
+        )
+        validate_remote_url(
+            "https://storage.googleapis.com/example/object", "moonshine"
+        )
+        for url, source_group in (
+            ("https://evil.example/object", "huggingface"),
+            ("http://huggingface.co/example", "huggingface"),
+            ("https://huggingface.co/example", "moonshine"),
+        ):
+            try:
+                validate_remote_url(url, source_group)
+            except VerificationError:
+                pass
+            else:
+                raise VerificationError(
+                    f"self-test failed to reject redirect/source URL: {url}"
+                )
 
         safe_root = root / "safe"
         safe_root.mkdir()
@@ -369,7 +444,7 @@ def main() -> int:
     try:
         if args.self_test:
             self_test()
-            print("TRUSTED_000B2_MATERIALIZATION_SELF_TEST=PASS")
+            print("TRUSTED_000B2_ARTIFACT_IDENTITY_SELF_TEST=PASS")
             return 0
         if args.base_root is None or args.candidate_root is None:
             parser.error(
@@ -377,12 +452,11 @@ def main() -> int:
             )
         verify(args.base_root, args.candidate_root)
     except VerificationError as exc:
-        print(f"TRUSTED_000B2_MATERIALIZATION=FAIL: {exc}")
+        print(f"TRUSTED_000B2_ARTIFACT_IDENTITY=FAIL: {exc}")
         return 1
-    print("TRUSTED_000B2_MATERIALIZATION=PASS")
+    print("TRUSTED_000B2_ARTIFACT_IDENTITY=PASS")
     print(f"MATERIALIZED_ARTIFACT_RECORDS={EXPECTED_PENDING_COUNT}")
-    print("PRIMARY_TEST_DECODING=NO")
-    print("COMPARATIVE_RANKING=NO")
+    print("PROCESS_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE")
     return 0
 
 
