@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/TheHalfMoon/Wispral/research/000b1/schemas/entity-annotation.schema.json",
   "title": "Wispral 000B1 Developer Entity Annotation",
+  "description": "Structural schema. Cross-field span invariants (0 <= start_char < end_char <= len(reference_transcript), exact_text == reference_transcript[start_char:end_char], and unique entity_id) are normative and fail-closed in research/000b1/validate_entity_annotation.py; CI regressions are in verify_entity_annotation_gate.py.",
   "type": "object",
   "additionalProperties": false,
   "required": ["utterance_id", "panel", "split", "speaker_id", "reference_transcript", "entities"],
@@ -17,6 +18,7 @@
       "type": "array",
       "items": {
         "type": "object",
+        "description": "start_char/end_char are additionally cross-validated against reference_transcript by validate_entity_annotation.py; JSON Schema draft 2020-12 cannot compare sibling numeric properties directly.",
         "additionalProperties": false,
         "required": ["entity_id", "class", "start_char", "end_char", "exact_text", "normalization", "binding", "distractors"],
         "properties": {
