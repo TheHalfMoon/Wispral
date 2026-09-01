@@ -1,8 +1,23 @@
 # Specification 000A — ACP Capability and Representative-Agent Qualification
 
-**State:** `GRAIN` candidate after founding authority becomes canonical and readiness is rechecked  
+**State:** `RUNNING`  
 **Parent:** `000-founding-research`  
 **Type:** research / protocol qualification
+
+## Execution activation
+
+Readiness was rechecked against canonical Wispral `main` at `25acbcc29bab262223315a55826e77396cc35822` and live ACP authority on 2026-09-01.
+
+The execution gate passed because:
+
+- the active Constitution, architecture invariants, parent Specification 000, and this Grain are canonical;
+- ACP specification, official Rust SDK, and registry revisions are publicly accessible and pinned in `docs/research/acp/qualification-inputs.md`;
+- Gemini CLI `0.57.0` and Codex ACP `1.7.0` remain current pinned representative distributions in the official registry;
+- `fixtures/acp-probe` is synthetic and isolated from user repositories;
+- the first behavioral probe is unauthenticated, receives no repository secrets, strips known API-key/token environment variables, and does not bypass provider permissions;
+- trace capture is limited to the synthetic fixture and sanitized ACP messages.
+
+This activation authorizes only the research tasks already defined by 000A. It does not authorize product code.
 
 ## Outcome
 
