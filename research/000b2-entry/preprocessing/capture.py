@@ -25,8 +25,8 @@ def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def load_attempt_state(path: Path) -> dict[str, Any]:
-    value = json.loads(path.read_text(encoding="utf-8"))
+def load_attempt_state_bytes(raw: bytes) -> dict[str, Any]:
+    value = json.loads(raw.decode("utf-8"))
     if not isinstance(value, dict):
         raise ValueError("attempt state must be a JSON object")
     attempt_id = value.get("attempt_id")
@@ -74,13 +74,19 @@ def capture(binary: Path, *, attempt_state_path: Path | None, qualification_only
         }
     else:
         assert attempt_state_path is not None
-        state = load_attempt_state(attempt_state_path)
+        state_path = attempt_state_path.resolve(strict=True)
+        if state_path.is_symlink() or not state_path.is_file():
+            raise ValueError("attempt state must be a regular non-symlink file")
+        # One immutable byte snapshot is both validated and hashed. A concurrent file
+        # replacement after this read cannot make the emitted digest describe unseen bytes.
+        state_raw = state_path.read_bytes()
+        state = load_attempt_state_bytes(state_raw)
         ordering = {
             "mode": "ATTEMPT_STATE_BOUND",
             "attempt_time_authority": True,
             "attempt_id": state["attempt_id"],
             "canonical_wispral_revision": state["canonical_wispral_revision"],
-            "attempt_state_sha256": file_sha256(attempt_state_path),
+            "attempt_state_sha256": sha256_bytes(state_raw),
             "primary_test_decoding_started": False,
         }
 
