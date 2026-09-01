@@ -5,12 +5,18 @@ on:
     branches:
       - research/000b2-entry-preparation
     paths:
-      - 'research/000b2-entry/**'
+      - 'research/000b2-entry/materialize_artifacts.py'
+      - 'research/000b2-entry/artifact-size-amendment.json'
+      - 'research/000b2-entry/materialized-artifacts.json'
+      - 'research/000b2-entry/verify_materialization.py'
       - 'research/000b1/qualified-candidates.json'
       - '.github/workflows/000b2-entry-materialization.yml'
   pull_request:
     paths:
-      - 'research/000b2-entry/**'
+      - 'research/000b2-entry/materialize_artifacts.py'
+      - 'research/000b2-entry/artifact-size-amendment.json'
+      - 'research/000b2-entry/materialized-artifacts.json'
+      - 'research/000b2-entry/verify_materialization.py'
       - 'research/000b1/qualified-candidates.json'
       - '.github/workflows/000b2-entry-materialization.yml'
 
