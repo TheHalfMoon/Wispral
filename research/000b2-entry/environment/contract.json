@@ -1,0 +1,25 @@
+{
+  "schema_version": "000b2-execution-environment-contract-v1",
+  "status": "PREPARED_ATTEMPT_CAPTURE_REQUIRED",
+  "performance_claim_policy": {
+    "github_hosted_runner": "DIAGNOSTIC_ONLY",
+    "controlled_required_for_comparative_performance": true,
+    "comparative_performance_authorized_by_this_contract": false
+  },
+  "required_identity_fields": [
+    "os",
+    "kernel",
+    "machine",
+    "cpu_model",
+    "logical_cpu_count",
+    "memory_bytes",
+    "runner",
+    "toolchain",
+    "hardware_fingerprint_sha256",
+    "environment_id"
+  ],
+  "same_attempt_requirement": "Capture the execution environment before any primary test decoding in the same B2 attempt environment. A prior CI capture may qualify tooling but cannot substitute for attempt-time evidence.",
+  "primary_test_decoding_performed": false,
+  "resolved": false,
+  "reason_unresolved": "No authorized B2 primary attempt exists; therefore no same-attempt environment fingerprint exists."
+}
