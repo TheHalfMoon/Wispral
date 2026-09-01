@@ -12,7 +12,7 @@ Produce a frozen, reproducible pre-comparison contract for the first local devel
 
 ## Why this is a separate Grain
 
-The current candidate ecosystem contains materially different behaviors:
+The following behavior notes are upstream-documented refinement inputs, not Wispral observations. At the pinned sources recorded in `docs/research/stt/000b-refinement-inputs.md`, each remains `DOCUMENTED_NOT_OBSERVED` until reproduced by a Wispral attempt:
 
 - Moonshine exposes streaming architectures and native runtime keyterms/context;
 - whisper.cpp exposes local Whisper inference but documents its microphone stream example as naive periodic/sliding re-decode behavior;
