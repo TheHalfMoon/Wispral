@@ -1,0 +1,43 @@
+{
+  "schema_version": "000b1-canonical-closeout-v1",
+  "closed_date": "2026-09-01",
+  "specification": "000B1-benchmark-candidate-qualification",
+  "disposition": "VERIFIED",
+  "canonical_base_before_evidence_merge": "6b5696a6becc360948282712cc9339df9cb3a67c",
+  "evidence_pr": 7,
+  "evidence_pr_head": "262c8cc6dd6fadfcd782ce5beee2f3ca443c77b5",
+  "evidence_merge_commit": "8df69835349f85d5ae6af9d6a62ef3af24f65f43",
+  "evidence_workflow": {
+    "name": "000B1 Preregistration",
+    "run_id": 33514521301,
+    "run_number": 58,
+    "head_sha": "262c8cc6dd6fadfcd782ce5beee2f3ca443c77b5",
+    "conclusion": "success"
+  },
+  "review_reconciliation": {
+    "independent_reviewers": ["coderabbitai", "cubic-dev-ai"],
+    "all_actionable_findings_reconciled": true,
+    "all_review_threads_resolved_before_merge": true,
+    "note": "Independent reviews produced actionable findings on earlier PR heads. Each finding was verified, fixed when valid, regression-gated, and the corresponding threads were resolved or confirmed addressed before the guarded final merge. No stale review was represented as a fresh approval."
+  },
+  "scope": {
+    "primary_test_decoding_performed": false,
+    "comparative_ranking_present": false,
+    "product_runtime_or_cargo_added": false,
+    "human_recording_authorized": false,
+    "b2_authorized": false
+  },
+  "b2_disposition": "BLOCKED_EXTERNAL",
+  "b2_ready": false,
+  "b2_blockers": [
+    "human developer-speech consent, retention, redistribution, withdrawal, and frozen corpus authority are absent",
+    "Moonshine material payload SHA-256 values remain pending attempt-time materialization",
+    "sherpa-onnx tokens.txt SHA-256 remains pending attempt-time materialization",
+    "each selected candidate still requires bounded non-primary operational smoke PASS or an explicit canonical waiver",
+    "the exact B2 scorer implementation/revision and configuration digest are not frozen",
+    "attempt-time FFmpeg binary/version-output identities and preprocessing execution evidence are not frozen",
+    "the B2 execution environment and hardware fingerprint are not frozen",
+    "a final B2 attempt manifest with frozen=true and a matching freeze digest does not exist"
+  ],
+  "next_action": "Do not execute 000B2 primary decoding. Preserve 000B2 as BLOCKED_EXTERNAL until the external human-speech authority exists and the remaining material, operational, scoring, preprocessing, environment, and manifest gates are satisfied without weakening the 000B1 contract."
+}

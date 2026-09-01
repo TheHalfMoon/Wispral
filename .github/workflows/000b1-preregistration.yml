@@ -4,16 +4,21 @@ on:
   push:
     branches:
       - research/000b1-benchmark-candidate-qualification
+      - research/000b1-canonical-closeout
     paths:
       - 'docs/research/stt/000b1-*'
+      - 'docs/canonical/CURRENT_STATE.md'
       - 'research/000b1/**'
-      - 'specs/000B1-benchmark-candidate-qualification/tasks.md'
+      - 'specs/CURRENT.md'
+      - 'specs/000B1-benchmark-candidate-qualification/**'
       - '.github/workflows/000b1-preregistration.yml'
   pull_request:
     paths:
       - 'docs/research/stt/000b1-*'
+      - 'docs/canonical/CURRENT_STATE.md'
       - 'research/000b1/**'
-      - 'specs/000B1-benchmark-candidate-qualification/tasks.md'
+      - 'specs/CURRENT.md'
+      - 'specs/000B1-benchmark-candidate-qualification/**'
       - '.github/workflows/000b1-preregistration.yml'
 
 permissions:
@@ -38,3 +43,11 @@ jobs:
         run: python research/000b1/verify_entity_annotation_gate.py
       - name: Verify 000B1 cross-document authority alignment
         run: python research/000b1/verify_documents.py
+      - name: Verify canonical closeout when present
+        run: |
+          if [ -f research/000b1/canonical-closeout.json ]; then
+            python research/000b1/verify_closeout.py
+            python research/000b1/verify_closeout_regressions.py
+          else
+            echo 'B1_CLOSEOUT=NO'
+          fi
