@@ -17,6 +17,7 @@ DRAFT = B1 / "examples" / "draft-attempt-manifest.json"
 MATERIALIZED = HERE / "materialized-artifacts.json"
 SMOKE_EVIDENCE = HERE / "operational-smoke-evidence.json"
 SCORER_CONFIG = HERE / "scorer-config.json"
+CANONICAL_SCORER_REVISION = "49d0f31408ab36f285f5e61228b54a72ca0aec07"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 EXPECTED_CANDIDATES = {
@@ -82,13 +83,17 @@ def verified_smoke_cells() -> dict[str, dict]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--canonical-revision", required=True)
-    parser.add_argument("--scorer-revision")
+    parser.add_argument("--scorer-revision", default=CANONICAL_SCORER_REVISION)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if not SHA40.fullmatch(args.canonical_revision):
         raise SystemExit("--canonical-revision must be a 40-hex Git SHA")
-    if args.scorer_revision is not None and not SHA40.fullmatch(args.scorer_revision):
+    if not SHA40.fullmatch(args.scorer_revision):
         raise SystemExit("--scorer-revision must be a 40-hex Git SHA")
+    if args.scorer_revision != CANONICAL_SCORER_REVISION:
+        raise SystemExit(
+            "--scorer-revision differs from the canonical entry-preparation scorer revision"
+        )
 
     manifest = load(DRAFT)
     evidence = load(MATERIALIZED)
@@ -144,6 +149,7 @@ def main() -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print("ENTRY_MANIFEST_DRAFT=PASS")
+    print(f"SCORER_REVISION={CANONICAL_SCORER_REVISION}")
     print("OPERATIONAL_QUALIFICATION=SMOKE_PASS")
     print("FROZEN=NO")
     print("PRIMARY_TEST_DECODING=NO")

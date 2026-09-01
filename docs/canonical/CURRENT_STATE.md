@@ -8,12 +8,14 @@
 **ACP closeout merge:** `99dd6290ee01ce566d32b92df6d469b66b56520a`  
 **000B refinement merge:** `6b5696a6becc360948282712cc9339df9cb3a67c`  
 **000B1 evidence merge:** `8df69835349f85d5ae6af9d6a62ef3af24f65f43`  
+**000B2 entry-preparation evidence merge:** `49d0f31408ab36f285f5e61228b54a72ca0aec07`  
 **Program status:** `SPEC_000_RESEARCH_ACTIVE`  
 **Active product implementation:** none  
 **Active parent specification:** `000-founding-research` — `REFINING`  
 **Verified ACP child:** `000A-acp-qualification` — `VERIFIED`, recommendation `PARTIAL`, confidence `MODERATE`  
 **Active research parent:** `000B-stt-entity-bakeoff` — `REFINING`  
 **Verified speech child:** `000B1-benchmark-candidate-qualification` — `VERIFIED`  
+**000B2 entry preparation:** `CLOSED_CANONICAL`  
 **Blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
 **Published release:** none
 
@@ -36,7 +38,7 @@ The verified result remains intentionally bounded:
 - both representatives completed real ACP v1 initialization;
 - both exposed structured capability/authentication metadata;
 - authenticated prompt execution, streaming, active cancellation, structured permission behavior, Codex steering behavior, and representative ACP v2 runtime interoperability were not observed;
-- recommendation: `PARTIAL`, confidence `MODERATE`;
+- recommendation: `PARTIAL`, confidence: `MODERATE`;
 - ACP remains a structured-path candidate, not an unconditional production selection.
 
 ## Canonical local-speech refinement
@@ -78,24 +80,47 @@ The verified B1 result is a preregistration/qualification contract, not a benchm
 - human recording authorization created: `NO`;
 - B2 authorization created: `NO`.
 
-The canonical closeout record is `research/000b1/canonical-closeout.json`.
+The historical B1 closeout record remains `research/000b1/canonical-closeout.json`.
+
+## Canonical 000B2 entry-preparation proof
+
+PR #10 completed the bounded non-primary B2 entry-preparation unit and merged by guarded expected-head merge from exact head `69b66bc433a146c2146e2b7fec264a8f4ed50ae9` as canonical commit `49d0f31408ab36f285f5e61228b54a72ca0aec07`.
+
+Before that merge, PR #11 canonicalized the trusted-base artifact-identity verifier at `32135294675a372653843560623067d9ad3822d6`, and PR #12 corrected live-base refresh semantics at `248208cffa666a485fe58b7467fdbb2ec7e8b820`.
+
+The decisive trusted runtime proof is workflow `000B2 Trusted Materialization Authority` run `33537242680`, job `99954441750`. It:
+
+- checked out live canonical `main` and resolved `TRUSTED_BASE_SHA=248208cffa666a485fe58b7467fdbb2ec7e8b820`;
+- checked out exact candidate head `69b66bc433a146c2146e2b7fec264a8f4ed50ae9` as data only;
+- reproduced all 18 pending artifact identities;
+- emitted `TRUSTED_000B2_ARTIFACT_IDENTITY=PASS`;
+- explicitly emitted `PROCESS_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE`.
+
+The entry-preparation unit canonically establishes:
+
+- all B1-pending Moonshine and sherpa-onnx artifact SHA-256 identities are materialized;
+- all six selected candidate cells have bounded deterministic synthetic non-speech `SMOKE_PASS` evidence;
+- the deterministic B2 scorer implementation, configuration, and verifier are canonical at merge `49d0f31408ab36f285f5e61228b54a72ca0aec07`;
+- FFmpeg `9.0.1` qualification and attempt-state-bound preprocessing capture tooling are prepared;
+- attempt-state-bound execution-environment capture tooling is prepared.
+
+This does not create participant/media authority, primary human-speech evidence, independent process chronology, controlled-environment attestation, comparative ranking, or a frozen final B2 attempt.
+
+The current closeout record is `research/000b2-entry/canonical-closeout.json`; current readiness is `research/000b2-entry/readiness.json`.
 
 ## B2 blocked successor
 
-`000B2-unbiased-stt-bakeoff` is `BLOCKED_EXTERNAL`, not `READY`.
+`000B2-unbiased-stt-bakeoff` remains `BLOCKED_EXTERNAL`, not `READY`.
 
-Primary developer-speech decoding must not begin until all required gates are satisfied. Current blockers are:
+Primary developer-speech decoding must not begin until all remaining gates are satisfied. Current blockers are:
 
-- explicit human developer-speech consent, retention, redistribution, withdrawal, and frozen-corpus authority are absent;
-- Moonshine payload SHA-256 values remain pending attempt-time materialization;
-- sherpa-onnx `tokens.txt` SHA-256 remains pending attempt-time materialization;
-- each selected candidate still requires bounded non-primary operational smoke PASS or an explicit canonical waiver;
-- exact scorer implementation/revision/configuration is not frozen;
-- attempt-time FFmpeg binary/version-output identity and preprocessing execution evidence are not frozen;
-- execution environment and hardware fingerprint are not frozen;
+- human developer-speech participant/media authority, including consent, purpose, retention, redistribution, withdrawal, derivative-artifact permission, privacy, and prohibited-content policy, is absent;
+- authorized human recordings, consent records, speaker-disjoint split manifests, and a frozen primary test manifest are absent;
+- accepted attempt-bound FFmpeg `9.0.1` binary/version/config identity and preprocessing execution evidence under separately reviewable execution chronology is absent;
+- accepted attempt-bound execution-environment and hardware-fingerprint evidence under separately reviewable chronology/control evidence is absent;
 - no final B2 attempt manifest exists with `frozen=true` and a matching freeze digest.
 
-Synthetic/TTS audio may support smoke/harness/regression only. It cannot satisfy the human developer-speech authority gate and cannot enter the primary human ranking.
+Synthetic/TTS audio may support smoke/harness/regression only. It cannot satisfy the human developer-speech authority gate and cannot enter the primary human ranking. Repository-owner approval cannot substitute for participant/media authority.
 
 ## What is established
 
@@ -110,7 +135,8 @@ Canonical research authority now contains:
 - a founding voice/agent threat model;
 - verified 000A ACP evidence (`PARTIAL` / `MODERATE`);
 - verified 000B1 local-STT preregistration/candidate qualification;
-- explicit B2 external/material readiness blockers.
+- canonical B2 entry-preparation evidence for artifact identities, bounded smoke qualification, and scorer revision;
+- explicit remaining B2 external/attempt-time readiness blockers.
 
 ## Current product thesis
 
@@ -151,8 +177,8 @@ Wispral does NOT currently claim:
 
 No Rust product implementation, Cargo workspace, permanent speech-engine integration, ACP production client, PTY adapter, TUI, installer, or release is authorized until Specification 000 synthesis reaches `000G`, selects a bounded first implementation Grain from reproducible evidence, and that Grain independently satisfies readiness.
 
-Verified 000A and verified 000B1 do not weaken this gate.
+Verified 000A, verified 000B1, and canonical B2 entry preparation do not weaken this gate.
 
 ## Next canonical action
 
-Do not execute B2 while it is `BLOCKED_EXTERNAL`. Establish the missing human-speech authority and satisfy the remaining materialization, operational, scoring, preprocessing, environment, and final manifest-freeze gates without weakening the verified B1 contract. If those gates cannot be satisfied, preserve the block rather than substitute synthetic primary evidence or prematurely advance B3/B4.
+Preserve B2 as `BLOCKED_EXTERNAL`. Establish real participant/media authority and an authorized frozen human developer-speech corpus first. Only then prepare a separately reviewable B2 attempt that captures preprocessing and execution-environment evidence before primary decoding, freezes the final manifest, and rechecks readiness from canonical `main`. If those gates cannot be satisfied, preserve the block rather than substitute synthetic primary evidence or prematurely advance B3/B4.

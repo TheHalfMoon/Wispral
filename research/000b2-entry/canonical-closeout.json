@@ -1,0 +1,61 @@
+{
+  "schema_version": "000b2-entry-closeout-v1",
+  "recorded_date": "2026-09-01",
+  "disposition": "BLOCKED_EXTERNAL",
+  "b2_ready": false,
+  "primary_test_decoding_authorized": false,
+  "entry_preparation_evidence_merge": "49d0f31408ab36f285f5e61228b54a72ca0aec07",
+  "qualified_candidate_head": "69b66bc433a146c2146e2b7fec264a8f4ed50ae9",
+  "exact_head_qualification": {
+    "entry_materialization_run_id": 33535368632,
+    "entry_contracts_run_id": 33535368635,
+    "operational_smoke_run_id": 33535368633,
+    "preprocessing_toolchain_run_id": 33535368733
+  },
+  "trusted_authority_merges": {
+    "trusted_base_authority": "32135294675a372653843560623067d9ad3822d6",
+    "live_base_refresh_fix": "248208cffa666a485fe58b7467fdbb2ec7e8b820"
+  },
+  "trusted_runtime_proof": {
+    "workflow": "000B2 Trusted Materialization Authority",
+    "run_id": 33537242680,
+    "job_id": 99954441750,
+    "trusted_base_sha": "248208cffa666a485fe58b7467fdbb2ec7e8b820",
+    "candidate_head_sha": "69b66bc433a146c2146e2b7fec264a8f4ed50ae9",
+    "artifact_identity_status": "PASS",
+    "materialized_artifact_records": 18,
+    "process_attestation": "NOT_PROVIDED_BY_THIS_GATE"
+  },
+  "review_reconciliation": {
+    "independent_findings_present": true,
+    "all_findings_reconciled": true,
+    "all_review_threads_resolved": true,
+    "stale_review_represented_as_fresh_approval": false
+  },
+  "resolved_entry_gates": [
+    "all B1-pending candidate artifact SHA-256 identities are materialized and canonically reproduced",
+    "all six selected candidate cells have bounded deterministic synthetic non-speech SMOKE_PASS evidence",
+    "scorer implementation, configuration, and verifier are canonical at the entry-preparation evidence merge"
+  ],
+  "prepared_but_not_attempt_evidence": [
+    "FFmpeg 9.0.1 qualification and attempt-state-bound preprocessing capture tooling",
+    "attempt-state-bound execution-environment capture tooling"
+  ],
+  "remaining_blockers": [
+    "human developer-speech participant/media authority is absent",
+    "authorized human corpus, consent records, speaker-disjoint split manifests, and frozen primary test manifest are absent",
+    "accepted attempt-bound FFmpeg 9.0.1 binary/version/config identity and preprocessing execution evidence is absent",
+    "accepted attempt-bound execution environment and hardware fingerprint evidence is absent",
+    "final B2 attempt manifest is not frozen"
+  ],
+  "non_claims": {
+    "primary_test_decoding_performed": false,
+    "human_speech_used_in_entry_preparation": false,
+    "comparative_ranking_present": false,
+    "accuracy_claim_present": false,
+    "performance_claim_present": false,
+    "product_runtime_or_product_code_added": false,
+    "stt_winner_selected": false
+  },
+  "next_action": "Preserve B2 as BLOCKED_EXTERNAL. Establish real participant/media authority and an authorized frozen human corpus first; then create a separately reviewable authorized attempt that captures preprocessing and execution-environment evidence before primary decoding, freezes the final manifest, and rechecks readiness from canonical main."
+}

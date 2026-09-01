@@ -18,7 +18,10 @@
       "workflow_run_id": 33519579512,
       "workflow_head_sha": "3d4325b7c9b13e6696326f3d2c8a6cfe501d9e12",
       "factual_amendment_path": "research/000b2-entry/artifact-size-amendment.json",
-      "note": "All B1-pending Moonshine SHA-256 values and sherpa-onnx tokens.txt SHA-256 were materialized. The historical 5050-byte tokens.txt value is preserved in B1 and the B2 entry evidence records the reproduced 5048-byte source fact through an explicit bounded amendment. This gate does not attest amendment chronology."
+      "canonical_trusted_reproduction_run_id": 33537242680,
+      "canonical_trusted_base_sha": "248208cffa666a485fe58b7467fdbb2ec7e8b820",
+      "canonical_candidate_head_sha": "69b66bc433a146c2146e2b7fec264a8f4ed50ae9",
+      "note": "All B1-pending candidate artifact SHA-256 identities are materialized and were independently reproduced by canonical-base verifier code against the exact qualified entry-preparation head. The historical 5050-byte tokens.txt value is preserved in B1 and the B2 entry evidence records the reproduced 5048-byte source fact through an explicit bounded amendment. This gate does not attest amendment chronology."
     },
     "operational_qualification": {
       "status": "RESOLVED_SMOKE_PASS",
@@ -30,12 +33,13 @@
       "primary_ranking_eligible": false
     },
     "scorer": {
-      "status": "CANONICAL_REVISION_PENDING_MERGE",
+      "status": "CANONICAL",
+      "canonical_revision": "49d0f31408ab36f285f5e61228b54a72ca0aec07",
       "implementation_path": "research/000b2-entry/scorer.py",
       "config_path": "research/000b2-entry/scorer-config.json",
       "verifier_path": "research/000b2-entry/verify_scorer.py",
       "verification_baseline_workflow_run_id": 33523779606,
-      "note": "Implementation and configuration are deterministic and CI-verified. The recorded run is a stable verification baseline, not a self-updating latest-run claim. The canonical scorer revision cannot be named until this entry-preparation evidence merges."
+      "note": "The deterministic scorer implementation, configuration, and verifier became canonical in the entry-preparation evidence merge. The recorded workflow run remains a stable verification baseline rather than a self-updating latest-run claim."
     },
     "preprocessing": {
       "status": "SAME_ATTEMPT_CAPTURE_REQUIRED",
@@ -43,7 +47,7 @@
       "capture_tool_path": "research/000b2-entry/preprocessing/capture.py",
       "required_tool": "FFmpeg 9.0.1",
       "resolved": false,
-      "note": "Toolchain qualification does not substitute for an authorized attempt's FFmpeg binary/version/config evidence. The capture tool binds identity to one declared PRE_PRIMARY_CAPTURE state snapshot but does not independently attest chronology."
+      "note": "Toolchain qualification does not substitute for an authorized attempt's FFmpeg binary/version/config identity and preprocessing execution evidence. The capture tool binds identity to one declared PRE_PRIMARY_CAPTURE state snapshot but does not independently attest chronology."
     },
     "execution_environment": {
       "status": "SAME_ATTEMPT_CAPTURE_REQUIRED",
@@ -87,10 +91,9 @@
   "remaining_blockers": [
     "human developer-speech participant/media authority is absent",
     "authorized human corpus, consent records, speaker-disjoint split manifests, and frozen primary test manifest are absent",
-    "scorer canonical revision is pending entry-preparation merge",
-    "same-attempt FFmpeg 9.0.1 binary/version/config capture is absent",
-    "same-attempt execution environment and hardware fingerprint are absent",
+    "accepted attempt-bound FFmpeg 9.0.1 binary/version/config identity and preprocessing execution evidence is absent",
+    "accepted attempt-bound execution environment and hardware fingerprint evidence is absent",
     "final B2 attempt manifest is not frozen"
   ],
-  "next_action": "Merge qualified B2 entry-preparation evidence after exact-head CI and review reconciliation. Then reread canonical governance. Do not execute B2 primary human-speech decoding unless external participant/media authority and corpus evidence become real and every attempt-bound gate validates under separately reviewed execution chronology and environment-control evidence."
+  "next_action": "Entry preparation is canonical, but B2 remains BLOCKED_EXTERNAL. Establish real participant/media authority and an authorized frozen human corpus first; then create a separately reviewable authorized attempt that captures preprocessing and execution-environment evidence before primary decoding, freezes the final manifest, and rechecks readiness from canonical main. Do not execute B2 primary human-speech decoding before those gates are real."
 }
