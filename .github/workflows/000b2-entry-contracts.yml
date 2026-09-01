@@ -16,6 +16,7 @@ on:
       - 'research/000b2-entry/verify_readiness.py'
       - 'research/000b2-entry/preprocessing/**'
       - 'research/000b2-entry/environment/**'
+      - 'specs/CURRENT.md'
       - '.github/workflows/000b2-entry-contracts.yml'
   pull_request:
     paths:
@@ -30,6 +31,7 @@ on:
       - 'research/000b2-entry/verify_readiness.py'
       - 'research/000b2-entry/preprocessing/**'
       - 'research/000b2-entry/environment/**'
+      - 'specs/CURRENT.md'
       - '.github/workflows/000b2-entry-contracts.yml'
 
 permissions:
@@ -63,12 +65,13 @@ jobs:
           python research/000b2-entry/prepare_attempt_manifest.py \
             --canonical-revision "$CANONICAL_REVISION" \
             --output "$RUNNER_TEMP/000b2-entry-draft.json"
-      - name: Prove B2 entry draft validates but remains blocked
+      - name: Prove B2 entry draft validates but canonical frontier remains blocked
         run: |
           OUTPUT="$(python research/000b2-entry/validate_entry_manifest.py "$RUNNER_TEMP/000b2-entry-draft.json")"
           printf '%s\n' "$OUTPUT"
           printf '%s\n' "$OUTPUT" | grep -Fx 'ENTRY_STRUCTURE=PASS'
           printf '%s\n' "$OUTPUT" | grep -Fx 'B2_READY=NO'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'BLOCKER=canonical B2 frontier is BLOCKED_EXTERNAL, not READY'
       - name: Verify current B2 readiness record
         run: |
           test -f research/000b2-entry/readiness.json || {
