@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -30,6 +31,25 @@ NONCLAIMS = {
     "performance_claim_present": False,
     "product_runtime_or_product_code_added": False,
 }
+EXPECTED_FILES = {
+    "materialization evidence": "research/000b2-entry/materialized-artifacts.json",
+    "artifact amendment": "research/000b2-entry/artifact-size-amendment.json",
+    "operational smoke evidence": "research/000b2-entry/operational-smoke-evidence.json",
+    "scorer implementation_path": "research/000b2-entry/scorer.py",
+    "scorer config_path": "research/000b2-entry/scorer-config.json",
+    "scorer verifier_path": "research/000b2-entry/verify_scorer.py",
+    "preprocessing contract": "research/000b2-entry/preprocessing/contract.json",
+    "preprocessing capture tool": "research/000b2-entry/preprocessing/capture.py",
+    "environment contract": "research/000b2-entry/environment/contract.json",
+    "environment capture tool": "research/000b2-entry/environment/capture.py",
+    "attempt manifest generator": "research/000b2-entry/prepare_attempt_manifest.py",
+    "attempt manifest validator": "research/000b2-entry/validate_entry_manifest.py",
+}
+CONTENT_VERIFIERS = {
+    "research/000b2-entry/verify_materialization.py": "VERIFY_000B2_MATERIALIZATION=PASS",
+    "research/000b2-entry/verify_operational_smoke.py": "VERIFY_000B2_OPERATIONAL_SMOKE=PASS",
+    "research/000b2-entry/verify_scorer.py": "VERIFY_000B2_SCORER=PASS",
+}
 
 
 def load(path: Path) -> Any:
@@ -40,11 +60,47 @@ def fail(message: str) -> None:
     raise AssertionError(message)
 
 
-def require_file(relative: str, label: str) -> Path:
+def require_file(relative: Any, label: str) -> Path:
+    expected = EXPECTED_FILES.get(label)
+    if expected is None:
+        fail(f"readiness verifier has no allowlisted path for {label}")
+    if not isinstance(relative, str) or relative != expected:
+        fail(f"{label} path drift: expected {expected!r}, got {relative!r}")
+    rel = Path(relative)
+    if rel.is_absolute() or ".." in rel.parts:
+        fail(f"{label} path escapes repository root: {relative}")
+    path = ROOT / rel
+    if path.is_symlink():
+        fail(f"{label} must not be a symlink: {relative}")
+    try:
+        resolved = path.resolve(strict=True)
+    except OSError as exc:
+        fail(f"{label} missing: {relative}: {exc}")
+    root_resolved = ROOT.resolve(strict=True)
+    if not resolved.is_relative_to(root_resolved) or not resolved.is_file():
+        fail(f"{label} is not a regular repository file: {relative}")
+    return resolved
+
+
+def run_content_verifier(relative: str) -> None:
+    marker = CONTENT_VERIFIERS.get(relative)
+    if marker is None:
+        fail(f"content verifier is not allowlisted: {relative}")
     path = ROOT / relative
-    if not path.is_file():
-        fail(f"{label} missing: {relative}")
-    return path
+    if path.is_symlink() or not path.is_file():
+        fail(f"content verifier missing or symlinked: {relative}")
+    proc = subprocess.run(
+        [sys.executable, str(path)],
+        cwd=ROOT,
+        check=False,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        timeout=30,
+    )
+    if proc.returncode != 0 or marker not in proc.stdout.splitlines():
+        detail = proc.stdout.strip() or f"exit={proc.returncode}"
+        fail(f"content verifier failed for {relative}: {detail}")
 
 
 def require_gate(gates: dict[str, Any], name: str) -> dict[str, Any]:
@@ -104,8 +160,9 @@ def verify() -> None:
         fail("artifact materialization run drift")
     if materialization.get("workflow_head_sha") != "3d4325b7c9b13e6696326f3d2c8a6cfe501d9e12":
         fail("artifact materialization head drift")
-    require_file(str(materialization.get("evidence_path")), "materialization evidence")
-    require_file(str(materialization.get("factual_amendment_path")), "artifact amendment")
+    require_file(materialization.get("evidence_path"), "materialization evidence")
+    require_file(materialization.get("factual_amendment_path"), "artifact amendment")
+    run_content_verifier("research/000b2-entry/verify_materialization.py")
 
     smoke = require_gate(gates, "operational_qualification")
     if smoke.get("status") != "RESOLVED_SMOKE_PASS":
@@ -120,7 +177,8 @@ def verify() -> None:
         fail("operational smoke input class drift")
     if smoke.get("primary_ranking_eligible") is not False:
         fail("operational smoke cannot become primary-ranking evidence")
-    require_file(str(smoke.get("evidence_path")), "operational smoke evidence")
+    require_file(smoke.get("evidence_path"), "operational smoke evidence")
+    run_content_verifier("research/000b2-entry/verify_operational_smoke.py")
 
     scorer = require_gate(gates, "scorer")
     if scorer.get("status") != "CANONICAL_REVISION_PENDING_MERGE":
@@ -133,23 +191,24 @@ def verify() -> None:
     if not isinstance(note, str) or "stable verification baseline" not in note:
         fail("scorer verification baseline semantics missing")
     for key in ("implementation_path", "config_path", "verifier_path"):
-        require_file(str(scorer.get(key)), f"scorer {key}")
+        require_file(scorer.get(key), f"scorer {key}")
+    run_content_verifier("research/000b2-entry/verify_scorer.py")
 
     preprocessing = require_gate(gates, "preprocessing")
     if preprocessing.get("status") != "SAME_ATTEMPT_CAPTURE_REQUIRED" or preprocessing.get("resolved") is not False:
         fail("preprocessing must remain unresolved pending same-attempt capture")
     if preprocessing.get("required_tool") != "FFmpeg 9.0.1":
         fail("preprocessing tool drift")
-    require_file(str(preprocessing.get("contract_path")), "preprocessing contract")
-    require_file(str(preprocessing.get("capture_tool_path")), "preprocessing capture tool")
+    require_file(preprocessing.get("contract_path"), "preprocessing contract")
+    require_file(preprocessing.get("capture_tool_path"), "preprocessing capture tool")
 
     environment = require_gate(gates, "execution_environment")
     if environment.get("status") != "SAME_ATTEMPT_CAPTURE_REQUIRED" or environment.get("resolved") is not False:
         fail("execution environment must remain unresolved pending same-attempt capture")
     if environment.get("github_hosted_performance_mode") != "DIAGNOSTIC_ONLY":
         fail("hosted-runner performance boundary drift")
-    require_file(str(environment.get("contract_path")), "environment contract")
-    require_file(str(environment.get("capture_tool_path")), "environment capture tool")
+    require_file(environment.get("contract_path"), "environment contract")
+    require_file(environment.get("capture_tool_path"), "environment capture tool")
 
     human = require_gate(gates, "human_developer_speech_authority")
     if human.get("status") != "BLOCKED_EXTERNAL" or human.get("resolved") is not False:
@@ -169,8 +228,8 @@ def verify() -> None:
         fail("attempt manifest must remain not frozen")
     if manifest.get("primary_test_decoding_started") is not False:
         fail("primary decoding started before readiness")
-    require_file(str(manifest.get("generator_path")), "attempt manifest generator")
-    require_file(str(manifest.get("validator_path")), "attempt manifest validator")
+    require_file(manifest.get("generator_path"), "attempt manifest generator")
+    require_file(manifest.get("validator_path"), "attempt manifest validator")
 
     next_action = record.get("next_action")
     if not isinstance(next_action, str) or "Do not execute B2 primary human-speech decoding" not in next_action:
@@ -184,7 +243,15 @@ def verify() -> None:
 def main() -> int:
     try:
         verify()
-    except (AssertionError, OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+    except (
+        AssertionError,
+        OSError,
+        ValueError,
+        KeyError,
+        TypeError,
+        json.JSONDecodeError,
+        subprocess.SubprocessError,
+    ) as exc:
         print(f"VERIFY_000B2_ENTRY_READINESS=FAIL: {exc}", file=sys.stderr)
         return 1
     print("VERIFY_000B2_ENTRY_READINESS=PASS")
