@@ -18,6 +18,8 @@ The bounded non-primary `000B2` entry-preparation unit is canonically closed. It
 
 `000B2-unbiased-stt-bakeoff` remains the dependency-ordered successor but is `BLOCKED_EXTERNAL`, not `GRAIN`, `READY`, or `RUNNING`.
 
+Entry-preparation work may only remove non-primary readiness blockers without weakening the frozen B1 contract, inspecting the primary test split, or substituting synthetic/TTS media for the required human developer-speech authority. The now-closed entry-preparation unit satisfied that boundary; the same invariant continues to govern any future readiness-only maintenance.
+
 B2 primary developer-speech decoding MUST NOT begin while any current readiness gate remains unsatisfied. Synthetic/TTS media may support smoke/harness/regression only and cannot substitute for the required human developer-speech authority or frozen primary corpus.
 
 `specs/CURRENT.md`, `research/000b2-entry/readiness.json`, and `research/000b2-entry/canonical-closeout.json` own the current executable frontier and blocker set. `research/000b1/canonical-closeout.json` remains historical B1 authority and must not be rewritten to pretend its original blocker snapshot is current.
