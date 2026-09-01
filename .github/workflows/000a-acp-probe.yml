@@ -6,6 +6,7 @@ on:
       - '.github/workflows/000a-acp-probe.yml'
       - 'research/000a/**'
       - 'fixtures/acp-probe/**'
+      - 'docs/research/acp/**'
       - 'specs/000A-acp-qualification/**'
   workflow_dispatch:
 
@@ -13,6 +14,25 @@ permissions:
   contents: read
 
 jobs:
+  evidence-verifier:
+    name: Committed evidence verifier
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate verifier syntax
+        run: python -m py_compile research/000a/verify_evidence.py
+
+      - name: Cross-check matrix and committed raw evidence
+        run: python research/000a/verify_evidence.py
+
   protocol-probe:
     name: ACP v1 probe (${{ matrix.agent.id }})
     runs-on: ubuntu-latest
