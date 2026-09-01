@@ -147,7 +147,7 @@ If more than one meaningful footprint tier is needed, use a small preregistered 
 
 ### Primary evidence requires human speech
 
-Synthetic/TTS-generated audio may be used for installation smoke tests, schema validation, and deterministic harness regression. It MUST NOT be the sole basis for ranking candidate STT configurations or making human developer-speech accuracy claims.
+Synthetic/TTS-generated audio may be used only for installation smoke tests, schema validation, and deterministic harness regression. It MUST NOT contribute to the primary human developer-speech ranking or support human developer-speech accuracy claims.
 
 The primary developer-entity panel requires recorded human speech with:
 
