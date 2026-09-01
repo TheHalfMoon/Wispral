@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Fail-closed verifier for durable B2 non-primary operational smoke evidence."""
+"""Fail-closed verifier for durable or freshly aggregated B2 smoke evidence."""
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import re
@@ -86,13 +87,85 @@ def expected_artifacts() -> dict[str, dict[str, tuple[int, str]]]:
     return result
 
 
-def verify() -> None:
-    evidence = load(EVIDENCE)
+def expected_runtime_revisions() -> dict[str, str]:
+    registry = load(REGISTRY)
+    revisions: dict[str, str] = {}
+    for family in registry["families"]:
+        family_name = family.get("family")
+        runtime = family.get("runtime")
+        if not isinstance(family_name, str) or not isinstance(runtime, dict):
+            fail("qualified candidate family/runtime malformed")
+        revision = runtime.get("revision")
+        if not isinstance(revision, str) or not SHA40.fullmatch(revision):
+            fail(f"qualified runtime revision malformed: {family_name}")
+        if family_name in revisions:
+            fail(f"duplicate runtime family authority: {family_name}")
+        revisions[family_name] = revision
+    if set(revisions) != {"moonshine", "whisper.cpp", "sherpa-onnx"}:
+        fail("qualified runtime family authority drift")
+    return revisions
+
+
+def verify_runtime(candidate_id: str, family: str, cell: dict[str, Any], expected_revision: str) -> None:
+    runtime_revision = cell.get("runtime_revision")
+    if runtime_revision != expected_revision:
+        fail(f"runtime revision differs from frozen B1 authority: {candidate_id}")
+    if not SHA40.fullmatch(runtime_revision):
+        fail(f"runtime revision malformed: {candidate_id}")
+
+    runtime = cell.get("runtime")
+    if not isinstance(runtime, dict):
+        fail(f"runtime evidence missing: {candidate_id}")
+    if family == "moonshine":
+        if runtime.get("distribution") != "moonshine-voice" or runtime.get("version") != "0.1.5":
+            fail(f"Moonshine runtime identity drift: {candidate_id}")
+        expected_arch = 4 if candidate_id == "moonshine-compact" else 5
+        if runtime.get("model_arch") != expected_arch or runtime.get("model_asset_root") != "quantized_26_08_21":
+            fail(f"Moonshine model runtime identity drift: {candidate_id}")
+    elif family == "sherpa-onnx":
+        if runtime != {"distribution": "sherpa-onnx", "version": "1.13.7"}:
+            fail(f"sherpa runtime identity drift: {candidate_id}")
+    elif family == "whisper.cpp":
+        if runtime.get("source_revision") != expected_revision:
+            fail(f"whisper source revision differs from B1 authority: {candidate_id}")
+        for field in ("cli_binary_sha256", "version_output_sha256"):
+            value = runtime.get(field)
+            if not isinstance(value, str) or not SHA256.fullmatch(value):
+                fail(f"whisper runtime {field} missing/malformed: {candidate_id}")
+    else:
+        fail(f"unexpected runtime family: {family}")
+
+
+def verify_execution(candidate_id: str, family: str, cell: dict[str, Any]) -> None:
+    execution = cell.get("execution")
+    if not isinstance(execution, dict) or execution.get("decode_completed") is not True:
+        fail(f"decode path did not complete: {candidate_id}")
+    if family == "moonshine":
+        if execution.get("stream_api_executed") is not True:
+            fail(f"Moonshine stream execution marker missing: {candidate_id}")
+    elif family == "sherpa-onnx":
+        if execution.get("online_transducer_api_executed") is not True:
+            fail(f"sherpa online transducer execution marker missing: {candidate_id}")
+        decode_steps = execution.get("decode_steps")
+        if not isinstance(decode_steps, int) or decode_steps <= 0 or decode_steps > 10000:
+            fail(f"sherpa decode-step evidence malformed: {candidate_id}")
+    elif family == "whisper.cpp":
+        if execution.get("whisper_cli_executed") is not True or execution.get("exit_code") != 0:
+            fail(f"whisper CLI execution marker missing/failed: {candidate_id}")
+        if execution.get("captured_output_retained") is not False:
+            fail(f"whisper transcript-retention boundary drift: {candidate_id}")
+    else:
+        fail(f"unexpected execution family: {family}")
+
+
+def verify(evidence_path: Path = EVIDENCE, expected_workflow: dict[str, Any] | None = None) -> None:
+    evidence = load(evidence_path)
+    workflow_authority = EXPECTED_WORKFLOW if expected_workflow is None else expected_workflow
     if evidence.get("schema_version") != "000b2-operational-smoke-evidence-v1":
         fail("aggregate smoke schema drift")
     if evidence.get("purpose") != "B2_ENTRY_OPERATIONAL_QUALIFICATION_NON_PRIMARY":
         fail("aggregate smoke purpose drift")
-    if evidence.get("source_workflow") != EXPECTED_WORKFLOW:
+    if evidence.get("source_workflow") != workflow_authority:
         fail("aggregate smoke workflow provenance drift")
     for field in (
         "primary_test_decoding_performed",
@@ -111,7 +184,8 @@ def verify() -> None:
         fail("aggregate smoke is not PASS")
     if qualification.get("candidate_count") != 6:
         fail("aggregate smoke candidate count drift")
-    if set(qualification.get("candidate_ids", [])) != set(EXPECTED_CELLS):
+    candidate_ids = qualification.get("candidate_ids")
+    if not isinstance(candidate_ids, list) or len(candidate_ids) != 6 or set(candidate_ids) != set(EXPECTED_CELLS):
         fail("aggregate smoke candidate allowlist drift")
     if qualification.get("synthetic_input_sha256") != EXPECTED_SYNTHETIC_SHA:
         fail("aggregate synthetic input digest drift")
@@ -120,6 +194,7 @@ def verify() -> None:
         fail("aggregate evidence payload digest mismatch")
 
     expected = expected_artifacts()
+    runtime_revisions = expected_runtime_revisions()
     cells = evidence.get("candidate_evidence")
     if not isinstance(cells, list) or len(cells) != 6:
         fail("candidate evidence must contain exactly six cells")
@@ -187,20 +262,54 @@ def verify() -> None:
         if observed != expected[candidate_id]:
             fail(f"artifact evidence differs from preregistered/materialized authority: {candidate_id}")
 
-        runtime_revision = cell.get("runtime_revision")
-        if not isinstance(runtime_revision, str) or not SHA40.fullmatch(runtime_revision):
-            fail(f"runtime revision malformed: {candidate_id}")
-        execution = cell.get("execution")
-        if not isinstance(execution, dict) or execution.get("decode_completed") is not True:
-            fail(f"decode path did not complete: {candidate_id}")
+        verify_runtime(candidate_id, family, cell, runtime_revisions[family])
+        verify_execution(candidate_id, family, cell)
 
     if seen != set(EXPECTED_CELLS):
         fail("six-cell smoke allowlist incomplete")
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--evidence", type=Path)
+    parser.add_argument("--expected-head-sha")
+    parser.add_argument("--expected-run-id", type=int)
+    parser.add_argument("--expected-run-number", type=int)
+    args = parser.parse_args()
+    dynamic = any(
+        value is not None
+        for value in (
+            args.evidence,
+            args.expected_head_sha,
+            args.expected_run_id,
+            args.expected_run_number,
+        )
+    )
+    if dynamic and not all(
+        value is not None
+        for value in (
+            args.evidence,
+            args.expected_head_sha,
+            args.expected_run_id,
+            args.expected_run_number,
+        )
+    ):
+        parser.error("fresh aggregate verification requires evidence, head SHA, run id, and run number")
+
+    evidence_path = EVIDENCE
+    expected_workflow = None
+    if dynamic:
+        if not SHA40.fullmatch(args.expected_head_sha):
+            parser.error("--expected-head-sha must be a full lowercase Git SHA")
+        evidence_path = args.evidence
+        expected_workflow = {
+            "name": "000B2 Operational Smoke",
+            "head_sha": args.expected_head_sha,
+            "run_id": args.expected_run_id,
+            "run_number": args.expected_run_number,
+        }
     try:
-        verify()
+        verify(evidence_path, expected_workflow)
     except (AssertionError, OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
         print(f"VERIFY_000B2_OPERATIONAL_SMOKE=FAIL: {exc}", file=sys.stderr)
         return 1
