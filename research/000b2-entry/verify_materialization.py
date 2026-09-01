@@ -36,6 +36,8 @@ def correction_map(amendment: dict[str, Any]) -> dict[tuple[str, str], dict[str,
         raise AssertionError("amendment status drift")
     if amendment.get("primary_test_decoding_performed") is not False:
         raise AssertionError("amendment follows primary decoding")
+    if amendment.get("comparative_ranking_present") is not False:
+        raise AssertionError("amendment follows comparative ranking")
     rows = amendment.get("corrections")
     if not isinstance(rows, list) or len(rows) != 2:
         raise AssertionError("expected exactly two tokens.txt size corrections")
@@ -94,6 +96,9 @@ def expected_pending(registry: dict[str, Any], corrections: dict[tuple[str, str]
                     "source_url": source_url,
                     "pre_attempt_size_amended": amended,
                 }
+    unused = set(corrections) - set(expected)
+    if unused:
+        raise AssertionError(f"amendment keys are not pending in registry: {sorted(unused)}")
     return expected
 
 
@@ -108,7 +113,10 @@ def flattened_evidence(evidence: dict[str, Any]) -> dict[tuple[str, str], dict[s
         for path, row in paths.items():
             if not isinstance(row, dict):
                 raise AssertionError(f"artifact evidence not a mapping: {candidate_id}:{path}")
-            result[(candidate_id, path)] = row
+            key = (candidate_id, path)
+            if key in result:
+                raise AssertionError(f"duplicate artifact evidence: {key}")
+            result[key] = row
     return result
 
 
@@ -171,6 +179,8 @@ def verify_live_report(path: Path, committed: dict[tuple[str, str], dict[str, An
     live = load(path)
     if live.get("schema_version") != "000b2-materialization-v1":
         raise AssertionError("live materialization report schema drift")
+    if live.get("purpose") != "B2_ENTRY_PREPARATION_NON_DECODING":
+        raise AssertionError("live materialization purpose drift")
     if live.get("primary_test_decoding_performed") is not False or live.get("comparative_ranking_present") is not False:
         raise AssertionError("live materialization crossed non-decoding boundary")
     payload_digest = live.get("report_payload_sha256")
@@ -185,8 +195,15 @@ def verify_live_report(path: Path, committed: dict[tuple[str, str], dict[str, An
         raise AssertionError("live report payload digest mismatch")
 
     live_rows = {}
-    for row in live.get("artifacts", []):
+    rows = live.get("artifacts")
+    if not isinstance(rows, list):
+        raise AssertionError("live materialization artifact list missing")
+    for row in rows:
+        if not isinstance(row, dict):
+            raise AssertionError("live materialization artifact row malformed")
         key = (row.get("candidate_id"), row.get("path"))
+        if key in live_rows:
+            raise AssertionError(f"duplicate live materialization row: {key}")
         live_rows[key] = row
     if set(live_rows) != set(committed):
         raise AssertionError("live materialization artifact set differs from committed evidence")
