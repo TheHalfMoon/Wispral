@@ -6,7 +6,6 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
-import os
 import tempfile
 from pathlib import Path
 
@@ -70,14 +69,11 @@ def main() -> int:
         qualification = capture.capture(
             binary, attempt_state_path=None, qualification_only=True
         )
-        require(
-            qualification["ordering"]["mode"] == "QUALIFICATION_ONLY",
-            "qualification mode drift",
-        )
-        require(
-            qualification["ordering"]["attempt_time_authority"] is False,
-            "qualification became attempt authority",
-        )
+        q_ordering = qualification["ordering"]
+        require(q_ordering["mode"] == "QUALIFICATION_ONLY", "qualification mode drift")
+        require(q_ordering["attempt_state_bound"] is False, "qualification bound to attempt")
+        require(q_ordering["attempt_time_authority"] is False, "qualification became attempt authority")
+        require(q_ordering["independent_chronology_attestation"] is False, "qualification fabricated chronology")
         require(qualification["source_tag"] == "n9.0.1", "source tag drift")
         require(
             qualification["source_commit"]
@@ -93,7 +89,9 @@ def main() -> int:
         )
         ordering = bound["ordering"]
         require(ordering["mode"] == "ATTEMPT_STATE_BOUND", "attempt mode drift")
-        require(ordering["attempt_time_authority"] is True, "attempt authority missing")
+        require(ordering["attempt_state_bound"] is True, "attempt-state binding missing")
+        require(ordering["attempt_time_authority"] is False, "snapshot binding became chronology authority")
+        require(ordering["independent_chronology_attestation"] is False, "snapshot binding fabricated chronology")
         require(ordering["attempt_id"] == "B2-ATTEMPT-TEST", "attempt id drift")
         require(ordering["canonical_wispral_revision"] == revision, "revision drift")
         require(
@@ -101,8 +99,8 @@ def main() -> int:
             "attempt-state digest drift",
         )
         require(
-            ordering["primary_test_decoding_started"] is False,
-            "attempt ordering drift",
+            ordering["declared_primary_test_decoding_started"] is False,
+            "declared attempt ordering drift",
         )
 
         duplicate = root / "duplicate.json"
@@ -134,7 +132,7 @@ def main() -> int:
             except ValueError:
                 pass
             else:
-                raise AssertionError("invalid attempt-state ordering was accepted")
+                raise AssertionError("invalid attempt-state declaration was accepted")
 
         symlink = root / "state-link.json"
         try:
@@ -168,6 +166,7 @@ def main() -> int:
     print("VERIFY_000B2_PREPROCESSING_CAPTURE=PASS")
     print("RELEASE_TAG_IDENTITY=PINNED")
     print("ATTEMPT_STATE_BOUND=YES")
+    print("INDEPENDENT_CHRONOLOGY_ATTESTATION=NO")
     print("DUPLICATE_JSON_KEYS=REJECTED")
     print("SYMLINK_ATTEMPT_STATE=REJECTED")
     return 0
