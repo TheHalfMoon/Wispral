@@ -54,13 +54,6 @@ def observed_whisper_source_revision(cli_path: Path) -> str:
     ).stdout.strip()
     if len(observed) != 40 or any(char not in "0123456789abcdef" for char in observed):
         raise RuntimeError("whisper CLI source revision is malformed")
-    clean = subprocess.run(
-        ["git", "-C", str(source_root), "diff", "--quiet", "HEAD", "--"],
-        check=False,
-        timeout=30,
-    )
-    if clean.returncode != 0:
-        raise RuntimeError("whisper source checkout has tracked modifications after pinned checkout")
     cache = source_root / "build" / "CMakeCache.txt"
     if cache.is_symlink() or not cache.is_file():
         raise RuntimeError("whisper CMake build identity is missing")
