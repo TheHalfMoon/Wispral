@@ -1,6 +1,6 @@
 # Wispral Specification Frontier
 
-**Status:** founding research — ACP verified; STT preregistration verified; B2 entry preparation canonical; B2 externally blocked
+**Status:** founding research — ACP verified; STT preregistration verified; B2 entry preparation and authority structure canonical; B2 externally blocked
 
 ## Active parent specification
 
@@ -65,7 +65,7 @@ Disposition:
 - comparative ranking: `NO`;
 - STT winner/product dependency selection: `NO`.
 
-See `research/000b1/canonical-closeout.json` for the historical B1 closeout proof. Current B2 readiness is owned by `research/000b2-entry/readiness.json` and `research/000b2-entry/canonical-closeout.json`.
+See `research/000b1/canonical-closeout.json` for the historical B1 closeout proof. Current B2 readiness is owned by `research/000b2-entry/readiness.json`; historical entry-preparation closeout remains `research/000b2-entry/canonical-closeout.json`.
 
 ## B2 entry preparation — canonical
 
@@ -82,6 +82,24 @@ The bounded preparation unit canonically establishes:
 
 These preparation results do **not** provide process chronology attestation, participant/media authority, primary human-speech evidence, a controlled performance-environment attestation, or a frozen B2 attempt.
 
+## B2 human-authority structure — canonical, authority still external
+
+PR #14 canonicalized fail-closed authority-intake structure at merge `f71df132f963056b3321fe38b94ed88d6a0dfd89` from exact head `20961174b5b4603806a6d79963e3bc9e624f5995`. Exact-head `000B2 Entry Contracts` run `33541279600` passed, and post-merge run `33541475726` passed. The canonical authority package and template remain `NOT_AUTHORIZED`.
+
+PR #15 canonicalized the trusted structural gate at merge `8cc8b1a22edd9268a49b3ad16c4d3ee8c0d6d586` from exact head `1516f65cb763a7b50e3f2fa9ebd98ea53d253771`. Exact-head bootstrap run `33542254408` passed; post-merge trusted run `33542411499` passed and rechecked the canonical blocked state plus open main-targeting PRs against the refreshed base.
+
+The trusted gate:
+
+- executes verifier code from live canonical `main` only;
+- does not check out or execute candidate code;
+- reads only non-executable candidate authority/readiness/state data from an immutable exact head SHA;
+- structurally validates `AUTHORIZED` or `NOT_AUTHORIZED` metadata without claiming that the underlying consent is genuine;
+- always preserves `PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE`, `PRIMARY_MEDIA_ACCEPTANCE=NO`, and `B2_READY=NO`.
+
+Durable proof is `research/000b2-entry/authority/canonical-structural-gate.json`.
+
+This structure reduces accidental or candidate-controlled self-authorization. It does **not** create participant consent, verify a private consent artifact, authorize recording, accept primary media, or satisfy the external human-authority blocker.
+
 ## Blocked successor
 
 `000B2-unbiased-stt-bakeoff`
@@ -96,7 +114,7 @@ B2 is not `READY` and primary decoding is not authorized. Current blockers are n
 - accepted attempt-bound execution-environment and hardware-fingerprint evidence under separately reviewable chronology/control evidence is absent;
 - no final `frozen=true` B2 attempt manifest with a matching freeze digest exists.
 
-Synthetic/TTS media cannot satisfy the human developer-speech authority gate or enter the primary ranking. Repository-owner approval cannot substitute for participant/media authority.
+Synthetic/TTS media cannot satisfy the human developer-speech authority gate or enter the primary ranking. Repository-owner approval cannot substitute for participant/media authority. A structurally valid authority package or consent digest also cannot substitute for independently real participant authority.
 
 ## Evidence boundaries established by 000B1
 
@@ -137,7 +155,7 @@ Before any child is marked `VERIFIED`:
 
 No Rust product implementation, Cargo workspace, permanent speech engine integration, ACP production client, PTY adapter, TUI, installer, or release is authorized until `000G` selects a bounded first implementation Grain and that Grain independently satisfies readiness.
 
-Neither verified 000A, verified 000B1, nor canonical B2 entry preparation weakens this gate.
+Neither verified 000A, verified 000B1, canonical B2 entry preparation, nor canonical B2 authority structure weakens this gate.
 
 ## Live-truth rule
 
@@ -145,4 +163,4 @@ Live canonical GitHub/repository truth overrides this file. After each merged re
 
 ## Next canonical action
 
-Preserve B2 as `BLOCKED_EXTERNAL`. Establish real participant/media authority and an authorized frozen human developer-speech corpus first. Only then may a separately reviewable attempt be prepared to capture preprocessing and execution-environment evidence before any primary decode, freeze the final attempt manifest, and recheck readiness from canonical `main`. Do not substitute synthetic primary evidence or prematurely advance B3/B4.
+Preserve B2 as `BLOCKED_EXTERNAL`. Establish real participant/media authority and an authorized frozen human developer-speech corpus first. Authority structure is prepared, but structural metadata is not consent. Only after real external evidence exists may a separately reviewable attempt be prepared to capture preprocessing and execution-environment evidence before any primary decode, freeze the final attempt manifest, and recheck readiness from canonical `main`. Do not substitute synthetic primary evidence or prematurely advance B3/B4.
