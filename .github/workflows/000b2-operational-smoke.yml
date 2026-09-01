@@ -6,6 +6,7 @@ on:
       - research/000b2-entry-preparation
     paths:
       - 'research/000b2-entry/operational_smoke.py'
+      - 'research/000b2-entry/operational_smoke_entry.py'
       - 'research/000b2-entry/aggregate_operational_smoke.py'
       - 'research/000b2-entry/materialized-artifacts.json'
       - 'research/000b2-entry/artifact-size-amendment.json'
@@ -37,14 +38,14 @@ jobs:
       - name: Run compact smoke
         run: |
           mkdir -p "$RUNNER_TEMP/smoke/moonshine"
-          python research/000b2-entry/operational_smoke.py moonshine \
+          python research/000b2-entry/operational_smoke_entry.py moonshine \
             --candidate moonshine-compact \
             --wav "$RUNNER_TEMP/smoke/moonshine/smoke.wav" \
             --work-dir "$RUNNER_TEMP/smoke/moonshine/compact" \
             --output "$RUNNER_TEMP/smoke/moonshine/moonshine-compact.json"
       - name: Run balanced smoke
         run: |
-          python research/000b2-entry/operational_smoke.py moonshine \
+          python research/000b2-entry/operational_smoke_entry.py moonshine \
             --candidate moonshine-balanced \
             --wav "$RUNNER_TEMP/smoke/moonshine/smoke.wav" \
             --work-dir "$RUNNER_TEMP/smoke/moonshine/balanced" \
@@ -106,14 +107,14 @@ jobs:
           MODELS="$RUNNER_TEMP/whisper-models"
           CLI="$RUNNER_TEMP/whisper.cpp/build/bin/whisper-cli"
           mkdir -p "$OUT"
-          python research/000b2-entry/operational_smoke.py whisper \
+          python research/000b2-entry/operational_smoke_entry.py whisper \
             --candidate whispercpp-compact \
             --wav "$OUT/smoke.wav" \
             --model "$MODELS/ggml-base.en.bin" \
             --cli "$CLI" \
             --source-revision "$WHISPER_REV" \
             --output "$OUT/whispercpp-compact.json"
-          python research/000b2-entry/operational_smoke.py whisper \
+          python research/000b2-entry/operational_smoke_entry.py whisper \
             --candidate whispercpp-balanced \
             --wav "$OUT/smoke.wav" \
             --model "$MODELS/ggml-small.en.bin" \
@@ -176,12 +177,12 @@ jobs:
           set -euo pipefail
           OUT="$RUNNER_TEMP/smoke/sherpa"
           mkdir -p "$OUT"
-          python research/000b2-entry/operational_smoke.py sherpa \
+          python research/000b2-entry/operational_smoke_entry.py sherpa \
             --candidate sherpa-onnx-compact \
             --wav "$OUT/smoke.wav" \
             --model-root "$RUNNER_TEMP/sherpa-models/compact" \
             --output "$OUT/sherpa-onnx-compact.json"
-          python research/000b2-entry/operational_smoke.py sherpa \
+          python research/000b2-entry/operational_smoke_entry.py sherpa \
             --candidate sherpa-onnx-balanced \
             --wav "$OUT/smoke.wav" \
             --model-root "$RUNNER_TEMP/sherpa-models/balanced" \
