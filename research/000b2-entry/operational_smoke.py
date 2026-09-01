@@ -64,7 +64,7 @@ def candidate_record(candidate_id: str) -> tuple[dict[str, Any], dict[str, Any]]
 def amendment_sizes() -> dict[tuple[str, str], int]:
     amendment = load(AMENDMENT)
     return {
-        (item["candidate_id"], item["path"]): item["corrected_b2_size_bytes"]
+        (item["candidate_id"], item["path"]): item["b2_entry_size_bytes"]
         for item in amendment["corrections"]
     }
 
