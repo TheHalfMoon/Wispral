@@ -1,8 +1,14 @@
 # Specification 000A — ACP Capability and Representative-Agent Qualification
 
-**State:** `RUNNING`  
+**State:** `VERIFYING`  
 **Parent:** `000-founding-research`  
 **Type:** research / protocol qualification
+
+## Verification frontier
+
+Attempt `WISPRAL-000A-ATTEMPT-001` completed its unauthenticated execution at workflow run `33501999725`, which succeeded across both representative matrix cells. Raw sanitized traces, package integrity, fixture digests, a capability matrix, and the `PARTIAL` recommendation are now committed on the research branch.
+
+Execution tasks A001–A010 are complete within their evidence limits. A011 independent evidence review and A012 canonical closeout remain open. `VERIFYING` does not authorize product code and does not convert authentication-blocked behavior into support claims.
 
 ## Execution activation
 
