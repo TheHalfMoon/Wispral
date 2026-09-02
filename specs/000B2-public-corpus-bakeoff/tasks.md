@@ -6,7 +6,7 @@ These execution tasks become authorized only after the public-corpus amendment a
 
 ## Phase P — public corpus and attempt freeze
 
-- [ ] `B2P01` Record exact OpenSLR SLR12 source/license facts and official checksums in machine-readable provenance.
+- [x] `B2P01` Record exact OpenSLR SLR12 source/license facts and official checksums in machine-readable provenance.
 - [ ] `B2P02` Materialize `test-clean.tar.gz` and `test-other.tar.gz` from an approved source or official mirror; verify official MD5 and record exact archive SHA-256.
 - [ ] `B2P03` Implement deterministic speaker/utterance subset selection independent of candidate outputs.
 - [ ] `B2P04` Freeze selected public-human subset manifest and manifest digest before candidate decoding.
