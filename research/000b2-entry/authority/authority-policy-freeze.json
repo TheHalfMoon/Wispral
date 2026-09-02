@@ -1,0 +1,18 @@
+{
+  "schema_version": "000b2-authority-policy-freeze-v1",
+  "recorded_date": "2026-09-02",
+  "policy_status": "FROZEN_OWNER_POLICY",
+  "authority_package_path": "research/000b2-entry/authority/authority-package.json",
+  "authority_policy_sha256": "454b208884211f83fc3ed62c22844d2a72d37dafbaa001793d791e91faecc811",
+  "authority_status": "NOT_AUTHORIZED",
+  "participant_count": 0,
+  "consent_records_sha256": null,
+  "authority_effective_before_recording": false,
+  "participant_consent_attested": false,
+  "recording_authorized": false,
+  "primary_media_accepted": false,
+  "primary_test_decoding_authorized": false,
+  "public_raw_audio_redistribution": false,
+  "model_training_authorized": false,
+  "note": "This record freezes only the project-controlled participant policy projection. It does not attest participant consent, consent chronology, recording authority, media provenance, corpus acceptance, or B2 readiness."
+}
