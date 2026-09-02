@@ -137,16 +137,12 @@ def main() -> None:
     require_bool(guards, "product_code_authorized", False, "claim_guards")
 
     next_action = readiness.get("next_action")
-    require(isinstance(next_action, str), "next action must be text")
-    for phrase in (
-        "Execute B2P01 only",
-        "OpenSLR SLR12 source/license facts",
-        "official archive checksums",
-        "machine-readable provenance",
-        "Do not materialize corpus archives",
-        "B2P01 is canonical",
-    ):
-        require_text(next_action, phrase, "next action")
+    expected_next_action = (
+        "Execute B2P01 only: reverify and record the exact OpenSLR SLR12 source/license facts and "
+        "official archive checksums in machine-readable provenance. Do not materialize corpus archives "
+        "or begin B2P02 until B2P01 is canonical."
+    )
+    require(next_action == expected_next_action, "next action must be the exact B2P01-only instruction")
 
     spec = spec_path.read_text(encoding="utf-8")
     plan = plan_path.read_text(encoding="utf-8")
