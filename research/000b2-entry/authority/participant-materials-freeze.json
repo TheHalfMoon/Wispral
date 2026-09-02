@@ -3,7 +3,7 @@
   "recorded_date": "2026-09-02",
   "materials_status": "FROZEN_OWNER_TEMPLATES",
   "authority_policy_sha256": "454b208884211f83fc3ed62c22844d2a72d37dafbaa001793d791e91faecc811",
-  "materials_sha256": "45d43256e7914dc35f97ac9704a3139e92a53f145eb0239f65fa0b7f4c2eb320",
+  "materials_sha256": "5f96a7ff1ab63371c0396a93ccaa140b4d82bf567e62e64c9b0ed7520997034c",
   "materials": {
     "participant_information_consent_template": {
       "path": "research/000b2-entry/authority/participant-information-consent.template.md",
@@ -11,7 +11,7 @@
     },
     "recording_entry_checklist_template": {
       "path": "research/000b2-entry/authority/recording-entry-checklist.template.md",
-      "sha256": "eb6af6f09940cdb7a41efdf798458059561a31021320ca997671906ea9e36fe3"
+      "sha256": "b4e9f8fdf54c0809bb5f44d004c61c6e621506fef64888b92cec407ca05d0a55"
     }
   },
   "participant_consent_attested": false,
