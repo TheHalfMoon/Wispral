@@ -1,0 +1,191 @@
+name: 000B2 Trusted Participant Materials
+
+on:
+  pull_request:
+    paths:
+      - '.github/trusted/verify_000b2_participant_materials.py'
+      - '.github/workflows/000b2-trusted-participant-materials.yml'
+      - 'research/000b2-entry/authority/participant-information-consent.template.md'
+      - 'research/000b2-entry/authority/recording-entry-checklist.template.md'
+      - 'research/000b2-entry/authority/participant-materials-freeze.json'
+      - 'research/000b2-entry/authority/authority-package.json'
+      - 'research/000b2-entry/authority/authority-policy-freeze.json'
+      - 'research/000b2-entry/readiness.json'
+      - 'specs/CURRENT.md'
+      - 'docs/canonical/CURRENT_STATE.md'
+  pull_request_target:
+    types: [opened, synchronize, reopened, edited]
+    paths:
+      - '.github/trusted/verify_000b2_participant_materials.py'
+      - '.github/workflows/000b2-trusted-participant-materials.yml'
+      - 'research/000b2-entry/authority/participant-information-consent.template.md'
+      - 'research/000b2-entry/authority/recording-entry-checklist.template.md'
+      - 'research/000b2-entry/authority/participant-materials-freeze.json'
+      - 'research/000b2-entry/authority/authority-package.json'
+      - 'research/000b2-entry/authority/authority-policy-freeze.json'
+      - 'research/000b2-entry/readiness.json'
+      - 'specs/CURRENT.md'
+      - 'docs/canonical/CURRENT_STATE.md'
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  candidate-self-test:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact PR head for participant-material verifier self-test
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Verify self-test checkout matches exact PR head
+        env:
+          EVENT_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          CHECKED_OUT_SHA="$(git rev-parse HEAD)"
+          if [ "$CHECKED_OUT_SHA" != "$EVENT_HEAD_SHA" ]; then
+            echo "participant-material self-test exact-head mismatch: event=$EVENT_HEAD_SHA checkout=$CHECKED_OUT_SHA" >&2
+            exit 1
+          fi
+          echo "EXACT_PR_HEAD_SHA=$CHECKED_OUT_SHA"
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compile participant-material verification chain
+        run: |
+          python -m py_compile .github/trusted/verify_000b2_participant_materials.py
+          python -m py_compile .github/trusted/verify_000b2_participant_policy.py
+          python -m py_compile research/000b2-entry/authority/verify_authority.py
+          python -m py_compile research/000b2-entry/authority/verify_consent_records.py
+      - name: Exercise participant-material self-test
+        run: |
+          python .github/trusted/verify_000b2_participant_materials.py \
+            --base-root . \
+            --self-test
+      - name: Verify exact candidate remains non-authorizing
+        run: |
+          OUTPUT="$(python .github/trusted/verify_000b2_participant_materials.py \
+            --base-root . \
+            --candidate-root .)"
+          printf '%s\n' "$OUTPUT"
+          printf '%s\n' "$OUTPUT" | grep -E '^PARTICIPANT_MATERIALS=(NOT_YET_CANONICAL|FROZEN_TRUSTED)$'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'AUTHORITY_POLICY_SHA256=454b208884211f83fc3ed62c22844d2a72d37dafbaa001793d791e91faecc811'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'B2_PRIMARY_RECORDING_AUTHORIZED=NO'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PRIMARY_MEDIA_ACCEPTANCE=NO'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PRIMARY_TEST_DECODING_AUTHORIZED=NO'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'B2_READY=NO'
+      - name: Verify workflow action pins and trusted-boundary markers
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          path = Path('.github/workflows/000b2-trusted-participant-materials.yml')
+          text = path.read_text(encoding='utf-8')
+          required = (
+              'pull_request_target:',
+              "github.event.pull_request.base.ref == 'main'",
+              'Checkout live canonical base participant-material authority',
+              'trusted-base/.github/trusted/verify_000b2_participant_materials.py',
+              'PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE',
+              '--reverify-open-prs',
+              'actions/checkout@11d5960a326750d5838078e36cf38b85af677262',
+              'actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065',
+          )
+          missing = [item for item in required if item not in text]
+          if missing:
+              raise SystemExit(f'trusted participant-material workflow drift: {missing}')
+          uses = []
+          for line in text.splitlines():
+              stripped = line.strip()
+              if stripped.startswith(('- uses:', 'uses:')):
+                  uses.append(stripped.split('uses:', 1)[1].strip())
+          if not uses:
+              raise SystemExit('trusted participant-material workflow has no action uses entries')
+          bad = [item for item in uses if re.fullmatch(r'[^@\s]+@[0-9a-f]{40}', item) is None]
+          if bad:
+              raise SystemExit(f'trusted participant-material workflow has non-pinned action uses: {bad}')
+          print('TRUSTED_PARTICIPANT_MATERIALS_WORKFLOW_SELF_TEST=PASS')
+          PY
+
+  verify-candidate-materials-from-live-base:
+    if: github.event_name == 'pull_request_target' && github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout live canonical base participant-material authority
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          path: trusted-base
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Resolve exact trusted participant-material boundary
+        env:
+          EVENT_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          BASE_SHA="$(git -C trusted-base rev-parse HEAD)"
+          if [[ ! "$BASE_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "live canonical participant-material base SHA malformed: $BASE_SHA" >&2
+            exit 1
+          fi
+          if [[ ! "$EVENT_HEAD_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "candidate participant-material head SHA malformed: $EVENT_HEAD_SHA" >&2
+            exit 1
+          fi
+          echo "TRUSTED_BASE_SHA=$BASE_SHA"
+          echo "CANDIDATE_HEAD_SHA=$EVENT_HEAD_SHA"
+      - name: Verify exact candidate participant materials with live canonical verifier
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          CANDIDATE_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python trusted-base/.github/trusted/verify_000b2_participant_materials.py \
+            --base-root trusted-base \
+            --repo "$REPOSITORY" \
+            --head-sha "$CANDIDATE_HEAD_SHA"
+          echo 'PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE'
+          echo 'PRIMARY_MEDIA_ACCEPTANCE=NO'
+          echo 'PRIMARY_TEST_DECODING_AUTHORIZED=NO'
+
+  verify-canonical-and-open-prs-after-base-push:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          path: trusted-base
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify new canonical participant-material base remains fail-closed
+        run: |
+          python trusted-base/.github/trusted/verify_000b2_participant_materials.py \
+            --base-root trusted-base \
+            --candidate-root trusted-base
+          echo 'PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE'
+          echo 'PRIMARY_MEDIA_ACCEPTANCE=NO'
+          echo 'PRIMARY_TEST_DECODING_AUTHORIZED=NO'
+      - name: Reverify every open main-targeting PR against canonical participant-material authority
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          python trusted-base/.github/trusted/verify_000b2_participant_materials.py \
+            --base-root trusted-base \
+            --repo "$REPOSITORY" \
+            --reverify-open-prs
