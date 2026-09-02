@@ -43,6 +43,10 @@ The parent separates:
 
 State: `VERIFIED`
 
+Canonical 000B refinement/base merge: `6b5696a6becc360948282712cc9339df9cb3a67c`
+
+Canonical evidence merge: `8df69835349f85d5ae6af9d6a62ef3af24f65f43` from PR #7.
+
 B1 remains immutable historical evidence. It froze the candidate/configuration envelope, six candidate cells, model/runtime provenance expectations, scorer/manifest contracts, FFmpeg `9.0.1` preprocessing requirement, and a private 20-speaker / 720-utterance human developer-speech design.
 
 No primary human developer-speech decoding occurred under that design. No comparative ranking or production STT dependency was selected.
