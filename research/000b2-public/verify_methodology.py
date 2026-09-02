@@ -25,6 +25,7 @@ def require_bool(mapping: dict[str, Any], key: str, expected: bool, label: str) 
 
 def main() -> None:
     readiness_path = ROOT / "research/000b2-public/readiness.json"
+    corpus_source_path = ROOT / "research/000b2-public/corpus-source.json"
     spec_path = ROOT / "specs/000B2-public-corpus-bakeoff/spec.md"
     plan_path = ROOT / "specs/000B2-public-corpus-bakeoff/plan.md"
     tasks_path = ROOT / "specs/000B2-public-corpus-bakeoff/tasks.md"
@@ -36,6 +37,7 @@ def main() -> None:
 
     required_paths = (
         readiness_path,
+        corpus_source_path,
         spec_path,
         plan_path,
         tasks_path,
@@ -144,6 +146,66 @@ def main() -> None:
     )
     require(next_action == expected_next_action, "next action must be the exact B2P01-only instruction")
 
+    corpus_source = json.loads(corpus_source_path.read_text(encoding="utf-8"))
+    require(isinstance(corpus_source, dict), "corpus-source root must be an object")
+    require(corpus_source.get("schema_version") == "000b2-public-corpus-source-v1", "corpus-source schema drift")
+    require(corpus_source.get("task") == "B2P01", "corpus-source task must be B2P01")
+    require(corpus_source.get("state") == "FROZEN_SOURCE_PROVENANCE", "corpus-source state drift")
+    require(corpus_source.get("verified_on") == "2026-09-02", "corpus-source verification date drift")
+
+    source_resource = corpus_source.get("resource")
+    require(isinstance(source_resource, dict), "corpus-source resource must be an object")
+    expected_resource = {
+        "provider": "OpenSLR",
+        "identifier": "SLR12",
+        "name": "LibriSpeech ASR corpus",
+        "resource_page": "https://www.openslr.org/12/",
+        "summary": "Large-scale (1000 hours) corpus of read English speech",
+        "category": "Speech",
+        "license": "CC BY 4.0",
+        "checksum_manifest": "https://www.openslr.org/resources/12/md5sum.txt",
+        "checksum_algorithm": "MD5",
+    }
+    require(source_resource == expected_resource, "corpus-source authoritative resource facts drift")
+
+    source_partitions = corpus_source.get("partitions")
+    require(isinstance(source_partitions, list) and len(source_partitions) == 2, "corpus-source must freeze two partitions")
+    source_by_name: dict[str, dict[str, Any]] = {}
+    for item in source_partitions:
+        require(isinstance(item, dict), "corpus-source partition must be an object")
+        name = item.get("name")
+        require(isinstance(name, str) and name in expected_md5, f"unexpected corpus-source partition: {name!r}")
+        require(name not in source_by_name, f"duplicate corpus-source partition: {name}")
+        source_by_name[name] = item
+        require(item.get("official_md5") == expected_md5[name], f"corpus-source MD5 drift for {name}")
+        require_bool(item, "materialized", False, f"corpus_source.partition[{name}]")
+        require(item.get("archive_sha256") is None, f"corpus-source {name} must not pre-claim SHA-256")
+    require(set(source_by_name) == set(expected_md5), "corpus-source partition set drift")
+    require(source_by_name["test-clean.tar.gz"].get("role") == "test set, clean speech", "test-clean role drift")
+    require(
+        source_by_name["test-other.tar.gz"].get("role") == "test set, other more challenging speech",
+        "test-other role drift",
+    )
+
+    source_verification = corpus_source.get("verification")
+    require(isinstance(source_verification, dict), "corpus-source verification must be an object")
+    require_bool(source_verification, "resource_page_checked", True, "corpus_source.verification")
+    require_bool(source_verification, "checksum_manifest_checked", True, "corpus_source.verification")
+    require_bool(source_verification, "archive_bytes_fetched", False, "corpus_source.verification")
+    require_bool(source_verification, "archive_checksums_verified_against_bytes", False, "corpus_source.verification")
+    require(
+        source_verification.get("scope") == "SOURCE_LICENSE_AND_OFFICIAL_CHECKSUM_PROVENANCE_ONLY",
+        "corpus-source verification scope drift",
+    )
+
+    source_guards = corpus_source.get("claim_guards")
+    require(isinstance(source_guards, dict), "corpus-source claim guards must be an object")
+    require(source_guards.get("public_human_claim_scope") == "BOUNDED_ORDINARY_READ_ENGLISH_ONLY", "corpus-source claim scope drift")
+    require(source_guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "corpus-source human evidence guard drift")
+    require_bool(source_guards, "production_stt_selected", False, "corpus_source.claim_guards")
+    require_bool(source_guards, "product_code_authorized", False, "corpus_source.claim_guards")
+    require(corpus_source.get("next_task_after_canonicalization") == "B2P02", "B2P01 successor must be B2P02")
+
     spec = spec_path.read_text(encoding="utf-8")
     plan = plan_path.read_text(encoding="utf-8")
     tasks = tasks_path.read_text(encoding="utf-8")
@@ -183,6 +245,16 @@ def main() -> None:
         "B2S01", "B2S02", "B2S03", "B2S04", "B2S05", "B2S06", "B2S07", "B2S08", "B2S09",
     ):
         require_text(tasks, f"`{task_id}`", "public child tasks")
+    require_text(
+        tasks,
+        "- [x] `B2P01` Record exact OpenSLR SLR12 source/license facts and official checksums in machine-readable provenance.",
+        "public child tasks",
+    )
+    require_text(
+        tasks,
+        "- [ ] `B2P02` Materialize `test-clean.tar.gz` and `test-other.tar.gz` from an approved source or official mirror; verify official MD5 and record exact archive SHA-256.",
+        "public child tasks",
+    )
     for phrase in (
         "These execution tasks become authorized only after the public-corpus amendment and frontier reconciliation are canonical on `main`.",
         "primary_decoding_started=false",
@@ -216,6 +288,7 @@ def main() -> None:
     require_text(founding_tasks, "HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT", "founding tasks")
 
     print("PUBLIC_CORPUS_METHODOLOGY=PASS")
+    print("B2P01_CORPUS_PROVENANCE=PASS")
     print("STRUCTURED_READINESS_GUARDS=PASS")
     print("P0_D0_SEPARATION=PASS")
     print("PRE_DECODE_FREEZE_ORDERING=PASS")
@@ -224,6 +297,7 @@ def main() -> None:
     print("PRIVATE_COLLECTION_HISTORY=PRESERVED_UNEXECUTED")
     print("PUBLIC_HUMAN_BASELINE=LIBRISPEECH_SLR12")
     print("HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT")
+    print("ARCHIVE_BYTES_FETCHED=NO")
     print("PRODUCT_CODE_AUTHORIZED=NO")
 
 
