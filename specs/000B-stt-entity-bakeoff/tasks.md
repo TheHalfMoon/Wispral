@@ -4,12 +4,14 @@ This file tracks recursive child progression. It is not permission to execute la
 
 ## Parent state
 
-- [x] `000B1` benchmark/candidate qualification — historical `VERIFIED`; evidence merge `8df69835349f85d5ae6af9d6a62ef3af24f65f43`, canonical closeout merge `ed05ad9b0ef80ae4f6838e783188cf306c20391a`.
+- [x] `000B1` benchmark/candidate qualification — `VERIFIED`; evidence merge `8df69835349f85d5ae6af9d6a62ef3af24f65f43`, canonical closeout merge `ed05ad9b0ef80ae4f6838e783188cf306c20391a`.
 - [x] `000B2` bounded entry preparation — `CLOSED_CANONICAL`; evidence merge `49d0f31408ab36f285f5e61228b54a72ca0aec07`; this is not comparative B2 execution.
-- [ ] historical `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`; its private human developer-speech execution remains unauthorized.
+- [ ] `000B2` unbiased local STT bakeoff — `BLOCKED_EXTERNAL`; primary execution is not authorized.
 - [ ] `000B2-public-corpus-bakeoff` — prospective execution successor; becomes executable only after its bounded methodology/frontier amendment is canonical.
 - [ ] `000B3` repository-context uplift — intentionally coarse until evidence-selected B2 output is canonical.
 - [ ] `000B4` STT synthesis — intentionally coarse until prior evidence selects its exact inputs.
+
+The `000B1` and private `000B2` markers above preserve the canonical historical contract. The public-corpus child is a separate prospective successor and does not convert the historical private lane to READY or executed.
 
 ## Current child frontier
 
@@ -17,11 +19,15 @@ This file tracks recursive child progression. It is not permission to execute la
 
 The bounded non-primary B2 entry-preparation unit is canonically closed. It removed materialization, non-primary smoke, scorer-canonicalization, and tooling-preparation blockers without creating participant/media authority or authorizing comparative developer-speech decoding.
 
-The historical `000B2-unbiased-stt-bakeoff` lane remains `BLOCKED_EXTERNAL`, not `READY` or `RUNNING`. Its private participant/media authority requirements remain fully fail-closed and its historical evidence must not be rewritten.
+`000B2-unbiased-stt-bakeoff` remains the historical dependency record and is `BLOCKED_EXTERNAL`, not `READY` or `RUNNING`. Its private participant/media authority requirements remain fully fail-closed and its historical evidence must not be rewritten.
+
+Entry-preparation work may only remove non-primary readiness blockers without weakening the frozen historical B1/private-B2 contract or substituting public/synthetic media for human developer-speech authority in that historical lane.
 
 A separate prospective successor, `000B2-public-corpus-bakeoff`, may become the active executable B2 route only after its methodology amendment is canonical on `main`. It uses public human ordinary read-English speech and preserves the explicit boundary `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`.
 
-`specs/CURRENT.md` owns the executable frontier, while this parent ledger must remain consistent with it. `research/000b2-entry/readiness.json` and `research/000b2-entry/canonical-closeout.json` remain machine-readable evidence for the historical private lane. `research/000b1/canonical-closeout.json` remains historical B1 authority and must not be rewritten to pretend its original blocker snapshot is current.
+`specs/CURRENT.md` owns the executable frontier.
+
+`research/000b2-entry/readiness.json` and `research/000b2-entry/canonical-closeout.json` remain machine-readable evidence for the historical private lane. `research/000b1/canonical-closeout.json` remains historical B1 authority and must not be rewritten to pretend its original blocker snapshot is current.
 
 ## 000B2 entry-preparation closeout
 

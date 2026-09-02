@@ -47,12 +47,13 @@ The following remain prohibited during B2:
 
 ## 000B child ordering
 
-- [x] `000B1` benchmark/candidate qualification — historical `VERIFIED`.
+- [x] `000B1` benchmark/candidate qualification — `VERIFIED`.
+- [ ] `000B2` unbiased local STT bakeoff — `BLOCKED_EXTERNAL`; entry-preparation only until all attempt-time gates pass.
 - [ ] `000B2-public-corpus-bakeoff` — `READY` candidate; becomes the executable B2 lane only after its authority update is canonical on `main`.
 - [ ] `000B3` repository-context uplift — coarse until amended B2 evidence is canonical.
 - [ ] `000B4` STT synthesis — coarse until preceding evidence stabilizes its inputs.
 
-The old private-collection B2 path is not deleted, rewritten, or reported as completed. It is superseded as the active execution route because its external dependency is unnecessary for the narrower founding shortlist decision.
+The first two B-chain markers above are preserved canonical history. The old private-collection B2 path is not deleted, rewritten, or reported as completed; it remains `BLOCKED_EXTERNAL`. The public-corpus successor is a separate prospective active route because the private external dependency is unnecessary for the narrower founding shortlist decision permitted by the parent acceptance contract.
 
 ## Parent closeout tasks
 
