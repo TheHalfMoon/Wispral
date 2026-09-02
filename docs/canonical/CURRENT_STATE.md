@@ -28,7 +28,7 @@
 **000B2 authority structure:** `CANONICAL`, participant authority still `EXTERNAL`  
 **000B2 participant policy:** `CANONICAL_FROZEN`, participant consent `EXTERNAL_NOT_OBTAINED`  
 **000B2 participant materials:** `CANONICAL_FROZEN`, participant consent `EXTERNAL_NOT_OBTAINED`  
-**Historical blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
+**Blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
 **Active execution successor:** `000B2-public-corpus-bakeoff` — `READY`  
 **Published release:** none
 
