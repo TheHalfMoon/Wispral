@@ -127,6 +127,16 @@ jobs:
           grep -Fiq 'identity-bearing consent artifacts' "$RUNBOOK"
           grep -Fq 'outside the repository' "$RUNBOOK"
           echo 'EXTERNAL_AUTHORITY_RUNBOOK_BOUNDARY=PASS'
+      - name: Verify frozen owner-controlled participant policy remains non-authorizing
+        run: |
+          OUTPUT="$(python research/000b2-entry/authority/verify_authority_policy_freeze.py)"
+          printf '%s\n' "$OUTPUT"
+          printf '%s\n' "$OUTPUT" | grep -Fx 'VERIFY_000B2_AUTHORITY_POLICY_FREEZE=PASS'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'AUTHORITY_PACKAGE=NOT_AUTHORIZED'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PARTICIPANT_CONSENT_ATTESTATION=NO'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'B2_PRIMARY_RECORDING_AUTHORIZED=NO'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PUBLIC_RAW_AUDIO_REDISTRIBUTION=NO'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'MODEL_TRAINING_AUTHORIZED=NO'
       - name: Verify preprocessing capture boundary
         run: |
           python research/000b2-entry/preprocessing/verify_capture.py
