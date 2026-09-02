@@ -1,0 +1,71 @@
+name: Public B2 current-state reconciliation builder v2
+on:
+  push:
+    branches:
+      - evidence/000b2-public-current-state-reconcile-cfb8833
+permissions:
+  contents: write
+  actions: read
+  pull-requests: read
+  issues: read
+jobs:
+  reconcile:
+    runs-on: ubuntu-24.04
+    env:
+      BASE_SHA: cfb883311c1acb45cb8422ab6b2c02443dc1b62c
+      BASE_PARENT: c54e09a2d1cca5929bb7cd5571e84ad9698d4f73
+      REVIEWED_HEAD: 875b0e4be76e8fc0eb753af189255b38ce3dc7ca
+      TARGET_BRANCH: docs/000b2-public-current-state-reconciliation
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify immutable live facts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASE_SHA"
+          test -z "$(git ls-remote origin refs/heads/$TARGET_BRANCH | cut -f1)"
+          pr="$(gh api repos/${GITHUB_REPOSITORY}/pulls/28)"
+          jq -e --arg merge "$BASE_SHA" --arg base "$BASE_PARENT" --arg head "$REVIEWED_HEAD" '.merged == true and .merge_commit_sha == $merge and .base.sha == $base and .head.sha == $head and .merged_at == "2026-09-02T19:02:21Z"' <<<"$pr"
+          merge="$(gh api repos/${GITHUB_REPOSITORY}/commits/$BASE_SHA)"
+          jq -e --arg parent "$BASE_PARENT" --arg tree '241709f190778a359af018b734314820f4ce8ce1' '(.parents | length) == 1 and .parents[0].sha == $parent and .commit.tree.sha == $tree and .commit.verification.verified == true and .commit.verification.reason == "valid"' <<<"$merge"
+          review="$(gh api repos/${GITHUB_REPOSITORY}/issues/comments/5514088896)"
+          jq -e --arg base "$BASE_PARENT" --arg head "$REVIEWED_HEAD" '.user.login == "coderabbitai[bot]" and .updated_at == "2026-09-02T19:06:58Z" and (.body | contains("No actionable comments were generated in the recent review")) and (.body | contains($base)) and (.body | contains($head)) and (.body | contains("Files selected for processing (12)"))' <<<"$review"
+          status="$(gh api repos/${GITHUB_REPOSITORY}/commits/$REVIEWED_HEAD/status)"
+          jq -e '.state == "success" and any(.statuses[]; .context == "CodeRabbit" and .state == "success" and .description == "Review completed" and .created_at == "2026-09-02T19:07:00Z")' <<<"$status"
+          runs="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=$BASE_SHA&status=success&per_page=100")"
+          jq -e '.total_count == 6 and (.workflow_runs | length) == 6 and all(.workflow_runs[]; .status == "completed" and .conclusion == "success" and .event == "push")' <<<"$runs"
+      - name: Build bounded candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp .github/scripts/reconcile_public_b2_current_state.py /tmp/reconcile.py
+          python -m py_compile /tmp/reconcile.py
+          git checkout --detach "$BASE_SHA"
+          python /tmp/reconcile.py
+          git diff --check
+          test "$(git diff --name-only)" = 'docs/canonical/CURRENT_STATE.md'
+          grep -F '**Active public B2 execution lane:** `000B2-public-corpus-bakeoff` — `CANONICAL`, execution not started' docs/canonical/CURRENT_STATE.md
+          grep -F 'must not be represented as a pre-merge review' docs/canonical/CURRENT_STATE.md
+          grep -F 'B2P01 source/license/checksum freeze' docs/canonical/CURRENT_STATE.md
+          grep -F '`HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT` remains mandatory.' docs/canonical/CURRENT_STATE.md
+          python research/000b2-public/verify_methodology.py
+          git config user.name 'Abdulaziz M. Shehri'
+          git config user.email 'alshehriofficial@gmail.com'
+          git add docs/canonical/CURRENT_STATE.md
+          git commit -m 'docs(canonical): reconcile public B2 current state'
+          test "$(git rev-parse HEAD^)" = "$BASE_SHA"
+          test -z "$(git status --porcelain)"
+      - name: Guarded publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          candidate="$(git rev-parse HEAD)"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASE_SHA"
+          test -z "$(git ls-remote origin refs/heads/$TARGET_BRANCH | cut -f1)"
+          git push origin "$candidate:refs/heads/$TARGET_BRANCH"
+          test "$(git ls-remote origin refs/heads/$TARGET_BRANCH | cut -f1)" = "$candidate"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASE_SHA"
+          echo "CURRENT_STATE_RECONCILIATION_HEAD=$candidate"
