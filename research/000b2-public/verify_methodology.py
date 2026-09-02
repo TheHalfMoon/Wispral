@@ -91,10 +91,15 @@ def main() -> None:
         require(phrase in spec, f"spec missing required phrase: {phrase}")
         require(phrase in current, f"current frontier missing required phrase: {phrase}")
 
+    require("`000B2-unbiased-stt-bakeoff`" in current, "historical B2 marker missing")
+    historical_section = current[current.index("`000B2-unbiased-stt-bakeoff`") :]
+    require("State: `BLOCKED_EXTERNAL`" in historical_section[:512], "historical B2 lane must remain blocked")
+    require("`000B2-public-corpus-bakeoff`" in current, "public successor marker missing")
     require("production Rust/Cargo speech code" in founding_tasks, "product-code prohibition missing")
     require("private 20-speaker" in founding_tasks, "historical private-path preservation missing")
 
     print("PUBLIC_CORPUS_METHODOLOGY=PASS")
+    print("HISTORICAL_PRIVATE_B2=BLOCKED_EXTERNAL")
     print("PRIVATE_COLLECTION_HISTORY=PRESERVED_UNEXECUTED")
     print("PUBLIC_HUMAN_BASELINE=LIBRISPEECH_SLR12")
     print("HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT")
