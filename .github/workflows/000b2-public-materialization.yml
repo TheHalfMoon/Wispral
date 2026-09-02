@@ -8,6 +8,7 @@ on:
       - 'research/000b2-public/archive-materialization.json'
       - 'research/000b2-public/materialize_archives.py'
       - 'research/000b2-public/verify_methodology.py'
+      - 'research/000b2-public/verify_workflow_contracts.py'
       - 'specs/000B2-public-corpus-bakeoff/tasks.md'
       - 'specs/CURRENT.md'
       - 'docs/canonical/CURRENT_STATE.md'
@@ -22,6 +23,7 @@ on:
       - 'research/000b2-public/archive-materialization.json'
       - 'research/000b2-public/materialize_archives.py'
       - 'research/000b2-public/verify_methodology.py'
+      - 'research/000b2-public/verify_workflow_contracts.py'
       - 'specs/000B2-public-corpus-bakeoff/tasks.md'
       - 'specs/CURRENT.md'
       - 'docs/canonical/CURRENT_STATE.md'
@@ -46,6 +48,8 @@ jobs:
         run: |
           test "$(git rev-parse HEAD)" = "$B2P02_REVISION"
           echo "B2P02_REVISION=$B2P02_REVISION"
+      - name: Verify workflow contracts
+        run: python research/000b2-public/verify_workflow_contracts.py
       - name: Reverify official OpenSLR archive bytes
         run: |
           mkdir -p "$RUNNER_TEMP/b2p02/work"
