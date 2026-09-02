@@ -23,6 +23,10 @@ def require_bool(mapping: dict[str, Any], key: str, expected: bool, label: str) 
     require(mapping.get(key) is expected, f"{label}.{key} must be {expected}")
 
 
+def require_exact_keys(mapping: dict[str, Any], expected: set[str], label: str) -> None:
+    require(set(mapping) == expected, f"{label} keys drift: expected {sorted(expected)}, got {sorted(mapping)}")
+
+
 def main() -> None:
     readiness_path = ROOT / "research/000b2-public/readiness.json"
     corpus_source_path = ROOT / "research/000b2-public/corpus-source.json"
@@ -148,6 +152,21 @@ def main() -> None:
 
     corpus_source = json.loads(corpus_source_path.read_text(encoding="utf-8"))
     require(isinstance(corpus_source, dict), "corpus-source root must be an object")
+    require_exact_keys(
+        corpus_source,
+        {
+            "schema_version",
+            "task",
+            "state",
+            "verified_on",
+            "resource",
+            "partitions",
+            "verification",
+            "claim_guards",
+            "next_task_after_canonicalization",
+        },
+        "corpus_source",
+    )
     require(corpus_source.get("schema_version") == "000b2-public-corpus-source-v1", "corpus-source schema drift")
     require(corpus_source.get("task") == "B2P01", "corpus-source task must be B2P01")
     require(corpus_source.get("state") == "FROZEN_SOURCE_PROVENANCE", "corpus-source state drift")
@@ -171,8 +190,10 @@ def main() -> None:
     source_partitions = corpus_source.get("partitions")
     require(isinstance(source_partitions, list) and len(source_partitions) == 2, "corpus-source must freeze two partitions")
     source_by_name: dict[str, dict[str, Any]] = {}
+    partition_keys = {"name", "role", "official_md5", "materialized", "archive_sha256"}
     for item in source_partitions:
         require(isinstance(item, dict), "corpus-source partition must be an object")
+        require_exact_keys(item, partition_keys, "corpus_source.partition")
         name = item.get("name")
         require(isinstance(name, str) and name in expected_md5, f"unexpected corpus-source partition: {name!r}")
         require(name not in source_by_name, f"duplicate corpus-source partition: {name}")
@@ -189,21 +210,24 @@ def main() -> None:
 
     source_verification = corpus_source.get("verification")
     require(isinstance(source_verification, dict), "corpus-source verification must be an object")
-    require_bool(source_verification, "resource_page_checked", True, "corpus_source.verification")
-    require_bool(source_verification, "checksum_manifest_checked", True, "corpus_source.verification")
-    require_bool(source_verification, "archive_bytes_fetched", False, "corpus_source.verification")
-    require_bool(source_verification, "archive_checksums_verified_against_bytes", False, "corpus_source.verification")
-    require(
-        source_verification.get("scope") == "SOURCE_LICENSE_AND_OFFICIAL_CHECKSUM_PROVENANCE_ONLY",
-        "corpus-source verification scope drift",
-    )
+    expected_verification = {
+        "resource_page_checked": True,
+        "checksum_manifest_checked": True,
+        "archive_bytes_fetched": False,
+        "archive_checksums_verified_against_bytes": False,
+        "scope": "SOURCE_LICENSE_AND_OFFICIAL_CHECKSUM_PROVENANCE_ONLY",
+    }
+    require(source_verification == expected_verification, "corpus-source verification boundary drift")
 
     source_guards = corpus_source.get("claim_guards")
     require(isinstance(source_guards, dict), "corpus-source claim guards must be an object")
-    require(source_guards.get("public_human_claim_scope") == "BOUNDED_ORDINARY_READ_ENGLISH_ONLY", "corpus-source claim scope drift")
-    require(source_guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "corpus-source human evidence guard drift")
-    require_bool(source_guards, "production_stt_selected", False, "corpus_source.claim_guards")
-    require_bool(source_guards, "product_code_authorized", False, "corpus_source.claim_guards")
+    expected_source_guards = {
+        "public_human_claim_scope": "BOUNDED_ORDINARY_READ_ENGLISH_ONLY",
+        "human_developer_speech_accuracy_evidence": "ABSENT",
+        "production_stt_selected": False,
+        "product_code_authorized": False,
+    }
+    require(source_guards == expected_source_guards, "corpus-source claim guards drift")
     require(corpus_source.get("next_task_after_canonicalization") == "B2P02", "B2P01 successor must be B2P02")
 
     spec = spec_path.read_text(encoding="utf-8")
@@ -238,12 +262,13 @@ def main() -> None:
     ):
         require_text(plan, phrase, "public child plan")
 
-    for task_id in (
+    all_task_ids = (
         "B2P01", "B2P02", "B2P03", "B2P04", "B2P05", "B2P06", "B2P07", "B2P08",
         "B2E01", "B2E02", "B2E03", "B2E04", "B2E05", "B2E06", "B2E07", "B2E08",
         "B2D01", "B2D02", "B2D03", "B2D04",
         "B2S01", "B2S02", "B2S03", "B2S04", "B2S05", "B2S06", "B2S07", "B2S08", "B2S09",
-    ):
+    )
+    for task_id in all_task_ids:
         require_text(tasks, f"`{task_id}`", "public child tasks")
     require_text(
         tasks,
@@ -255,6 +280,8 @@ def main() -> None:
         "- [ ] `B2P02` Materialize `test-clean.tar.gz` and `test-other.tar.gz` from an approved source or official mirror; verify official MD5 and record exact archive SHA-256.",
         "public child tasks",
     )
+    for task_id in all_task_ids[1:]:
+        require(f"- [x] `{task_id}`" not in tasks, f"{task_id} must remain unchecked during B2P01")
     for phrase in (
         "These execution tasks become authorized only after the public-corpus amendment and frontier reconciliation are canonical on `main`.",
         "primary_decoding_started=false",
