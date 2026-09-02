@@ -52,10 +52,7 @@ def main() -> None:
     require(isinstance(readiness, dict), "readiness root must be an object")
     require(readiness.get("schema_version") == "000b2-public-readiness-v1", "schema version drift")
     require(readiness.get("lane") == "PUBLIC_CORPUS", "lane drift")
-    require(
-        readiness.get("state") == "READY_CANDIDATE_PENDING_CANONICALIZATION",
-        "candidate must not self-claim canonical readiness",
-    )
+    require(readiness.get("state") == "READY", "canonical public execution readiness must be explicit")
 
     historical = readiness.get("historical_private_collection_lane")
     require(isinstance(historical, dict), "historical private lane must be an object")
@@ -69,10 +66,7 @@ def main() -> None:
     require(public.get("corpus") == "LibriSpeech ASR corpus SLR12", "unexpected public corpus")
     require(public.get("upstream") == "https://www.openslr.org/12/", "OpenSLR source drift")
     require(public.get("license") == "CC BY 4.0", "license drift")
-    require(
-        public.get("claim_scope") == "BOUNDED_ORDINARY_READ_ENGLISH_ONLY",
-        "public-human claim scope drift",
-    )
+    require(public.get("claim_scope") == "BOUNDED_ORDINARY_READ_ENGLISH_ONLY", "public-human claim scope drift")
     require_bool(public, "subset_manifest_frozen", False, "public_human_baseline")
     require_bool(public, "candidate_decoding_started", False, "public_human_baseline")
 
@@ -116,10 +110,7 @@ def main() -> None:
     require(isinstance(environment, dict), "execution environment contract must be an object")
     require_bool(environment, "attempt_bound_capture_required", True, "execution_environment")
     require_bool(environment, "resolved", False, "execution_environment")
-    require(
-        environment.get("hosted_runner_performance_mode") == "DIAGNOSTIC_ONLY",
-        "hosted-runner performance claim boundary drift",
-    )
+    require(environment.get("hosted_runner_performance_mode") == "DIAGNOSTIC_ONLY", "hosted-runner performance claim boundary drift")
 
     attempt = readiness.get("attempt_manifest")
     require(isinstance(attempt, dict), "attempt manifest state must be an object")
@@ -128,24 +119,20 @@ def main() -> None:
 
     guards = readiness.get("claim_guards")
     require(isinstance(guards, dict), "claim guards must be an object")
-    require(
-        guards.get("human_developer_speech_accuracy_evidence") == "ABSENT",
-        "human developer-speech evidence must remain explicitly absent",
-    )
+    require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human developer-speech evidence must remain explicitly absent")
     require_bool(guards, "synthetic_developer_media_is_human_evidence", False, "claim_guards")
     require_bool(guards, "production_stt_selected", False, "claim_guards")
     require_bool(guards, "product_code_authorized", False, "claim_guards")
 
-    next_action = readiness.get("next_action_after_canonicalization")
+    next_action = readiness.get("next_action")
     require(isinstance(next_action, str), "next action must be text")
     for phrase in (
-        "Materialize and verify the exact public corpus archives",
-        "compute archive SHA-256 values",
-        "freeze deterministic subset selection",
-        "revalidate candidate identities",
-        "capture preprocessing/environment evidence",
-        "freeze the attempt manifest",
-        "only then begin P0 C0 comparative decoding",
+        "Execute B2P01 only",
+        "OpenSLR SLR12 source/license facts",
+        "official archive checksums",
+        "machine-readable provenance",
+        "Do not materialize corpus archives",
+        "B2P01 is canonical",
     ):
         require_text(next_action, phrase, "next action")
 
