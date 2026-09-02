@@ -1,0 +1,64 @@
+{
+  "schema_version": "000b2-public-readiness-v1",
+  "lane": "PUBLIC_CORPUS",
+  "state": "READY_CANDIDATE_PENDING_CANONICALIZATION",
+  "historical_private_collection_lane": {
+    "preserved": true,
+    "executed": false,
+    "primary_decoding_performed": false,
+    "active_entry_gate": false
+  },
+  "public_human_baseline": {
+    "corpus": "LibriSpeech ASR corpus SLR12",
+    "upstream": "https://www.openslr.org/12/",
+    "license": "CC BY 4.0",
+    "partitions": [
+      {
+        "name": "test-clean.tar.gz",
+        "official_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_sha256": null,
+        "materialized": false
+      },
+      {
+        "name": "test-other.tar.gz",
+        "official_md5": "fb5a50374b501bb3bac4815ee91d3135",
+        "archive_sha256": null,
+        "materialized": false
+      }
+    ],
+    "subset_manifest_frozen": false,
+    "candidate_decoding_started": false,
+    "claim_scope": "BOUNDED_ORDINARY_READ_ENGLISH_ONLY"
+  },
+  "developer_term_diagnostic": {
+    "status": "OPTIONAL_NOT_FROZEN",
+    "synthetic_only": true,
+    "human_accuracy_claim_eligible": false,
+    "may_be_not_run": true
+  },
+  "candidate_registry": {
+    "reuse_canonical_b1_b2_entry_cells": true,
+    "revalidation_required_before_decode": true
+  },
+  "preprocessing": {
+    "required_tool": "FFmpeg 9.0.1",
+    "attempt_bound_capture_required": true,
+    "resolved": false
+  },
+  "execution_environment": {
+    "attempt_bound_capture_required": true,
+    "resolved": false,
+    "hosted_runner_performance_mode": "DIAGNOSTIC_ONLY"
+  },
+  "attempt_manifest": {
+    "frozen": false,
+    "primary_decoding_started": false
+  },
+  "claim_guards": {
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "synthetic_developer_media_is_human_evidence": false,
+    "production_stt_selected": false,
+    "product_code_authorized": false
+  },
+  "next_action_after_canonicalization": "Materialize and verify the exact public corpus archives, compute archive SHA-256 values, implement and freeze deterministic subset selection, revalidate candidate identities, capture preprocessing/environment evidence, freeze the attempt manifest, and only then begin P0 C0 comparative decoding."
+}
