@@ -17,6 +17,7 @@
 **000B2 trusted participant-materials merge:** `c753635d29deca180af85dfd2f8914bef3ee0ec8`  
 **000B2 participant-material identity amendment merge:** `fe8496e5e45160a09e55a6f967dd62e46c0bf47f`  
 **000B2 participant-material freeze merge:** `66cca406e69eda33dfd6e0a2adf59ea328eda1c6`  
+**000B2 public-corpus methodology merge:** `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`  
 **Program status:** `SPEC_000_RESEARCH_ACTIVE`  
 **Active product implementation:** none  
 **Active parent specification:** `000-founding-research` — `REFINING`  
@@ -27,7 +28,8 @@
 **000B2 authority structure:** `CANONICAL`, participant authority still `EXTERNAL`  
 **000B2 participant policy:** `CANONICAL_FROZEN`, participant consent `EXTERNAL_NOT_OBTAINED`  
 **000B2 participant materials:** `CANONICAL_FROZEN`, participant consent `EXTERNAL_NOT_OBTAINED`  
-**Blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
+**Historical blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
+**Active execution successor:** `000B2-public-corpus-bakeoff` — `READY`  
 **Published release:** none
 
 Live GitHub and repository truth override this document.
@@ -162,19 +164,40 @@ Post-merge verification at `66cca406e69eda33dfd6e0a2adf59ea328eda1c6` completed 
 
 These controls make the project-controlled policy and participant-facing material exact and reviewable. They do not make consent self-authenticating. The authority package remains `NOT_AUTHORIZED`, `participant_count=0`, `consent_records_sha256=null`, and `authority_effective_before_recording=false`. No participant identity, signature, consent chronology, human recording, or corpus has been accepted by these repository-side units.
 
-## B2 blocked successor
+## Canonical public-corpus B2 methodology successor
+
+PR #28 replaced only the unstarted active private-collection execution route with the separately governed `000B2-public-corpus-bakeoff` successor while preserving all historical B1/private-authority evidence.
+
+The exact qualified amendment head was `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` against exact base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`. All six applicable exact-head pull-request workflow lanes completed successfully. A fresh independent CodeRabbit semantic review evaluated the complete 12-path amendment and current PR metadata and reported `No actionable findings`; no review threads remained unresolved.
+
+The guarded expected-head squash merge produced canonical commit `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`, with parent `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`, tree `241709f190778a359af018b734314820f4ce8ce1`, and GitHub signature verification `verified=true`, reason `valid`.
+
+Post-merge push verification on `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` completed successfully in:
+
+- `000B2 Trusted Participant Materials` run `33670888382`;
+- `000B2 Trusted Participant Policy` run `33670888470`;
+- `000B2 Public Corpus Methodology` run `33670888430`;
+- `000B2 Entry Contracts` run `33670888303`;
+- `000B2 Trusted Human Authority Structure` run `33670888357`;
+- `000B2 Trusted Materialization Authority` run `33670888397`.
+
+The public-corpus successor is now the active B2 execution route. Its first ordered execution task is `B2P01`. Comparative P0 decoding remains prohibited until `B2P01` through `B2P08` complete and the final pre-decode attempt manifest is frozen with `primary_decoding_started=false`.
+
+This canonical methodology merge does not establish human developer-speech accuracy, accent/cadence coverage, Arabic support, general STT superiority, a production speech winner, or product/runtime implementation authority. All synthesis must preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT` unless genuine qualifying evidence becomes canonical through a separate route.
+
+## Historical private B2 blocked successor
 
 `000B2-unbiased-stt-bakeoff` remains `BLOCKED_EXTERNAL`, not `READY`.
 
-Primary developer-speech decoding must not begin until all remaining gates are satisfied. Current blockers are:
+Primary developer-speech decoding must not begin until all remaining gates are satisfied. Current blockers for that historical private lane are:
 
 - real human developer-speech participant/media authority is absent: the project-controlled policy and participant-facing materials are frozen, but no real participant consent has been obtained or independently verified, the authority package remains `NOT_AUTHORIZED`, `participant_count=0`, and no consent-bundle digest is bound;
 - authorized human recordings, consent records, speaker-disjoint split manifests, and a frozen primary test manifest are absent;
 - accepted attempt-bound FFmpeg `9.0.1` binary/version/config identity and preprocessing execution evidence under separately reviewable execution chronology is absent;
 - accepted attempt-bound execution-environment and hardware-fingerprint evidence under separately reviewable chronology/control evidence is absent;
-- no final B2 attempt manifest exists with `frozen=true` and a matching freeze digest.
+- no final private-lane B2 attempt manifest exists with `frozen=true` and a matching freeze digest.
 
-Synthetic/TTS audio may support smoke/harness/regression only. It cannot satisfy the human developer-speech authority gate and cannot enter the primary human ranking. Repository-owner approval, structural authority metadata, frozen project policy, frozen participant-facing materials, or a consent-record digest cannot substitute for real participant/media authority.
+Synthetic/TTS audio may support smoke/harness/regression only. It cannot satisfy the human developer-speech authority gate and cannot enter the historical private human ranking. Repository-owner approval, structural authority metadata, frozen project policy, frozen participant-facing materials, or a consent-record digest cannot substitute for real participant/media authority.
 
 ## What is established
 
@@ -192,7 +215,9 @@ Canonical research authority now contains:
 - canonical B2 entry-preparation evidence for artifact identities, bounded smoke qualification, and scorer revision;
 - canonical fail-closed B2 authority-intake and trusted structural verification surfaces;
 - canonical frozen participant policy and exact participant-facing/operator-entry materials, without real participant consent;
-- explicit remaining B2 external/attempt-time readiness blockers.
+- historical private `000B2-unbiased-stt-bakeoff` preserved as `BLOCKED_EXTERNAL`;
+- canonical `000B2-public-corpus-bakeoff` methodology as the active B2 execution route;
+- no comparative public-corpus decoding yet and no production STT selection.
 
 ## Current product thesis
 
@@ -233,8 +258,8 @@ Wispral does NOT currently claim:
 
 No Rust product implementation, Cargo workspace, permanent speech-engine integration, ACP production client, PTY adapter, TUI, installer, or release is authorized until Specification 000 synthesis reaches `000G`, selects a bounded first implementation Grain from reproducible evidence, and that Grain independently satisfies readiness.
 
-Verified 000A, verified 000B1, canonical B2 entry preparation, canonical B2 authority structure, and canonical participant policy/materials do not weaken this gate.
+Verified 000A, verified 000B1, canonical B2 entry preparation, canonical B2 authority structure, canonical participant policy/materials, and the canonical public-corpus B2 methodology do not weaken this gate.
 
 ## Next canonical action
 
-Preserve B2 as `BLOCKED_EXTERNAL`. Use the exact frozen participant policy and participant-facing materials in the real external consent process, establish independently genuine participant/media authority, and collect the authorized frozen human developer-speech corpus under that authority. Repository structure, policy, and templates are prepared, but none is consent. Only then prepare a separately reviewable B2 attempt that captures preprocessing and execution-environment evidence before primary decoding, freezes the final manifest, and rechecks readiness from canonical `main`. If those gates cannot be satisfied, preserve the block rather than substitute synthetic primary evidence or prematurely advance B3/B4.
+Execute `B2P01` only: reverify and record the exact OpenSLR SLR12 source/license facts and official archive checksums in machine-readable provenance. Continue to `B2P02` only after `B2P01` is preserved and reviewable, then continue strictly in task order. Do not begin comparative P0 decoding until `B2P01` through `B2P08` are genuinely complete and the final pre-decode attempt manifest is frozen with `primary_decoding_started=false`. Preserve the historical private lane as `BLOCKED_EXTERNAL`, preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, and keep the product-code gate closed.
