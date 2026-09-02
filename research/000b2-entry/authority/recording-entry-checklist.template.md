@@ -10,7 +10,7 @@ Use one externally retained checklist per participant before that participant's 
 
 ## A. Immutable policy binding
 
-- [ ] The participant-facing material presented to the participant is the canonical 000B2 participant information/consent material or an externally approved equivalent that preserves the same frozen policy without weakening it.
+- [ ] The participant-facing material presented to the participant is the exact frozen file `research/000b2-entry/authority/participant-information-consent.template.md` with SHA-256 `dd4143145674473ea56122a7e7e23cfc95c08cb99840b451b190bc92fb3d93b6`.
 - [ ] The external consent artifact binds exactly:
   - `authority_policy_sha256 = 454b208884211f83fc3ed62c22844d2a72d37dafbaa001793d791e91faecc811`
 - [ ] No policy field has materially changed since the participant reviewed it.
