@@ -18,6 +18,7 @@
 **000B2 participant-material identity amendment merge:** `fe8496e5e45160a09e55a6f967dd62e46c0bf47f`  
 **000B2 participant-material freeze merge:** `66cca406e69eda33dfd6e0a2adf59ea328eda1c6`  
 **000B2 public-corpus methodology merge:** `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`  
+**000B2 public-frontier current-view merge:** `94e3b50009b5054db6ccd9bb3276facd1399399c`  
 **Program status:** `SPEC_000_RESEARCH_ACTIVE`  
 **Active product implementation:** none  
 **Active parent specification:** `000-founding-research` — `REFINING`  
@@ -30,6 +31,7 @@
 **000B2 participant materials:** `CANONICAL_FROZEN`, participant consent `EXTERNAL_NOT_OBTAINED`  
 **Blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
 **Active execution successor:** `000B2-public-corpus-bakeoff` — `READY`  
+**Qualification chronology gate:** this forward-only remediation must become canonical before `B2P01` execution begins  
 **Published release:** none
 
 Live GitHub and repository truth override this document.
@@ -168,9 +170,13 @@ These controls make the project-controlled policy and participant-facing materia
 
 PR #28 replaced only the unstarted active private-collection execution route with the separately governed `000B2-public-corpus-bakeoff` successor while preserving all historical B1/private-authority evidence.
 
-The exact qualified amendment head was `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` against exact base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`. All six applicable exact-head pull-request workflow lanes completed successfully. A fresh independent CodeRabbit semantic review evaluated the complete 12-path amendment and current PR metadata and reported `No actionable findings`; no review threads remained unresolved.
+The amendment head was `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` against exact base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`. All six applicable exact-head pull-request workflow lanes completed successfully before merge.
 
-The guarded expected-head squash merge produced canonical commit `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`, with parent `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`, tree `241709f190778a359af018b734314820f4ce8ce1`, and GitHub signature verification `verified=true`, reason `valid`.
+Live PR chronology does not prove the required independent semantic-review gate before the PR #28 merge. Owner-authored COMMENT reviews submitted at `2026-09-02T18:56:33Z` and `2026-09-02T18:57:04Z` explicitly recorded that independent review remained pending and that self-authored review could not satisfy the gate. PR #28 merged at `2026-09-02T19:02:21Z`. The persistent CodeRabbit comment that now records an exact-head review of all 12 paths was updated at `2026-09-02T19:06:58Z`, after merge; no independently authored submitted PR review exists before the merge. Therefore `PR28_PREMERGE_INDEPENDENT_REVIEW=NOT_PROVEN`.
+
+The later exact-head CodeRabbit review run `ed2b90b4-c50b-4b26-9283-b58975f448d5` covered base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73` through head `875b0e4be76e8fc0eb753af189255b38ce3dc7ca`, selected all 12 changed paths, and reported no actionable comments. That late review is useful semantic defect-screening evidence, but it does not retroactively satisfy the required pre-merge chronology gate.
+
+The squash merge produced canonical commit `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`, with parent `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`, tree `241709f190778a359af018b734314820f4ce8ce1`, and GitHub signature verification `verified=true`, reason `valid`.
 
 Post-merge push verification on `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` completed successfully in:
 
@@ -181,9 +187,21 @@ Post-merge push verification on `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` compl
 - `000B2 Trusted Human Authority Structure` run `33670888357`;
 - `000B2 Trusted Materialization Authority` run `33670888397`.
 
-The public-corpus successor is now the active B2 execution route. Its first ordered execution task is `B2P01`. Comparative P0 decoding remains prohibited until `B2P01` through `B2P08` complete and the final pre-decode attempt manifest is frozen with `primary_decoding_started=false`.
+## Canonical public-frontier reconciliation and qualification debt
 
-This canonical methodology merge does not establish human developer-speech accuracy, accent/cadence coverage, Arabic support, general STT superiority, a production speech winner, or product/runtime implementation authority. All synthesis must preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT` unless genuine qualifying evidence becomes canonical through a separate route.
+PR #29 reconciled `docs/canonical/CURRENT_STATE.md` and `specs/CURRENT.md` and merged from exact head `1a736b62490f48bb02285f841bb833b985b8483d` against exact base `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` as canonical commit `94e3b50009b5054db6ccd9bb3276facd1399399c`, parent `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`, tree `33eb5bdf877d8745beddbc6ff666c02e720bca12`, GitHub verification `verified=true`, reason `valid`.
+
+All six applicable exact-head PR workflows completed successfully on `1a736b62490f48bb02285f841bb833b985b8483d`, and no review threads were unresolved. However, the CodeRabbit exact-head response before merge explicitly combined `No actionable findings` with `Action not completed — Review rate limited`. Repository governance explicitly forbids converting rate-limited/status output into PASS, and PR #29 has no independently authored submitted PR review. Therefore `PR29_PREMERGE_INDEPENDENT_REVIEW=NOT_SATISFIED`. The merge-commit message statement that a fresh independent CodeRabbit review had completed is inaccurate metadata and is not evidence.
+
+The initial push workflows on `94e3b50009b5054db6ccd9bb3276facd1399399c` showed three failures only because the trusted push gates reverified stale open PR #30 from pre-#29 base `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`. PR #30 was closed without merge after this was diagnosed. The failed jobs for `000B2 Trusted Participant Policy` run `33674332834`, `000B2 Trusted Participant Materials` run `33674332663`, and `000B2 Trusted Human Authority Structure` run `33674332691` were rerun on the unchanged canonical SHA and completed successfully. The other three post-merge push workflows were already successful. Thus the canonical bytes themselves are compatible with the trusted gates; the remaining defect is qualification chronology, not a verifier bypass or participant-authority change.
+
+Stale successor PR #31, which would have promoted `research/000b2-public/readiness.json` to `READY` before this chronology debt was repaired, was also closed without merge. No public archive materialization, fetched-byte SHA-256 capture, subset freeze, candidate decoding, comparative ranking, or product selection has begun.
+
+This forward-only remediation corrects the canonical record without rewriting or reverting PR #28 or PR #29. Before `B2P01` may execute, this remediation itself must receive applicable exact-head CI, a fresh genuinely independent substantive semantic review on its exact unchanged head, zero unresolved actionable review threads, guarded expected-head merge, and successful post-merge verification. Once this remediation is canonical, `B2P01` is again the next execution task in the public lane.
+
+The public-corpus successor remains the active B2 execution route. Comparative P0 decoding remains prohibited until `B2P01` through `B2P08` complete and the final pre-decode attempt manifest is frozen with `primary_decoding_started=false`.
+
+This methodology and remediation do not establish human developer-speech accuracy, accent/cadence coverage, Arabic support, general STT superiority, a production speech winner, or product/runtime implementation authority. All synthesis must preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT` unless genuine qualifying evidence becomes canonical through a separate route.
 
 ## Historical private B2 blocked successor
 
@@ -216,7 +234,7 @@ Canonical research authority now contains:
 - canonical fail-closed B2 authority-intake and trusted structural verification surfaces;
 - canonical frozen participant policy and exact participant-facing/operator-entry materials, without real participant consent;
 - historical private `000B2-unbiased-stt-bakeoff` preserved as `BLOCKED_EXTERNAL`;
-- canonical `000B2-public-corpus-bakeoff` methodology as the active B2 execution route;
+- canonical public-corpus B2 methodology bytes, with pre-merge review chronology debt explicitly recorded and bounded by this remediation;
 - no comparative public-corpus decoding yet and no production STT selection.
 
 ## Current product thesis
@@ -262,4 +280,4 @@ Verified 000A, verified 000B1, canonical B2 entry preparation, canonical B2 auth
 
 ## Next canonical action
 
-Execute `B2P01` only: reverify and record the exact OpenSLR SLR12 source/license facts and official archive checksums in machine-readable provenance. Continue to `B2P02` only after `B2P01` is preserved and reviewable, then continue strictly in task order. Do not begin comparative P0 decoding until `B2P01` through `B2P08` are genuinely complete and the final pre-decode attempt manifest is frozen with `primary_decoding_started=false`. Preserve the historical private lane as `BLOCKED_EXTERNAL`, preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, and keep the product-code gate closed.
+First canonicalize this qualification-chronology remediation with applicable exact-head CI, fresh independent substantive semantic review, zero unresolved actionable review threads, guarded expected-head merge, and successful post-merge verification. Do not execute `B2P01` while this remediation remains non-canonical. Once the remediation is canonical, execute `B2P01` only: reverify and record the exact OpenSLR SLR12 source/license facts and official archive checksums in machine-readable provenance. Continue to `B2P02` only after `B2P01` is preserved and reviewable, then continue strictly in task order. Do not begin comparative P0 decoding until `B2P01` through `B2P08` are genuinely complete and the final pre-decode attempt manifest is frozen with `primary_decoding_started=false`. Preserve the historical private lane as `BLOCKED_EXTERNAL`, preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, and keep the product-code gate closed.
