@@ -1,0 +1,73 @@
+name: Qualify public B2 current-state reconciliation
+on:
+  push:
+    branches:
+      - evidence/000b2-current-state-qualify-88c8e21
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+  issues: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    env:
+      BASE_SHA: cfb883311c1acb45cb8422ab6b2c02443dc1b62c
+      HEAD_SHA: 88c8e21b1f030fb982c2e49b8c52df08fd871f45
+      HEAD_TREE: 6b7af51353f872840ca9d593f2ec16da292c3d4c
+      TARGET_BRANCH: docs/000b2-public-current-state-reconciliation
+      PR_NUMBER: '30'
+      BUILDER_RUN: '33672365265'
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify exact identity and provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASE_SHA"
+          test "$(git ls-remote origin refs/heads/$TARGET_BRANCH | cut -f1)" = "$HEAD_SHA"
+          test "$(git rev-parse "$HEAD_SHA^{tree}")" = "$HEAD_TREE"
+          test "$(git rev-parse "$HEAD_SHA^")" = "$BASE_SHA"
+          pr="$(gh api repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER)"
+          jq -e --arg base "$BASE_SHA" --arg head "$HEAD_SHA" '.state == "open" and .draft == false and .base.sha == $base and .head.sha == $head and .commits == 1 and .changed_files == 1' <<<"$pr"
+          builder="$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/$BUILDER_RUN)"
+          jq -e '.status == "completed" and .conclusion == "success"' <<<"$builder"
+          compare="$(gh api repos/${GITHUB_REPOSITORY}/compare/$BASE_SHA...$HEAD_SHA)"
+          jq -e '.status == "ahead" and .ahead_by == 1 and .behind_by == 0 and .total_commits == 1 and (.files | length) == 1 and .files[0].filename == "docs/canonical/CURRENT_STATE.md"' <<<"$compare"
+      - name: Verify reconciled canonical state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout --detach "$HEAD_SHA"
+          git diff --check "$BASE_SHA...$HEAD_SHA"
+          grep -F '**000B2 public-corpus methodology merge:** `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`' docs/canonical/CURRENT_STATE.md
+          grep -F '**Historical private successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`' docs/canonical/CURRENT_STATE.md
+          grep -F '**Active public B2 execution lane:** `000B2-public-corpus-bakeoff` — `CANONICAL`, execution not started' docs/canonical/CURRENT_STATE.md
+          grep -F '**Public B2 primary decoding:** `NOT_STARTED`' docs/canonical/CURRENT_STATE.md
+          grep -F 'It is therefore post-merge independent semantic evidence and must not be represented as a pre-merge review.' docs/canonical/CURRENT_STATE.md
+          grep -F 'B2P01 source/license/checksum freeze' docs/canonical/CURRENT_STATE.md
+          grep -F '`HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT` remains mandatory.' docs/canonical/CURRENT_STATE.md
+          grep -F 'No Rust product code, Cargo workspace, permanent STT integration' docs/canonical/CURRENT_STATE.md
+          test -z "$(git diff --name-only "$BASE_SHA...$HEAD_SHA" -- research specs .github ':!docs/canonical/CURRENT_STATE.md')"
+          python research/000b2-public/verify_methodology.py
+      - name: Reverify underlying PR 28 facts and authority boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          old_pr="$(gh api repos/${GITHUB_REPOSITORY}/pulls/28)"
+          jq -e '.merged == true and .merge_commit_sha == "cfb883311c1acb45cb8422ab6b2c02443dc1b62c" and .base.sha == "c54e09a2d1cca5929bb7cd5571e84ad9698d4f73" and .head.sha == "875b0e4be76e8fc0eb753af189255b38ce3dc7ca" and .merged_at == "2026-09-02T19:02:21Z"' <<<"$old_pr"
+          review="$(gh api repos/${GITHUB_REPOSITORY}/issues/comments/5514088896)"
+          jq -e '.user.login == "coderabbitai[bot]" and .updated_at == "2026-09-02T19:06:58Z" and (.body | contains("No actionable comments were generated in the recent review")) and (.body | contains("Files selected for processing (12)"))' <<<"$review"
+          readiness="$(cat research/000b2-public/readiness.json)"
+          jq -e '.historical_private_lane_preserved == true and .historical_private_lane_executed == false and .corpus.archives_materialized == false and .subset_manifest_frozen == false and .candidate_decoding_started == false and .attempt.frozen == false and .attempt.primary_decoding_started == false and .product_code_authorized == false' <<<"$readiness"
+      - name: Final immutable recheck
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASE_SHA"
+          test "$(git ls-remote origin refs/heads/$TARGET_BRANCH | cut -f1)" = "$HEAD_SHA"
+          pr="$(gh api repos/${GITHUB_REPOSITORY}/pulls/$PR_NUMBER)"
+          jq -e --arg base "$BASE_SHA" --arg head "$HEAD_SHA" '.state == "open" and .draft == false and .base.sha == $base and .head.sha == $head' <<<"$pr"
