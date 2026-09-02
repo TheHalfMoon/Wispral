@@ -268,8 +268,15 @@ def main() -> None:
         "B2D01", "B2D02", "B2D03", "B2D04",
         "B2S01", "B2S02", "B2S03", "B2S04", "B2S05", "B2S06", "B2S07", "B2S08", "B2S09",
     )
+    task_lines = tasks.splitlines()
     for task_id in all_task_ids:
-        require_text(tasks, f"`{task_id}`", "public child tasks")
+        matching_lines = [line for line in task_lines if f"`{task_id}`" in line]
+        require(len(matching_lines) == 1, f"{task_id} must appear in exactly one checklist line")
+        expected_marker = "- [x]" if task_id == "B2P01" else "- [ ]"
+        require(
+            matching_lines[0].startswith(f"{expected_marker} `{task_id}`"),
+            f"{task_id} checklist state must be {expected_marker}",
+        )
     require_text(
         tasks,
         "- [x] `B2P01` Record exact OpenSLR SLR12 source/license facts and official checksums in machine-readable provenance.",
@@ -280,8 +287,6 @@ def main() -> None:
         "- [ ] `B2P02` Materialize `test-clean.tar.gz` and `test-other.tar.gz` from an approved source or official mirror; verify official MD5 and record exact archive SHA-256.",
         "public child tasks",
     )
-    for task_id in all_task_ids[1:]:
-        require(f"- [x] `{task_id}`" not in tasks, f"{task_id} must remain unchecked during B2P01")
     for phrase in (
         "These execution tasks become authorized only after the public-corpus amendment and frontier reconciliation are canonical on `main`.",
         "primary_decoding_started=false",
