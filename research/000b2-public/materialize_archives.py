@@ -14,7 +14,6 @@ import hashlib
 import json
 import os
 import shutil
-import sys
 import time
 import urllib.request
 from pathlib import Path
@@ -97,7 +96,7 @@ def stream_archive(url: str, destination: Path) -> dict[str, Any]:
                     sha256.update(chunk)
                     byte_count += len(chunk)
             if expected_length is not None and byte_count != expected_length:
-                fail(
+                raise OSError(
                     f"content-length mismatch for {destination.name}: "
                     f"expected {expected_length}, observed {byte_count}"
                 )
@@ -107,10 +106,9 @@ def stream_archive(url: str, destination: Path) -> dict[str, Any]:
                 "md5": md5.hexdigest(),
                 "sha256": sha256.hexdigest(),
             }
-        except SystemExit:
-            raise
         except Exception as exc:  # noqa: BLE001 - network boundary is deliberately fail-closed.
             last_error = exc
+            destination.unlink(missing_ok=True)
             if attempt < MAX_ATTEMPTS:
                 time.sleep(attempt * 2)
     fail(f"unable to materialize {url}: {last_error}")
@@ -209,11 +207,15 @@ def main() -> None:
         )
         destination.unlink(missing_ok=True)
 
+    revision = os.environ.get("B2P02_REVISION") or os.environ.get("GITHUB_SHA")
+    if not revision:
+        fail("exact revision identity is unavailable")
+
     record = {
         "schema_version": "000b2-public-archive-materialization-observation-v1",
         "task": "B2P02",
         "repository": os.environ.get("GITHUB_REPOSITORY"),
-        "revision": os.environ.get("GITHUB_SHA"),
+        "revision": revision,
         "github_run_id": os.environ.get("GITHUB_RUN_ID"),
         "github_run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
         "runner_os": os.environ.get("RUNNER_OS"),
@@ -225,6 +227,7 @@ def main() -> None:
     }
     args.output.write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     shutil.rmtree(args.work_dir, ignore_errors=True)
+    print(f"B2P02_REVISION={revision}")
     print(f"B2P02_OBSERVATION={args.output}")
     print("B2P02_MATERIALIZATION=PASS")
 
