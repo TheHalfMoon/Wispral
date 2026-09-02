@@ -18,7 +18,7 @@ PRIMARY_TEST_DECODING_AUTHORIZED=NO
 
 Identity-bearing consent artifacts, participant contact information, signatures, identity-to-pseudonym mappings, withdrawal evidence, and raw authority-review notes MUST remain outside the public repository.
 
-Repository-visible consent metadata may contain only the fields allowed by `consent-records.schema.json`. Participant ids MUST be independently generated pseudonyms matching `spk-<8 lowercase hex>` and MUST NOT be derived from a name, email address, phone number, account identifier, or another direct identifier.
+Participant ids MUST be independently generated pseudonyms matching `spk-<8 lowercase hex>` and MUST NOT be derived from a name, email address, phone number, account identifier, or another direct identifier.
 
 The repository must never be used as the source of truth for the participant's real identity.
 
@@ -69,9 +69,9 @@ Before any recording for that participant:
 
 No audio may be collected merely because a pseudonymous consent record can be made structurally valid.
 
-## 4. Build the repository-visible active consent bundle
+## 4. Build the private active consent bundle
 
-Start from a private working copy of `consent-records.template.json` and add only active pseudonymous records. Each record must contain:
+Start from a private working copy of `consent-records.template.json` and add only active pseudonymous records. The individual records remain outside GitHub by default. Each record must contain:
 
 - `participant_id`;
 - preregistered `split`;
@@ -80,7 +80,7 @@ Start from a private working copy of `consent-records.template.json` and add onl
 - `consent_obtained_at_utc`;
 - `record_status=ACTIVE`.
 
-The bundle remains `PARTIAL` until all 20 active participants exist. Validate the working bundle against the same private policy file:
+The bundle remains `PARTIAL` until all 20 active participants exist. Validate the private working bundle against the same private policy file:
 
 ```bash
 python research/000b2-entry/authority/verify_consent_records.py \
@@ -103,14 +103,16 @@ python research/000b2-entry/authority/verify_consent_records.py \
   --require-complete
 ```
 
-Record the emitted `CONSENT_RECORDS_SHA256`. A successful structural check still emits no participant-consent attestation and no primary-media acceptance.
+Record the emitted `CONSENT_RECORDS_SHA256`. This aggregate digest plus `participant_count=20` is the minimum repository-visible commitment needed by the authority package. Publishing the 20 individual pseudonymous records is not required for B2 entry and must not be done merely to satisfy the authority gate.
+
+A successful structural check still emits no participant-consent attestation and no primary-media acceptance.
 
 ## 5. Bind the complete bundle into the authority package only after real review
 
 Only after the real external consent artifacts have been reviewed for genuineness and chronology may the candidate authority package be prepared with:
 
 - `authority_status=AUTHORIZED`;
-- `consent_records_sha256=<exact complete bundle digest>`;
+- `consent_records_sha256=<exact complete private bundle digest>`;
 - `participant_count=20`;
 - `authority_effective_before_recording=true`.
 
@@ -129,7 +131,7 @@ python research/000b2-entry/authority/verify_consent_records.py \
   --require-authority-binding
 ```
 
-These commands validate structure and digest binding only. They do not independently verify signatures, identities, understanding, consent chronology, or media provenance.
+These commands validate structure and digest binding only. They do not independently verify signatures, identities, understanding, consent chronology, media provenance, or primary-media acceptance.
 
 ## 6. Recording entry gate
 
@@ -177,12 +179,14 @@ Primary decoding remains prohibited until:
 
 ## 9. Repository publication boundary
 
+The default publication surface is privacy-minimal. The repository needs only the non-identifying authority package commitment required by the canonical contract, including the aggregate participant count and complete private-bundle digest.
+
 Before any authority or corpus metadata is proposed to GitHub:
 
 - remove all direct identifiers and private identity mappings;
-- verify only schema-permitted pseudonymous metadata is present;
+- do not publish the individual consent records merely to satisfy B2 entry;
 - verify external consent artifacts themselves are not added;
 - verify no raw human audio is added unless a separately established policy explicitly permits repository publication and canonical governance authorizes that publication surface;
 - preserve the external evidence needed to challenge consent genuineness and chronology without publishing participant identities.
 
-A future PR may carry pseudonymous metadata and digests only after the underlying external facts are real. CI success must never be described as participant consent, media acceptance, chronology attestation, or B2 decoding authority.
+A future separately authorized PR may carry additional schema-permitted pseudonymous metadata only when a concrete reproducibility need justifies the additional disclosure. CI success must never be described as participant consent, media acceptance, chronology attestation, or B2 decoding authority.
