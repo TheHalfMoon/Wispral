@@ -1,0 +1,23 @@
+{
+  "schema_version": "000b2-participant-materials-freeze-v1",
+  "recorded_date": "2026-09-02",
+  "materials_status": "FROZEN_OWNER_TEMPLATES",
+  "authority_policy_sha256": "454b208884211f83fc3ed62c22844d2a72d37dafbaa001793d791e91faecc811",
+  "materials_sha256": "5f96a7ff1ab63371c0396a93ccaa140b4d82bf567e62e64c9b0ed7520997034c",
+  "materials": {
+    "participant_information_consent_template": {
+      "path": "research/000b2-entry/authority/participant-information-consent.template.md",
+      "sha256": "dd4143145674473ea56122a7e7e23cfc95c08cb99840b451b190bc92fb3d93b6"
+    },
+    "recording_entry_checklist_template": {
+      "path": "research/000b2-entry/authority/recording-entry-checklist.template.md",
+      "sha256": "b4e9f8fdf54c0809bb5f44d004c61c6e621506fef64888b92cec407ca05d0a55"
+    }
+  },
+  "participant_consent_attested": false,
+  "recording_authorized": false,
+  "primary_media_accepted": false,
+  "primary_test_decoding_authorized": false,
+  "b2_ready": false,
+  "note": "This record freezes participant-facing and operator-entry templates only. It does not attest real consent, external approval, chronology, recording authority, media provenance, corpus acceptance, or B2 readiness."
+}
