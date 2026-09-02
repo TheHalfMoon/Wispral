@@ -53,8 +53,8 @@ def main() -> None:
     require(readiness.get("schema_version") == "000b2-public-readiness-v1", "schema version drift")
     require(readiness.get("lane") == "PUBLIC_CORPUS", "lane drift")
     require(
-        readiness.get("state") == "READY_CANDIDATE_PENDING_CANONICALIZATION",
-        "candidate must not self-claim canonical readiness",
+        readiness.get("state") == "READY",
+        "canonical public execution readiness must be explicit",
     )
 
     historical = readiness.get("historical_private_collection_lane")
@@ -136,18 +136,13 @@ def main() -> None:
     require_bool(guards, "production_stt_selected", False, "claim_guards")
     require_bool(guards, "product_code_authorized", False, "claim_guards")
 
-    next_action = readiness.get("next_action_after_canonicalization")
-    require(isinstance(next_action, str), "next action must be text")
-    for phrase in (
-        "Materialize and verify the exact public corpus archives",
-        "compute archive SHA-256 values",
-        "freeze deterministic subset selection",
-        "revalidate candidate identities",
-        "capture preprocessing/environment evidence",
-        "freeze the attempt manifest",
-        "only then begin P0 C0 comparative decoding",
-    ):
-        require_text(next_action, phrase, "next action")
+    next_action = readiness.get("next_action")
+    expected_next_action = (
+        "Execute B2P01 only: reverify and record the exact OpenSLR SLR12 source/license facts and "
+        "official archive checksums in machine-readable provenance. Do not materialize corpus archives "
+        "or begin B2P02 until B2P01 is canonical."
+    )
+    require(next_action == expected_next_action, "next action must be the exact B2P01-only instruction")
 
     spec = spec_path.read_text(encoding="utf-8")
     plan = plan_path.read_text(encoding="utf-8")

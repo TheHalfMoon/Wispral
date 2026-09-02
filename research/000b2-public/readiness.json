@@ -1,7 +1,7 @@
 {
   "schema_version": "000b2-public-readiness-v1",
   "lane": "PUBLIC_CORPUS",
-  "state": "READY_CANDIDATE_PENDING_CANONICALIZATION",
+  "state": "READY",
   "historical_private_collection_lane": {
     "preserved": true,
     "executed": false,
@@ -60,5 +60,5 @@
     "production_stt_selected": false,
     "product_code_authorized": false
   },
-  "next_action_after_canonicalization": "Materialize and verify the exact public corpus archives, compute archive SHA-256 values, implement and freeze deterministic subset selection, revalidate candidate identities, capture preprocessing/environment evidence, freeze the attempt manifest, and only then begin P0 C0 comparative decoding."
+  "next_action": "Execute B2P01 only: reverify and record the exact OpenSLR SLR12 source/license facts and official archive checksums in machine-readable provenance. Do not materialize corpus archives or begin B2P02 until B2P01 is canonical."
 }
