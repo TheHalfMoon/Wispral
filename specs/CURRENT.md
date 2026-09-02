@@ -1,8 +1,8 @@
 # Wispral Specification Frontier
 
-**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; public-corpus B2 execution frontier `READY` only after the qualification-chronology remediation below is canonical
+**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; current bounded execution unit `B2P01`
 
-**Canonical public-corpus methodology merge:** `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` from PR #28, merged from exact head `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` against exact base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`. Live chronology does not prove the required independent semantic review before that merge; the forward-only remediation below must become canonical before execution begins.
+**Canonical public-corpus methodology merge:** `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` from PR #28, merged from exact head `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` against exact base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`. Live chronology did not prove the required independent semantic review before that merge; the resulting qualification debt was repaired forward-only by PR #32 at canonical merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, and machine readiness was reconciled by PR #33 at canonical merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`.
 
 This file owns the executable specification frontier. Historical proof and merge chronology live in `docs/canonical/CURRENT_STATE.md` and immutable Git history.
 
@@ -75,7 +75,7 @@ State: `BLOCKED_EXTERNAL`
 
 This exact historical lane remains blocked. Its private participant/media authority gate is intentionally preserved, and the old entry-preparation validators continue to fail closed against it.
 
-The public-corpus successor below is canonical as repository bytes, but dependent execution remains held until the qualification-chronology remediation becomes canonical. Nothing in the amendment converts this historical lane to `READY`, authorizes its primary human decode, or fabricates its missing participant/media evidence.
+The public-corpus successor below is canonical and executable in ordered bounded units because the qualification-chronology remediation is now canonical and the machine readiness reconciliation is canonical. Nothing in those changes converts this historical lane to `READY`, authorizes its primary human decode, or fabricates its missing participant/media evidence.
 
 ## Active execution successor
 
@@ -83,9 +83,9 @@ The intended active B2 execution route is:
 
 `000B2-public-corpus-bakeoff`
 
-State: `READY`, subject to the qualification-chronology remediation gate below.
+State: `READY`
 
-The bounded methodology amendment became canonical at merge `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`, and the current-view reconciliation became canonical at merge `94e3b50009b5054db6ccd9bb3276facd1399399c`. Comparative decoding remains prohibited until the chronology remediation is canonical, then until the ordered pre-decode tasks `B2P01` through `B2P08` are genuinely complete and the final attempt manifest is frozen with `primary_decoding_started=false`.
+The bounded methodology amendment became canonical at merge `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`, the public-frontier reconciliation became canonical at merge `94e3b50009b5054db6ccd9bb3276facd1399399c`, the qualification-chronology remediation became canonical at merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, and the machine readiness reconciliation became canonical at merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`. `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`. Comparative decoding remains prohibited until the ordered pre-decode tasks `B2P01` through `B2P08` are genuinely complete and the final attempt manifest is frozen with `primary_decoding_started=false`.
 
 Rationale:
 
@@ -121,9 +121,11 @@ For PR #29:
 
 The first push verification on `94e3b50009b5054db6ccd9bb3276facd1399399c` had three trusted-gate failures caused only by stale open PR #30. PR #30 was closed without merge, and the failed jobs for `000B2 Trusted Participant Policy` run `33674332834`, `000B2 Trusted Participant Materials` run `33674332663`, and `000B2 Trusted Human Authority Structure` run `33674332691` were rerun on the unchanged canonical SHA and completed successfully. The other three post-merge workflow lanes were already successful. Stale readiness successor PR #31 was also closed without merge before it could promote the machine readiness state.
 
-No `B2P01` provenance work, public archive materialization, fetched-byte SHA-256 capture, subset freeze, candidate decoding, comparative ranking, or product selection began before this remediation.
+No `B2P01` provenance work, public archive materialization, fetched-byte SHA-256 capture, subset freeze, candidate decoding, comparative ranking, or product selection began before the remediation was canonical.
 
-This remediation is forward-only: it does not rewrite or revert canonical commits. Before any `B2P01` execution, this exact remediation candidate must itself pass applicable exact-head CI, obtain a fresh genuinely independent substantive semantic review on the exact unchanged head, have zero unresolved actionable review threads, merge with expected-head protection, and pass post-merge verification. Once this remediation is canonical, the gate is satisfied and `B2P01` becomes the next execution task.
+The forward-only remediation was independently qualified and canonically merged by PR #32 as `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, from exact qualified head `596b5e4d6654c4d562de51d8a047c8196ce52c7d` against exact base `94e3b50009b5054db6ccd9bb3276facd1399399c`. Its applicable exact-head workflow lanes completed successfully, fresh independent CodeRabbit substantive review reported no actionable findings, no actionable review threads remained, and post-merge verification succeeded. Therefore `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`.
+
+PR #33 then reconciled the machine-readable public readiness state and canonically merged as `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7` from exact qualified head `990f7260475822839f1fe748f70460643de9b8ad` against exact base `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`. Exact-head `000B2 Public Corpus Methodology` run `33677613666` succeeded, a prior review finding was repaired forward-only, and fresh independent review of the repaired head completed clean. Canonical `research/000b2-public/readiness.json` is now `READY` and makes `B2P01` the exact sole next action until B2P01 itself becomes canonical.
 
 ## Public-human P0 baseline
 
@@ -158,7 +160,7 @@ All B2 synthesis MUST preserve:
 
 ## Public B2 executable ordering
 
-After the qualification-chronology remediation is canonical, the authorized order is the task order in `specs/000B2-public-corpus-bakeoff/tasks.md`:
+With `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`, the authorized order is the task order in `specs/000B2-public-corpus-bakeoff/tasks.md`:
 
 1. freeze public corpus provenance;
 2. materialize exact archives and record official MD5 plus fetched-byte SHA-256;
@@ -225,7 +227,7 @@ Before any child becomes `VERIFIED`:
 
 No Rust product implementation, Cargo workspace, permanent speech engine integration, ACP production client, PTY adapter, TUI, installer, or release is authorized until `000G` selects a bounded first implementation Grain and that Grain independently satisfies readiness.
 
-The public-corpus amendment and this chronology remediation do not weaken this gate.
+The public-corpus amendment and canonical chronology remediation do not weaken this gate.
 
 ## Live-truth rule
 
@@ -233,4 +235,4 @@ Live canonical GitHub/repository truth overrides this file. After every merged r
 
 ## Next canonical action
 
-Canonicalize this qualification-chronology remediation first. Do not execute `B2P01` while this remediation remains non-canonical. After it is canonically merged and post-merge verified, execute `B2P01` only: reverify and record exact OpenSLR SLR12 source/license facts and official archive checksums in machine-readable provenance. Continue to `B2P02` and later tasks only in canonical task order. Do not begin comparative candidate decoding until `B2P01` through `B2P08` are complete and the pre-decode attempt manifest is frozen with `primary_decoding_started=false`. Preserve `000B2-unbiased-stt-bakeoff` as historical `BLOCKED_EXTERNAL`, do not fabricate private consent, and do not represent public or synthetic media as human developer-speech evidence.
+Complete and canonically qualify the current `B2P01` provenance unit. `B2P01` may be represented as complete only when its exact provenance candidate passes applicable exact-head CI, fresh independent substantive semantic review, review-thread reconciliation, guarded expected-head merge, and successful post-merge verification. Only after B2P01 is canonical and the canonical authority/readiness is reread may `B2P02` begin to materialize the exact public archives, verify official MD5 against fetched bytes, and record exact archive SHA-256. Continue later tasks only in canonical task order. Do not begin comparative candidate decoding until `B2P01` through `B2P08` are complete and the pre-decode attempt manifest is frozen with `primary_decoding_started=false`. Preserve `000B2-unbiased-stt-bakeoff` as historical `BLOCKED_EXTERNAL`, do not fabricate private consent, and do not represent public or synthetic media as human developer-speech evidence.
