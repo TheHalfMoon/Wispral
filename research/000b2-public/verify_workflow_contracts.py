@@ -34,6 +34,8 @@ def main() -> None:
         "python research/000b2-public/verify_methodology.py",
         "docs/canonical/CURRENT_STATE.md",
         "research/000b2-public/**",
+        ".github/workflows/000b2-public-methodology.yml",
+        ".github/workflows/000b2-public-materialization.yml",
     ):
         require_text(methodology, phrase, "methodology workflow")
 
@@ -57,6 +59,14 @@ def main() -> None:
     require(
         materialization.count("Verify exact revision identity") == 1,
         "materialization workflow must contain exactly one exact-revision identity step",
+    )
+    require(
+        methodology.count("Verify workflow contracts") == 1,
+        "methodology workflow must run workflow-contract verification exactly once",
+    )
+    require(
+        materialization.count("Verify workflow contracts") == 1,
+        "materialization workflow must run workflow-contract verification exactly once",
     )
 
     print("B2P02_WORKFLOW_CONTRACTS=PASS")
