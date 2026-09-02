@@ -1,6 +1,8 @@
 # Wispral Specification Frontier
 
-**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 execution amendment pending canonicalization
+**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; public-corpus B2 execution frontier active
+
+**Canonical public-corpus methodology merge:** `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` from PR #28, qualified from exact head `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` against exact base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`.
 
 This file owns the executable specification frontier. Historical proof and merge chronology live in `docs/canonical/CURRENT_STATE.md` and immutable Git history.
 
@@ -73,15 +75,17 @@ State: `BLOCKED_EXTERNAL`
 
 This exact historical lane remains blocked. Its private participant/media authority gate is intentionally preserved, and the old entry-preparation validators continue to fail closed against it.
 
-The lane is no longer the only possible B2 execution route once the public-corpus successor below becomes canonical. Nothing in the public-corpus amendment converts this historical lane to `READY`, authorizes its primary human decode, or fabricates its missing participant/media evidence.
+The public-corpus successor below is now canonical and is the active B2 execution route. Nothing in that canonical amendment converts this historical lane to `READY`, authorizes its primary human decode, or fabricates its missing participant/media evidence.
 
-## Prospective execution successor
+## Active execution successor
 
-The new active B2 execution route is:
+The active B2 execution route is:
 
 `000B2-public-corpus-bakeoff`
 
-State: `READY` candidate; executable only after this authority update is canonical on `main`.
+State: `READY`.
+
+The bounded methodology/frontier amendment became canonical at merge `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`. Comparative decoding remains prohibited until the ordered pre-decode tasks `B2P01` through `B2P08` are genuinely complete and the final attempt manifest is frozen with `primary_decoding_started=false`.
 
 Rationale:
 
@@ -90,7 +94,7 @@ Rationale:
 - the founding product decision needs a reproducible shortlist/viability signal, not unnecessary new private data collection;
 - public human speech can provide bounded ordinary-recognition evidence while synthetic developer-term material remains diagnostic only.
 
-This is a prospective methodology successor, not a retroactive rewrite of B1 or a transition of the historical `000B2-unbiased-stt-bakeoff` lane.
+This is a prospective methodology successor that is now canonical for active execution, not a retroactive rewrite of B1 or a transition of the historical `000B2-unbiased-stt-bakeoff` lane.
 
 ## Public-human P0 baseline
 
@@ -103,7 +107,7 @@ Frozen upstream facts for entry:
 - `test-clean.tar.gz` official MD5: `32fa31d27d2e1cad72775fee3f4849a9`;
 - `test-other.tar.gz` official MD5: `fb5a50374b501bb3bac4815ee91d3135`.
 
-Execution MUST verify upstream checksums, compute exact archive SHA-256 values, deterministically freeze a bounded speaker-disjoint subset before candidate decoding, and use identical canonical audio bytes across all included candidate cells.
+Execution MUST reverify upstream facts, verify upstream checksums, compute exact archive SHA-256 values from the materialized bytes, deterministically freeze a bounded speaker-disjoint subset before candidate decoding, and use identical canonical audio bytes across all included candidate cells.
 
 P0 supports only bounded ordinary read-English recognition evidence on the exact frozen public subset. It MUST NOT be described as developer speech.
 
@@ -123,7 +127,7 @@ All B2 synthesis MUST preserve:
 
 `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`
 
-## Public B2 executable ordering after canonicalization
+## Public B2 executable ordering
 
 The authorized order is the task order in `specs/000B2-public-corpus-bakeoff/tasks.md`:
 
@@ -200,4 +204,4 @@ Live canonical GitHub/repository truth overrides this file. After every merged r
 
 ## Next canonical action
 
-Qualify and merge the bounded `000B2-public-corpus-bakeoff` methodology successor while preserving `000B2-unbiased-stt-bakeoff` as historical `BLOCKED_EXTERNAL`. Only after the public successor becomes canonical may its execution tasks begin. Do not perform comparative candidate decoding on the amendment branch, do not fabricate private consent, and do not represent public or synthetic media as human developer-speech evidence.
+Execute `B2P01` only: reverify and record exact OpenSLR SLR12 source/license facts and official archive checksums in machine-readable provenance. Continue to `B2P02` and later tasks only in canonical task order. Do not begin comparative candidate decoding until `B2P01` through `B2P08` are complete and the pre-decode attempt manifest is frozen with `primary_decoding_started=false`. Preserve `000B2-unbiased-stt-bakeoff` as historical `BLOCKED_EXTERNAL`, do not fabricate private consent, and do not represent public or synthetic media as human developer-speech evidence.
