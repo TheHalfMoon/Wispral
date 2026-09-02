@@ -1,7 +1,8 @@
 {
-  "schema_version": "000b2-public-readiness-v1",
+  "schema_version": "000b2-public-readiness-v2",
   "lane": "PUBLIC_CORPUS",
   "state": "READY",
+  "completed_through": "B2P02",
   "historical_private_collection_lane": {
     "preserved": true,
     "executed": false,
@@ -16,16 +17,19 @@
       {
         "name": "test-clean.tar.gz",
         "official_md5": "32fa31d27d2e1cad72775fee3f4849a9",
-        "archive_sha256": null,
-        "materialized": false
+        "archive_bytes": 346663984,
+        "archive_sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "materialized": true
       },
       {
         "name": "test-other.tar.gz",
         "official_md5": "fb5a50374b501bb3bac4815ee91d3135",
-        "archive_sha256": null,
-        "materialized": false
+        "archive_bytes": 328757843,
+        "archive_sha256": "d09c181bba5cf717b3dee7d4d592af11a3ee3a09e08ae025c5506f6ebe961c29",
+        "materialized": true
       }
     ],
+    "archive_byte_evidence": "research/000b2-public/archive-materialization.json",
     "subset_manifest_frozen": false,
     "candidate_decoding_started": false,
     "claim_scope": "BOUNDED_ORDINARY_READ_ENGLISH_ONLY"
@@ -60,5 +64,5 @@
     "production_stt_selected": false,
     "product_code_authorized": false
   },
-  "next_action": "Execute B2P01 only: reverify and record the exact OpenSLR SLR12 source/license facts and official archive checksums in machine-readable provenance. Do not materialize corpus archives or begin B2P02 until B2P01 is canonical."
+  "next_action": "After B2P02 is canonically merged and post-merge verified, execute B2P03 only: implement deterministic speaker/utterance subset selection independent of candidate outputs. Do not freeze the B2P04 subset manifest or begin candidate work until B2P03 is canonical."
 }
