@@ -15,6 +15,7 @@ import json
 import os
 import shutil
 import time
+import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Any
@@ -25,6 +26,9 @@ TASKS_PATH = ROOT / "specs/000B2-public-corpus-bakeoff/tasks.md"
 CHUNK_SIZE = 4 * 1024 * 1024
 MAX_ATTEMPTS = 3
 USER_AGENT = "Wispral-B2P02/1.0 (+https://github.com/TheHalfMoon/Wispral)"
+APPROVED_SCHEME = "https"
+APPROVED_HOST = "www.openslr.org"
+CHECKSUM_MANIFEST_URL = "https://www.openslr.org/resources/12/md5sum.txt"
 ARCHIVE_SOURCE_URLS = {
     "test-clean.tar.gz": "https://www.openslr.org/resources/12/test-clean.tar.gz",
     "test-other.tar.gz": "https://www.openslr.org/resources/12/test-other.tar.gz",
@@ -32,20 +36,77 @@ ARCHIVE_SOURCE_URLS = {
 
 
 def fail(message: str) -> None:
+    """Abort the materialization gate with an explicit fail-closed marker."""
     raise SystemExit(f"B2P02_MATERIALIZATION=FAIL: {message}")
 
 
+def validate_approved_url(url: str, label: str) -> str:
+    """Require HTTPS on the exact approved OpenSLR origin without credentials."""
+    try:
+        parsed = urllib.parse.urlsplit(url)
+        port = parsed.port
+    except ValueError as exc:
+        fail(f"invalid {label} URL {url!r}: {exc}")
+    if parsed.scheme != APPROVED_SCHEME:
+        fail(f"{label} URL must use HTTPS: {url!r}")
+    if parsed.hostname != APPROVED_HOST:
+        fail(f"{label} URL must remain on {APPROVED_HOST}: {url!r}")
+    if port not in {None, 443}:
+        fail(f"{label} URL must use the default HTTPS port: {url!r}")
+    if parsed.username is not None or parsed.password is not None:
+        fail(f"{label} URL must not contain credentials: {url!r}")
+    if parsed.fragment:
+        fail(f"{label} URL must not contain a fragment: {url!r}")
+    return url
+
+
+class ApprovedOpenSLRRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Allow redirects only when every hop stays on the approved HTTPS origin."""
+
+    def redirect_request(  # type: ignore[override]
+        self,
+        req: urllib.request.Request,
+        fp: Any,
+        code: int,
+        msg: str,
+        headers: Any,
+        newurl: str,
+    ) -> urllib.request.Request | None:
+        """Validate each redirect target before urllib constructs the next request."""
+        target = urllib.parse.urljoin(req.full_url, newurl)
+        validate_approved_url(target, "redirect target")
+        return super().redirect_request(req, fp, code, msg, headers, target)
+
+
+OPENER = urllib.request.build_opener(ApprovedOpenSLRRedirectHandler())
+
+
 def request(url: str) -> urllib.request.Request:
+    """Create a request only after validating the initial approved origin."""
+    validate_approved_url(url, "request")
     return urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
 
 
+def open_approved(url: str) -> Any:
+    """Open a URL through the restricted redirect handler and validate the final URL."""
+    response = OPENER.open(request(url), timeout=120)  # noqa: S310 - origin and every redirect are constrained above.
+    try:
+        validate_approved_url(response.geturl(), "final response")
+    except BaseException:
+        response.close()
+        raise
+    return response
+
+
 def fetch_text(url: str) -> tuple[str, str]:
+    """Fetch one approved text resource with bounded retries and final-origin validation."""
     last_error: Exception | None = None
     for attempt in range(1, MAX_ATTEMPTS + 1):
         try:
-            with urllib.request.urlopen(request(url), timeout=120) as response:
+            with open_approved(url) as response:
                 data = response.read()
-                return data.decode("utf-8"), response.geturl()
+                resolved_url = validate_approved_url(response.geturl(), "final text response")
+                return data.decode("utf-8"), resolved_url
         except Exception as exc:  # noqa: BLE001 - network boundary is deliberately fail-closed.
             last_error = exc
             if attempt < MAX_ATTEMPTS:
@@ -55,6 +116,7 @@ def fetch_text(url: str) -> tuple[str, str]:
 
 
 def parse_official_md5(manifest: str, required_names: set[str]) -> dict[str, str]:
+    """Extract exactly the required archive MD5 values from the official manifest."""
     observed: dict[str, str] = {}
     for raw_line in manifest.splitlines():
         line = raw_line.strip()
@@ -77,6 +139,7 @@ def parse_official_md5(manifest: str, required_names: set[str]) -> dict[str, str
 
 
 def stream_archive(url: str, destination: Path) -> dict[str, Any]:
+    """Stream one approved archive while computing byte count, MD5, and SHA-256."""
     last_error: Exception | None = None
     for attempt in range(1, MAX_ATTEMPTS + 1):
         md5 = hashlib.md5(usedforsecurity=False)
@@ -86,8 +149,8 @@ def stream_archive(url: str, destination: Path) -> dict[str, Any]:
         expected_length: int | None = None
         destination.unlink(missing_ok=True)
         try:
-            with urllib.request.urlopen(request(url), timeout=120) as response, destination.open("wb") as output:
-                resolved_url = response.geturl()
+            with open_approved(url) as response, destination.open("wb") as output:
+                resolved_url = validate_approved_url(response.geturl(), "final archive response")
                 content_length = response.headers.get("Content-Length")
                 if content_length is not None:
                     expected_length = int(content_length)
@@ -120,6 +183,7 @@ def stream_archive(url: str, destination: Path) -> dict[str, Any]:
 
 
 def load_json(path: Path) -> dict[str, Any]:
+    """Load one required JSON object from the repository."""
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
         fail(f"expected JSON object at {path.relative_to(ROOT)}")
@@ -127,6 +191,7 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 def main() -> None:
+    """Execute the bounded B2P02 archive materialization and verification gate."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--work-dir", type=Path, required=True)
@@ -139,8 +204,8 @@ def main() -> None:
         fail("corpus-source resource/partitions shape is invalid")
 
     checksum_manifest = resource.get("checksum_manifest")
-    if not isinstance(checksum_manifest, str) or not checksum_manifest.startswith("https://www.openslr.org/"):
-        fail("checksum manifest must be the canonical OpenSLR HTTPS resource")
+    if checksum_manifest != CHECKSUM_MANIFEST_URL:
+        fail(f"checksum manifest must be exactly {CHECKSUM_MANIFEST_URL}")
 
     partition_by_name: dict[str, dict[str, Any]] = {}
     for item in partitions:
@@ -216,7 +281,7 @@ def main() -> None:
         print(
             "B2P02_ARCHIVE "
             f"name={name} bytes={observed['bytes']} md5={observed['md5']} "
-            f"sha256={observed['sha256']} source_url={source_url}"
+            f"sha256={observed['sha256']} source_url={source_url} resolved_url={observed['resolved_url']}"
         )
         destination.unlink(missing_ok=True)
 
@@ -235,6 +300,8 @@ def main() -> None:
         "runner_arch": os.environ.get("RUNNER_ARCH"),
         "checksum_manifest": checksum_manifest,
         "checksum_manifest_resolved_url": manifest_resolved_url,
+        "approved_origin": f"{APPROVED_SCHEME}://{APPROVED_HOST}",
+        "redirect_policy": "REJECT_OUTSIDE_APPROVED_HTTPS_ORIGIN",
         "archive_bytes_retained_in_repository": False,
         "archives": observations,
     }
@@ -242,6 +309,7 @@ def main() -> None:
     shutil.rmtree(args.work_dir, ignore_errors=True)
     print(f"B2P02_REVISION={revision}")
     print(f"B2P02_OBSERVATION={args.output}")
+    print("B2P02_REDIRECT_POLICY=PASS")
     print("B2P02_MATERIALIZATION=PASS")
 
 
