@@ -11,6 +11,12 @@
 **000B2 entry-preparation evidence merge:** `49d0f31408ab36f285f5e61228b54a72ca0aec07`  
 **000B2 authority-intake merge:** `f71df132f963056b3321fe38b94ed88d6a0dfd89`  
 **000B2 trusted authority-structure merge:** `8cc8b1a22edd9268a49b3ad16c4d3ee8c0d6d586`  
+**000B2 external-authority runbook merge:** `9e66115a3e17631e7e658b276779d05240fa647b`  
+**000B2 trusted participant-policy merge:** `4048ba97471c0d94046cff0625b7f2fe2e2c8f3a`  
+**000B2 participant-policy freeze merge:** `ee8a579093c35a93650a8b13f0bac02cecd3f1e8`  
+**000B2 trusted participant-materials merge:** `c753635d29deca180af85dfd2f8914bef3ee0ec8`  
+**000B2 participant-material identity amendment merge:** `fe8496e5e45160a09e55a6f967dd62e46c0bf47f`  
+**000B2 participant-material freeze merge:** `66cca406e69eda33dfd6e0a2adf59ea328eda1c6`  
 **Program status:** `SPEC_000_RESEARCH_ACTIVE`  
 **Active product implementation:** none  
 **Active parent specification:** `000-founding-research` — `REFINING`  
@@ -19,6 +25,8 @@
 **Verified speech child:** `000B1-benchmark-candidate-qualification` — `VERIFIED`  
 **000B2 entry preparation:** `CLOSED_CANONICAL`  
 **000B2 authority structure:** `CANONICAL`, participant authority still `EXTERNAL`  
+**000B2 participant policy:** `CANONICAL_FROZEN`, participant consent `EXTERNAL_NOT_OBTAINED`  
+**000B2 participant materials:** `CANONICAL_FROZEN`, participant consent `EXTERNAL_NOT_OBTAINED`  
 **Blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
 **Published release:** none
 
@@ -130,19 +138,43 @@ Durable proof is `research/000b2-entry/authority/canonical-structural-gate.json`
 
 This is trust-boundary preparation, not participant/media authority. No participant consent was created or verified, no human recording was accepted, and no primary decoding was authorized.
 
+## Canonical B2 participant policy and participant-material proof
+
+PR #19 added the external authority runbook and policy-fingerprint helper, then merged as `9e66115a3e17631e7e658b276779d05240fa647b`. The runbook keeps identity-bearing consent artifacts, identity mappings, signatures, contact data, withdrawal evidence, and raw authority-review notes outside the public repository and explicitly does not attest consent or authorize recording.
+
+PR #21 established the trusted participant-policy gate at `4048ba97471c0d94046cff0625b7f2fe2e2c8f3a`; PR #20 then froze the project-controlled participant policy at `ee8a579093c35a93650a8b13f0bac02cecd3f1e8`. The frozen policy fixes consent scope, recording purpose, public raw-audio redistribution as prohibited, repository storage boundaries, retention, pre-freeze withdrawal, derivative-artifact scope, privacy constraints, and prohibited-content controls. Its policy SHA-256 is `454b208884211f83fc3ed62c22844d2a72d37dafbaa001793d791e91faecc811`.
+
+PR #22 established the trusted participant-material gate at `c753635d29deca180af85dfd2f8914bef3ee0ec8`. Independent review on PR #23 then identified an exact-template binding defect; PR #24 corrected the trusted identities and merged as `fe8496e5e45160a09e55a6f967dd62e46c0bf47f`. PR #23 subsequently froze the corrected participant-facing material set at `66cca406e69eda33dfd6e0a2adf59ea328eda1c6` after exact-head CI and independent CodeRabbit review `5090599306`.
+
+The frozen participant-material identities are:
+
+- participant information/consent template SHA-256 `dd4143145674473ea56122a7e7e23cfc95c08cb99840b451b190bc92fb3d93b6`;
+- recording-entry checklist SHA-256 `b4e9f8fdf54c0809bb5f44d004c61c6e621506fef64888b92cec407ca05d0a55`;
+- deterministic material-set SHA-256 `5f96a7ff1ab63371c0396a93ccaa140b4d82bf567e62e64c9b0ed7520997034c`.
+
+Post-merge verification at `66cca406e69eda33dfd6e0a2adf59ea328eda1c6` completed successfully in:
+
+- `000B2 Trusted Materialization Authority` run `33639022112`;
+- `000B2 Trusted Human Authority Structure` run `33639022068`;
+- `000B2 Entry Contracts` run `33639022116`;
+- `000B2 Trusted Participant Materials` run `33639022133`;
+- `000B2 Trusted Participant Policy` run `33639022138`.
+
+These controls make the project-controlled policy and participant-facing material exact and reviewable. They do not make consent self-authenticating. The authority package remains `NOT_AUTHORIZED`, `participant_count=0`, `consent_records_sha256=null`, and `authority_effective_before_recording=false`. No participant identity, signature, consent chronology, human recording, or corpus has been accepted by these repository-side units.
+
 ## B2 blocked successor
 
 `000B2-unbiased-stt-bakeoff` remains `BLOCKED_EXTERNAL`, not `READY`.
 
 Primary developer-speech decoding must not begin until all remaining gates are satisfied. Current blockers are:
 
-- human developer-speech participant/media authority, including consent, purpose, retention, redistribution, withdrawal, derivative-artifact permission, privacy, and prohibited-content policy, is absent;
+- real human developer-speech participant/media authority is absent: the project-controlled policy and participant-facing materials are frozen, but no real participant consent has been obtained or independently verified, the authority package remains `NOT_AUTHORIZED`, `participant_count=0`, and no consent-bundle digest is bound;
 - authorized human recordings, consent records, speaker-disjoint split manifests, and a frozen primary test manifest are absent;
 - accepted attempt-bound FFmpeg `9.0.1` binary/version/config identity and preprocessing execution evidence under separately reviewable execution chronology is absent;
 - accepted attempt-bound execution-environment and hardware-fingerprint evidence under separately reviewable chronology/control evidence is absent;
 - no final B2 attempt manifest exists with `frozen=true` and a matching freeze digest.
 
-Synthetic/TTS audio may support smoke/harness/regression only. It cannot satisfy the human developer-speech authority gate and cannot enter the primary human ranking. Repository-owner approval, structural authority metadata, or a consent-record digest cannot substitute for real participant/media authority.
+Synthetic/TTS audio may support smoke/harness/regression only. It cannot satisfy the human developer-speech authority gate and cannot enter the primary human ranking. Repository-owner approval, structural authority metadata, frozen project policy, frozen participant-facing materials, or a consent-record digest cannot substitute for real participant/media authority.
 
 ## What is established
 
@@ -159,6 +191,7 @@ Canonical research authority now contains:
 - verified 000B1 local-STT preregistration/candidate qualification;
 - canonical B2 entry-preparation evidence for artifact identities, bounded smoke qualification, and scorer revision;
 - canonical fail-closed B2 authority-intake and trusted structural verification surfaces;
+- canonical frozen participant policy and exact participant-facing/operator-entry materials, without real participant consent;
 - explicit remaining B2 external/attempt-time readiness blockers.
 
 ## Current product thesis
@@ -200,8 +233,8 @@ Wispral does NOT currently claim:
 
 No Rust product implementation, Cargo workspace, permanent speech-engine integration, ACP production client, PTY adapter, TUI, installer, or release is authorized until Specification 000 synthesis reaches `000G`, selects a bounded first implementation Grain from reproducible evidence, and that Grain independently satisfies readiness.
 
-Verified 000A, verified 000B1, canonical B2 entry preparation, and canonical B2 authority structure do not weaken this gate.
+Verified 000A, verified 000B1, canonical B2 entry preparation, canonical B2 authority structure, and canonical participant policy/materials do not weaken this gate.
 
 ## Next canonical action
 
-Preserve B2 as `BLOCKED_EXTERNAL`. Establish real participant/media authority and an authorized frozen human developer-speech corpus first. Authority intake and trusted structural verification are prepared, but structural metadata is not consent. Only then prepare a separately reviewable B2 attempt that captures preprocessing and execution-environment evidence before primary decoding, freezes the final manifest, and rechecks readiness from canonical `main`. If those gates cannot be satisfied, preserve the block rather than substitute synthetic primary evidence or prematurely advance B3/B4.
+Preserve B2 as `BLOCKED_EXTERNAL`. Use the exact frozen participant policy and participant-facing materials in the real external consent process, establish independently genuine participant/media authority, and collect the authorized frozen human developer-speech corpus under that authority. Repository structure, policy, and templates are prepared, but none is consent. Only then prepare a separately reviewable B2 attempt that captures preprocessing and execution-environment evidence before primary decoding, freezes the final manifest, and rechecks readiness from canonical `main`. If those gates cannot be satisfied, preserve the block rather than substitute synthetic primary evidence or prematurely advance B3/B4.
