@@ -4,6 +4,7 @@
 This verifier validates a non-identifying authority sidecar. It does not create,
 collect, or infer participant consent. An AUTHORIZED result is valid only when
 all contract fields are explicitly populated and bound to consent-record digests.
+It never accepts primary media or authorizes primary decoding.
 """
 
 from __future__ import annotations
@@ -227,7 +228,8 @@ def main() -> int:
         return 1
     status = package["authority_status"]
     print(f"AUTHORITY_PACKAGE={status}")
-    print(f"PRIMARY_MEDIA_ACCEPTANCE={'YES' if status == 'AUTHORIZED' else 'NO'}")
+    print("PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_VERIFIER")
+    print("PRIMARY_MEDIA_ACCEPTANCE=NO")
     return 0
 
 
