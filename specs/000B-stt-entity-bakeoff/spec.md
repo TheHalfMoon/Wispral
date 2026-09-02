@@ -28,23 +28,24 @@ A single Grain containing corpus design, runtime/model selection, multiple backe
 000B is therefore a bounded research parent with sequential evidence children:
 
 1. `000B1-benchmark-candidate-qualification` — freeze the benchmark contract, candidate inclusion rules, provenance requirements, streaming-semantics taxonomy, corpus rules, scoring schema, execution-environment rules, and attempt-freeze protocol before comparative decoding;
-2. `000B2-unbiased-stt-bakeoff` — execute the primary local STT comparison with repository context disabled;
-3. `000B3-context-uplift` — measure engine-agnostic deterministic repository resolution and backend-native context/bias features as separate conditions using frozen evidence from 000B2;
-4. `000B4-stt-synthesis` — reconcile the evidence into a bounded recommendation or an explicit insufficient-evidence result.
+2. historical `000B2-unbiased-stt-bakeoff` — preserve the unstarted private human developer-speech route as `BLOCKED_EXTERNAL` unless its real participant/media gates are independently satisfied;
+3. `000B2-public-corpus-bakeoff` — prospective execution successor for a bounded public-human ordinary read-English C0 baseline, executable only after its amendment is canonical;
+4. `000B3-context-uplift` — measure engine-agnostic deterministic repository resolution and backend-native context/bias features as separate conditions using frozen evidence from the evidence-selected B2 route;
+5. `000B4-stt-synthesis` — reconcile the evidence into a bounded recommendation or an explicit insufficient-evidence result.
 
-Only 000B1 is refined to task-level execution by the current authority update. 000B2–000B4 remain intentionally coarse until preceding canonical evidence can change their shape.
+B1 is historical `VERIFIED`. The private B2 route remains preserved and blocked. The public-corpus B2 successor is refined only by its separately reviewable amendment; B3–B4 remain intentionally coarse until preceding canonical evidence can change their shape.
 
 ## Research questions
 
 000B may answer:
 
-1. Which local configurations produce the strongest developer-entity recognition under a disclosed product-relevant envelope?
+1. Which local configurations produce the strongest evidence within the exact population and condition actually tested?
 2. What ordinary-language accuracy is lost or gained by those configurations?
 3. Which candidates expose genuinely incremental streaming behavior versus chunked or repeated re-decode behavior?
 4. What first-partial, finalization, resource, and startup observations are measurable without conflating STT with turn detection?
-5. Does deterministic bounded repository resolution improve exact developer-entity correctness from the same raw transcript?
+5. Does deterministic bounded repository resolution improve exact developer-entity correctness from the same raw transcript where developer-term evidence exists?
 6. Where a backend exposes native keyterms, prompts, hotwords, or context biasing, what uplift and false-bias cost does that feature produce under its own explicitly separate condition?
-7. Is the evidence strong enough to recommend one configuration, a Pareto shortlist, or no first-product selection?
+7. Is the evidence strong enough to recommend one configuration, a Pareto shortlist, a bounded public-baseline shortlist, or no first-product selection?
 
 ## Current candidate families
 
@@ -77,7 +78,7 @@ Different semantics may be measured, but unlike categories must not be reported 
 
 ### C0 — Unbiased local STT
 
-The primary cross-backend comparison.
+The primary cross-backend comparison for the exact frozen corpus used by an attempt.
 
 - repository vocabulary/context disabled;
 - no test-utterance-specific prompt or hotword injection;
@@ -85,7 +86,7 @@ The primary cross-backend comparison.
 - deterministic decoding settings where supported and recorded;
 - backend-specific necessities remain documented rather than hidden.
 
-C0 establishes raw recognition evidence only.
+C0 establishes raw recognition evidence only for the tested population. Public audiobook C0 evidence MUST NOT be relabeled as human developer-speech evidence.
 
 ### C1 — Engine-agnostic deterministic repository resolution
 
@@ -96,7 +97,7 @@ Applied to frozen C0 transcripts, not to audio decoding.
 - resolver code/config is frozen before evaluation on the test split;
 - exact binding, ambiguity, and unsafe false-binding outcomes are preserved.
 
-C1 measures the value of a portable Wispral context layer rather than native decoder bias.
+C1 measures the value of a portable Wispral context layer rather than native decoder bias. If the underlying B2 corpus does not contain genuine human developer speech, C1 results inherit that limitation and cannot create human developer-speech accuracy evidence.
 
 ### C2 — Backend-native context/bias features
 
@@ -110,7 +111,7 @@ C2 MUST NOT replace C0 in the cross-backend raw STT comparison. Native features 
 
 Runtime family and model configuration are separate decisions.
 
-Before any primary test decoding, 000B1 must freeze an attempt manifest containing for every candidate:
+Before any comparative decoding, the active B2 route must freeze an attempt manifest containing for every candidate:
 
 - runtime repository/release/version and exact source revision;
 - model name and source;
@@ -126,11 +127,11 @@ Before any primary test decoding, 000B1 must freeze an attempt manifest containi
 - expected artifact footprint;
 - exclusions and known incompatibilities.
 
-After the primary test split is decoded, model size, quantization, decoding parameters, prompts, candidate membership, or context budget may not be changed within that attempt. A material change requires preserving the prior attempt and starting a newly pinned attempt.
+After an attempt's comparative outputs are inspected, model size, quantization, decoding parameters, prompts, candidate membership, corpus membership, or context budget may not be changed within that attempt. A material change requires preserving the prior attempt and starting a newly pinned attempt.
 
 ## Product-relevant configuration envelope
 
-000B1 must define an explicit local configuration envelope before choosing exact candidate models. It should prefer configurations that are plausible for a terminal-native local-first product rather than unconstrained leaderboard models.
+000B1 defines an explicit local configuration envelope before choosing exact candidate models. It prefers configurations that are plausible for a terminal-native local-first product rather than unconstrained leaderboard models.
 
 The envelope must at minimum bound:
 
@@ -145,11 +146,11 @@ If more than one meaningful footprint tier is needed, use a small preregistered 
 
 ## Corpus contract
 
-### Primary evidence requires human speech
+### Human evidence and route separation
 
-Synthetic/TTS-generated audio may be used only for installation smoke tests, schema validation, and deterministic harness regression. It MUST NOT contribute to the primary human developer-speech ranking or support human developer-speech accuracy claims.
+Synthetic/TTS-generated audio MUST NOT contribute to a human developer-speech ranking or support human developer-speech accuracy claims.
 
-The primary developer-entity panel requires recorded human speech with:
+The historical private developer-entity panel requires recorded human speech with:
 
 - explicit informed consent;
 - documented retention policy;
@@ -157,11 +158,21 @@ The primary developer-entity panel requires recorded human speech with:
 - no secret, proprietary, credential, or sensitive repository content;
 - speaker and recording metadata sufficient to state limitations without unnecessarily identifying participants.
 
-If suitable human audio is unavailable, the primary comparative execution is `BLOCKED_EXTERNAL`; a synthetic smoke result must not be upgraded into a ranking.
+If those private human developer-speech requirements are unavailable, the historical `000B2-unbiased-stt-bakeoff` route remains `BLOCKED_EXTERNAL`; synthetic smoke or public audiobook speech must not be upgraded into that route's developer-speech ranking.
 
-### Corpus composition
+The parent acceptance condition nevertheless permits 000B to close when human developer-speech evidence is absent if that absence is explicit enough to prevent a false ranking. A separately canonical public-corpus B2 successor may therefore collect reproducible human ordinary-speech evidence without claiming that it satisfies the missing developer-speech panel.
 
-The frozen corpus design should cover at least:
+For `000B2-public-corpus-bakeoff`:
+
+- the public-human corpus must be openly distributed under recorded license/provenance;
+- exact source archive checksums and fetched-byte digests must be frozen;
+- a deterministic subset manifest must be frozen before candidate outputs are observed;
+- identical canonical audio bytes must be supplied to every included candidate;
+- all synthesis must preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT` unless genuine qualifying human developer-speech evidence later becomes canonical through a separate route.
+
+### Historical developer corpus composition
+
+The historical private design covers at least:
 
 - file and directory paths;
 - Rust, Python, TypeScript, shell, and mixed-style identifiers;
@@ -174,11 +185,13 @@ The frozen corpus design should cover at least:
 - pronunciation variation and non-native English cadence;
 - ordinary non-entity language used to measure collateral degradation.
 
+That composition remains historical preregistration; a public ordinary-speech successor must not pretend to satisfy it.
+
 English is the founding comparison language. Arabic remains a planned qualification target, not a support claim and not a mandatory 000B ranking panel unless a later preregistered extension has comparable candidate coverage.
 
 ## Audio normalization
 
-All primary candidates must consume audio derived from one frozen canonical preprocessing pipeline.
+All candidates in a comparative attempt must consume audio derived through one frozen canonical preprocessing pipeline.
 
 The contract must record:
 
@@ -190,13 +203,13 @@ The contract must record:
 - whether silence trimming is forbidden or preregistered;
 - the exact real-time feed schedule used by streaming tests.
 
-Do not perform backend-specific denoising, resampling, normalization, or test-set cleanup unless the condition is explicitly isolated and cannot influence the primary C0 ranking.
+Do not perform backend-specific denoising, resampling, normalization, or test-set cleanup unless the condition is explicitly isolated and cannot influence the primary C0 comparison.
 
 ## STT-versus-turn-detection boundary
 
 000B is not the turn-taking experiment.
 
-For primary pre-segmented accuracy cells, disable VAD/endpointing where the backend permits it so recognition quality is not silently scored together with segmentation quality. If a backend cannot operate without its segmentation path, record that constraint explicitly.
+For pre-segmented accuracy cells, disable VAD/endpointing where the backend permits it so recognition quality is not silently scored together with segmentation quality. If a backend cannot operate without its segmentation path, record that constraint explicitly.
 
 Streaming measurements may use known audio timing and pre-segmented utterances to observe:
 
@@ -214,46 +227,41 @@ Shared GitHub-hosted runners may be used for installation, deterministic schema 
 
 They MUST NOT be used to make general comparative latency, CPU, memory, battery, or performance-superiority claims unless the methodology separately demonstrates that the environment is sufficiently controlled. Product-relevant performance evidence should use explicitly identified hardware and OS and preserve run-level observations.
 
-## Primary metrics
+## Metrics and claim boundaries
 
-The minimum C0/C1 evidence set includes:
+Where genuine human developer-speech evidence exists, the minimum C0/C1 evidence set may include:
 
 - developer entity exact-match accuracy;
 - normalized entity accuracy only under preregistered normalization rules;
 - entity deletion/substitution/insertion counts;
-- ordinary WER or an equivalent disclosed general-language metric;
 - false entity insertion rate;
 - repository-binding accuracy for C1;
 - ambiguity detection rate for C1;
 - unsafe false-binding rate for C1;
 - sample count and failure/timeout count.
 
-Where meaningful and methodologically qualified, also preserve:
+A public ordinary-speech B2 route instead supports ordinary WER or an equivalent disclosed general-language metric, failures/timeouts, exact candidate/runtime provenance, and streaming semantics where methodologically qualified. Optional synthetic developer-term diagnostics remain separate and `DIAGNOSTIC_ONLY`.
 
-- first-partial timing;
-- finalization timing;
-- real-time factor;
-- model-load/startup time;
-- peak resident memory;
-- CPU/GPU/accelerator configuration;
-- partial revision count or stability measure.
+Where meaningful and methodologically qualified, preserve timing/resource observations only with the required environment limitations.
 
-C2 additionally reports native-context uplift and degradation relative to the same backend's C0, including false-bias behavior on distractor terms.
+C2 additionally reports native-context uplift and degradation relative to the same backend's C0, including false-bias behavior on distractor terms, but only within the population that was actually tested.
 
 ## Scoring and selection discipline
 
 000B must not manufacture one opaque weighted score merely to produce a winner.
 
-Before the primary attempt, 000B1 must define:
+Before a comparative attempt, the active child must define:
 
 - hard eligibility gates;
 - primary and secondary metrics;
 - treatment of failures/timeouts;
 - configuration/resource tiers if any;
 - a Pareto/dominance or other transparent decision rule;
-- what result is sufficient to recommend `LEADING`, `CONTENDER`, `REJECTED`, or `INSUFFICIENT_EVIDENCE`.
+- recommendation vocabulary appropriate to the evidence population.
 
-The final 000B recommendation may retain multiple non-dominated candidates for 000G. A forced single winner is not required when the evidence shows a real accuracy/resource/latency tradeoff.
+A public-corpus successor may use only bounded labels such as `LEADING_PUBLIC_BASELINE`, `CONTENDER_PUBLIC_BASELINE`, `REJECTED`, or `INSUFFICIENT_EVIDENCE`; those labels are not production selection and not human developer-speech superiority claims.
+
+The final 000B recommendation may retain multiple non-dominated candidates for 000G. A forced single winner is not required when the evidence shows a real tradeoff or when the missing human developer-speech evidence prevents a stronger claim.
 
 ## Out of scope
 
@@ -275,13 +283,13 @@ The final 000B recommendation may retain multiple non-dominated candidates for 0
 000B can close only when its evidence-selected children are `VERIFIED`, `SUPERSEDED`, or `CANCELLED` with explicit rationale and:
 
 1. exact candidate runtime/model provenance is preserved;
-2. the primary C0 comparison uses one frozen corpus and frozen configurations;
+2. each comparative C0 attempt uses one frozen corpus and frozen configurations;
 3. human developer-speech evidence exists or the absence of it is explicit enough to prevent a false ranking;
 4. C0 raw STT results remain separate from C1/C2 context conditions;
 5. failures and losing metrics remain visible;
 6. streaming-semantics differences are reported rather than hidden;
 7. hardware-dependent performance claims use controlled, disclosed hardware or remain unclaimed;
-8. context benefit includes unsafe false-binding and collateral-degradation evidence;
+8. context benefit claims include unsafe false-binding and collateral-degradation evidence where that context evaluation is actually executed;
 9. a final recommendation states what is and is not justified for 000G;
 10. no README/roadmap/product claim exceeds the evidence.
 

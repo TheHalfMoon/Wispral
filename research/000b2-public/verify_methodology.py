@@ -19,6 +19,9 @@ def main() -> None:
     spec_path = ROOT / "specs/000B2-public-corpus-bakeoff/spec.md"
     plan_path = ROOT / "specs/000B2-public-corpus-bakeoff/plan.md"
     tasks_path = ROOT / "specs/000B2-public-corpus-bakeoff/tasks.md"
+    parent_spec_path = ROOT / "specs/000B-stt-entity-bakeoff/spec.md"
+    parent_plan_path = ROOT / "specs/000B-stt-entity-bakeoff/plan.md"
+    parent_tasks_path = ROOT / "specs/000B-stt-entity-bakeoff/tasks.md"
     current_path = ROOT / "specs/CURRENT.md"
     founding_tasks_path = ROOT / "specs/000-founding-research/tasks.md"
 
@@ -27,6 +30,9 @@ def main() -> None:
         spec_path,
         plan_path,
         tasks_path,
+        parent_spec_path,
+        parent_plan_path,
+        parent_tasks_path,
         current_path,
         founding_tasks_path,
     ):
@@ -79,6 +85,9 @@ def main() -> None:
     spec = spec_path.read_text(encoding="utf-8")
     current = current_path.read_text(encoding="utf-8")
     founding_tasks = founding_tasks_path.read_text(encoding="utf-8")
+    parent_spec = parent_spec_path.read_text(encoding="utf-8")
+    parent_plan = parent_plan_path.read_text(encoding="utf-8")
+    parent_tasks = parent_tasks_path.read_text(encoding="utf-8")
 
     required_phrases = (
         "HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT",
@@ -95,10 +104,25 @@ def main() -> None:
     historical_section = current[current.index("`000B2-unbiased-stt-bakeoff`") :]
     require("State: `BLOCKED_EXTERNAL`" in historical_section[:512], "historical B2 lane must remain blocked")
     require("`000B2-public-corpus-bakeoff`" in current, "public successor marker missing")
+
+    for label, text in (
+        ("parent spec", parent_spec),
+        ("parent plan", parent_plan),
+        ("parent tasks", parent_tasks),
+    ):
+        require("`000B2-unbiased-stt-bakeoff`" in text, f"{label} missing historical private lane")
+        require("`000B2-public-corpus-bakeoff`" in text, f"{label} missing public successor")
+        require("BLOCKED_EXTERNAL" in text, f"{label} must preserve historical blocked state")
+        require(
+            "HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT" in text,
+            f"{label} missing human developer-speech non-claim",
+        )
+
     require("production Rust/Cargo speech code" in founding_tasks, "product-code prohibition missing")
     require("private 20-speaker" in founding_tasks, "historical private-path preservation missing")
 
     print("PUBLIC_CORPUS_METHODOLOGY=PASS")
+    print("PARENT_AUTHORITY_CHAIN=ALIGNED")
     print("HISTORICAL_PRIVATE_B2=BLOCKED_EXTERNAL")
     print("PRIVATE_COLLECTION_HISTORY=PRESERVED_UNEXECUTED")
     print("PUBLIC_HUMAN_BASELINE=LIBRISPEECH_SLR12")

@@ -3,6 +3,7 @@ name: 000B2 Public Corpus Methodology
 on:
   pull_request:
     paths:
+      - 'specs/000B-stt-entity-bakeoff/**'
       - 'specs/000B2-public-corpus-bakeoff/**'
       - 'specs/000-founding-research/tasks.md'
       - 'specs/CURRENT.md'
@@ -12,6 +13,7 @@ on:
     branches:
       - main
     paths:
+      - 'specs/000B-stt-entity-bakeoff/**'
       - 'specs/000B2-public-corpus-bakeoff/**'
       - 'specs/000-founding-research/tasks.md'
       - 'specs/CURRENT.md'
