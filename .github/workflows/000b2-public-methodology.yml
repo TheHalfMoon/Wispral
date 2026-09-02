@@ -10,6 +10,7 @@ on:
       - 'docs/canonical/CURRENT_STATE.md'
       - 'research/000b2-public/**'
       - '.github/workflows/000b2-public-methodology.yml'
+      - '.github/workflows/000b2-public-materialization.yml'
   push:
     branches:
       - main
@@ -21,6 +22,7 @@ on:
       - 'docs/canonical/CURRENT_STATE.md'
       - 'research/000b2-public/**'
       - '.github/workflows/000b2-public-methodology.yml'
+      - '.github/workflows/000b2-public-materialization.yml'
 
 permissions:
   contents: read
@@ -39,5 +41,7 @@ jobs:
         run: |
           test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
           echo "EXACT_REVISION=$EXACT_REVISION"
+      - name: Verify workflow contracts
+        run: python research/000b2-public/verify_workflow_contracts.py
       - name: Verify methodology contract
         run: python research/000b2-public/verify_methodology.py
