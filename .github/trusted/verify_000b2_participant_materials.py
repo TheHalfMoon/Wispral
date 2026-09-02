@@ -33,8 +33,8 @@ CHECKLIST_PATH = "research/000b2-entry/authority/recording-entry-checklist.templ
 FREEZE_PATH = "research/000b2-entry/authority/participant-materials-freeze.json"
 POLICY_SHA256 = "454b208884211f83fc3ed62c22844d2a72d37dafbaa001793d791e91faecc811"
 INFO_SHA256 = "dd4143145674473ea56122a7e7e23cfc95c08cb99840b451b190bc92fb3d93b6"
-CHECKLIST_SHA256 = "eb6af6f09940cdb7a41efdf798458059561a31021320ca997671906ea9e36fe3"
-MATERIALS_SHA256 = "45d43256e7914dc35f97ac9704a3139e92a53f145eb0239f65fa0b7f4c2eb320"
+CHECKLIST_SHA256 = "b4e9f8fdf54c0809bb5f44d004c61c6e621506fef64888b92cec407ca05d0a55"
+MATERIALS_SHA256 = "5f96a7ff1ab63371c0396a93ccaa140b4d82bf567e62e64c9b0ed7520997034c"
 
 EXPECTED_MATERIALS = {
     "participant_information_consent_template": {
