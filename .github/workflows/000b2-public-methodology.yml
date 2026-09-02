@@ -1,0 +1,33 @@
+name: 000B2 Public Corpus Methodology
+
+on:
+  pull_request:
+    paths:
+      - 'specs/000B-stt-entity-bakeoff/**'
+      - 'specs/000B2-public-corpus-bakeoff/**'
+      - 'specs/000-founding-research/tasks.md'
+      - 'specs/CURRENT.md'
+      - 'research/000b2-public/**'
+      - '.github/workflows/000b2-public-methodology.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'specs/000B-stt-entity-bakeoff/**'
+      - 'specs/000B2-public-corpus-bakeoff/**'
+      - 'specs/000-founding-research/tasks.md'
+      - 'specs/CURRENT.md'
+      - 'research/000b2-public/**'
+      - '.github/workflows/000b2-public-methodology.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-public-corpus-methodology:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v4
+      - name: Verify methodology contract
+        run: python research/000b2-public/verify_methodology.py
