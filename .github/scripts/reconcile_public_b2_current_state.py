@@ -22,16 +22,16 @@ replace_once(
     merge_anchor,
     merge_anchor
     + "**000B2 public-corpus methodology merge:** "
-    "`cfb883311c1acb45cb8422ab6b2c02443dc1b62c`  \n",
+    "`cfb883311c1acb45cb8422ab6b2c02443dc1b62c`\n",
 )
 
 replace_once(
     "**Blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  \n",
     "**Historical private successor:** `000B2-unbiased-stt-bakeoff` — "
-    "`BLOCKED_EXTERNAL`  \n"
+    "`BLOCKED_EXTERNAL`\n"
     "**Active public B2 execution lane:** `000B2-public-corpus-bakeoff` — "
-    "`CANONICAL`, execution not started  \n"
-    "**Public B2 primary decoding:** `NOT_STARTED`  \n",
+    "`CANONICAL`, execution not started\n"
+    "**Public B2 primary decoding:** `NOT_STARTED`\n",
 )
 
 replace_once(
