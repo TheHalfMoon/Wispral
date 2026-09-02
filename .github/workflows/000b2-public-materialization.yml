@@ -11,6 +11,7 @@ on:
       - 'specs/000B2-public-corpus-bakeoff/tasks.md'
       - 'specs/CURRENT.md'
       - 'docs/canonical/CURRENT_STATE.md'
+      - '.github/workflows/000b2-public-methodology.yml'
       - '.github/workflows/000b2-public-materialization.yml'
   push:
     branches:
@@ -24,6 +25,7 @@ on:
       - 'specs/000B2-public-corpus-bakeoff/tasks.md'
       - 'specs/CURRENT.md'
       - 'docs/canonical/CURRENT_STATE.md'
+      - '.github/workflows/000b2-public-methodology.yml'
       - '.github/workflows/000b2-public-materialization.yml'
 
 permissions:
@@ -40,6 +42,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ env.B2P02_REVISION }}
+      - name: Verify exact revision identity
+        run: |
+          test "$(git rev-parse HEAD)" = "$B2P02_REVISION"
+          echo "B2P02_REVISION=$B2P02_REVISION"
       - name: Reverify official OpenSLR archive bytes
         run: |
           mkdir -p "$RUNNER_TEMP/b2p02/work"
