@@ -1,0 +1,55 @@
+name: 000B2 Public Corpus Archive Materialization
+
+on:
+  pull_request:
+    paths:
+      - 'research/000b2-public/corpus-source.json'
+      - 'research/000b2-public/readiness.json'
+      - 'research/000b2-public/archive-materialization.json'
+      - 'research/000b2-public/materialize_archives.py'
+      - 'research/000b2-public/verify_methodology.py'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+      - 'specs/CURRENT.md'
+      - 'docs/canonical/CURRENT_STATE.md'
+      - '.github/workflows/000b2-public-materialization.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'research/000b2-public/corpus-source.json'
+      - 'research/000b2-public/readiness.json'
+      - 'research/000b2-public/archive-materialization.json'
+      - 'research/000b2-public/materialize_archives.py'
+      - 'research/000b2-public/verify_methodology.py'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+      - 'specs/CURRENT.md'
+      - 'docs/canonical/CURRENT_STATE.md'
+      - '.github/workflows/000b2-public-materialization.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  materialize-official-archives:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      B2P02_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.B2P02_REVISION }}
+      - name: Reverify official OpenSLR archive bytes
+        run: |
+          mkdir -p "$RUNNER_TEMP/b2p02/work"
+          python research/000b2-public/materialize_archives.py \
+            --work-dir "$RUNNER_TEMP/b2p02/work" \
+            --output "$RUNNER_TEMP/b2p02/archive-materialization.json"
+      - name: Upload bounded materialization observation
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2p02-archive-materialization-${{ env.B2P02_REVISION }}
+          path: ${{ runner.temp }}/b2p02/archive-materialization.json
+          if-no-files-found: error
+          retention-days: 7
