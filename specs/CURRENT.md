@@ -61,9 +61,19 @@ That lane remains historically truthful:
 
 Those records MUST NOT be rewritten to pretend consent or corpus evidence existed.
 
-## Prospective execution supersession
+## Historical blocked successor — preserved and superseded as the active route
 
-The active B2 execution route is prospectively superseded by:
+`000B2-unbiased-stt-bakeoff`
+
+State: `BLOCKED_EXTERNAL`
+
+This exact historical lane remains blocked. Its private participant/media authority gate is intentionally preserved, and the old entry-preparation validators continue to fail closed against it.
+
+The lane is no longer the only possible B2 execution route once the public-corpus successor below becomes canonical. Nothing in the public-corpus amendment converts this historical lane to `READY`, authorizes its primary human decode, or fabricates its missing participant/media evidence.
+
+## Prospective execution successor
+
+The new active B2 execution route is:
 
 `000B2-public-corpus-bakeoff`
 
@@ -76,7 +86,7 @@ Rationale:
 - the founding product decision needs a reproducible shortlist/viability signal, not unnecessary new private data collection;
 - public human speech can provide bounded ordinary-recognition evidence while synthetic developer-term material remains diagnostic only.
 
-This is a prospective methodology amendment, not a retroactive rewrite of B1.
+This is a prospective methodology successor, not a retroactive rewrite of B1 or a transition of the historical `000B2-unbiased-stt-bakeoff` lane.
 
 ## Public-human P0 baseline
 
@@ -109,7 +119,7 @@ All B2 synthesis MUST preserve:
 
 `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`
 
-## B2 executable ordering after canonicalization
+## Public B2 executable ordering after canonicalization
 
 The authorized order is the task order in `specs/000B2-public-corpus-bakeoff/tasks.md`:
 
@@ -119,7 +129,7 @@ The authorized order is the task order in `specs/000B2-public-corpus-bakeoff/tas
 4. revalidate the six canonical candidate cells;
 5. capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration;
 6. capture attempt-bound environment/hardware evidence;
-7. freeze the pre-decode attempt manifest;
+7. freeze the pre-decode public-lane attempt manifest;
 8. execute P0 C0 decoding against identical public-human audio;
 9. optionally freeze and execute D0 diagnostic material;
 10. score without result-driven methodology changes;
@@ -128,7 +138,9 @@ The authorized order is the task order in `specs/000B2-public-corpus-bakeoff/tas
 13. review-thread reconciliation and guarded expected-head merge;
 14. post-merge verification and canonical reread.
 
-## B2 decision boundary
+The historical private-lane attempt generator remains bound to the historical `BLOCKED_EXTERNAL` lane and is not reused to self-authorize the public successor.
+
+## Public B2 decision boundary
 
 The amended B2 may classify candidates only as:
 
@@ -143,7 +155,7 @@ A leading public-baseline candidate is not a production dependency selection and
 
 `000B3` repository-context uplift remains coarse until amended B2 evidence is canonical.
 
-B3 may use frozen B2 C0 transcripts and separately frozen diagnostic developer material, but it must inherit the same missing-human-developer-evidence limitation.
+B3 may use frozen public-B2 C0 transcripts and separately frozen diagnostic developer material, but it must inherit the same missing-human-developer-evidence limitation.
 
 `000B4` STT synthesis remains coarse until B2/B3 settle its inputs.
 
@@ -184,4 +196,4 @@ Live canonical GitHub/repository truth overrides this file. After every merged r
 
 ## Next canonical action
 
-Qualify and merge the bounded `000B2-public-corpus-bakeoff` methodology amendment. Only after it becomes canonical may the public-corpus execution tasks begin. Do not perform comparative candidate decoding on the amendment branch, do not fabricate private consent, and do not represent public or synthetic media as human developer-speech evidence.
+Qualify and merge the bounded `000B2-public-corpus-bakeoff` methodology successor while preserving `000B2-unbiased-stt-bakeoff` as historical `BLOCKED_EXTERNAL`. Only after the public successor becomes canonical may its execution tasks begin. Do not perform comparative candidate decoding on the amendment branch, do not fabricate private consent, and do not represent public or synthetic media as human developer-speech evidence.
