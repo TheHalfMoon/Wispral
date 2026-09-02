@@ -25,6 +25,10 @@ TASKS_PATH = ROOT / "specs/000B2-public-corpus-bakeoff/tasks.md"
 CHUNK_SIZE = 4 * 1024 * 1024
 MAX_ATTEMPTS = 3
 USER_AGENT = "Wispral-B2P02/1.0 (+https://github.com/TheHalfMoon/Wispral)"
+ARCHIVE_SOURCE_URLS = {
+    "test-clean.tar.gz": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+    "test-other.tar.gz": "https://www.openslr.org/resources/12/test-other.tar.gz",
+}
 
 
 def fail(message: str) -> None:
@@ -149,7 +153,7 @@ def main() -> None:
             fail(f"duplicate partition {name}")
         partition_by_name[name] = item
 
-    required_names = {"test-clean.tar.gz", "test-other.tar.gz"}
+    required_names = set(ARCHIVE_SOURCE_URLS)
     if set(partition_by_name) != required_names:
         fail(f"unexpected partition set: {sorted(partition_by_name)}")
 
@@ -169,7 +173,10 @@ def main() -> None:
 
     for name in sorted(required_names):
         item = partition_by_name[name]
-        source_url = f"https://www.openslr.org/resources/12/{name}"
+        source_url = ARCHIVE_SOURCE_URLS[name]
+        recorded_source_url = item.get("source_url")
+        if b2p02_complete and recorded_source_url != source_url:
+            fail(f"recorded source URL drift for {name}: expected {source_url}, observed {recorded_source_url!r}")
         destination = args.work_dir / name
         observed = stream_archive(source_url, destination)
         if observed["md5"] != item["official_md5"]:
@@ -188,6 +195,12 @@ def main() -> None:
                 fail(
                     f"recorded SHA-256 mismatch for {name}: "
                     f"expected {recorded_sha256}, observed {observed['sha256']}"
+                )
+            recorded_bytes = item.get("archive_bytes")
+            if observed["bytes"] != recorded_bytes:
+                fail(
+                    f"recorded byte-count mismatch for {name}: "
+                    f"expected {recorded_bytes}, observed {observed['bytes']}"
                 )
 
         observation = {
