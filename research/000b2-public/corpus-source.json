@@ -1,0 +1,47 @@
+{
+  "schema_version": "000b2-public-corpus-source-v1",
+  "task": "B2P01",
+  "state": "FROZEN_SOURCE_PROVENANCE",
+  "verified_on": "2026-09-02",
+  "resource": {
+    "provider": "OpenSLR",
+    "identifier": "SLR12",
+    "name": "LibriSpeech ASR corpus",
+    "resource_page": "https://www.openslr.org/12/",
+    "summary": "Large-scale (1000 hours) corpus of read English speech",
+    "category": "Speech",
+    "license": "CC BY 4.0",
+    "checksum_manifest": "https://www.openslr.org/resources/12/md5sum.txt",
+    "checksum_algorithm": "MD5"
+  },
+  "partitions": [
+    {
+      "name": "test-clean.tar.gz",
+      "role": "test set, clean speech",
+      "official_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+      "materialized": false,
+      "archive_sha256": null
+    },
+    {
+      "name": "test-other.tar.gz",
+      "role": "test set, other more challenging speech",
+      "official_md5": "fb5a50374b501bb3bac4815ee91d3135",
+      "materialized": false,
+      "archive_sha256": null
+    }
+  ],
+  "verification": {
+    "resource_page_checked": true,
+    "checksum_manifest_checked": true,
+    "archive_bytes_fetched": false,
+    "archive_checksums_verified_against_bytes": false,
+    "scope": "SOURCE_LICENSE_AND_OFFICIAL_CHECKSUM_PROVENANCE_ONLY"
+  },
+  "claim_guards": {
+    "public_human_claim_scope": "BOUNDED_ORDINARY_READ_ENGLISH_ONLY",
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "production_stt_selected": false,
+    "product_code_authorized": false
+  },
+  "next_task_after_canonicalization": "B2P02"
+}
