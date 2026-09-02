@@ -62,13 +62,13 @@ jobs:
           python .github/trusted/verify_000b2_participant_policy.py \
             --base-root . \
             --self-test
-      - name: Verify current bootstrap state remains non-authorizing
+      - name: Verify current canonical policy state remains non-authorizing
         run: |
           OUTPUT="$(python .github/trusted/verify_000b2_participant_policy.py \
             --base-root . \
             --candidate-root .)"
           printf '%s\n' "$OUTPUT"
-          printf '%s\n' "$OUTPUT" | grep -Fx 'PARTICIPANT_POLICY=NOT_YET_CANONICAL'
+          printf '%s\n' "$OUTPUT" | grep -Fx 'PARTICIPANT_POLICY=FROZEN_TRUSTED'
           printf '%s\n' "$OUTPUT" | grep -Fx 'AUTHORITY_PACKAGE=NOT_AUTHORIZED'
           printf '%s\n' "$OUTPUT" | grep -Fx 'PARTICIPANT_CONSENT_ATTESTATION=NOT_PROVIDED_BY_THIS_GATE'
           printf '%s\n' "$OUTPUT" | grep -Fx 'B2_PRIMARY_RECORDING_AUTHORIZED=NO'
