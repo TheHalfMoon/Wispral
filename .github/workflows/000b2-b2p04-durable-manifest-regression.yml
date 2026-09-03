@@ -11,102 +11,38 @@ permissions:
   contents: write
 
 jobs:
-  add-durable-manifest-regression:
+  add-regression:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout exact staging revision
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
-      - name: Verify exact branch and canonical base
-        shell: bash
+      - name: Verify exact base
         run: |
           set -euo pipefail
-          test "${GITHUB_REF_NAME}" = "docs/000b2-b2p04-frontier-reconciliation"
-          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
           git fetch --no-tags origin main
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
           test "$(git rev-parse origin/main)" = "4c4e758f22b54fa62256e57bfbd344adc817df8e"
           test "$(git merge-base HEAD origin/main)" = "4c4e758f22b54fa62256e57bfbd344adc817df8e"
-      - name: Add permanent phase-aware missing-manifest regression
-        shell: bash
+      - name: Apply durable regression
         run: |
           set -euo pipefail
-          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
-          from pathlib import Path
-
-          path = Path('research/000b2-public/verify_subset_freeze.py')
-          text = path.read_text(encoding='utf-8')
-
-          anchor = '''    print("B2P04_COMMITTED_MANIFEST=VALID")
-
-
-def main() -> None:
-              """Run all offline B2P04 structural/adversarial gates."""'''
-          replacement = '''    print("B2P04_COMMITTED_MANIFEST=VALID")
-
-
-def verify_manifest_presence_phase_regression() -> None:
-              """Require absent-manifest handling to differ only by the verified authority phase."""
-              global MANIFEST_PATH
-              original_manifest_path = MANIFEST_PATH
-              with tempfile.TemporaryDirectory() as temporary:
-                  MANIFEST_PATH = Path(temporary) / "missing-subset-manifest.json"
-                  try:
-                      try:
-                          verify_manifest("B2P04")
-                      except SystemExit as error:
-                          require(
-                              "canonical B2P04 reconciliation requires the committed subset manifest" in str(error),
-                              "canonical missing-manifest rejection emitted the wrong failure",
-                          )
-                      else:
-                          raise SystemExit(
-                              "B2P04_FREEZE_VERIFIER=FAIL: reconciled B2P04 accepted a missing committed manifest"
-                          )
-
-                      verify_manifest("B2P03")
-                  finally:
-                      MANIFEST_PATH = original_manifest_path
-
-              print("B2P04_RECONCILED_MISSING_MANIFEST_REJECTION=PASS")
-              print("B2P03_ABSENT_MANIFEST_PROBE=PASS")
-
-
-def main() -> None:
-              """Run all offline B2P04 structural/adversarial gates."""'''
-          if text.count(anchor) != 1:
-              raise SystemExit(f'B2P04_DURABLE_MANIFEST_REGRESSION=FAIL: insertion anchor count {text.count(anchor)}')
-          text = text.replace(anchor, replacement)
-
-          call_anchor = '''    verify_safe_extraction()
-              authority_phase = verify_current_authority()
-              verify_manifest(authority_phase)
-              print("B2P04_FREEZE_VERIFIER=PASS")'''
-          call_replacement = '''    verify_safe_extraction()
-              verify_manifest_presence_phase_regression()
-              authority_phase = verify_current_authority()
-              verify_manifest(authority_phase)
-              print("B2P04_FREEZE_VERIFIER=PASS")'''
-          if text.count(call_anchor) != 1:
-              raise SystemExit(f'B2P04_DURABLE_MANIFEST_REGRESSION=FAIL: call anchor count {text.count(call_anchor)}')
-          path.write_text(text.replace(call_anchor, call_replacement), encoding='utf-8')
-          print('B2P04_DURABLE_MANIFEST_REGRESSION=APPLIED')
-          PY
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/.b2p04_durable_regression_patch.py
           PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze.py | tee "$RUNNER_TEMP/verifier.log"
           grep -F "B2P04_RECONCILED_MISSING_MANIFEST_REJECTION=PASS" "$RUNNER_TEMP/verifier.log"
           grep -F "B2P03_ABSENT_MANIFEST_PROBE=PASS" "$RUNNER_TEMP/verifier.log"
           PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_methodology.py
           PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze_root_metadata.py
-      - name: Commit forward-only regression
-        shell: bash
+      - name: Commit repair
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add research/000b2-public/verify_subset_freeze.py
-          test "$(git diff --cached --name-only)" = "research/000b2-public/verify_subset_freeze.py"
+          git rm research/000b2-public/.b2p04_durable_regression_patch.py
+          test "$(git diff --cached --name-only | sort)" = $'research/000b2-public/.b2p04_durable_regression_patch.py\nresearch/000b2-public/verify_subset_freeze.py'
           git diff --cached --check
           git commit -m "test(000b2): persist B2P04 missing-manifest regression"
           git push origin HEAD:docs/000b2-b2p04-frontier-reconciliation
