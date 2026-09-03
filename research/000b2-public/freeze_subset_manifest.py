@@ -122,6 +122,8 @@ def validate_member_scope(member: tarfile.TarInfo, partition: str) -> tuple[str,
     require(not member.issym(), f"symbolic link archive member is prohibited: {member.name!r}")
     require(not member.islnk(), f"hard-link archive member is prohibited: {member.name!r}")
     require(member.isdir() or member.isreg(), f"special archive member is prohibited: {member.name!r}")
+    if member.isreg():
+        require(member.size >= 0, f"negative regular-file size is prohibited: {member.name!r}")
     if parts == ("LibriSpeech",):
         require(member.isdir(), "LibriSpeech archive root must be a directory")
         return parts

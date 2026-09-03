@@ -125,6 +125,16 @@ def verify_safe_extraction() -> None:
     fifo.type = tarfile.FIFOTYPE
     require_rejected([(fifo, None)], "test-clean", "FIFO")
 
+    negative_size = tarfile.TarInfo("LibriSpeech/test-clean/negative.flac")
+    negative_size.type = tarfile.REGTYPE
+    negative_size.size = -1
+    try:
+        freeze.validate_member_scope(negative_size, "test-clean")
+    except freeze.FreezeError:
+        pass
+    else:
+        raise SystemExit("B2P04_FREEZE_VERIFIER=FAIL: negative regular-file size was accepted")
+
 
 def verify_static_boundaries() -> None:
     """Require the implementation to stay on the bounded no-extractall/no-subprocess surface."""
@@ -332,6 +342,7 @@ def main() -> None:
     print("B2P04_SYMLINK_REJECTION=PASS")
     print("B2P04_HARDLINK_REJECTION=PASS")
     print("B2P04_SPECIAL_NODE_REJECTION=PASS")
+    print("B2P04_NEGATIVE_SIZE_REJECTION=PASS")
     print("B2P04_CANDIDATE_REVALIDATION_STARTED=NO")
     print("B2P04_CANDIDATE_DECODING_STARTED=NO")
     print("B2P04_PRIMARY_DECODING_STARTED=NO")
