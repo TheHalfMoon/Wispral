@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify B2P05 candidate identity revalidation without decoding audio."""
+"""Verify B2P05 candidate identities against an independent canonical base checkout."""
 
 from __future__ import annotations
 
@@ -14,12 +14,15 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import quote
 
-ROOT = Path(__file__).resolve().parents[2]
-EVIDENCE_PATH = ROOT / "research/000b2-public/candidate-revalidation.json"
-REGISTRY_PATH = ROOT / "research/000b1/qualified-candidates.json"
-MATERIALIZED_PATH = ROOT / "research/000b2-entry/materialized-artifacts.json"
-READINESS_PATH = ROOT / "research/000b2-public/readiness.json"
-TRUSTED_VERIFIER_PATH = ROOT / ".github/trusted/verify_000b2_materialization.py"
+CANDIDATE_ROOT = Path(__file__).resolve().parents[2]
+CANONICAL_BASE_SHA = "6135cd67c1b31e0be0b82ba202b6a6770d34b68d"
+EVIDENCE_REL = Path("research/000b2-public/candidate-revalidation.json")
+REGISTRY_REL = Path("research/000b1/qualified-candidates.json")
+MATERIALIZED_REL = Path("research/000b2-entry/materialized-artifacts.json")
+AMENDMENT_REL = Path("research/000b2-entry/artifact-size-amendment.json")
+READINESS_REL = Path("research/000b2-public/readiness.json")
+TRUSTED_VERIFIER_REL = Path(".github/trusted/verify_000b2_materialization.py")
+EXPECTED_REGISTRY_SHA256 = "2448daab15aea13d1e03c326e43b163337a4e3a09ec077bb0f25e3dd51499f1f"
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 SHA40_RE = re.compile(r"^[0-9a-f]{40}$")
 EXPECTED_IDS = {
@@ -30,10 +33,23 @@ EXPECTED_IDS = {
     "sherpa-onnx-compact",
     "sherpa-onnx-balanced",
 }
+IMMUTABLE_BASE_INPUTS = (
+    REGISTRY_REL,
+    MATERIALIZED_REL,
+    AMENDMENT_REL,
+    READINESS_REL,
+    TRUSTED_VERIFIER_REL,
+)
 
 
 class RevalidationError(RuntimeError):
     """Fail-closed B2P05 verification error."""
+
+
+def require(condition: bool, message: str) -> None:
+    """Raise a stable fail-closed error when a B2P05 invariant is false."""
+    if not condition:
+        raise RevalidationError(message)
 
 
 def reject_duplicate_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -46,32 +62,34 @@ def reject_duplicate_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return result
 
 
-def load_object(path: Path) -> dict[str, Any]:
-    """Load one regular UTF-8 JSON authority file with duplicate-key rejection."""
-    if path.is_symlink() or not path.is_file():
-        raise RevalidationError(f"authority input is not a regular file: {path.relative_to(ROOT)}")
+def safe_bytes(root: Path, relative: Path) -> bytes:
+    """Read one regular non-symlink file without permitting checkout-root escape."""
+    resolved_root = root.resolve(strict=True)
+    path = resolved_root / relative
+    if path.is_symlink():
+        raise RevalidationError(f"symlink is forbidden for authority input: {relative}")
+    resolved = path.resolve(strict=True)
+    if not resolved.is_relative_to(resolved_root):
+        raise RevalidationError(f"authority input escapes checkout root: {relative}")
+    if not resolved.is_file():
+        raise RevalidationError(f"authority input is not a regular file: {relative}")
+    return resolved.read_bytes()
+
+
+def load_object(raw: bytes, label: str) -> dict[str, Any]:
+    """Parse one UTF-8 JSON object with duplicate-key rejection."""
     try:
-        value = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=reject_duplicate_pairs)
+        value = json.loads(raw.decode("utf-8"), object_pairs_hook=reject_duplicate_pairs)
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise RevalidationError(f"invalid JSON in {path.relative_to(ROOT)}: {exc}") from exc
+        raise RevalidationError(f"invalid JSON in {label}: {exc}") from exc
     if not isinstance(value, dict):
-        raise RevalidationError(f"authority input must be an object: {path.relative_to(ROOT)}")
+        raise RevalidationError(f"{label} must be a JSON object")
     return value
 
 
-def sha256_file(path: Path) -> str:
-    """Return the SHA-256 digest of a bounded repository authority file."""
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
-def require(condition: bool, message: str) -> None:
-    """Raise a stable fail-closed error when a B2P05 invariant is false."""
-    if not condition:
-        raise RevalidationError(message)
+def sha256_bytes(raw: bytes) -> str:
+    """Return a SHA-256 digest for exact authority bytes."""
+    return hashlib.sha256(raw).hexdigest()
 
 
 def family_map(registry: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -88,20 +106,38 @@ def family_map(registry: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return result
 
 
-def verify_static_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, dict[str, Any]]]:
-    """Verify exact B2P05 authority, six-cell membership, pins, and closed later gates."""
-    evidence = load_object(EVIDENCE_PATH)
-    registry = load_object(REGISTRY_PATH)
-    materialized = load_object(MATERIALIZED_PATH)
-    readiness = load_object(READINESS_PATH)
+def verify_static_authority(trusted_base_root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Bind B2P05 candidate data to immutable canonical-base authority and closed gates."""
+    base_root = trusted_base_root.resolve(strict=True)
+    candidate_root = CANDIDATE_ROOT.resolve(strict=True)
+
+    for relative in IMMUTABLE_BASE_INPUTS:
+        base_raw = safe_bytes(base_root, relative)
+        candidate_raw = safe_bytes(candidate_root, relative)
+        require(candidate_raw == base_raw, f"candidate changed canonical B2P05 authority input: {relative}")
+
+    registry_raw = safe_bytes(base_root, REGISTRY_REL)
+    materialized_raw = safe_bytes(base_root, MATERIALIZED_REL)
+    readiness_raw = safe_bytes(base_root, READINESS_REL)
+    evidence_raw = safe_bytes(candidate_root, EVIDENCE_REL)
+
+    registry_sha = sha256_bytes(registry_raw)
+    require(registry_sha == EXPECTED_REGISTRY_SHA256, "canonical candidate registry byte digest drift")
+
+    registry = load_object(registry_raw, "canonical candidate registry")
+    materialized = load_object(materialized_raw, "canonical materialized artifact evidence")
+    readiness = load_object(readiness_raw, "canonical public readiness")
+    evidence = load_object(evidence_raw, "B2P05 candidate revalidation evidence")
 
     require(evidence.get("schema_version") == "000b2-public-candidate-revalidation-v1", "B2P05 evidence schema drift")
     require(evidence.get("task") == "B2P05", "B2P05 task identity drift")
-    require(evidence.get("canonical_base_sha") == "6135cd67c1b31e0be0b82ba202b6a6770d34b68d", "B2P05 canonical base drift")
-    registry_sha = sha256_file(REGISTRY_PATH)
-    require(SHA256_RE.fullmatch(registry_sha) is not None, "candidate registry SHA-256 malformed")
-    require(evidence.get("candidate_registry_sha256") == registry_sha, "candidate registry byte digest drift")
-    require(materialized.get("registry_sha256") == registry_sha, "materialized artifact evidence is not bound to canonical registry")
+    require(evidence.get("canonical_base_sha") == CANONICAL_BASE_SHA, "B2P05 canonical base drift")
+    require(evidence.get("candidate_registry") == str(REGISTRY_REL), "B2P05 registry path drift")
+    require(evidence.get("candidate_registry_sha256") == EXPECTED_REGISTRY_SHA256, "B2P05 registry digest binding drift")
+    require(evidence.get("materialized_artifact_evidence") == str(MATERIALIZED_REL), "B2P05 materialized-evidence path drift")
+    require(evidence.get("artifact_size_amendment") == str(AMENDMENT_REL), "B2P05 amendment path drift")
+    require(evidence.get("trusted_artifact_verifier") == str(TRUSTED_VERIFIER_REL), "B2P05 trusted-verifier path drift")
+    require(materialized.get("registry_sha256") == EXPECTED_REGISTRY_SHA256, "canonical materialized evidence registry binding drift")
 
     candidate_ids = evidence.get("candidate_ids")
     require(isinstance(candidate_ids, list) and len(candidate_ids) == len(set(candidate_ids)), "candidate ID list malformed")
@@ -145,26 +181,50 @@ def verify_static_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str,
     require(isinstance(sherpa_source, dict) and pins["sherpa-onnx"].get("model_repository") == sherpa_source.get("repository"), "sherpa-onnx model repository drift")
     require(pins["sherpa-onnx"].get("onnx_revision") == sherpa_source.get("onnx_revision"), "sherpa-onnx model revision drift")
 
+    contract = evidence.get("live_revalidation_contract")
+    require(isinstance(contract, dict), "B2P05 live revalidation contract missing")
+    for field in (
+        "exact_runtime_release_and_revision_resolution_required",
+        "all_canonical_artifact_bytes_must_match_recorded_size_and_sha256",
+        "redirects_must_remain_within_the_existing_trusted_host_policy",
+        "candidate_membership_must_not_change",
+        "c0_repository_or_test_specific_context_must_remain_off",
+    ):
+        require(contract.get(field) is True, f"B2P05 live contract drift: {field}")
+
     require(readiness.get("state") == "READY" and readiness.get("completed_through") == "B2P04", "B2P05 requires canonical B2P04 readiness")
     public = readiness.get("public_human_baseline")
     preprocessing = readiness.get("preprocessing")
+    environment = readiness.get("environment")
     attempt = readiness.get("attempt_manifest")
     guards = readiness.get("claim_guards")
     require(isinstance(public, dict) and public.get("candidate_decoding_started") is False, "candidate decoding started before B2P05")
     require(isinstance(preprocessing, dict) and preprocessing.get("resolved") is False, "B2P06 preprocessing capture started before B2P05")
-    require(isinstance(attempt, dict) and attempt.get("primary_decoding_started") is False and attempt.get("frozen") is False, "attempt state advanced before B2P05")
+    require(isinstance(environment, dict) and environment.get("resolved") is False, "B2P07 environment capture started before B2P05")
+    require(isinstance(attempt, dict) and attempt.get("primary_decoding_started") is False and attempt.get("frozen") is False, "B2P08 attempt state advanced before B2P05")
     require(isinstance(guards, dict), "claim guards missing")
     require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human developer-speech evidence guard drift")
     require(guards.get("production_stt_selected") is False and guards.get("product_code_authorized") is False, "product-selection guard drift")
+
     evidence_guards = evidence.get("guards")
-    require(isinstance(evidence_guards, dict) and all(evidence_guards.get(key) is False for key in ("candidate_decoding_started", "primary_decoding_started", "b2p06_preprocessing_capture_started", "production_stt_selected", "product_code_authorized")), "B2P05 evidence guard drift")
+    require(isinstance(evidence_guards, dict), "B2P05 evidence guards missing")
+    for field in (
+        "candidate_decoding_started",
+        "primary_decoding_started",
+        "b2p06_preprocessing_capture_started",
+        "production_stt_selected",
+        "product_code_authorized",
+    ):
+        require(evidence_guards.get(field) is False, f"B2P05 evidence guard drift: {field}")
     require(evidence_guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "B2P05 human-evidence guard drift")
 
+    print(f"B2P05_CANONICAL_BASE={CANONICAL_BASE_SHA}")
+    print("B2P05_CANONICAL_AUTHORITY_INPUTS=UNCHANGED")
     print("B2P05_STATIC_AUTHORITY=PASS")
     print("B2P05_CANDIDATE_COUNT=6")
     print("B2P05_C0_CONTEXT_FREEZE=PASS")
     print("B2P05_LATER_GATES_CLOSED=PASS")
-    return evidence, registry, families
+    return evidence, registry
 
 
 def github_json(url: str) -> dict[str, Any]:
@@ -188,7 +248,7 @@ def github_json(url: str) -> dict[str, Any]:
 
 
 def resolve_release_tag(repo: str, tag: str) -> str:
-    """Resolve a GitHub release tag through annotated tags to its exact commit SHA."""
+    """Resolve a GitHub release tag through bounded annotated-tag indirection."""
     release = github_json(f"https://api.github.com/repos/{repo}/releases/tags/{quote(tag, safe='')}")
     require(release.get("tag_name") == tag and release.get("draft") is False, f"{repo} release tag drift")
     ref = github_json(f"https://api.github.com/repos/{repo}/git/ref/tags/{quote(tag, safe='')}")
@@ -208,7 +268,7 @@ def resolve_release_tag(repo: str, tag: str) -> str:
 
 
 def verify_runtime_pins(evidence: dict[str, Any]) -> None:
-    """Revalidate every canonical runtime release/tag and exact source revision live."""
+    """Revalidate each canonical runtime release/tag and exact source revision live."""
     pins = evidence["runtime_pins"]
     for family_name in sorted(pins):
         pin = pins[family_name]
@@ -222,21 +282,20 @@ def verify_runtime_pins(evidence: dict[str, Any]) -> None:
         print(f"B2P05_RUNTIME_PIN_{family_name.upper().replace('.', '_').replace('-', '_')}=PASS")
 
 
-def load_trusted_verifier():
-    """Load the canonical trusted artifact verifier without creating a second trust policy."""
-    spec = importlib.util.spec_from_file_location("wispral_trusted_materialization", TRUSTED_VERIFIER_PATH)
-    require(spec is not None and spec.loader is not None, "trusted artifact verifier cannot be loaded")
+def load_trusted_verifier(trusted_base_root: Path):
+    """Load download and redirect policy only from the independent canonical base."""
+    verifier_path = trusted_base_root.resolve(strict=True) / TRUSTED_VERIFIER_REL
+    require(verifier_path.is_file() and not verifier_path.is_symlink(), "canonical trusted verifier is not a regular file")
+    spec = importlib.util.spec_from_file_location("wispral_canonical_trusted_materialization", verifier_path)
+    require(spec is not None and spec.loader is not None, "canonical trusted artifact verifier cannot be loaded")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
-def verify_all_artifact_bytes(registry: dict[str, Any]) -> None:
-    """Reproduce pending identities and all already-pinned model artifact digests live."""
-    trusted = load_trusted_verifier()
-    trusted.verify(ROOT, ROOT)
-    print("B2P05_PENDING_ARTIFACT_IDENTITIES=PASS")
-
+def verify_prepinned_artifact_bytes(trusted_base_root: Path, registry: dict[str, Any]) -> None:
+    """Re-download all pre-pinned model artifacts using canonical trusted redirect policy."""
+    trusted = load_trusted_verifier(trusted_base_root)
     observations: dict[tuple[str, int, str], tuple[str, str]] = {}
     for family in registry["families"]:
         name = family["family"]
@@ -271,26 +330,30 @@ def verify_all_artifact_bytes(registry: dict[str, Any]) -> None:
         require(observed_sha == committed_sha, f"live pinned SHA-256 mismatch for {(candidate_id, path)}")
         print(f"B2P05_PINNED_ARTIFACT={candidate_id}:{path}:PASS")
     print(f"B2P05_PINNED_ARTIFACT_UNIQUE_DOWNLOADS={len(observations)}")
-    print("B2P05_ALL_ARTIFACT_IDENTITIES=PASS")
+    print("B2P05_PREPINNED_ARTIFACT_IDENTITIES=PASS")
 
 
 def main() -> int:
-    """Run static B2P05 gates and optionally the bounded live network revalidation."""
+    """Run static authority gates and optionally bounded live runtime/model revalidation."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--live", action="store_true", help="revalidate runtime refs and all model artifact bytes from pinned sources")
+    parser.add_argument("--trusted-base-root", type=Path, required=True)
+    parser.add_argument("--live", action="store_true", help="revalidate runtime refs and pre-pinned model bytes")
     args = parser.parse_args()
     try:
-        evidence, registry, _ = verify_static_authority()
+        evidence, registry = verify_static_authority(args.trusted_base_root)
         if args.live:
             verify_runtime_pins(evidence)
-            verify_all_artifact_bytes(registry)
+            verify_prepinned_artifact_bytes(args.trusted_base_root, registry)
             print("B2P05_LIVE_REVALIDATION=PASS")
         else:
             print("B2P05_LIVE_REVALIDATION=NOT_RUN")
         print("B2P05_CANDIDATE_REVALIDATION_VERIFIER=PASS")
         return 0
-    except (RevalidationError, Exception) as exc:
+    except RevalidationError as exc:
         print(f"B2P05_CANDIDATE_REVALIDATION_VERIFIER=FAIL: {exc}")
+        return 1
+    except Exception as exc:
+        print(f"B2P05_CANDIDATE_REVALIDATION_VERIFIER=FAIL: unexpected {type(exc).__name__}: {exc}")
         return 1
 
 
