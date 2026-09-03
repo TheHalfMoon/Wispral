@@ -118,14 +118,18 @@ def no_follow_flags(*, directory: bool) -> int:
         directory_flag = getattr(os, "O_DIRECTORY", None)
         require(isinstance(directory_flag, int), "race-safe source validation requires O_DIRECTORY support")
         flags |= directory_flag
+    else:
+        non_block = getattr(os, "O_NONBLOCK", 0)
+        if isinstance(non_block, int):
+            flags |= non_block
     close_on_exec = getattr(os, "O_CLOEXEC", 0)
     if isinstance(close_on_exec, int):
         flags |= close_on_exec
     return flags
 
 
-def open_absolute_directory_no_follow(path: Path, expected: SourceIdentity, label: str) -> int:
-    """Open an absolute directory one component at a time without following symlinks."""
+def open_absolute_directory_for_snapshot(path: Path, label: str) -> tuple[int, SourceIdentity]:
+    """Open an absolute directory chain without following links and return its live identity."""
     absolute = path.absolute()
     require(absolute.is_absolute() and bool(absolute.anchor), f"{label} must resolve to an absolute path")
     directory_flags = no_follow_flags(directory=True)
@@ -138,15 +142,27 @@ def open_absolute_directory_no_follow(path: Path, expected: SourceIdentity, labe
             current_fd = next_fd
         observed = source_identity(os.fstat(current_fd))
         require(stat.S_ISDIR(observed.mode), f"{label} is not a directory")
-        require_identity(observed, expected, label)
         result = current_fd
         current_fd = None
-        return result
+        return result, observed
     except OSError as error:
         raise SelectionError(f"unable to open {label} without following links: {path}: {error}") from error
     finally:
         if current_fd is not None:
             os.close(current_fd)
+
+
+def open_absolute_directory_no_follow(path: Path, expected: SourceIdentity, label: str) -> int:
+    """Open an absolute directory one component at a time and require the captured identity."""
+    directory_fd, observed = open_absolute_directory_for_snapshot(path, label)
+    try:
+        require_identity(observed, expected, label)
+        result = directory_fd
+        directory_fd = -1
+        return result
+    finally:
+        if directory_fd >= 0:
+            os.close(directory_fd)
 
 
 def snapshot_entry(snapshot: SourceTreeSnapshot, relative: Path, label: str) -> SourceIdentity:
@@ -341,29 +357,77 @@ def load_policy(path: Path = POLICY_PATH) -> SelectionPolicy:
     )
 
 
-def require_symlink_free_tree(root: Path, label: str) -> SourceTreeSnapshot:
-    """Snapshot every source node and reject links or special filesystem entries."""
+def list_directory_names(directory_fd: int, relative: Path, label: str) -> list[str]:
+    """Return one deterministic directory listing from an already-open source descriptor."""
     try:
-        root_stat = root.lstat()
+        names = os.listdir(directory_fd)
     except OSError as error:
-        raise SelectionError(f"unable to stat {label}: {root}: {error}") from error
-    require(not stat.S_ISLNK(root_stat.st_mode), f"symbolic link is not allowed for {label}: {root}")
-    require(stat.S_ISDIR(root_stat.st_mode), f"{label} is not a directory: {root}")
-    entries: dict[str, SourceIdentity] = {}
-    for path in root.rglob("*"):
-        relative = path.relative_to(root).as_posix()
+        location = relative.as_posix() if relative.parts else "."
+        raise SelectionError(f"unable to enumerate {label} directory {location}: {error}") from error
+    require(all(name not in {"", ".", ".."} and "/" not in name for name in names), f"invalid source-tree entry in {label}")
+    return sorted(names)
+
+
+def snapshot_directory(
+    directory_fd: int,
+    relative: Path,
+    entries: dict[str, SourceIdentity],
+    label: str,
+    expected_identity: SourceIdentity,
+) -> None:
+    """Recursively snapshot one directory while rejecting mutation during enumeration."""
+    before = source_identity(os.fstat(directory_fd))
+    require(stat.S_ISDIR(before.mode), f"{label} snapshot node is not a directory")
+    require_identity(before, expected_identity, f"{label} directory {relative.as_posix() or '.'}")
+    names = list_directory_names(directory_fd, relative, label)
+    directory_flags = no_follow_flags(directory=True)
+    file_flags = no_follow_flags(directory=False)
+
+    for name in names:
+        child_relative = relative / name if relative.parts else Path(name)
+        child_key = child_relative.as_posix()
         try:
-            observed = path.lstat()
+            child_stat = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
         except OSError as error:
-            raise SelectionError(f"unable to stat {label} entry {relative}: {error}") from error
-        require(not stat.S_ISLNK(observed.st_mode), f"symbolic link is not allowed for {label}: {path}")
+            raise SelectionError(f"unable to inspect {label} entry {child_key}: {error}") from error
+        captured = source_identity(child_stat)
+        require(not stat.S_ISLNK(captured.mode), f"symbolic link is not allowed for {label}: {child_key}")
         require(
-            stat.S_ISDIR(observed.st_mode) or stat.S_ISREG(observed.st_mode),
-            f"special filesystem node is not allowed for {label}: {path}",
+            stat.S_ISDIR(captured.mode) or stat.S_ISREG(captured.mode),
+            f"special filesystem node is not allowed for {label}: {child_key}",
         )
-        require(relative not in entries, f"duplicate source-tree path: {relative}")
-        entries[relative] = source_identity(observed)
-    return SourceTreeSnapshot(root_identity=source_identity(root_stat), entries=entries)
+        require(child_key not in entries, f"duplicate source-tree path: {child_key}")
+
+        flags = directory_flags if stat.S_ISDIR(captured.mode) else file_flags
+        child_fd: int | None = None
+        try:
+            child_fd = os.open(name, flags, dir_fd=directory_fd)
+            opened = source_identity(os.fstat(child_fd))
+            require_identity(opened, captured, f"{label} entry {child_key}")
+            entries[child_key] = opened
+            if stat.S_ISDIR(opened.mode):
+                snapshot_directory(child_fd, child_relative, entries, label, opened)
+        except OSError as error:
+            raise SelectionError(f"unable to open {label} entry {child_key} without following links: {error}") from error
+        finally:
+            if child_fd is not None:
+                os.close(child_fd)
+
+    after = source_identity(os.fstat(directory_fd))
+    require_identity(after, before, f"{label} directory {relative.as_posix() or '.'} during snapshot")
+
+
+def require_symlink_free_tree(root: Path, label: str) -> SourceTreeSnapshot:
+    """Build a descriptor-relative source snapshot and reject links, special nodes, or concurrent mutation."""
+    root_fd, root_identity = open_absolute_directory_for_snapshot(root, label)
+    entries: dict[str, SourceIdentity] = {}
+    try:
+        snapshot_directory(root_fd, Path(), entries, label, root_identity)
+        final_root = source_identity(os.fstat(root_fd))
+        require_identity(final_root, root_identity, f"{label} root during snapshot")
+    finally:
+        os.close(root_fd)
+    return SourceTreeSnapshot(root_identity=root_identity, entries=entries)
 
 
 def resolve_librispeech_root(corpus_root: Path) -> Path:
