@@ -35,6 +35,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: b2p04-subset-freeze-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   freeze-public-corpus-subset:
     runs-on: ubuntu-latest
@@ -47,10 +51,15 @@ jobs:
         with:
           ref: ${{ env.B2P04_REVISION }}
           persist-credentials: false
+      - name: Set up pinned Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Verify exact revision identity
         run: |
           test "$(git rev-parse HEAD)" = "$B2P04_REVISION"
           echo "B2P04_REVISION=$B2P04_REVISION"
+          test "$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')" = "3.12"
       - name: Verify offline freeze boundaries
         run: python research/000b2-public/verify_subset_freeze.py
       - name: Verify root metadata extraction boundary
