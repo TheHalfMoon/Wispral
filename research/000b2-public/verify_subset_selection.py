@@ -7,9 +7,11 @@ import inspect
 import json
 import shutil
 import tempfile
+import threading
 from pathlib import Path
 from typing import Callable
 
+import select_subset as selector_module
 from select_subset import SelectionError, render_json, select_subset
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -54,7 +56,10 @@ def write_speaker_fixture(partition_root: Path, partition: str, speaker_id: str,
         transcript_lines.append(f"{uid} {transcript}")
         payload = f"synthetic-flac-fixture|{partition}|{speaker_id}|{chapter}|{ordinal:04d}".encode("utf-8")
         (chapter_root / f"{uid}.flac").write_bytes(payload)
-    (chapter_root / f"{speaker_id}-{chapter}.trans.txt").write_text("\n".join(transcript_lines) + "\n", encoding="utf-8")
+    (chapter_root / f"{speaker_id}-{chapter}.trans.txt").write_text(
+        "\n".join(transcript_lines) + "\n",
+        encoding="utf-8",
+    )
 
 
 def build_valid_fixture(root: Path, reverse: bool = False) -> Path:
@@ -154,9 +159,106 @@ def verify_symlinked_corpus_ancestor_rejected() -> None:
         try:
             select_subset(indirect_corpus)
         except SelectionError as error:
-            require("symbolic link is not allowed for corpus root" in str(error), f"unexpected symlink-ancestry reason: {error}")
+            require(
+                "symbolic link is not allowed for corpus root" in str(error),
+                f"unexpected symlink-ancestry reason: {error}",
+            )
         else:
             raise SystemExit("B2P03_SUBSET_SELECTION=FAIL: symlinked corpus ancestry unexpectedly accepted")
+
+
+def verify_synchronized_regular_source_swap_rejected() -> None:
+    """Race a regular-file replacement after validation and require identity-change rejection."""
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        librispeech_root = build_valid_fixture(root)
+        transcript_path = sorted((librispeech_root / "test-clean").rglob("*.trans.txt"))[0]
+        backup_path = librispeech_root.parent / "validated-transcript-backup.txt"
+        barrier = threading.Barrier(2)
+        thread_errors: list[BaseException] = []
+        original_snapshot = selector_module.require_symlink_free_tree
+
+        def synchronized_snapshot(path: Path, label: str) -> selector_module.SourceTreeSnapshot:
+            snapshot = original_snapshot(path, label)
+            if label == "partition tree test-clean":
+                barrier.wait(timeout=5)
+                barrier.wait(timeout=5)
+            return snapshot
+
+        def replace_after_snapshot() -> None:
+            try:
+                barrier.wait(timeout=5)
+                transcript_path.rename(backup_path)
+                transcript_path.write_text(backup_path.read_text(encoding="utf-8"), encoding="utf-8")
+                barrier.wait(timeout=5)
+            except BaseException as error:  # noqa: BLE001 - test thread reports exact synchronization failure.
+                thread_errors.append(error)
+                try:
+                    barrier.abort()
+                except threading.BrokenBarrierError:
+                    pass
+
+        selector_module.require_symlink_free_tree = synchronized_snapshot
+        worker = threading.Thread(target=replace_after_snapshot, name="b2p03-source-swap")
+        worker.start()
+        try:
+            try:
+                selector_module.select_subset(root)
+            except SelectionError as error:
+                require(
+                    "identity changed since validation" in str(error),
+                    f"unexpected synchronized-race rejection reason: {error}",
+                )
+            else:
+                raise SystemExit("B2P03_SUBSET_SELECTION=FAIL: synchronized regular-file swap unexpectedly accepted")
+        finally:
+            selector_module.require_symlink_free_tree = original_snapshot
+            if worker.is_alive():
+                try:
+                    barrier.abort()
+                except threading.BrokenBarrierError:
+                    pass
+            worker.join(timeout=5)
+        require(not worker.is_alive(), "synchronized source-swap worker did not terminate")
+        require(not thread_errors, f"synchronized source-swap worker failed: {thread_errors}")
+
+
+def truncate_speaker_fixture(librispeech_root: Path, partition: str, speaker_id: str, keep: int) -> None:
+    """Reduce one otherwise valid speaker to a smaller positive utterance count."""
+    require(1 <= keep < 10, "variable-count fixture keep value must be within 1..9")
+    chapter = chapter_id(speaker_id)
+    chapter_root = librispeech_root / partition / speaker_id / chapter
+    transcript_path = chapter_root / f"{speaker_id}-{chapter}.trans.txt"
+    lines = transcript_path.read_text(encoding="utf-8").splitlines()
+    retained = lines[:keep]
+    retained_ids = {line.split(maxsplit=1)[0] for line in retained}
+    transcript_path.write_text("\n".join(retained) + "\n", encoding="utf-8")
+    for audio_path in chapter_root.glob("*.flac"):
+        if audio_path.stem not in retained_ids:
+            audio_path.unlink()
+
+
+def verify_variable_utterance_count_allowed() -> None:
+    """Prove the policy is an upper bound and selected speakers may have fewer than ten utterances."""
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        librispeech_root = build_valid_fixture(root)
+        baseline = select_subset(root)
+        clean_baseline = next(item for item in baseline["partitions"] if item["name"] == "test-clean")
+        selected_speaker = clean_baseline["speakers"][0]["speaker_id"]
+        truncate_speaker_fixture(librispeech_root, "test-clean", selected_speaker, keep=3)
+
+        result = select_subset(root)
+        clean = next(item for item in result["partitions"] if item["name"] == "test-clean")
+        speaker = next(item for item in clean["speakers"] if item["speaker_id"] == selected_speaker)
+        require(len(speaker["utterances"]) == 3, "selected speaker with fewer than ten utterances was not preserved")
+        derived_count = sum(len(item["utterances"]) for item in clean["speakers"])
+        require(clean["utterance_count"] == derived_count, "partition utterance_count is not derived from speaker records")
+        require(
+            all(1 <= len(item["utterances"]) <= 10 for item in clean["speakers"]),
+            "selected speaker utterance count escaped the configured 1..10 bound",
+        )
+        require(derived_count < 120, "variable-count fixture did not exercise a below-cap selected speaker")
 
 
 def verify_policy_boundaries() -> None:
@@ -170,13 +272,19 @@ def verify_policy_boundaries() -> None:
     require(policy["ordering"]["hash_algorithm"] == "SHA-256", "hash algorithm drift")
     require(policy["ordering"]["selection_material"] == "wispral-000b2-public-b2p03-v1", "selection material drift")
     require(policy["source_contract"]["candidate_outputs_allowed"] is False, "candidate outputs must remain prohibited")
-    require(policy["source_contract"]["candidate_specific_behavior_allowed"] is False, "candidate-specific behavior must remain prohibited")
+    require(
+        policy["source_contract"]["candidate_specific_behavior_allowed"] is False,
+        "candidate-specific behavior must remain prohibited",
+    )
     require(policy["output_contract"]["kind"] == "UNFROZEN_SELECTION_CANDIDATE", "B2P03 output kind drift")
     require(policy["output_contract"]["manifest_digest_emitted"] is False, "B2P03 must not emit a manifest digest")
     require(policy["claim_guards"]["subset_manifest_frozen"] is False, "B2P04 manifest freeze must remain false")
     require(policy["claim_guards"]["candidate_decoding_started"] is False, "candidate decoding must remain false")
     require(policy["claim_guards"]["primary_decoding_started"] is False, "primary decoding must remain false")
-    require(policy["claim_guards"]["human_developer_speech_accuracy_evidence"] == "ABSENT", "human developer-speech evidence must remain absent")
+    require(
+        policy["claim_guards"]["human_developer_speech_accuracy_evidence"] == "ABSENT",
+        "human developer-speech evidence must remain absent",
+    )
     require(policy["claim_guards"]["production_stt_selected"] is False, "production STT selection must remain false")
     require(policy["claim_guards"]["product_code_authorized"] is False, "product-code authority must remain false")
 
@@ -185,13 +293,16 @@ def verify_policy_boundaries() -> None:
     source = SELECTOR_PATH.read_text(encoding="utf-8")
     require("subprocess" not in source, "selector must not invoke external candidate/runtime processes")
     require("requests" not in source and "urllib" not in source, "selector must not access network sources")
-    require("is_symlink" in source, "selector must explicitly reject symbolic-link source indirection")
     require("require_no_symlink_ancestry" in source, "selector must reject symlinked corpus ancestry")
-    require("require_symlink_free_tree" in source, "selector must reject internal directory symlink nodes")
+    require("require_symlink_free_tree" in source, "selector must reject internal source-tree symlink nodes")
+    require("O_NOFOLLOW" in source and "dir_fd=" in source, "selector must use descriptor-relative no-follow opens")
+    require("source_identity" in source and "identity changed since validation" in source, "selector must detect TOCTOU replacement")
+    require("sha256_stable_fd" in source, "selector must hash the already-open validated source descriptor")
+    require("sha256_file(" not in source, "selector must not reopen source audio by path for hashing")
 
 
 def verify_determinism_and_shape() -> None:
-    """Prove traversal and transcript ordering cannot change the selected source identities."""
+    """Prove traversal and transcript ordering cannot change selected source identities."""
     with tempfile.TemporaryDirectory() as first_temp, tempfile.TemporaryDirectory() as second_temp:
         first_root = Path(first_temp)
         second_root = Path(second_temp)
@@ -209,49 +320,71 @@ def verify_determinism_and_shape() -> None:
 
         selected_speakers: set[str] = set()
         selected_utterances: set[str] = set()
+        derived_global_utterances = 0
         for partition in first["partitions"]:
             require(partition["speaker_count"] == 12, f"{partition['name']} selected speaker count drift")
-            require(partition["utterance_count"] == 120, f"{partition['name']} selected utterance count drift")
             require(len(partition["speakers"]) == 12, f"{partition['name']} speaker records drift")
+            derived_partition_utterances = sum(len(item["utterances"]) for item in partition["speakers"])
+            require(
+                partition["utterance_count"] == derived_partition_utterances,
+                f"{partition['name']} utterance_count does not match selected records",
+            )
+            derived_global_utterances += derived_partition_utterances
             for speaker in partition["speakers"]:
                 speaker_id = speaker["speaker_id"]
                 require(speaker_id not in selected_speakers, f"selected speaker overlap: {speaker_id}")
                 selected_speakers.add(speaker_id)
-                require(len(speaker["utterances"]) == 10, f"selected utterance cap drift for speaker {speaker_id}")
+                require(
+                    1 <= len(speaker["utterances"]) <= 10,
+                    f"selected utterance bound drift for speaker {speaker_id}",
+                )
                 for utterance in speaker["utterances"]:
                     uid = utterance["utterance_id"]
                     require(uid not in selected_utterances, f"selected utterance overlap: {uid}")
                     selected_utterances.add(uid)
                     require(utterance["source_partition"] == partition["name"], f"partition binding drift for {uid}")
                     require(utterance["speaker_id"] == speaker_id, f"speaker binding drift for {uid}")
-                    require(utterance["source_audio_path"].startswith(f"LibriSpeech/{partition['name']}/{speaker_id}/"), f"source path drift for {uid}")
+                    require(
+                        utterance["source_audio_path"].startswith(f"LibriSpeech/{partition['name']}/{speaker_id}/"),
+                        f"source path drift for {uid}",
+                    )
                     digest = utterance["source_file_sha256"]
-                    require(len(digest) == 64 and all(character in "0123456789abcdef" for character in digest), f"invalid source SHA-256 for {uid}")
+                    require(
+                        len(digest) == 64 and all(character in "0123456789abcdef" for character in digest),
+                        f"invalid source SHA-256 for {uid}",
+                    )
         require(len(selected_speakers) == 24, "global selected speaker count drift")
-        require(len(selected_utterances) == 240, "global selected utterance count drift")
+        require(len(selected_utterances) == derived_global_utterances, "global selected utterance count drift")
 
 
 def main() -> None:
     """Run deterministic and adversarial B2P03 verification without real corpus or candidate execution."""
     verify_policy_boundaries()
     verify_determinism_and_shape()
+    verify_variable_utterance_count_allowed()
     expect_selection_error(remove_one_audio, "missing audio for transcript utterance")
     expect_selection_error(add_orphan_audio, "audio has no transcript entry")
     expect_selection_error(duplicate_transcript_id, "duplicate transcript utterance id")
     expect_selection_error(overlap_speaker_between_partitions, "speaker overlap across public partitions")
     expect_selection_error(replace_audio_with_external_symlink, "symbolic link is not allowed for partition tree test-clean")
     expect_selection_error(replace_transcript_with_external_symlink, "symbolic link is not allowed for partition tree test-clean")
-    expect_selection_error(replace_speaker_directory_with_external_symlink, "symbolic link is not allowed for partition tree test-clean")
+    expect_selection_error(
+        replace_speaker_directory_with_external_symlink,
+        "symbolic link is not allowed for partition tree test-clean",
+    )
     verify_symlinked_corpus_ancestor_rejected()
+    verify_synchronized_regular_source_swap_rejected()
     print("B2P03_SUBSET_SELECTION=PASS")
     print("B2P03_HASH_ORDERING=SHA256_FROZEN")
     print("B2P03_TRAVERSAL_ORDER_INDEPENDENT=YES")
+    print("B2P03_VARIABLE_UTTERANCE_COUNT=PASS")
     print("B2P03_MISSING_PAIR_REJECTION=PASS")
     print("B2P03_DUPLICATE_REJECTION=PASS")
     print("B2P03_SPEAKER_DISJOINTNESS=PASS")
     print("B2P03_SYMLINK_REJECTION=PASS")
     print("B2P03_INTERNAL_DIRECTORY_SYMLINK_REJECTION=PASS")
     print("B2P03_SYMLINK_ANCESTRY_REJECTION=PASS")
+    print("B2P03_SOURCE_RACE_REJECTION=PASS")
     print("B2P03_CANDIDATE_OUTPUT_DEPENDENCY=ABSENT")
     print("B2P03_SUBSET_MANIFEST_FROZEN=NO")
     print("B2P03_CANDIDATE_DECODING_STARTED=NO")
