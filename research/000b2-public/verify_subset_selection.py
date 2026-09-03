@@ -131,6 +131,15 @@ def replace_transcript_with_external_symlink(librispeech_root: Path) -> None:
     transcript_path.symlink_to(external)
 
 
+def replace_speaker_directory_with_external_symlink(librispeech_root: Path) -> None:
+    """Replace a speaker directory with a symlink that recursive globs would otherwise skip."""
+    speaker_id = speaker_ids("test-clean")[0]
+    speaker_path = librispeech_root / "test-clean" / speaker_id
+    external = librispeech_root.parent / "external-speaker-tree"
+    shutil.move(str(speaker_path), str(external))
+    speaker_path.symlink_to(external, target_is_directory=True)
+
+
 def verify_symlinked_corpus_ancestor_rejected() -> None:
     """Reject a corpus path whose final component is regular but an ancestor is a symlink."""
     with tempfile.TemporaryDirectory() as temporary:
@@ -178,6 +187,7 @@ def verify_policy_boundaries() -> None:
     require("requests" not in source and "urllib" not in source, "selector must not access network sources")
     require("is_symlink" in source, "selector must explicitly reject symbolic-link source indirection")
     require("require_no_symlink_ancestry" in source, "selector must reject symlinked corpus ancestry")
+    require("require_symlink_free_tree" in source, "selector must reject internal directory symlink nodes")
 
 
 def verify_determinism_and_shape() -> None:
@@ -229,8 +239,9 @@ def main() -> None:
     expect_selection_error(add_orphan_audio, "audio has no transcript entry")
     expect_selection_error(duplicate_transcript_id, "duplicate transcript utterance id")
     expect_selection_error(overlap_speaker_between_partitions, "speaker overlap across public partitions")
-    expect_selection_error(replace_audio_with_external_symlink, "symbolic link is not allowed for audio source")
-    expect_selection_error(replace_transcript_with_external_symlink, "symbolic link is not allowed for transcript source")
+    expect_selection_error(replace_audio_with_external_symlink, "symbolic link is not allowed for partition tree test-clean")
+    expect_selection_error(replace_transcript_with_external_symlink, "symbolic link is not allowed for partition tree test-clean")
+    expect_selection_error(replace_speaker_directory_with_external_symlink, "symbolic link is not allowed for partition tree test-clean")
     verify_symlinked_corpus_ancestor_rejected()
     print("B2P03_SUBSET_SELECTION=PASS")
     print("B2P03_HASH_ORDERING=SHA256_FROZEN")
@@ -239,6 +250,7 @@ def main() -> None:
     print("B2P03_DUPLICATE_REJECTION=PASS")
     print("B2P03_SPEAKER_DISJOINTNESS=PASS")
     print("B2P03_SYMLINK_REJECTION=PASS")
+    print("B2P03_INTERNAL_DIRECTORY_SYMLINK_REJECTION=PASS")
     print("B2P03_SYMLINK_ANCESTRY_REJECTION=PASS")
     print("B2P03_CANDIDATE_OUTPUT_DEPENDENCY=ABSENT")
     print("B2P03_SUBSET_MANIFEST_FROZEN=NO")
