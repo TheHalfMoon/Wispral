@@ -1,0 +1,204 @@
+name: Internal B2P06 Canonical Reconciliation
+
+on:
+  push:
+    branches:
+      - docs/000b2-reconcile-after-b2p06
+    paths:
+      - '.github/workflows/internal-b2p06-reconcile.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: docs/000b2-reconcile-after-b2p06
+          fetch-depth: 0
+      - name: Apply exact B2P06 canonical reconciliation
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          def replace_once(path: str, old: str, new: str) -> None:
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{path}: expected exactly one match, got {count}: {old[:120]!r}')
+              p.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          # Machine readiness: B2P06 is canonical; B2P07 is the sole next bounded unit.
+          p = Path('research/000b2-public/readiness.json')
+          readiness = json.loads(p.read_text(encoding='utf-8'))
+          if readiness.get('completed_through') != 'B2P05':
+              raise SystemExit('unexpected pre-reconciliation completed_through')
+          if readiness['preprocessing'].get('resolved') is not False:
+              raise SystemExit('unexpected pre-reconciliation preprocessing state')
+          if readiness['execution_environment'].get('resolved') is not False:
+              raise SystemExit('B2P07 environment must remain unresolved')
+          if readiness['attempt_manifest'].get('frozen') is not False or readiness['attempt_manifest'].get('primary_decoding_started') is not False:
+              raise SystemExit('B2P08/primary decoding must remain closed')
+          if readiness['public_human_baseline'].get('candidate_decoding_started') is not False:
+              raise SystemExit('candidate decoding must remain closed')
+          readiness['completed_through'] = 'B2P06'
+          readiness['preprocessing']['resolved'] = True
+          readiness['next_action'] = (
+              'Execute B2P07 only: capture attempt-bound execution environment and hardware facts while preserving CONTROLLED versus DIAGNOSTIC semantics and the canonical B2P06 preprocessing evidence. '
+              'Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical.'
+          )
+          p.write_text(json.dumps(readiness, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+
+          replace_once(
+              'specs/000B2-public-corpus-bakeoff/tasks.md',
+              '- [ ] `B2P06` Capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration and execution evidence.',
+              '- [x] `B2P06` Capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration and execution evidence.',
+          )
+
+          # B2P05 verifier remains useful after B2P06 reconciliation and must distinguish the later phase.
+          replace_once(
+              'research/000b2-public/verify_candidate_revalidation.py',
+              '"""Accept only B2P05 execution or its canonical reconciliation, with later gates closed."""',
+              '"""Accept B2P05 execution and canonical B2P05/B2P06 reconciliation phases with later gates closed."""',
+          )
+          replace_once(
+              'research/000b2-public/verify_candidate_revalidation.py',
+              'require(completed_through in {"B2P04", "B2P05"}, "unsupported B2P05 readiness phase")',
+              'require(completed_through in {"B2P04", "B2P05", "B2P06"}, "unsupported B2P05/B2P06 readiness phase")',
+          )
+          replace_once(
+              'research/000b2-public/verify_candidate_revalidation.py',
+              'require(isinstance(preprocessing, dict) and preprocessing.get("resolved") is False, "B2P06 preprocessing capture started before canonical B2P05 reconciliation")',
+              'require(isinstance(preprocessing, dict), "preprocessing readiness missing")',
+          )
+          replace_once(
+              'research/000b2-public/verify_candidate_revalidation.py',
+              'if completed_through == "B2P04":\n        require(isinstance(next_action, str) and next_action.startswith("Execute B2P05 only:"), "B2P05 execution phase next action drift")',
+              'if completed_through == "B2P04":\n        require(preprocessing.get("resolved") is False, "B2P06 preprocessing capture started before B2P05 execution")\n        require(isinstance(next_action, str) and next_action.startswith("Execute B2P05 only:"), "B2P05 execution phase next action drift")',
+          )
+          replace_once(
+              'research/000b2-public/verify_candidate_revalidation.py',
+              'require(isinstance(next_action, str) and next_action.startswith("Execute B2P06 only:"), "B2P05 reconciliation must authorize B2P06 only")\n    require("Do not begin B2P07 environment capture, B2P08 attempt freeze, or candidate decoding until B2P06 is canonical." in next_action, "B2P06 successor boundary drift")\n    return "RECONCILED"',
+              'if completed_through == "B2P05":\n        require(preprocessing.get("resolved") is False, "B2P06 preprocessing must remain unresolved at the B2P05 frontier")\n        require(isinstance(next_action, str) and next_action.startswith("Execute B2P06 only:"), "B2P05 reconciliation must authorize B2P06 only")\n        require("Do not begin B2P07 environment capture, B2P08 attempt freeze, or candidate decoding until B2P06 is canonical." in next_action, "B2P06 successor boundary drift")\n        return "B2P05_RECONCILED"\n\n    require(preprocessing.get("resolved") is True, "B2P06 reconciliation must mark preprocessing resolved")\n    require(isinstance(next_action, str) and next_action.startswith("Execute B2P07 only:"), "B2P06 reconciliation must authorize B2P07 only")\n    require("Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical." in next_action, "B2P07 successor boundary drift")\n    return "B2P06_RECONCILED"',
+          )
+
+          # Historical B2P04 verifier must accept the later B2P06-complete phase without weakening the frozen manifest.
+          replace_once(
+              'research/000b2-public/verify_subset_freeze.py',
+              'require(isinstance(preprocessing, dict) and preprocessing.get("resolved") is False, "B2P06 preprocessing capture must remain unresolved before B2P06 execution")',
+              'require(isinstance(preprocessing, dict), "preprocessing readiness must be an object")',
+          )
+          for phase in ('B2P03', 'B2P04', 'B2P05'):
+              marker = f'if completed_through == "{phase}":\n'
+              insertion = marker + '        require(preprocessing.get("resolved") is False, "B2P06 preprocessing must remain unresolved before B2P06 canonical reconciliation")\n'
+              replace_once('research/000b2-public/verify_subset_freeze.py', marker, insertion)
+          replace_once(
+              'research/000b2-public/verify_subset_freeze.py',
+              '        return "B2P05"\n\n    raise SystemExit(f"B2P04_FREEZE_VERIFIER=FAIL: unsupported completed_through state: {completed_through!r}")',
+              '''        return "B2P05"\n\n    if completed_through == "B2P06":\n        require(preprocessing.get("resolved") is True, "B2P06 reconciliation must mark preprocessing resolved")\n        require(public.get("subset_manifest_frozen") is True, "B2P06 reconciliation must preserve the B2P04 frozen manifest")\n        require(isinstance(next_action, str) and next_action.startswith("Execute B2P07 only:"), "B2P06 reconciliation must authorize B2P07 only")\n        require("Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical." in next_action, "B2P07 successor boundary drift")\n        require("- [x] `B2P06`" in tasks, "B2P06 reconciliation must mark B2P06 complete")\n        require("- [ ] `B2P07`" in tasks, "B2P07 must remain open during B2P07 execution qualification")\n        require("- [ ] `B2P08`" in tasks, "B2P08 must remain unauthorized")\n        require("current bounded execution unit `B2P07`" in current, "reconciled frontier is not B2P07-only")\n        require("Execute and canonically qualify `B2P07` only" in current, "reconciled current view must authorize B2P07 only")\n        require("B2P08 remains non-authorized" in current, "reconciled frontier must keep B2P08 closed")\n        return "B2P06"\n\n    raise SystemExit(f"B2P04_FREEZE_VERIFIER=FAIL: unsupported completed_through state: {completed_through!r}")''',
+          )
+
+          # Methodology moves its current proof boundary from B2P05/B2P06 to B2P06/B2P07.
+          replace_once(
+              'research/000b2-public/verify_methodology.py',
+              'B2P05_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID = 33803832657\n',
+              '''B2P05_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID = 33803832657\nB2P06_CANONICAL_MERGE = "3dceadd984ff307ce55745bf5f289890a2fac261"\nB2P06_QUALIFIED_HEAD = "c5501daf14038ced0ba3ad2de1cad92cfb38302a"\nB2P06_EVIDENCE_SHA256 = "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011"\nB2P06_POSTMERGE_PREPROCESSING_RUN_ID = 33814736588\nB2P06_POSTMERGE_PREPROCESSING_JOB_ID = 100844238206\nB2P06_POSTMERGE_PREPROCESSING_ARTIFACT_ID = 9916141620\nB2P06_POSTMERGE_PREPROCESSING_ARTIFACT_DIGEST = "sha256:d0a6918fc7bf48e93053fab4fb3286c250a6c980456d893bb9c286f9697130b9"\nB2P06_POSTMERGE_CANDIDATE_REVALIDATION_RUN_ID = 33814736795\nB2P06_POSTMERGE_METHODOLOGY_RUN_ID = 33814736759\nB2P06_POSTMERGE_TRUSTED_MATERIALIZATION_RUN_ID = 33814736691\nB2P06_POSTMERGE_TRUSTED_PARTICIPANT_MATERIALS_RUN_ID = 33814736716\nB2P06_POSTMERGE_TRUSTED_PARTICIPANT_POLICY_RUN_ID = 33814736734\nB2P06_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID = 33814736663\n''',
+          )
+          replace_once('research/000b2-public/verify_methodology.py', 'require(readiness.get("completed_through") == "B2P05", "readiness completed_through must be B2P05")', 'require(readiness.get("completed_through") == "B2P06", "readiness completed_through must be B2P06")')
+          replace_once('research/000b2-public/verify_methodology.py', 'require_bool(preprocessing, "resolved", False, "preprocessing")', 'require_bool(preprocessing, "resolved", True, "preprocessing")')
+          old_next = '''    expected_next_action = (\n        "Execute B2P06 only: capture attempt-bound FFmpeg 9.0.1 preprocessing identity, configuration, and execution evidence while preserving the frozen B2P04 source membership and canonical B2P05 candidate identities. "\n        "Do not begin B2P07 environment capture, B2P08 attempt freeze, or candidate decoding until B2P06 is canonical."\n    )\n    require(readiness.get("next_action") == expected_next_action, "next action must be exact B2P06-only instruction")'''
+          new_next = '''    expected_next_action = (\n        "Execute B2P07 only: capture attempt-bound execution environment and hardware facts while preserving CONTROLLED versus DIAGNOSTIC semantics and the canonical B2P06 preprocessing evidence. "\n        "Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical."\n    )\n    require(readiness.get("next_action") == expected_next_action, "next action must be exact B2P07-only instruction")'''
+          replace_once('research/000b2-public/verify_methodology.py', old_next, new_next)
+          replace_once('research/000b2-public/verify_methodology.py', 'expected_marker = "- [x]" if task_id in {"B2P01", "B2P02", "B2P03", "B2P04", "B2P05"} else "- [ ]"', 'expected_marker = "- [x]" if task_id in {"B2P01", "B2P02", "B2P03", "B2P04", "B2P05", "B2P06"} else "- [ ]"')
+          replace_once('research/000b2-public/verify_methodology.py', 'require_text(tasks, "- [ ] `B2P06` Capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration and execution evidence.", "public child tasks")', 'require_text(tasks, "- [x] `B2P06` Capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration and execution evidence.", "public child tasks")')
+          replace_once(
+              'research/000b2-public/verify_methodology.py',
+              '    require_text(current, "current bounded execution unit `B2P06`", "current frontier")\n    require_text(current, "Execute and canonically qualify `B2P06` only", "current frontier next action")\n    require_text(current, "B2P07 remains non-authorized", "current frontier successor boundary")\n    require_absent(current, "current bounded execution unit `B2P05`", "current frontier stale unit")',
+              '''    require_text(current, B2P06_CANONICAL_MERGE, "current frontier B2P06 canonical proof")\n    require_text(current, B2P06_QUALIFIED_HEAD, "current frontier B2P06 qualified-head proof")\n    require_text(current, f"run `{B2P06_POSTMERGE_PREPROCESSING_RUN_ID}`", "current frontier B2P06 preprocessing post-merge run proof")\n    require_text(current, f"job `{B2P06_POSTMERGE_PREPROCESSING_JOB_ID}`", "current frontier B2P06 preprocessing post-merge job proof")\n    require_text(current, f"artifact `{B2P06_POSTMERGE_PREPROCESSING_ARTIFACT_ID}`", "current frontier B2P06 preprocessing artifact proof")\n    require_text(current, B2P06_POSTMERGE_PREPROCESSING_ARTIFACT_DIGEST, "current frontier B2P06 artifact digest proof")\n    require_text(current, B2P06_EVIDENCE_SHA256, "current frontier B2P06 evidence digest proof")\n    require_text(current, "current bounded execution unit `B2P07`", "current frontier")\n    require_text(current, "Execute and canonically qualify `B2P07` only", "current frontier next action")\n    require_text(current, "B2P08 remains non-authorized", "current frontier successor boundary")\n    require_absent(current, "current bounded execution unit `B2P06`", "current frontier stale unit")''',
+          )
+          replace_once(
+              'research/000b2-public/verify_methodology.py',
+              '    require_text(current_state, "current bounded execution unit is `B2P06`", "current state")\n    require_absent(current_state, "current bounded execution unit is `B2P05`", "current state stale unit")',
+              '''    require_text(current_state, B2P06_CANONICAL_MERGE, "current state B2P06 canonical proof")\n    require_text(current_state, B2P06_QUALIFIED_HEAD, "current state B2P06 qualified-head proof")\n    require_text(current_state, f"run `{B2P06_POSTMERGE_PREPROCESSING_RUN_ID}`", "current state B2P06 preprocessing post-merge run proof")\n    require_text(current_state, f"job `{B2P06_POSTMERGE_PREPROCESSING_JOB_ID}`", "current state B2P06 preprocessing post-merge job proof")\n    require_text(current_state, f"artifact `{B2P06_POSTMERGE_PREPROCESSING_ARTIFACT_ID}`", "current state B2P06 preprocessing artifact proof")\n    require_text(current_state, B2P06_POSTMERGE_PREPROCESSING_ARTIFACT_DIGEST, "current state B2P06 artifact digest proof")\n    require_text(current_state, B2P06_EVIDENCE_SHA256, "current state B2P06 evidence digest proof")\n    require_text(current_state, f"run `{B2P06_POSTMERGE_CANDIDATE_REVALIDATION_RUN_ID}`", "current state B2P06 candidate-revalidation run proof")\n    require_text(current_state, f"run `{B2P06_POSTMERGE_METHODOLOGY_RUN_ID}`", "current state B2P06 methodology run proof")\n    require_text(current_state, f"run `{B2P06_POSTMERGE_TRUSTED_MATERIALIZATION_RUN_ID}`", "current state B2P06 trusted-materialization run proof")\n    require_text(current_state, f"run `{B2P06_POSTMERGE_TRUSTED_PARTICIPANT_MATERIALS_RUN_ID}`", "current state B2P06 participant-materials run proof")\n    require_text(current_state, f"run `{B2P06_POSTMERGE_TRUSTED_PARTICIPANT_POLICY_RUN_ID}`", "current state B2P06 participant-policy run proof")\n    require_text(current_state, f"run `{B2P06_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID}`", "current state B2P06 human-authority run proof")\n    require_text(current_state, "current bounded execution unit is `B2P07`", "current state")\n    require_absent(current_state, "current bounded execution unit is `B2P06`", "current state stale unit")''',
+          )
+          replace_once(
+              'research/000b2-public/verify_methodology.py',
+              '    print("B2P06_FRONTIER=AUTHORIZED")',
+              '''    print("B2P06_PREPROCESSING_CAPTURE=PASS")\n    print(f"B2P06_CANONICAL_MERGE={B2P06_CANONICAL_MERGE}")\n    print(f"B2P06_POSTMERGE_PREPROCESSING_RUN_ID={B2P06_POSTMERGE_PREPROCESSING_RUN_ID}")\n    print(f"B2P06_EVIDENCE_SHA256={B2P06_EVIDENCE_SHA256}")\n    print("B2P07_FRONTIER=AUTHORIZED")''',
+          )
+
+          # Canonical/current prose. Keep historical B2P04 manifest wording immutable; add B2P06 as later binding evidence.
+          replace_once(
+              'specs/CURRENT.md',
+              '**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 through B2P05 canonical; current bounded execution unit `B2P06`',
+              '**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 through B2P06 canonical; current bounded execution unit `B2P07`',
+          )
+          current = Path('specs/CURRENT.md').read_text(encoding='utf-8')
+          anchor = 'The canonical authority/readiness reread therefore completes B2P05 and authorizes B2P06 only.'
+          if current.count(anchor) != 1:
+              raise SystemExit('CURRENT B2P05 proof anchor drift')
+          b2p06_proof = '''\n\nPR #43 then completed B2P06 attempt-bound preprocessing capture and merged by guarded expected-head squash as canonical commit `3dceadd984ff307ce55745bf5f289890a2fac261` from exact qualified head `c5501daf14038ced0ba3ad2de1cad92cfb38302a` against exact base `e8841a68a7e37c7e4dd26ff73fe2566661c468b0`. Exact-head methodology run `33814334825` and preprocessing run `33814334967`, job `100843002336`, succeeded after forward-only repair of the mutable FFmpeg build environment. Fresh independent CodeRabbit semantic review covered the final exact five-file diff and reported no actionable findings; zero actionable review threads remained before merge.\n\nCanonical post-merge preprocessing run `33814736588`, job `100844238206`, checked out exact merge `3dceadd984ff307ce55745bf5f289890a2fac261`, rebuilt FFmpeg `n9.0.1` source commit `bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa` inside digest-pinned `python:3.12.11-bookworm@sha256:13c9584604a99ca134c4f41800f74ffc64ee6ac8cf555cf1e704a6087fc84f12`, reprocessed all 240 frozen source identities, reproduced committed evidence SHA-256 `d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011`, uploaded bounded artifact `9916141620` with digest `sha256:d0a6918fc7bf48e93053fab4fb3286c250a6c980456d893bb9c286f9697130b9`, and removed transient corpus/audio/toolchain state. Candidate-revalidation run `33814736795`, methodology run `33814736759`, trusted-materialization run `33814736691`, participant-materials run `33814736716`, participant-policy run `33814736734`, and human-authority run `33814736663` also succeeded on the same canonical merge. B2P07 environment capture and B2P08 attempt freeze remained unresolved/unfrozen; candidate and primary decoding remained false; `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, no production STT selection, and no product-code authority were preserved. The canonical authority/readiness reread therefore completes B2P06 and authorizes B2P07 only.'''
+          current = current.replace(anchor, anchor + b2p06_proof, 1)
+          old_action_start = 'Execute and canonically qualify `B2P06` only:'
+          idx = current.rfind(old_action_start)
+          if idx < 0:
+              raise SystemExit('CURRENT B2P06 next action missing')
+          end = current.find('\n', idx)
+          if end < 0:
+              end = len(current)
+          new_action = 'Execute and canonically qualify `B2P07` only: capture attempt-bound execution environment and hardware facts for `000B2-PUBLIC-ATTEMPT-001`, preserving the canonical B2P06 preprocessing evidence and explicit CONTROLLED versus DIAGNOSTIC semantics. B2P07 must not freeze the B2P08 attempt manifest and must not begin candidate or primary decoding. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, the historical private lane as `BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`. B2P08 remains non-authorized until B2P07 is canonically qualified, post-merge verified, and reconciled.'
+          current = current[:idx] + new_action + current[end:]
+          Path('specs/CURRENT.md').write_text(current, encoding='utf-8')
+
+          state = Path('docs/canonical/CURRENT_STATE.md').read_text(encoding='utf-8')
+          b2p05_line = '**000B2 B2P05 candidate-revalidation merge:** `49538990fb4cf8223e9321261925206ed7ff5cee`  '
+          if state.count(b2p05_line) != 1:
+              raise SystemExit('CURRENT_STATE B2P05 header anchor drift')
+          state = state.replace(b2p05_line, b2p05_line + '\n**000B2 B2P06 preprocessing-capture merge:** `3dceadd984ff307ce55745bf5f289890a2fac261`  ', 1)
+          state = state.replace('B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; current bounded execution unit is `B2P06`', 'B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; current bounded execution unit is `B2P07`', 1)
+          state_anchor = 'The canonical authority/readiness reread therefore completes B2P05 and authorizes B2P06 only.'
+          if state.count(state_anchor) != 1:
+              raise SystemExit('CURRENT_STATE B2P05 anchor drift')
+          state = state.replace(state_anchor, state_anchor + b2p06_proof, 1)
+          state = state.replace('- B2P06 authorized as the sole current bounded execution unit;\n- candidate revalidation is complete; no comparative public-corpus decoding has started, B2P06 preprocessing capture remains unresolved until its own execution unit, and no production STT is selected.', '- canonical B2P06 attempt-bound immutable preprocessing capture at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261`, including committed evidence SHA-256 `d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011` and successful seven-lane canonical post-merge verification;\n- B2P07 authorized as the sole current bounded execution unit;\n- candidate revalidation and preprocessing capture are complete; no comparative public-corpus decoding has started, B2P07 environment capture remains unresolved until its own execution unit, and no production STT is selected.', 1)
+          old_state_action = 'Execute and canonically qualify `B2P06` only:'
+          idx = state.rfind(old_state_action)
+          if idx < 0:
+              raise SystemExit('CURRENT_STATE B2P06 action missing')
+          end = state.find('\n', idx)
+          if end < 0:
+              end = len(state)
+          state = state[:idx] + new_action + state[end:]
+          Path('docs/canonical/CURRENT_STATE.md').write_text(state, encoding='utf-8')
+          PY
+
+          python -m py_compile \
+            research/000b2-public/verify_subset_freeze.py \
+            research/000b2-public/verify_candidate_revalidation.py \
+            research/000b2-public/verify_methodology.py \
+            research/000b2-public/verify_preprocessing_capture.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py --static-only
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_methodology.py
+          git diff --check
+      - name: Commit reconciliation candidate
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            docs/canonical/CURRENT_STATE.md \
+            research/000b2-public/readiness.json \
+            research/000b2-public/verify_candidate_revalidation.py \
+            research/000b2-public/verify_methodology.py \
+            research/000b2-public/verify_subset_freeze.py \
+            specs/000B2-public-corpus-bakeoff/tasks.md \
+            specs/CURRENT.md
+          git commit -m 'docs(000b2): reconcile frontier after B2P06'
+          git push origin HEAD:docs/000b2-reconcile-after-b2p06
