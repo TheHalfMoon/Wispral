@@ -1,0 +1,56 @@
+{
+  "schema_version": "000b2-public-candidate-revalidation-v1",
+  "task": "B2P05",
+  "purpose": "REVALIDATE_CANONICAL_CANDIDATE_IDENTITIES_BEFORE_DECODE",
+  "canonical_base_sha": "6135cd67c1b31e0be0b82ba202b6a6770d34b68d",
+  "candidate_registry": "research/000b1/qualified-candidates.json",
+  "candidate_registry_sha256": "2448daab15aea13d1e03c326e43b163337a4e3a09ec077bb0f25e3dd51499f1f",
+  "materialized_artifact_evidence": "research/000b2-entry/materialized-artifacts.json",
+  "artifact_size_amendment": "research/000b2-entry/artifact-size-amendment.json",
+  "trusted_artifact_verifier": ".github/trusted/verify_000b2_materialization.py",
+  "candidate_ids": [
+    "moonshine-compact",
+    "moonshine-balanced",
+    "whispercpp-compact",
+    "whispercpp-balanced",
+    "sherpa-onnx-compact",
+    "sherpa-onnx-balanced"
+  ],
+  "runtime_pins": {
+    "moonshine": {
+      "repository": "moonshine-ai/moonshine",
+      "release": "v0.1.5",
+      "revision": "234f60faa0eb388b01cdf7e60aca232af37aefda",
+      "model_asset_revision": "quantized_26_08_21"
+    },
+    "whisper.cpp": {
+      "repository": "ggml-org/whisper.cpp",
+      "release": "b4938",
+      "revision": "371b5a7561823ab2bb32142d2751e35e7534727b",
+      "model_repository": "ggerganov/whisper.cpp",
+      "model_revision": "80da2d8bfee42b0e836fc3a9890373e5defc00a6"
+    },
+    "sherpa-onnx": {
+      "repository": "k2-fsa/sherpa-onnx",
+      "release": "v1.13.7",
+      "revision": "917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e",
+      "model_repository": "csukuangfj/sherpa-onnx-streaming-zipformer-en-2023-06-26",
+      "onnx_revision": "6037ea07e3abfe599ad00d418968bcf9656e7472"
+    }
+  },
+  "live_revalidation_contract": {
+    "exact_runtime_release_and_revision_resolution_required": true,
+    "all_canonical_artifact_bytes_must_match_recorded_size_and_sha256": true,
+    "redirects_must_remain_within_the_existing_trusted_host_policy": true,
+    "candidate_membership_must_not_change": true,
+    "c0_repository_or_test_specific_context_must_remain_off": true
+  },
+  "guards": {
+    "candidate_decoding_started": false,
+    "primary_decoding_started": false,
+    "b2p06_preprocessing_capture_started": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "production_stt_selected": false,
+    "product_code_authorized": false
+  }
+}
