@@ -413,6 +413,15 @@ def validate_relative_source_path(
     require(relative.parts[1] == chapter, f"chapter directory mismatch for {path.name}")
 
 
+def snapshot_inventory(partition_root: Path, snapshot: SourceTreeSnapshot, suffix: str) -> list[Path]:
+    """Build a deterministic regular-file inventory only from the validated source snapshot."""
+    return [
+        partition_root / relative
+        for relative, identity in sorted(snapshot.entries.items())
+        if stat.S_ISREG(identity.mode) and relative.endswith(suffix)
+    ]
+
+
 def discover_partition(librispeech_root: Path, partition: str) -> dict[str, list[Utterance]]:
     """Enumerate and race-safely validate every transcript/audio pair in one partition."""
     partition_root = librispeech_root / partition
@@ -423,14 +432,8 @@ def discover_partition(librispeech_root: Path, partition: str) -> dict[str, list
         f"partition root {partition}",
     )
     try:
-        transcript_files = sorted(
-            partition_root.rglob("*.trans.txt"),
-            key=lambda item: item.relative_to(partition_root).as_posix(),
-        )
-        audio_files = sorted(
-            partition_root.rglob("*.flac"),
-            key=lambda item: item.relative_to(partition_root).as_posix(),
-        )
+        transcript_files = snapshot_inventory(partition_root, snapshot, ".trans.txt")
+        audio_files = snapshot_inventory(partition_root, snapshot, ".flac")
         require(transcript_files, f"partition {partition} contains no transcript files")
         require(audio_files, f"partition {partition} contains no FLAC files")
 
