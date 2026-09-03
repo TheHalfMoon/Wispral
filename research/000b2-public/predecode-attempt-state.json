@@ -1,0 +1,10 @@
+{
+  "schema_version": "000b2-public-predecode-attempt-state-v1",
+  "attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+  "canonical_wispral_revision": "e8841a68a7e37c7e4dd26ff73fe2566661c468b0",
+  "phase": "PRE_PRIMARY_CAPTURE",
+  "primary_test_decoding_started": false,
+  "candidate_decoding_started": false,
+  "b2p04_freeze_digest_sha256": "f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242",
+  "b2p04_manifest_sha256": "5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb"
+}
