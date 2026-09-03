@@ -34,7 +34,6 @@ jobs:
                   raise SystemExit(f'{path}: expected exactly one match, got {count}: {old[:120]!r}')
               p.write_text(text.replace(old, new, 1), encoding='utf-8')
 
-          # Machine readiness: B2P06 is canonical; B2P07 is the sole next bounded unit.
           p = Path('research/000b2-public/readiness.json')
           readiness = json.loads(p.read_text(encoding='utf-8'))
           if readiness.get('completed_through') != 'B2P05':
@@ -61,7 +60,6 @@ jobs:
               '- [x] `B2P06` Capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration and execution evidence.',
           )
 
-          # B2P05 verifier remains useful after B2P06 reconciliation and must distinguish the later phase.
           replace_once(
               'research/000b2-public/verify_candidate_revalidation.py',
               '"""Accept only B2P05 execution or its canonical reconciliation, with later gates closed."""',
@@ -88,7 +86,6 @@ jobs:
               'if completed_through == "B2P05":\n        require(preprocessing.get("resolved") is False, "B2P06 preprocessing must remain unresolved at the B2P05 frontier")\n        require(isinstance(next_action, str) and next_action.startswith("Execute B2P06 only:"), "B2P05 reconciliation must authorize B2P06 only")\n        require("Do not begin B2P07 environment capture, B2P08 attempt freeze, or candidate decoding until B2P06 is canonical." in next_action, "B2P06 successor boundary drift")\n        return "B2P05_RECONCILED"\n\n    require(preprocessing.get("resolved") is True, "B2P06 reconciliation must mark preprocessing resolved")\n    require(isinstance(next_action, str) and next_action.startswith("Execute B2P07 only:"), "B2P06 reconciliation must authorize B2P07 only")\n    require("Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical." in next_action, "B2P07 successor boundary drift")\n    return "B2P06_RECONCILED"',
           )
 
-          # Historical B2P04 verifier must accept the later B2P06-complete phase without weakening the frozen manifest.
           replace_once(
               'research/000b2-public/verify_subset_freeze.py',
               'require(isinstance(preprocessing, dict) and preprocessing.get("resolved") is False, "B2P06 preprocessing capture must remain unresolved before B2P06 execution")',
@@ -104,7 +101,6 @@ jobs:
               '''        return "B2P05"\n\n    if completed_through == "B2P06":\n        require(preprocessing.get("resolved") is True, "B2P06 reconciliation must mark preprocessing resolved")\n        require(public.get("subset_manifest_frozen") is True, "B2P06 reconciliation must preserve the B2P04 frozen manifest")\n        require(isinstance(next_action, str) and next_action.startswith("Execute B2P07 only:"), "B2P06 reconciliation must authorize B2P07 only")\n        require("Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical." in next_action, "B2P07 successor boundary drift")\n        require("- [x] `B2P06`" in tasks, "B2P06 reconciliation must mark B2P06 complete")\n        require("- [ ] `B2P07`" in tasks, "B2P07 must remain open during B2P07 execution qualification")\n        require("- [ ] `B2P08`" in tasks, "B2P08 must remain unauthorized")\n        require("current bounded execution unit `B2P07`" in current, "reconciled frontier is not B2P07-only")\n        require("Execute and canonically qualify `B2P07` only" in current, "reconciled current view must authorize B2P07 only")\n        require("B2P08 remains non-authorized" in current, "reconciled frontier must keep B2P08 closed")\n        return "B2P06"\n\n    raise SystemExit(f"B2P04_FREEZE_VERIFIER=FAIL: unsupported completed_through state: {completed_through!r}")''',
           )
 
-          # Methodology moves its current proof boundary from B2P05/B2P06 to B2P06/B2P07.
           replace_once(
               'research/000b2-public/verify_methodology.py',
               'B2P05_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID = 33803832657\n',
@@ -133,18 +129,27 @@ jobs:
               '''    print("B2P06_PREPROCESSING_CAPTURE=PASS")\n    print(f"B2P06_CANONICAL_MERGE={B2P06_CANONICAL_MERGE}")\n    print(f"B2P06_POSTMERGE_PREPROCESSING_RUN_ID={B2P06_POSTMERGE_PREPROCESSING_RUN_ID}")\n    print(f"B2P06_EVIDENCE_SHA256={B2P06_EVIDENCE_SHA256}")\n    print("B2P07_FRONTIER=AUTHORIZED")''',
           )
 
-          # Canonical/current prose. Keep historical B2P04 manifest wording immutable; add B2P06 as later binding evidence.
           replace_once(
               'specs/CURRENT.md',
               '**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 through B2P05 canonical; current bounded execution unit `B2P06`',
               '**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 through B2P06 canonical; current bounded execution unit `B2P07`',
           )
+          replace_once(
+              'specs/CURRENT.md',
+              'B2P04 subset-manifest freeze became canonical at merge `4c4e758f22b54fa62256e57bfbd344adc817df8e`, and B2P05 candidate revalidation became canonical at merge `49538990fb4cf8223e9321261925206ed7ff5cee`. `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`. B2P01 through B2P05 are complete. B2P06 is the current bounded execution unit.',
+              'B2P04 subset-manifest freeze became canonical at merge `4c4e758f22b54fa62256e57bfbd344adc817df8e`, B2P05 candidate revalidation became canonical at merge `49538990fb4cf8223e9321261925206ed7ff5cee`, and B2P06 preprocessing capture became canonical at merge `3dceadd984ff307ce55745bf5f289890a2fac261`. `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`. B2P01 through B2P06 are complete. B2P07 is the current bounded execution unit.',
+          )
           current = Path('specs/CURRENT.md').read_text(encoding='utf-8')
-          anchor = 'The canonical authority/readiness reread therefore completes B2P05 and authorizes B2P06 only.'
+          anchor = 'The canonical reread therefore satisfies the B2P06 entry condition while preserving every pre-decode guard.'
           if current.count(anchor) != 1:
               raise SystemExit('CURRENT B2P05 proof anchor drift')
           b2p06_proof = '''\n\nPR #43 then completed B2P06 attempt-bound preprocessing capture and merged by guarded expected-head squash as canonical commit `3dceadd984ff307ce55745bf5f289890a2fac261` from exact qualified head `c5501daf14038ced0ba3ad2de1cad92cfb38302a` against exact base `e8841a68a7e37c7e4dd26ff73fe2566661c468b0`. Exact-head methodology run `33814334825` and preprocessing run `33814334967`, job `100843002336`, succeeded after forward-only repair of the mutable FFmpeg build environment. Fresh independent CodeRabbit semantic review covered the final exact five-file diff and reported no actionable findings; zero actionable review threads remained before merge.\n\nCanonical post-merge preprocessing run `33814736588`, job `100844238206`, checked out exact merge `3dceadd984ff307ce55745bf5f289890a2fac261`, rebuilt FFmpeg `n9.0.1` source commit `bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa` inside digest-pinned `python:3.12.11-bookworm@sha256:13c9584604a99ca134c4f41800f74ffc64ee6ac8cf555cf1e704a6087fc84f12`, reprocessed all 240 frozen source identities, reproduced committed evidence SHA-256 `d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011`, uploaded bounded artifact `9916141620` with digest `sha256:d0a6918fc7bf48e93053fab4fb3286c250a6c980456d893bb9c286f9697130b9`, and removed transient corpus/audio/toolchain state. Candidate-revalidation run `33814736795`, methodology run `33814736759`, trusted-materialization run `33814736691`, participant-materials run `33814736716`, participant-policy run `33814736734`, and human-authority run `33814736663` also succeeded on the same canonical merge. B2P07 environment capture and B2P08 attempt freeze remained unresolved/unfrozen; candidate and primary decoding remained false; `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, no production STT selection, and no product-code authority were preserved. The canonical authority/readiness reread therefore completes B2P06 and authorizes B2P07 only.'''
           current = current.replace(anchor, anchor + b2p06_proof, 1)
+          replace_old = 'B2P05 candidate identity revalidation is canonical and post-merge verified at merge `49538990fb4cf8223e9321261925206ed7ff5cee`; B2P06 is now authorized only to capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration and execution evidence. Candidate decoding, B2P07 environment capture, B2P08 attempt freeze, and primary decoding remain unauthorized during B2P06.'
+          replace_new = 'B2P05 candidate identity revalidation is canonical and post-merge verified at merge `49538990fb4cf8223e9321261925206ed7ff5cee`. B2P06 attempt-bound preprocessing capture is canonical and post-merge verified at merge `3dceadd984ff307ce55745bf5f289890a2fac261` with evidence SHA-256 `d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011`; B2P07 is now authorized only to capture attempt-bound execution environment/hardware evidence while preserving CONTROLLED versus DIAGNOSTIC semantics. Candidate decoding, B2P08 attempt freeze, and primary decoding remain unauthorized during B2P07.'
+          if current.count(replace_old) != 1:
+              raise SystemExit('CURRENT public-human frontier anchor drift')
+          current = current.replace(replace_old, replace_new, 1)
           old_action_start = 'Execute and canonically qualify `B2P06` only:'
           idx = current.rfind(old_action_start)
           if idx < 0:
@@ -161,7 +166,10 @@ jobs:
           if state.count(b2p05_line) != 1:
               raise SystemExit('CURRENT_STATE B2P05 header anchor drift')
           state = state.replace(b2p05_line, b2p05_line + '\n**000B2 B2P06 preprocessing-capture merge:** `3dceadd984ff307ce55745bf5f289890a2fac261`  ', 1)
-          state = state.replace('B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; current bounded execution unit is `B2P06`', 'B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; current bounded execution unit is `B2P07`', 1)
+          old_qualification = 'B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; current bounded execution unit is `B2P06`'
+          if state.count(old_qualification) != 1:
+              raise SystemExit('CURRENT_STATE qualification frontier drift')
+          state = state.replace(old_qualification, 'B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; current bounded execution unit is `B2P07`', 1)
           state_anchor = 'The canonical authority/readiness reread therefore completes B2P05 and authorizes B2P06 only.'
           if state.count(state_anchor) != 1:
               raise SystemExit('CURRENT_STATE B2P05 anchor drift')
