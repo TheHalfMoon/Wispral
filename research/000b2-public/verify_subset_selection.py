@@ -131,6 +131,25 @@ def replace_transcript_with_external_symlink(librispeech_root: Path) -> None:
     transcript_path.symlink_to(external)
 
 
+def verify_symlinked_corpus_ancestor_rejected() -> None:
+    """Reject a corpus path whose final component is regular but an ancestor is a symlink."""
+    with tempfile.TemporaryDirectory() as temporary:
+        base = Path(temporary)
+        real_parent = base / "real-parent"
+        real_corpus = real_parent / "corpus"
+        build_valid_fixture(real_corpus)
+        linked_parent = base / "linked-parent"
+        linked_parent.symlink_to(real_parent, target_is_directory=True)
+        indirect_corpus = linked_parent / "corpus"
+        require(not indirect_corpus.is_symlink(), "adversarial corpus leaf must itself remain non-symlink")
+        try:
+            select_subset(indirect_corpus)
+        except SelectionError as error:
+            require("symbolic link is not allowed for corpus root" in str(error), f"unexpected symlink-ancestry reason: {error}")
+        else:
+            raise SystemExit("B2P03_SUBSET_SELECTION=FAIL: symlinked corpus ancestry unexpectedly accepted")
+
+
 def verify_policy_boundaries() -> None:
     """Verify the committed B2P03 policy keeps all later execution and claim gates closed."""
     policy = json.loads(POLICY_PATH.read_text(encoding="utf-8"))
@@ -158,6 +177,7 @@ def verify_policy_boundaries() -> None:
     require("subprocess" not in source, "selector must not invoke external candidate/runtime processes")
     require("requests" not in source and "urllib" not in source, "selector must not access network sources")
     require("is_symlink" in source, "selector must explicitly reject symbolic-link source indirection")
+    require("require_no_symlink_ancestry" in source, "selector must reject symlinked corpus ancestry")
 
 
 def verify_determinism_and_shape() -> None:
@@ -211,6 +231,7 @@ def main() -> None:
     expect_selection_error(overlap_speaker_between_partitions, "speaker overlap across public partitions")
     expect_selection_error(replace_audio_with_external_symlink, "symbolic link is not allowed for audio source")
     expect_selection_error(replace_transcript_with_external_symlink, "symbolic link is not allowed for transcript source")
+    verify_symlinked_corpus_ancestor_rejected()
     print("B2P03_SUBSET_SELECTION=PASS")
     print("B2P03_HASH_ORDERING=SHA256_FROZEN")
     print("B2P03_TRAVERSAL_ORDER_INDEPENDENT=YES")
@@ -218,6 +239,7 @@ def main() -> None:
     print("B2P03_DUPLICATE_REJECTION=PASS")
     print("B2P03_SPEAKER_DISJOINTNESS=PASS")
     print("B2P03_SYMLINK_REJECTION=PASS")
+    print("B2P03_SYMLINK_ANCESTRY_REJECTION=PASS")
     print("B2P03_CANDIDATE_OUTPUT_DEPENDENCY=ABSENT")
     print("B2P03_SUBSET_MANIFEST_FROZEN=NO")
     print("B2P03_CANDIDATE_DECODING_STARTED=NO")
