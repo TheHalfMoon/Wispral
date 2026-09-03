@@ -125,6 +125,9 @@ def validate_member_scope(member: tarfile.TarInfo, partition: str) -> tuple[str,
     if parts == ("LibriSpeech",):
         require(member.isdir(), "LibriSpeech archive root must be a directory")
         return parts
+    if parts == ("LibriSpeech", partition):
+        require(member.isdir(), f"LibriSpeech/{partition} archive root must be a directory")
+        return parts
     if len(parts) == 2 and parts[0] == "LibriSpeech":
         require(
             is_ignored_root_metadata(parts, member),
