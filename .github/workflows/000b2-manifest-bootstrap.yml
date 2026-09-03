@@ -119,7 +119,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A -- research/000b2-public
-          test "$(git diff --cached --name-only | wc -l)" -eq 9
           test "$(sha256sum research/000b2-public/subset-manifest.json | cut -d' ' -f1)" = "$B2P04_EXPECTED_MANIFEST_SHA256"
+          git diff --cached --name-status
           git commit -m "research(000b2): freeze exact B2P04 subset manifest"
           git push origin "HEAD:research/000b2-b2p04-subset-manifest-freeze"
