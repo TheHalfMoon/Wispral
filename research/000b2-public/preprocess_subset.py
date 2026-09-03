@@ -218,7 +218,16 @@ def runtime_build_configuration(ffmpeg: Path) -> dict[str, Any]:
         timeout=30,
     ).stdout.decode("utf-8", errors="strict")
     observed_flags = [line.strip() for line in output.splitlines() if line.strip().startswith("--")]
-    behavior_flags = [flag for flag in observed_flags if not flag.startswith("--prefix=")]
+    behavior_flags: list[str] = []
+    for flag in observed_flags:
+        if flag.startswith("--prefix="):
+            continue
+        if "=" in flag:
+            name, value = flag.split("=", 1)
+            if len(value) >= 2 and value[0] == value[-1] and value[0] in {"\"", "\'"}:
+                value = value[1:-1]
+            flag = f"{name}={value}"
+        behavior_flags.append(flag)
     require(len(observed_flags) == len(behavior_flags) + 1, "FFmpeg build configuration must contain exactly one ignored prefix flag")
     require(len(behavior_flags) == len(set(behavior_flags)), "FFmpeg behavior configuration contains duplicate flags")
     observed_set = set(behavior_flags)
