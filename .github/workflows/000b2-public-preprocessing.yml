@@ -84,7 +84,8 @@ jobs:
               set -euo pipefail
               test "$(git rev-parse HEAD)" = "$B2P06_REVISION"
               test "$(python -c '"'"'import platform; print(platform.python_version())'"'"')" = "3.12.11"
-              python -m py_compile \
+              mkdir -p /evidence/pycache
+              PYTHONPYCACHEPREFIX=/evidence/pycache python -m py_compile \
                 research/000b2-public/preprocess_subset.py \
                 research/000b2-public/verify_preprocessing_capture.py
               PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py --static-only
