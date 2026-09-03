@@ -23,6 +23,7 @@
 **000B2 public-readiness reconciliation merge:** `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`  
 **000B2 B2P01 provenance merge:** `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`  
 **000B2 B2P02 archive-byte merge:** `1ba4e42561cc53f574d5d35689e2ae499a398b5c`  
+**000B2 B2P03 deterministic-subset merge:** `83eca872148f329033c299f6671d275edf2d7b58`  
 **Program status:** `SPEC_000_RESEARCH_ACTIVE`  
 **Active product implementation:** none  
 **Active parent specification:** `000-founding-research` — `REFINING`  
@@ -35,7 +36,7 @@
 **000B2 participant materials:** `CANONICAL_FROZEN`, participant consent `EXTERNAL_NOT_OBTAINED`  
 **Blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
 **Active execution successor:** `000B2-public-corpus-bakeoff` — `READY`  
-**Qualification chronology gate:** `SATISFIED` by PR #32 merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`; machine readiness reconciled by PR #33 merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`; B2P01 is canonical at PR #34 merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`; B2P02 is canonical at PR #35 merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c` and post-merge verified; current bounded execution unit is `B2P03`  
+**Qualification chronology gate:** `SATISFIED` by PR #32 merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`; machine readiness reconciled by PR #33 merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`; B2P01 is canonical at PR #34 merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`; B2P02 is canonical at PR #35 merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c` and post-merge verified; B2P03 is canonical at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58` and post-merge verified; current bounded execution unit is `B2P04`  
 **Published release:** none
 
 Live GitHub and repository truth override this document.
@@ -214,7 +215,11 @@ Post-merge `000B2 Public Corpus Archive Materialization` run `33751302416`, job 
 - `test-clean.tar.gz`: 346663984 bytes, MD5 `32fa31d27d2e1cad72775fee3f4849a9`, SHA-256 `39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23`;
 - `test-other.tar.gz`: 328757843 bytes, MD5 `fb5a50374b501bb3bac4815ee91d3135`, SHA-256 `d09c181bba5cf717b3dee7d4d592af11a3ee3a09e08ae025c5506f6ebe961c29`.
 
-That canonical run emitted `B2P02_WORKFLOW_CONTRACTS=PASS`, `ACTIVE_WORKFLOW_STRUCTURE=VERIFIED`, `B2P02_REDIRECT_POLICY=PASS`, and `B2P02_MATERIALIZATION=PASS`, and uploaded bounded observation artifact `9891735545` with ZIP digest `sha256:b0187d8b664a212a100d6d1515773891315d5af9e137178507c3b079d9edca6b`. The other applicable post-merge workflow lanes also completed successfully. Large archive bytes were deleted after hashing and were not committed. The canonical authority/readiness reread therefore completes B2P02 and authorizes B2P03 only.
+That canonical run emitted `B2P02_WORKFLOW_CONTRACTS=PASS`, `ACTIVE_WORKFLOW_STRUCTURE=VERIFIED`, `B2P02_REDIRECT_POLICY=PASS`, and `B2P02_MATERIALIZATION=PASS`, and uploaded bounded observation artifact `9891735545` with ZIP digest `sha256:b0187d8b664a212a100d6d1515773891315d5af9e137178507c3b079d9edca6b`. The other applicable post-merge workflow lanes also completed successfully. Large archive bytes were deleted after hashing and were not committed. The canonical authority/readiness reread therefore completes B2P02 and authorized B2P03 only.
+
+PR #37 then completed B2P03 deterministic source-only subset selection and merged by guarded expected-head squash as canonical commit `83eca872148f329033c299f6671d275edf2d7b58` from exact qualified head `e642500c7ba6c5935a94da42cf638c01f9366913` against exact base `2f9517bf34342f7e02697024c32ed2a16f61cf29`. The final candidate changed exactly four files. Exact-head `000B2 Public Corpus Subset Selection` run `33774852016` and `000B2 Public Corpus Methodology` run `33774852021` completed successfully. Fresh independent CodeRabbit semantic review covered the complete exact base/head four-file diff and reported no actionable semantic findings after valid source-integrity and correctness findings had been repaired forward-only. Zero actionable review threads remained before merge. The merge is GitHub-signature verified with parent equal to the qualified base.
+
+All six applicable push workflows on canonical merge `83eca872148f329033c299f6671d275edf2d7b58` completed successfully. `000B2 Public Corpus Subset Selection` run `33775647508`, job `100716549752`, checked out the exact merge and passed deterministic selector plus mutation-adversarial verification. `000B2 Public Corpus Methodology` run `33775647539`, job `100716550502`, also passed on the exact merge. `000B2 Trusted Materialization Authority` run `33775647532`, `000B2 Trusted Participant Materials` run `33775647580`, `000B2 Trusted Participant Policy` run `33775647607`, and `000B2 Trusted Human Authority Structure` run `33775647617` also succeeded. No selected-subset manifest was frozen, `candidate_decoding_started=false`, `primary_decoding_started=false`, no production STT was selected, no product code was authorized, and no human developer-speech accuracy evidence was created. The canonical authority/readiness reread therefore completes B2P03 and authorizes B2P04 only.
 
 Comparative P0 decoding remains prohibited until `B2P01` through `B2P08` complete and the final pre-decode attempt manifest is frozen with `primary_decoding_started=false`.
 
@@ -256,8 +261,9 @@ Canonical research authority now contains:
 - canonical public readiness at PR #33 merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`;
 - canonical B2P01 source/checksum provenance at PR #34 merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`;
 - canonical B2P02 archive-byte verification at PR #35 merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c`, including successful canonical post-merge byte revalidation;
-- B2P03 authorized as the sole current bounded execution unit;
-- no subset-manifest freeze, no comparative public-corpus decoding, and no production STT selection.
+- canonical B2P03 deterministic subset-selection logic at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58`, including successful six-lane canonical post-merge verification;
+- B2P04 authorized as the sole current bounded execution unit;
+- no subset-manifest freeze yet, no comparative public-corpus decoding, and no production STT selection.
 
 ## Current product thesis
 
@@ -298,8 +304,8 @@ Wispral does NOT currently claim:
 
 No Rust product implementation, Cargo workspace, permanent speech-engine integration, ACP production client, PTY adapter, TUI, installer, or release is authorized until Specification 000 synthesis reaches `000G`, selects a bounded first implementation Grain from reproducible evidence, and that Grain independently satisfies readiness.
 
-Verified 000A, verified 000B1, canonical B2 entry preparation, canonical B2 authority structure, canonical participant policy/materials, the canonical public-corpus B2 methodology, canonical qualification-chronology remediation, canonical public readiness, canonical B2P01 provenance, and canonical B2P02 archive-byte verification do not weaken this gate.
+Verified 000A, verified 000B1, canonical B2 entry preparation, canonical B2 authority structure, canonical participant policy/materials, the canonical public-corpus B2 methodology, canonical qualification-chronology remediation, canonical public readiness, canonical B2P01 provenance, canonical B2P02 archive-byte verification, and canonical B2P03 deterministic subset selection do not weaken this gate.
 
 ## Next canonical action
 
-Execute and canonically qualify `B2P03` only: implement deterministic speaker/utterance subset selection independent of candidate outputs. B2P03 may define and test the deterministic selection algorithm and its bounded configuration against corpus metadata/identities, but it must not freeze the B2P04 selected-subset manifest, inspect candidate outputs, revalidate or run candidate cells, or begin comparative P0 decoding. Preserve `subset_manifest_frozen=false`, `candidate_decoding_started=false`, `primary_decoding_started=false`, the historical private lane as `BLOCKED_EXTERNAL`, `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, and the closed product-code gate. B2P04 remains non-authorized until B2P03 passes applicable exact-head CI, fresh independent substantive semantic review, zero unresolved actionable review threads, guarded expected-head merge, successful post-merge verification, and canonical authority/readiness reread.
+Execute and canonically qualify `B2P04` only: freeze the selected public-human subset manifest and deterministic manifest digest before candidate decoding, using the canonical B2P03 deterministic selection logic and preserving exact source-corpus identity binding. B2P04 may materialize and safely extract the exact official LibriSpeech archives bound to canonical B2P02 identities as necessary to derive the frozen membership, but it must reject unsafe archive members and source identity drift fail closed, must not inspect candidate outputs or candidate-specific behavior, and must not claim B2P06 preprocessing identities. Preserve `candidate_decoding_started=false`, `primary_decoding_started=false`, the historical private lane as `BLOCKED_EXTERNAL`, `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, and the closed product-code gate. B2P05 remains non-authorized until B2P04 passes applicable exact-head CI, fresh independent substantive semantic review, zero unresolved actionable review threads, guarded expected-head merge, successful post-merge verification, and canonical authority/readiness reread.
