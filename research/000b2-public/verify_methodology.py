@@ -19,6 +19,11 @@ B2P02_PROBE_RUN_ID = 33683639224
 B2P02_PROBE_JOB_ID = 100425793105
 B2P02_PROBE_ARTIFACT_ID = 9867230579
 B2P02_PROBE_ARTIFACT_DIGEST = "sha256:82d64230f1aa0c52ac5eef8f314415095916e79b97945e302f4a03d7361c8c74"
+B2P03_CANONICAL_MERGE = "83eca872148f329033c299f6671d275edf2d7b58"
+B2P03_POSTMERGE_SUBSET_RUN_ID = 33775647508
+B2P03_POSTMERGE_SUBSET_JOB_ID = 100716549752
+B2P03_POSTMERGE_METHODOLOGY_RUN_ID = 33775647539
+B2P03_POSTMERGE_METHODOLOGY_JOB_ID = 100716550502
 
 EXPECTED_ARCHIVES: dict[str, dict[str, Any]] = {
     "test-clean.tar.gz": {
@@ -91,6 +96,10 @@ def main() -> None:
     materialization_path = ROOT / "research/000b2-public/archive-materialization.json"
     materializer_path = ROOT / "research/000b2-public/materialize_archives.py"
     materialization_workflow_path = ROOT / ".github/workflows/000b2-public-materialization.yml"
+    subset_policy_path = ROOT / "research/000b2-public/subset-selection-policy.json"
+    subset_selector_path = ROOT / "research/000b2-public/select_subset.py"
+    subset_verifier_path = ROOT / "research/000b2-public/verify_subset_selection.py"
+    subset_workflow_path = ROOT / ".github/workflows/000b2-public-subset-selection.yml"
     spec_path = ROOT / "specs/000B2-public-corpus-bakeoff/spec.md"
     plan_path = ROOT / "specs/000B2-public-corpus-bakeoff/plan.md"
     tasks_path = ROOT / "specs/000B2-public-corpus-bakeoff/tasks.md"
@@ -103,7 +112,8 @@ def main() -> None:
 
     required_paths = (
         readiness_path, corpus_source_path, materialization_path, materializer_path,
-        materialization_workflow_path, spec_path, plan_path, tasks_path, parent_spec_path,
+        materialization_workflow_path, subset_policy_path, subset_selector_path, subset_verifier_path,
+        subset_workflow_path, spec_path, plan_path, tasks_path, parent_spec_path,
         parent_plan_path, parent_tasks_path, current_path, current_state_path, founding_tasks_path,
     )
     for path in required_paths:
@@ -124,7 +134,7 @@ def main() -> None:
     require(readiness.get("schema_version") == "000b2-public-readiness-v2", "readiness schema version drift")
     require(readiness.get("lane") == "PUBLIC_CORPUS", "readiness lane drift")
     require(readiness.get("state") == "READY", "public execution readiness must remain explicit")
-    require(readiness.get("completed_through") == "B2P02", "readiness completed_through must be B2P02")
+    require(readiness.get("completed_through") == "B2P03", "readiness completed_through must be B2P03")
 
     historical = readiness.get("historical_private_collection_lane")
     require(isinstance(historical, dict), "historical private lane must be an object")
@@ -201,10 +211,11 @@ def main() -> None:
     require_bool(guards, "product_code_authorized", False, "claim_guards")
 
     expected_next_action = (
-        "Execute B2P03 only: implement deterministic speaker/utterance subset selection independent of candidate outputs. "
-        "Do not freeze the B2P04 subset manifest or begin candidate work until B2P03 is canonical."
+        "Execute B2P04 only: freeze the selected public-human subset manifest and deterministic manifest digest before candidate decoding. "
+        "Use the canonical B2P03 selection logic and preserve source-corpus identity binding. "
+        "Do not begin candidate revalidation or decoding until B2P04 is canonical."
     )
-    require(readiness.get("next_action") == expected_next_action, "next action must be exact B2P03-only instruction")
+    require(readiness.get("next_action") == expected_next_action, "next action must be exact B2P04-only instruction")
 
     corpus_source = load_object(corpus_source_path, "corpus-source")
     require_exact_keys(
@@ -258,7 +269,7 @@ def main() -> None:
     source_guards = corpus_source.get("claim_guards")
     require(isinstance(source_guards, dict), "corpus-source claim guards must be an object")
     require(source_guards == expected_source_guards, "corpus-source claim guards drift")
-    require(corpus_source.get("next_task_after_canonicalization") == "B2P03", "B2P02 successor must be B2P03")
+    require(corpus_source.get("next_task_after_canonicalization") == "B2P03", "B2P02 successor must remain historical B2P03")
 
     evidence = load_object(materialization_path, "archive materialization evidence")
     require_exact_keys(
@@ -318,6 +329,90 @@ def main() -> None:
         "materialization evidence boundary drift",
     )
 
+    subset_policy = load_object(subset_policy_path, "subset selection policy")
+    require_exact_keys(
+        subset_policy,
+        {"schema_version", "task", "state", "corpus", "partitions", "ordering", "source_contract", "output_contract", "claim_guards"},
+        "subset_policy",
+    )
+    require(subset_policy.get("schema_version") == "000b2-public-subset-selection-policy-v1", "subset policy schema drift")
+    require(subset_policy.get("task") == "B2P03", "subset policy task drift")
+    require(subset_policy.get("state") == "SELECTION_LOGIC_FROZEN_MANIFEST_NOT_FROZEN", "subset policy state drift")
+    require(subset_policy.get("corpus") == "LibriSpeech ASR corpus SLR12", "subset policy corpus drift")
+    require(
+        subset_policy.get("partitions") == [
+            {"name": "test-clean", "speakers_per_partition": 12, "utterances_per_speaker_max": 10},
+            {"name": "test-other", "speakers_per_partition": 12, "utterances_per_speaker_max": 10},
+        ],
+        "subset policy partition contract drift",
+    )
+    ordering = subset_policy.get("ordering")
+    require(isinstance(ordering, dict), "subset ordering must be an object")
+    require_exact_keys(
+        ordering,
+        {
+            "hash_algorithm", "selection_material", "encoding", "component_separator",
+            "speaker_components", "utterance_components", "tie_breaker",
+        },
+        "subset_ordering",
+    )
+    require(ordering.get("hash_algorithm") == "SHA-256", "subset ordering hash drift")
+    require(ordering.get("selection_material") == "wispral-000b2-public-b2p03-v1", "subset selection material drift")
+    require(ordering.get("encoding") == "UTF-8", "subset ordering encoding drift")
+    require(ordering.get("component_separator") == "NUL", "subset ordering separator drift")
+    require(ordering.get("tie_breaker") == "lexicographic stable identifier", "subset ordering tie-breaker drift")
+
+    source_contract = subset_policy.get("source_contract")
+    require(isinstance(source_contract, dict), "subset source contract must be an object")
+    require_exact_keys(
+        source_contract,
+        {
+            "membership_inputs", "candidate_outputs_allowed", "candidate_specific_behavior_allowed",
+            "require_complete_transcript_audio_pairs", "require_partition_speaker_disjointness",
+            "reject_duplicate_utterance_ids", "audio_extension", "transcript_extension",
+        },
+        "subset_source_contract",
+    )
+    require(source_contract.get("membership_inputs") == "EXTRACTED_LIBRISPEECH_METADATA_AND_SOURCE_CONTENT_IDENTITIES_ONLY", "subset source input boundary drift")
+    require_bool(source_contract, "candidate_outputs_allowed", False, "subset_source_contract")
+    require_bool(source_contract, "candidate_specific_behavior_allowed", False, "subset_source_contract")
+    require_bool(source_contract, "require_complete_transcript_audio_pairs", True, "subset_source_contract")
+    require_bool(source_contract, "require_partition_speaker_disjointness", True, "subset_source_contract")
+    require_bool(source_contract, "reject_duplicate_utterance_ids", True, "subset_source_contract")
+
+    output_contract = subset_policy.get("output_contract")
+    require(isinstance(output_contract, dict), "subset output contract must be an object")
+    require_exact_keys(
+        output_contract,
+        {
+            "kind", "includes_source_partition", "includes_speaker_id", "includes_chapter_id",
+            "includes_utterance_id", "includes_reference_transcript", "includes_source_audio_path",
+            "includes_source_file_sha256", "manifest_digest_emitted",
+            "canonical_preprocessed_file_sha256_emitted",
+        },
+        "subset_output_contract",
+    )
+    require(output_contract.get("kind") == "UNFROZEN_SELECTION_CANDIDATE", "subset output kind drift")
+    require_bool(output_contract, "manifest_digest_emitted", False, "subset_output_contract")
+    require_bool(output_contract, "canonical_preprocessed_file_sha256_emitted", False, "subset_output_contract")
+
+    subset_guards = subset_policy.get("claim_guards")
+    require(isinstance(subset_guards, dict), "subset claim guards must be an object")
+    require_exact_keys(
+        subset_guards,
+        {
+            "subset_manifest_frozen", "candidate_decoding_started", "primary_decoding_started",
+            "human_developer_speech_accuracy_evidence", "production_stt_selected", "product_code_authorized",
+        },
+        "subset_claim_guards",
+    )
+    require_bool(subset_guards, "subset_manifest_frozen", False, "subset_claim_guards")
+    require_bool(subset_guards, "candidate_decoding_started", False, "subset_claim_guards")
+    require_bool(subset_guards, "primary_decoding_started", False, "subset_claim_guards")
+    require(subset_guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "subset human-developer evidence guard drift")
+    require_bool(subset_guards, "production_stt_selected", False, "subset_claim_guards")
+    require_bool(subset_guards, "product_code_authorized", False, "subset_claim_guards")
+
     spec = spec_path.read_text(encoding="utf-8")
     plan = plan_path.read_text(encoding="utf-8")
     tasks = tasks_path.read_text(encoding="utf-8")
@@ -329,6 +424,9 @@ def main() -> None:
     parent_tasks = parent_tasks_path.read_text(encoding="utf-8")
     materializer = materializer_path.read_text(encoding="utf-8")
     materialization_workflow = materialization_workflow_path.read_text(encoding="utf-8")
+    subset_selector = subset_selector_path.read_text(encoding="utf-8")
+    subset_verifier = subset_verifier_path.read_text(encoding="utf-8")
+    subset_workflow = subset_workflow_path.read_text(encoding="utf-8")
 
     for phrase in (
         "HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT", "DIAGNOSTIC_ONLY", "CC BY 4.0",
@@ -350,10 +448,12 @@ def main() -> None:
     for task_id in ALL_TASK_IDS:
         matching_lines = [line for line in task_lines if f"`{task_id}`" in line]
         require(len(matching_lines) == 1, f"{task_id} must appear in exactly one checklist line")
-        expected_marker = "- [x]" if task_id in {"B2P01", "B2P02"} else "- [ ]"
+        expected_marker = "- [x]" if task_id in {"B2P01", "B2P02", "B2P03"} else "- [ ]"
         require(matching_lines[0].startswith(f"{expected_marker} `{task_id}`"), f"{task_id} checklist state must be {expected_marker}")
     require_text(tasks, "- [x] `B2P01` Record exact OpenSLR SLR12 source/license facts and official checksums in machine-readable provenance.", "public child tasks")
     require_text(tasks, "- [x] `B2P02` Materialize `test-clean.tar.gz` and `test-other.tar.gz` from an approved source or official mirror; verify official MD5 and record exact archive SHA-256.", "public child tasks")
+    require_text(tasks, "- [x] `B2P03` Implement deterministic speaker/utterance subset selection independent of candidate outputs.", "public child tasks")
+    require_text(tasks, "- [ ] `B2P04` Freeze selected public-human subset manifest and manifest digest before candidate decoding.", "public child tasks")
 
     for phrase in (
         "These execution tasks become authorized only after the public-corpus amendment and frontier reconciliation are canonical on `main`.",
@@ -373,8 +473,13 @@ def main() -> None:
     require_text(current, f"job `{B2P02_POSTMERGE_JOB_ID}`", "current frontier B2P02 post-merge job proof")
     require_text(current, f"artifact `{B2P02_POSTMERGE_ARTIFACT_ID}`", "current frontier B2P02 post-merge artifact proof")
     require_text(current, B2P02_POSTMERGE_ARTIFACT_DIGEST, "current frontier B2P02 post-merge artifact digest proof")
-    require_text(current, "current bounded execution unit `B2P03`", "current frontier")
-    require_absent(current, "current bounded execution unit `B2P02`", "current frontier")
+    require_text(current, B2P03_CANONICAL_MERGE, "current frontier B2P03 canonical proof")
+    require_text(current, f"run `{B2P03_POSTMERGE_SUBSET_RUN_ID}`", "current frontier B2P03 subset post-merge run proof")
+    require_text(current, f"job `{B2P03_POSTMERGE_SUBSET_JOB_ID}`", "current frontier B2P03 subset post-merge job proof")
+    require_text(current, f"run `{B2P03_POSTMERGE_METHODOLOGY_RUN_ID}`", "current frontier B2P03 methodology post-merge run proof")
+    require_text(current, f"job `{B2P03_POSTMERGE_METHODOLOGY_JOB_ID}`", "current frontier B2P03 methodology post-merge job proof")
+    require_text(current, "current bounded execution unit `B2P04`", "current frontier")
+    require_absent(current, "current bounded execution unit `B2P03`", "current frontier")
 
     require_text(current_state, B2P01_CANONICAL_MERGE, "current state B2P01 canonical proof")
     require_text(current_state, B2P02_CANONICAL_MERGE, "current state B2P02 canonical proof")
@@ -382,8 +487,13 @@ def main() -> None:
     require_text(current_state, f"job `{B2P02_POSTMERGE_JOB_ID}`", "current state B2P02 post-merge job proof")
     require_text(current_state, f"artifact `{B2P02_POSTMERGE_ARTIFACT_ID}`", "current state B2P02 post-merge artifact proof")
     require_text(current_state, B2P02_POSTMERGE_ARTIFACT_DIGEST, "current state B2P02 post-merge artifact digest proof")
-    require_text(current_state, "current bounded execution unit is `B2P03`", "current state")
-    require_absent(current_state, "current bounded execution unit is `B2P02`", "current state")
+    require_text(current_state, B2P03_CANONICAL_MERGE, "current state B2P03 canonical proof")
+    require_text(current_state, f"run `{B2P03_POSTMERGE_SUBSET_RUN_ID}`", "current state B2P03 subset post-merge run proof")
+    require_text(current_state, f"job `{B2P03_POSTMERGE_SUBSET_JOB_ID}`", "current state B2P03 subset post-merge job proof")
+    require_text(current_state, f"run `{B2P03_POSTMERGE_METHODOLOGY_RUN_ID}`", "current state B2P03 methodology post-merge run proof")
+    require_text(current_state, f"job `{B2P03_POSTMERGE_METHODOLOGY_JOB_ID}`", "current state B2P03 methodology post-merge job proof")
+    require_text(current_state, "current bounded execution unit is `B2P04`", "current state")
+    require_absent(current_state, "current bounded execution unit is `B2P03`", "current state")
 
     for label, text in (("parent spec", parent_spec), ("parent plan", parent_plan), ("parent tasks", parent_tasks)):
         require_text(text, "`000B2-unbiased-stt-bakeoff`", label)
@@ -407,6 +517,22 @@ def main() -> None:
     ):
         require_text(materialization_workflow, phrase, "B2P02 materialization workflow")
 
+    for phrase in (
+        "UNFROZEN_SELECTION_CANDIDATE", "require_discovery_unchanged", "O_NOFOLLOW",
+    ):
+        require_text(subset_selector, phrase, "B2P03 selector")
+    for phrase in (
+        "B2P03_CROSS_PARTITION_LATE_MUTATION_REJECTION=PASS", "B2P03_SUBSET_MANIFEST_FROZEN=NO",
+        "B2P03_CANDIDATE_DECODING_STARTED=NO",
+    ):
+        require_text(subset_verifier, phrase, "B2P03 verifier")
+    for phrase in (
+        "000B2 Public Corpus Subset Selection", "persist-credentials: false",
+        "python research/000b2-public/verify_subset_selection.py", "B2P03_POST_SNAPSHOT_ADDITION=PASS",
+        "B2P03_SNAPSHOT_ENUMERATION_DELETION=PASS",
+    ):
+        require_text(subset_workflow, phrase, "B2P03 subset workflow")
+
     print("PUBLIC_CORPUS_METHODOLOGY=PASS")
     print("B2P01_CORPUS_PROVENANCE=PASS")
     print("B2P02_ARCHIVE_MATERIALIZATION=PASS")
@@ -415,7 +541,11 @@ def main() -> None:
     print(f"B2P02_POSTMERGE_RUN_ID={B2P02_POSTMERGE_RUN_ID}")
     print(f"B2P02_TEST_CLEAN_SHA256={EXPECTED_ARCHIVES['test-clean.tar.gz']['archive_sha256']}")
     print(f"B2P02_TEST_OTHER_SHA256={EXPECTED_ARCHIVES['test-other.tar.gz']['archive_sha256']}")
-    print("B2P03_FRONTIER=AUTHORIZED")
+    print("B2P03_SUBSET_SELECTION=PASS")
+    print(f"B2P03_CANONICAL_MERGE={B2P03_CANONICAL_MERGE}")
+    print(f"B2P03_POSTMERGE_SUBSET_RUN_ID={B2P03_POSTMERGE_SUBSET_RUN_ID}")
+    print(f"B2P03_POSTMERGE_METHODOLOGY_RUN_ID={B2P03_POSTMERGE_METHODOLOGY_RUN_ID}")
+    print("B2P04_FRONTIER=AUTHORIZED")
     print("STRUCTURED_READINESS_GUARDS=PASS")
     print("P0_D0_SEPARATION=PASS")
     print("PRE_DECODE_FREEZE_ORDERING=PASS")
@@ -427,8 +557,11 @@ def main() -> None:
     print("ARCHIVE_BYTES_FETCHED=YES")
     print("ARCHIVE_MD5_VERIFIED=YES")
     print("ARCHIVE_SHA256_RECORDED=YES")
-    print("SUBSET_SELECTION_STARTED=NO")
+    print("SUBSET_SELECTION_STARTED=YES")
+    print("SUBSET_SELECTION_CANONICAL=YES")
+    print("SUBSET_MANIFEST_FROZEN=NO")
     print("CANDIDATE_DECODING_STARTED=NO")
+    print("PRIMARY_DECODING_STARTED=NO")
     print("PRODUCT_CODE_AUTHORIZED=NO")
 
 
