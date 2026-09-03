@@ -2,7 +2,7 @@
   "schema_version": "000b2-public-readiness-v2",
   "lane": "PUBLIC_CORPUS",
   "state": "READY",
-  "completed_through": "B2P02",
+  "completed_through": "B2P03",
   "historical_private_collection_lane": {
     "preserved": true,
     "executed": false,
@@ -64,5 +64,5 @@
     "production_stt_selected": false,
     "product_code_authorized": false
   },
-  "next_action": "Execute B2P03 only: implement deterministic speaker/utterance subset selection independent of candidate outputs. Do not freeze the B2P04 subset manifest or begin candidate work until B2P03 is canonical."
+  "next_action": "Execute B2P04 only: freeze the selected public-human subset manifest and deterministic manifest digest before candidate decoding. Use the canonical B2P03 selection logic and preserve source-corpus identity binding. Do not begin candidate revalidation or decoding until B2P04 is canonical."
 }
