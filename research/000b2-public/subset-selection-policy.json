@@ -1,0 +1,69 @@
+{
+  "schema_version": "000b2-public-subset-selection-policy-v1",
+  "task": "B2P03",
+  "state": "SELECTION_LOGIC_FROZEN_MANIFEST_NOT_FROZEN",
+  "corpus": "LibriSpeech ASR corpus SLR12",
+  "partitions": [
+    {
+      "name": "test-clean",
+      "speakers_per_partition": 12,
+      "utterances_per_speaker_max": 10
+    },
+    {
+      "name": "test-other",
+      "speakers_per_partition": 12,
+      "utterances_per_speaker_max": 10
+    }
+  ],
+  "ordering": {
+    "hash_algorithm": "SHA-256",
+    "selection_material": "wispral-000b2-public-b2p03-v1",
+    "encoding": "UTF-8",
+    "component_separator": "NUL",
+    "speaker_components": [
+      "selection_material",
+      "speaker",
+      "partition",
+      "speaker_id"
+    ],
+    "utterance_components": [
+      "selection_material",
+      "utterance",
+      "partition",
+      "speaker_id",
+      "chapter_id",
+      "utterance_id"
+    ],
+    "tie_breaker": "lexicographic stable identifier"
+  },
+  "source_contract": {
+    "membership_inputs": "EXTRACTED_LIBRISPEECH_METADATA_AND_SOURCE_CONTENT_IDENTITIES_ONLY",
+    "candidate_outputs_allowed": false,
+    "candidate_specific_behavior_allowed": false,
+    "require_complete_transcript_audio_pairs": true,
+    "require_partition_speaker_disjointness": true,
+    "reject_duplicate_utterance_ids": true,
+    "audio_extension": ".flac",
+    "transcript_extension": ".trans.txt"
+  },
+  "output_contract": {
+    "kind": "UNFROZEN_SELECTION_CANDIDATE",
+    "includes_source_partition": true,
+    "includes_speaker_id": true,
+    "includes_chapter_id": true,
+    "includes_utterance_id": true,
+    "includes_reference_transcript": true,
+    "includes_source_audio_path": true,
+    "includes_source_file_sha256": true,
+    "manifest_digest_emitted": false,
+    "canonical_preprocessed_file_sha256_emitted": false
+  },
+  "claim_guards": {
+    "subset_manifest_frozen": false,
+    "candidate_decoding_started": false,
+    "primary_decoding_started": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "production_stt_selected": false,
+    "product_code_authorized": false
+  }
+}
