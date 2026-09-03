@@ -348,6 +348,14 @@ def main() -> None:
     )
     ordering = subset_policy.get("ordering")
     require(isinstance(ordering, dict), "subset ordering must be an object")
+    require_exact_keys(
+        ordering,
+        {
+            "hash_algorithm", "selection_material", "encoding", "component_separator",
+            "speaker_components", "utterance_components", "tie_breaker",
+        },
+        "subset_ordering",
+    )
     require(ordering.get("hash_algorithm") == "SHA-256", "subset ordering hash drift")
     require(ordering.get("selection_material") == "wispral-000b2-public-b2p03-v1", "subset selection material drift")
     require(ordering.get("encoding") == "UTF-8", "subset ordering encoding drift")
@@ -356,6 +364,15 @@ def main() -> None:
 
     source_contract = subset_policy.get("source_contract")
     require(isinstance(source_contract, dict), "subset source contract must be an object")
+    require_exact_keys(
+        source_contract,
+        {
+            "membership_inputs", "candidate_outputs_allowed", "candidate_specific_behavior_allowed",
+            "require_complete_transcript_audio_pairs", "require_partition_speaker_disjointness",
+            "reject_duplicate_utterance_ids", "audio_extension", "transcript_extension",
+        },
+        "subset_source_contract",
+    )
     require(source_contract.get("membership_inputs") == "EXTRACTED_LIBRISPEECH_METADATA_AND_SOURCE_CONTENT_IDENTITIES_ONLY", "subset source input boundary drift")
     require_bool(source_contract, "candidate_outputs_allowed", False, "subset_source_contract")
     require_bool(source_contract, "candidate_specific_behavior_allowed", False, "subset_source_contract")
@@ -365,12 +382,30 @@ def main() -> None:
 
     output_contract = subset_policy.get("output_contract")
     require(isinstance(output_contract, dict), "subset output contract must be an object")
+    require_exact_keys(
+        output_contract,
+        {
+            "kind", "includes_source_partition", "includes_speaker_id", "includes_chapter_id",
+            "includes_utterance_id", "includes_reference_transcript", "includes_source_audio_path",
+            "includes_source_file_sha256", "manifest_digest_emitted",
+            "canonical_preprocessed_file_sha256_emitted",
+        },
+        "subset_output_contract",
+    )
     require(output_contract.get("kind") == "UNFROZEN_SELECTION_CANDIDATE", "subset output kind drift")
     require_bool(output_contract, "manifest_digest_emitted", False, "subset_output_contract")
     require_bool(output_contract, "canonical_preprocessed_file_sha256_emitted", False, "subset_output_contract")
 
     subset_guards = subset_policy.get("claim_guards")
     require(isinstance(subset_guards, dict), "subset claim guards must be an object")
+    require_exact_keys(
+        subset_guards,
+        {
+            "subset_manifest_frozen", "candidate_decoding_started", "primary_decoding_started",
+            "human_developer_speech_accuracy_evidence", "production_stt_selected", "product_code_authorized",
+        },
+        "subset_claim_guards",
+    )
     require_bool(subset_guards, "subset_manifest_frozen", False, "subset_claim_guards")
     require_bool(subset_guards, "candidate_decoding_started", False, "subset_claim_guards")
     require_bool(subset_guards, "primary_decoding_started", False, "subset_claim_guards")
