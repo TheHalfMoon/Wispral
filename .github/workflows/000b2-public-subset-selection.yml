@@ -44,6 +44,84 @@ jobs:
           echo "EXACT_REVISION=$EXACT_REVISION"
       - name: Verify deterministic subset selection
         run: python research/000b2-public/verify_subset_selection.py
+      - name: Verify addition after snapshot is rejected
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import sys
+          import tempfile
+          import threading
+          from pathlib import Path
+
+          module_dir = Path("research/000b2-public").resolve()
+          sys.path.insert(0, str(module_dir))
+
+          import select_subset as selector_module
+          import verify_subset_selection as verifier_module
+
+          with tempfile.TemporaryDirectory() as temporary:
+              root = Path(temporary)
+              librispeech_root = verifier_module.build_valid_fixture(root)
+              speaker_id = verifier_module.speaker_ids("test-clean")[0]
+              chapter = verifier_module.chapter_id(speaker_id)
+              orphan_uid = verifier_module.utterance_id(speaker_id, chapter, 9999)
+              orphan_path = librispeech_root / "test-clean" / speaker_id / chapter / f"{orphan_uid}.flac"
+              barrier = threading.Barrier(2)
+              thread_errors: list[BaseException] = []
+              original_snapshot = selector_module.require_symlink_free_tree
+
+              def synchronized_snapshot(path: Path, label: str) -> selector_module.SourceTreeSnapshot:
+                  snapshot = original_snapshot(path, label)
+                  if label == "partition tree test-clean":
+                      barrier.wait(timeout=5)
+                      barrier.wait(timeout=5)
+                  return snapshot
+
+              def add_after_snapshot() -> None:
+                  try:
+                      barrier.wait(timeout=5)
+                      orphan_path.write_bytes(b"candidate-like-orphan-after-snapshot")
+                      barrier.wait(timeout=5)
+                  except BaseException as error:  # noqa: BLE001 - test thread reports exact synchronization failure.
+                      thread_errors.append(error)
+                      try:
+                          barrier.abort()
+                      except threading.BrokenBarrierError:
+                          pass
+
+              selector_module.require_symlink_free_tree = synchronized_snapshot
+              worker = threading.Thread(target=add_after_snapshot, name="b2p03-source-addition")
+              worker.start()
+              try:
+                  try:
+                      selector_module.select_subset(root)
+                  except selector_module.SelectionError as error:
+                      message = str(error)
+                      accepted_reasons = (
+                          "changed after initial snapshot",
+                          "identity changed since validation",
+                      )
+                      if not any(fragment in message for fragment in accepted_reasons):
+                          raise SystemExit(f"B2P03_POST_SNAPSHOT_ADDITION=FAIL: unexpected reason: {error}")
+                  else:
+                      raise SystemExit("B2P03_POST_SNAPSHOT_ADDITION=FAIL: post-snapshot source addition was accepted")
+              finally:
+                  selector_module.require_symlink_free_tree = original_snapshot
+                  if worker.is_alive():
+                      try:
+                          barrier.abort()
+                      except threading.BrokenBarrierError:
+                          pass
+                  worker.join(timeout=5)
+
+              if worker.is_alive():
+                  raise SystemExit("B2P03_POST_SNAPSHOT_ADDITION=FAIL: worker did not terminate")
+              if thread_errors:
+                  raise SystemExit(f"B2P03_POST_SNAPSHOT_ADDITION=FAIL: worker errors: {thread_errors}")
+
+          print("B2P03_POST_SNAPSHOT_ADDITION=PASS")
+          PY
       - name: Verify deletion during snapshot enumeration is rejected
         run: |
           python - <<'PY'
