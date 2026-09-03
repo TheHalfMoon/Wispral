@@ -1,0 +1,119 @@
+name: 000B2 Manifest Transport Bootstrap
+
+on:
+  push:
+    branches:
+      - research/000b2-b2p04-subset-manifest-freeze
+    paths:
+      - '.github/workflows/000b2-manifest-bootstrap.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap-exact-manifest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      B2P04_EXPECTED_BASE: c1a576db2adf67cb4b830c280e6cba80b0ae3b43
+      B2P04_EXPECTED_MANIFEST_SHA256: 5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb
+      B2P04_EXPECTED_FREEZE_DIGEST: f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242
+    steps:
+      - name: Checkout exact bootstrap revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Verify branch and canonical base
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF_NAME}" = "research/000b2-b2p04-subset-manifest-freeze"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git fetch --no-tags origin main
+          test "$(git merge-base HEAD origin/main)" = "$B2P04_EXPECTED_BASE"
+          test ! -e research/000b2-public/subset-manifest.json
+      - name: Decode and verify exact artifact candidate bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from __future__ import annotations
+
+          import base64
+          import gzip
+          import hashlib
+          import json
+          from pathlib import Path
+
+          transport = Path('research/000b2-public/.b2p04-manifest-candidate.json.gz.b64')
+          output = Path('research/000b2-public/subset-manifest.json')
+          if not transport.is_file() or transport.is_symlink():
+              raise SystemExit('B2P04_BOOTSTRAP=FAIL: exact transport file is missing or unsafe')
+
+          try:
+              compressed = base64.b64decode(transport.read_text(encoding='ascii').strip(), validate=True)
+              raw = gzip.decompress(compressed)
+          except Exception as error:
+              raise SystemExit(f'B2P04_BOOTSTRAP=FAIL: transport decode failed: {error}') from error
+
+          observed_sha = hashlib.sha256(raw).hexdigest()
+          expected_sha = '5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb'
+          if observed_sha != expected_sha:
+              raise SystemExit(f'B2P04_BOOTSTRAP=FAIL: manifest byte SHA-256 mismatch: {observed_sha}')
+
+          obj = json.loads(raw)
+          projection = json.loads(json.dumps(obj))
+          projection['freeze_digest_sha256'] = None
+          canonical = (json.dumps(projection, ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n').encode('utf-8')
+          observed_freeze = hashlib.sha256(canonical).hexdigest()
+          expected_freeze = 'f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242'
+          if obj.get('freeze_digest_sha256') != expected_freeze or observed_freeze != expected_freeze:
+              raise SystemExit(f'B2P04_BOOTSTRAP=FAIL: freeze digest mismatch: declared={obj.get("freeze_digest_sha256")!r} recomputed={observed_freeze}')
+
+          rendered = (json.dumps(obj, ensure_ascii=False, indent=2, sort_keys=True) + '\n').encode('utf-8')
+          if raw != rendered:
+              raise SystemExit('B2P04_BOOTSTRAP=FAIL: candidate bytes are not canonical rendered JSON')
+
+          membership = obj.get('membership', {})
+          guards = obj.get('claim_guards', {})
+          if membership.get('total_speakers') != 24 or membership.get('total_utterances') != 240:
+              raise SystemExit('B2P04_BOOTSTRAP=FAIL: bounded membership counts drifted')
+          expected_guards = {
+              'candidate_decoding_started': False,
+              'candidate_revalidation_started': False,
+              'human_developer_speech_accuracy_evidence': 'ABSENT',
+              'primary_decoding_started': False,
+              'product_code_authorized': False,
+              'production_stt_selected': False,
+          }
+          if guards != expected_guards:
+              raise SystemExit('B2P04_BOOTSTRAP=FAIL: claim guards drifted')
+
+          output.write_bytes(raw)
+          print(f'B2P04_BOOTSTRAP_MANIFEST_SHA256={observed_sha}')
+          print(f'B2P04_BOOTSTRAP_FREEZE_DIGEST_SHA256={observed_freeze}')
+          print('B2P04_BOOTSTRAP=VERIFIED')
+          PY
+      - name: Verify repository B2P04 boundaries with committed candidate present
+        run: python research/000b2-public/verify_subset_freeze.py
+      - name: Commit exact manifest and remove transport bootstrap
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f \
+            research/000b2-public/.b2p04-manifest-candidate.json.gz.b64 \
+            research/000b2-public/.b2p04-manifest-part-01.b64 \
+            research/000b2-public/.b2p04-manifest-part-02.b64 \
+            .github/workflows/000b2-manifest-bootstrap.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- \
+            research/000b2-public/subset-manifest.json \
+            research/000b2-public/.b2p04-manifest-candidate.json.gz.b64 \
+            research/000b2-public/.b2p04-manifest-part-01.b64 \
+            research/000b2-public/.b2p04-manifest-part-02.b64 \
+            .github/workflows/000b2-manifest-bootstrap.yml
+          test "$(git diff --cached --name-only | wc -l)" -eq 5
+          git commit -m "research(000b2): freeze exact B2P04 subset manifest"
+          git push origin "HEAD:research/000b2-b2p04-subset-manifest-freeze"
