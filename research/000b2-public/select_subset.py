@@ -80,8 +80,16 @@ def stable_hash(selection_material: str, *components: str) -> str:
     return sha256_bytes(encoded)
 
 
+def require_no_symlink_ancestry(path: Path, label: str) -> None:
+    """Reject a symlink at the path or in any existing ancestor component."""
+    absolute = path.absolute()
+    resolved = path.resolve(strict=False)
+    require(absolute == resolved, f"symbolic link is not allowed for {label}: {path}")
+
+
 def load_policy(path: Path = POLICY_PATH) -> SelectionPolicy:
     """Load and strictly validate the frozen B2P03 selection policy."""
+    require_no_symlink_ancestry(path, "selection policy")
     require(not path.is_symlink(), f"symbolic link is not allowed for selection policy: {path}")
     require(path.is_file(), f"selection policy is not a regular file: {path}")
     raw_bytes = path.read_bytes()
@@ -196,6 +204,7 @@ def require_no_symlink_components(path: Path, anchor: Path, label: str) -> None:
 
 def resolve_librispeech_root(corpus_root: Path) -> Path:
     """Resolve a caller-provided extraction root while rejecting symlinked corpus components."""
+    require_no_symlink_ancestry(corpus_root, "corpus root")
     require(not corpus_root.is_symlink(), f"symbolic link is not allowed for corpus root: {corpus_root}")
     root = corpus_root.absolute()
     require(not root.is_symlink(), f"symbolic link is not allowed for corpus root: {root}")
