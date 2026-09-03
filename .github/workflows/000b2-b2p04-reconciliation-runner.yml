@@ -1,0 +1,80 @@
+name: 000B2 B2P04 Reconciliation Runner
+
+on:
+  push:
+    branches:
+      - docs/000b2-b2p04-frontier-reconciliation
+    paths:
+      - '.github/workflows/000b2-b2p04-reconciliation-runner.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile-b2p04:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact runner revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Verify exact branch and canonical base
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF_NAME}" = "docs/000b2-b2p04-frontier-reconciliation"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git fetch --no-tags origin main
+          test "$(git rev-parse origin/main)" = "4c4e758f22b54fa62256e57bfbd344adc817df8e"
+          test "$(git merge-base HEAD origin/main)" = "4c4e758f22b54fa62256e57bfbd344adc817df8e"
+      - name: Execute canonical reconciliation logic
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          import textwrap
+
+          path = Path('.github/workflows/000b2-b2p04-reconcile-bootstrap.yml')
+          lines = path.read_text(encoding='utf-8').splitlines()
+          start_name = '      - name: Apply exact B2P04 canonical reconciliation'
+          try:
+              start = lines.index(start_name)
+          except ValueError as exc:
+              raise SystemExit('B2P04_RECONCILIATION_RUNNER=FAIL: apply step not found') from exc
+          try:
+              run_index = next(i for i in range(start + 1, len(lines)) if lines[i] == '        run: |')
+          except StopIteration as exc:
+              raise SystemExit('B2P04_RECONCILIATION_RUNNER=FAIL: apply run block not found') from exc
+          end = len(lines)
+          for i in range(run_index + 1, len(lines)):
+              if lines[i].startswith('      - name: '):
+                  end = i
+                  break
+          body = '\n'.join(lines[run_index + 1:end]) + '\n'
+          script = textwrap.dedent(body)
+          if 'B2P04_RECONCILIATION=APPLIED' not in script:
+              raise SystemExit('B2P04_RECONCILIATION_RUNNER=FAIL: apply marker missing')
+          subprocess.run(['bash', '-c', script], check=True)
+          print('B2P04_RECONCILIATION_RUNNER=APPLIED')
+          PY
+      - name: Verify reconciled guards offline
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_methodology.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze_root_metadata.py
+      - name: Commit exact reconciliation surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/canonical/CURRENT_STATE.md research/000b2-public/readiness.json research/000b2-public/verify_methodology.py specs/000B2-public-corpus-bakeoff/tasks.md specs/CURRENT.md
+          test "$(git diff --cached --name-only | sort)" = $'docs/canonical/CURRENT_STATE.md\nresearch/000b2-public/readiness.json\nresearch/000b2-public/verify_methodology.py\nspecs/000B2-public-corpus-bakeoff/tasks.md\nspecs/CURRENT.md'
+          git commit -m "docs(000b2): reconcile frontier after B2P04"
+          git push origin HEAD:docs/000b2-b2p04-frontier-reconciliation
