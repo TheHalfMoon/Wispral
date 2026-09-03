@@ -64,5 +64,5 @@
     "production_stt_selected": false,
     "product_code_authorized": false
   },
-  "next_action": "After B2P02 is canonically merged and post-merge verified, execute B2P03 only: implement deterministic speaker/utterance subset selection independent of candidate outputs. Do not freeze the B2P04 subset manifest or begin candidate work until B2P03 is canonical."
+  "next_action": "Execute B2P03 only: implement deterministic speaker/utterance subset selection independent of candidate outputs. Do not freeze the B2P04 subset manifest or begin candidate work until B2P03 is canonical."
 }
