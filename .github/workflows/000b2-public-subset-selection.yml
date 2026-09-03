@@ -1,0 +1,45 @@
+name: 000B2 Public Corpus Subset Selection
+
+on:
+  pull_request:
+    paths:
+      - 'research/000b2-public/subset-selection-policy.json'
+      - 'research/000b2-public/select_subset.py'
+      - 'research/000b2-public/verify_subset_selection.py'
+      - 'research/000b2-public/readiness.json'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+      - 'specs/CURRENT.md'
+      - 'docs/canonical/CURRENT_STATE.md'
+      - '.github/workflows/000b2-public-subset-selection.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'research/000b2-public/subset-selection-policy.json'
+      - 'research/000b2-public/select_subset.py'
+      - 'research/000b2-public/verify_subset_selection.py'
+      - 'research/000b2-public/readiness.json'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+      - 'specs/CURRENT.md'
+      - 'docs/canonical/CURRENT_STATE.md'
+      - '.github/workflows/000b2-public-subset-selection.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-public-corpus-subset-selection:
+    runs-on: ubuntu-latest
+    env:
+      EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.EXACT_REVISION }}
+      - name: Verify exact revision identity
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+          echo "EXACT_REVISION=$EXACT_REVISION"
+      - name: Verify deterministic subset selection
+        run: python research/000b2-public/verify_subset_selection.py
