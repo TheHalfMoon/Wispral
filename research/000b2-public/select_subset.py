@@ -49,6 +49,7 @@ class SourceIdentity:
     device: int
     inode: int
     mode: int
+    link_count: int
     size: int
     mtime_ns: int
     ctime_ns: int
@@ -98,6 +99,7 @@ def source_identity(value: os.stat_result) -> SourceIdentity:
         device=value.st_dev,
         inode=value.st_ino,
         mode=value.st_mode,
+        link_count=value.st_nlink,
         size=value.st_size,
         mtime_ns=value.st_mtime_ns,
         ctime_ns=value.st_ctime_ns,
@@ -248,7 +250,6 @@ def require_no_symlink_ancestry(path: Path, label: str) -> None:
     resolved = path.resolve(strict=False)
     require(absolute == resolved, f"symbolic link is not allowed for {label}: {path}")
 
-
 def load_policy(path: Path = POLICY_PATH) -> SelectionPolicy:
     """Load and strictly validate the frozen B2P03 selection policy."""
     require_no_symlink_ancestry(path, "selection policy")
@@ -396,6 +397,8 @@ def snapshot_directory(
             stat.S_ISDIR(captured.mode) or stat.S_ISREG(captured.mode),
             f"special filesystem node is not allowed for {label}: {child_key}",
         )
+        if stat.S_ISREG(captured.mode):
+            require(captured.link_count == 1, f"hard-linked regular file is not allowed for {label}: {child_key}")
         require(child_key not in entries, f"duplicate source-tree path: {child_key}")
 
         flags = directory_flags if stat.S_ISDIR(captured.mode) else file_flags
