@@ -202,6 +202,13 @@ def require_no_symlink_components(path: Path, anchor: Path, label: str) -> None:
         require(not current.is_symlink(), f"symbolic link is not allowed for {label}: {current}")
 
 
+def require_symlink_free_tree(root: Path, label: str) -> None:
+    """Reject every symlink node under a source tree, including non-traversed directory links."""
+    require(not root.is_symlink(), f"symbolic link is not allowed for {label}: {root}")
+    for path in root.rglob("*"):
+        require(not path.is_symlink(), f"symbolic link is not allowed for {label}: {path}")
+
+
 def resolve_librispeech_root(corpus_root: Path) -> Path:
     """Resolve a caller-provided extraction root while rejecting symlinked corpus components."""
     require_no_symlink_ancestry(corpus_root, "corpus root")
@@ -248,6 +255,7 @@ def discover_partition(librispeech_root: Path, partition: str) -> dict[str, list
     """Enumerate and validate every non-symlink transcript/audio pair in one configured partition."""
     partition_root = librispeech_root / partition
     require_no_symlink_components(partition_root, librispeech_root, "partition root")
+    require_symlink_free_tree(partition_root, f"partition tree {partition}")
     transcript_files = sorted(partition_root.rglob("*.trans.txt"), key=lambda item: item.relative_to(partition_root).as_posix())
     audio_files = sorted(partition_root.rglob("*.flac"), key=lambda item: item.relative_to(partition_root).as_posix())
     require(transcript_files, f"partition {partition} contains no transcript files")
