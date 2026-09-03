@@ -1,0 +1,73 @@
+name: 000B2 B2P04 Stale Authority Repair
+
+on:
+  push:
+    branches:
+      - docs/000b2-b2p04-frontier-reconciliation
+    paths:
+      - '.github/workflows/000b2-b2p04-stale-authority-repair.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair-stale-b2p04-authority:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact staging revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Verify exact branch and canonical base
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF_NAME}" = "docs/000b2-b2p04-frontier-reconciliation"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git fetch --no-tags origin main
+          test "$(git rev-parse origin/main)" = "4c4e758f22b54fa62256e57bfbd344adc817df8e"
+          test "$(git merge-base HEAD origin/main)" = "4c4e758f22b54fa62256e57bfbd344adc817df8e"
+      - name: Repair final canonical action and regression-gate it
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          from pathlib import Path
+
+          current_path = Path('specs/CURRENT.md')
+          current = current_path.read_text(encoding='utf-8')
+          old = '''Execute and canonically qualify `B2P04` only: freeze the selected public-human subset manifest and deterministic manifest digest before candidate decoding, using the canonical B2P03 deterministic selection logic and preserving exact source-corpus identity binding. B2P04 may materialize and safely extract the exact official LibriSpeech archives bound to canonical B2P02 identities as necessary to derive the frozen membership, but it must reject unsafe archive members and source identity drift fail closed, must not inspect candidate outputs or candidate-specific behavior, and must not claim B2P06 preprocessing identities. Preserve `candidate_decoding_started=false`, `primary_decoding_started=false`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, and the closed product-code gate. B2P05 remains non-authorized until B2P04 itself passes applicable exact-head CI, fresh independent substantive semantic review, zero unresolved actionable review threads, guarded expected-head merge, successful post-merge verification, and canonical authority/readiness reread.'''
+          new = '''Execute and canonically qualify `B2P05` only: revalidate the six canonical candidate cells and their artifact/runtime/model identities against live canonical evidence. B2P05 may verify identity availability, exact source revisions, model/artifact digests, runtime/tool versions, and canonical smoke/waiver evidence without candidate-specific result inspection. It must not decode the frozen P0 subset, must not begin B2P06 preprocessing capture, and must not mutate the B2P04 subset membership or freeze digest. Preserve `candidate_decoding_started=false`, `primary_decoding_started=false`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, and the closed product-code gate. B2P06 remains non-authorized until B2P05 is canonically qualified, post-merge verified, and reconciled.'''
+          if current.count(old) != 1:
+              raise SystemExit(f'B2P04_STALE_AUTHORITY_REPAIR=FAIL: current action anchor count {current.count(old)}')
+          current_path.write_text(current.replace(old, new), encoding='utf-8')
+
+          verifier_path = Path('research/000b2-public/verify_methodology.py')
+          verifier = verifier_path.read_text(encoding='utf-8')
+          anchor = '''    require_text(current, "current bounded execution unit `B2P05`", "current frontier")
+              require_absent(current, "current bounded execution unit `B2P04`", "current frontier")'''
+          replacement = '''    require_text(current, "current bounded execution unit `B2P05`", "current frontier")
+              require_text(current, "Execute and canonically qualify `B2P05` only", "current frontier next action")
+              require_absent(current, "Execute and canonically qualify `B2P04` only", "current frontier stale next action")
+              require_absent(current, "current bounded execution unit `B2P04`", "current frontier")'''
+          if verifier.count(anchor) != 1:
+              raise SystemExit(f'B2P04_STALE_AUTHORITY_REPAIR=FAIL: verifier anchor count {verifier.count(anchor)}')
+          verifier_path.write_text(verifier.replace(anchor, replacement), encoding='utf-8')
+          print('B2P04_STALE_AUTHORITY_REPAIR=APPLIED')
+          PY
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_methodology.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze_root_metadata.py
+      - name: Commit forward-only repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add specs/CURRENT.md research/000b2-public/verify_methodology.py
+          test "$(git diff --cached --name-only | sort)" = $'research/000b2-public/verify_methodology.py\nspecs/CURRENT.md'
+          git diff --cached --check
+          git commit -m "fix(000b2): remove stale B2P04 execution authority"
+          git push origin HEAD:docs/000b2-b2p04-frontier-reconciliation
