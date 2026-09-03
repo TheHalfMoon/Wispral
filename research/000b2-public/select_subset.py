@@ -64,7 +64,9 @@ def sha256_bytes(data: bytes) -> str:
 
 
 def sha256_file(path: Path) -> str:
-    """Hash one source audio file without loading it all into memory."""
+    """Hash one non-symlink source audio file without loading it all into memory."""
+    require(not path.is_symlink(), f"symbolic link is not allowed for source audio: {path}")
+    require(path.is_file(), f"source audio is not a regular file: {path}")
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         while chunk := handle.read(1024 * 1024):
@@ -80,6 +82,8 @@ def stable_hash(selection_material: str, *components: str) -> str:
 
 def load_policy(path: Path = POLICY_PATH) -> SelectionPolicy:
     """Load and strictly validate the frozen B2P03 selection policy."""
+    require(not path.is_symlink(), f"symbolic link is not allowed for selection policy: {path}")
+    require(path.is_file(), f"selection policy is not a regular file: {path}")
     raw_bytes = path.read_bytes()
     raw = json.loads(raw_bytes.decode("utf-8"))
     require(isinstance(raw, dict), "selection policy root must be an object")
@@ -177,20 +181,41 @@ def load_policy(path: Path = POLICY_PATH) -> SelectionPolicy:
     )
 
 
+def require_no_symlink_components(path: Path, anchor: Path, label: str) -> None:
+    """Reject symlinks at the anchor or any lexical component from anchor through path."""
+    try:
+        relative = path.relative_to(anchor)
+    except ValueError as error:
+        raise SelectionError(f"{label} escapes configured corpus root: {path}") from error
+    require(not anchor.is_symlink(), f"symbolic link is not allowed for {label}: {anchor}")
+    current = anchor
+    for component in relative.parts:
+        current = current / component
+        require(not current.is_symlink(), f"symbolic link is not allowed for {label}: {current}")
+
+
 def resolve_librispeech_root(corpus_root: Path) -> Path:
-    """Resolve a caller-provided extraction root to the LibriSpeech directory without guessing elsewhere."""
-    root = corpus_root.resolve()
+    """Resolve a caller-provided extraction root while rejecting symlinked corpus components."""
+    require(not corpus_root.is_symlink(), f"symbolic link is not allowed for corpus root: {corpus_root}")
+    root = corpus_root.absolute()
+    require(not root.is_symlink(), f"symbolic link is not allowed for corpus root: {root}")
     require(root.is_dir(), f"corpus root is not a directory: {corpus_root}")
+    nested = root / "LibriSpeech"
     if root.name == "LibriSpeech":
         resolved = root
-    elif (root / "LibriSpeech").is_dir():
-        resolved = root / "LibriSpeech"
+    elif nested.exists():
+        require(not nested.is_symlink(), f"symbolic link is not allowed for LibriSpeech root: {nested}")
+        require(nested.is_dir(), f"LibriSpeech extraction is not a directory: {nested}")
+        resolved = nested
     elif all((root / partition).is_dir() for partition in EXPECTED_PARTITIONS):
         resolved = root
     else:
         raise SelectionError("corpus root must be LibriSpeech or contain the configured test-clean/test-other extraction")
+    require(not resolved.is_symlink(), f"symbolic link is not allowed for LibriSpeech root: {resolved}")
     for partition in EXPECTED_PARTITIONS:
-        require((resolved / partition).is_dir(), f"missing required partition: {partition}")
+        partition_root = resolved / partition
+        require(not partition_root.is_symlink(), f"symbolic link is not allowed for partition root: {partition_root}")
+        require(partition_root.is_dir(), f"missing required partition: {partition}")
     return resolved
 
 
@@ -211,8 +236,9 @@ def validate_relative_source_path(partition: str, speaker: str, chapter: str, pa
 
 
 def discover_partition(librispeech_root: Path, partition: str) -> dict[str, list[Utterance]]:
-    """Enumerate and validate every transcript/audio pair in one configured partition."""
+    """Enumerate and validate every non-symlink transcript/audio pair in one configured partition."""
     partition_root = librispeech_root / partition
+    require_no_symlink_components(partition_root, librispeech_root, "partition root")
     transcript_files = sorted(partition_root.rglob("*.trans.txt"), key=lambda item: item.relative_to(partition_root).as_posix())
     audio_files = sorted(partition_root.rglob("*.flac"), key=lambda item: item.relative_to(partition_root).as_posix())
     require(transcript_files, f"partition {partition} contains no transcript files")
@@ -221,6 +247,7 @@ def discover_partition(librispeech_root: Path, partition: str) -> dict[str, list
     by_id: dict[str, Utterance] = {}
     expected_audio_paths: dict[str, Path] = {}
     for transcript_file in transcript_files:
+        require_no_symlink_components(transcript_file, partition_root, "transcript source")
         relative = transcript_file.relative_to(partition_root)
         require(len(relative.parts) == 3, f"unexpected transcript path depth: {partition}/{relative.as_posix()}")
         speaker_dir, chapter_dir = relative.parts[0], relative.parts[1]
@@ -229,6 +256,7 @@ def discover_partition(librispeech_root: Path, partition: str) -> dict[str, list
             transcript_file.name == f"{expected_stem}.trans.txt",
             f"transcript filename does not match speaker/chapter directories: {relative.as_posix()}",
         )
+        require(transcript_file.is_file(), f"transcript source is not a regular file: {relative.as_posix()}")
         lines = transcript_file.read_text(encoding="utf-8").splitlines()
         require(lines, f"empty transcript file: {relative.as_posix()}")
         for line_number, line in enumerate(lines, start=1):
@@ -241,6 +269,7 @@ def discover_partition(librispeech_root: Path, partition: str) -> dict[str, list
             require(chapter_id == chapter_dir, f"transcript chapter mismatch for {utterance_id}")
             require(utterance_id not in by_id, f"duplicate transcript utterance id: {utterance_id}")
             audio_path = transcript_file.parent / f"{utterance_id}.flac"
+            require_no_symlink_components(audio_path, partition_root, "audio source")
             require(audio_path.is_file(), f"missing audio for transcript utterance: {partition}/{speaker_dir}/{chapter_dir}/{utterance_id}.flac")
             source_path = f"LibriSpeech/{partition}/{speaker_id}/{chapter_id}/{utterance_id}.flac"
             by_id[utterance_id] = Utterance(
@@ -252,17 +281,19 @@ def discover_partition(librispeech_root: Path, partition: str) -> dict[str, list
                 audio_path=audio_path,
                 source_audio_path=source_path,
             )
-            expected_audio_paths[utterance_id] = audio_path.resolve()
+            expected_audio_paths[utterance_id] = audio_path
 
     seen_audio_ids: set[str] = set()
     for audio_file in audio_files:
+        require_no_symlink_components(audio_file, partition_root, "audio source")
         utterance_id = audio_file.name.removesuffix(".flac")
         speaker_id, chapter_id, _ = parse_utterance_id(utterance_id)
         validate_relative_source_path(partition, speaker_id, chapter_id, audio_file, partition_root)
+        require(audio_file.is_file(), f"audio source is not a regular file: {audio_file.relative_to(partition_root).as_posix()}")
         require(utterance_id not in seen_audio_ids, f"duplicate audio utterance id: {utterance_id}")
         seen_audio_ids.add(utterance_id)
         require(utterance_id in by_id, f"audio has no transcript entry: {partition}/{audio_file.relative_to(partition_root).as_posix()}")
-        require(audio_file.resolve() == expected_audio_paths[utterance_id], f"audio path mismatch for utterance: {utterance_id}")
+        require(audio_file == expected_audio_paths[utterance_id], f"audio path mismatch for utterance: {utterance_id}")
 
     require(set(by_id) == seen_audio_ids, f"transcript/audio identity mismatch in partition {partition}")
     speakers: dict[str, list[Utterance]] = {}
