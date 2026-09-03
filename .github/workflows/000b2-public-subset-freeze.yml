@@ -5,6 +5,7 @@ on:
     paths:
       - 'research/000b2-public/freeze_subset_manifest.py'
       - 'research/000b2-public/verify_subset_freeze.py'
+      - 'research/000b2-public/verify_subset_freeze_root_metadata.py'
       - 'research/000b2-public/subset-manifest.json'
       - 'research/000b2-public/subset-selection-policy.json'
       - 'research/000b2-public/select_subset.py'
@@ -20,6 +21,7 @@ on:
     paths:
       - 'research/000b2-public/freeze_subset_manifest.py'
       - 'research/000b2-public/verify_subset_freeze.py'
+      - 'research/000b2-public/verify_subset_freeze_root_metadata.py'
       - 'research/000b2-public/subset-manifest.json'
       - 'research/000b2-public/subset-selection-policy.json'
       - 'research/000b2-public/select_subset.py'
@@ -51,6 +53,8 @@ jobs:
           echo "B2P04_REVISION=$B2P04_REVISION"
       - name: Verify offline freeze boundaries
         run: python research/000b2-public/verify_subset_freeze.py
+      - name: Verify root metadata extraction boundary
+        run: python research/000b2-public/verify_subset_freeze_root_metadata.py
       - name: Reproduce exact B2P04 subset freeze
         run: |
           mkdir -p "$RUNNER_TEMP/b2p04/work"
