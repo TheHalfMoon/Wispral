@@ -9,6 +9,11 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 B2P01_CANONICAL_MERGE = "2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129"
+B2P02_CANONICAL_MERGE = "1ba4e42561cc53f574d5d35689e2ae499a398b5c"
+B2P02_POSTMERGE_RUN_ID = 33751302416
+B2P02_POSTMERGE_JOB_ID = 100635230794
+B2P02_POSTMERGE_ARTIFACT_ID = 9891735545
+B2P02_POSTMERGE_ARTIFACT_DIGEST = "sha256:b0187d8b664a212a100d6d1515773891315d5af9e137178507c3b079d9edca6b"
 B2P02_PROBE_REVISION = "b95da4aef86766ee9a976bb951cc2f6779dd1ef2"
 B2P02_PROBE_RUN_ID = 33683639224
 B2P02_PROBE_JOB_ID = 100425793105
@@ -47,6 +52,10 @@ def require(condition: bool, message: str) -> None:
 
 def require_text(text: str, phrase: str, label: str) -> None:
     require(phrase in text, f"{label} missing required text: {phrase}")
+
+
+def require_absent(text: str, phrase: str, label: str) -> None:
+    require(phrase not in text, f"{label} contains stale/prohibited text: {phrase}")
 
 
 def require_bool(mapping: dict[str, Any], key: str, expected: bool, label: str) -> None:
@@ -93,20 +102,9 @@ def main() -> None:
     founding_tasks_path = ROOT / "specs/000-founding-research/tasks.md"
 
     required_paths = (
-        readiness_path,
-        corpus_source_path,
-        materialization_path,
-        materializer_path,
-        materialization_workflow_path,
-        spec_path,
-        plan_path,
-        tasks_path,
-        parent_spec_path,
-        parent_plan_path,
-        parent_tasks_path,
-        current_path,
-        current_state_path,
-        founding_tasks_path,
+        readiness_path, corpus_source_path, materialization_path, materializer_path,
+        materialization_workflow_path, spec_path, plan_path, tasks_path, parent_spec_path,
+        parent_plan_path, parent_tasks_path, current_path, current_state_path, founding_tasks_path,
     )
     for path in required_paths:
         require(path.is_file(), f"missing required file: {path.relative_to(ROOT)}")
@@ -140,10 +138,7 @@ def main() -> None:
     require(isinstance(public, dict), "public human baseline must be an object")
     require_exact_keys(
         public,
-        {
-            "corpus", "upstream", "license", "partitions", "archive_byte_evidence",
-            "subset_manifest_frozen", "candidate_decoding_started", "claim_scope",
-        },
+        {"corpus", "upstream", "license", "partitions", "archive_byte_evidence", "subset_manifest_frozen", "candidate_decoding_started", "claim_scope"},
         "public_human_baseline",
     )
     require(public.get("corpus") == "LibriSpeech ASR corpus SLR12", "unexpected public corpus")
@@ -155,10 +150,9 @@ def main() -> None:
     require_bool(public, "candidate_decoding_started", False, "public_human_baseline")
 
     readiness_partitions = index_records(public.get("partitions"), expected_names, "readiness partition")
-    readiness_partition_keys = {"name", "official_md5", "archive_bytes", "archive_sha256", "materialized"}
     for name, expected in EXPECTED_ARCHIVES.items():
         item = readiness_partitions[name]
-        require_exact_keys(item, readiness_partition_keys, f"readiness partition[{name}]")
+        require_exact_keys(item, {"name", "official_md5", "archive_bytes", "archive_sha256", "materialized"}, f"readiness partition[{name}]")
         require(item.get("official_md5") == expected["official_md5"], f"readiness MD5 drift for {name}")
         require(item.get("archive_bytes") == expected["archive_bytes"], f"readiness byte-count drift for {name}")
         require(item.get("archive_sha256") == expected["archive_sha256"], f"readiness SHA-256 drift for {name}")
@@ -207,19 +201,15 @@ def main() -> None:
     require_bool(guards, "product_code_authorized", False, "claim_guards")
 
     expected_next_action = (
-        "After B2P02 is canonically merged and post-merge verified, execute B2P03 only: implement deterministic "
-        "speaker/utterance subset selection independent of candidate outputs. Do not freeze the B2P04 subset manifest "
-        "or begin candidate work until B2P03 is canonical."
+        "Execute B2P03 only: implement deterministic speaker/utterance subset selection independent of candidate outputs. "
+        "Do not freeze the B2P04 subset manifest or begin candidate work until B2P03 is canonical."
     )
-    require(readiness.get("next_action") == expected_next_action, "next action must be exact B2P03-after-canonicalization instruction")
+    require(readiness.get("next_action") == expected_next_action, "next action must be exact B2P03-only instruction")
 
     corpus_source = load_object(corpus_source_path, "corpus-source")
     require_exact_keys(
         corpus_source,
-        {
-            "schema_version", "task", "state", "source_provenance_verified_on", "resource", "partitions",
-            "verification", "claim_guards", "next_task_after_canonicalization",
-        },
+        {"schema_version", "task", "state", "source_provenance_verified_on", "resource", "partitions", "verification", "claim_guards", "next_task_after_canonicalization"},
         "corpus_source",
     )
     require(corpus_source.get("schema_version") == "000b2-public-corpus-source-v2", "corpus-source schema drift")
@@ -228,14 +218,9 @@ def main() -> None:
     require(corpus_source.get("source_provenance_verified_on") == "2026-09-02", "source provenance date drift")
 
     expected_resource = {
-        "provider": "OpenSLR",
-        "identifier": "SLR12",
-        "name": "LibriSpeech ASR corpus",
-        "resource_page": "https://www.openslr.org/12/",
-        "summary": "Large-scale (1000 hours) corpus of read English speech",
-        "category": "Speech",
-        "license": "CC BY 4.0",
-        "checksum_manifest": "https://www.openslr.org/resources/12/md5sum.txt",
+        "provider": "OpenSLR", "identifier": "SLR12", "name": "LibriSpeech ASR corpus",
+        "resource_page": "https://www.openslr.org/12/", "summary": "Large-scale (1000 hours) corpus of read English speech",
+        "category": "Speech", "license": "CC BY 4.0", "checksum_manifest": "https://www.openslr.org/resources/12/md5sum.txt",
         "checksum_algorithm": "MD5",
     }
     source_resource = corpus_source.get("resource")
@@ -243,10 +228,7 @@ def main() -> None:
     require(source_resource == expected_resource, "corpus-source authoritative resource facts drift")
 
     source_partitions = index_records(corpus_source.get("partitions"), expected_names, "corpus-source partition")
-    source_partition_keys = {
-        "name", "role", "source_url", "official_md5", "archive_bytes", "materialized",
-        "archive_sha256", "archive_retained_in_repository",
-    }
+    source_partition_keys = {"name", "role", "source_url", "official_md5", "archive_bytes", "materialized", "archive_sha256", "archive_retained_in_repository"}
     for name, expected in EXPECTED_ARCHIVES.items():
         item = source_partitions[name]
         require_exact_keys(item, source_partition_keys, f"corpus_source.partition[{name}]")
@@ -259,11 +241,8 @@ def main() -> None:
         require_bool(item, "archive_retained_in_repository", False, f"corpus_source.partition[{name}]")
 
     expected_verification = {
-        "resource_page_checked": True,
-        "checksum_manifest_checked": True,
-        "archive_bytes_fetched": True,
-        "archive_checksums_verified_against_bytes": True,
-        "archive_sha256_computed_from_fetched_bytes": True,
+        "resource_page_checked": True, "checksum_manifest_checked": True, "archive_bytes_fetched": True,
+        "archive_checksums_verified_against_bytes": True, "archive_sha256_computed_from_fetched_bytes": True,
         "materialization_evidence": "research/000b2-public/archive-materialization.json",
         "scope": "SOURCE_LICENSE_AND_EXACT_ARCHIVE_BYTE_VERIFICATION",
     }
@@ -273,11 +252,8 @@ def main() -> None:
 
     expected_source_guards = {
         "public_human_claim_scope": "BOUNDED_ORDINARY_READ_ENGLISH_ONLY",
-        "human_developer_speech_accuracy_evidence": "ABSENT",
-        "subset_manifest_frozen": False,
-        "candidate_decoding_started": False,
-        "production_stt_selected": False,
-        "product_code_authorized": False,
+        "human_developer_speech_accuracy_evidence": "ABSENT", "subset_manifest_frozen": False,
+        "candidate_decoding_started": False, "production_stt_selected": False, "product_code_authorized": False,
     }
     source_guards = corpus_source.get("claim_guards")
     require(isinstance(source_guards, dict), "corpus-source claim guards must be an object")
@@ -287,11 +263,7 @@ def main() -> None:
     evidence = load_object(materialization_path, "archive materialization evidence")
     require_exact_keys(
         evidence,
-        {
-            "schema_version", "task", "status", "repository", "probe_revision", "github_run_id",
-            "github_run_attempt", "github_job_id", "artifact", "runner", "checksum_manifest",
-            "checksum_manifest_resolved_url", "archive_bytes_retained_in_repository", "archives", "evidence_boundary",
-        },
+        {"schema_version", "task", "status", "repository", "probe_revision", "github_run_id", "github_run_attempt", "github_job_id", "artifact", "runner", "checksum_manifest", "checksum_manifest_resolved_url", "archive_bytes_retained_in_repository", "archives", "evidence_boundary"},
         "archive_materialization",
     )
     require(evidence.get("schema_version") == "000b2-public-archive-materialization-evidence-v1", "materialization schema drift")
@@ -334,8 +306,7 @@ def main() -> None:
     evidence_boundary = evidence.get("evidence_boundary")
     require(isinstance(evidence_boundary, dict), "materialization evidence boundary must be an object")
     require(
-        evidence_boundary
-        == {
+        evidence_boundary == {
             "official_md5_verified_against_fetched_bytes": True,
             "sha256_computed_from_same_fetched_bytes": True,
             "archives_extracted": False,
@@ -360,24 +331,17 @@ def main() -> None:
     materialization_workflow = materialization_workflow_path.read_text(encoding="utf-8")
 
     for phrase in (
-        "HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT",
-        "DIAGNOSTIC_ONLY",
-        "CC BY 4.0",
-        EXPECTED_ARCHIVES["test-clean.tar.gz"]["official_md5"],
-        EXPECTED_ARCHIVES["test-other.tar.gz"]["official_md5"],
+        "HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT", "DIAGNOSTIC_ONLY", "CC BY 4.0",
+        EXPECTED_ARCHIVES["test-clean.tar.gz"]["official_md5"], EXPECTED_ARCHIVES["test-other.tar.gz"]["official_md5"],
     ):
         require_text(spec, phrase, "public child spec")
         require_text(current, phrase, "current frontier")
 
     for phrase in (
-        "Materialize and verify exact archive bytes",
-        "Freeze deterministic public-human subset selection logic and manifest",
-        "Revalidate all candidate artifact/runtime identities from canonical evidence",
-        "identical P0 audio bytes",
-        "The subset builder must operate before candidate decoding",
-        "D0 is optional and diagnostic",
-        "D0 must never be merged numerically into P0 as one human accuracy score",
-        "Do not infer control merely because metadata was captured",
+        "Materialize and verify exact archive bytes", "Freeze deterministic public-human subset selection logic and manifest",
+        "Revalidate all candidate artifact/runtime identities from canonical evidence", "identical P0 audio bytes",
+        "The subset builder must operate before candidate decoding", "D0 is optional and diagnostic",
+        "D0 must never be merged numerically into P0 as one human accuracy score", "Do not infer control merely because metadata was captured",
         "Large upstream audio/model binaries must not be committed merely for reproducibility",
     ):
         require_text(plan, phrase, "public child plan")
@@ -393,13 +357,9 @@ def main() -> None:
 
     for phrase in (
         "These execution tasks become authorized only after the public-corpus amendment and frontier reconciliation are canonical on `main`.",
-        "primary_decoding_started=false",
-        "P0 and D0 strictly separated",
-        "representing public audiobook speech as developer speech",
-        "representing synthetic developer speech as human speech",
-        "changing subset membership after candidate results are visible",
-        "production STT integration",
-        "permanent Rust/Cargo speech dependency",
+        "primary_decoding_started=false", "P0 and D0 strictly separated", "representing public audiobook speech as developer speech",
+        "representing synthetic developer speech as human speech", "changing subset membership after candidate results are visible",
+        "production STT integration", "permanent Rust/Cargo speech dependency",
     ):
         require_text(tasks, phrase, "public child tasks")
 
@@ -408,9 +368,22 @@ def main() -> None:
     require_text(historical_section[:512], "State: `BLOCKED_EXTERNAL`", "historical B2 frontier")
     require_text(current, "`000B2-public-corpus-bakeoff`", "current frontier")
     require_text(current, B2P01_CANONICAL_MERGE, "current frontier B2P01 canonical proof")
-    require_text(current, "current bounded execution unit `B2P02`", "current frontier")
+    require_text(current, B2P02_CANONICAL_MERGE, "current frontier B2P02 canonical proof")
+    require_text(current, f"run `{B2P02_POSTMERGE_RUN_ID}`", "current frontier B2P02 post-merge run proof")
+    require_text(current, f"job `{B2P02_POSTMERGE_JOB_ID}`", "current frontier B2P02 post-merge job proof")
+    require_text(current, f"artifact `{B2P02_POSTMERGE_ARTIFACT_ID}`", "current frontier B2P02 post-merge artifact proof")
+    require_text(current, B2P02_POSTMERGE_ARTIFACT_DIGEST, "current frontier B2P02 post-merge artifact digest proof")
+    require_text(current, "current bounded execution unit `B2P03`", "current frontier")
+    require_absent(current, "current bounded execution unit `B2P02`", "current frontier")
+
     require_text(current_state, B2P01_CANONICAL_MERGE, "current state B2P01 canonical proof")
-    require_text(current_state, "current bounded execution unit is `B2P02`", "current state")
+    require_text(current_state, B2P02_CANONICAL_MERGE, "current state B2P02 canonical proof")
+    require_text(current_state, f"run `{B2P02_POSTMERGE_RUN_ID}`", "current state B2P02 post-merge run proof")
+    require_text(current_state, f"job `{B2P02_POSTMERGE_JOB_ID}`", "current state B2P02 post-merge job proof")
+    require_text(current_state, f"artifact `{B2P02_POSTMERGE_ARTIFACT_ID}`", "current state B2P02 post-merge artifact proof")
+    require_text(current_state, B2P02_POSTMERGE_ARTIFACT_DIGEST, "current state B2P02 post-merge artifact digest proof")
+    require_text(current_state, "current bounded execution unit is `B2P03`", "current state")
+    require_absent(current_state, "current bounded execution unit is `B2P02`", "current state")
 
     for label, text in (("parent spec", parent_spec), ("parent plan", parent_plan), ("parent tasks", parent_tasks)):
         require_text(text, "`000B2-unbiased-stt-bakeoff`", label)
@@ -424,18 +397,13 @@ def main() -> None:
     require_text(founding_tasks, "HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT", "founding tasks")
 
     for phrase in (
-        "https://www.openslr.org/resources/12/test-clean.tar.gz",
-        "https://www.openslr.org/resources/12/test-other.tar.gz",
-        "B2P02_MATERIALIZATION=PASS",
-        "B2P02_REVISION",
+        "https://www.openslr.org/resources/12/test-clean.tar.gz", "https://www.openslr.org/resources/12/test-other.tar.gz",
+        "B2P02_MATERIALIZATION=PASS", "B2P02_REVISION",
     ):
         require_text(materializer, phrase, "B2P02 materializer")
     for phrase in (
-        "000B2 Public Corpus Archive Materialization",
-        "B2P02_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}",
-        "ref: ${{ env.B2P02_REVISION }}",
-        "materialize_archives.py",
-        "actions/upload-artifact@v4",
+        "000B2 Public Corpus Archive Materialization", "B2P02_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}",
+        "ref: ${{ env.B2P02_REVISION }}", "materialize_archives.py", "actions/upload-artifact@v4",
     ):
         require_text(materialization_workflow, phrase, "B2P02 materialization workflow")
 
@@ -443,8 +411,11 @@ def main() -> None:
     print("B2P01_CORPUS_PROVENANCE=PASS")
     print("B2P02_ARCHIVE_MATERIALIZATION=PASS")
     print(f"B2P02_PROBE_RUN_ID={B2P02_PROBE_RUN_ID}")
+    print(f"B2P02_CANONICAL_MERGE={B2P02_CANONICAL_MERGE}")
+    print(f"B2P02_POSTMERGE_RUN_ID={B2P02_POSTMERGE_RUN_ID}")
     print(f"B2P02_TEST_CLEAN_SHA256={EXPECTED_ARCHIVES['test-clean.tar.gz']['archive_sha256']}")
     print(f"B2P02_TEST_OTHER_SHA256={EXPECTED_ARCHIVES['test-other.tar.gz']['archive_sha256']}")
+    print("B2P03_FRONTIER=AUTHORIZED")
     print("STRUCTURED_READINESS_GUARDS=PASS")
     print("P0_D0_SEPARATION=PASS")
     print("PRE_DECODE_FREEZE_ORDERING=PASS")

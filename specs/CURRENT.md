@@ -1,10 +1,12 @@
 # Wispral Specification Frontier
 
-**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 canonical; current bounded execution unit `B2P02`
+**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 and B2P02 canonical; current bounded execution unit `B2P03`
 
 **Canonical public-corpus methodology merge:** `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` from PR #28, merged from exact head `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` against exact base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`. Live chronology did not prove the required independent semantic review before that merge; the resulting qualification debt was repaired forward-only by PR #32 at canonical merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, and machine readiness was reconciled by PR #33 at canonical merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`.
 
 **Canonical B2P01 provenance merge:** `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129` from PR #34, merged by guarded squash from exact qualified head `dbc499dc3e24c247b95260631558eec825672fbf` against exact base `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`. All six applicable exact-head workflows succeeded, fresh independent CodeRabbit review reported no actionable findings, all six post-merge workflows on the canonical merge succeeded, and the canonical authority/readiness reread authorized B2P02 as the next bounded unit.
+
+**Canonical B2P02 archive-byte merge:** `1ba4e42561cc53f574d5d35689e2ae499a398b5c` from PR #35, merged by guarded squash from exact qualified head `06bbd50676edcf87fc3e85b73bc6b7f17d3161ff` against exact base `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`. All seven applicable exact-head workflows succeeded and fresh independent CodeRabbit review covered all 11 changed files with no actionable findings. Post-merge archive materialization run `33751302416`, job `100635230794`, checked out the canonical merge, passed exact workflow-structure verification before archive access, re-fetched both official OpenSLR archives, reproduced both recorded byte counts, official MD5 values, and SHA-256 identities, emitted `B2P02_REDIRECT_POLICY=PASS` and `B2P02_MATERIALIZATION=PASS`, and uploaded artifact `9891735545` with ZIP digest `sha256:b0187d8b664a212a100d6d1515773891315d5af9e137178507c3b079d9edca6b`. The required canonical reread therefore authorizes B2P03 as the sole next bounded unit.
 
 This file owns the executable specification frontier. Historical proof and merge chronology live in `docs/canonical/CURRENT_STATE.md` and immutable Git history.
 
@@ -87,7 +89,7 @@ The intended active B2 execution route is:
 
 State: `READY`
 
-The bounded methodology amendment became canonical at merge `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`, the public-frontier reconciliation became canonical at merge `94e3b50009b5054db6ccd9bb3276facd1399399c`, the qualification-chronology remediation became canonical at merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, the machine readiness reconciliation became canonical at merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`, and B2P01 provenance became canonical at merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`. `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`. B2P01 is complete. B2P02 is the current bounded execution unit. Comparative decoding remains prohibited until the ordered pre-decode tasks `B2P01` through `B2P08` are genuinely complete and the final attempt manifest is frozen with `primary_decoding_started=false`.
+The bounded methodology amendment became canonical at merge `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`, the public-frontier reconciliation became canonical at merge `94e3b50009b5054db6ccd9bb3276facd1399399c`, the qualification-chronology remediation became canonical at merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, the machine readiness reconciliation became canonical at merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`, B2P01 provenance became canonical at merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`, and B2P02 archive-byte verification became canonical at merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c`. `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`. B2P01 and B2P02 are complete. B2P03 is the current bounded execution unit. Comparative decoding remains prohibited until the ordered pre-decode tasks `B2P01` through `B2P08` are genuinely complete and the final attempt manifest is frozen with `primary_decoding_started=false`.
 
 Rationale:
 
@@ -131,6 +133,8 @@ PR #33 then reconciled the machine-readable public readiness state and canonical
 
 PR #34 then executed and canonically qualified B2P01 source/checksum provenance. It merged by guarded expected-head squash as `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129` from exact qualified head `dbc499dc3e24c247b95260631558eec825672fbf` against exact base `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`. The exact candidate had all six applicable workflows successful and a fresh independent CodeRabbit review with no actionable findings after a prior canonical-authority defect was repaired. All six push workflows on the canonical merge then completed successfully. No archive bytes were fetched by B2P01. The required canonical reread therefore satisfied the B2P02 entry condition.
 
+PR #35 then executed and canonically qualified B2P02 archive materialization. It merged by guarded expected-head squash as `1ba4e42561cc53f574d5d35689e2ae499a398b5c` from exact qualified head `06bbd50676edcf87fc3e85b73bc6b7f17d3161ff` against exact base `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`. The final 11-file candidate had all seven applicable exact-head workflows successful and a fresh independent CodeRabbit substantive review with no actionable findings after forward-only redirect and workflow-structure hardening. Post-merge materialization run `33751302416`, job `100635230794`, revalidated the canonical merge SHA and reproduced both archive byte counts, official MD5 values, and SHA-256 identities. The required canonical reread therefore satisfies the B2P03 entry condition.
+
 ## Public-human P0 baseline
 
 The public B2 lane uses LibriSpeech ASR corpus SLR12 from OpenSLR.
@@ -142,14 +146,15 @@ Frozen upstream facts for entry:
 - `test-clean.tar.gz` official MD5: `32fa31d27d2e1cad72775fee3f4849a9`;
 - `test-other.tar.gz` official MD5: `fb5a50374b501bb3bac4815ee91d3135`.
 
-B2P02 exact archive-byte evidence on PR #35 records:
+B2P02 exact archive-byte evidence records:
 
 - `test-clean.tar.gz` — 346663984 bytes, SHA-256 `39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23`;
 - `test-other.tar.gz` — 328757843 bytes, SHA-256 `d09c181bba5cf717b3dee7d4d592af11a3ee3a09e08ae025c5506f6ebe961c29`;
-- official MD5 was reverified against the same fetched bytes in GitHub Actions run `33683639224` on exact probe revision `b95da4aef86766ee9a976bb951cc2f6779dd1ef2`;
+- official MD5 was reverified against the same fetched bytes on the final PR #35 exact head and again after canonical merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c` in GitHub Actions run `33751302416`, job `100635230794`;
+- post-merge bounded observation artifact `9891735545` has ZIP digest `sha256:b0187d8b664a212a100d6d1515773891315d5af9e137178507c3b079d9edca6b`;
 - the large upstream archive bytes were deleted after hashing and are not committed to the repository.
 
-The final B2P02 candidate must re-fetch and verify these committed identities on its exact head before merge. B2P03 remains non-authorized until B2P02 is canonical and post-merge verified.
+B2P02 is canonical and post-merge verified. B2P03 is now authorized to implement deterministic speaker/utterance subset selection independent of candidate outputs. B2P03 MUST NOT freeze the B2P04 selected-subset manifest, inspect candidate outputs, or begin candidate decoding.
 
 P0 supports only bounded ordinary read-English recognition evidence on the exact frozen public subset. It MUST NOT be described as developer speech.
 
@@ -246,4 +251,4 @@ Live canonical GitHub/repository truth overrides this file. After every merged r
 
 ## Next canonical action
 
-Complete and canonically qualify the current bounded execution unit `B2P02`. The current candidate may record B2P02 byte evidence only because B2P01 is canonical at merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129` and its post-merge verification/reread succeeded. B2P02 must re-fetch the exact official archives on the final candidate head, verify official MD5 against those bytes, and verify the recorded SHA-256 values before merge. `B2P03` remains non-authorized until B2P02 itself passes applicable exact-head CI, fresh independent substantive semantic review, zero unresolved actionable review threads, guarded expected-head merge, successful post-merge verification, and canonical authority/readiness reread. Do not freeze the B2P04 subset manifest or begin comparative candidate decoding. Preserve `000B2-unbiased-stt-bakeoff` as historical `BLOCKED_EXTERNAL`, preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, and keep the product-code gate closed.
+Execute and canonically qualify `B2P03` only: implement deterministic speaker/utterance subset selection independent of candidate outputs. The implementation must be deterministic from corpus metadata/content identities and frozen configuration, must not inspect candidate outputs or candidate-specific behavior, and must remain separate from the B2P04 manifest freeze. Do not freeze the B2P04 selected-subset manifest, revalidate or run candidate cells, or begin comparative P0 decoding during B2P03. Preserve `subset_manifest_frozen=false`, `candidate_decoding_started=false`, `primary_decoding_started=false`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, and the closed product-code gate. B2P04 remains non-authorized until B2P03 itself passes applicable exact-head CI, fresh independent substantive semantic review, zero unresolved actionable review threads, guarded expected-head merge, successful post-merge verification, and canonical authority/readiness reread.
