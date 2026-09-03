@@ -1,0 +1,59 @@
+name: Internal B2P06 Buildconf Quote Patch
+
+on:
+  push:
+    branches:
+      - research/000b2-b2p06-preprocessing-capture
+    paths:
+      - '.github/workflows/internal-b2p06-quote-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-buildconf-normalization:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: research/000b2-b2p06-preprocessing-capture
+          fetch-depth: 0
+      - name: Normalize only shell quoting in buildconf flags
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('research/000b2-public/preprocess_subset.py')
+          text = path.read_text(encoding='utf-8')
+          old = (
+              '    observed_flags = [line.strip() for line in output.splitlines() if line.strip().startswith("--")]\n'
+              '    behavior_flags = [flag for flag in observed_flags if not flag.startswith("--prefix=")]\n'
+          )
+          new = (
+              '    observed_flags = [line.strip() for line in output.splitlines() if line.strip().startswith("--")]\n'
+              '    behavior_flags: list[str] = []\n'
+              '    for flag in observed_flags:\n'
+              '        if flag.startswith("--prefix="):\n'
+              '            continue\n'
+              '        if "=" in flag:\n'
+              '            name, value = flag.split("=", 1)\n'
+              '            if len(value) >= 2 and value[0] == value[-1] and value[0] in {"\\\"", "\\\'"}:\n'
+              '                value = value[1:-1]\n'
+              '            flag = f"{name}={value}"\n'
+              '        behavior_flags.append(flag)\n'
+          )
+          if text.count(old) != 1:
+              raise SystemExit(f'expected one target block, found {text.count(old)}')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+          python -m py_compile research/000b2-public/preprocess_subset.py
+          git diff --check
+          git diff -- research/000b2-public/preprocess_subset.py
+      - name: Commit exact patch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/000b2-public/preprocess_subset.py
+          git commit -m 'fix(000b2): normalize FFmpeg buildconf shell quoting'
+          git push origin HEAD:research/000b2-b2p06-preprocessing-capture
