@@ -37,56 +37,21 @@ jobs:
 
           engine = Path('research/000b2-public/freeze_subset_manifest.py')
           text = engine.read_text(encoding='utf-8')
-          old = '''    require(not member.islnk(), f"hard-link archive member is prohibited: {member.name!r}")
-    require(member.isdir() or member.isreg(), f"special archive member is prohibited: {member.name!r}")
-    if parts == ("LibriSpeech",):
-'''
-          new = '''    require(not member.islnk(), f"hard-link archive member is prohibited: {member.name!r}")
-    require(member.isdir() or member.isreg(), f"special archive member is prohibited: {member.name!r}")
-    if member.isreg():
-        require(member.size >= 0, f"negative regular-file size is prohibited: {member.name!r}")
-    if parts == ("LibriSpeech",):
-'''
+          old = '    require(not member.islnk(), f"hard-link archive member is prohibited: {member.name!r}")\n    require(member.isdir() or member.isreg(), f"special archive member is prohibited: {member.name!r}")\n    if parts == ("LibriSpeech",):\n'
+          new = '    require(not member.islnk(), f"hard-link archive member is prohibited: {member.name!r}")\n    require(member.isdir() or member.isreg(), f"special archive member is prohibited: {member.name!r}")\n    if member.isreg():\n        require(member.size >= 0, f"negative regular-file size is prohibited: {member.name!r}")\n    if parts == ("LibriSpeech",):\n'
           if text.count(old) != 1:
               raise SystemExit('B2P04_FORWARD_REPAIR=FAIL: engine anchor drift')
           engine.write_text(text.replace(old, new), encoding='utf-8')
 
           verifier = Path('research/000b2-public/verify_subset_freeze.py')
           text = verifier.read_text(encoding='utf-8')
-          old = '''    fifo = tarfile.TarInfo("LibriSpeech/test-clean/fifo")
-    fifo.type = tarfile.FIFOTYPE
-    require_rejected([(fifo, None)], "test-clean", "FIFO")
-
-
-def verify_static_boundaries() -> None:
-'''
-          new = '''    fifo = tarfile.TarInfo("LibriSpeech/test-clean/fifo")
-    fifo.type = tarfile.FIFOTYPE
-    require_rejected([(fifo, None)], "test-clean", "FIFO")
-
-    negative_size = tarfile.TarInfo("LibriSpeech/test-clean/negative.flac")
-    negative_size.type = tarfile.REGTYPE
-    negative_size.size = -1
-    try:
-        freeze.validate_member_scope(negative_size, "test-clean")
-    except freeze.FreezeError:
-        pass
-    else:
-        raise SystemExit("B2P04_FREEZE_VERIFIER=FAIL: negative regular-file size was accepted")
-
-
-def verify_static_boundaries() -> None:
-'''
+          old = '    fifo = tarfile.TarInfo("LibriSpeech/test-clean/fifo")\n    fifo.type = tarfile.FIFOTYPE\n    require_rejected([(fifo, None)], "test-clean", "FIFO")\n\n\ndef verify_static_boundaries() -> None:\n'
+          new = '    fifo = tarfile.TarInfo("LibriSpeech/test-clean/fifo")\n    fifo.type = tarfile.FIFOTYPE\n    require_rejected([(fifo, None)], "test-clean", "FIFO")\n\n    negative_size = tarfile.TarInfo("LibriSpeech/test-clean/negative.flac")\n    negative_size.type = tarfile.REGTYPE\n    negative_size.size = -1\n    try:\n        freeze.validate_member_scope(negative_size, "test-clean")\n    except freeze.FreezeError:\n        pass\n    else:\n        raise SystemExit("B2P04_FREEZE_VERIFIER=FAIL: negative regular-file size was accepted")\n\n\ndef verify_static_boundaries() -> None:\n'
           if text.count(old) != 1:
               raise SystemExit('B2P04_FORWARD_REPAIR=FAIL: verifier regression anchor drift')
           text = text.replace(old, new)
-          old = '''    print("B2P04_SPECIAL_NODE_REJECTION=PASS")
-    print("B2P04_CANDIDATE_REVALIDATION_STARTED=NO")
-'''
-          new = '''    print("B2P04_SPECIAL_NODE_REJECTION=PASS")
-    print("B2P04_NEGATIVE_SIZE_REJECTION=PASS")
-    print("B2P04_CANDIDATE_REVALIDATION_STARTED=NO")
-'''
+          old = '    print("B2P04_SPECIAL_NODE_REJECTION=PASS")\n    print("B2P04_CANDIDATE_REVALIDATION_STARTED=NO")\n'
+          new = '    print("B2P04_SPECIAL_NODE_REJECTION=PASS")\n    print("B2P04_NEGATIVE_SIZE_REJECTION=PASS")\n    print("B2P04_CANDIDATE_REVALIDATION_STARTED=NO")\n'
           if text.count(old) != 1:
               raise SystemExit('B2P04_FORWARD_REPAIR=FAIL: verifier output anchor drift')
           verifier.write_text(text.replace(old, new), encoding='utf-8')
