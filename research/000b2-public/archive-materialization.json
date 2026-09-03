@@ -1,0 +1,54 @@
+{
+  "schema_version": "000b2-public-archive-materialization-evidence-v1",
+  "task": "B2P02",
+  "status": "VERIFIED_ARCHIVE_BYTES",
+  "repository": "TheHalfMoon/Wispral",
+  "probe_revision": "b95da4aef86766ee9a976bb951cc2f6779dd1ef2",
+  "github_run_id": 33683639224,
+  "github_run_attempt": 1,
+  "github_job_id": 100425793105,
+  "artifact": {
+    "id": 9867230579,
+    "name": "b2p02-archive-materialization-b95da4aef86766ee9a976bb951cc2f6779dd1ef2",
+    "digest": "sha256:82d64230f1aa0c52ac5eef8f314415095916e79b97945e302f4a03d7361c8c74",
+    "created_at": "2026-09-02T21:11:08Z",
+    "retention_days": 7
+  },
+  "runner": {
+    "os": "Linux",
+    "arch": "X64",
+    "image": "ubuntu-24.04"
+  },
+  "checksum_manifest": "https://www.openslr.org/resources/12/md5sum.txt",
+  "checksum_manifest_resolved_url": "https://www.openslr.org/resources/12/md5sum.txt",
+  "archive_bytes_retained_in_repository": false,
+  "archives": [
+    {
+      "name": "test-clean.tar.gz",
+      "source_url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+      "resolved_url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+      "bytes": 346663984,
+      "official_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+      "observed_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+      "observed_sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23"
+    },
+    {
+      "name": "test-other.tar.gz",
+      "source_url": "https://www.openslr.org/resources/12/test-other.tar.gz",
+      "resolved_url": "https://www.openslr.org/resources/12/test-other.tar.gz",
+      "bytes": 328757843,
+      "official_md5": "fb5a50374b501bb3bac4815ee91d3135",
+      "observed_md5": "fb5a50374b501bb3bac4815ee91d3135",
+      "observed_sha256": "d09c181bba5cf717b3dee7d4d592af11a3ee3a09e08ae025c5506f6ebe961c29"
+    }
+  ],
+  "evidence_boundary": {
+    "official_md5_verified_against_fetched_bytes": true,
+    "sha256_computed_from_same_fetched_bytes": true,
+    "archives_extracted": false,
+    "subset_selection_started": false,
+    "candidate_decoding_started": false,
+    "production_stt_selected": false,
+    "product_code_authorized": false
+  }
+}

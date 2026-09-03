@@ -1,8 +1,8 @@
 {
-  "schema_version": "000b2-public-corpus-source-v1",
-  "task": "B2P01",
-  "state": "FROZEN_SOURCE_PROVENANCE",
-  "verified_on": "2026-09-02",
+  "schema_version": "000b2-public-corpus-source-v2",
+  "task": "B2P02",
+  "state": "ARCHIVES_MATERIALIZED_AND_VERIFIED",
+  "source_provenance_verified_on": "2026-09-02",
   "resource": {
     "provider": "OpenSLR",
     "identifier": "SLR12",
@@ -18,30 +18,40 @@
     {
       "name": "test-clean.tar.gz",
       "role": "test set, clean speech",
+      "source_url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
       "official_md5": "32fa31d27d2e1cad72775fee3f4849a9",
-      "materialized": false,
-      "archive_sha256": null
+      "archive_bytes": 346663984,
+      "materialized": true,
+      "archive_sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+      "archive_retained_in_repository": false
     },
     {
       "name": "test-other.tar.gz",
       "role": "test set, other more challenging speech",
+      "source_url": "https://www.openslr.org/resources/12/test-other.tar.gz",
       "official_md5": "fb5a50374b501bb3bac4815ee91d3135",
-      "materialized": false,
-      "archive_sha256": null
+      "archive_bytes": 328757843,
+      "materialized": true,
+      "archive_sha256": "d09c181bba5cf717b3dee7d4d592af11a3ee3a09e08ae025c5506f6ebe961c29",
+      "archive_retained_in_repository": false
     }
   ],
   "verification": {
     "resource_page_checked": true,
     "checksum_manifest_checked": true,
-    "archive_bytes_fetched": false,
-    "archive_checksums_verified_against_bytes": false,
-    "scope": "SOURCE_LICENSE_AND_OFFICIAL_CHECKSUM_PROVENANCE_ONLY"
+    "archive_bytes_fetched": true,
+    "archive_checksums_verified_against_bytes": true,
+    "archive_sha256_computed_from_fetched_bytes": true,
+    "materialization_evidence": "research/000b2-public/archive-materialization.json",
+    "scope": "SOURCE_LICENSE_AND_EXACT_ARCHIVE_BYTE_VERIFICATION"
   },
   "claim_guards": {
     "public_human_claim_scope": "BOUNDED_ORDINARY_READ_ENGLISH_ONLY",
     "human_developer_speech_accuracy_evidence": "ABSENT",
+    "subset_manifest_frozen": false,
+    "candidate_decoding_started": false,
     "production_stt_selected": false,
     "product_code_authorized": false
   },
-  "next_task_after_canonicalization": "B2P02"
+  "next_task_after_canonicalization": "B2P03"
 }
