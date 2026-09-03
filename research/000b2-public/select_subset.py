@@ -76,6 +76,14 @@ class Utterance:
     source_file_sha256: str
 
 
+@dataclass(frozen=True)
+class PartitionDiscovery:
+    """Validated partition inventory plus the source snapshot that produced it."""
+
+    speakers: dict[str, list[Utterance]]
+    snapshot: SourceTreeSnapshot
+
+
 def require(condition: bool, message: str) -> None:
     """Fail closed when one deterministic-selection invariant is absent."""
     if not condition:
@@ -500,8 +508,8 @@ def snapshot_inventory(partition_root: Path, snapshot: SourceTreeSnapshot, suffi
     ]
 
 
-def discover_partition(librispeech_root: Path, partition: str) -> dict[str, list[Utterance]]:
-    """Enumerate and race-safely validate every transcript/audio pair in one partition."""
+def discover_partition_state(librispeech_root: Path, partition: str) -> PartitionDiscovery:
+    """Enumerate one partition and retain the validated source snapshot for final revalidation."""
     partition_root = librispeech_root / partition
     snapshot = require_symlink_free_tree(partition_root, f"partition tree {partition}")
     partition_fd = open_absolute_directory_no_follow(
@@ -607,7 +615,26 @@ def discover_partition(librispeech_root: Path, partition: str) -> dict[str, list
         for speaker_id, utterances in speakers.items():
             require(utterances, f"speaker has no utterances: {partition}/{speaker_id}")
         require_snapshot_unchanged(partition_fd, snapshot, f"partition tree {partition}")
-        return speakers
+        return PartitionDiscovery(speakers=speakers, snapshot=snapshot)
+    finally:
+        os.close(partition_fd)
+
+
+def discover_partition(librispeech_root: Path, partition: str) -> dict[str, list[Utterance]]:
+    """Enumerate and race-safely validate every transcript/audio pair in one partition."""
+    return discover_partition_state(librispeech_root, partition).speakers
+
+
+def require_discovery_unchanged(librispeech_root: Path, partition: str, discovery: PartitionDiscovery) -> None:
+    """Revalidate one retained partition snapshot after all configured inventories are consumed."""
+    partition_root = librispeech_root / partition
+    partition_fd = open_absolute_directory_no_follow(
+        partition_root,
+        discovery.snapshot.root_identity,
+        f"partition root {partition} final revalidation",
+    )
+    try:
+        require_snapshot_unchanged(partition_fd, discovery.snapshot, f"partition tree {partition}")
     finally:
         os.close(partition_fd)
 
@@ -674,7 +701,8 @@ def select_subset(corpus_root: Path, policy_path: Path = POLICY_PATH) -> dict[st
     """Build the deterministic B2P03 selection candidate without freezing a B2P04 manifest."""
     policy = load_policy(policy_path)
     librispeech_root = resolve_librispeech_root(corpus_root)
-    inventories = {rule.name: discover_partition(librispeech_root, rule.name) for rule in policy.partitions}
+    discoveries = {rule.name: discover_partition_state(librispeech_root, rule.name) for rule in policy.partitions}
+    inventories = {name: discovery.speakers for name, discovery in discoveries.items()}
 
     partition_speaker_sets = {name: set(speakers) for name, speakers in inventories.items()}
     overlap = partition_speaker_sets[EXPECTED_PARTITIONS[0]] & partition_speaker_sets[EXPECTED_PARTITIONS[1]]
@@ -693,6 +721,10 @@ def select_subset(corpus_root: Path, policy_path: Path = POLICY_PATH) -> dict[st
     selected_partitions = [
         select_partition(rule, inventories[rule.name], policy.selection_material) for rule in policy.partitions
     ]
+
+    for rule in policy.partitions:
+        require_discovery_unchanged(librispeech_root, rule.name, discoveries[rule.name])
+
     return {
         "schema_version": "000b2-public-subset-selection-candidate-v1",
         "task": "B2P03",
