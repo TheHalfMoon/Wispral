@@ -9,7 +9,7 @@ These execution tasks become authorized only after the public-corpus amendment a
 - [x] `B2P01` Record exact OpenSLR SLR12 source/license facts and official checksums in machine-readable provenance.
 - [x] `B2P02` Materialize `test-clean.tar.gz` and `test-other.tar.gz` from an approved source or official mirror; verify official MD5 and record exact archive SHA-256.
 - [x] `B2P03` Implement deterministic speaker/utterance subset selection independent of candidate outputs.
-- [ ] `B2P04` Freeze selected public-human subset manifest and manifest digest before candidate decoding.
+- [x] `B2P04` Freeze selected public-human subset manifest and manifest digest before candidate decoding.
 - [ ] `B2P05` Revalidate the six canonical candidate cells and artifact/runtime/model identities against live canonical evidence.
 - [ ] `B2P06` Capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration and execution evidence.
 - [ ] `B2P07` Capture attempt-bound execution environment/hardware facts and preserve `CONTROLLED` versus `DIAGNOSTIC` semantics.

@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -24,6 +25,16 @@ B2P03_POSTMERGE_SUBSET_RUN_ID = 33775647508
 B2P03_POSTMERGE_SUBSET_JOB_ID = 100716549752
 B2P03_POSTMERGE_METHODOLOGY_RUN_ID = 33775647539
 B2P03_POSTMERGE_METHODOLOGY_JOB_ID = 100716550502
+B2P04_CANONICAL_MERGE = "4c4e758f22b54fa62256e57bfbd344adc817df8e"
+B2P04_QUALIFIED_HEAD = "0d83d277cc2544f63613e674d60bae07ad24dc26"
+B2P04_MANIFEST_SHA256 = "5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb"
+B2P04_FREEZE_DIGEST_SHA256 = "f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242"
+B2P04_POSTMERGE_SUBSET_RUN_ID = 33794854765
+B2P04_POSTMERGE_SUBSET_JOB_ID = 100779961908
+B2P04_POSTMERGE_ARTIFACT_ID = 9908811632
+B2P04_POSTMERGE_ARTIFACT_DIGEST = "sha256:bad9a31cea1a3a51b6ecbf9053f4941b1ae8a5d88cb97b747703166fe9444578"
+B2P04_POSTMERGE_METHODOLOGY_RUN_ID = 33794854595
+B2P04_POSTMERGE_METHODOLOGY_JOB_ID = 100779960182
 
 EXPECTED_ARCHIVES: dict[str, dict[str, Any]] = {
     "test-clean.tar.gz": {
@@ -77,6 +88,14 @@ def load_object(path: Path, label: str) -> dict[str, Any]:
     return value
 
 
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def index_records(records: Any, expected_names: set[str], label: str) -> dict[str, dict[str, Any]]:
     require(isinstance(records, list) and len(records) == len(expected_names), f"{label} record count drift")
     indexed: dict[str, dict[str, Any]] = {}
@@ -100,6 +119,8 @@ def main() -> None:
     subset_selector_path = ROOT / "research/000b2-public/select_subset.py"
     subset_verifier_path = ROOT / "research/000b2-public/verify_subset_selection.py"
     subset_workflow_path = ROOT / ".github/workflows/000b2-public-subset-selection.yml"
+    subset_manifest_path = ROOT / "research/000b2-public/subset-manifest.json"
+    subset_freeze_workflow_path = ROOT / ".github/workflows/000b2-public-subset-freeze.yml"
     spec_path = ROOT / "specs/000B2-public-corpus-bakeoff/spec.md"
     plan_path = ROOT / "specs/000B2-public-corpus-bakeoff/plan.md"
     tasks_path = ROOT / "specs/000B2-public-corpus-bakeoff/tasks.md"
@@ -113,7 +134,7 @@ def main() -> None:
     required_paths = (
         readiness_path, corpus_source_path, materialization_path, materializer_path,
         materialization_workflow_path, subset_policy_path, subset_selector_path, subset_verifier_path,
-        subset_workflow_path, spec_path, plan_path, tasks_path, parent_spec_path,
+        subset_workflow_path, subset_manifest_path, subset_freeze_workflow_path, spec_path, plan_path, tasks_path, parent_spec_path,
         parent_plan_path, parent_tasks_path, current_path, current_state_path, founding_tasks_path,
     )
     for path in required_paths:
@@ -134,7 +155,7 @@ def main() -> None:
     require(readiness.get("schema_version") == "000b2-public-readiness-v2", "readiness schema version drift")
     require(readiness.get("lane") == "PUBLIC_CORPUS", "readiness lane drift")
     require(readiness.get("state") == "READY", "public execution readiness must remain explicit")
-    require(readiness.get("completed_through") == "B2P03", "readiness completed_through must be B2P03")
+    require(readiness.get("completed_through") == "B2P04", "readiness completed_through must be B2P04")
 
     historical = readiness.get("historical_private_collection_lane")
     require(isinstance(historical, dict), "historical private lane must be an object")
@@ -156,7 +177,7 @@ def main() -> None:
     require(public.get("license") == "CC BY 4.0", "license drift")
     require(public.get("archive_byte_evidence") == "research/000b2-public/archive-materialization.json", "archive evidence binding drift")
     require(public.get("claim_scope") == "BOUNDED_ORDINARY_READ_ENGLISH_ONLY", "public-human claim scope drift")
-    require_bool(public, "subset_manifest_frozen", False, "public_human_baseline")
+    require_bool(public, "subset_manifest_frozen", True, "public_human_baseline")
     require_bool(public, "candidate_decoding_started", False, "public_human_baseline")
 
     readiness_partitions = index_records(public.get("partitions"), expected_names, "readiness partition")
@@ -211,11 +232,10 @@ def main() -> None:
     require_bool(guards, "product_code_authorized", False, "claim_guards")
 
     expected_next_action = (
-        "Execute B2P04 only: freeze the selected public-human subset manifest and deterministic manifest digest before candidate decoding. "
-        "Use the canonical B2P03 selection logic and preserve source-corpus identity binding. "
-        "Do not begin candidate revalidation or decoding until B2P04 is canonical."
+        "Execute B2P05 only: revalidate the six canonical candidate cells and artifact/runtime/model identities against live canonical evidence. "
+        "Do not begin candidate decoding, B2P06 preprocessing capture, or primary decoding until B2P05 is canonical."
     )
-    require(readiness.get("next_action") == expected_next_action, "next action must be exact B2P04-only instruction")
+    require(readiness.get("next_action") == expected_next_action, "next action must be exact B2P05-only instruction")
 
     corpus_source = load_object(corpus_source_path, "corpus-source")
     require_exact_keys(
@@ -413,6 +433,39 @@ def main() -> None:
     require_bool(subset_guards, "production_stt_selected", False, "subset_claim_guards")
     require_bool(subset_guards, "product_code_authorized", False, "subset_claim_guards")
 
+    subset_manifest = load_object(subset_manifest_path, "subset manifest")
+    require_exact_keys(
+        subset_manifest,
+        {"schema_version", "task", "state", "frozen", "freeze_digest_sha256", "authority", "source_corpus", "selection_engine", "membership", "preprocessing_boundary", "claim_guards"},
+        "subset_manifest",
+    )
+    require(subset_manifest.get("schema_version") == "000b2-public-subset-manifest-v1", "subset manifest schema drift")
+    require(subset_manifest.get("task") == "B2P04", "subset manifest task drift")
+    require(subset_manifest.get("state") == "FROZEN_SOURCE_MEMBERSHIP", "subset manifest state drift")
+    require_bool(subset_manifest, "frozen", True, "subset_manifest")
+    require(subset_manifest.get("freeze_digest_sha256") == B2P04_FREEZE_DIGEST_SHA256, "B2P04 freeze digest drift")
+    require(sha256_file(subset_manifest_path) == B2P04_MANIFEST_SHA256, "B2P04 manifest byte SHA-256 drift")
+    manifest_authority = subset_manifest.get("authority")
+    require(isinstance(manifest_authority, dict), "subset manifest authority must be an object")
+    require(manifest_authority.get("b2p03_canonical_merge") == B2P03_CANONICAL_MERGE, "subset manifest B2P03 canonical binding drift")
+    membership = subset_manifest.get("membership")
+    require(isinstance(membership, dict), "subset manifest membership must be an object")
+    require(membership.get("kind") == "SOURCE_FLAC_IDENTITIES_AND_REFERENCE_TRANSCRIPTS", "subset manifest membership kind drift")
+    require(membership.get("total_speakers") == 24, "subset manifest speaker count drift")
+    require(membership.get("total_utterances") == 240, "subset manifest utterance count drift")
+    manifest_preprocessing = subset_manifest.get("preprocessing_boundary")
+    require(isinstance(manifest_preprocessing, dict), "subset manifest preprocessing boundary must be an object")
+    require(manifest_preprocessing.get("status") == "NOT_CAPTURED_B2P06", "B2P06 preprocessing boundary drift")
+    require_bool(manifest_preprocessing, "canonical_preprocessed_file_sha256_present", False, "subset_manifest.preprocessing_boundary")
+    manifest_guards = subset_manifest.get("claim_guards")
+    require(isinstance(manifest_guards, dict), "subset manifest claim guards must be an object")
+    require_bool(manifest_guards, "candidate_revalidation_started", False, "subset_manifest.claim_guards")
+    require_bool(manifest_guards, "candidate_decoding_started", False, "subset_manifest.claim_guards")
+    require_bool(manifest_guards, "primary_decoding_started", False, "subset_manifest.claim_guards")
+    require(manifest_guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "subset manifest human evidence guard drift")
+    require_bool(manifest_guards, "production_stt_selected", False, "subset_manifest.claim_guards")
+    require_bool(manifest_guards, "product_code_authorized", False, "subset_manifest.claim_guards")
+
     spec = spec_path.read_text(encoding="utf-8")
     plan = plan_path.read_text(encoding="utf-8")
     tasks = tasks_path.read_text(encoding="utf-8")
@@ -427,6 +480,7 @@ def main() -> None:
     subset_selector = subset_selector_path.read_text(encoding="utf-8")
     subset_verifier = subset_verifier_path.read_text(encoding="utf-8")
     subset_workflow = subset_workflow_path.read_text(encoding="utf-8")
+    subset_freeze_workflow = subset_freeze_workflow_path.read_text(encoding="utf-8")
 
     for phrase in (
         "HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT", "DIAGNOSTIC_ONLY", "CC BY 4.0",
@@ -448,12 +502,12 @@ def main() -> None:
     for task_id in ALL_TASK_IDS:
         matching_lines = [line for line in task_lines if f"`{task_id}`" in line]
         require(len(matching_lines) == 1, f"{task_id} must appear in exactly one checklist line")
-        expected_marker = "- [x]" if task_id in {"B2P01", "B2P02", "B2P03"} else "- [ ]"
+        expected_marker = "- [x]" if task_id in {"B2P01", "B2P02", "B2P03", "B2P04"} else "- [ ]"
         require(matching_lines[0].startswith(f"{expected_marker} `{task_id}`"), f"{task_id} checklist state must be {expected_marker}")
     require_text(tasks, "- [x] `B2P01` Record exact OpenSLR SLR12 source/license facts and official checksums in machine-readable provenance.", "public child tasks")
     require_text(tasks, "- [x] `B2P02` Materialize `test-clean.tar.gz` and `test-other.tar.gz` from an approved source or official mirror; verify official MD5 and record exact archive SHA-256.", "public child tasks")
     require_text(tasks, "- [x] `B2P03` Implement deterministic speaker/utterance subset selection independent of candidate outputs.", "public child tasks")
-    require_text(tasks, "- [ ] `B2P04` Freeze selected public-human subset manifest and manifest digest before candidate decoding.", "public child tasks")
+    require_text(tasks, "- [x] `B2P04` Freeze selected public-human subset manifest and manifest digest before candidate decoding.", "public child tasks")
 
     for phrase in (
         "These execution tasks become authorized only after the public-corpus amendment and frontier reconciliation are canonical on `main`.",
@@ -478,8 +532,15 @@ def main() -> None:
     require_text(current, f"job `{B2P03_POSTMERGE_SUBSET_JOB_ID}`", "current frontier B2P03 subset post-merge job proof")
     require_text(current, f"run `{B2P03_POSTMERGE_METHODOLOGY_RUN_ID}`", "current frontier B2P03 methodology post-merge run proof")
     require_text(current, f"job `{B2P03_POSTMERGE_METHODOLOGY_JOB_ID}`", "current frontier B2P03 methodology post-merge job proof")
-    require_text(current, "current bounded execution unit `B2P04`", "current frontier")
-    require_absent(current, "current bounded execution unit `B2P03`", "current frontier")
+    require_text(current, B2P04_CANONICAL_MERGE, "current frontier B2P04 canonical proof")
+    require_text(current, f"run `{B2P04_POSTMERGE_SUBSET_RUN_ID}`", "current frontier B2P04 subset post-merge run proof")
+    require_text(current, f"job `{B2P04_POSTMERGE_SUBSET_JOB_ID}`", "current frontier B2P04 subset post-merge job proof")
+    require_text(current, f"artifact `{B2P04_POSTMERGE_ARTIFACT_ID}`", "current frontier B2P04 post-merge artifact proof")
+    require_text(current, B2P04_POSTMERGE_ARTIFACT_DIGEST, "current frontier B2P04 post-merge artifact digest proof")
+    require_text(current, B2P04_MANIFEST_SHA256, "current frontier B2P04 manifest SHA proof")
+    require_text(current, B2P04_FREEZE_DIGEST_SHA256, "current frontier B2P04 freeze digest proof")
+    require_text(current, "current bounded execution unit `B2P05`", "current frontier")
+    require_absent(current, "current bounded execution unit `B2P04`", "current frontier")
 
     require_text(current_state, B2P01_CANONICAL_MERGE, "current state B2P01 canonical proof")
     require_text(current_state, B2P02_CANONICAL_MERGE, "current state B2P02 canonical proof")
@@ -492,8 +553,15 @@ def main() -> None:
     require_text(current_state, f"job `{B2P03_POSTMERGE_SUBSET_JOB_ID}`", "current state B2P03 subset post-merge job proof")
     require_text(current_state, f"run `{B2P03_POSTMERGE_METHODOLOGY_RUN_ID}`", "current state B2P03 methodology post-merge run proof")
     require_text(current_state, f"job `{B2P03_POSTMERGE_METHODOLOGY_JOB_ID}`", "current state B2P03 methodology post-merge job proof")
-    require_text(current_state, "current bounded execution unit is `B2P04`", "current state")
-    require_absent(current_state, "current bounded execution unit is `B2P03`", "current state")
+    require_text(current_state, B2P04_CANONICAL_MERGE, "current state B2P04 canonical proof")
+    require_text(current_state, f"run `{B2P04_POSTMERGE_SUBSET_RUN_ID}`", "current state B2P04 subset post-merge run proof")
+    require_text(current_state, f"job `{B2P04_POSTMERGE_SUBSET_JOB_ID}`", "current state B2P04 subset post-merge job proof")
+    require_text(current_state, f"artifact `{B2P04_POSTMERGE_ARTIFACT_ID}`", "current state B2P04 post-merge artifact proof")
+    require_text(current_state, B2P04_POSTMERGE_ARTIFACT_DIGEST, "current state B2P04 post-merge artifact digest proof")
+    require_text(current_state, B2P04_MANIFEST_SHA256, "current state B2P04 manifest SHA proof")
+    require_text(current_state, B2P04_FREEZE_DIGEST_SHA256, "current state B2P04 freeze digest proof")
+    require_text(current_state, "current bounded execution unit is `B2P05`", "current state")
+    require_absent(current_state, "current bounded execution unit is `B2P04`", "current state")
 
     for label, text in (("parent spec", parent_spec), ("parent plan", parent_plan), ("parent tasks", parent_tasks)):
         require_text(text, "`000B2-unbiased-stt-bakeoff`", label)
@@ -532,6 +600,13 @@ def main() -> None:
         "B2P03_SNAPSHOT_ENUMERATION_DELETION=PASS",
     ):
         require_text(subset_workflow, phrase, "B2P03 subset workflow")
+    for phrase in (
+        "000B2 Public Corpus Subset Freeze", "python-version: '3.12'", "cancel-in-progress: true",
+        "python research/000b2-public/verify_subset_freeze.py",
+        "python research/000b2-public/verify_subset_freeze_root_metadata.py",
+        "--committed research/000b2-public/subset-manifest.json",
+    ):
+        require_text(subset_freeze_workflow, phrase, "B2P04 subset-freeze workflow")
 
     print("PUBLIC_CORPUS_METHODOLOGY=PASS")
     print("B2P01_CORPUS_PROVENANCE=PASS")
@@ -545,7 +620,13 @@ def main() -> None:
     print(f"B2P03_CANONICAL_MERGE={B2P03_CANONICAL_MERGE}")
     print(f"B2P03_POSTMERGE_SUBSET_RUN_ID={B2P03_POSTMERGE_SUBSET_RUN_ID}")
     print(f"B2P03_POSTMERGE_METHODOLOGY_RUN_ID={B2P03_POSTMERGE_METHODOLOGY_RUN_ID}")
-    print("B2P04_FRONTIER=AUTHORIZED")
+    print("B2P04_SUBSET_MANIFEST=PASS")
+    print(f"B2P04_CANONICAL_MERGE={B2P04_CANONICAL_MERGE}")
+    print(f"B2P04_POSTMERGE_SUBSET_RUN_ID={B2P04_POSTMERGE_SUBSET_RUN_ID}")
+    print(f"B2P04_POSTMERGE_METHODOLOGY_RUN_ID={B2P04_POSTMERGE_METHODOLOGY_RUN_ID}")
+    print(f"B2P04_MANIFEST_SHA256={B2P04_MANIFEST_SHA256}")
+    print(f"B2P04_FREEZE_DIGEST_SHA256={B2P04_FREEZE_DIGEST_SHA256}")
+    print("B2P05_FRONTIER=AUTHORIZED")
     print("STRUCTURED_READINESS_GUARDS=PASS")
     print("P0_D0_SEPARATION=PASS")
     print("PRE_DECODE_FREEZE_ORDERING=PASS")
@@ -559,7 +640,7 @@ def main() -> None:
     print("ARCHIVE_SHA256_RECORDED=YES")
     print("SUBSET_SELECTION_STARTED=YES")
     print("SUBSET_SELECTION_CANONICAL=YES")
-    print("SUBSET_MANIFEST_FROZEN=NO")
+    print("SUBSET_MANIFEST_FROZEN=YES")
     print("CANDIDATE_DECODING_STARTED=NO")
     print("PRIMARY_DECODING_STARTED=NO")
     print("PRODUCT_CODE_AUTHORIZED=NO")
