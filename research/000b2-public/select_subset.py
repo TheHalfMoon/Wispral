@@ -6,7 +6,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
+import stat
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -14,6 +16,7 @@ from typing import Any
 POLICY_PATH = Path(__file__).with_name("subset-selection-policy.json")
 UTTERANCE_ID_RE = re.compile(r"^(?P<speaker>[0-9]+)-(?P<chapter>[0-9]+)-(?P<utterance>[0-9]+)$")
 EXPECTED_PARTITIONS = ("test-clean", "test-other")
+READ_CHUNK_SIZE = 1024 * 1024
 
 
 class SelectionError(ValueError):
@@ -40,6 +43,26 @@ class SelectionPolicy:
 
 
 @dataclass(frozen=True)
+class SourceIdentity:
+    """Race-detection identity captured for one validated filesystem node."""
+
+    device: int
+    inode: int
+    mode: int
+    size: int
+    mtime_ns: int
+    ctime_ns: int
+
+
+@dataclass(frozen=True)
+class SourceTreeSnapshot:
+    """Validated partition tree identities used for no-follow descriptor access."""
+
+    root_identity: SourceIdentity
+    entries: dict[str, SourceIdentity]
+
+
+@dataclass(frozen=True)
 class Utterance:
     """One validated transcript/audio pair from extracted LibriSpeech source data."""
 
@@ -48,8 +71,8 @@ class Utterance:
     chapter_id: str
     utterance_id: str
     transcript: str
-    audio_path: Path
     source_audio_path: str
+    source_file_sha256: str
 
 
 def require(condition: bool, message: str) -> None:
@@ -63,21 +86,144 @@ def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def sha256_file(path: Path) -> str:
-    """Hash one non-symlink source audio file without loading it all into memory."""
-    require(not path.is_symlink(), f"symbolic link is not allowed for source audio: {path}")
-    require(path.is_file(), f"source audio is not a regular file: {path}")
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        while chunk := handle.read(1024 * 1024):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
 def stable_hash(selection_material: str, *components: str) -> str:
     """Hash UTF-8 components separated by NUL bytes using the frozen ordering contract."""
     encoded = "\0".join((selection_material, *components)).encode("utf-8")
     return sha256_bytes(encoded)
+
+
+def source_identity(value: os.stat_result) -> SourceIdentity:
+    """Project stat metadata needed to detect source-node replacement or mutation."""
+    return SourceIdentity(
+        device=value.st_dev,
+        inode=value.st_ino,
+        mode=value.st_mode,
+        size=value.st_size,
+        mtime_ns=value.st_mtime_ns,
+        ctime_ns=value.st_ctime_ns,
+    )
+
+
+def require_identity(actual: SourceIdentity, expected: SourceIdentity, label: str) -> None:
+    """Reject any node whose identity changed after the validated tree snapshot."""
+    require(actual == expected, f"{label} identity changed since validation")
+
+
+def no_follow_flags(*, directory: bool) -> int:
+    """Return fail-closed POSIX open flags for descriptor-relative source access."""
+    no_follow = getattr(os, "O_NOFOLLOW", None)
+    require(isinstance(no_follow, int), "race-safe source validation requires O_NOFOLLOW support")
+    flags = os.O_RDONLY | no_follow
+    if directory:
+        directory_flag = getattr(os, "O_DIRECTORY", None)
+        require(isinstance(directory_flag, int), "race-safe source validation requires O_DIRECTORY support")
+        flags |= directory_flag
+    close_on_exec = getattr(os, "O_CLOEXEC", 0)
+    if isinstance(close_on_exec, int):
+        flags |= close_on_exec
+    return flags
+
+
+def open_absolute_directory_no_follow(path: Path, expected: SourceIdentity, label: str) -> int:
+    """Open an absolute directory one component at a time without following symlinks."""
+    absolute = path.absolute()
+    require(absolute.is_absolute() and bool(absolute.anchor), f"{label} must resolve to an absolute path")
+    directory_flags = no_follow_flags(directory=True)
+    current_fd: int | None = None
+    try:
+        current_fd = os.open(absolute.anchor, directory_flags)
+        for component in absolute.parts[1:]:
+            next_fd = os.open(component, directory_flags, dir_fd=current_fd)
+            os.close(current_fd)
+            current_fd = next_fd
+        observed = source_identity(os.fstat(current_fd))
+        require(stat.S_ISDIR(observed.mode), f"{label} is not a directory")
+        require_identity(observed, expected, label)
+        result = current_fd
+        current_fd = None
+        return result
+    except OSError as error:
+        raise SelectionError(f"unable to open {label} without following links: {path}: {error}") from error
+    finally:
+        if current_fd is not None:
+            os.close(current_fd)
+
+
+def snapshot_entry(snapshot: SourceTreeSnapshot, relative: Path, label: str) -> SourceIdentity:
+    """Return the prevalidated identity for one partition-relative source node."""
+    key = relative.as_posix()
+    expected = snapshot.entries.get(key)
+    require(expected is not None, f"{label} was not present in the validated source tree: {key}")
+    assert expected is not None
+    return expected
+
+
+def open_regular_file_beneath(
+    root_fd: int,
+    relative: Path,
+    snapshot: SourceTreeSnapshot,
+    label: str,
+) -> tuple[int, SourceIdentity]:
+    """Open one validated regular file through no-follow directory descriptors."""
+    require(not relative.is_absolute(), f"{label} must be relative to the partition root")
+    require(relative.parts and all(part not in {"", ".", ".."} for part in relative.parts), f"invalid {label} path")
+    directory_flags = no_follow_flags(directory=True)
+    file_flags = no_follow_flags(directory=False)
+    current_fd = os.dup(root_fd)
+    cumulative: list[str] = []
+    file_fd: int | None = None
+    try:
+        for component in relative.parts[:-1]:
+            cumulative.append(component)
+            expected_directory = snapshot_entry(snapshot, Path(*cumulative), label)
+            require(stat.S_ISDIR(expected_directory.mode), f"{label} parent is not a validated directory")
+            next_fd = os.open(component, directory_flags, dir_fd=current_fd)
+            observed_directory = source_identity(os.fstat(next_fd))
+            require_identity(observed_directory, expected_directory, f"{label} parent {'/'.join(cumulative)}")
+            os.close(current_fd)
+            current_fd = next_fd
+
+        expected_file = snapshot_entry(snapshot, relative, label)
+        require(stat.S_ISREG(expected_file.mode), f"{label} is not a validated regular file: {relative.as_posix()}")
+        file_fd = os.open(relative.parts[-1], file_flags, dir_fd=current_fd)
+        observed_file = source_identity(os.fstat(file_fd))
+        require(stat.S_ISREG(observed_file.mode), f"{label} is not a regular file: {relative.as_posix()}")
+        require_identity(observed_file, expected_file, label)
+        result = file_fd
+        file_fd = None
+        return result, expected_file
+    except OSError as error:
+        raise SelectionError(
+            f"unable to open {label} without following links: {relative.as_posix()}: {error}"
+        ) from error
+    finally:
+        os.close(current_fd)
+        if file_fd is not None:
+            os.close(file_fd)
+
+
+def read_stable_bytes(file_fd: int, expected: SourceIdentity, label: str) -> bytes:
+    """Read bytes from the already-open validated descriptor and reject concurrent mutation."""
+    before = source_identity(os.fstat(file_fd))
+    require_identity(before, expected, label)
+    chunks: list[bytes] = []
+    while chunk := os.read(file_fd, READ_CHUNK_SIZE):
+        chunks.append(chunk)
+    after = source_identity(os.fstat(file_fd))
+    require_identity(after, before, f"{label} during read")
+    return b"".join(chunks)
+
+
+def sha256_stable_fd(file_fd: int, expected: SourceIdentity, label: str) -> str:
+    """Hash bytes from the already-open validated descriptor and reject concurrent mutation."""
+    before = source_identity(os.fstat(file_fd))
+    require_identity(before, expected, label)
+    digest = hashlib.sha256()
+    while chunk := os.read(file_fd, READ_CHUNK_SIZE):
+        digest.update(chunk)
+    after = source_identity(os.fstat(file_fd))
+    require_identity(after, before, f"{label} during hash")
+    return digest.hexdigest()
 
 
 def require_no_symlink_ancestry(path: Path, label: str) -> None:
@@ -170,11 +316,17 @@ def load_policy(path: Path = POLICY_PATH) -> SelectionPolicy:
 
     partition_rows = raw.get("partitions")
     require(isinstance(partition_rows, list), "selection policy partitions must be a list")
-    require([item.get("name") for item in partition_rows if isinstance(item, dict)] == list(EXPECTED_PARTITIONS), "partition order drift")
+    require(
+        [item.get("name") for item in partition_rows if isinstance(item, dict)] == list(EXPECTED_PARTITIONS),
+        "partition order drift",
+    )
     rules: list[PartitionRule] = []
     for item in partition_rows:
         require(isinstance(item, dict), "selection partition rule must be an object")
-        require(set(item) == {"name", "speakers_per_partition", "utterances_per_speaker_max"}, "selection partition rule keys drift")
+        require(
+            set(item) == {"name", "speakers_per_partition", "utterances_per_speaker_max"},
+            "selection partition rule keys drift",
+        )
         speakers = item.get("speakers_per_partition")
         utterances = item.get("utterances_per_speaker_max")
         require(type(speakers) is int and speakers == 12, f"{item.get('name')} speaker count must remain 12")
@@ -189,24 +341,29 @@ def load_policy(path: Path = POLICY_PATH) -> SelectionPolicy:
     )
 
 
-def require_no_symlink_components(path: Path, anchor: Path, label: str) -> None:
-    """Reject symlinks at the anchor or any lexical component from anchor through path."""
+def require_symlink_free_tree(root: Path, label: str) -> SourceTreeSnapshot:
+    """Snapshot every source node and reject links or special filesystem entries."""
     try:
-        relative = path.relative_to(anchor)
-    except ValueError as error:
-        raise SelectionError(f"{label} escapes configured corpus root: {path}") from error
-    require(not anchor.is_symlink(), f"symbolic link is not allowed for {label}: {anchor}")
-    current = anchor
-    for component in relative.parts:
-        current = current / component
-        require(not current.is_symlink(), f"symbolic link is not allowed for {label}: {current}")
-
-
-def require_symlink_free_tree(root: Path, label: str) -> None:
-    """Reject every symlink node under a source tree, including non-traversed directory links."""
-    require(not root.is_symlink(), f"symbolic link is not allowed for {label}: {root}")
+        root_stat = root.lstat()
+    except OSError as error:
+        raise SelectionError(f"unable to stat {label}: {root}: {error}") from error
+    require(not stat.S_ISLNK(root_stat.st_mode), f"symbolic link is not allowed for {label}: {root}")
+    require(stat.S_ISDIR(root_stat.st_mode), f"{label} is not a directory: {root}")
+    entries: dict[str, SourceIdentity] = {}
     for path in root.rglob("*"):
-        require(not path.is_symlink(), f"symbolic link is not allowed for {label}: {path}")
+        relative = path.relative_to(root).as_posix()
+        try:
+            observed = path.lstat()
+        except OSError as error:
+            raise SelectionError(f"unable to stat {label} entry {relative}: {error}") from error
+        require(not stat.S_ISLNK(observed.st_mode), f"symbolic link is not allowed for {label}: {path}")
+        require(
+            stat.S_ISDIR(observed.st_mode) or stat.S_ISREG(observed.st_mode),
+            f"special filesystem node is not allowed for {label}: {path}",
+        )
+        require(relative not in entries, f"duplicate source-tree path: {relative}")
+        entries[relative] = source_identity(observed)
+    return SourceTreeSnapshot(root_identity=source_identity(root_stat), entries=entries)
 
 
 def resolve_librispeech_root(corpus_root: Path) -> Path:
@@ -214,7 +371,6 @@ def resolve_librispeech_root(corpus_root: Path) -> Path:
     require_no_symlink_ancestry(corpus_root, "corpus root")
     require(not corpus_root.is_symlink(), f"symbolic link is not allowed for corpus root: {corpus_root}")
     root = corpus_root.absolute()
-    require(not root.is_symlink(), f"symbolic link is not allowed for corpus root: {root}")
     require(root.is_dir(), f"corpus root is not a directory: {corpus_root}")
     nested = root / "LibriSpeech"
     if root.name == "LibriSpeech":
@@ -243,7 +399,13 @@ def parse_utterance_id(value: str) -> tuple[str, str, str]:
     return match.group("speaker"), match.group("chapter"), match.group("utterance")
 
 
-def validate_relative_source_path(partition: str, speaker: str, chapter: str, path: Path, partition_root: Path) -> None:
+def validate_relative_source_path(
+    partition: str,
+    speaker: str,
+    chapter: str,
+    path: Path,
+    partition_root: Path,
+) -> None:
     """Require one transcript/audio file to live at the canonical partition/speaker/chapter depth."""
     relative = path.relative_to(partition_root)
     require(len(relative.parts) == 3, f"unexpected LibriSpeech path depth: {partition}/{relative.as_posix()}")
@@ -252,76 +414,127 @@ def validate_relative_source_path(partition: str, speaker: str, chapter: str, pa
 
 
 def discover_partition(librispeech_root: Path, partition: str) -> dict[str, list[Utterance]]:
-    """Enumerate and validate every non-symlink transcript/audio pair in one configured partition."""
+    """Enumerate and race-safely validate every transcript/audio pair in one partition."""
     partition_root = librispeech_root / partition
-    require_no_symlink_components(partition_root, librispeech_root, "partition root")
-    require_symlink_free_tree(partition_root, f"partition tree {partition}")
-    transcript_files = sorted(partition_root.rglob("*.trans.txt"), key=lambda item: item.relative_to(partition_root).as_posix())
-    audio_files = sorted(partition_root.rglob("*.flac"), key=lambda item: item.relative_to(partition_root).as_posix())
-    require(transcript_files, f"partition {partition} contains no transcript files")
-    require(audio_files, f"partition {partition} contains no FLAC files")
-
-    by_id: dict[str, Utterance] = {}
-    expected_audio_paths: dict[str, Path] = {}
-    for transcript_file in transcript_files:
-        require_no_symlink_components(transcript_file, partition_root, "transcript source")
-        relative = transcript_file.relative_to(partition_root)
-        require(len(relative.parts) == 3, f"unexpected transcript path depth: {partition}/{relative.as_posix()}")
-        speaker_dir, chapter_dir = relative.parts[0], relative.parts[1]
-        expected_stem = f"{speaker_dir}-{chapter_dir}"
-        require(
-            transcript_file.name == f"{expected_stem}.trans.txt",
-            f"transcript filename does not match speaker/chapter directories: {relative.as_posix()}",
+    snapshot = require_symlink_free_tree(partition_root, f"partition tree {partition}")
+    partition_fd = open_absolute_directory_no_follow(
+        partition_root,
+        snapshot.root_identity,
+        f"partition root {partition}",
+    )
+    try:
+        transcript_files = sorted(
+            partition_root.rglob("*.trans.txt"),
+            key=lambda item: item.relative_to(partition_root).as_posix(),
         )
-        require(transcript_file.is_file(), f"transcript source is not a regular file: {relative.as_posix()}")
-        lines = transcript_file.read_text(encoding="utf-8").splitlines()
-        require(lines, f"empty transcript file: {relative.as_posix()}")
-        for line_number, line in enumerate(lines, start=1):
-            require(bool(line.strip()), f"blank transcript line at {relative.as_posix()}:{line_number}")
-            fields = line.split(maxsplit=1)
-            require(len(fields) == 2 and bool(fields[1].strip()), f"malformed transcript line at {relative.as_posix()}:{line_number}")
-            utterance_id, transcript = fields[0], fields[1].strip()
-            speaker_id, chapter_id, _ = parse_utterance_id(utterance_id)
-            require(speaker_id == speaker_dir, f"transcript speaker mismatch for {utterance_id}")
-            require(chapter_id == chapter_dir, f"transcript chapter mismatch for {utterance_id}")
-            require(utterance_id not in by_id, f"duplicate transcript utterance id: {utterance_id}")
-            audio_path = transcript_file.parent / f"{utterance_id}.flac"
-            require_no_symlink_components(audio_path, partition_root, "audio source")
-            require(audio_path.is_file(), f"missing audio for transcript utterance: {partition}/{speaker_dir}/{chapter_dir}/{utterance_id}.flac")
-            source_path = f"LibriSpeech/{partition}/{speaker_id}/{chapter_id}/{utterance_id}.flac"
-            by_id[utterance_id] = Utterance(
-                partition=partition,
-                speaker_id=speaker_id,
-                chapter_id=chapter_id,
-                utterance_id=utterance_id,
-                transcript=transcript,
-                audio_path=audio_path,
-                source_audio_path=source_path,
+        audio_files = sorted(
+            partition_root.rglob("*.flac"),
+            key=lambda item: item.relative_to(partition_root).as_posix(),
+        )
+        require(transcript_files, f"partition {partition} contains no transcript files")
+        require(audio_files, f"partition {partition} contains no FLAC files")
+
+        by_id: dict[str, Utterance] = {}
+        expected_audio_paths: dict[str, Path] = {}
+        for transcript_file in transcript_files:
+            relative = transcript_file.relative_to(partition_root)
+            require(len(relative.parts) == 3, f"unexpected transcript path depth: {partition}/{relative.as_posix()}")
+            speaker_dir, chapter_dir = relative.parts[0], relative.parts[1]
+            expected_stem = f"{speaker_dir}-{chapter_dir}"
+            require(
+                transcript_file.name == f"{expected_stem}.trans.txt",
+                f"transcript filename does not match speaker/chapter directories: {relative.as_posix()}",
             )
-            expected_audio_paths[utterance_id] = audio_path
+            transcript_fd, transcript_identity = open_regular_file_beneath(
+                partition_fd,
+                relative,
+                snapshot,
+                "transcript source",
+            )
+            try:
+                transcript_bytes = read_stable_bytes(transcript_fd, transcript_identity, "transcript source")
+            finally:
+                os.close(transcript_fd)
+            try:
+                lines = transcript_bytes.decode("utf-8").splitlines()
+            except UnicodeDecodeError as error:
+                raise SelectionError(f"transcript source is not valid UTF-8: {relative.as_posix()}") from error
+            require(lines, f"empty transcript file: {relative.as_posix()}")
 
-    seen_audio_ids: set[str] = set()
-    for audio_file in audio_files:
-        require_no_symlink_components(audio_file, partition_root, "audio source")
-        utterance_id = audio_file.name.removesuffix(".flac")
-        speaker_id, chapter_id, _ = parse_utterance_id(utterance_id)
-        validate_relative_source_path(partition, speaker_id, chapter_id, audio_file, partition_root)
-        require(audio_file.is_file(), f"audio source is not a regular file: {audio_file.relative_to(partition_root).as_posix()}")
-        require(utterance_id not in seen_audio_ids, f"duplicate audio utterance id: {utterance_id}")
-        seen_audio_ids.add(utterance_id)
-        require(utterance_id in by_id, f"audio has no transcript entry: {partition}/{audio_file.relative_to(partition_root).as_posix()}")
-        require(audio_file == expected_audio_paths[utterance_id], f"audio path mismatch for utterance: {utterance_id}")
+            for line_number, line in enumerate(lines, start=1):
+                require(bool(line.strip()), f"blank transcript line at {relative.as_posix()}:{line_number}")
+                fields = line.split(maxsplit=1)
+                require(
+                    len(fields) == 2 and bool(fields[1].strip()),
+                    f"malformed transcript line at {relative.as_posix()}:{line_number}",
+                )
+                utterance_id, transcript = fields[0], fields[1].strip()
+                speaker_id, chapter_id, _ = parse_utterance_id(utterance_id)
+                require(speaker_id == speaker_dir, f"transcript speaker mismatch for {utterance_id}")
+                require(chapter_id == chapter_dir, f"transcript chapter mismatch for {utterance_id}")
+                require(utterance_id not in by_id, f"duplicate transcript utterance id: {utterance_id}")
 
-    require(set(by_id) == seen_audio_ids, f"transcript/audio identity mismatch in partition {partition}")
-    speakers: dict[str, list[Utterance]] = {}
-    for utterance in by_id.values():
-        speakers.setdefault(utterance.speaker_id, []).append(utterance)
-    for speaker_id, utterances in speakers.items():
-        require(utterances, f"speaker has no utterances: {partition}/{speaker_id}")
-    return speakers
+                audio_path = transcript_file.parent / f"{utterance_id}.flac"
+                audio_relative = audio_path.relative_to(partition_root)
+                require(
+                    audio_relative.as_posix() in snapshot.entries,
+                    f"missing audio for transcript utterance: {partition}/{speaker_dir}/{chapter_dir}/{utterance_id}.flac",
+                )
+                audio_fd, audio_identity = open_regular_file_beneath(
+                    partition_fd,
+                    audio_relative,
+                    snapshot,
+                    "audio source",
+                )
+                try:
+                    audio_sha256 = sha256_stable_fd(audio_fd, audio_identity, "audio source")
+                finally:
+                    os.close(audio_fd)
+
+                source_path = f"LibriSpeech/{partition}/{speaker_id}/{chapter_id}/{utterance_id}.flac"
+                by_id[utterance_id] = Utterance(
+                    partition=partition,
+                    speaker_id=speaker_id,
+                    chapter_id=chapter_id,
+                    utterance_id=utterance_id,
+                    transcript=transcript,
+                    source_audio_path=source_path,
+                    source_file_sha256=audio_sha256,
+                )
+                expected_audio_paths[utterance_id] = audio_path
+
+        seen_audio_ids: set[str] = set()
+        for audio_file in audio_files:
+            relative = audio_file.relative_to(partition_root)
+            utterance_id = audio_file.name.removesuffix(".flac")
+            speaker_id, chapter_id, _ = parse_utterance_id(utterance_id)
+            validate_relative_source_path(partition, speaker_id, chapter_id, audio_file, partition_root)
+            audio_fd, _ = open_regular_file_beneath(partition_fd, relative, snapshot, "audio source")
+            os.close(audio_fd)
+            require(utterance_id not in seen_audio_ids, f"duplicate audio utterance id: {utterance_id}")
+            seen_audio_ids.add(utterance_id)
+            require(
+                utterance_id in by_id,
+                f"audio has no transcript entry: {partition}/{relative.as_posix()}",
+            )
+            require(audio_file == expected_audio_paths[utterance_id], f"audio path mismatch for utterance: {utterance_id}")
+
+        require(set(by_id) == seen_audio_ids, f"transcript/audio identity mismatch in partition {partition}")
+        speakers: dict[str, list[Utterance]] = {}
+        for utterance in by_id.values():
+            speakers.setdefault(utterance.speaker_id, []).append(utterance)
+        for speaker_id, utterances in speakers.items():
+            require(utterances, f"speaker has no utterances: {partition}/{speaker_id}")
+        return speakers
+    finally:
+        os.close(partition_fd)
 
 
-def select_partition(rule: PartitionRule, speakers: dict[str, list[Utterance]], selection_material: str) -> dict[str, Any]:
+def select_partition(
+    rule: PartitionRule,
+    speakers: dict[str, list[Utterance]],
+    selection_material: str,
+) -> dict[str, Any]:
     """Select speakers and utterances by frozen hash ordering for one partition."""
     require(
         len(speakers) >= rule.speakers_per_partition,
@@ -349,6 +562,7 @@ def select_partition(rule: PartitionRule, speakers: dict[str, list[Utterance]], 
             ),
         )
         selected = ordered_utterances[: rule.utterances_per_speaker_max]
+        require(selected, f"selected speaker has no utterances: {rule.name}/{speaker_id}")
         output_speakers.append(
             {
                 "speaker_id": speaker_id,
@@ -360,7 +574,7 @@ def select_partition(rule: PartitionRule, speakers: dict[str, list[Utterance]], 
                         "utterance_id": item.utterance_id,
                         "reference_transcript": item.transcript,
                         "source_audio_path": item.source_audio_path,
-                        "source_file_sha256": sha256_file(item.audio_path),
+                        "source_file_sha256": item.source_file_sha256,
                     }
                     for item in selected
                 ],
@@ -385,10 +599,13 @@ def select_subset(corpus_root: Path, policy_path: Path = POLICY_PATH) -> dict[st
     require(not overlap, f"speaker overlap across public partitions: {sorted(overlap)}")
 
     all_utterance_ids: set[str] = set()
-    for partition, speakers in inventories.items():
+    for speakers in inventories.values():
         for utterances in speakers.values():
             for utterance in utterances:
-                require(utterance.utterance_id not in all_utterance_ids, f"utterance overlap across partitions: {utterance.utterance_id}")
+                require(
+                    utterance.utterance_id not in all_utterance_ids,
+                    f"utterance overlap across partitions: {utterance.utterance_id}",
+                )
                 all_utterance_ids.add(utterance.utterance_id)
 
     selected_partitions = [
