@@ -1,0 +1,113 @@
+name: 000B2 B2P04 Manifest Presence Repair
+
+on:
+  push:
+    branches:
+      - docs/000b2-b2p04-frontier-reconciliation
+    paths:
+      - '.github/workflows/000b2-b2p04-manifest-presence-repair.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair-manifest-presence-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact staging revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Verify exact branch and canonical base
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF_NAME}" = "docs/000b2-b2p04-frontier-reconciliation"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git fetch --no-tags origin main
+          test "$(git rev-parse origin/main)" = "4c4e758f22b54fa62256e57bfbd344adc817df8e"
+          test "$(git merge-base HEAD origin/main)" = "4c4e758f22b54fa62256e57bfbd344adc817df8e"
+      - name: Require committed manifest after canonical B2P04 reconciliation
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          from pathlib import Path
+
+          path = Path('research/000b2-public/verify_subset_freeze.py')
+          text = path.read_text(encoding='utf-8')
+
+          text = text.replace(
+              'def verify_current_authority() -> None:\n    """Require the exact B2P04 qualification or canonical-reconciliation authority state."""',
+              'def verify_current_authority() -> str:\n    """Require and return the exact B2P04 authority phase."""',
+              1,
+          )
+          old_pre = '''        require("B2P05 remains non-authorized" in current, "pre-reconciliation frontier must keep B2P05 closed")
+                  return'''
+          new_pre = '''        require("B2P05 remains non-authorized" in current, "pre-reconciliation frontier must keep B2P05 closed")
+                  return "B2P03"'''
+          old_canonical = '''        require("Candidate decoding, B2P06 preprocessing capture, and primary decoding remain unauthorized during B2P05." in current, "canonical B2P05 boundaries drift")
+                  return'''
+          new_canonical = '''        require("Candidate decoding, B2P06 preprocessing capture, and primary decoding remain unauthorized during B2P05." in current, "canonical B2P05 boundaries drift")
+                  return "B2P04"'''
+          if text.count(old_pre) != 1 or text.count(old_canonical) != 1:
+              raise SystemExit('B2P04_MANIFEST_PRESENCE_REPAIR=FAIL: authority return anchors drift')
+          text = text.replace(old_pre, new_pre).replace(old_canonical, new_canonical)
+
+          old_manifest = '''def verify_manifest() -> None:
+              """If present, verify the complete committed source-membership freeze and its digest."""
+              if not MANIFEST_PATH.exists():
+                  print("B2P04_COMMITTED_MANIFEST=ABSENT_PROBE_REQUIRED")
+                  return'''
+          new_manifest = '''def verify_manifest(authority_phase: str) -> None:
+              """Verify the committed freeze; absence is permitted only for the B2P03 probe phase."""
+              if not MANIFEST_PATH.exists():
+                  require(authority_phase == "B2P03", "canonical B2P04 reconciliation requires the committed subset manifest")
+                  print("B2P04_COMMITTED_MANIFEST=ABSENT_PROBE_REQUIRED")
+                  return'''
+          if text.count(old_manifest) != 1:
+              raise SystemExit(f'B2P04_MANIFEST_PRESENCE_REPAIR=FAIL: manifest anchor count {text.count(old_manifest)}')
+          text = text.replace(old_manifest, new_manifest)
+
+          old_main = '''    verify_safe_extraction()
+              verify_current_authority()
+              verify_manifest()'''
+          new_main = '''    verify_safe_extraction()
+              authority_phase = verify_current_authority()
+              verify_manifest(authority_phase)'''
+          if text.count(old_main) != 1:
+              raise SystemExit(f'B2P04_MANIFEST_PRESENCE_REPAIR=FAIL: main anchor count {text.count(old_main)}')
+          text = text.replace(old_main, new_main)
+
+          path.write_text(text, encoding='utf-8')
+          print('B2P04_MANIFEST_PRESENCE_REPAIR=APPLIED')
+          PY
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_methodology.py
+      - name: Regression reject missing manifest in reconciled state
+        shell: bash
+        run: |
+          set -euo pipefail
+          mv research/000b2-public/subset-manifest.json "$RUNNER_TEMP/subset-manifest.json"
+          set +e
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze.py > "$RUNNER_TEMP/missing-manifest.log" 2>&1
+          status=$?
+          set -e
+          test "$status" -ne 0
+          grep -F "canonical B2P04 reconciliation requires the committed subset manifest" "$RUNNER_TEMP/missing-manifest.log"
+          mv "$RUNNER_TEMP/subset-manifest.json" research/000b2-public/subset-manifest.json
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze.py
+          echo "B2P04_RECONCILED_MISSING_MANIFEST_REJECTION=PASS"
+      - name: Commit forward-only repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/000b2-public/verify_subset_freeze.py
+          test "$(git diff --cached --name-only)" = "research/000b2-public/verify_subset_freeze.py"
+          git diff --cached --check
+          git commit -m "fix(000b2): require B2P04 manifest after reconciliation"
+          git push origin HEAD:docs/000b2-b2p04-frontier-reconciliation
