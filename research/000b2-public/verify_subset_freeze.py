@@ -153,14 +153,18 @@ def verify_static_boundaries() -> None:
 
 
 def verify_current_authority() -> str:
-    """Require and return the exact B2P04 authority phase."""
+    """Require and return the exact current authority phase while preserving the B2P04 freeze."""
     readiness = load_object(READINESS_PATH, "public readiness")
     require(readiness.get("state") == "READY", "public readiness must remain READY")
     public = readiness.get("public_human_baseline")
     require(isinstance(public, dict), "public_human_baseline must be an object")
     require(public.get("candidate_decoding_started") is False, "candidate decoding must remain closed")
+    preprocessing = readiness.get("preprocessing")
+    require(isinstance(preprocessing, dict) and preprocessing.get("resolved") is False, "B2P06 preprocessing capture must remain unresolved before B2P06 execution")
+    environment = readiness.get("execution_environment")
+    require(isinstance(environment, dict) and environment.get("resolved") is False, "B2P07 environment capture must remain unresolved")
     attempt = readiness.get("attempt_manifest")
-    require(isinstance(attempt, dict) and attempt.get("primary_decoding_started") is False, "primary decoding must remain closed")
+    require(isinstance(attempt, dict) and attempt.get("primary_decoding_started") is False and attempt.get("frozen") is False, "primary decoding and B2P08 freeze must remain closed")
     guards = readiness.get("claim_guards")
     require(isinstance(guards, dict), "claim_guards must be an object")
     require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human developer-speech evidence guard drift")
@@ -172,27 +176,41 @@ def verify_current_authority() -> str:
     tasks = TASKS_PATH.read_text(encoding="utf-8")
     current = CURRENT_PATH.read_text(encoding="utf-8")
     require("- [x] `B2P03`" in tasks, "B2P03 must remain complete")
-    require("- [ ] `B2P05`" in tasks, "B2P05 must remain uncompleted")
 
     if completed_through == "B2P03":
         require(public.get("subset_manifest_frozen") is False, "pre-reconciliation readiness must remain unfrozen")
         require(isinstance(next_action, str) and next_action.startswith("Execute B2P04 only:"), "pre-reconciliation readiness must authorize B2P04 only")
         require("Do not begin candidate revalidation or decoding until B2P04 is canonical." in next_action, "pre-reconciliation B2P05/decode boundary drift")
         require("- [ ] `B2P04`" in tasks, "B2P04 must remain unchecked during implementation qualification")
+        require("- [ ] `B2P05`" in tasks, "B2P05 must remain uncompleted before B2P04 canonicalization")
         require("Execute and canonically qualify `B2P04` only" in current, "pre-reconciliation frontier is not B2P04-only")
         require("B2P05 remains non-authorized" in current, "pre-reconciliation frontier must keep B2P05 closed")
         return "B2P03"
 
     if completed_through == "B2P04":
         require(public.get("subset_manifest_frozen") is True, "canonical B2P04 readiness must bind the frozen manifest")
-        require(isinstance(next_action, str) and next_action.startswith("Execute B2P05 only:"), "canonical reconciliation must authorize B2P05 only")
+        require(isinstance(next_action, str) and next_action.startswith("Execute B2P05 only:"), "canonical B2P04 reconciliation must authorize B2P05 only")
         require("Do not begin candidate decoding, B2P06 preprocessing capture, or primary decoding until B2P05 is canonical." in next_action, "canonical B2P05/decode boundary drift")
         require("- [x] `B2P04`" in tasks, "canonical reconciliation must mark B2P04 complete")
+        require("- [ ] `B2P05`" in tasks, "B2P05 must remain open during B2P05 execution qualification")
         require("- [ ] `B2P06`" in tasks, "B2P06 must remain unauthorized")
         require("current bounded execution unit `B2P05`" in current, "canonical frontier is not B2P05-only")
         require("B2P05 is now authorized only to revalidate" in current, "canonical frontier must bound B2P05 to identity revalidation")
         require("Candidate decoding, B2P06 preprocessing capture, and primary decoding remain unauthorized during B2P05." in current, "canonical B2P05 boundaries drift")
         return "B2P04"
+
+    if completed_through == "B2P05":
+        require(public.get("subset_manifest_frozen") is True, "B2P05 reconciliation must preserve the B2P04 frozen manifest")
+        require(isinstance(next_action, str) and next_action.startswith("Execute B2P06 only:"), "B2P05 reconciliation must authorize B2P06 only")
+        require("Do not begin B2P07 environment capture, B2P08 attempt freeze, or candidate decoding until B2P06 is canonical." in next_action, "B2P06 successor boundary drift")
+        require("- [x] `B2P04`" in tasks, "B2P04 must remain complete")
+        require("- [x] `B2P05`" in tasks, "B2P05 reconciliation must mark B2P05 complete")
+        require("- [ ] `B2P06`" in tasks, "B2P06 must remain open and not pre-completed")
+        require("- [ ] `B2P07`" in tasks, "B2P07 must remain unauthorized")
+        require("current bounded execution unit `B2P06`" in current, "reconciled frontier is not B2P06-only")
+        require("Execute and canonically qualify `B2P06` only" in current, "reconciled current view must authorize B2P06 only")
+        require("B2P07 remains non-authorized" in current, "reconciled frontier must keep B2P07 closed")
+        return "B2P05"
 
     raise SystemExit(f"B2P04_FREEZE_VERIFIER=FAIL: unsupported completed_through state: {completed_through!r}")
 
@@ -383,12 +401,13 @@ def main() -> None:
     authority_phase = verify_current_authority()
     verify_manifest(authority_phase)
     print("B2P04_FREEZE_VERIFIER=PASS")
+    print(f"B2P04_AUTHORITY_PHASE={authority_phase}")
     print("B2P04_TAR_TRAVERSAL_REJECTION=PASS")
     print("B2P04_SYMLINK_REJECTION=PASS")
     print("B2P04_HARDLINK_REJECTION=PASS")
     print("B2P04_SPECIAL_NODE_REJECTION=PASS")
     print("B2P04_NEGATIVE_SIZE_REJECTION=PASS")
-    print("B2P04_CANDIDATE_REVALIDATION_STARTED=NO")
+    print("B2P04_MANIFEST_CANDIDATE_REVALIDATION_STARTED_AT_FREEZE=NO")
     print("B2P04_CANDIDATE_DECODING_STARTED=NO")
     print("B2P04_PRIMARY_DECODING_STARTED=NO")
     print("B2P06_PREPROCESSING_IDENTITIES=NOT_CAPTURED")
