@@ -26,22 +26,24 @@ jobs:
 
           path = Path('research/000b2-public/preprocess_subset.py')
           text = path.read_text(encoding='utf-8')
-          old = '''    require(len(observed_flags) == len(behavior_flags) + 1, "FFmpeg build configuration must contain exactly one ignored prefix flag")
-    require(behavior_flags == list(EXPECTED_BEHAVIOR_CONFIG_FLAGS), "FFmpeg behavior-affecting build configuration drift")
-    return {
-'''
-          new = '''    require(len(observed_flags) == len(behavior_flags) + 1, "FFmpeg build configuration must contain exactly one ignored prefix flag")
-    require(len(behavior_flags) == len(set(behavior_flags)), "FFmpeg behavior configuration contains duplicate flags")
-    observed_set = set(behavior_flags)
-    expected_set = set(EXPECTED_BEHAVIOR_CONFIG_FLAGS)
-    if observed_set != expected_set:
-        missing = sorted(expected_set - observed_set)
-        extra = sorted(observed_set - expected_set)
-        raise PreprocessingError(
-            f"FFmpeg behavior-affecting build configuration drift: missing={missing!r}, extra={extra!r}, observed={behavior_flags!r}"
-        )
-    return {
-'''
+          old = (
+              '    require(len(observed_flags) == len(behavior_flags) + 1, "FFmpeg build configuration must contain exactly one ignored prefix flag")\n'
+              '    require(behavior_flags == list(EXPECTED_BEHAVIOR_CONFIG_FLAGS), "FFmpeg behavior-affecting build configuration drift")\n'
+              '    return {\n'
+          )
+          new = (
+              '    require(len(observed_flags) == len(behavior_flags) + 1, "FFmpeg build configuration must contain exactly one ignored prefix flag")\n'
+              '    require(len(behavior_flags) == len(set(behavior_flags)), "FFmpeg behavior configuration contains duplicate flags")\n'
+              '    observed_set = set(behavior_flags)\n'
+              '    expected_set = set(EXPECTED_BEHAVIOR_CONFIG_FLAGS)\n'
+              '    if observed_set != expected_set:\n'
+              '        missing = sorted(expected_set - observed_set)\n'
+              '        extra = sorted(observed_set - expected_set)\n'
+              '        raise PreprocessingError(\n'
+              '            f"FFmpeg behavior-affecting build configuration drift: missing={missing!r}, extra={extra!r}, observed={behavior_flags!r}"\n'
+              '        )\n'
+              '    return {\n'
+          )
           if text.count(old) != 1:
               raise SystemExit(f'expected one target block, found {text.count(old)}')
           path.write_text(text.replace(old, new, 1), encoding='utf-8')
