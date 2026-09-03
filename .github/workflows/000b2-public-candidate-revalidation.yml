@@ -1,0 +1,69 @@
+name: 000B2 Public Corpus Candidate Revalidation
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/000b2-public-candidate-revalidation.yml'
+      - '.github/trusted/verify_000b2_materialization.py'
+      - 'research/000b1/qualified-candidates.json'
+      - 'research/000b2-entry/artifact-size-amendment.json'
+      - 'research/000b2-entry/materialized-artifacts.json'
+      - 'research/000b2-public/candidate-revalidation.json'
+      - 'research/000b2-public/readiness.json'
+      - 'research/000b2-public/verify_candidate_revalidation.py'
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  static-candidate-revalidation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Set up pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact revision identity
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          echo "B2P05_EXACT_HEAD=${GITHUB_SHA}"
+      - name: Compile B2P05 verifier
+        run: python -m py_compile research/000b2-public/verify_candidate_revalidation.py
+      - name: Verify B2P05 static authority and closed later gates
+        run: python research/000b2-public/verify_candidate_revalidation.py
+      - name: Reverify current public methodology and frozen subset
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_methodology.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze.py
+
+  live-candidate-revalidation:
+    needs: static-candidate-revalidation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Set up pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact revision identity
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          echo "B2P05_EXACT_HEAD=${GITHUB_SHA}"
+      - name: Revalidate exact runtime, model, and artifact identities live
+        run: PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_candidate_revalidation.py --live
