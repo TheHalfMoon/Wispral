@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import inspect
 import json
+import os
 import shutil
 import tempfile
 import threading
@@ -134,6 +135,24 @@ def replace_transcript_with_external_symlink(librispeech_root: Path) -> None:
     external.write_text(transcript_path.read_text(encoding="utf-8"), encoding="utf-8")
     transcript_path.unlink()
     transcript_path.symlink_to(external)
+
+
+def replace_audio_with_external_hardlink(librispeech_root: Path) -> None:
+    """Replace one canonical-looking audio path with a hard link to external candidate-like bytes."""
+    audio_path = sorted((librispeech_root / "test-clean").rglob("*.flac"))[0]
+    external = librispeech_root.parent / "candidate-output-hardlink.flac"
+    external.write_bytes(b"external-candidate-like-hardlinked-audio")
+    audio_path.unlink()
+    os.link(external, audio_path)
+
+
+def replace_transcript_with_external_hardlink(librispeech_root: Path) -> None:
+    """Replace one canonical-looking transcript path with a hard link to external candidate-like text."""
+    transcript_path = sorted((librispeech_root / "test-clean").rglob("*.trans.txt"))[0]
+    external = librispeech_root.parent / "candidate-output-hardlink.trans.txt"
+    external.write_text(transcript_path.read_text(encoding="utf-8"), encoding="utf-8")
+    transcript_path.unlink()
+    os.link(external, transcript_path)
 
 
 def replace_speaker_directory_with_external_symlink(librispeech_root: Path) -> None:
@@ -352,6 +371,7 @@ def verify_policy_boundaries() -> None:
     require("require_symlink_free_tree" in source, "selector must reject internal source-tree symlink nodes")
     require("O_NOFOLLOW" in source and "dir_fd=" in source, "selector must use descriptor-relative no-follow opens")
     require("source_identity" in source and "identity changed since validation" in source, "selector must detect TOCTOU replacement")
+    require("link_count" in source and "hard-linked regular file is not allowed" in source, "selector must reject hard-linked source files")
     require("sha256_stable_fd" in source, "selector must hash the already-open validated source descriptor")
     require("sha256_file(" not in source, "selector must not reopen source audio by path for hashing")
     require("snapshot_inventory" in source and "snapshot.entries.items()" in source, "selector inventory must derive from validated snapshot")
@@ -426,6 +446,8 @@ def main() -> None:
     expect_selection_error(overlap_speaker_between_partitions, "speaker overlap across public partitions")
     expect_selection_error(replace_audio_with_external_symlink, "symbolic link is not allowed for partition tree test-clean")
     expect_selection_error(replace_transcript_with_external_symlink, "symbolic link is not allowed for partition tree test-clean")
+    expect_selection_error(replace_audio_with_external_hardlink, "hard-linked regular file is not allowed for partition tree test-clean")
+    expect_selection_error(replace_transcript_with_external_hardlink, "hard-linked regular file is not allowed for partition tree test-clean")
     expect_selection_error(
         replace_speaker_directory_with_external_symlink,
         "symbolic link is not allowed for partition tree test-clean",
@@ -441,6 +463,7 @@ def main() -> None:
     print("B2P03_DUPLICATE_REJECTION=PASS")
     print("B2P03_SPEAKER_DISJOINTNESS=PASS")
     print("B2P03_SYMLINK_REJECTION=PASS")
+    print("B2P03_HARDLINK_REJECTION=PASS")
     print("B2P03_INTERNAL_DIRECTORY_SYMLINK_REJECTION=PASS")
     print("B2P03_SYMLINK_ANCESTRY_REJECTION=PASS")
     print("B2P03_SOURCE_RACE_REJECTION=PASS")
