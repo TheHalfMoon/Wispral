@@ -152,8 +152,8 @@ def verify_static_boundaries() -> None:
         require(required in source, f"freeze engine missing required boundary marker: {required}")
 
 
-def verify_current_authority() -> None:
-    """Require the exact B2P04 qualification or canonical-reconciliation authority state."""
+def verify_current_authority() -> str:
+    """Require and return the exact B2P04 authority phase."""
     readiness = load_object(READINESS_PATH, "public readiness")
     require(readiness.get("state") == "READY", "public readiness must remain READY")
     public = readiness.get("public_human_baseline")
@@ -181,7 +181,7 @@ def verify_current_authority() -> None:
         require("- [ ] `B2P04`" in tasks, "B2P04 must remain unchecked during implementation qualification")
         require("Execute and canonically qualify `B2P04` only" in current, "pre-reconciliation frontier is not B2P04-only")
         require("B2P05 remains non-authorized" in current, "pre-reconciliation frontier must keep B2P05 closed")
-        return
+        return "B2P03"
 
     if completed_through == "B2P04":
         require(public.get("subset_manifest_frozen") is True, "canonical B2P04 readiness must bind the frozen manifest")
@@ -192,14 +192,15 @@ def verify_current_authority() -> None:
         require("current bounded execution unit `B2P05`" in current, "canonical frontier is not B2P05-only")
         require("B2P05 is now authorized only to revalidate" in current, "canonical frontier must bound B2P05 to identity revalidation")
         require("Candidate decoding, B2P06 preprocessing capture, and primary decoding remain unauthorized during B2P05." in current, "canonical B2P05 boundaries drift")
-        return
+        return "B2P04"
 
     raise SystemExit(f"B2P04_FREEZE_VERIFIER=FAIL: unsupported completed_through state: {completed_through!r}")
 
 
-def verify_manifest() -> None:
-    """If present, verify the complete committed source-membership freeze and its digest."""
+def verify_manifest(authority_phase: str) -> None:
+    """Verify the committed freeze; absence is permitted only for the B2P03 probe phase."""
     if not MANIFEST_PATH.exists():
+        require(authority_phase == "B2P03", "canonical B2P04 reconciliation requires the committed subset manifest")
         print("B2P04_COMMITTED_MANIFEST=ABSENT_PROBE_REQUIRED")
         return
     require(MANIFEST_PATH.is_file() and not MANIFEST_PATH.is_symlink(), "subset manifest must be a regular non-symlink file")
@@ -351,8 +352,8 @@ def main() -> None:
     """Run all offline B2P04 structural/adversarial gates."""
     verify_static_boundaries()
     verify_safe_extraction()
-    verify_current_authority()
-    verify_manifest()
+    authority_phase = verify_current_authority()
+    verify_manifest(authority_phase)
     print("B2P04_FREEZE_VERIFIER=PASS")
     print("B2P04_TAR_TRAVERSAL_REJECTION=PASS")
     print("B2P04_SYMLINK_REJECTION=PASS")
