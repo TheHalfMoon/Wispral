@@ -250,6 +250,7 @@ def require_no_symlink_ancestry(path: Path, label: str) -> None:
     resolved = path.resolve(strict=False)
     require(absolute == resolved, f"symbolic link is not allowed for {label}: {path}")
 
+
 def load_policy(path: Path = POLICY_PATH) -> SelectionPolicy:
     """Load and strictly validate the frozen B2P03 selection policy."""
     require_no_symlink_ancestry(path, "selection policy")
@@ -433,6 +434,16 @@ def require_symlink_free_tree(root: Path, label: str) -> SourceTreeSnapshot:
     return SourceTreeSnapshot(root_identity=root_identity, entries=entries)
 
 
+def require_snapshot_unchanged(root_fd: int, snapshot: SourceTreeSnapshot, label: str) -> None:
+    """Re-snapshot an open partition and reject any added, removed, or changed source node."""
+    entries: dict[str, SourceIdentity] = {}
+    snapshot_directory(root_fd, Path(), entries, label, snapshot.root_identity)
+    final_root = source_identity(os.fstat(root_fd))
+    require_identity(final_root, snapshot.root_identity, f"{label} root after inventory consumption")
+    final_snapshot = SourceTreeSnapshot(root_identity=final_root, entries=entries)
+    require(final_snapshot == snapshot, f"{label} changed after initial snapshot")
+
+
 def resolve_librispeech_root(corpus_root: Path) -> Path:
     """Resolve a caller-provided extraction root while rejecting symlinked corpus components."""
     require_no_symlink_ancestry(corpus_root, "corpus root")
@@ -595,6 +606,7 @@ def discover_partition(librispeech_root: Path, partition: str) -> dict[str, list
             speakers.setdefault(utterance.speaker_id, []).append(utterance)
         for speaker_id, utterances in speakers.items():
             require(utterances, f"speaker has no utterances: {partition}/{speaker_id}")
+        require_snapshot_unchanged(partition_fd, snapshot, f"partition tree {partition}")
         return speakers
     finally:
         os.close(partition_fd)
