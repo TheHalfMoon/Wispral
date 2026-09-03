@@ -238,6 +238,7 @@ def verify_methodology(workflow: dict[str, Any]) -> None:
     jobs = mapping(workflow.get("jobs"), "methodology.jobs")
     require(set(jobs) == {"verify-public-corpus-methodology"}, "methodology active job set drift")
     job = mapping(jobs.get("verify-public-corpus-methodology"), "methodology.job")
+    require(set(job) == {"runs-on", "env", "steps"}, "methodology job fields drift")
     require(job.get("runs-on") == "ubuntu-latest", "methodology runner drift")
     require_exact_mapping(
         mapping(job.get("env"), "methodology.job.env"),
@@ -287,6 +288,7 @@ def verify_materialization(workflow: dict[str, Any]) -> None:
     jobs = mapping(workflow.get("jobs"), "materialization.jobs")
     require(set(jobs) == {"materialize-official-archives"}, "materialization active job set drift")
     job = mapping(jobs.get("materialize-official-archives"), "materialization.job")
+    require(set(job) == {"runs-on", "timeout-minutes", "env", "steps"}, "materialization job fields drift")
     require(job.get("runs-on") == "ubuntu-latest", "materialization runner drift")
     require(job.get("timeout-minutes") == 30, "materialization timeout drift")
     require_exact_mapping(
