@@ -1,0 +1,68 @@
+name: 000B2 Public Corpus Subset Freeze
+
+on:
+  pull_request:
+    paths:
+      - 'research/000b2-public/freeze_subset_manifest.py'
+      - 'research/000b2-public/verify_subset_freeze.py'
+      - 'research/000b2-public/subset-manifest.json'
+      - 'research/000b2-public/subset-selection-policy.json'
+      - 'research/000b2-public/select_subset.py'
+      - 'research/000b2-public/corpus-source.json'
+      - 'research/000b2-public/archive-materialization.json'
+      - 'research/000b2-public/readiness.json'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+      - 'specs/CURRENT.md'
+      - '.github/workflows/000b2-public-subset-freeze.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'research/000b2-public/freeze_subset_manifest.py'
+      - 'research/000b2-public/verify_subset_freeze.py'
+      - 'research/000b2-public/subset-manifest.json'
+      - 'research/000b2-public/subset-selection-policy.json'
+      - 'research/000b2-public/select_subset.py'
+      - 'research/000b2-public/corpus-source.json'
+      - 'research/000b2-public/archive-materialization.json'
+      - 'research/000b2-public/readiness.json'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+      - 'specs/CURRENT.md'
+      - '.github/workflows/000b2-public-subset-freeze.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  freeze-public-corpus-subset:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      B2P04_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.B2P04_REVISION }}
+          persist-credentials: false
+      - name: Verify exact revision identity
+        run: |
+          test "$(git rev-parse HEAD)" = "$B2P04_REVISION"
+          echo "B2P04_REVISION=$B2P04_REVISION"
+      - name: Verify offline freeze boundaries
+        run: python research/000b2-public/verify_subset_freeze.py
+      - name: Reproduce exact B2P04 subset freeze
+        run: |
+          mkdir -p "$RUNNER_TEMP/b2p04/work"
+          python research/000b2-public/freeze_subset_manifest.py \
+            --work-dir "$RUNNER_TEMP/b2p04/work" \
+            --output "$RUNNER_TEMP/b2p04/subset-manifest-candidate.json" \
+            --committed research/000b2-public/subset-manifest.json
+      - name: Upload bounded subset-freeze candidate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b2p04-subset-freeze-${{ env.B2P04_REVISION }}
+          path: ${{ runner.temp }}/b2p04/subset-manifest-candidate.json
+          if-no-files-found: warn
+          retention-days: 7
