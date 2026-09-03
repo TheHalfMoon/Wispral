@@ -16,6 +16,7 @@ from urllib.parse import quote
 
 CANDIDATE_ROOT = Path(__file__).resolve().parents[2]
 CANONICAL_BASE_SHA = "6135cd67c1b31e0be0b82ba202b6a6770d34b68d"
+B2P05_CANONICAL_MERGE = "49538990fb4cf8223e9321261925206ed7ff5cee"
 EVIDENCE_REL = Path("research/000b2-public/candidate-revalidation.json")
 REGISTRY_REL = Path("research/000b1/qualified-candidates.json")
 MATERIALIZED_REL = Path("research/000b2-entry/materialized-artifacts.json")
@@ -37,7 +38,6 @@ IMMUTABLE_BASE_INPUTS = (
     REGISTRY_REL,
     MATERIALIZED_REL,
     AMENDMENT_REL,
-    READINESS_REL,
     TRUSTED_VERIFIER_REL,
 )
 
@@ -106,6 +106,41 @@ def family_map(registry: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return result
 
 
+def verify_readiness_phase(base_readiness: dict[str, Any], readiness: dict[str, Any]) -> str:
+    """Accept only B2P05 execution or its canonical reconciliation, with later gates closed."""
+    require(base_readiness.get("state") == "READY", "canonical base public readiness must remain READY")
+    require(base_readiness.get("completed_through") == "B2P04", "canonical B2P05 base must remain completed through B2P04")
+    base_next = base_readiness.get("next_action")
+    require(isinstance(base_next, str) and base_next.startswith("Execute B2P05 only:"), "canonical B2P05 base next action drift")
+
+    require(readiness.get("state") == "READY", "public readiness must remain READY")
+    completed_through = readiness.get("completed_through")
+    require(completed_through in {"B2P04", "B2P05"}, "unsupported B2P05 readiness phase")
+
+    public = readiness.get("public_human_baseline")
+    preprocessing = readiness.get("preprocessing")
+    environment = readiness.get("execution_environment")
+    attempt = readiness.get("attempt_manifest")
+    guards = readiness.get("claim_guards")
+    require(isinstance(public, dict) and public.get("candidate_decoding_started") is False, "candidate decoding must remain closed through B2P05 reconciliation")
+    require(isinstance(preprocessing, dict) and preprocessing.get("resolved") is False, "B2P06 preprocessing capture started before canonical B2P05 reconciliation")
+    require(isinstance(environment, dict) and environment.get("resolved") is False, "B2P07 environment capture started before canonical B2P05 reconciliation")
+    require(isinstance(attempt, dict) and attempt.get("primary_decoding_started") is False and attempt.get("frozen") is False, "B2P08 attempt state advanced before canonical B2P05 reconciliation")
+    require(isinstance(guards, dict), "claim guards missing")
+    require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human developer-speech evidence guard drift")
+    require(guards.get("production_stt_selected") is False and guards.get("product_code_authorized") is False, "product-selection guard drift")
+
+    next_action = readiness.get("next_action")
+    if completed_through == "B2P04":
+        require(isinstance(next_action, str) and next_action.startswith("Execute B2P05 only:"), "B2P05 execution phase next action drift")
+        require("Do not begin candidate decoding, B2P06 preprocessing capture, or primary decoding until B2P05 is canonical." in next_action, "B2P05 execution boundary drift")
+        return "EXECUTION"
+
+    require(isinstance(next_action, str) and next_action.startswith("Execute B2P06 only:"), "B2P05 reconciliation must authorize B2P06 only")
+    require("Do not begin B2P07 environment capture, B2P08 attempt freeze, or candidate decoding until B2P06 is canonical." in next_action, "B2P06 successor boundary drift")
+    return "RECONCILED"
+
+
 def verify_static_authority(trusted_base_root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     """Bind B2P05 candidate data to immutable canonical-base authority and closed gates."""
     base_root = trusted_base_root.resolve(strict=True)
@@ -118,7 +153,8 @@ def verify_static_authority(trusted_base_root: Path) -> tuple[dict[str, Any], di
 
     registry_raw = safe_bytes(base_root, REGISTRY_REL)
     materialized_raw = safe_bytes(base_root, MATERIALIZED_REL)
-    readiness_raw = safe_bytes(base_root, READINESS_REL)
+    base_readiness_raw = safe_bytes(base_root, READINESS_REL)
+    readiness_raw = safe_bytes(candidate_root, READINESS_REL)
     evidence_raw = safe_bytes(candidate_root, EVIDENCE_REL)
 
     registry_sha = sha256_bytes(registry_raw)
@@ -126,7 +162,8 @@ def verify_static_authority(trusted_base_root: Path) -> tuple[dict[str, Any], di
 
     registry = load_object(registry_raw, "canonical candidate registry")
     materialized = load_object(materialized_raw, "canonical materialized artifact evidence")
-    readiness = load_object(readiness_raw, "canonical public readiness")
+    base_readiness = load_object(base_readiness_raw, "canonical B2P05 base readiness")
+    readiness = load_object(readiness_raw, "candidate public readiness")
     evidence = load_object(evidence_raw, "B2P05 candidate revalidation evidence")
 
     require(evidence.get("schema_version") == "000b2-public-candidate-revalidation-v1", "B2P05 evidence schema drift")
@@ -192,19 +229,7 @@ def verify_static_authority(trusted_base_root: Path) -> tuple[dict[str, Any], di
     ):
         require(contract.get(field) is True, f"B2P05 live contract drift: {field}")
 
-    require(readiness.get("state") == "READY" and readiness.get("completed_through") == "B2P04", "B2P05 requires canonical B2P04 readiness")
-    public = readiness.get("public_human_baseline")
-    preprocessing = readiness.get("preprocessing")
-    environment = readiness.get("execution_environment")
-    attempt = readiness.get("attempt_manifest")
-    guards = readiness.get("claim_guards")
-    require(isinstance(public, dict) and public.get("candidate_decoding_started") is False, "candidate decoding started before B2P05")
-    require(isinstance(preprocessing, dict) and preprocessing.get("resolved") is False, "B2P06 preprocessing capture started before B2P05")
-    require(isinstance(environment, dict) and environment.get("resolved") is False, "B2P07 environment capture started before B2P05")
-    require(isinstance(attempt, dict) and attempt.get("primary_decoding_started") is False and attempt.get("frozen") is False, "B2P08 attempt state advanced before B2P05")
-    require(isinstance(guards, dict), "claim guards missing")
-    require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human developer-speech evidence guard drift")
-    require(guards.get("production_stt_selected") is False and guards.get("product_code_authorized") is False, "product-selection guard drift")
+    phase = verify_readiness_phase(base_readiness, readiness)
 
     evidence_guards = evidence.get("guards")
     require(isinstance(evidence_guards, dict), "B2P05 evidence guards missing")
@@ -219,7 +244,9 @@ def verify_static_authority(trusted_base_root: Path) -> tuple[dict[str, Any], di
     require(evidence_guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "B2P05 human-evidence guard drift")
 
     print(f"B2P05_CANONICAL_BASE={CANONICAL_BASE_SHA}")
+    print(f"B2P05_CANONICAL_MERGE={B2P05_CANONICAL_MERGE}")
     print("B2P05_CANONICAL_AUTHORITY_INPUTS=UNCHANGED")
+    print(f"B2P05_AUTHORITY_PHASE={phase}")
     print("B2P05_STATIC_AUTHORITY=PASS")
     print("B2P05_CANDIDATE_COUNT=6")
     print("B2P05_C0_CONTEXT_FREEZE=PASS")
