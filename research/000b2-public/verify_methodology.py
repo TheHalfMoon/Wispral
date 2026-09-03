@@ -543,6 +543,8 @@ def main() -> None:
     require_text(current, B2P04_MANIFEST_SHA256, "current frontier B2P04 manifest SHA proof")
     require_text(current, B2P04_FREEZE_DIGEST_SHA256, "current frontier B2P04 freeze digest proof")
     require_text(current, "current bounded execution unit `B2P05`", "current frontier")
+    require_text(current, "Execute and canonically qualify `B2P05` only", "current frontier next action")
+    require_absent(current, "Execute and canonically qualify `B2P04` only", "current frontier stale next action")
     require_absent(current, "current bounded execution unit `B2P04`", "current frontier")
 
     require_text(current_state, B2P01_CANONICAL_MERGE, "current state B2P01 canonical proof")
