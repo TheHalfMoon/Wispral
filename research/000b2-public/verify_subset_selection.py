@@ -113,6 +113,24 @@ def overlap_speaker_between_partitions(librispeech_root: Path) -> None:
     shutil.copytree(source, destination)
 
 
+def replace_audio_with_external_symlink(librispeech_root: Path) -> None:
+    """Replace one canonical-looking audio path with a symlink to external bytes."""
+    audio_path = sorted((librispeech_root / "test-clean").rglob("*.flac"))[0]
+    external = librispeech_root.parent / "candidate-output.flac"
+    external.write_bytes(b"external-candidate-like-audio")
+    audio_path.unlink()
+    audio_path.symlink_to(external)
+
+
+def replace_transcript_with_external_symlink(librispeech_root: Path) -> None:
+    """Replace one canonical-looking transcript path with a symlink to external text."""
+    transcript_path = sorted((librispeech_root / "test-clean").rglob("*.trans.txt"))[0]
+    external = librispeech_root.parent / "candidate-output.trans.txt"
+    external.write_text(transcript_path.read_text(encoding="utf-8"), encoding="utf-8")
+    transcript_path.unlink()
+    transcript_path.symlink_to(external)
+
+
 def verify_policy_boundaries() -> None:
     """Verify the committed B2P03 policy keeps all later execution and claim gates closed."""
     policy = json.loads(POLICY_PATH.read_text(encoding="utf-8"))
@@ -139,6 +157,7 @@ def verify_policy_boundaries() -> None:
     source = SELECTOR_PATH.read_text(encoding="utf-8")
     require("subprocess" not in source, "selector must not invoke external candidate/runtime processes")
     require("requests" not in source and "urllib" not in source, "selector must not access network sources")
+    require("is_symlink" in source, "selector must explicitly reject symbolic-link source indirection")
 
 
 def verify_determinism_and_shape() -> None:
@@ -190,12 +209,15 @@ def main() -> None:
     expect_selection_error(add_orphan_audio, "audio has no transcript entry")
     expect_selection_error(duplicate_transcript_id, "duplicate transcript utterance id")
     expect_selection_error(overlap_speaker_between_partitions, "speaker overlap across public partitions")
+    expect_selection_error(replace_audio_with_external_symlink, "symbolic link is not allowed for audio source")
+    expect_selection_error(replace_transcript_with_external_symlink, "symbolic link is not allowed for transcript source")
     print("B2P03_SUBSET_SELECTION=PASS")
     print("B2P03_HASH_ORDERING=SHA256_FROZEN")
     print("B2P03_TRAVERSAL_ORDER_INDEPENDENT=YES")
     print("B2P03_MISSING_PAIR_REJECTION=PASS")
     print("B2P03_DUPLICATE_REJECTION=PASS")
     print("B2P03_SPEAKER_DISJOINTNESS=PASS")
+    print("B2P03_SYMLINK_REJECTION=PASS")
     print("B2P03_CANDIDATE_OUTPUT_DEPENDENCY=ABSENT")
     print("B2P03_SUBSET_MANIFEST_FROZEN=NO")
     print("B2P03_CANDIDATE_DECODING_STARTED=NO")
