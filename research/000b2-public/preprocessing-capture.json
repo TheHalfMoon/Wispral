@@ -3155,7 +3155,7 @@
     "source_membership_count": 240
   },
   "ffmpeg": {
-    "binary_sha256": "38fc93d7eb0cdfa154ea3045ec0e74ce9878f2ca66179f8609562c1768a6e009",
+    "binary_sha256": "3cf9a9a1a281fb44ba44d311efcb7d70985515202be8cdf390b1dca97bce272e",
     "build_configuration": {
       "behavior_flags": [
         "--disable-everything",
@@ -3185,7 +3185,7 @@
     "tool": "FFmpeg",
     "tool_version": "9.0.1",
     "version_first_line": "ffmpeg version n9.0.1 Copyright (c) 2000-2026 the FFmpeg developers",
-    "version_output_sha256": "c2ec29c4c5488429a45047ed5ea40e791e56dacd99d8408a795a3b7c8acb9c38"
+    "version_output_sha256": "294283ba3fc351e3ece26e7502f17d67c9af00892d9cd41b97afc62faed4f134"
   },
   "preprocessing_contract": {
     "canonical_format": "PCM_WAV",
