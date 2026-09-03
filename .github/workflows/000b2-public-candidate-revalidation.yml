@@ -22,10 +22,13 @@ jobs:
   static-candidate-revalidation:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    env:
+      EXPECTED_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
     steps:
       - name: Checkout exact revision
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
+          ref: ${{ env.EXPECTED_SHA }}
           persist-credentials: false
       - name: Set up pinned Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -34,8 +37,8 @@ jobs:
       - name: Verify exact revision identity
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
-          echo "B2P05_EXACT_HEAD=${GITHUB_SHA}"
+          test "$(git rev-parse HEAD)" = "${EXPECTED_SHA}"
+          echo "B2P05_EXACT_HEAD=${EXPECTED_SHA}"
       - name: Compile B2P05 verifier
         run: python -m py_compile research/000b2-public/verify_candidate_revalidation.py
       - name: Verify B2P05 static authority and closed later gates
@@ -51,10 +54,12 @@ jobs:
     timeout-minutes: 60
     env:
       GITHUB_TOKEN: ${{ github.token }}
+      EXPECTED_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
     steps:
       - name: Checkout exact revision
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
+          ref: ${{ env.EXPECTED_SHA }}
           persist-credentials: false
       - name: Set up pinned Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -63,7 +68,7 @@ jobs:
       - name: Verify exact revision identity
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
-          echo "B2P05_EXACT_HEAD=${GITHUB_SHA}"
+          test "$(git rev-parse HEAD)" = "${EXPECTED_SHA}"
+          echo "B2P05_EXACT_HEAD=${EXPECTED_SHA}"
       - name: Revalidate exact runtime, model, and artifact identities live
         run: PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_candidate_revalidation.py --live
