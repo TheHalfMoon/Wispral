@@ -220,7 +220,15 @@ def runtime_build_configuration(ffmpeg: Path) -> dict[str, Any]:
     observed_flags = [line.strip() for line in output.splitlines() if line.strip().startswith("--")]
     behavior_flags = [flag for flag in observed_flags if not flag.startswith("--prefix=")]
     require(len(observed_flags) == len(behavior_flags) + 1, "FFmpeg build configuration must contain exactly one ignored prefix flag")
-    require(behavior_flags == list(EXPECTED_BEHAVIOR_CONFIG_FLAGS), "FFmpeg behavior-affecting build configuration drift")
+    require(len(behavior_flags) == len(set(behavior_flags)), "FFmpeg behavior configuration contains duplicate flags")
+    observed_set = set(behavior_flags)
+    expected_set = set(EXPECTED_BEHAVIOR_CONFIG_FLAGS)
+    if observed_set != expected_set:
+        missing = sorted(expected_set - observed_set)
+        extra = sorted(observed_set - expected_set)
+        raise PreprocessingError(
+            f"FFmpeg behavior-affecting build configuration drift: missing={missing!r}, extra={extra!r}, observed={behavior_flags!r}"
+        )
     return {
         "behavior_flags": list(EXPECTED_BEHAVIOR_CONFIG_FLAGS),
         "behavior_flags_sha256": sha256_bytes(canonical_json_bytes(list(EXPECTED_BEHAVIOR_CONFIG_FLAGS))),
