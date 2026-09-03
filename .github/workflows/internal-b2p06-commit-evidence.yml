@@ -1,0 +1,55 @@
+name: Internal B2P06 Commit Exact Evidence
+
+on:
+  push:
+    branches:
+      - research/000b2-b2p06-preprocessing-capture
+    paths:
+      - '.github/workflows/internal-b2p06-commit-evidence.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  commit-evidence:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: research/000b2-b2p06-preprocessing-capture
+          fetch-depth: 0
+      - name: Download and verify exact B2P06 evidence artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: '9914299928'
+          EXPECTED_ZIP_SHA256: 'bc17388617fa811a763ae0e54eecc60a41fe6c1c6cbd79c2915fad8aad4a3f83'
+          EXPECTED_JSON_SHA256: '6883d138f14dee1936b25a1532136458f530249824e021c41c459836792eab60'
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/b2p06-evidence"
+          mkdir -p "$RUNNER_TEMP/b2p06-evidence"
+          curl --fail --location \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" \
+            --output "$RUNNER_TEMP/b2p06-evidence/evidence.zip"
+          test "$(sha256sum "$RUNNER_TEMP/b2p06-evidence/evidence.zip" | awk '{print $1}')" = "$EXPECTED_ZIP_SHA256"
+          unzip -q "$RUNNER_TEMP/b2p06-evidence/evidence.zip" -d "$RUNNER_TEMP/b2p06-evidence/unpacked"
+          test "$(find "$RUNNER_TEMP/b2p06-evidence/unpacked" -maxdepth 1 -type f | wc -l)" = "1"
+          test -f "$RUNNER_TEMP/b2p06-evidence/unpacked/preprocessing-capture.json"
+          test "$(sha256sum "$RUNNER_TEMP/b2p06-evidence/unpacked/preprocessing-capture.json" | awk '{print $1}')" = "$EXPECTED_JSON_SHA256"
+          cp "$RUNNER_TEMP/b2p06-evidence/unpacked/preprocessing-capture.json" research/000b2-public/preprocessing-capture.json
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py \
+            --evidence research/000b2-public/preprocessing-capture.json
+          git diff --check
+      - name: Commit exact B2P06 evidence bytes
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/000b2-public/preprocessing-capture.json
+          git commit -m 'research(000b2): commit B2P06 preprocessing evidence'
+          git push origin HEAD:research/000b2-b2p06-preprocessing-capture
