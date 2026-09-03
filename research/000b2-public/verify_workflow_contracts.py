@@ -232,6 +232,7 @@ def verify_triggers(workflow: dict[str, Any], expected_paths: list[str], label: 
 
 def verify_methodology(workflow: dict[str, Any]) -> None:
     """Verify the active methodology job and every exact-head control field."""
+    require(set(workflow) == {"name", "on", "permissions", "jobs"}, "methodology top-level workflow fields drift")
     require(workflow.get("name") == "000B2 Public Corpus Methodology", "methodology workflow name drift")
     verify_triggers(workflow, METHODOLOGY_PATHS, "methodology")
     require_exact_mapping(mapping(workflow.get("permissions"), "methodology.permissions"), {"contents": "read"}, "methodology.permissions")
@@ -282,6 +283,7 @@ def verify_methodology(workflow: dict[str, Any]) -> None:
 
 def verify_materialization(workflow: dict[str, Any]) -> None:
     """Verify the active materialization job and every exact-head/evidence field."""
+    require(set(workflow) == {"name", "on", "permissions", "jobs"}, "materialization top-level workflow fields drift")
     require(workflow.get("name") == "000B2 Public Corpus Archive Materialization", "materialization workflow name drift")
     verify_triggers(workflow, MATERIALIZATION_PATHS, "materialization")
     require_exact_mapping(mapping(workflow.get("permissions"), "materialization.permissions"), {"contents": "read"}, "materialization.permissions")
