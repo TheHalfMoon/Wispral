@@ -223,6 +223,61 @@ def verify_synchronized_regular_source_swap_rejected() -> None:
         require(not thread_errors, f"synchronized source-swap worker failed: {thread_errors}")
 
 
+def verify_synchronized_snapshot_deletion_rejected() -> None:
+    """Delete a snapshotted speaker subtree before inventory consumption and require fail-closed access."""
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        librispeech_root = build_valid_fixture(root)
+        speaker_path = librispeech_root / "test-clean" / speaker_ids("test-clean")[0]
+        barrier = threading.Barrier(2)
+        thread_errors: list[BaseException] = []
+        original_snapshot = selector_module.require_symlink_free_tree
+
+        def synchronized_snapshot(path: Path, label: str) -> selector_module.SourceTreeSnapshot:
+            snapshot = original_snapshot(path, label)
+            if label == "partition tree test-clean":
+                barrier.wait(timeout=5)
+                barrier.wait(timeout=5)
+            return snapshot
+
+        def delete_after_snapshot() -> None:
+            try:
+                barrier.wait(timeout=5)
+                shutil.rmtree(speaker_path)
+                barrier.wait(timeout=5)
+            except BaseException as error:  # noqa: BLE001 - test thread reports exact synchronization failure.
+                thread_errors.append(error)
+                try:
+                    barrier.abort()
+                except threading.BrokenBarrierError:
+                    pass
+
+        selector_module.require_symlink_free_tree = synchronized_snapshot
+        worker = threading.Thread(target=delete_after_snapshot, name="b2p03-source-delete")
+        worker.start()
+        try:
+            try:
+                selector_module.select_subset(root)
+            except SelectionError as error:
+                require(
+                    "identity changed since validation" in str(error)
+                    or "unable to open transcript source without following links" in str(error),
+                    f"unexpected synchronized-deletion rejection reason: {error}",
+                )
+            else:
+                raise SystemExit("B2P03_SUBSET_SELECTION=FAIL: post-snapshot speaker deletion unexpectedly accepted")
+        finally:
+            selector_module.require_symlink_free_tree = original_snapshot
+            if worker.is_alive():
+                try:
+                    barrier.abort()
+                except threading.BrokenBarrierError:
+                    pass
+            worker.join(timeout=5)
+        require(not worker.is_alive(), "synchronized source-deletion worker did not terminate")
+        require(not thread_errors, f"synchronized source-deletion worker failed: {thread_errors}")
+
+
 def truncate_speaker_fixture(librispeech_root: Path, partition: str, speaker_id: str, keep: int) -> None:
     """Reduce one otherwise valid speaker to a smaller positive utterance count."""
     require(1 <= keep < 10, "variable-count fixture keep value must be within 1..9")
@@ -299,6 +354,9 @@ def verify_policy_boundaries() -> None:
     require("source_identity" in source and "identity changed since validation" in source, "selector must detect TOCTOU replacement")
     require("sha256_stable_fd" in source, "selector must hash the already-open validated source descriptor")
     require("sha256_file(" not in source, "selector must not reopen source audio by path for hashing")
+    require("snapshot_inventory" in source and "snapshot.entries.items()" in source, "selector inventory must derive from validated snapshot")
+    require('partition_root.rglob("*.trans.txt")' not in source, "selector must not rediscover transcripts after snapshot")
+    require('partition_root.rglob("*.flac")' not in source, "selector must not rediscover audio after snapshot")
 
 
 def verify_determinism_and_shape() -> None:
@@ -374,6 +432,7 @@ def main() -> None:
     )
     verify_symlinked_corpus_ancestor_rejected()
     verify_synchronized_regular_source_swap_rejected()
+    verify_synchronized_snapshot_deletion_rejected()
     print("B2P03_SUBSET_SELECTION=PASS")
     print("B2P03_HASH_ORDERING=SHA256_FROZEN")
     print("B2P03_TRAVERSAL_ORDER_INDEPENDENT=YES")
@@ -385,6 +444,7 @@ def main() -> None:
     print("B2P03_INTERNAL_DIRECTORY_SYMLINK_REJECTION=PASS")
     print("B2P03_SYMLINK_ANCESTRY_REJECTION=PASS")
     print("B2P03_SOURCE_RACE_REJECTION=PASS")
+    print("B2P03_SNAPSHOT_DELETION_REJECTION=PASS")
     print("B2P03_CANDIDATE_OUTPUT_DEPENDENCY=ABSENT")
     print("B2P03_SUBSET_MANIFEST_FROZEN=NO")
     print("B2P03_CANDIDATE_DECODING_STARTED=NO")
