@@ -1,0 +1,244 @@
+name: 000B2 B2P04 Frontier Reconciliation Bootstrap
+
+on:
+  push:
+    branches:
+      - docs/000b2-b2p04-frontier-reconciliation
+    paths:
+      - '.github/workflows/000b2-b2p04-reconcile-bootstrap.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile-b2p04-frontier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact bootstrap revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Verify exact branch and canonical base
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF_NAME}" = "docs/000b2-b2p04-frontier-reconciliation"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git fetch --no-tags origin main
+          test "$(git rev-parse origin/main)" = "4c4e758f22b54fa62256e57bfbd344adc817df8e"
+          test "$(git merge-base HEAD origin/main)" = "4c4e758f22b54fa62256e57bfbd344adc817df8e"
+      - name: Apply exact B2P04 canonical reconciliation
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          from __future__ import annotations
+
+          import json
+          from pathlib import Path
+
+          BASE = "4c4e758f22b54fa62256e57bfbd344adc817df8e"
+          QUALIFIED_HEAD = "0d83d277cc2544f63613e674d60bae07ad24dc26"
+          MANIFEST_SHA = "5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb"
+          FREEZE_DIGEST = "f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242"
+          POST_SUBSET_RUN = 33794854765
+          POST_SUBSET_JOB = 100779961908
+          POST_SUBSET_ARTIFACT = 9908811632
+          POST_SUBSET_ARTIFACT_DIGEST = "sha256:bad9a31cea1a3a51b6ecbf9053f4941b1ae8a5d88cb97b747703166fe9444578"
+          POST_METHODOLOGY_RUN = 33794854595
+          POST_METHODOLOGY_JOB = 100779960182
+
+          def replace_once(path: str, old: str, new: str) -> None:
+              p = Path(path)
+              text = p.read_text(encoding="utf-8")
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f"B2P04_RECONCILIATION=FAIL: {path} anchor count {count} for {old[:100]!r}")
+              p.write_text(text.replace(old, new), encoding="utf-8")
+
+          # Machine readiness: complete B2P04 and authorize B2P05 only.
+          readiness_path = Path("research/000b2-public/readiness.json")
+          readiness = json.loads(readiness_path.read_text(encoding="utf-8"))
+          if readiness.get("completed_through") != "B2P03":
+              raise SystemExit("B2P04_RECONCILIATION=FAIL: readiness completed_through drift")
+          public = readiness.get("public_human_baseline")
+          if not isinstance(public, dict) or public.get("subset_manifest_frozen") is not False or public.get("candidate_decoding_started") is not False:
+              raise SystemExit("B2P04_RECONCILIATION=FAIL: readiness public-human precondition drift")
+          if readiness.get("attempt_manifest", {}).get("primary_decoding_started") is not False:
+              raise SystemExit("B2P04_RECONCILIATION=FAIL: primary decoding already started")
+          readiness["completed_through"] = "B2P04"
+          public["subset_manifest_frozen"] = True
+          readiness["next_action"] = (
+              "Execute B2P05 only: revalidate the six canonical candidate cells and artifact/runtime/model identities against live canonical evidence. "
+              "Do not begin candidate decoding, B2P06 preprocessing capture, or primary decoding until B2P05 is canonical."
+          )
+          readiness_path.write_text(json.dumps(readiness, indent=2) + "\n", encoding="utf-8")
+
+          # Canonical task ledger.
+          replace_once(
+              "specs/000B2-public-corpus-bakeoff/tasks.md",
+              "- [ ] `B2P04` Freeze selected public-human subset manifest and manifest digest before candidate decoding.",
+              "- [x] `B2P04` Freeze selected public-human subset manifest and manifest digest before candidate decoding.",
+          )
+
+          # Current-state canonical chronology/frontier.
+          replace_once(
+              "docs/canonical/CURRENT_STATE.md",
+              "**000B2 B2P03 deterministic-subset merge:** `83eca872148f329033c299f6671d275edf2d7b58`  \n**Program status:**",
+              "**000B2 B2P03 deterministic-subset merge:** `83eca872148f329033c299f6671d275edf2d7b58`  \n**000B2 B2P04 subset-manifest freeze merge:** `4c4e758f22b54fa62256e57bfbd344adc817df8e`  \n**Program status:**",
+          )
+          replace_once(
+              "docs/canonical/CURRENT_STATE.md",
+              "B2P03 is canonical at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58` and post-merge verified; current bounded execution unit is `B2P04`",
+              "B2P03 is canonical at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58` and post-merge verified; B2P04 is canonical at PR #39 merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` and post-merge verified; current bounded execution unit is `B2P05`",
+          )
+          b2p04_proof = f'''\n\nPR #39 then completed B2P04 deterministic public-human source-membership freeze and merged by guarded expected-head squash as canonical commit `{BASE}` from exact qualified head `{QUALIFIED_HEAD}` against exact base `c1a576db2adf67cb4b830c280e6cba80b0ae3b43`. The final candidate changed exactly five files. Exact-head `000B2 Public Corpus Methodology` run `33793696076` and `000B2 Public Corpus Subset Freeze` run `33793696006`, job `100776173700`, completed successfully. The subset-freeze gate used pinned Python `3.12`, passed offline adversarial and exact root-metadata regression verification, re-fetched the official OpenSLR archives, regenerated the committed manifest byte-for-byte, and preserved `candidate_revalidation_started=false`, `candidate_decoding_started=false`, and `primary_decoding_started=false`. Fresh independent CodeRabbit semantic audit comment `5530776500` covered exact base `c1a576db2adf67cb4b830c280e6cba80b0ae3b43` through exact head `{QUALIFIED_HEAD}` and all five changed files and reported no actionable findings. The only substantive inline review thread had been repaired forward-only and resolved before merge. The merge is GitHub-signature verified with parent equal to the qualified base.\n\nAll six applicable push workflows on canonical merge `{BASE}` completed successfully. `000B2 Public Corpus Subset Freeze` run `{POST_SUBSET_RUN}`, job `{POST_SUBSET_JOB}`, checked out the exact canonical merge, used pinned Python `3.12`, passed exact revision identity, offline freeze-boundary and exact root-metadata verification, reproduced the committed B2P04 manifest, and uploaded artifact `{POST_SUBSET_ARTIFACT}` with ZIP digest `{POST_SUBSET_ARTIFACT_DIGEST}`. `000B2 Public Corpus Methodology` run `{POST_METHODOLOGY_RUN}`, job `{POST_METHODOLOGY_JOB}`, also succeeded on the exact merge. `000B2 Trusted Materialization Authority` run `33794854462`, `000B2 Trusted Participant Materials` run `33794854484`, `000B2 Trusted Participant Policy` run `33794854642`, and `000B2 Trusted Human Authority Structure` run `33794854865` also succeeded. The frozen manifest byte SHA-256 is `{MANIFEST_SHA}` and its self-excluding freeze digest is `{FREEZE_DIGEST}` for 24 speakers and 240 utterances. Candidate revalidation and all decoding remained unstarted; B2P06 preprocessing identities were not captured; no production STT was selected; no product code was authorized; and `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT` remained preserved. The canonical authority/readiness reread therefore completes B2P04 and authorizes B2P05 only.'''
+          replace_once(
+              "docs/canonical/CURRENT_STATE.md",
+              "The canonical authority/readiness reread therefore completes B2P03 and authorizes B2P04 only.\n\nComparative P0 decoding remains prohibited",
+              "The canonical authority/readiness reread therefore completes B2P03 and authorized B2P04 only." + b2p04_proof + "\n\nComparative P0 decoding remains prohibited",
+          )
+          replace_once(
+              "docs/canonical/CURRENT_STATE.md",
+              "- canonical B2P03 deterministic subset-selection logic at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58`, including successful six-lane canonical post-merge verification;\n- B2P04 authorized as the sole current bounded execution unit;\n- no subset-manifest freeze yet, no comparative public-corpus decoding, and no production STT selection.",
+              f"- canonical B2P03 deterministic subset-selection logic at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58`, including successful six-lane canonical post-merge verification;\n- canonical B2P04 source-membership manifest freeze at PR #39 merge `{BASE}`, including manifest byte SHA-256 `{MANIFEST_SHA}`, freeze digest `{FREEZE_DIGEST}`, and successful six-lane canonical post-merge verification;\n- B2P05 authorized as the sole current bounded execution unit;\n- candidate revalidation has not started, no comparative public-corpus decoding has started, and no production STT is selected.",
+          )
+          replace_once(
+              "docs/canonical/CURRENT_STATE.md",
+              "canonical B2P02 archive-byte verification, and canonical B2P03 deterministic subset selection do not weaken this gate.",
+              "canonical B2P02 archive-byte verification, canonical B2P03 deterministic subset selection, and canonical B2P04 subset-manifest freeze do not weaken this gate.",
+          )
+          replace_once(
+              "docs/canonical/CURRENT_STATE.md",
+              "Execute and canonically qualify `B2P04` only: freeze the selected public-human subset manifest and deterministic manifest digest before candidate decoding, using the canonical B2P03 deterministic selection logic and preserving exact source-corpus identity binding. B2P04 may materialize and safely extract the exact official LibriSpeech archives bound to canonical B2P02 identities as necessary to derive the frozen membership, but it must reject unsafe archive members and source identity drift fail closed, must not inspect candidate outputs or candidate-specific behavior, and must not claim B2P06 preprocessing identities. Preserve `candidate_decoding_started=false`, `primary_decoding_started=false`, the historical private lane as `BLOCKED_EXTERNAL`, `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, and the closed product-code gate. B2P05 remains non-authorized until B2P04 passes applicable exact-head CI, fresh independent substantive semantic review, zero unresolved actionable review threads, guarded expected-head merge, successful post-merge verification, and canonical authority/readiness reread.",
+              "Execute and canonically qualify `B2P05` only: revalidate the six canonical candidate cells and their artifact/runtime/model identities against live canonical evidence. B2P05 may verify identity availability, exact source revisions, model/artifact digests, runtime/tool versions, and canonical smoke/waiver evidence without candidate-specific result inspection. It must not decode the frozen P0 subset, must not begin B2P06 preprocessing capture, and must not mutate the B2P04 subset membership or freeze digest. Preserve `candidate_decoding_started=false`, `primary_decoding_started=false`, the historical private lane as `BLOCKED_EXTERNAL`, `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, and the closed product-code gate. B2P06 remains non-authorized until B2P05 is canonically qualified, post-merge verified, and reconciled.",
+          )
+
+          # Specification frontier.
+          replace_once(
+              "specs/CURRENT.md",
+              "**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 through B2P03 canonical; current bounded execution unit `B2P04`",
+              "**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 through B2P04 canonical; current bounded execution unit `B2P05`",
+          )
+          canonical_b2p04 = f'''\n\n**Canonical B2P04 subset-manifest freeze merge:** `{BASE}` from PR #39, merged by guarded expected-head squash from exact qualified head `{QUALIFIED_HEAD}` against exact base `c1a576db2adf67cb4b830c280e6cba80b0ae3b43`. Exact-head methodology run `33793696076` and subset-freeze run `33793696006`, job `100776173700`, succeeded; the latter reproduced the committed manifest byte-for-byte from exact official archive identities under pinned Python `3.12`. Fresh independent CodeRabbit semantic audit comment `5530776500` covered the complete five-file exact base/head diff and reported no actionable findings after forward-only hardening. The frozen manifest byte SHA-256 is `{MANIFEST_SHA}` and freeze digest `{FREEZE_DIGEST}`. Post-merge subset-freeze run `{POST_SUBSET_RUN}`, job `{POST_SUBSET_JOB}`, reproduced the canonical freeze and uploaded artifact `{POST_SUBSET_ARTIFACT}` with ZIP digest `{POST_SUBSET_ARTIFACT_DIGEST}`; methodology run `{POST_METHODOLOGY_RUN}`, job `{POST_METHODOLOGY_JOB}`, and the four trusted push lanes also succeeded. No candidate revalidation or decoding began. The required canonical reread therefore authorizes B2P05 as the sole next bounded unit.'''
+          replace_once(
+              "specs/CURRENT.md",
+              "No subset manifest was frozen and no candidate or primary decoding began. The required canonical reread therefore authorizes B2P04 as the sole next bounded unit.\n\nThis file owns",
+              "No subset manifest was frozen and no candidate or primary decoding began. The required canonical reread therefore authorized B2P04 as the sole next bounded unit." + canonical_b2p04 + "\n\nThis file owns",
+          )
+          replace_once(
+              "specs/CURRENT.md",
+              "B2P03 deterministic subset selection became canonical at merge `83eca872148f329033c299f6671d275edf2d7b58`. `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`. B2P01 through B2P03 are complete. B2P04 is the current bounded execution unit.",
+              f"B2P03 deterministic subset selection became canonical at merge `83eca872148f329033c299f6671d275edf2d7b58`, and B2P04 subset-manifest freeze became canonical at merge `{BASE}`. `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`. B2P01 through B2P04 are complete. B2P05 is the current bounded execution unit.",
+          )
+          b2p04_chronology = f'''\n\nPR #39 then executed and canonically qualified B2P04 deterministic public-human source-membership freeze. It merged by guarded expected-head squash as `{BASE}` from exact qualified head `{QUALIFIED_HEAD}` against exact base `c1a576db2adf67cb4b830c280e6cba80b0ae3b43`. The final five-file candidate had exact-head methodology run `33793696076` and subset-freeze run `33793696006`, job `100776173700`, successful. Fresh independent CodeRabbit semantic audit comment `5530776500` reviewed the complete exact five-file range and reported no actionable findings after valid negative-size, root-metadata allowlist, and runtime-reproducibility findings were repaired forward-only. Post-merge subset-freeze run `{POST_SUBSET_RUN}`, job `{POST_SUBSET_JOB}`, methodology run `{POST_METHODOLOGY_RUN}`, job `{POST_METHODOLOGY_JOB}`, and the four trusted push lanes all succeeded on the exact canonical merge. The canonical freeze contains 24 speakers / 240 utterances, manifest byte SHA-256 `{MANIFEST_SHA}`, and freeze digest `{FREEZE_DIGEST}`. No candidate revalidation, candidate decoding, primary decoding, or B2P06 preprocessing capture began. The canonical reread therefore satisfies the B2P05 entry condition while preserving every pre-decode guard.'''
+          replace_once(
+              "specs/CURRENT.md",
+              "The canonical reread therefore satisfies the B2P04 entry condition while preserving every pre-decode guard.\n\n## Public-human P0 baseline",
+              "The canonical reread therefore satisfied the B2P04 entry condition while preserving every pre-decode guard." + b2p04_chronology + "\n\n## Public-human P0 baseline",
+          )
+          replace_once(
+              "specs/CURRENT.md",
+              "B2P02 is canonical and post-merge verified. B2P03 deterministic subset-selection logic is canonical and post-merge verified at merge `83eca872148f329033c299f6671d275edf2d7b58`. B2P04 is now authorized only to freeze the selected public-human subset manifest and deterministic manifest digest from canonical source identities before any candidate revalidation or decoding. Candidate revalidation and all decoding remain unauthorized during B2P04.",
+              f"B2P02 is canonical and post-merge verified. B2P03 deterministic subset-selection logic is canonical and post-merge verified at merge `83eca872148f329033c299f6671d275edf2d7b58`. B2P04 deterministic source-membership freeze is canonical and post-merge verified at merge `{BASE}` with manifest byte SHA-256 `{MANIFEST_SHA}` and freeze digest `{FREEZE_DIGEST}`. B2P05 is now authorized only to revalidate the six canonical candidate cells and artifact/runtime/model identities against live canonical evidence. Candidate decoding, B2P06 preprocessing capture, and primary decoding remain unauthorized during B2P05.",
+          )
+          replace_once(
+              "specs/CURRENT.md",
+              "With `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`, the authorized order is the task order in `specs/000B2-public-corpus-bakeoff/tasks.md`:\n\n1. freeze public corpus provenance;\n2. materialize exact archives and record official MD5 plus fetched-byte SHA-256;\n3. implement and freeze deterministic subset selection before candidate outputs exist;\n4. revalidate the six canonical candidate cells;\n5. capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration;\n6. capture attempt-bound environment/hardware evidence;\n7. freeze the pre-decode public-lane attempt manifest;\n8. execute P0 C0 decoding against identical public-human audio;\n9. optionally freeze and execute D0 diagnostic material;\n10. score without result-driven methodology changes;\n11. produce bounded results/report/closeout;\n12. exact-head CI and independent substantive semantic review;\n13. review-thread reconciliation and guarded expected-head merge;\n14. post-merge verification and canonical reread.",
+              "With `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`, B2P01 through B2P04 are canonical and the authorized order remains the task order in `specs/000B2-public-corpus-bakeoff/tasks.md`:\n\n1. freeze public corpus provenance;\n2. materialize exact archives and record official MD5 plus fetched-byte SHA-256;\n3. implement deterministic subset-selection logic before candidate outputs exist;\n4. freeze the selected public-human source-membership manifest and deterministic digest;\n5. revalidate the six canonical candidate cells;\n6. capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration;\n7. capture attempt-bound environment/hardware evidence;\n8. freeze the pre-decode public-lane attempt manifest;\n9. execute P0 C0 decoding against identical public-human audio;\n10. optionally freeze and execute D0 diagnostic material;\n11. score without result-driven methodology changes;\n12. produce bounded results/report/closeout;\n13. exact-head CI and independent substantive semantic review;\n14. review-thread reconciliation and guarded expected-head merge;\n15. post-merge verification and canonical reread.",
+          )
+
+          # Methodology verifier: move the machine gate from B2P04 to B2P05 and bind B2P04 evidence.
+          verifier = "research/000b2-public/verify_methodology.py"
+          replace_once(verifier, "import json\n", "import hashlib\nimport json\n")
+          replace_once(
+              verifier,
+              "B2P03_POSTMERGE_METHODOLOGY_JOB_ID = 100716550502\n",
+              f'''B2P03_POSTMERGE_METHODOLOGY_JOB_ID = 100716550502\nB2P04_CANONICAL_MERGE = "{BASE}"\nB2P04_QUALIFIED_HEAD = "{QUALIFIED_HEAD}"\nB2P04_MANIFEST_SHA256 = "{MANIFEST_SHA}"\nB2P04_FREEZE_DIGEST_SHA256 = "{FREEZE_DIGEST}"\nB2P04_POSTMERGE_SUBSET_RUN_ID = {POST_SUBSET_RUN}\nB2P04_POSTMERGE_SUBSET_JOB_ID = {POST_SUBSET_JOB}\nB2P04_POSTMERGE_ARTIFACT_ID = {POST_SUBSET_ARTIFACT}\nB2P04_POSTMERGE_ARTIFACT_DIGEST = "{POST_SUBSET_ARTIFACT_DIGEST}"\nB2P04_POSTMERGE_METHODOLOGY_RUN_ID = {POST_METHODOLOGY_RUN}\nB2P04_POSTMERGE_METHODOLOGY_JOB_ID = {POST_METHODOLOGY_JOB}\n''',
+          )
+          replace_once(
+              verifier,
+              "def index_records(records: Any, expected_names: set[str], label: str) -> dict[str, dict[str, Any]]:",
+              '''def sha256_file(path: Path) -> str:\n    digest = hashlib.sha256()\n    with path.open("rb") as handle:\n        for chunk in iter(lambda: handle.read(1024 * 1024), b""):\n            digest.update(chunk)\n    return digest.hexdigest()\n\n\ndef index_records(records: Any, expected_names: set[str], label: str) -> dict[str, dict[str, Any]]:''',
+          )
+          replace_once(
+              verifier,
+              "    subset_workflow_path = ROOT / \".github/workflows/000b2-public-subset-selection.yml\"\n",
+              "    subset_workflow_path = ROOT / \".github/workflows/000b2-public-subset-selection.yml\"\n    subset_manifest_path = ROOT / \"research/000b2-public/subset-manifest.json\"\n    subset_freeze_workflow_path = ROOT / \".github/workflows/000b2-public-subset-freeze.yml\"\n",
+          )
+          replace_once(
+              verifier,
+              "        materialization_workflow_path, subset_policy_path, subset_selector_path, subset_verifier_path,\n        subset_workflow_path, spec_path, plan_path, tasks_path, parent_spec_path,",
+              "        materialization_workflow_path, subset_policy_path, subset_selector_path, subset_verifier_path,\n        subset_workflow_path, subset_manifest_path, subset_freeze_workflow_path, spec_path, plan_path, tasks_path, parent_spec_path,",
+          )
+          replace_once(verifier, 'require(readiness.get("completed_through") == "B2P03", "readiness completed_through must be B2P03")', 'require(readiness.get("completed_through") == "B2P04", "readiness completed_through must be B2P04")')
+          replace_once(verifier, 'require_bool(public, "subset_manifest_frozen", False, "public_human_baseline")', 'require_bool(public, "subset_manifest_frozen", True, "public_human_baseline")')
+          replace_once(
+              verifier,
+              '''    expected_next_action = (\n        "Execute B2P04 only: freeze the selected public-human subset manifest and deterministic manifest digest before candidate decoding. "\n        "Use the canonical B2P03 selection logic and preserve source-corpus identity binding. "\n        "Do not begin candidate revalidation or decoding until B2P04 is canonical."\n    )\n    require(readiness.get("next_action") == expected_next_action, "next action must be exact B2P04-only instruction")''',
+              '''    expected_next_action = (\n        "Execute B2P05 only: revalidate the six canonical candidate cells and artifact/runtime/model identities against live canonical evidence. "\n        "Do not begin candidate decoding, B2P06 preprocessing capture, or primary decoding until B2P05 is canonical."\n    )\n    require(readiness.get("next_action") == expected_next_action, "next action must be exact B2P05-only instruction")''',
+          )
+          manifest_checks = '''\n\n    subset_manifest = load_object(subset_manifest_path, "subset manifest")\n    require_exact_keys(\n        subset_manifest,\n        {"schema_version", "task", "state", "frozen", "freeze_digest_sha256", "authority", "source_corpus", "selection_engine", "membership", "preprocessing_boundary", "claim_guards"},\n        "subset_manifest",\n    )\n    require(subset_manifest.get("schema_version") == "000b2-public-subset-manifest-v1", "subset manifest schema drift")\n    require(subset_manifest.get("task") == "B2P04", "subset manifest task drift")\n    require(subset_manifest.get("state") == "FROZEN_SOURCE_MEMBERSHIP", "subset manifest state drift")\n    require_bool(subset_manifest, "frozen", True, "subset_manifest")\n    require(subset_manifest.get("freeze_digest_sha256") == B2P04_FREEZE_DIGEST_SHA256, "B2P04 freeze digest drift")\n    require(sha256_file(subset_manifest_path) == B2P04_MANIFEST_SHA256, "B2P04 manifest byte SHA-256 drift")\n    manifest_authority = subset_manifest.get("authority")\n    require(isinstance(manifest_authority, dict), "subset manifest authority must be an object")\n    require(manifest_authority.get("b2p03_canonical_merge") == B2P03_CANONICAL_MERGE, "subset manifest B2P03 canonical binding drift")\n    membership = subset_manifest.get("membership")\n    require(isinstance(membership, dict), "subset manifest membership must be an object")\n    require(membership.get("kind") == "SOURCE_FLAC_IDENTITIES_AND_REFERENCE_TRANSCRIPTS", "subset manifest membership kind drift")\n    require(membership.get("total_speakers") == 24, "subset manifest speaker count drift")\n    require(membership.get("total_utterances") == 240, "subset manifest utterance count drift")\n    manifest_preprocessing = subset_manifest.get("preprocessing_boundary")\n    require(isinstance(manifest_preprocessing, dict), "subset manifest preprocessing boundary must be an object")\n    require(manifest_preprocessing.get("status") == "NOT_CAPTURED_B2P06", "B2P06 preprocessing boundary drift")\n    require_bool(manifest_preprocessing, "canonical_preprocessed_file_sha256_present", False, "subset_manifest.preprocessing_boundary")\n    manifest_guards = subset_manifest.get("claim_guards")\n    require(isinstance(manifest_guards, dict), "subset manifest claim guards must be an object")\n    require_bool(manifest_guards, "candidate_revalidation_started", False, "subset_manifest.claim_guards")\n    require_bool(manifest_guards, "candidate_decoding_started", False, "subset_manifest.claim_guards")\n    require_bool(manifest_guards, "primary_decoding_started", False, "subset_manifest.claim_guards")\n    require(manifest_guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "subset manifest human evidence guard drift")\n    require_bool(manifest_guards, "production_stt_selected", False, "subset_manifest.claim_guards")\n    require_bool(manifest_guards, "product_code_authorized", False, "subset_manifest.claim_guards")'''
+          replace_once(
+              verifier,
+              '    require_bool(subset_guards, "product_code_authorized", False, "subset_claim_guards")\n\n    spec = spec_path.read_text(encoding="utf-8")',
+              '    require_bool(subset_guards, "product_code_authorized", False, "subset_claim_guards")' + manifest_checks + '\n\n    spec = spec_path.read_text(encoding="utf-8")',
+          )
+          replace_once(
+              verifier,
+              '    subset_workflow = subset_workflow_path.read_text(encoding="utf-8")\n',
+              '    subset_workflow = subset_workflow_path.read_text(encoding="utf-8")\n    subset_freeze_workflow = subset_freeze_workflow_path.read_text(encoding="utf-8")\n',
+          )
+          replace_once(verifier, 'expected_marker = "- [x]" if task_id in {"B2P01", "B2P02", "B2P03"} else "- [ ]"', 'expected_marker = "- [x]" if task_id in {"B2P01", "B2P02", "B2P03", "B2P04"} else "- [ ]"')
+          replace_once(verifier, 'require_text(tasks, "- [ ] `B2P04` Freeze selected public-human subset manifest and manifest digest before candidate decoding.", "public child tasks")', 'require_text(tasks, "- [x] `B2P04` Freeze selected public-human subset manifest and manifest digest before candidate decoding.", "public child tasks")')
+          replace_once(
+              verifier,
+              '    require_text(current, "current bounded execution unit `B2P04`", "current frontier")\n    require_absent(current, "current bounded execution unit `B2P03`", "current frontier")',
+              '''    require_text(current, B2P04_CANONICAL_MERGE, "current frontier B2P04 canonical proof")\n    require_text(current, f"run `{B2P04_POSTMERGE_SUBSET_RUN_ID}`", "current frontier B2P04 subset post-merge run proof")\n    require_text(current, f"job `{B2P04_POSTMERGE_SUBSET_JOB_ID}`", "current frontier B2P04 subset post-merge job proof")\n    require_text(current, f"artifact `{B2P04_POSTMERGE_ARTIFACT_ID}`", "current frontier B2P04 post-merge artifact proof")\n    require_text(current, B2P04_POSTMERGE_ARTIFACT_DIGEST, "current frontier B2P04 post-merge artifact digest proof")\n    require_text(current, B2P04_MANIFEST_SHA256, "current frontier B2P04 manifest SHA proof")\n    require_text(current, B2P04_FREEZE_DIGEST_SHA256, "current frontier B2P04 freeze digest proof")\n    require_text(current, "current bounded execution unit `B2P05`", "current frontier")\n    require_absent(current, "current bounded execution unit `B2P04`", "current frontier")''',
+          )
+          replace_once(
+              verifier,
+              '    require_text(current_state, "current bounded execution unit is `B2P04`", "current state")\n    require_absent(current_state, "current bounded execution unit is `B2P03`", "current state")',
+              '''    require_text(current_state, B2P04_CANONICAL_MERGE, "current state B2P04 canonical proof")\n    require_text(current_state, f"run `{B2P04_POSTMERGE_SUBSET_RUN_ID}`", "current state B2P04 subset post-merge run proof")\n    require_text(current_state, f"job `{B2P04_POSTMERGE_SUBSET_JOB_ID}`", "current state B2P04 subset post-merge job proof")\n    require_text(current_state, f"artifact `{B2P04_POSTMERGE_ARTIFACT_ID}`", "current state B2P04 post-merge artifact proof")\n    require_text(current_state, B2P04_POSTMERGE_ARTIFACT_DIGEST, "current state B2P04 post-merge artifact digest proof")\n    require_text(current_state, B2P04_MANIFEST_SHA256, "current state B2P04 manifest SHA proof")\n    require_text(current_state, B2P04_FREEZE_DIGEST_SHA256, "current state B2P04 freeze digest proof")\n    require_text(current_state, "current bounded execution unit is `B2P05`", "current state")\n    require_absent(current_state, "current bounded execution unit is `B2P04`", "current state")''',
+          )
+          replace_once(
+              verifier,
+              '    for phrase in (\n        "000B2 Public Corpus Subset Selection", "persist-credentials: false",\n        "python research/000b2-public/verify_subset_selection.py", "B2P03_POST_SNAPSHOT_ADDITION=PASS",\n        "B2P03_SNAPSHOT_ENUMERATION_DELETION=PASS",\n    ):\n        require_text(subset_workflow, phrase, "B2P03 subset workflow")\n',
+              '''    for phrase in (\n        "000B2 Public Corpus Subset Selection", "persist-credentials: false",\n        "python research/000b2-public/verify_subset_selection.py", "B2P03_POST_SNAPSHOT_ADDITION=PASS",\n        "B2P03_SNAPSHOT_ENUMERATION_DELETION=PASS",\n    ):\n        require_text(subset_workflow, phrase, "B2P03 subset workflow")\n    for phrase in (\n        "000B2 Public Corpus Subset Freeze", "python-version: '3.12'", "cancel-in-progress: true",\n        "python research/000b2-public/verify_subset_freeze.py",\n        "python research/000b2-public/verify_subset_freeze_root_metadata.py",\n        "--committed research/000b2-public/subset-manifest.json",\n    ):\n        require_text(subset_freeze_workflow, phrase, "B2P04 subset-freeze workflow")\n''',
+          )
+          replace_once(
+              verifier,
+              '    print("B2P04_FRONTIER=AUTHORIZED")\n',
+              '''    print("B2P04_SUBSET_MANIFEST=PASS")\n    print(f"B2P04_CANONICAL_MERGE={B2P04_CANONICAL_MERGE}")\n    print(f"B2P04_POSTMERGE_SUBSET_RUN_ID={B2P04_POSTMERGE_SUBSET_RUN_ID}")\n    print(f"B2P04_POSTMERGE_METHODOLOGY_RUN_ID={B2P04_POSTMERGE_METHODOLOGY_RUN_ID}")\n    print(f"B2P04_MANIFEST_SHA256={B2P04_MANIFEST_SHA256}")\n    print(f"B2P04_FREEZE_DIGEST_SHA256={B2P04_FREEZE_DIGEST_SHA256}")\n    print("B2P05_FRONTIER=AUTHORIZED")\n''',
+          )
+          replace_once(verifier, '    print("SUBSET_MANIFEST_FROZEN=NO")', '    print("SUBSET_MANIFEST_FROZEN=YES")')
+
+          print("B2P04_RECONCILIATION=APPLIED")
+          PY
+      - name: Verify reconciled canonical guards offline
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_methodology.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze_root_metadata.py
+      - name: Commit exact five-file reconciliation and remove bootstrap
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/000b2-b2p04-reconcile-bootstrap.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            docs/canonical/CURRENT_STATE.md \
+            research/000b2-public/readiness.json \
+            research/000b2-public/verify_methodology.py \
+            specs/000B2-public-corpus-bakeoff/tasks.md \
+            specs/CURRENT.md \
+            .github/workflows/000b2-b2p04-reconcile-bootstrap.yml
+          test "$(git diff --cached --name-only | wc -l)" -eq 6
+          git diff --cached --check
+          git commit -m "docs(000b2): reconcile frontier after B2P04"
+          git push origin "HEAD:docs/000b2-b2p04-frontier-reconciliation"
