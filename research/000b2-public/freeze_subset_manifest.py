@@ -27,6 +27,13 @@ EXPECTED_ARCHIVES = {
     "test-clean.tar.gz": "test-clean",
     "test-other.tar.gz": "test-other",
 }
+ALLOWED_LIBRISPEECH_ROOT_METADATA = {
+    "BOOKS.TXT",
+    "CHAPTERS.TXT",
+    "LICENSE.TXT",
+    "README.TXT",
+    "SPEAKERS.TXT",
+}
 MAX_ARCHIVE_MEMBERS = 100_000
 MAX_EXTRACTED_BYTES_PER_ARCHIVE = 2 * 1024 * 1024 * 1024
 COPY_CHUNK_SIZE = 1024 * 1024
@@ -99,17 +106,33 @@ def normalized_member_parts(name: str) -> tuple[str, ...]:
     return parts
 
 
+def is_ignored_root_metadata(parts: tuple[str, ...], member: tarfile.TarInfo) -> bool:
+    """Recognize exact LibriSpeech root metadata that is validated but never extracted."""
+    return (
+        len(parts) == 2
+        and parts[0] == "LibriSpeech"
+        and parts[1] in ALLOWED_LIBRISPEECH_ROOT_METADATA
+        and member.isreg()
+    )
+
+
 def validate_member_scope(member: tarfile.TarInfo, partition: str) -> tuple[str, ...]:
-    """Require one tar member to be a regular file/directory inside exactly one expected partition."""
+    """Require one tar member to be bounded metadata or a regular file/directory in the expected partition."""
     parts = normalized_member_parts(member.name)
-    if parts == ("LibriSpeech",):
-        require(member.isdir(), "LibriSpeech archive root must be a directory")
-        return parts
-    require(len(parts) >= 2, f"archive member is outside expected LibriSpeech/{partition} root: {member.name!r}")
-    require(parts[:2] == ("LibriSpeech", partition), f"archive member escaped expected partition {partition}: {member.name!r}")
     require(not member.issym(), f"symbolic link archive member is prohibited: {member.name!r}")
     require(not member.islnk(), f"hard-link archive member is prohibited: {member.name!r}")
     require(member.isdir() or member.isreg(), f"special archive member is prohibited: {member.name!r}")
+    if parts == ("LibriSpeech",):
+        require(member.isdir(), "LibriSpeech archive root must be a directory")
+        return parts
+    if len(parts) == 2 and parts[0] == "LibriSpeech":
+        require(
+            is_ignored_root_metadata(parts, member),
+            f"unexpected LibriSpeech root metadata member: {member.name!r}",
+        )
+        return parts
+    require(len(parts) >= 2, f"archive member is outside expected LibriSpeech/{partition} root: {member.name!r}")
+    require(parts[:2] == ("LibriSpeech", partition), f"archive member escaped expected partition {partition}: {member.name!r}")
     return parts
 
 
@@ -129,6 +152,7 @@ def safe_extract_archive(archive_path: Path, destination: Path, partition: str) 
     destination.mkdir(parents=True, exist_ok=True)
     seen: set[str] = set()
     regular_files = 0
+    ignored_root_metadata_files = 0
     total_regular_bytes = 0
     member_count = 0
 
@@ -157,6 +181,10 @@ def safe_extract_archive(archive_path: Path, destination: Path, partition: str) 
                 total_regular_bytes <= MAX_EXTRACTED_BYTES_PER_ARCHIVE,
                 f"archive extracted-byte bound exceeded for {archive_path.name}",
             )
+            if is_ignored_root_metadata(parts, member):
+                ignored_root_metadata_files += 1
+                continue
+
             target.parent.mkdir(parents=True, exist_ok=True)
             require(not target.exists(), f"archive regular-file collision: {target}")
             source = archive.extractfile(member)
@@ -166,12 +194,13 @@ def safe_extract_archive(archive_path: Path, destination: Path, partition: str) 
             regular_files += 1
 
     require(member_count > 0, f"archive contains no members: {archive_path.name}")
-    require(regular_files > 0, f"archive contains no regular files: {archive_path.name}")
+    require(regular_files > 0, f"archive contains no partition regular files: {archive_path.name}")
     partition_root = destination / "LibriSpeech" / partition
     require(partition_root.is_dir() and not partition_root.is_symlink(), f"extracted partition root missing: {partition}")
     return {
         "member_count": member_count,
         "regular_file_count": regular_files,
+        "ignored_root_metadata_file_count": ignored_root_metadata_files,
         "regular_file_bytes": total_regular_bytes,
     }
 
