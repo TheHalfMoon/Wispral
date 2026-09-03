@@ -118,7 +118,7 @@ jobs:
             --evidence "$RUNNER_TEMP/b2p06/preprocessing-capture.json"
       - name: Upload bounded B2P06 evidence candidate
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: b2p06-preprocessing-${{ env.B2P06_REVISION }}
           path: ${{ runner.temp }}/b2p06/preprocessing-capture.json
