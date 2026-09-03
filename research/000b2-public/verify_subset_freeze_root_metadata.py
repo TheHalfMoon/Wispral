@@ -10,6 +10,14 @@ from pathlib import Path
 
 import freeze_subset_manifest as freeze
 
+EXPECTED_LIBRISPEECH_ROOT_METADATA = {
+    "BOOKS.TXT",
+    "CHAPTERS.TXT",
+    "LICENSE.TXT",
+    "README.TXT",
+    "SPEAKERS.TXT",
+}
+
 
 def require(condition: bool, message: str) -> None:
     """Fail closed on one root-metadata regression."""
@@ -36,9 +44,17 @@ def write_tar(path: Path, root_name: str, payload: bytes = b"metadata") -> None:
         archive.addfile(audio, io.BytesIO(b"audio"))
 
 
+def verify_allowlist_is_pinned() -> None:
+    """Require the extraction engine allowlist to equal the independently pinned reviewed set."""
+    require(
+        freeze.ALLOWED_LIBRISPEECH_ROOT_METADATA == EXPECTED_LIBRISPEECH_ROOT_METADATA,
+        "LibriSpeech root metadata allowlist drifted from the reviewed exact set",
+    )
+
+
 def verify_allowed_root_metadata_is_not_extracted() -> None:
     """Allow only the exact metadata allowlist and keep those bytes outside extracted selection input."""
-    for name in sorted(freeze.ALLOWED_LIBRISPEECH_ROOT_METADATA):
+    for name in sorted(EXPECTED_LIBRISPEECH_ROOT_METADATA):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             archive = root / "fixture.tar.gz"
@@ -65,6 +81,7 @@ def verify_unknown_root_metadata_is_rejected() -> None:
 
 def main() -> None:
     """Run the exact root-metadata regression surface."""
+    verify_allowlist_is_pinned()
     verify_allowed_root_metadata_is_not_extracted()
     verify_unknown_root_metadata_is_rejected()
     print("B2P04_ROOT_METADATA_VERIFIER=PASS")
