@@ -195,7 +195,7 @@ def verify_static_authority(trusted_base_root: Path) -> tuple[dict[str, Any], di
     require(readiness.get("state") == "READY" and readiness.get("completed_through") == "B2P04", "B2P05 requires canonical B2P04 readiness")
     public = readiness.get("public_human_baseline")
     preprocessing = readiness.get("preprocessing")
-    environment = readiness.get("environment")
+    environment = readiness.get("execution_environment")
     attempt = readiness.get("attempt_manifest")
     guards = readiness.get("claim_guards")
     require(isinstance(public, dict) and public.get("candidate_decoding_started") is False, "candidate decoding started before B2P05")
