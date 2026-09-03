@@ -113,26 +113,16 @@ jobs:
           if text.count(old) != 1:
               raise SystemExit(f"B2P04_VERIFIER_TRANSITION=FAIL: authority function anchor count {text.count(old)}")
           path.write_text(text.replace(old, new), encoding="utf-8")
-
-          bootstrap = Path(".github/workflows/000b2-b2p04-reconcile-bootstrap.yml")
-          bootstrap_text = bootstrap.read_text(encoding="utf-8")
-          marker = "# verifier-transition-trigger-v1"
-          if marker in bootstrap_text:
-              raise SystemExit("B2P04_VERIFIER_TRANSITION=FAIL: trigger marker already present")
-          bootstrap.write_text(bootstrap_text + "\n" + marker + "\n", encoding="utf-8")
           print("B2P04_VERIFIER_TRANSITION=APPLIED")
           PY
           PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze.py
-      - name: Commit transition and retrigger reconciliation
+      - name: Commit verifier transition
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm .github/workflows/000b2-b2p04-verifier-transition-bootstrap.yml
-          git add research/000b2-public/verify_subset_freeze.py .github/workflows/000b2-b2p04-reconcile-bootstrap.yml
-          test "$(git diff --cached --name-only | sort)" = $'.github/workflows/000b2-b2p04-reconcile-bootstrap.yml\n.github/workflows/000b2-b2p04-verifier-transition-bootstrap.yml\nresearch/000b2-public/verify_subset_freeze.py'
+          git add research/000b2-public/verify_subset_freeze.py
+          test "$(git diff --cached --name-only)" = "research/000b2-public/verify_subset_freeze.py"
           git commit -m "fix(000b2): reconcile B2P04 verifier authority states"
           git push origin HEAD:docs/000b2-b2p04-frontier-reconciliation
