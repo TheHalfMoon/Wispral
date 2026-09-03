@@ -1,0 +1,2356 @@
+{
+  "authority": {
+    "b2p03_canonical_merge": "83eca872148f329033c299f6671d275edf2d7b58",
+    "b2p03_frontier_reconciliation_merge": "c1a576db2adf67cb4b830c280e6cba80b0ae3b43"
+  },
+  "claim_guards": {
+    "candidate_decoding_started": false,
+    "candidate_revalidation_started": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "primary_decoding_started": false,
+    "product_code_authorized": false,
+    "production_stt_selected": false
+  },
+  "freeze_digest_sha256": "f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242",
+  "frozen": true,
+  "membership": {
+    "kind": "SOURCE_FLAC_IDENTITIES_AND_REFERENCE_TRANSCRIPTS",
+    "partitions": [
+      {
+        "name": "test-clean",
+        "speaker_count": 12,
+        "speakers": [
+          {
+            "speaker_id": "1580",
+            "utterances": [
+              {
+                "chapter_id": "141084",
+                "reference_transcript": "YOU DON'T SEEM TO REALIZE THE POSITION",
+                "source_audio_path": "LibriSpeech/test-clean/1580/141084/1580-141084-0006.flac",
+                "source_file_sha256": "a5f48929c99eebee630495c3f2c7afb1a549f5046234551bdf3d9ab1420d408f",
+                "source_partition": "test-clean",
+                "speaker_id": "1580",
+                "utterance_id": "1580-141084-0006"
+              },
+              {
+                "chapter_id": "141083",
+                "reference_transcript": "DID YOU LOOK AT THESE PAPERS ON THE TABLE",
+                "source_audio_path": "LibriSpeech/test-clean/1580/141083/1580-141083-0047.flac",
+                "source_file_sha256": "b09ab965531adb88c4424d525c0c5a62c6591456d62859aaf866c34ba7e6738e",
+                "source_partition": "test-clean",
+                "speaker_id": "1580",
+                "utterance_id": "1580-141083-0047"
+              },
+              {
+                "chapter_id": "141084",
+                "reference_transcript": "JUST CLOSE THE DOOR SAID HOLMES",
+                "source_audio_path": "LibriSpeech/test-clean/1580/141084/1580-141084-0030.flac",
+                "source_file_sha256": "a2aadf42caed5c0112cf37e136015a8ca9fdefe0419c276576652c84920f1bf7",
+                "source_partition": "test-clean",
+                "speaker_id": "1580",
+                "utterance_id": "1580-141084-0030"
+              },
+              {
+                "chapter_id": "141083",
+                "reference_transcript": "I REALLY DON'T THINK HE KNEW MUCH ABOUT IT MISTER HOLMES",
+                "source_audio_path": "LibriSpeech/test-clean/1580/141083/1580-141083-0050.flac",
+                "source_file_sha256": "5c877f5be2f33fcde4617ff782ac7363a4a2260b54f58b634b4ece2e2c6f2017",
+                "source_partition": "test-clean",
+                "speaker_id": "1580",
+                "utterance_id": "1580-141083-0050"
+              },
+              {
+                "chapter_id": "141084",
+                "reference_transcript": "AND ONE MORE THIS MORNING",
+                "source_audio_path": "LibriSpeech/test-clean/1580/141084/1580-141084-0022.flac",
+                "source_file_sha256": "3e1175da77643a0b899e1eb28d33a59ef1bffe202c99b97f7625c017add76e5f",
+                "source_partition": "test-clean",
+                "speaker_id": "1580",
+                "utterance_id": "1580-141084-0022"
+              },
+              {
+                "chapter_id": "141083",
+                "reference_transcript": "I HAD TO READ IT OVER CAREFULLY AS THE TEXT MUST BE ABSOLUTELY CORRECT",
+                "source_audio_path": "LibriSpeech/test-clean/1580/141083/1580-141083-0004.flac",
+                "source_file_sha256": "30b322da14fed6218c8fb755c8ab009a72ff8c00088547e1ea3a2041ee1c73dc",
+                "source_partition": "test-clean",
+                "speaker_id": "1580",
+                "utterance_id": "1580-141083-0004"
+              },
+              {
+                "chapter_id": "141084",
+                "reference_transcript": "IF THIS MATTER IS NOT TO BECOME PUBLIC WE MUST GIVE OURSELVES CERTAIN POWERS AND RESOLVE OURSELVES INTO A SMALL PRIVATE COURT MARTIAL",
+                "source_audio_path": "LibriSpeech/test-clean/1580/141084/1580-141084-0026.flac",
+                "source_file_sha256": "096842c32abc665b77371853c004b765c3faa7b9c5c570d659897cf3884bf943",
+                "source_partition": "test-clean",
+                "speaker_id": "1580",
+                "utterance_id": "1580-141084-0026"
+              },
+              {
+                "chapter_id": "141084",
+                "reference_transcript": "NO SIR CERTAINLY NOT",
+                "source_audio_path": "LibriSpeech/test-clean/1580/141084/1580-141084-0027.flac",
+                "source_file_sha256": "e21c552fd79d2b1e44d6461cdfce995336ce6e5b2d5eef7118c77db2b1cb485a",
+                "source_partition": "test-clean",
+                "speaker_id": "1580",
+                "utterance_id": "1580-141084-0027"
+              },
+              {
+                "chapter_id": "141084",
+                "reference_transcript": "HE RETURNED CARRYING HIS JUMPING SHOES WHICH ARE PROVIDED AS YOU ARE AWARE WITH SEVERAL SHARP SPIKES",
+                "source_audio_path": "LibriSpeech/test-clean/1580/141084/1580-141084-0040.flac",
+                "source_file_sha256": "a4ffe77c0b61bb19b182523241febc2d462409e3b88868a0ddce80a8cae997fe",
+                "source_partition": "test-clean",
+                "speaker_id": "1580",
+                "utterance_id": "1580-141084-0040"
+              },
+              {
+                "chapter_id": "141083",
+                "reference_transcript": "HOLMES TURNED AWAY AND STOOPED SUDDENLY TO THE FLOOR HALLOA WHAT'S THIS",
+                "source_audio_path": "LibriSpeech/test-clean/1580/141083/1580-141083-0035.flac",
+                "source_file_sha256": "c15a4ef17b55a1480263769346bacd6ea2b64d57d1c54a9f53ee91af31559a87",
+                "source_partition": "test-clean",
+                "speaker_id": "1580",
+                "utterance_id": "1580-141083-0035"
+              }
+            ]
+          },
+          {
+            "speaker_id": "6829",
+            "utterances": [
+              {
+                "chapter_id": "68769",
+                "reference_transcript": "I'M NOT ELECTIONEERING JUST NOW",
+                "source_audio_path": "LibriSpeech/test-clean/6829/68769/6829-68769-0041.flac",
+                "source_file_sha256": "e0e3964567d7a515d2443c6e1eff105f88da0e87ef44cc2954b36f1b9d93096c",
+                "source_partition": "test-clean",
+                "speaker_id": "6829",
+                "utterance_id": "6829-68769-0041"
+              },
+              {
+                "chapter_id": "68769",
+                "reference_transcript": "HE SPOKE SIMPLY BUT PACED UP AND DOWN THE NARROW CELL IN FRONT OF THEM",
+                "source_audio_path": "LibriSpeech/test-clean/6829/68769/6829-68769-0026.flac",
+                "source_file_sha256": "145e81795f914dbeb27203c9a5b096ec3696183f0ca531952ced490aa6b35363",
+                "source_partition": "test-clean",
+                "speaker_id": "6829",
+                "utterance_id": "6829-68769-0026"
+              },
+              {
+                "chapter_id": "68769",
+                "reference_transcript": "THEY WERE RECEIVED IN THE LITTLE OFFICE BY A MAN NAMED MARKHAM WHO WAS THE JAILER",
+                "source_audio_path": "LibriSpeech/test-clean/6829/68769/6829-68769-0009.flac",
+                "source_file_sha256": "109d8f0288067d190507959fa491ec08bea2af662d4eac3f8b17bdd8050a12de",
+                "source_partition": "test-clean",
+                "speaker_id": "6829",
+                "utterance_id": "6829-68769-0009"
+              },
+              {
+                "chapter_id": "68769",
+                "reference_transcript": "I'LL PAY ALL THE COSTS BESIDES",
+                "source_audio_path": "LibriSpeech/test-clean/6829/68769/6829-68769-0045.flac",
+                "source_file_sha256": "542b62f526c36cc45f30206729f0655591035d5b571c84e90db0110f1496d39b",
+                "source_partition": "test-clean",
+                "speaker_id": "6829",
+                "utterance_id": "6829-68769-0045"
+              },
+              {
+                "chapter_id": "68771",
+                "reference_transcript": "YOU SPEAK LIKE AN EDUCATED PERSON SAID BETH WONDERINGLY WHERE IS YOUR HOME",
+                "source_audio_path": "LibriSpeech/test-clean/6829/68771/6829-68771-0023.flac",
+                "source_file_sha256": "2f0748ef0bfa3557da96e4ce0a276f4ef7599b4772c039d40ae5ed6932a2a6eb",
+                "source_partition": "test-clean",
+                "speaker_id": "6829",
+                "utterance_id": "6829-68771-0023"
+              },
+              {
+                "chapter_id": "68771",
+                "reference_transcript": "THE WEAK KNEED CONTINGENCY MUST BE STRENGTHENED AND FORTIFIED AND A COUPLE OF HUNDRED VOTES IN ONE WAY OR ANOTHER SECURED FROM THE OPPOSITION",
+                "source_audio_path": "LibriSpeech/test-clean/6829/68771/6829-68771-0002.flac",
+                "source_file_sha256": "8b4d8f046b3e2867ad5e62a9d55b9de4e86b6accea8f88517f45a1267cfb4565",
+                "source_partition": "test-clean",
+                "speaker_id": "6829",
+                "utterance_id": "6829-68771-0002"
+              },
+              {
+                "chapter_id": "68771",
+                "reference_transcript": "SHE EVEN SEEMED MILDLY AMUSED AT THE ATTENTION SHE ATTRACTED",
+                "source_audio_path": "LibriSpeech/test-clean/6829/68771/6829-68771-0028.flac",
+                "source_file_sha256": "d74ce0c53118a4e994feb25124eedb4123ed52dc5553265ff824edcb2eac51a3",
+                "source_partition": "test-clean",
+                "speaker_id": "6829",
+                "utterance_id": "6829-68771-0028"
+              },
+              {
+                "chapter_id": "68769",
+                "reference_transcript": "WORSE TOM WORSE N EVER REPLIED THE JAILER GLOOMILY",
+                "source_audio_path": "LibriSpeech/test-clean/6829/68769/6829-68769-0017.flac",
+                "source_file_sha256": "3624499fe8472c977ef700724320aa6c9710351da45e38124df01110319f02e0",
+                "source_partition": "test-clean",
+                "speaker_id": "6829",
+                "utterance_id": "6829-68769-0017"
+              },
+              {
+                "chapter_id": "68771",
+                "reference_transcript": "I WISH I KNEW MYSELF SHE CRIED FIERCELY",
+                "source_audio_path": "LibriSpeech/test-clean/6829/68771/6829-68771-0034.flac",
+                "source_file_sha256": "c5c84b077015659b10561296a40e4fde758ee59b4ef7dea0869437eb10c26bcb",
+                "source_partition": "test-clean",
+                "speaker_id": "6829",
+                "utterance_id": "6829-68771-0034"
+              },
+              {
+                "chapter_id": "68769",
+                "reference_transcript": "BETH UNEASY AT HIS SILENCE NUDGED HIM",
+                "source_audio_path": "LibriSpeech/test-clean/6829/68769/6829-68769-0050.flac",
+                "source_file_sha256": "738db9d8995841b7c9cac77cb8b2520fedfead75ba60af44a2589396970e9771",
+                "source_partition": "test-clean",
+                "speaker_id": "6829",
+                "utterance_id": "6829-68769-0050"
+              }
+            ]
+          },
+          {
+            "speaker_id": "8230",
+            "utterances": [
+              {
+                "chapter_id": "279154",
+                "reference_transcript": "HABIT IS A CONCEPT INVOLVING THE OCCURRENCE OF SIMILAR EVENTS AT DIFFERENT TIMES IF THE BEHAVIOURIST FEELS CONFIDENT THAT THERE IS SUCH A PHENOMENON AS HABIT THAT CAN ONLY BE BECAUSE HE TRUSTS HIS MEMORY WHEN IT ASSURES HIM THAT THERE HAVE BEEN OTHER TIMES",
+                "source_audio_path": "LibriSpeech/test-clean/8230/279154/8230-279154-0007.flac",
+                "source_file_sha256": "9e3f3d60d4a0cb67476a62e11d32eb0f317da9a7864919607d41b436ee937c9c",
+                "source_partition": "test-clean",
+                "speaker_id": "8230",
+                "utterance_id": "8230-279154-0007"
+              },
+              {
+                "chapter_id": "279154",
+                "reference_transcript": "ALL THAT I AM DOING IS TO USE ITS LOGICAL TENABILITY AS A HELP IN THE ANALYSIS OF WHAT OCCURS WHEN WE REMEMBER",
+                "source_audio_path": "LibriSpeech/test-clean/8230/279154/8230-279154-0005.flac",
+                "source_file_sha256": "d119d5e32f079cf990b435f1844158431570fa4bd1726e2135bca47594a98566",
+                "source_partition": "test-clean",
+                "speaker_id": "8230",
+                "utterance_id": "8230-279154-0005"
+              },
+              {
+                "chapter_id": "279154",
+                "reference_transcript": "FAMILIARITY IS A FEELING CAPABLE OF DEGREES",
+                "source_audio_path": "LibriSpeech/test-clean/8230/279154/8230-279154-0012.flac",
+                "source_file_sha256": "e64d663e3ccb70ac42f437acf1070a45cffb2d985081fa5c930df241e1e2acbd",
+                "source_partition": "test-clean",
+                "speaker_id": "8230",
+                "utterance_id": "8230-279154-0012"
+              },
+              {
+                "chapter_id": "279154",
+                "reference_transcript": "IT IS THIS THAT IS OF INTEREST TO THEORY OF KNOWLEDGE",
+                "source_audio_path": "LibriSpeech/test-clean/8230/279154/8230-279154-0032.flac",
+                "source_file_sha256": "d60da130333b0e1adba450d171b7f753f423dce0f66a00448dfb036d43a7231d",
+                "source_partition": "test-clean",
+                "speaker_id": "8230",
+                "utterance_id": "8230-279154-0032"
+              },
+              {
+                "chapter_id": "279154",
+                "reference_transcript": "THERE IS OF COURSE A DIFFERENCE BETWEEN KNOWING THE TEMPORAL RELATION OF A REMEMBERED EVENT TO THE PRESENT AND KNOWING THE TIME ORDER OF TWO REMEMBERED EVENTS",
+                "source_audio_path": "LibriSpeech/test-clean/8230/279154/8230-279154-0018.flac",
+                "source_file_sha256": "6fb6d05dd68dfe641a0f58b800e9d2e86662dab952355bc7573505bc35efb2fc",
+                "source_partition": "test-clean",
+                "speaker_id": "8230",
+                "utterance_id": "8230-279154-0018"
+              },
+              {
+                "chapter_id": "279154",
+                "reference_transcript": "THERE IS NO LOGICAL IMPOSSIBILITY IN THE HYPOTHESIS THAT THE WORLD SPRANG INTO BEING FIVE MINUTES AGO EXACTLY AS IT THEN WAS WITH A POPULATION THAT REMEMBERED A WHOLLY UNREAL PAST",
+                "source_audio_path": "LibriSpeech/test-clean/8230/279154/8230-279154-0004.flac",
+                "source_file_sha256": "86c86f72e7913b2bf48d8e2fece50daa228b2b15d6fb7e0dcb609def7350699d",
+                "source_partition": "test-clean",
+                "speaker_id": "8230",
+                "utterance_id": "8230-279154-0004"
+              },
+              {
+                "chapter_id": "279154",
+                "reference_transcript": "WE MIGHT PROVISIONALLY THOUGH PERHAPS NOT QUITE CORRECTLY DEFINE MEMORY AS THAT WAY OF KNOWING ABOUT THE PAST WHICH HAS NO ANALOGUE IN OUR KNOWLEDGE OF THE FUTURE SUCH A DEFINITION WOULD AT LEAST SERVE TO MARK THE PROBLEM WITH WHICH WE ARE CONCERNED THOUGH SOME EXPECTATIONS MAY DESERVE TO RANK WITH MEMORY AS REGARDS IMMEDIACY",
+                "source_audio_path": "LibriSpeech/test-clean/8230/279154/8230-279154-0025.flac",
+                "source_file_sha256": "0de68b8f5863f288f837b15e5a3fa7ecd40afb824abe0a6338f2300a3ccd25d2",
+                "source_partition": "test-clean",
+                "speaker_id": "8230",
+                "utterance_id": "8230-279154-0025"
+              },
+              {
+                "chapter_id": "279154",
+                "reference_transcript": "THIS DISTINCTION IS VITAL TO THE UNDERSTANDING OF MEMORY BUT IT IS NOT SO EASY TO CARRY OUT IN PRACTICE AS IT IS TO DRAW IN THEORY",
+                "source_audio_path": "LibriSpeech/test-clean/8230/279154/8230-279154-0026.flac",
+                "source_file_sha256": "5fbc9e2683d23c73717b8f9ee1436a3b8785e0a54c60d0ce8e39464e4f25d85c",
+                "source_partition": "test-clean",
+                "speaker_id": "8230",
+                "utterance_id": "8230-279154-0026"
+              },
+              {
+                "chapter_id": "279154",
+                "reference_transcript": "RECOGNITION IN THIS SENSE DOES NOT NECESSARILY INVOLVE MORE THAN A HABIT OF ASSOCIATION THE KIND OF OBJECT WE ARE SEEING AT THE MOMENT IS ASSOCIATED WITH THE WORD CAT OR WITH AN AUDITORY IMAGE OF PURRING OR WHATEVER OTHER CHARACTERISTIC WE MAY HAPPEN TO RECOGNIZE IN THE CAT OF THE MOMENT",
+                "source_audio_path": "LibriSpeech/test-clean/8230/279154/8230-279154-0037.flac",
+                "source_file_sha256": "286b010838d572a540a0d1a90943f3a16d66260d8888dced6ebb3b1ed257601a",
+                "source_partition": "test-clean",
+                "speaker_id": "8230",
+                "utterance_id": "8230-279154-0037"
+              },
+              {
+                "chapter_id": "279154",
+                "reference_transcript": "IF WE HAD RETAINED THE SUBJECT OR ACT IN KNOWLEDGE THE WHOLE PROBLEM OF MEMORY WOULD HAVE BEEN COMPARATIVELY SIMPLE",
+                "source_audio_path": "LibriSpeech/test-clean/8230/279154/8230-279154-0020.flac",
+                "source_file_sha256": "ddedfea2693b847fad1b7f8cf0cbef9c16797614d35b4e3bb1b7caaa8b2a11c3",
+                "source_partition": "test-clean",
+                "speaker_id": "8230",
+                "utterance_id": "8230-279154-0020"
+              }
+            ]
+          },
+          {
+            "speaker_id": "2830",
+            "utterances": [
+              {
+                "chapter_id": "3980",
+                "reference_transcript": "THESE PERVERTERS OF THE RIGHTEOUSNESS OF CHRIST RESIST THE FATHER AND THE SON AND THE WORKS OF THEM BOTH",
+                "source_audio_path": "LibriSpeech/test-clean/2830/3980/2830-3980-0023.flac",
+                "source_file_sha256": "2503437bee238b168a6bd391f8d6900717a6f1b744168002bfbfda62060edf7e",
+                "source_partition": "test-clean",
+                "speaker_id": "2830",
+                "utterance_id": "2830-3980-0023"
+              },
+              {
+                "chapter_id": "3980",
+                "reference_transcript": "WHEREVER THE MEANS OF GRACE ARE FOUND THERE IS THE HOLY CHURCH EVEN THOUGH ANTICHRIST REIGNS THERE",
+                "source_audio_path": "LibriSpeech/test-clean/2830/3980/2830-3980-0036.flac",
+                "source_file_sha256": "9d03e5523b6c8f0b01872026a930469d4aa1e053cb01b0a34addeb561f9575db",
+                "source_partition": "test-clean",
+                "speaker_id": "2830",
+                "utterance_id": "2830-3980-0036"
+              },
+              {
+                "chapter_id": "3980",
+                "reference_transcript": "MOHAMMED ALSO SPEAKS HIGHLY OF CHRIST",
+                "source_audio_path": "LibriSpeech/test-clean/2830/3980/2830-3980-0058.flac",
+                "source_file_sha256": "f5fab0c4753104e9e88bda8948f478599ed4f4acfb03465d01576171385669bb",
+                "source_partition": "test-clean",
+                "speaker_id": "2830",
+                "utterance_id": "2830-3980-0058"
+              },
+              {
+                "chapter_id": "3980",
+                "reference_transcript": "THEY DO NOT GO WHERE THE ENEMIES OF THE GOSPEL PREDOMINATE THEY GO WHERE THE CHRISTIANS ARE",
+                "source_audio_path": "LibriSpeech/test-clean/2830/3980/2830-3980-0030.flac",
+                "source_file_sha256": "2cb92900baa1fda24ae4f23d7eb271ca8c16b1a2f28dba8d1b51736a29b78cb6",
+                "source_partition": "test-clean",
+                "speaker_id": "2830",
+                "utterance_id": "2830-3980-0030"
+              },
+              {
+                "chapter_id": "3980",
+                "reference_transcript": "HE MENTIONS THE APOSTLES FIRST BECAUSE THEY WERE APPOINTED DIRECTLY BY GOD",
+                "source_audio_path": "LibriSpeech/test-clean/2830/3980/2830-3980-0013.flac",
+                "source_file_sha256": "f305ca8bad9ce0be9589051e7850607b95881d7a7dca81f9cae91000cb5101bf",
+                "source_partition": "test-clean",
+                "speaker_id": "2830",
+                "utterance_id": "2830-3980-0013"
+              },
+              {
+                "chapter_id": "3980",
+                "reference_transcript": "BUT WE ARE CARELESS WE MAKE LIGHT OF SIN",
+                "source_audio_path": "LibriSpeech/test-clean/2830/3980/2830-3980-0070.flac",
+                "source_file_sha256": "a75106c0068a3871cd9a050de9a85bf7e0ea17f4f3b72f05904e0804c31fa135",
+                "source_partition": "test-clean",
+                "speaker_id": "2830",
+                "utterance_id": "2830-3980-0070"
+              },
+              {
+                "chapter_id": "3980",
+                "reference_transcript": "UNDERSCORE THESE WORDS FOR THEY ARE FULL OF COMFORT FOR SORE CONSCIENCES",
+                "source_audio_path": "LibriSpeech/test-clean/2830/3980/2830-3980-0063.flac",
+                "source_file_sha256": "75d60e5ddd676b4b591770775f05ea03b10581e4dec44eaa785779baf037041c",
+                "source_partition": "test-clean",
+                "speaker_id": "2830",
+                "utterance_id": "2830-3980-0063"
+              },
+              {
+                "chapter_id": "3980",
+                "reference_transcript": "TO BESTOW PEACE AND GRACE LIES IN THE PROVINCE OF GOD WHO ALONE CAN CREATE THESE BLESSINGS THE ANGELS CANNOT",
+                "source_audio_path": "LibriSpeech/test-clean/2830/3980/2830-3980-0055.flac",
+                "source_file_sha256": "bdc87f5f42837e7b5e3c509034733c0fc8c973622fa083f8c49d77b930a745b0",
+                "source_partition": "test-clean",
+                "speaker_id": "2830",
+                "utterance_id": "2830-3980-0055"
+              },
+              {
+                "chapter_id": "3980",
+                "reference_transcript": "MEN SHOULD NOT SPECULATE ABOUT THE NATURE OF GOD",
+                "source_audio_path": "LibriSpeech/test-clean/2830/3980/2830-3980-0045.flac",
+                "source_file_sha256": "502954e9d9096995057c0fe420f646c760c04319e2fd0d5adab96abf5329bfd3",
+                "source_partition": "test-clean",
+                "speaker_id": "2830",
+                "utterance_id": "2830-3980-0045"
+              },
+              {
+                "chapter_id": "3980",
+                "reference_transcript": "THAT CHRIST IS VERY GOD IS APPARENT IN THAT PAUL ASCRIBES TO HIM DIVINE POWERS EQUALLY WITH THE FATHER AS FOR INSTANCE THE POWER TO DISPENSE GRACE AND PEACE",
+                "source_audio_path": "LibriSpeech/test-clean/2830/3980/2830-3980-0054.flac",
+                "source_file_sha256": "6ffa3c3ec3f5d4aafa5c667c4546ddfdcd7e87a47a96e59242e862c31a35fdfc",
+                "source_partition": "test-clean",
+                "speaker_id": "2830",
+                "utterance_id": "2830-3980-0054"
+              }
+            ]
+          },
+          {
+            "speaker_id": "61",
+            "utterances": [
+              {
+                "chapter_id": "70970",
+                "reference_transcript": "THEY REGAINED THEIR APARTMENT APPARENTLY WITHOUT DISTURBING THE HOUSEHOLD OF GAMEWELL",
+                "source_audio_path": "LibriSpeech/test-clean/61/70970/61-70970-0040.flac",
+                "source_file_sha256": "5a2297c062e9922ed331f717b2acc94248f30a513324144fd125e1189028e1b4",
+                "source_partition": "test-clean",
+                "speaker_id": "61",
+                "utterance_id": "61-70970-0040"
+              },
+              {
+                "chapter_id": "70968",
+                "reference_transcript": "TAKING ADVANTAGE OF THIS THE SQUIRE'S FEW MEN REDOUBLED THEIR EFFORTS AND ENCOURAGED BY ROBIN'S AND THE LITTLE STROLLER'S CRIES FOUGHT THEIR WAY TO HIM",
+                "source_audio_path": "LibriSpeech/test-clean/61/70968/61-70968-0035.flac",
+                "source_file_sha256": "2bdaf43f44218652132ad0c072b301271171d370428701b071159ed1d593f65f",
+                "source_partition": "test-clean",
+                "speaker_id": "61",
+                "utterance_id": "61-70968-0035"
+              },
+              {
+                "chapter_id": "70968",
+                "reference_transcript": "CRIES OF A NOTTINGHAM A NOTTINGHAM",
+                "source_audio_path": "LibriSpeech/test-clean/61/70968/61-70968-0012.flac",
+                "source_file_sha256": "980dd86b87c173dc5c0e5395de5619c95523fb59e8dfbece50108afb4ce2277f",
+                "source_partition": "test-clean",
+                "speaker_id": "61",
+                "utterance_id": "61-70968-0012"
+              },
+              {
+                "chapter_id": "70970",
+                "reference_transcript": "NEVER THAT SIR HE HAD SAID",
+                "source_audio_path": "LibriSpeech/test-clean/61/70970/61-70970-0006.flac",
+                "source_file_sha256": "00f9364a961ab5a1efbc11a4ecad60b2f4be9df6f46c963d94177140eec4433c",
+                "source_partition": "test-clean",
+                "speaker_id": "61",
+                "utterance_id": "61-70970-0006"
+              },
+              {
+                "chapter_id": "70970",
+                "reference_transcript": "WILL WHISPERED ROBIN OPENING HIS DOOR AS HE SPOKE ARE YOU READY",
+                "source_audio_path": "LibriSpeech/test-clean/61/70970/61-70970-0020.flac",
+                "source_file_sha256": "af2a287367360869e97bec74573c71a83671f0d15fa4d25f9dfc20e30902fef9",
+                "source_partition": "test-clean",
+                "speaker_id": "61",
+                "utterance_id": "61-70970-0020"
+              },
+              {
+                "chapter_id": "70970",
+                "reference_transcript": "FROM THE BLACKNESS BEHIND THE LIGHT THEY HEARD A VOICE WARRENTON'S",
+                "source_audio_path": "LibriSpeech/test-clean/61/70970/61-70970-0029.flac",
+                "source_file_sha256": "6d1628888619b7294ba9e9810df9681f8de33e83454cb75eb7ee058eaba90b57",
+                "source_partition": "test-clean",
+                "speaker_id": "61",
+                "utterance_id": "61-70970-0029"
+              },
+              {
+                "chapter_id": "70968",
+                "reference_transcript": "GEORGE MONTFICHET WILL NEVER FORGET THIS DAY",
+                "source_audio_path": "LibriSpeech/test-clean/61/70968/61-70968-0036.flac",
+                "source_file_sha256": "3da5aba391882fe52fcffd1330e4b3c222cbf1f0f271d687a8547fee1ad561e9",
+                "source_partition": "test-clean",
+                "speaker_id": "61",
+                "utterance_id": "61-70968-0036"
+              },
+              {
+                "chapter_id": "70970",
+                "reference_transcript": "IF FOR A WHIM YOU BEGGAR YOURSELF I CANNOT STAY YOU",
+                "source_audio_path": "LibriSpeech/test-clean/61/70970/61-70970-0003.flac",
+                "source_file_sha256": "07a9cee74f0d53cd796c458c39b2835c3d997d48cdf0b5cf6dda12a450709768",
+                "source_partition": "test-clean",
+                "speaker_id": "61",
+                "utterance_id": "61-70970-0003"
+              },
+              {
+                "chapter_id": "70970",
+                "reference_transcript": "AS ANY IN ENGLAND I WOULD SAY SAID GAMEWELL PROUDLY THAT IS IN HIS DAY",
+                "source_audio_path": "LibriSpeech/test-clean/61/70970/61-70970-0011.flac",
+                "source_file_sha256": "7652d587f197b01c378691360aaa3762852843a6de96dd7b02c04a0c10e28e7b",
+                "source_partition": "test-clean",
+                "speaker_id": "61",
+                "utterance_id": "61-70970-0011"
+              },
+              {
+                "chapter_id": "70968",
+                "reference_transcript": "THE STROLLERS TOOK THEIR PART IN IT WITH HEARTY ZEST NOW THAT THEY HAD SOME CHANCE OF BEATING OFF THEIR FOES",
+                "source_audio_path": "LibriSpeech/test-clean/61/70968/61-70968-0026.flac",
+                "source_file_sha256": "d3e8c8a006501e60851b15d13d13c40c620a4c4598306aa65828818e3b796a01",
+                "source_partition": "test-clean",
+                "speaker_id": "61",
+                "utterance_id": "61-70968-0026"
+              }
+            ]
+          },
+          {
+            "speaker_id": "1320",
+            "utterances": [
+              {
+                "chapter_id": "122617",
+                "reference_transcript": "THE LODGE IN WHICH UNCAS WAS CONFINED WAS IN THE VERY CENTER OF THE VILLAGE AND IN A SITUATION PERHAPS MORE DIFFICULT THAN ANY OTHER TO APPROACH OR LEAVE WITHOUT OBSERVATION",
+                "source_audio_path": "LibriSpeech/test-clean/1320/122617/1320-122617-0011.flac",
+                "source_file_sha256": "4674bdaeb3a93796f3ecedf1df3d21e9b6bff49c3b16f635eac1832cf44a8e69",
+                "source_partition": "test-clean",
+                "speaker_id": "1320",
+                "utterance_id": "1320-122617-0011"
+              },
+              {
+                "chapter_id": "122617",
+                "reference_transcript": "WELL WHAT CAN'T BE DONE BY MAIN COURAGE IN WAR MUST BE DONE BY CIRCUMVENTION",
+                "source_audio_path": "LibriSpeech/test-clean/1320/122617/1320-122617-0026.flac",
+                "source_file_sha256": "8e46137d386c181c23a97932fb560a1fffa0b8e635bfe38c81c6f0791dbbe9ed",
+                "source_partition": "test-clean",
+                "speaker_id": "1320",
+                "utterance_id": "1320-122617-0026"
+              },
+              {
+                "chapter_id": "122617",
+                "reference_transcript": "THERE WAS SOMETHING IN HIS AIR AND MANNER THAT BETRAYED TO THE SCOUT THE UTTER CONFUSION OF THE STATE OF HIS MIND",
+                "source_audio_path": "LibriSpeech/test-clean/1320/122617/1320-122617-0003.flac",
+                "source_file_sha256": "bbe9ef85bbe228c73a414f064c9bd992c94135d73f9900b33104ad93c07d0594",
+                "source_partition": "test-clean",
+                "speaker_id": "1320",
+                "utterance_id": "1320-122617-0003"
+              },
+              {
+                "chapter_id": "122617",
+                "reference_transcript": "AS SOON AS THESE DISPOSITIONS WERE MADE THE SCOUT TURNED TO DAVID AND GAVE HIM HIS PARTING INSTRUCTIONS",
+                "source_audio_path": "LibriSpeech/test-clean/1320/122617/1320-122617-0027.flac",
+                "source_file_sha256": "22c2c92f1ccaa4194a16382e196de9996b7495feacab6a43fcbf02a40b0e4fdc",
+                "source_partition": "test-clean",
+                "speaker_id": "1320",
+                "utterance_id": "1320-122617-0027"
+              },
+              {
+                "chapter_id": "122612",
+                "reference_transcript": "YET HERE ARE WE WITHIN A SHORT RANGE OF THE SCAROONS AND NOT A SIGN OF A TRAIL HAVE WE CROSSED",
+                "source_audio_path": "LibriSpeech/test-clean/1320/122612/1320-122612-0005.flac",
+                "source_file_sha256": "f2ae6c60e32d69c7afdafe54694fe4b52c0128d4c0b3021f9dc854c9e3611eb8",
+                "source_partition": "test-clean",
+                "speaker_id": "1320",
+                "utterance_id": "1320-122612-0005"
+              },
+              {
+                "chapter_id": "122617",
+                "reference_transcript": "THE DELAWARES ARE CHILDREN OF THE TORTOISE AND THEY OUTSTRIP THE DEER",
+                "source_audio_path": "LibriSpeech/test-clean/1320/122617/1320-122617-0022.flac",
+                "source_file_sha256": "9c4d285c536c8562a3b9add558d159b84c5b3d8c27922669906ae8da831fc25c",
+                "source_partition": "test-clean",
+                "speaker_id": "1320",
+                "utterance_id": "1320-122617-0022"
+              },
+              {
+                "chapter_id": "122617",
+                "reference_transcript": "COME COME RETURNED HAWKEYE UNCASING HIS HONEST COUNTENANCE THE BETTER TO ASSURE THE WAVERING CONFIDENCE OF HIS COMPANION YOU MAY SEE A SKIN WHICH IF IT BE NOT AS WHITE AS ONE OF THE GENTLE ONES HAS NO TINGE OF RED TO IT THAT THE WINDS OF THE HEAVEN AND THE SUN HAVE NOT BESTOWED NOW LET US TO BUSINESS",
+                "source_audio_path": "LibriSpeech/test-clean/1320/122617/1320-122617-0007.flac",
+                "source_file_sha256": "4fcd5c2531354e3fe10cb72bb614bf3458616f255bfa4e612f19f25e776cdf24",
+                "source_partition": "test-clean",
+                "speaker_id": "1320",
+                "utterance_id": "1320-122617-0007"
+              },
+              {
+                "chapter_id": "122617",
+                "reference_transcript": "UNCAS WHO HAD ALREADY APPROACHED THE DOOR IN READINESS TO LEAD THE WAY NOW RECOILED AND PLACED HIMSELF ONCE MORE IN THE BOTTOM OF THE LODGE",
+                "source_audio_path": "LibriSpeech/test-clean/1320/122617/1320-122617-0023.flac",
+                "source_file_sha256": "553fc6594343774831ac876fee34c4ec2b47b53d451f313b10e64eea5cadd8c2",
+                "source_partition": "test-clean",
+                "speaker_id": "1320",
+                "utterance_id": "1320-122617-0023"
+              },
+              {
+                "chapter_id": "122617",
+                "reference_transcript": "THE TASK WILL NOT BE DIFFICULT RETURNED DAVID HESITATING THOUGH I GREATLY FEAR YOUR PRESENCE WOULD RATHER INCREASE THAN MITIGATE HIS UNHAPPY FORTUNES",
+                "source_audio_path": "LibriSpeech/test-clean/1320/122617/1320-122617-0010.flac",
+                "source_file_sha256": "a034af0c5a1b84fa2688a2a467bf6dc74e4d440da3f8fb16fad8711509cd3cde",
+                "source_partition": "test-clean",
+                "speaker_id": "1320",
+                "utterance_id": "1320-122617-0010"
+              },
+              {
+                "chapter_id": "122617",
+                "reference_transcript": "THE BEAR SHOOK HIS SHAGGY SIDES AND THEN A WELL KNOWN VOICE REPLIED",
+                "source_audio_path": "LibriSpeech/test-clean/1320/122617/1320-122617-0005.flac",
+                "source_file_sha256": "4042ebefc5c7fc9173dc68bd52377dc4d2c17b68b5c5f1c9c5b7f9d04c305a51",
+                "source_partition": "test-clean",
+                "speaker_id": "1320",
+                "utterance_id": "1320-122617-0005"
+              }
+            ]
+          },
+          {
+            "speaker_id": "1284",
+            "utterances": [
+              {
+                "chapter_id": "1181",
+                "reference_transcript": "NO I FORGOT ALL ABOUT THE BRAINS EXCLAIMED THE WOMAN",
+                "source_audio_path": "LibriSpeech/test-clean/1284/1181/1284-1181-0005.flac",
+                "source_file_sha256": "89a399efeb95ed31d9e7b302dde9262a494a0f8cae2fb61c9e63cc808ebf9db0",
+                "source_partition": "test-clean",
+                "speaker_id": "1284",
+                "utterance_id": "1284-1181-0005"
+              },
+              {
+                "chapter_id": "1181",
+                "reference_transcript": "I AM NOT ALLOWED TO PERFORM MAGIC EXCEPT FOR MY OWN AMUSEMENT HE TOLD HIS VISITORS AS HE LIGHTED A PIPE WITH A CROOKED STEM AND BEGAN TO SMOKE",
+                "source_audio_path": "LibriSpeech/test-clean/1284/1181/1284-1181-0016.flac",
+                "source_file_sha256": "7dbc59160a39df606203c882180ed1380bf890bf85342539bd3aeb5f73d843bf",
+                "source_partition": "test-clean",
+                "speaker_id": "1284",
+                "utterance_id": "1284-1181-0016"
+              },
+              {
+                "chapter_id": "134647",
+                "reference_transcript": "THE GRATEFUL APPLAUSE OF THE CLERGY HAS CONSECRATED THE MEMORY OF A PRINCE WHO INDULGED THEIR PASSIONS AND PROMOTED THEIR INTEREST",
+                "source_audio_path": "LibriSpeech/test-clean/1284/134647/1284-134647-0000.flac",
+                "source_file_sha256": "b74ac729f680346abd5fbfcb0509ad5bd2bdeaab65268490343c947d684786de",
+                "source_partition": "test-clean",
+                "speaker_id": "1284",
+                "utterance_id": "1284-134647-0000"
+              },
+              {
+                "chapter_id": "134647",
+                "reference_transcript": "CONSTANTINE EASILY BELIEVED THAT THE HERETICS WHO PRESUMED TO DISPUTE HIS OPINIONS OR TO OPPOSE HIS COMMANDS WERE GUILTY OF THE MOST ABSURD AND CRIMINAL OBSTINACY AND THAT A SEASONABLE APPLICATION OF MODERATE SEVERITIES MIGHT SAVE THOSE UNHAPPY MEN FROM THE DANGER OF AN EVERLASTING CONDEMNATION",
+                "source_audio_path": "LibriSpeech/test-clean/1284/134647/1284-134647-0003.flac",
+                "source_file_sha256": "76184eccd216bf13ad61c7ce7a14253579255547d18a9c595e8cb7d7167ad662",
+                "source_partition": "test-clean",
+                "speaker_id": "1284",
+                "utterance_id": "1284-134647-0003"
+              },
+              {
+                "chapter_id": "1181",
+                "reference_transcript": "SHE POURED INTO THE DISH A QUANTITY FROM EACH OF THESE BOTTLES",
+                "source_audio_path": "LibriSpeech/test-clean/1284/1181/1284-1181-0007.flac",
+                "source_file_sha256": "8002852c66fe7fd7790117e9e2dc60bf38c706476e999f70a559f7d91e9d9986",
+                "source_partition": "test-clean",
+                "speaker_id": "1284",
+                "utterance_id": "1284-1181-0007"
+              },
+              {
+                "chapter_id": "1180",
+                "reference_transcript": "AT ONE END STOOD A GREAT FIREPLACE IN WHICH A BLUE LOG WAS BLAZING WITH A BLUE FLAME AND OVER THE FIRE HUNG FOUR KETTLES IN A ROW ALL BUBBLING AND STEAMING AT A GREAT RATE",
+                "source_audio_path": "LibriSpeech/test-clean/1284/1180/1284-1180-0017.flac",
+                "source_file_sha256": "d070391d274a6b0deebcbb30b3e4a668e9466973ed73f12077062c3d51ffc80e",
+                "source_partition": "test-clean",
+                "speaker_id": "1284",
+                "utterance_id": "1284-1180-0017"
+              },
+              {
+                "chapter_id": "1180",
+                "reference_transcript": "WHEN THEY WERE OUTSIDE UNC SIMPLY LATCHED THE DOOR AND STARTED UP THE PATH",
+                "source_audio_path": "LibriSpeech/test-clean/1284/1180/1284-1180-0004.flac",
+                "source_file_sha256": "a1c1b8e7f39f808dd4ec7a0aa45a0204f27ce05818b524d3c9674eb4117f8209",
+                "source_partition": "test-clean",
+                "speaker_id": "1284",
+                "utterance_id": "1284-1180-0004"
+              },
+              {
+                "chapter_id": "1180",
+                "reference_transcript": "UNC KNOCKED AT THE DOOR OF THE HOUSE AND A CHUBBY PLEASANT FACED WOMAN DRESSED ALL IN BLUE OPENED IT AND GREETED THE VISITORS WITH A SMILE",
+                "source_audio_path": "LibriSpeech/test-clean/1284/1180/1284-1180-0010.flac",
+                "source_file_sha256": "68027c44d3f39c928fa708e118ce7fd32838fe6ba38b498915a761ef45ebca8a",
+                "source_partition": "test-clean",
+                "speaker_id": "1284",
+                "utterance_id": "1284-1180-0010"
+              },
+              {
+                "chapter_id": "1180",
+                "reference_transcript": "WHEN I FOUND IT I SAID TO MYSELF THAT IT WOULD DO NICELY FOR MY SERVANT GIRL FOR WHEN SHE WAS BROUGHT TO LIFE SHE WOULD NOT BE PROUD NOR HAUGHTY AS THE GLASS CAT IS FOR SUCH A DREADFUL MIXTURE OF COLORS WOULD DISCOURAGE HER FROM TRYING TO BE AS DIGNIFIED AS THE BLUE MUNCHKINS ARE",
+                "source_audio_path": "LibriSpeech/test-clean/1284/1180/1284-1180-0030.flac",
+                "source_file_sha256": "e6fbfcfdc0082e860452906d6ddbf26aa2fc2ae7dad91cb387cd997af7f6bb40",
+                "source_partition": "test-clean",
+                "speaker_id": "1284",
+                "utterance_id": "1284-1180-0030"
+              },
+              {
+                "chapter_id": "1180",
+                "reference_transcript": "YOU MUST KNOW SAID MARGOLOTTE WHEN THEY WERE ALL SEATED TOGETHER ON THE BROAD WINDOW SEAT THAT MY HUSBAND FOOLISHLY GAVE AWAY ALL THE POWDER OF LIFE HE FIRST MADE TO OLD MOMBI THE WITCH WHO USED TO LIVE IN THE COUNTRY OF THE GILLIKINS TO THE NORTH OF HERE",
+                "source_audio_path": "LibriSpeech/test-clean/1284/1180/1284-1180-0019.flac",
+                "source_file_sha256": "0026cf0a157a0a1620d9e2a7dc8f3cbc04f389b2ba5fb1f3bd1a5a1b63f4ce72",
+                "source_partition": "test-clean",
+                "speaker_id": "1284",
+                "utterance_id": "1284-1180-0019"
+              }
+            ]
+          },
+          {
+            "speaker_id": "7176",
+            "utterances": [
+              {
+                "chapter_id": "88083",
+                "reference_transcript": "STRAIGHTWAY THE HAWK GLIDED FROM HIS PERCH AND DARTED AFTER HIM",
+                "source_audio_path": "LibriSpeech/test-clean/7176/88083/7176-88083-0016.flac",
+                "source_file_sha256": "643219ba6821944da9a0ba401d478f796ba7a28c4786badb5679b19c3bfe38f2",
+                "source_partition": "test-clean",
+                "speaker_id": "7176",
+                "utterance_id": "7176-88083-0016"
+              },
+              {
+                "chapter_id": "88083",
+                "reference_transcript": "BUT AT THIS POINT IN THE RAPIDS IT WAS IMPOSSIBLE FOR HIM TO STAY DOWN",
+                "source_audio_path": "LibriSpeech/test-clean/7176/88083/7176-88083-0017.flac",
+                "source_file_sha256": "1be80552e3cd30acff60d54375ec2918bdfc42fbbdbc22da4bf97b175be35744",
+                "source_partition": "test-clean",
+                "speaker_id": "7176",
+                "utterance_id": "7176-88083-0017"
+              },
+              {
+                "chapter_id": "88083",
+                "reference_transcript": "IT MIGHT HAVE SEEMED THAT A TROUT OF THIS SIZE WAS A FAIRLY SUBSTANTIAL MEAL",
+                "source_audio_path": "LibriSpeech/test-clean/7176/88083/7176-88083-0006.flac",
+                "source_file_sha256": "dcf56e4873aee75eb6549abb4935a33fa3ff3267362164bb62dcad08ceba7885",
+                "source_partition": "test-clean",
+                "speaker_id": "7176",
+                "utterance_id": "7176-88083-0006"
+              },
+              {
+                "chapter_id": "92135",
+                "reference_transcript": "IN THE OLD BADLY MADE PLAY IT WAS FREQUENTLY NECESSARY FOR ONE OF THE CHARACTERS TO TAKE THE AUDIENCE INTO HIS CONFIDENCE",
+                "source_audio_path": "LibriSpeech/test-clean/7176/92135/7176-92135-0017.flac",
+                "source_file_sha256": "dc46d1aa60d3395c47636cc238317a9d470f02e23f647b67f2606592a06eb006",
+                "source_partition": "test-clean",
+                "speaker_id": "7176",
+                "utterance_id": "7176-92135-0017"
+              },
+              {
+                "chapter_id": "92135",
+                "reference_transcript": "I WANT DOUBLE NINE HAL LO",
+                "source_audio_path": "LibriSpeech/test-clean/7176/92135/7176-92135-0019.flac",
+                "source_file_sha256": "6513b30c34df1e4b618c18cbaebf81f77f7eabe9071eb648abf15bb71bef015e",
+                "source_partition": "test-clean",
+                "speaker_id": "7176",
+                "utterance_id": "7176-92135-0019"
+              },
+              {
+                "chapter_id": "92135",
+                "reference_transcript": "HAM TO BE OR NOT TO BE",
+                "source_audio_path": "LibriSpeech/test-clean/7176/92135/7176-92135-0010.flac",
+                "source_file_sha256": "04997359d72bfe989c9ce87f65a9b5dcb15715d801aa8a67d361f0536943a240",
+                "source_partition": "test-clean",
+                "speaker_id": "7176",
+                "utterance_id": "7176-92135-0010"
+              },
+              {
+                "chapter_id": "88083",
+                "reference_transcript": "THE HAWK EMBITTERED BY THE LOSS OF HIS FIRST QUARRY HAD BECOME AS DOGGED IN PURSUIT AS A WEASEL NOT TO BE SHAKEN OFF OR EVADED OR DECEIVED",
+                "source_audio_path": "LibriSpeech/test-clean/7176/88083/7176-88083-0022.flac",
+                "source_file_sha256": "dce5e07511cc1eb796417bffee59071953dfcb1c907bd7fffbaee217b22d4e89",
+                "source_partition": "test-clean",
+                "speaker_id": "7176",
+                "utterance_id": "7176-88083-0022"
+              },
+              {
+                "chapter_id": "92135",
+                "reference_transcript": "IN NOVELS THE HERO HAS OFTEN PUSHED HIS MEALS AWAY UNTASTED BUT NO STAGE HERO WOULD DO ANYTHING SO UNNATURAL AS THIS",
+                "source_audio_path": "LibriSpeech/test-clean/7176/92135/7176-92135-0042.flac",
+                "source_file_sha256": "b1c7d947268b3e4cbef60f1f9f5d51ef027dd36565f49d6e21e24f7a4dc8e550",
+                "source_partition": "test-clean",
+                "speaker_id": "7176",
+                "utterance_id": "7176-92135-0042"
+              },
+              {
+                "chapter_id": "88083",
+                "reference_transcript": "AS HE FLEW HIS DOWN REACHING CLUTCHING TALONS WERE NOT HALF A YARD ABOVE THE FUGITIVE'S HEAD",
+                "source_audio_path": "LibriSpeech/test-clean/7176/88083/7176-88083-0019.flac",
+                "source_file_sha256": "20e64a915f30952a2e6f34b1ad05898793cbcb79f71d32443271f0ffd7e767c6",
+                "source_partition": "test-clean",
+                "speaker_id": "7176",
+                "utterance_id": "7176-88083-0019"
+              },
+              {
+                "chapter_id": "92135",
+                "reference_transcript": "INDEED IRRESOLUTION BEING THE KEYNOTE OF HAMLET'S SOLILOQUY A CLEVER PLAYER COULD TO SOME EXTENT INDICATE THE WHOLE THIRTY LINES BY A SILENT WORKING OF THE JAW BUT AT THE SAME TIME IT WOULD BE IDLE TO DENY THAT HE WOULD MISS THE FINER SHADES OF THE DRAMATIST'S MEANING",
+                "source_audio_path": "LibriSpeech/test-clean/7176/92135/7176-92135-0012.flac",
+                "source_file_sha256": "8d7278557156bcf58836bd6ce2bce5874ab13d1402e559f4b51f9d848c067caf",
+                "source_partition": "test-clean",
+                "speaker_id": "7176",
+                "utterance_id": "7176-92135-0012"
+              }
+            ]
+          },
+          {
+            "speaker_id": "672",
+            "utterances": [
+              {
+                "chapter_id": "122797",
+                "reference_transcript": "IN AUTUMN THE WOOD CUTTERS ALWAYS CAME AND FELLED SOME OF THE LARGEST TREES",
+                "source_audio_path": "LibriSpeech/test-clean/672/122797/672-122797-0007.flac",
+                "source_file_sha256": "848b9d923e1de6abe33c1df720a50c74fe47f0a06748507e6910687b788dd515",
+                "source_partition": "test-clean",
+                "speaker_id": "672",
+                "utterance_id": "672-122797-0007"
+              },
+              {
+                "chapter_id": "122797",
+                "reference_transcript": "REJOICE IN THY GROWTH SAID THE SUNBEAMS",
+                "source_audio_path": "LibriSpeech/test-clean/672/122797/672-122797-0010.flac",
+                "source_file_sha256": "1c13de1dab482949c39bb5ed530f868e41dd6141c5913e1f2c7db4dc012f92b6",
+                "source_partition": "test-clean",
+                "speaker_id": "672",
+                "utterance_id": "672-122797-0010"
+              },
+              {
+                "chapter_id": "122797",
+                "reference_transcript": "HOW KIND MAN IS AFTER ALL",
+                "source_audio_path": "LibriSpeech/test-clean/672/122797/672-122797-0047.flac",
+                "source_file_sha256": "5f8d99e0aeb9fc6372ed74ef01c4648d5df3192edcd3555b0f1489f87103c4e3",
+                "source_partition": "test-clean",
+                "speaker_id": "672",
+                "utterance_id": "672-122797-0047"
+              },
+              {
+                "chapter_id": "122797",
+                "reference_transcript": "WHO IS HUMPY DUMPY ASKED THE MICE",
+                "source_audio_path": "LibriSpeech/test-clean/672/122797/672-122797-0058.flac",
+                "source_file_sha256": "0743645635ebc65124f6283744579d6b115cfb80d7044c6ec587f5028b22c5d8",
+                "source_partition": "test-clean",
+                "speaker_id": "672",
+                "utterance_id": "672-122797-0058"
+              },
+              {
+                "chapter_id": "122797",
+                "reference_transcript": "WHY ONE MORNING THERE CAME A QUANTITY OF PEOPLE AND SET TO WORK IN THE LOFT",
+                "source_audio_path": "LibriSpeech/test-clean/672/122797/672-122797-0066.flac",
+                "source_file_sha256": "0c39702ed0998de3d88790dbbd8a36d6f1b37ebb6da30d13ace5c761a6d9ac9c",
+                "source_partition": "test-clean",
+                "speaker_id": "672",
+                "utterance_id": "672-122797-0066"
+              },
+              {
+                "chapter_id": "122797",
+                "reference_transcript": "BUT THE TREE DID NOT REJOICE AT ALL HE GREW AND GREW AND WAS GREEN BOTH WINTER AND SUMMER",
+                "source_audio_path": "LibriSpeech/test-clean/672/122797/672-122797-0020.flac",
+                "source_file_sha256": "c89dd9476f950d186f024238caa49b31ba37da972682cc2ff55007603a8ed6fe",
+                "source_partition": "test-clean",
+                "speaker_id": "672",
+                "utterance_id": "672-122797-0020"
+              },
+              {
+                "chapter_id": "122797",
+                "reference_transcript": "IT IS A VERY STUPID STORY",
+                "source_audio_path": "LibriSpeech/test-clean/672/122797/672-122797-0060.flac",
+                "source_file_sha256": "f5cea04f46b058da4f0b9dcaacd0b4f7412eeb914dc446e611619317c7769c66",
+                "source_partition": "test-clean",
+                "speaker_id": "672",
+                "utterance_id": "672-122797-0060"
+              },
+              {
+                "chapter_id": "122797",
+                "reference_transcript": "THE GOLDEN STAR OF TINSEL WAS STILL ON THE TOP OF THE TREE AND GLITTERED IN THE SUNSHINE",
+                "source_audio_path": "LibriSpeech/test-clean/672/122797/672-122797-0070.flac",
+                "source_file_sha256": "5c35cc4be3bebd4477fddd53021c974daaef239d5c0a771e62b83a0c609d441e",
+                "source_partition": "test-clean",
+                "speaker_id": "672",
+                "utterance_id": "672-122797-0070"
+              },
+              {
+                "chapter_id": "122797",
+                "reference_transcript": "THE AXE STRUCK DEEP INTO THE VERY PITH THE TREE FELL TO THE EARTH WITH A SIGH HE FELT A PANG IT WAS LIKE A SWOON HE COULD NOT THINK OF HAPPINESS FOR HE WAS SORROWFUL AT BEING SEPARATED FROM HIS HOME FROM THE PLACE WHERE HE HAD SPRUNG UP",
+                "source_audio_path": "LibriSpeech/test-clean/672/122797/672-122797-0022.flac",
+                "source_file_sha256": "0b7c7e6949d6b6306730878f3b523967f7bb994348c550ce50ed88f5de92c7f8",
+                "source_partition": "test-clean",
+                "speaker_id": "672",
+                "utterance_id": "672-122797-0022"
+              },
+              {
+                "chapter_id": "122797",
+                "reference_transcript": "THERE TOO WERE LARGE EASY CHAIRS SILKEN SOFAS LARGE TABLES FULL OF PICTURE BOOKS AND FULL OF TOYS WORTH HUNDREDS AND HUNDREDS OF CROWNS AT LEAST THE CHILDREN SAID SO",
+                "source_audio_path": "LibriSpeech/test-clean/672/122797/672-122797-0026.flac",
+                "source_file_sha256": "9038cd08be9b1ce2d561c56cfd0caf95ab5a822ff9888b1badc269dc3be68b6c",
+                "source_partition": "test-clean",
+                "speaker_id": "672",
+                "utterance_id": "672-122797-0026"
+              }
+            ]
+          },
+          {
+            "speaker_id": "5105",
+            "utterances": [
+              {
+                "chapter_id": "28240",
+                "reference_transcript": "MY YACHT IS AT YOUR SERVICE SIR EVEN SHOULD YOU REQUIRE TO MAKE A TOUR ROUND THE WORLD",
+                "source_audio_path": "LibriSpeech/test-clean/5105/28240/5105-28240-0019.flac",
+                "source_file_sha256": "131e68e0334c7505d87781402eb29920c2e375886ae19bfa626887c63bdbbfb9",
+                "source_partition": "test-clean",
+                "speaker_id": "5105",
+                "utterance_id": "5105-28240-0019"
+              },
+              {
+                "chapter_id": "28233",
+                "reference_transcript": "HE SEEMED BORN TO PLEASE WITHOUT BEING CONSCIOUS OF THE POWER HE POSSESSED",
+                "source_audio_path": "LibriSpeech/test-clean/5105/28233/5105-28233-0001.flac",
+                "source_file_sha256": "4b2e61eaf4628b801edf27360703c1e8bf45857ed30f5eb4395b9c9aa830a01f",
+                "source_partition": "test-clean",
+                "speaker_id": "5105",
+                "utterance_id": "5105-28233-0001"
+              },
+              {
+                "chapter_id": "28241",
+                "reference_transcript": "TO THE SURPRISE OF ALL AND ESPECIALLY OF LIEUTENANT PROCOPE THE LINE INDICATED A BOTTOM AT A NEARLY UNIFORM DEPTH OF FROM FOUR TO FIVE FATHOMS AND ALTHOUGH THE SOUNDING WAS PERSEVERED WITH CONTINUOUSLY FOR MORE THAN TWO HOURS OVER A CONSIDERABLE AREA THE DIFFERENCES OF LEVEL WERE INSIGNIFICANT NOT CORRESPONDING IN ANY DEGREE TO WHAT WOULD BE EXPECTED OVER THE SITE OF A CITY THAT HAD BEEN TERRACED LIKE THE SEATS OF AN AMPHITHEATER",
+                "source_audio_path": "LibriSpeech/test-clean/5105/28241/5105-28241-0015.flac",
+                "source_file_sha256": "8b3bbcf9754ba241fe1d06a61c2889a152c5fcb29385de441b34d646db153a4c",
+                "source_partition": "test-clean",
+                "speaker_id": "5105",
+                "utterance_id": "5105-28241-0015"
+              },
+              {
+                "chapter_id": "28240",
+                "reference_transcript": "SERVADAC TOOK IT FOR GRANTED THAT THE DOBRYNA WAS ENDEAVORING TO PUT IN",
+                "source_audio_path": "LibriSpeech/test-clean/5105/28240/5105-28240-0007.flac",
+                "source_file_sha256": "c4a45cddcbcfcbd34a7f35776c68400d24c4ab1a6494693cfadbfa6e7e301663",
+                "source_partition": "test-clean",
+                "speaker_id": "5105",
+                "utterance_id": "5105-28240-0007"
+              },
+              {
+                "chapter_id": "28240",
+                "reference_transcript": "BEFORE STARTING IT WAS INDISPENSABLE THAT THE ENGINE OF THE DOBRYNA SHOULD BE REPAIRED TO SAIL UNDER CANVAS ONLY WOULD IN CONTRARY WINDS AND ROUGH SEAS BE BOTH TEDIOUS AND DIFFICULT",
+                "source_audio_path": "LibriSpeech/test-clean/5105/28240/5105-28240-0021.flac",
+                "source_file_sha256": "25076befcfdf3f8c41532e7a0a8b52e0ce42ea98e4cc750d75d54661e3b0ff28",
+                "source_partition": "test-clean",
+                "speaker_id": "5105",
+                "utterance_id": "5105-28240-0021"
+              },
+              {
+                "chapter_id": "28240",
+                "reference_transcript": "CAPTAIN SERVADAC HASTENED TOWARDS HIM",
+                "source_audio_path": "LibriSpeech/test-clean/5105/28240/5105-28240-0010.flac",
+                "source_file_sha256": "0ffa559241029a85dfd42f316a865d47d80a896845a6c0a42bc282eda9814790",
+                "source_partition": "test-clean",
+                "speaker_id": "5105",
+                "utterance_id": "5105-28240-0010"
+              },
+              {
+                "chapter_id": "28233",
+                "reference_transcript": "IT MUST BE OWNED AND NO ONE WAS MORE READY TO CONFESS IT THAN HIMSELF THAT HIS LITERARY ATTAINMENTS WERE BY NO MEANS OF A HIGH ORDER",
+                "source_audio_path": "LibriSpeech/test-clean/5105/28233/5105-28233-0002.flac",
+                "source_file_sha256": "446a7cdd1120e5f39b8d34368ba082cd01e7d7dd3e85f9302726cd212a0ba723",
+                "source_partition": "test-clean",
+                "speaker_id": "5105",
+                "utterance_id": "5105-28233-0002"
+              },
+              {
+                "chapter_id": "28233",
+                "reference_transcript": "WHEN A PRIVATE IN THE EIGHTH CAVALRY HE HAD BEEN ON THE POINT OF QUITTING THE ARMY AT TWENTY EIGHT YEARS OF AGE BUT UNEXPECTEDLY HE HAD BEEN APPOINTED ORDERLY TO CAPTAIN SERVADAC",
+                "source_audio_path": "LibriSpeech/test-clean/5105/28233/5105-28233-0008.flac",
+                "source_file_sha256": "c0b7ea4504221aea4b1ee1e64cc1e8e01ab22152a630779104431b2045713e6c",
+                "source_partition": "test-clean",
+                "speaker_id": "5105",
+                "utterance_id": "5105-28233-0008"
+              },
+              {
+                "chapter_id": "28240",
+                "reference_transcript": "ARE YOU CERTAIN THAT THIS IS THE MEDITERRANEAN",
+                "source_audio_path": "LibriSpeech/test-clean/5105/28240/5105-28240-0014.flac",
+                "source_file_sha256": "df7804e531649644097737d345fa5d1f1fa103b67dc3c573079af22bffd15018",
+                "source_partition": "test-clean",
+                "speaker_id": "5105",
+                "utterance_id": "5105-28240-0014"
+              },
+              {
+                "chapter_id": "28240",
+                "reference_transcript": "YOU WILL TAKE ME ON BOARD COUNT WILL YOU NOT",
+                "source_audio_path": "LibriSpeech/test-clean/5105/28240/5105-28240-0018.flac",
+                "source_file_sha256": "ada54ee21bc5cf125f41c0e7d9fb274886cf9de201e01aa9561620050a20f57c",
+                "source_partition": "test-clean",
+                "speaker_id": "5105",
+                "utterance_id": "5105-28240-0018"
+              }
+            ]
+          },
+          {
+            "speaker_id": "8224",
+            "utterances": [
+              {
+                "chapter_id": "274384",
+                "reference_transcript": "ANOTHER PREACHER AFTER REPROACHING HIM TO HIS FACE WITH HIS MISGOVERNMENT ORDERED THIS PSALM TO BE SUNG",
+                "source_audio_path": "LibriSpeech/test-clean/8224/274384/8224-274384-0005.flac",
+                "source_file_sha256": "fe8474ec603ac9d208e9a998100845afe505eb2176d27f461a398b3070db4a5b",
+                "source_partition": "test-clean",
+                "speaker_id": "8224",
+                "utterance_id": "8224-274384-0005"
+              },
+              {
+                "chapter_id": "274384",
+                "reference_transcript": "HIS DEATH IN THIS CONJUNCTURE WAS A PUBLIC MISFORTUNE",
+                "source_audio_path": "LibriSpeech/test-clean/8224/274384/8224-274384-0013.flac",
+                "source_file_sha256": "2fe30e413c874c9b16a83096d507922d3b620e280a6169d80ddb48538c9e8607",
+                "source_partition": "test-clean",
+                "speaker_id": "8224",
+                "utterance_id": "8224-274384-0013"
+              },
+              {
+                "chapter_id": "274381",
+                "reference_transcript": "HISTORIANS AT LEAST PERHAPS FROM THEIR OWN IGNORANCE AND INEXPERIENCE HAVE NOT REMARKED ANY THING BUT A HEADLONG IMPETUOUS CONDUCT EACH PARTY HURRYING TO A BATTLE WHERE VALOR AND FORTUNE CHIEFLY DETERMINED THE SUCCESS",
+                "source_audio_path": "LibriSpeech/test-clean/8224/274381/8224-274381-0017.flac",
+                "source_file_sha256": "16c5f495ed6efc748a28174580ef821e86f6a8c0165b08ba2c3bd4229e1f2a89",
+                "source_partition": "test-clean",
+                "speaker_id": "8224",
+                "utterance_id": "8224-274381-0017"
+              },
+              {
+                "chapter_id": "274381",
+                "reference_transcript": "WITH THESE AND SOME REENFORCEMENTS OF THE ATHOLEMEN AND MACDONALDS WHOM HE HAD RECALLED MONTROSE FELL SUDDENLY UPON ARGYLE'S COUNTRY AND LET LOOSE UPON IT ALL THE RAGE OF WAR CARRYING OFF THE CATTLE BURNING THE HOUSES AND PUTTING THE INHABITANTS TO THE SWORD",
+                "source_audio_path": "LibriSpeech/test-clean/8224/274381/8224-274381-0008.flac",
+                "source_file_sha256": "24259edfce3ef4cb128d74314ba5a9913e2e4c40730739b03aa0a6b1532faca7",
+                "source_partition": "test-clean",
+                "speaker_id": "8224",
+                "utterance_id": "8224-274381-0008"
+              },
+              {
+                "chapter_id": "274384",
+                "reference_transcript": "OR HATH HE GIVEN US ANY GIFT",
+                "source_audio_path": "LibriSpeech/test-clean/8224/274384/8224-274384-0003.flac",
+                "source_file_sha256": "d9ae99b452dfe3bd99903c447f10e88823782fd71ec70862cf51fb99b68aea16",
+                "source_partition": "test-clean",
+                "speaker_id": "8224",
+                "utterance_id": "8224-274384-0003"
+              },
+              {
+                "chapter_id": "274381",
+                "reference_transcript": "WHILE THE FORMER FORETOLD THAT THE SCOTTISH COVENANTERS WERE SECRETLY FORMING A UNION WITH THE ENGLISH PARLIAMENT AND INCULCATED THE NECESSITY OF PREVENTING THEM BY SOME VIGOROUS UNDERTAKING THE LATTER STILL INSISTED THAT EVERY SUCH ATTEMPT WOULD PRECIPITATE THEM INTO MEASURES TO WHICH OTHERWISE THEY WERE NOT PERHAPS INCLINED",
+                "source_audio_path": "LibriSpeech/test-clean/8224/274381/8224-274381-0002.flac",
+                "source_file_sha256": "231812edb9064448a2da6c47f5f1f7ca657a72ff0908668605423bb382b76072",
+                "source_partition": "test-clean",
+                "speaker_id": "8224",
+                "utterance_id": "8224-274381-0002"
+              },
+              {
+                "chapter_id": "274384",
+                "reference_transcript": "BEFORE THE SETTLEMENT OF TERMS THE ADMINISTRATION MUST BE POSSESSED ENTIRELY BY THE PARLIAMENTS OF BOTH KINGDOMS AND HOW INCOMPATIBLE THAT SCHEME WITH THE LIBERTY OF THE KING IS EASILY IMAGINED",
+                "source_audio_path": "LibriSpeech/test-clean/8224/274384/8224-274384-0010.flac",
+                "source_file_sha256": "677a2c48f5ddd5929e5c68e682b66998c48322833dac3baa41a086f87ef15077",
+                "source_partition": "test-clean",
+                "speaker_id": "8224",
+                "utterance_id": "8224-274384-0010"
+              },
+              {
+                "chapter_id": "274381",
+                "reference_transcript": "THE KING'S EARS WERE NOW OPEN TO MONTROSE'S COUNSELS WHO PROPOSED NONE BUT THE BOLDEST AND MOST DARING AGREEABLY TO THE DESPERATE STATE OF THE ROYAL CAUSE IN SCOTLAND",
+                "source_audio_path": "LibriSpeech/test-clean/8224/274381/8224-274381-0003.flac",
+                "source_file_sha256": "53c628a4041b3fda50f32d99425e9501073b212503b1c21581c4b1d83eb505ba",
+                "source_partition": "test-clean",
+                "speaker_id": "8224",
+                "utterance_id": "8224-274381-0003"
+              },
+              {
+                "chapter_id": "274381",
+                "reference_transcript": "BY QUICK MARCHES THROUGH THESE INACCESSIBLE MOUNTAINS THAT GENERAL FREED HIMSELF FROM THE SUPERIOR FORCES OF THE COVENANTERS",
+                "source_audio_path": "LibriSpeech/test-clean/8224/274381/8224-274381-0007.flac",
+                "source_file_sha256": "aacc75f2207fbf23a872ac00477c3c6a31fe90136892e41c738ec95ef5b97dec",
+                "source_partition": "test-clean",
+                "speaker_id": "8224",
+                "utterance_id": "8224-274381-0007"
+              },
+              {
+                "chapter_id": "274384",
+                "reference_transcript": "THE PARLIAMENT AND THE SCOTS LAID THEIR PROPOSALS BEFORE THE KING",
+                "source_audio_path": "LibriSpeech/test-clean/8224/274384/8224-274384-0009.flac",
+                "source_file_sha256": "638910fdc098236e8399948125f5bc7a8c9411abd8260c5513c4a91c57788018",
+                "source_partition": "test-clean",
+                "speaker_id": "8224",
+                "utterance_id": "8224-274384-0009"
+              }
+            ]
+          },
+          {
+            "speaker_id": "4446",
+            "utterances": [
+              {
+                "chapter_id": "2271",
+                "reference_transcript": "SHE DOESN'T TAKE UP WITH ANYBODY YOU KNOW",
+                "source_audio_path": "LibriSpeech/test-clean/4446/2271/4446-2271-0007.flac",
+                "source_file_sha256": "d3ff0770851264a7133b835b365ff95421a109013410f4b54bacd5b0e34e6fc8",
+                "source_partition": "test-clean",
+                "speaker_id": "4446",
+                "utterance_id": "4446-2271-0007"
+              },
+              {
+                "chapter_id": "2271",
+                "reference_transcript": "AFTER THAT IT WAS EASY TO FORGET ACTUALLY TO FORGET",
+                "source_audio_path": "LibriSpeech/test-clean/4446/2271/4446-2271-0019.flac",
+                "source_file_sha256": "025aa443fd7cf60f4efc536c056bd4f93748cdcd053759c6986badf1bf8b449a",
+                "source_partition": "test-clean",
+                "speaker_id": "4446",
+                "utterance_id": "4446-2271-0019"
+              },
+              {
+                "chapter_id": "2271",
+                "reference_transcript": "I SAY SIR HARRY THE LITTLE GIRL'S GOING FAMOUSLY TO NIGHT ISN'T SHE",
+                "source_audio_path": "LibriSpeech/test-clean/4446/2271/4446-2271-0012.flac",
+                "source_file_sha256": "7de2b4e0df84275507a1a177dc48e7f080177181675814c1ebbcae94c9d7a898",
+                "source_partition": "test-clean",
+                "speaker_id": "4446",
+                "utterance_id": "4446-2271-0012"
+              },
+              {
+                "chapter_id": "2273",
+                "reference_transcript": "DO YOU REMEMBER THAT FIRST WALK WE TOOK TOGETHER IN PARIS",
+                "source_audio_path": "LibriSpeech/test-clean/4446/2273/4446-2273-0018.flac",
+                "source_file_sha256": "15c015a19a16db0bced7d5981c78a577f8b6da9c3f6686ddc5b2c3a5f223c713",
+                "source_partition": "test-clean",
+                "speaker_id": "4446",
+                "utterance_id": "4446-2273-0018"
+              },
+              {
+                "chapter_id": "2275",
+                "reference_transcript": "YOU SEE LOVING SOME ONE AS I LOVE YOU MAKES THE WHOLE WORLD DIFFERENT",
+                "source_audio_path": "LibriSpeech/test-clean/4446/2275/4446-2275-0041.flac",
+                "source_file_sha256": "ab4e34e36d4ee97d1cf992337aa88301a07bf6b322a42c19a7013a4a8711582a",
+                "source_partition": "test-clean",
+                "speaker_id": "4446",
+                "utterance_id": "4446-2275-0041"
+              },
+              {
+                "chapter_id": "2275",
+                "reference_transcript": "HE PULLED UP A WINDOW AS IF THE AIR WERE HEAVY",
+                "source_audio_path": "LibriSpeech/test-clean/4446/2275/4446-2275-0015.flac",
+                "source_file_sha256": "04bb7861be0e99db67cc32d7c2962d4fda43a858f6ab17c6122a42208cc32cf3",
+                "source_partition": "test-clean",
+                "speaker_id": "4446",
+                "utterance_id": "4446-2275-0015"
+              },
+              {
+                "chapter_id": "2275",
+                "reference_transcript": "BARTLEY BENT LOWER OVER THE FIRE",
+                "source_audio_path": "LibriSpeech/test-clean/4446/2275/4446-2275-0011.flac",
+                "source_file_sha256": "54aa96a691732b321289abaa8fbb43f7b6b276b679ecbe276cc1b2ee22bea2ba",
+                "source_partition": "test-clean",
+                "speaker_id": "4446",
+                "utterance_id": "4446-2275-0011"
+              },
+              {
+                "chapter_id": "2273",
+                "reference_transcript": "WHEN BARTLEY ARRIVED AT BEDFORD SQUARE ON SUNDAY EVENING MARIE THE PRETTY LITTLE FRENCH GIRL MET HIM AT THE DOOR AND CONDUCTED HIM UPSTAIRS",
+                "source_audio_path": "LibriSpeech/test-clean/4446/2273/4446-2273-0003.flac",
+                "source_file_sha256": "a3079b65e6a9cc9f1aec8eb17bd3fa4576dff077ed95ff3754ac3046239f25b7",
+                "source_partition": "test-clean",
+                "speaker_id": "4446",
+                "utterance_id": "4446-2273-0003"
+              },
+              {
+                "chapter_id": "2271",
+                "reference_transcript": "IRENE BURGOYNE ONE OF HER FAMILY TOLD ME IN CONFIDENCE THAT THERE WAS A ROMANCE SOMEWHERE BACK IN THE BEGINNING",
+                "source_audio_path": "LibriSpeech/test-clean/4446/2271/4446-2271-0008.flac",
+                "source_file_sha256": "b05b27f44050264385bdceb537135bd005eb1bc97491afd60d4e9c16d7f764bb",
+                "source_partition": "test-clean",
+                "speaker_id": "4446",
+                "utterance_id": "4446-2271-0008"
+              },
+              {
+                "chapter_id": "2275",
+                "reference_transcript": "I CAN'T STAND SEEING YOU MISERABLE",
+                "source_audio_path": "LibriSpeech/test-clean/4446/2275/4446-2275-0014.flac",
+                "source_file_sha256": "4c791e985144da8836c6e4625972561406954500ef8ec07ef529886670ac30ff",
+                "source_partition": "test-clean",
+                "speaker_id": "4446",
+                "utterance_id": "4446-2275-0014"
+              }
+            ]
+          }
+        ],
+        "utterance_count": 120
+      },
+      {
+        "name": "test-other",
+        "speaker_count": 12,
+        "speakers": [
+          {
+            "speaker_id": "3997",
+            "utterances": [
+              {
+                "chapter_id": "182399",
+                "reference_transcript": "EVERYBODY LOOKED AT PETER AND LAUGHED",
+                "source_audio_path": "LibriSpeech/test-other/3997/182399/3997-182399-0009.flac",
+                "source_file_sha256": "93481dd9dfb7dc37408fddbf45cc7bad03e27ccf0572f2cd7e68074e1b866e01",
+                "source_partition": "test-other",
+                "speaker_id": "3997",
+                "utterance_id": "3997-182399-0009"
+              },
+              {
+                "chapter_id": "180294",
+                "reference_transcript": "HOW WHY",
+                "source_audio_path": "LibriSpeech/test-other/3997/180294/3997-180294-0020.flac",
+                "source_file_sha256": "1bd59bbaae6664616a45a4c63ab2aa391ca8dcd3c042e2aa6065d6605daee96d",
+                "source_partition": "test-other",
+                "speaker_id": "3997",
+                "utterance_id": "3997-180294-0020"
+              },
+              {
+                "chapter_id": "182399",
+                "reference_transcript": "WASN'T ANYTHING GOING ON THAT THIS TRIFLING MEMBER OF THE BUZZARD FAM'LY DIDN'T FIND OUT ABOUT AND MEDDLE IN HE COULD ASK MO QUESTIONS THAN PETER RABBIT CAN AN ANYBODY THAT CAN DO THAT HAS GOT TO ASK A LOT",
+                "source_audio_path": "LibriSpeech/test-other/3997/182399/3997-182399-0008.flac",
+                "source_file_sha256": "a5f1fada426304763c2e519d7ab0aab2f0ae85772456eea4a9d6b05b38920afd",
+                "source_partition": "test-other",
+                "speaker_id": "3997",
+                "utterance_id": "3997-182399-0008"
+              },
+              {
+                "chapter_id": "180297",
+                "reference_transcript": "SUCH A MAN I FOUND IN THE DUKE BUT THE DUKE IS OLD AND OLD AGE NEITHER PROTECTS NOR CONSOLES",
+                "source_audio_path": "LibriSpeech/test-other/3997/180297/3997-180297-0020.flac",
+                "source_file_sha256": "5c6a7a4ef56862734d897b34d740dfe6307fcf84550092609e6e982b1fe4f3a4",
+                "source_partition": "test-other",
+                "speaker_id": "3997",
+                "utterance_id": "3997-180297-0020"
+              },
+              {
+                "chapter_id": "180297",
+                "reference_transcript": "MY DEAR PRUDENCE I ANSWERED YOU DO NOT KNOW WHAT YOU ARE SAYING",
+                "source_audio_path": "LibriSpeech/test-other/3997/180297/3997-180297-0004.flac",
+                "source_file_sha256": "b94a9ea576bdccd22dc6c339f903bf64c86697944a87c97d01073326a950b0f6",
+                "source_partition": "test-other",
+                "speaker_id": "3997",
+                "utterance_id": "3997-180297-0004"
+              },
+              {
+                "chapter_id": "182399",
+                "reference_transcript": "SO WE UNS SIT ON THE CHIMNEY TOPS WHENEVER OL JACK FROST GETS TO STRAYING DOWN WHERE HE HAVE NO BUSINESS",
+                "source_audio_path": "LibriSpeech/test-other/3997/182399/3997-182399-0010.flac",
+                "source_file_sha256": "380bd6ed9aefe9670883192c326aca1297fbf25b7f32f70caed0bd2d1f26e011",
+                "source_partition": "test-other",
+                "speaker_id": "3997",
+                "utterance_id": "3997-182399-0010"
+              },
+              {
+                "chapter_id": "180294",
+                "reference_transcript": "YES BUT IF I SHOULD ALREADY ASK FOR SOMETHING WHAT",
+                "source_audio_path": "LibriSpeech/test-other/3997/180294/3997-180294-0001.flac",
+                "source_file_sha256": "17deb03905e402c59feb97cefcabcbed4b64d578155db8e536c3d04568e28e4b",
+                "source_partition": "test-other",
+                "speaker_id": "3997",
+                "utterance_id": "3997-180294-0001"
+              },
+              {
+                "chapter_id": "180297",
+                "reference_transcript": "I FANCIED FOR A MOMENT THAT I MIGHT GIVE MYSELF THAT HAPPINESS FOR SIX MONTHS YOU WOULD NOT HAVE IT YOU INSISTED ON KNOWING THE MEANS",
+                "source_audio_path": "LibriSpeech/test-other/3997/180297/3997-180297-0010.flac",
+                "source_file_sha256": "5a4e9e8f75e818ec3572417cfc3952267b2a35d63ee167595d7cc2ca1506ca85",
+                "source_partition": "test-other",
+                "speaker_id": "3997",
+                "utterance_id": "3997-180297-0010"
+              },
+              {
+                "chapter_id": "180297",
+                "reference_transcript": "NEVER DO THEY GIVE YOU ADVICE WHICH IS NOT LUCRATIVE",
+                "source_audio_path": "LibriSpeech/test-other/3997/180297/3997-180297-0018.flac",
+                "source_file_sha256": "9edd9f45ef7e829078f20704530b84f88bd3411c13eef2eb86a8af95e6790736",
+                "source_partition": "test-other",
+                "speaker_id": "3997",
+                "utterance_id": "3997-180297-0018"
+              },
+              {
+                "chapter_id": "180297",
+                "reference_transcript": "I TORE THE LETTER INTO FRAGMENTS AND KISSED WITH TEARS THE HAND THAT GAVE IT TO ME",
+                "source_audio_path": "LibriSpeech/test-other/3997/180297/3997-180297-0027.flac",
+                "source_file_sha256": "7dcac8ea0b3705e6dfd14e795e8264ed30007d41f137f13056f0b2c7740dfbd3",
+                "source_partition": "test-other",
+                "speaker_id": "3997",
+                "utterance_id": "3997-180297-0027"
+              }
+            ]
+          },
+          {
+            "speaker_id": "6432",
+            "utterances": [
+              {
+                "chapter_id": "63722",
+                "reference_transcript": "AND THE DETECTIVE'S PROFESSIONAL INSTINCTS GOT THE UPPER HAND OF HIS FRIENDLINESS NOT THE LEAST IN THE WORLD NOT AS MUCH AS YOU DO WAS THE COOL ANSWER",
+                "source_audio_path": "LibriSpeech/test-other/6432/63722/6432-63722-0018.flac",
+                "source_file_sha256": "eb456ab4a43a3d07fb61d4bb7339797701ef565dc1de0959bd2584a6db894ef1",
+                "source_partition": "test-other",
+                "speaker_id": "6432",
+                "utterance_id": "6432-63722-0018"
+              },
+              {
+                "chapter_id": "63723",
+                "reference_transcript": "GRAVE AND EVEN REVEREND CONVENTIONS ASSEMBLED IN ITS BALLROOM AND POLITICIANS OF THE UPPER IF NOT BETTER CLASS WERE FREQUENTLY SEEN IN ITS DINING ROOM OR CAFE",
+                "source_audio_path": "LibriSpeech/test-other/6432/63723/6432-63723-0021.flac",
+                "source_file_sha256": "df50ee1ae6401b13972809ec0a85a725928b72776b71943b95ce13e6ee9a8999",
+                "source_partition": "test-other",
+                "speaker_id": "6432",
+                "utterance_id": "6432-63723-0021"
+              },
+              {
+                "chapter_id": "63722",
+                "reference_transcript": "I HAPPENED TO SEE THOSE CANDLESTICKS IN THE WINDOW OF SINGA PHUT'S SHOP THE OTHER DAY AND I MADE UP MY MIND TO BUY THEM WHEN I HAD A CHANCE",
+                "source_audio_path": "LibriSpeech/test-other/6432/63722/6432-63722-0019.flac",
+                "source_file_sha256": "f0ae36dd6c47761b1c2b9c135896411bcf471128b689112e1103274a2cfc8d4e",
+                "source_partition": "test-other",
+                "speaker_id": "6432",
+                "utterance_id": "6432-63722-0019"
+              },
+              {
+                "chapter_id": "63723",
+                "reference_transcript": "IT HAD A DOUBLE REPUTATION SO TO SPEAK",
+                "source_audio_path": "LibriSpeech/test-other/6432/63723/6432-63723-0020.flac",
+                "source_file_sha256": "24fae2c4211759727b5c1104af3e9d221a7a177f3a3b960ad15d8bba55cb849a",
+                "source_partition": "test-other",
+                "speaker_id": "6432",
+                "utterance_id": "6432-63723-0020"
+              },
+              {
+                "chapter_id": "63723",
+                "reference_transcript": "I WENT OVER THEM THE OTHER DAY AND NOTICED SOME WERE MISSING THOUGH I SAW THEM ALL WHEN I PAID A VISIT TO HER JUST A SHORT TIME BEFORE SHE WAS KILLED",
+                "source_audio_path": "LibriSpeech/test-other/6432/63723/6432-63723-0055.flac",
+                "source_file_sha256": "f54293f972daf2290bfcd00f340f7473a8bb6fca29177c982257d786da0b7cb6",
+                "source_partition": "test-other",
+                "speaker_id": "6432",
+                "utterance_id": "6432-63723-0055"
+              },
+              {
+                "chapter_id": "63722",
+                "reference_transcript": "SIMPLY BECAUSE THIS WATCH",
+                "source_audio_path": "LibriSpeech/test-other/6432/63722/6432-63722-0041.flac",
+                "source_file_sha256": "f95ff8828ccc1bbd20f7a408ff371e5e2369d15b4f4f63a1aae769f2c11c4667",
+                "source_partition": "test-other",
+                "speaker_id": "6432",
+                "utterance_id": "6432-63722-0041"
+              },
+              {
+                "chapter_id": "63723",
+                "reference_transcript": "NO I WASN'T THINKING OF THAT",
+                "source_audio_path": "LibriSpeech/test-other/6432/63723/6432-63723-0003.flac",
+                "source_file_sha256": "de989bed21f41c1512a7448a08cae9469dd112150ba295645d5c9e4dff6e2e6e",
+                "source_partition": "test-other",
+                "speaker_id": "6432",
+                "utterance_id": "6432-63723-0003"
+              },
+              {
+                "chapter_id": "63723",
+                "reference_transcript": "NOW AS TO CERTAIN MATTERS IN THE STORE ON THE MORNING OF THE MURDER",
+                "source_audio_path": "LibriSpeech/test-other/6432/63723/6432-63723-0044.flac",
+                "source_file_sha256": "4f7721b6d46fc3d7aaa262a903e02e96de54442ff5e66d2e102d44b8eb6814a7",
+                "source_partition": "test-other",
+                "speaker_id": "6432",
+                "utterance_id": "6432-63723-0044"
+              },
+              {
+                "chapter_id": "63722",
+                "reference_transcript": "SURE HELD SO TIGHT WE COULD HARDLY GET IT OUT",
+                "source_audio_path": "LibriSpeech/test-other/6432/63722/6432-63722-0026.flac",
+                "source_file_sha256": "7f3bd9c3c9ab2e8ae0b64a3635f48bcb45a58f7acf2b3e32a511c34d5cd4e9f9",
+                "source_partition": "test-other",
+                "speaker_id": "6432",
+                "utterance_id": "6432-63722-0026"
+              },
+              {
+                "chapter_id": "63723",
+                "reference_transcript": "CHUCKLED THE COLONEL AS HE SKILFULLY PLAYED THE LUCKLESS TROUT NOW STRUGGLING TO GET LOOSE FROM THE HOOK",
+                "source_audio_path": "LibriSpeech/test-other/6432/63723/6432-63723-0000.flac",
+                "source_file_sha256": "221728ab0d1e4b2bc976fbf9df3d7c781148f73e81d91f46bce951b192d224ad",
+                "source_partition": "test-other",
+                "speaker_id": "6432",
+                "utterance_id": "6432-63723-0000"
+              }
+            ]
+          },
+          {
+            "speaker_id": "1688",
+            "utterances": [
+              {
+                "chapter_id": "142285",
+                "reference_transcript": "I SHOULD HAVE THOUGHT OF IT AGAIN WHEN I WAS LESS BUSY MAY I GO WITH YOU NOW",
+                "source_audio_path": "LibriSpeech/test-other/1688/142285/1688-142285-0050.flac",
+                "source_file_sha256": "55e6288c85007839ffbbcdd34f92ed13310738fb563d2f732398313d34da5499",
+                "source_partition": "test-other",
+                "speaker_id": "1688",
+                "utterance_id": "1688-142285-0050"
+              },
+              {
+                "chapter_id": "142285",
+                "reference_transcript": "BUT YOU WILL BE THERE FATHER YOU SHALL OH MY HEART",
+                "source_audio_path": "LibriSpeech/test-other/1688/142285/1688-142285-0070.flac",
+                "source_file_sha256": "5b33b6fee44763bb1d4a4cd187acb3ca593907bf69e06397d6a372e51b236add",
+                "source_partition": "test-other",
+                "speaker_id": "1688",
+                "utterance_id": "1688-142285-0070"
+              },
+              {
+                "chapter_id": "142285",
+                "reference_transcript": "AT LAST SHE SAID IN A LOW VOICE",
+                "source_audio_path": "LibriSpeech/test-other/1688/142285/1688-142285-0043.flac",
+                "source_file_sha256": "65f42ac8ea0770d34f8f0d98f71bb1e263a8d7785bbd4ee3a76a93d1ebd603aa",
+                "source_partition": "test-other",
+                "speaker_id": "1688",
+                "utterance_id": "1688-142285-0043"
+              },
+              {
+                "chapter_id": "142285",
+                "reference_transcript": "NOT VICIOUS HE NEVER SAID THAT",
+                "source_audio_path": "LibriSpeech/test-other/1688/142285/1688-142285-0019.flac",
+                "source_file_sha256": "c14eafbbcb872180effc1acabc99b2f3640d3256701377b22ab78477eddec370",
+                "source_partition": "test-other",
+                "speaker_id": "1688",
+                "utterance_id": "1688-142285-0019"
+              },
+              {
+                "chapter_id": "142285",
+                "reference_transcript": "NOUGHT WORSE THAN MANY OTHERS I RECKON",
+                "source_audio_path": "LibriSpeech/test-other/1688/142285/1688-142285-0046.flac",
+                "source_file_sha256": "078cb5853bbd7d5892b284999b89b5e8a858ee0e131b2bedda398d70dc38dfd8",
+                "source_partition": "test-other",
+                "speaker_id": "1688",
+                "utterance_id": "1688-142285-0046"
+              },
+              {
+                "chapter_id": "142285",
+                "reference_transcript": "BUT THOUGH SHE RECEIVED CARESSES AND FOND WORDS BACK AGAIN IN SUCH PROFUSION AS WOULD HAVE GLADDENED HER FORMERLY YET SHE FELT THAT THERE WAS A SECRET WITHHELD FROM HER AND SHE BELIEVED IT BORE SERIOUS REFERENCE TO HER MOTHER'S HEALTH",
+                "source_audio_path": "LibriSpeech/test-other/1688/142285/1688-142285-0032.flac",
+                "source_file_sha256": "3beb5901f705bb574c72813b50024e328fb4e1500382106c602438b9004613cd",
+                "source_partition": "test-other",
+                "speaker_id": "1688",
+                "utterance_id": "1688-142285-0032"
+              },
+              {
+                "chapter_id": "142285",
+                "reference_transcript": "NO MAMMA THAT ANNE BUCKLEY WOULD NEVER HAVE DONE",
+                "source_audio_path": "LibriSpeech/test-other/1688/142285/1688-142285-0079.flac",
+                "source_file_sha256": "9b32a15ee749a141c15999cb8f4ad7acd5f2c07ef12268b903e885cc48de08d8",
+                "source_partition": "test-other",
+                "speaker_id": "1688",
+                "utterance_id": "1688-142285-0079"
+              },
+              {
+                "chapter_id": "142285",
+                "reference_transcript": "I REALLY WAS VERY MUCH AFRAID OF SHOWING HIM HOW MUCH SHOCKED I WAS AT SOME PARTS OF WHAT HE SAID",
+                "source_audio_path": "LibriSpeech/test-other/1688/142285/1688-142285-0007.flac",
+                "source_file_sha256": "de4deef5036c6c67974dff3a321884fd5dc508994c2285fd76a5204b0525aa4a",
+                "source_partition": "test-other",
+                "speaker_id": "1688",
+                "utterance_id": "1688-142285-0007"
+              },
+              {
+                "chapter_id": "142285",
+                "reference_transcript": "YOU WHO WERE ALWAYS ACCUSING PEOPLE OF BEING SHOPPY AT HELSTONE",
+                "source_audio_path": "LibriSpeech/test-other/1688/142285/1688-142285-0005.flac",
+                "source_file_sha256": "b7e70bfc9b4ffa2ce31e5e705a8b65f2f5205275a138764d2b7cb1672958edd7",
+                "source_partition": "test-other",
+                "speaker_id": "1688",
+                "utterance_id": "1688-142285-0005"
+              },
+              {
+                "chapter_id": "142285",
+                "reference_transcript": "WHAT WOULD YOU DO PAPA HOW WOULD YOU SET ABOUT IT",
+                "source_audio_path": "LibriSpeech/test-other/1688/142285/1688-142285-0083.flac",
+                "source_file_sha256": "dfb5b749fa2e2a1e852f7b4978a2c326b17c1ae8f3d58f27b6ed735489d9dc48",
+                "source_partition": "test-other",
+                "speaker_id": "1688",
+                "utterance_id": "1688-142285-0083"
+              }
+            ]
+          },
+          {
+            "speaker_id": "4294",
+            "utterances": [
+              {
+                "chapter_id": "9934",
+                "reference_transcript": "WHATEVER MAY HAVE BEEN HIS DESIRE TO REMAIN WHERE HE WAS HE COULD NOT HALT THERE HE WAS IRRESISTIBLY CONSTRAINED TO CONTINUE TO ADVANCE TO EXAMINE TO THINK TO MARCH FURTHER",
+                "source_audio_path": "LibriSpeech/test-other/4294/9934/4294-9934-0006.flac",
+                "source_file_sha256": "dc67eff381ec2a45dd2b3240486ddd7f41808ef1d05163d54476b8651cd90dbb",
+                "source_partition": "test-other",
+                "speaker_id": "4294",
+                "utterance_id": "4294-9934-0006"
+              },
+              {
+                "chapter_id": "14317",
+                "reference_transcript": "AFTER SEVERAL MONTHS WERE WASTED AND PIERO WOULD NEITHER WORK NOR PUT MEN TO WORK UPON THE PIECE I MADE HIM GIVE IT BACK",
+                "source_audio_path": "LibriSpeech/test-other/4294/14317/4294-14317-0015.flac",
+                "source_file_sha256": "0947f952dcfee209c96ecb7e10be89a5e3e16f07a76207a60a04c5b60519b8eb",
+                "source_partition": "test-other",
+                "speaker_id": "4294",
+                "utterance_id": "4294-14317-0015"
+              },
+              {
+                "chapter_id": "35475",
+                "reference_transcript": "TO HIM WHO COULD BRING HER BACK TO HER FATHER'S CASTLE SHOULD BE GIVEN THE THRONE AND KINGDOM AS WELL AS THE PRINCESS HERSELF SO FROM FAR AND NEAR INDEED FROM ALMOST EVERY COUNTRY UNDER THE SUN CAME KNIGHTS AND PRINCES TO FIGHT THE OGRE",
+                "source_audio_path": "LibriSpeech/test-other/4294/35475/4294-35475-0023.flac",
+                "source_file_sha256": "a371251e09393430b68fe7d0ee914d5533e4c44c2ebc5ae0d2e51d7caa51cf22",
+                "source_partition": "test-other",
+                "speaker_id": "4294",
+                "utterance_id": "4294-35475-0023"
+              },
+              {
+                "chapter_id": "9934",
+                "reference_transcript": "THE HALF LIGHTS OF DOUBT PAINED HIM",
+                "source_audio_path": "LibriSpeech/test-other/4294/9934/4294-9934-0005.flac",
+                "source_file_sha256": "1da54d552815b8def1aafd2df238bb3fe7256d7b3443aa8402a5b73241165d52",
+                "source_partition": "test-other",
+                "speaker_id": "4294",
+                "utterance_id": "4294-9934-0005"
+              },
+              {
+                "chapter_id": "9934",
+                "reference_transcript": "ONE MORNING ON HIS RETURN FROM THE LAW SCHOOL MARIUS FOUND A LETTER FROM HIS AUNT AND THE SIXTY PISTOLES THAT IS TO SAY SIX HUNDRED FRANCS IN GOLD IN A SEALED BOX",
+                "source_audio_path": "LibriSpeech/test-other/4294/9934/4294-9934-0027.flac",
+                "source_file_sha256": "b758863169f6fdfb4d13141828b6ae09f5387af08c75f228b68f04c95097156d",
+                "source_partition": "test-other",
+                "speaker_id": "4294",
+                "utterance_id": "4294-9934-0027"
+              },
+              {
+                "chapter_id": "9934",
+                "reference_transcript": "WHAT ARE YOU GOING TO DO I DO NOT KNOW",
+                "source_audio_path": "LibriSpeech/test-other/4294/9934/4294-9934-0013.flac",
+                "source_file_sha256": "6d448f30448d34697a1a2e217c50ee0efabd3ed4f60be28cc9f2b0bd235bdd50",
+                "source_partition": "test-other",
+                "speaker_id": "4294",
+                "utterance_id": "4294-9934-0013"
+              },
+              {
+                "chapter_id": "35475",
+                "reference_transcript": "A FAINT GLIMMER OF LIGHT ON THE OPPOSITE WALL SHOWS ME THE KEYHOLE",
+                "source_audio_path": "LibriSpeech/test-other/4294/35475/4294-35475-0015.flac",
+                "source_file_sha256": "604bb9b3b6458c04a9563c4d97f51554cc3eccfea2c48c21ce5e2b61bf1a27c6",
+                "source_partition": "test-other",
+                "speaker_id": "4294",
+                "utterance_id": "4294-35475-0015"
+              },
+              {
+                "chapter_id": "9934",
+                "reference_transcript": "NO IT IS NOT GOOD WHAT WILL YOU DO AFTER THAT",
+                "source_audio_path": "LibriSpeech/test-other/4294/9934/4294-9934-0017.flac",
+                "source_file_sha256": "b7454ccc34c7377eefeccc05cf1b61271da2154182a56005fd2940535bcf06bb",
+                "source_partition": "test-other",
+                "speaker_id": "4294",
+                "utterance_id": "4294-9934-0017"
+              },
+              {
+                "chapter_id": "9934",
+                "reference_transcript": "AT THAT MOMENT HE HAD THREE FRANCS LEFT",
+                "source_audio_path": "LibriSpeech/test-other/4294/9934/4294-9934-0029.flac",
+                "source_file_sha256": "af0c1f05a563a910f775aafef114fd8a65177461a647fc4f67ccb7ac54cb1de9",
+                "source_partition": "test-other",
+                "speaker_id": "4294",
+                "utterance_id": "4294-9934-0029"
+              },
+              {
+                "chapter_id": "14317",
+                "reference_transcript": "HAVING THIS EXCELLENT RESOLVE IN HEART I REACHED MY HOME",
+                "source_audio_path": "LibriSpeech/test-other/4294/14317/4294-14317-0018.flac",
+                "source_file_sha256": "c5b8cd0e0a639105f3452d1a11a322d7313eee034703dd1df6bc8051c57bc6ec",
+                "source_partition": "test-other",
+                "speaker_id": "4294",
+                "utterance_id": "4294-14317-0018"
+              }
+            ]
+          },
+          {
+            "speaker_id": "5442",
+            "utterances": [
+              {
+                "chapter_id": "32873",
+                "reference_transcript": "IF I THOUGHT YOU'D FAIL ME NOW TAMAR I SHOULD NEVER COME BACK GOOD NIGHT TAMAR",
+                "source_audio_path": "LibriSpeech/test-other/5442/32873/5442-32873-0019.flac",
+                "source_file_sha256": "bd1ff0fb3769c8d75df03b4b1bd04d88c214965e1b3913b48bff79c81a4110e4",
+                "source_partition": "test-other",
+                "speaker_id": "5442",
+                "utterance_id": "5442-32873-0019"
+              },
+              {
+                "chapter_id": "32873",
+                "reference_transcript": "OH FRIGHTFUL FRIGHTFUL IS IT A DREAM",
+                "source_audio_path": "LibriSpeech/test-other/5442/32873/5442-32873-0003.flac",
+                "source_file_sha256": "52994b2b69a09c0b42d35ffa2f0f50de09cc0e26309180b00fe26f6b27bad349",
+                "source_partition": "test-other",
+                "speaker_id": "5442",
+                "utterance_id": "5442-32873-0003"
+              },
+              {
+                "chapter_id": "41168",
+                "reference_transcript": "HE PARTICULARLY LIKED THE WAY ONE GRAY WHISKERED WAITER WHO SHOWED HIS SCORN FOR THE OTHER YOUNGER ONES AND WAS JEERED AT BY THEM WAS TEACHING THEM HOW TO FOLD UP NAPKINS PROPERLY",
+                "source_audio_path": "LibriSpeech/test-other/5442/41168/5442-41168-0012.flac",
+                "source_file_sha256": "2fde6dcebb9c223bbc8f7a489f6634283ec3f58d16f265e3961a41a1f9b7a4e8",
+                "source_partition": "test-other",
+                "speaker_id": "5442",
+                "utterance_id": "5442-41168-0012"
+              },
+              {
+                "chapter_id": "41168",
+                "reference_transcript": "TO ESCAPE FROM THIS PAINFUL FEELING HE WENT AWAY INTO THE OTHER ROOM WHERE THERE WAS NOBODY EXCEPT THE WAITERS AT THE REFRESHMENT BAR",
+                "source_audio_path": "LibriSpeech/test-other/5442/41168/5442-41168-0011.flac",
+                "source_file_sha256": "4c8a83b606a3f5656468f557e1cc0beca2d17a01b118609fe23f9f7382805a2f",
+                "source_partition": "test-other",
+                "speaker_id": "5442",
+                "utterance_id": "5442-41168-0011"
+              },
+              {
+                "chapter_id": "32873",
+                "reference_transcript": "THERE WAS A VERY NATURAL SAVAGERY AND DEJECTION THERE AND A WILD LEER IN HIS YELLOW EYES RACHEL SAT DOWN",
+                "source_audio_path": "LibriSpeech/test-other/5442/32873/5442-32873-0001.flac",
+                "source_file_sha256": "86a68e473e810c7a7fe12841363c0175602566578e7205badcab33af92de161e",
+                "source_partition": "test-other",
+                "speaker_id": "5442",
+                "utterance_id": "5442-32873-0001"
+              },
+              {
+                "chapter_id": "41169",
+                "reference_transcript": "LEVIN DID NOT CARE TO EAT AND HE WAS NOT SMOKING HE DID NOT WANT TO JOIN HIS OWN FRIENDS THAT IS SERGEY IVANOVITCH STEPAN ARKADYEVITCH SVIAZHSKY AND THE REST BECAUSE VRONSKY IN HIS EQUERRY'S UNIFORM WAS STANDING WITH THEM IN EAGER CONVERSATION",
+                "source_audio_path": "LibriSpeech/test-other/5442/41169/5442-41169-0000.flac",
+                "source_file_sha256": "80df158a887ddfdacdbdb2bb0baf95c4c4b67d84116594915bc87d305eb8f2ed",
+                "source_partition": "test-other",
+                "speaker_id": "5442",
+                "utterance_id": "5442-41169-0000"
+              },
+              {
+                "chapter_id": "32873",
+                "reference_transcript": "I'LL STAY HERE THAT IS IN THE DRAWING ROOM SHE ANSWERED AND THE FACE WAS WITHDRAWN",
+                "source_audio_path": "LibriSpeech/test-other/5442/32873/5442-32873-0012.flac",
+                "source_file_sha256": "366706d10e8d5fd525e39fc996f1d8972853662fcaace3a62b2b2473d448b33f",
+                "source_partition": "test-other",
+                "speaker_id": "5442",
+                "utterance_id": "5442-32873-0012"
+              },
+              {
+                "chapter_id": "41169",
+                "reference_transcript": "THERE'S A CLASS INSTINCT TOO OF WHAT ONE OUGHT AND OUGHTN'T TO DO",
+                "source_audio_path": "LibriSpeech/test-other/5442/41169/5442-41169-0029.flac",
+                "source_file_sha256": "5d73bcf266dd82f909dd950173756b0d106e96cdbdacb448d1a7f2d9c15611c4",
+                "source_partition": "test-other",
+                "speaker_id": "5442",
+                "utterance_id": "5442-41169-0029"
+              },
+              {
+                "chapter_id": "41169",
+                "reference_transcript": "SO THERE'LL BE NO ONE TO KEEP IT UP AND YET ONE DOES IT",
+                "source_audio_path": "LibriSpeech/test-other/5442/41169/5442-41169-0020.flac",
+                "source_file_sha256": "d331abc3b7018ed9cba0001c0095864c5fe862dcb3d2af0a4dc8eeb0dce0fb88",
+                "source_partition": "test-other",
+                "speaker_id": "5442",
+                "utterance_id": "5442-41169-0020"
+              },
+              {
+                "chapter_id": "41168",
+                "reference_transcript": "THE ACT SAID THAT IN CASE OF DIFFERENCE OF OPINION THERE MUST BE A BALLOT",
+                "source_audio_path": "LibriSpeech/test-other/5442/41168/5442-41168-0000.flac",
+                "source_file_sha256": "49cb7854d1df8b79655fb09eed9409fd44bbdf3dc9cd63b3b869b4e35ad0f535",
+                "source_partition": "test-other",
+                "speaker_id": "5442",
+                "utterance_id": "5442-41168-0000"
+              }
+            ]
+          },
+          {
+            "speaker_id": "4852",
+            "utterances": [
+              {
+                "chapter_id": "28312",
+                "reference_transcript": "A COURTYARD WAS SPARSELY LIT BY A FLARING TORCH OR TWO SHOWING A SWINGING SIGN HUNG ON A POST",
+                "source_audio_path": "LibriSpeech/test-other/4852/28312/4852-28312-0027.flac",
+                "source_file_sha256": "b0e7cae5d5da09cffaafeb03c5feee039960a0d080eff7c340125023a6cbdf05",
+                "source_partition": "test-other",
+                "speaker_id": "4852",
+                "utterance_id": "4852-28312-0027"
+              },
+              {
+                "chapter_id": "28312",
+                "reference_transcript": "YES SIR HE SAID",
+                "source_audio_path": "LibriSpeech/test-other/4852/28312/4852-28312-0009.flac",
+                "source_file_sha256": "34e16e484d8e1d4df6864bcd6ffa29f48fb0c168b846c708f3bc81cdc7d9b756",
+                "source_partition": "test-other",
+                "speaker_id": "4852",
+                "utterance_id": "4852-28312-0009"
+              },
+              {
+                "chapter_id": "28311",
+                "reference_transcript": "BUT THE NAME STILL SHOWED AT THE PROW AND MANY A TIME CHRIS SAFE AT HOME IN BED HAD SAILED IMAGINARY VOYAGES IN THE MIRABELLE",
+                "source_audio_path": "LibriSpeech/test-other/4852/28311/4852-28311-0023.flac",
+                "source_file_sha256": "ddea8bee0e8079bde027bf0a250b464460fa2aac35f4d1d6bcf3492f4d3d0c9e",
+                "source_partition": "test-other",
+                "speaker_id": "4852",
+                "utterance_id": "4852-28311-0023"
+              },
+              {
+                "chapter_id": "28311",
+                "reference_transcript": "THINK HE REALLY NEEDS IT HE PURSUED",
+                "source_audio_path": "LibriSpeech/test-other/4852/28311/4852-28311-0008.flac",
+                "source_file_sha256": "8a7f0eb74633e1347f0815f7925ca43e4e3dcc2c69dbf307e4cc09e3e4bfd906",
+                "source_partition": "test-other",
+                "speaker_id": "4852",
+                "utterance_id": "4852-28311-0008"
+              },
+              {
+                "chapter_id": "28312",
+                "reference_transcript": "CHRIS BLINKED AND LOOKED AGAIN YES THEY WERE STILL THERE",
+                "source_audio_path": "LibriSpeech/test-other/4852/28312/4852-28312-0007.flac",
+                "source_file_sha256": "30905a1b7e76352a2cb8bb606df84ac89151dac0f82b956e5541051d75f61f8d",
+                "source_partition": "test-other",
+                "speaker_id": "4852",
+                "utterance_id": "4852-28312-0007"
+              },
+              {
+                "chapter_id": "28330",
+                "reference_transcript": "CAPTAIN BLIZZARD'S ROUND PINK FACE CREASED IN HIS WINNING SMILE",
+                "source_audio_path": "LibriSpeech/test-other/4852/28330/4852-28330-0017.flac",
+                "source_file_sha256": "18c6462c2ed35068ed8a3085aefa65fd8e0fa8f2d4d6855f41e9250ddfdf11b5",
+                "source_partition": "test-other",
+                "speaker_id": "4852",
+                "utterance_id": "4852-28330-0017"
+              },
+              {
+                "chapter_id": "28312",
+                "reference_transcript": "HE GUESSED THERE MUST BE A LIVELY FIRE IN THAT ROOM BEYOND",
+                "source_audio_path": "LibriSpeech/test-other/4852/28312/4852-28312-0015.flac",
+                "source_file_sha256": "6e33d1d0e62769f804f492913dbbf3d10d0d6c7028a7483ee6515385ed9abab9",
+                "source_partition": "test-other",
+                "speaker_id": "4852",
+                "utterance_id": "4852-28312-0015"
+              },
+              {
+                "chapter_id": "28319",
+                "reference_transcript": "WITH INFINITE CAUTION CHRIS CLOSED THE DOOR SILENTLY BEHIND HIM AND RUNNING LIGHTLY FORWARD REACHED THE FIGURE OF THE NEGRO BOY",
+                "source_audio_path": "LibriSpeech/test-other/4852/28319/4852-28319-0024.flac",
+                "source_file_sha256": "7965213eac664d83530ed58854a5cba2081938a5f2e076d35a032054fb59ac50",
+                "source_partition": "test-other",
+                "speaker_id": "4852",
+                "utterance_id": "4852-28319-0024"
+              },
+              {
+                "chapter_id": "28311",
+                "reference_transcript": "SAY YOU KNOW SUMTHIN",
+                "source_audio_path": "LibriSpeech/test-other/4852/28311/4852-28311-0000.flac",
+                "source_file_sha256": "c82b1186f8e39054de243e2f8c4fae8a02bcf93d067b004d3edf7695f02b6e93",
+                "source_partition": "test-other",
+                "speaker_id": "4852",
+                "utterance_id": "4852-28311-0000"
+              },
+              {
+                "chapter_id": "28312",
+                "reference_transcript": "I I JUST WONDERED IF THE PLACE WAS STILL OPEN",
+                "source_audio_path": "LibriSpeech/test-other/4852/28312/4852-28312-0013.flac",
+                "source_file_sha256": "7552bb85403ea986460292a00cf4100ad4eb4b7909e5a6d82f10727ba08e989d",
+                "source_partition": "test-other",
+                "speaker_id": "4852",
+                "utterance_id": "4852-28312-0013"
+              }
+            ]
+          },
+          {
+            "speaker_id": "8131",
+            "utterances": [
+              {
+                "chapter_id": "117029",
+                "reference_transcript": "THAT'S MARS GORDON ECHOED THE OTHER'S COMMENT WHY DON'T YOU PULL OFF THE PLANET FATS YOU COULD GO BACK TO EARTH I'D GUESS THE OTHER NODDED",
+                "source_audio_path": "LibriSpeech/test-other/8131/117029/8131-117029-0010.flac",
+                "source_file_sha256": "8f7c3261fa00ff3ae6f6ef8625b1aaa6859c4c1391db64a75a4b90a575944e58",
+                "source_partition": "test-other",
+                "speaker_id": "8131",
+                "utterance_id": "8131-117029-0010"
+              },
+              {
+                "chapter_id": "117017",
+                "reference_transcript": "AND IF ANY OF THE OTHER COPS HAD PRIVATE RACKETS OF THEIR OWN IZZY WAS UNDOUBTEDLY THE MAN TO FIND IT OUT AND USE THE INFORMATION WITH A BEAT SUCH AS THAT EVEN GOING HALVES AND WITH ALL THE GRAFT TO THE UPPER BRACKETS HE'D STILL BE ABLE TO MAKE HIS PILE IN A MATTER OF MONTHS",
+                "source_audio_path": "LibriSpeech/test-other/8131/117017/8131-117017-0030.flac",
+                "source_file_sha256": "a17cadf6bd093efa10689ec73ae93440dbfa8ce49d8b39344b74b32e2eee1adc",
+                "source_partition": "test-other",
+                "speaker_id": "8131",
+                "utterance_id": "8131-117017-0030"
+              },
+              {
+                "chapter_id": "117029",
+                "reference_transcript": "AND I'VE PAID HER THE PAY WE OWE YOU FROM THE TIME YOU BEGAN USING YOUR BADGE SHE'S OUT SHOPPING",
+                "source_audio_path": "LibriSpeech/test-other/8131/117029/8131-117029-0018.flac",
+                "source_file_sha256": "5871acd0a796f37a523b2beea6d19a18130af8078b25e77b92cccce438796366",
+                "source_partition": "test-other",
+                "speaker_id": "8131",
+                "utterance_id": "8131-117029-0018"
+              },
+              {
+                "chapter_id": "117017",
+                "reference_transcript": "THE CAPTAIN LOOKED COMPLETELY BEATEN AS HE CAME INTO THE ROOM AND DROPPED ONTO THE BENCH",
+                "source_audio_path": "LibriSpeech/test-other/8131/117017/8131-117017-0031.flac",
+                "source_file_sha256": "c7f0c296f5183af51854dea49440b4b8a5de37c6dba2e1b259f25b9c99fa52d7",
+                "source_partition": "test-other",
+                "speaker_id": "8131",
+                "utterance_id": "8131-117017-0031"
+              },
+              {
+                "chapter_id": "117016",
+                "reference_transcript": "HE BROUGHT HIM TO THE GROUND WITH A SINGLE BLOW ACROSS THE KIDNEYS",
+                "source_audio_path": "LibriSpeech/test-other/8131/117016/8131-117016-0027.flac",
+                "source_file_sha256": "f6abc37328722c4ad44e34a112e583f52d339cb335c24ab88db6cd7375cd2a0d",
+                "source_partition": "test-other",
+                "speaker_id": "8131",
+                "utterance_id": "8131-117016-0027"
+              },
+              {
+                "chapter_id": "117017",
+                "reference_transcript": "MUST OF BEEN MAKING A BIG CONTACT IN SOMETHING FIFTY FIFTY",
+                "source_audio_path": "LibriSpeech/test-other/8131/117017/8131-117017-0012.flac",
+                "source_file_sha256": "522256dded96a67ba6d3e6711443287af37c3c1f7c432999f78c5b82a37569c3",
+                "source_partition": "test-other",
+                "speaker_id": "8131",
+                "utterance_id": "8131-117017-0012"
+              },
+              {
+                "chapter_id": "117016",
+                "reference_transcript": "BECAUSE IZZY IS ALWAYS HONEST ACCORDING TO HOW HE SEES IT",
+                "source_audio_path": "LibriSpeech/test-other/8131/117016/8131-117016-0056.flac",
+                "source_file_sha256": "4d0748d2f20972229e3ecf93454a4cec52d820b973bfed3f3a8eee5833681e2c",
+                "source_partition": "test-other",
+                "speaker_id": "8131",
+                "utterance_id": "8131-117016-0056"
+              },
+              {
+                "chapter_id": "117017",
+                "reference_transcript": "GORDON HAD HEARD OF THE FRIENDLY INTEREST CHARGED ON THE SIDE HERE BUT HE SHOOK HIS HEAD WRONG IZZY",
+                "source_audio_path": "LibriSpeech/test-other/8131/117017/8131-117017-0022.flac",
+                "source_file_sha256": "1ba774ccf58ba43d074df0bd5bc85b4bddacd4221211020c9025138fafddb191",
+                "source_partition": "test-other",
+                "speaker_id": "8131",
+                "utterance_id": "8131-117017-0022"
+              },
+              {
+                "chapter_id": "117016",
+                "reference_transcript": "IT FITTED WITH THE DIRE PREDICTIONS OF SECURITY AND WITH THE SPYING GORDON WAS GOING TO DO ACCORDING TO THEM",
+                "source_audio_path": "LibriSpeech/test-other/8131/117016/8131-117016-0053.flac",
+                "source_file_sha256": "b1a18b82b787fad9e2a2b9f5279c02a76614754298acd0b023c47495b638756a",
+                "source_partition": "test-other",
+                "speaker_id": "8131",
+                "utterance_id": "8131-117016-0053"
+              },
+              {
+                "chapter_id": "117029",
+                "reference_transcript": "CREDIT HAD BEEN ESTABLISHED AGAIN AND THE BUSINESSES WERE OPEN",
+                "source_audio_path": "LibriSpeech/test-other/8131/117029/8131-117029-0003.flac",
+                "source_file_sha256": "71ed57940b3ccbe7f6ee6de57407705c1267213c7902e1461f8484bed1056741",
+                "source_partition": "test-other",
+                "speaker_id": "8131",
+                "utterance_id": "8131-117029-0003"
+              }
+            ]
+          },
+          {
+            "speaker_id": "8280",
+            "utterances": [
+              {
+                "chapter_id": "266249",
+                "reference_transcript": "WITH ALL MY HEART IF YOU WILL STEP INTO THE GENTLEMEN'S CABIN WHERE THERE'S A LIGHT",
+                "source_audio_path": "LibriSpeech/test-other/8280/266249/8280-266249-0013.flac",
+                "source_file_sha256": "ebcce30af24c21a0dd7c8909ca33779586525e64a1a781cb760a98fb3b084729",
+                "source_partition": "test-other",
+                "speaker_id": "8280",
+                "utterance_id": "8280-266249-0013"
+              },
+              {
+                "chapter_id": "266249",
+                "reference_transcript": "OLD MISTER DINSMORE HAD ACCEPTED A PRESSING INVITATION FROM HIS GRANDDAUGHTER AND HER HUSBAND TO JOIN THE PARTY AND WITH THE ADDITION OF SERVANTS IT WAS A LARGE ONE",
+                "source_audio_path": "LibriSpeech/test-other/8280/266249/8280-266249-0000.flac",
+                "source_file_sha256": "27c5a3a664101845aa2fad99695d0b537c9aea0feb7fb830a5e8b8755ec1bbe6",
+                "source_partition": "test-other",
+                "speaker_id": "8280",
+                "utterance_id": "8280-266249-0000"
+              },
+              {
+                "chapter_id": "266249",
+                "reference_transcript": "A DEEP GROAN STARTLED THEM AND THEY SPRANG TO THEIR FEET PALE AND TREMBLING WITH SUDDEN TERROR EACH HOLDING HIS BREATH AND STRAINING HIS EAR TO CATCH A REPETITION OF THE DREAD SOUND",
+                "source_audio_path": "LibriSpeech/test-other/8280/266249/8280-266249-0052.flac",
+                "source_file_sha256": "23a1f3de950945960eb948c3133b221d4defe1de496e12bcc4574aab8e87754d",
+                "source_partition": "test-other",
+                "speaker_id": "8280",
+                "utterance_id": "8280-266249-0052"
+              },
+              {
+                "chapter_id": "266249",
+                "reference_transcript": "THERE WAS A PAUSE BROKEN BY YOUNG HORACE WHO HAD BEEN WATCHING A GROUP OF MEN GATHERED ABOUT A TABLE AT THE FURTHER END OF THE ROOM",
+                "source_audio_path": "LibriSpeech/test-other/8280/266249/8280-266249-0029.flac",
+                "source_file_sha256": "d5d30ab7e70bb7953d27db93a10cdda8f26f86ec6d54df4f7c97b0e98ab64986",
+                "source_partition": "test-other",
+                "speaker_id": "8280",
+                "utterance_id": "8280-266249-0029"
+              },
+              {
+                "chapter_id": "266249",
+                "reference_transcript": "AS THEY WERE IN NO HASTE AND THE CONFINEMENT OF A RAILROAD CAR WOULD BE VERY IRKSOME TO THE YOUNGER CHILDREN IT HAD BEEN DECIDED TO MAKE THE JOURNEY BY WATER",
+                "source_audio_path": "LibriSpeech/test-other/8280/266249/8280-266249-0001.flac",
+                "source_file_sha256": "846685956e9fce586117b67dc4d00f7bbb81b70a0c8ff2313f6a1a92177f6cc5",
+                "source_partition": "test-other",
+                "speaker_id": "8280",
+                "utterance_id": "8280-266249-0001"
+              },
+              {
+                "chapter_id": "266249",
+                "reference_transcript": "IS IT STRANGE THEN THAT SMOKERS AND CHEWERS HAVE A THOUSAND AILMENTS",
+                "source_audio_path": "LibriSpeech/test-other/8280/266249/8280-266249-0017.flac",
+                "source_file_sha256": "502154b5676510f9d5e94df2bcd4e36c1f440ce769537cfbf4277389bc2047e0",
+                "source_partition": "test-other",
+                "speaker_id": "8280",
+                "utterance_id": "8280-266249-0017"
+              },
+              {
+                "chapter_id": "266249",
+                "reference_transcript": "NO SIR WHAT KNOW YE NOT THAT YOUR BODY IS THE TEMPLE OF THE HOLY GHOST WHICH IS IN YOU WHICH YE HAVE OF GOD AND YE ARE NOT YOUR OWN",
+                "source_audio_path": "LibriSpeech/test-other/8280/266249/8280-266249-0023.flac",
+                "source_file_sha256": "f0512144731cdc50be21377fecb2e7dfd5495f6793f51e8d5f9558d41f7c1665",
+                "source_partition": "test-other",
+                "speaker_id": "8280",
+                "utterance_id": "8280-266249-0023"
+              },
+              {
+                "chapter_id": "266249",
+                "reference_transcript": "I WONDER WHICH OF US IT IS REMARKED THE FIRST LOOKING HARD AT OUR PARTY I DON'T KNOW BUT COME ON",
+                "source_audio_path": "LibriSpeech/test-other/8280/266249/8280-266249-0038.flac",
+                "source_file_sha256": "bd5ff113532efb17ee3fda51fd2aaf9611ca574733f76882a0ac39f5276e010c",
+                "source_partition": "test-other",
+                "speaker_id": "8280",
+                "utterance_id": "8280-266249-0038"
+              },
+              {
+                "chapter_id": "266249",
+                "reference_transcript": "DO YOU SON WAS THE SMILING REJOINDER",
+                "source_audio_path": "LibriSpeech/test-other/8280/266249/8280-266249-0008.flac",
+                "source_file_sha256": "068f375856062a4d48d2b1909b2cc1d21a8280f403d36326b054fdeff18bf24e",
+                "source_partition": "test-other",
+                "speaker_id": "8280",
+                "utterance_id": "8280-266249-0008"
+              },
+              {
+                "chapter_id": "266249",
+                "reference_transcript": "THEY HEARD HIM IN SILENCE WITH A COOL PHLEGMATIC INDIFFERENCE MOST EXASPERATING TO ONE IN HIS PRESENT MOOD",
+                "source_audio_path": "LibriSpeech/test-other/8280/266249/8280-266249-0041.flac",
+                "source_file_sha256": "b255787cb4eb95e7977c0e466b40687729146e6e9ae615461fa4b0ccccc8a6ae",
+                "source_partition": "test-other",
+                "speaker_id": "8280",
+                "utterance_id": "8280-266249-0041"
+              }
+            ]
+          },
+          {
+            "speaker_id": "3005",
+            "utterances": [
+              {
+                "chapter_id": "163399",
+                "reference_transcript": "YOUR UNCLE'S BEEN UP TO THE TOWN EVERY DAY TO FETCH YOU",
+                "source_audio_path": "LibriSpeech/test-other/3005/163399/3005-163399-0008.flac",
+                "source_file_sha256": "ab78c43799427d8924513d348d91e9262a0832b34aacd3027934fa52f5aa2156",
+                "source_partition": "test-other",
+                "speaker_id": "3005",
+                "utterance_id": "3005-163399-0008"
+              },
+              {
+                "chapter_id": "163399",
+                "reference_transcript": "PRETTY SOON SHE MADE THE COLD CHILLS STREAK ALL DOWN MY BACK BECAUSE SHE SAYS",
+                "source_audio_path": "LibriSpeech/test-other/3005/163399/3005-163399-0013.flac",
+                "source_file_sha256": "0880f5eaba6f3d9abcc3b00f39f6b0514fd1b46139efb59e92136d8e21a85fc1",
+                "source_partition": "test-other",
+                "speaker_id": "3005",
+                "utterance_id": "3005-163399-0013"
+              },
+              {
+                "chapter_id": "163390",
+                "reference_transcript": "WELL HENRY HE TAKES A NOTION HE WANTS TO GET UP SOME TROUBLE WITH THIS COUNTRY",
+                "source_audio_path": "LibriSpeech/test-other/3005/163390/3005-163390-0018.flac",
+                "source_file_sha256": "66500342877bd39a71016cbf78af40f8dd8bf232e4532965ac9ef4fdb02ab8f3",
+                "source_partition": "test-other",
+                "speaker_id": "3005",
+                "utterance_id": "3005-163390-0018"
+              },
+              {
+                "chapter_id": "163399",
+                "reference_transcript": "THE OLD GENTLEMAN STARED AND SAYS",
+                "source_audio_path": "LibriSpeech/test-other/3005/163399/3005-163399-0026.flac",
+                "source_file_sha256": "7011b75733ada4a6065478ee2a9a0667df40ed839667331bfaf67d2554385e72",
+                "source_partition": "test-other",
+                "speaker_id": "3005",
+                "utterance_id": "3005-163399-0026"
+              },
+              {
+                "chapter_id": "163390",
+                "reference_transcript": "I LAY I MAKE YOU MINE",
+                "source_audio_path": "LibriSpeech/test-other/3005/163390/3005-163390-0029.flac",
+                "source_file_sha256": "191d39098f5d0b1e056afe0c58f7d34a79f8cccc1faca06b0c2982e0ce9b3b06",
+                "source_partition": "test-other",
+                "speaker_id": "3005",
+                "utterance_id": "3005-163390-0029"
+              },
+              {
+                "chapter_id": "163390",
+                "reference_transcript": "NO I SAYS IT DON'T",
+                "source_audio_path": "LibriSpeech/test-other/3005/163390/3005-163390-0012.flac",
+                "source_file_sha256": "aa49062a4babb1f2928ed19bde72495570ec3b38a986107fa643aaea4167b2ae",
+                "source_partition": "test-other",
+                "speaker_id": "3005",
+                "utterance_id": "3005-163390-0012"
+              },
+              {
+                "chapter_id": "163391",
+                "reference_transcript": "WHICH WAS SOUND ENOUGH JUDGMENT BUT YOU TAKE THE AVERAGE MAN AND HE WOULDN'T WAIT FOR HIM TO HOWL",
+                "source_audio_path": "LibriSpeech/test-other/3005/163391/3005-163391-0000.flac",
+                "source_file_sha256": "6d4a19801d87e93ac25cc728f4727d10942bd1b7f8299257c7cf9cb689ddcb85",
+                "source_partition": "test-other",
+                "speaker_id": "3005",
+                "utterance_id": "3005-163391-0000"
+              },
+              {
+                "chapter_id": "163389",
+                "reference_transcript": "SHERBURN RUN HIS EYE SLOW ALONG THE CROWD AND WHEREVER IT STRUCK THE PEOPLE TRIED A LITTLE TO OUT GAZE HIM BUT THEY COULDN'T THEY DROPPED THEIR EYES AND LOOKED SNEAKY",
+                "source_audio_path": "LibriSpeech/test-other/3005/163389/3005-163389-0003.flac",
+                "source_file_sha256": "d9dcf6bc7d80114625eff13410d83443e2a6da87abb0a16ecc5be7ac059ec754",
+                "source_partition": "test-other",
+                "speaker_id": "3005",
+                "utterance_id": "3005-163389-0003"
+              },
+              {
+                "chapter_id": "163399",
+                "reference_transcript": "THEN I SAYS TO MYSELF S'POSE TOM SAWYER COMES DOWN ON THAT BOAT",
+                "source_audio_path": "LibriSpeech/test-other/3005/163399/3005-163399-0030.flac",
+                "source_file_sha256": "648861b86ae7b7ab6d825ff400375229dd625278fda4468bd62ea2f5edd21f44",
+                "source_partition": "test-other",
+                "speaker_id": "3005",
+                "utterance_id": "3005-163399-0030"
+              },
+              {
+                "chapter_id": "163389",
+                "reference_transcript": "THE AVERAGE MAN'S A COWARD",
+                "source_audio_path": "LibriSpeech/test-other/3005/163389/3005-163389-0004.flac",
+                "source_file_sha256": "59b4254268cb6c59b4df202bf03abd4f2dde6680a2383323e9ad6794e2ee99e3",
+                "source_partition": "test-other",
+                "speaker_id": "3005",
+                "utterance_id": "3005-163389-0004"
+              }
+            ]
+          },
+          {
+            "speaker_id": "8461",
+            "utterances": [
+              {
+                "chapter_id": "281231",
+                "reference_transcript": "AT HIS FEET WAS PLACED A TABLE OCCUPIED BY TWO SCRIBES WHOSE DUTY IT WAS TO RECORD THE PROCEEDINGS OF THE DAY",
+                "source_audio_path": "LibriSpeech/test-other/8461/281231/8461-281231-0037.flac",
+                "source_file_sha256": "732f69b658f69a0b2641c69de18842de1c22423b0e49ec3a675eaded58f77460",
+                "source_partition": "test-other",
+                "speaker_id": "8461",
+                "utterance_id": "8461-281231-0037"
+              },
+              {
+                "chapter_id": "281231",
+                "reference_transcript": "DE BRACY BOWED LOW AND IN SILENCE THREW HIMSELF UPON A HORSE AND GALLOPED OFF THROUGH THE WOOD",
+                "source_audio_path": "LibriSpeech/test-other/8461/281231/8461-281231-0025.flac",
+                "source_file_sha256": "9c4c31fdb500c71ad4a14ed0b9fc6d825cc731cfc22337fefcdb4bbd662cd796",
+                "source_partition": "test-other",
+                "speaker_id": "8461",
+                "utterance_id": "8461-281231-0025"
+              },
+              {
+                "chapter_id": "258277",
+                "reference_transcript": "SO HE TOLD HIM WHAT HAD BEFALLEN HIM AND ADDED IF I KNOW WHITHER THE RASCAL IS GONE AND WHERE TO FIND THE KNAVE I WOULD PAY HIM OUT",
+                "source_audio_path": "LibriSpeech/test-other/8461/258277/8461-258277-0010.flac",
+                "source_file_sha256": "6a3e3f4ff2cf17684a38f03a29b697dc4f6222feada3810348dfa69319451b09",
+                "source_partition": "test-other",
+                "speaker_id": "8461",
+                "utterance_id": "8461-258277-0010"
+              },
+              {
+                "chapter_id": "258277",
+                "reference_transcript": "WHEN IT WAS THE SEVEN HUNDRED AND EIGHTEENTH NIGHT",
+                "source_audio_path": "LibriSpeech/test-other/8461/258277/8461-258277-0000.flac",
+                "source_file_sha256": "6de1ae040fd3980738425c7228383352a04f8d09f0a9f162325fef5e1b67ad2a",
+                "source_partition": "test-other",
+                "speaker_id": "8461",
+                "utterance_id": "8461-258277-0000"
+              },
+              {
+                "chapter_id": "281231",
+                "reference_transcript": "HE APPEALED TO DE BRACY TO ASSIST HIM IN THIS PROJECT AND BECAME AT ONCE DEEPLY SUSPICIOUS OF THE KNIGHT'S LOYALTY TOWARDS HIM WHEN HE DECLINED TO LIFT HAND AGAINST THE MAN WHO HAD SPARED HIS OWN LIFE",
+                "source_audio_path": "LibriSpeech/test-other/8461/281231/8461-281231-0031.flac",
+                "source_file_sha256": "cee76d692cbf2351361cbb8e14216d00960c4b08bd6ee8e326d5253640487075",
+                "source_partition": "test-other",
+                "speaker_id": "8461",
+                "utterance_id": "8461-281231-0031"
+              },
+              {
+                "chapter_id": "281231",
+                "reference_transcript": "DURING ALL THIS TIME ISAAC OF YORK SAT MOURNFULLY APART GRIEVING FOR THE LOSS OF HIS DEARLY LOVED DAUGHTER REBECCA",
+                "source_audio_path": "LibriSpeech/test-other/8461/281231/8461-281231-0028.flac",
+                "source_file_sha256": "c2957ca88667b9217999e273df21da7332920d3ecaa3a2b06f1f4cfd7ac9a460",
+                "source_partition": "test-other",
+                "speaker_id": "8461",
+                "utterance_id": "8461-281231-0028"
+              },
+              {
+                "chapter_id": "258277",
+                "reference_transcript": "ANSWERED HASAN I KNOW WHERE HE IS AND OPENING THE DOOR OF THE CLOSET SHOWED HIM THE SWEETMEAT SELLER WITHIN DRUGGED AND SENSELESS",
+                "source_audio_path": "LibriSpeech/test-other/8461/258277/8461-258277-0012.flac",
+                "source_file_sha256": "1bd5d3b694d1810ac2f2f4e1acbe221f058d18fa81bf1cb209d2a5639c06ccee",
+                "source_partition": "test-other",
+                "speaker_id": "8461",
+                "utterance_id": "8461-258277-0012"
+              },
+              {
+                "chapter_id": "278226",
+                "reference_transcript": "SHE RETURNED IN A LITTLE MORE THAN TEN MINUTES IN THE FRESHEST TOILETTE ALL PALE SHIMMERING BLUE LIKE THE SPRING SKY WITH PEARL GREY GLOVES AND BOOTS AND PARASOL AND A BONNET THAT SEEMED MADE OF AZURE BUTTERFLIES",
+                "source_audio_path": "LibriSpeech/test-other/8461/278226/8461-278226-0005.flac",
+                "source_file_sha256": "b2d4607f1bd108a67cc000c15b3c1eab7215c1c44849d888af4ab0bc4dc82929",
+                "source_partition": "test-other",
+                "speaker_id": "8461",
+                "utterance_id": "8461-278226-0005"
+              },
+              {
+                "chapter_id": "281231",
+                "reference_transcript": "THE TEMPLAR IS FLED SAID DE BRACY IN ANSWER TO THE PRINCE'S EAGER QUESTIONS FRONT DE BOEUF YOU WILL NEVER SEE MORE AND HE ADDED IN A LOW AND EMPHATIC TONE RICHARD IS IN ENGLAND I HAVE SEEN HIM AND SPOKEN WITH HIM",
+                "source_audio_path": "LibriSpeech/test-other/8461/281231/8461-281231-0030.flac",
+                "source_file_sha256": "864e8570467cfa982363e8c6bda933eec8c4cb3b767920ace2f34a5cd83bd7d1",
+                "source_partition": "test-other",
+                "speaker_id": "8461",
+                "utterance_id": "8461-281231-0030"
+              },
+              {
+                "chapter_id": "258277",
+                "reference_transcript": "HE REPLIED I HAVE FORTY LADS BUT THEY ARE IN CAIRO",
+                "source_audio_path": "LibriSpeech/test-other/8461/258277/8461-258277-0016.flac",
+                "source_file_sha256": "1386f68862e1ea9ee0309b714b86082f8757471db17ffbba6c5b5d1bb253bd53",
+                "source_partition": "test-other",
+                "speaker_id": "8461",
+                "utterance_id": "8461-258277-0016"
+              }
+            ]
+          },
+          {
+            "speaker_id": "2414",
+            "utterances": [
+              {
+                "chapter_id": "159411",
+                "reference_transcript": "WHERE WAS THE TIGER THEN",
+                "source_audio_path": "LibriSpeech/test-other/2414/159411/2414-159411-0027.flac",
+                "source_file_sha256": "4869b6d90531cf0526bff81bbb3dc21525a66d305412176b84908cb75c7c959c",
+                "source_partition": "test-other",
+                "speaker_id": "2414",
+                "utterance_id": "2414-159411-0027"
+              },
+              {
+                "chapter_id": "128292",
+                "reference_transcript": "HOW HAVE I STILL INCLINATION",
+                "source_audio_path": "LibriSpeech/test-other/2414/128292/2414-128292-0019.flac",
+                "source_file_sha256": "31eccbfdcd5c63a821b308dbbe9174f645cb2a256d120cd4e5412e74e326ebc9",
+                "source_partition": "test-other",
+                "speaker_id": "2414",
+                "utterance_id": "2414-128292-0019"
+              },
+              {
+                "chapter_id": "159411",
+                "reference_transcript": "LET THE TIGER EAT THE MAN FOR MEN ARE AN UNGRATEFUL RACE",
+                "source_audio_path": "LibriSpeech/test-other/2414/159411/2414-159411-0009.flac",
+                "source_file_sha256": "0c4f398eeaa3b913756206538bc4c59b6482af9447e7c30a067f12704b10b373",
+                "source_partition": "test-other",
+                "speaker_id": "2414",
+                "utterance_id": "2414-159411-0009"
+              },
+              {
+                "chapter_id": "128292",
+                "reference_transcript": "FOR IT DO I ASK AND SEEK AND HAVE SOUGHT BUT HAVE NOT FOUND IT",
+                "source_audio_path": "LibriSpeech/test-other/2414/128292/2414-128292-0022.flac",
+                "source_file_sha256": "d49de511a5584d345ac68b439065dcebf3b35129e62734007ee50306e8cafaf8",
+                "source_partition": "test-other",
+                "speaker_id": "2414",
+                "utterance_id": "2414-128292-0022"
+              },
+              {
+                "chapter_id": "128292",
+                "reference_transcript": "WHAT MATTER ABOUT MY SHADOW",
+                "source_audio_path": "LibriSpeech/test-other/2414/128292/2414-128292-0002.flac",
+                "source_file_sha256": "a2ddbce10d493a09d1b74a9d86c47b02f5d59c8a7ab07d2c7291f159caf8ade4",
+                "source_partition": "test-other",
+                "speaker_id": "2414",
+                "utterance_id": "2414-128292-0002"
+              },
+              {
+                "chapter_id": "128292",
+                "reference_transcript": "THEY SLEEP QUIETLY THEY ENJOY THEIR NEW SECURITY",
+                "source_audio_path": "LibriSpeech/test-other/2414/128292/2414-128292-0027.flac",
+                "source_file_sha256": "c8240db2be3200757bd8ad2c48851ce36cfcd503d05e8f8ba3ebc5df4dc98b22",
+                "source_partition": "test-other",
+                "speaker_id": "2414",
+                "utterance_id": "2414-128292-0027"
+              },
+              {
+                "chapter_id": "159411",
+                "reference_transcript": "SHUT AND BOLTED SAID THE BRAHMAN",
+                "source_audio_path": "LibriSpeech/test-other/2414/159411/2414-159411-0030.flac",
+                "source_file_sha256": "87b610c7454693d7ead04239b9e00bf85cb78a40d917aa40827edab0882ffa31",
+                "source_partition": "test-other",
+                "speaker_id": "2414",
+                "utterance_id": "2414-159411-0030"
+              },
+              {
+                "chapter_id": "165385",
+                "reference_transcript": "THUS ACCOMPLISHED HE EXCITED THE ADMIRATION OF EVERY SILLY COQUETTE AND THE ENVY OF EVERY FLUTTERING COXCOMB BUT BY ALL YOUNG GENTLEMEN AND LADIES OF UNDERSTANDING HE WAS HEARTILY DESPISED AS A MERE CIVILIZED MONKEY",
+                "source_audio_path": "LibriSpeech/test-other/2414/165385/2414-165385-0000.flac",
+                "source_file_sha256": "88e191b0069ac83d0cc817dbaf1b855c3516d6d11792957bfb97987b995ffcac",
+                "source_partition": "test-other",
+                "speaker_id": "2414",
+                "utterance_id": "2414-165385-0000"
+              },
+              {
+                "chapter_id": "159411",
+                "reference_transcript": "ON WHAT MUST I GIVE JUDGMENT ASKED THE EAGLE",
+                "source_audio_path": "LibriSpeech/test-other/2414/159411/2414-159411-0015.flac",
+                "source_file_sha256": "50f4e3e37e967301e6d43c269cab8fd1b3ff63da9409372c9859aedf0855a54b",
+                "source_partition": "test-other",
+                "speaker_id": "2414",
+                "utterance_id": "2414-159411-0015"
+              },
+              {
+                "chapter_id": "128292",
+                "reference_transcript": "VERILY MY FOLLY HATH GROWN BIG IN THE MOUNTAINS",
+                "source_audio_path": "LibriSpeech/test-other/2414/128292/2414-128292-0005.flac",
+                "source_file_sha256": "7e2c921b32146edbbfdf7f6c0dae78bdf04dbfcb02743eef283fb04d5172967f",
+                "source_partition": "test-other",
+                "speaker_id": "2414",
+                "utterance_id": "2414-128292-0005"
+              }
+            ]
+          },
+          {
+            "speaker_id": "2033",
+            "utterances": [
+              {
+                "chapter_id": "164914",
+                "reference_transcript": "TELL ME WHAT HAPPENED QUOTH ZAU AL MAKAN",
+                "source_audio_path": "LibriSpeech/test-other/2033/164914/2033-164914-0005.flac",
+                "source_file_sha256": "38e09569ab4caa9b0750904b352adb10ad306bbc5a1a71fdf0c3e6097ac58d4c",
+                "source_partition": "test-other",
+                "speaker_id": "2033",
+                "utterance_id": "2033-164914-0005"
+              },
+              {
+                "chapter_id": "164915",
+                "reference_transcript": "THEN SHE THREW HERSELF UPON HIM AND HE GATHERED HER TO HIS BOSOM AND THE TWAIN FELL DOWN IN A FAINTING FIT",
+                "source_audio_path": "LibriSpeech/test-other/2033/164915/2033-164915-0001.flac",
+                "source_file_sha256": "e8bf164c2aba8631ce3aabfe7c0a364c4a2ba0fc665eb46699f06dd04170f5d5",
+                "source_partition": "test-other",
+                "speaker_id": "2033",
+                "utterance_id": "2033-164915-0001"
+              },
+              {
+                "chapter_id": "164915",
+                "reference_transcript": "SO IT WAS AGREED THAT WE GO TO DAMASCUS AND FETCH THENCE THE KING'S SON SHARRKAN AND MAKE HIM SULTAN OVER HIS FATHER'S REALM",
+                "source_audio_path": "LibriSpeech/test-other/2033/164915/2033-164915-0016.flac",
+                "source_file_sha256": "f2dfacb46d2c9b25431d904bf4ecd7961e595a321a9671793f2227553d96b121",
+                "source_partition": "test-other",
+                "speaker_id": "2033",
+                "utterance_id": "2033-164915-0016"
+              },
+              {
+                "chapter_id": "164915",
+                "reference_transcript": "WHEN THE EUNUCH SAW THIS CASE HE WONDERED AT THEM AND THROWING OVER THEM SOMEWHAT TO COVER THEM WAITED TILL THEY SHOULD RECOVER",
+                "source_audio_path": "LibriSpeech/test-other/2033/164915/2033-164915-0002.flac",
+                "source_file_sha256": "be4c04067c8f0589fd373fe4e25e9ed042be3e72cf87d90610d448c411524b28",
+                "source_partition": "test-other",
+                "speaker_id": "2033",
+                "utterance_id": "2033-164915-0002"
+              },
+              {
+                "chapter_id": "164916",
+                "reference_transcript": "MOREOVER THE SULTAN COMMANDED HIS WAZIR DANDAN CALL A TEN DAYS HALT OF THE ARMY THAT HE MIGHT BE PRIVATE WITH HIM AND LEARN FROM HIM HOW AND WHEREFORE HIS FATHER HAD BEEN SLAIN",
+                "source_audio_path": "LibriSpeech/test-other/2033/164916/2033-164916-0009.flac",
+                "source_file_sha256": "41f48057c07a4597814ce71c84106770fce19f8c27e94a29442ffe6e7ee33efe",
+                "source_partition": "test-other",
+                "speaker_id": "2033",
+                "utterance_id": "2033-164916-0009"
+              },
+              {
+                "chapter_id": "164914",
+                "reference_transcript": "RETURN QUICKLY AND LINGER NOT",
+                "source_audio_path": "LibriSpeech/test-other/2033/164914/2033-164914-0012.flac",
+                "source_file_sha256": "9334db667d7063d74e1720c479bf10edb28f9ce92b602c449b373a9f655651e2",
+                "source_partition": "test-other",
+                "speaker_id": "2033",
+                "utterance_id": "2033-164914-0012"
+              },
+              {
+                "chapter_id": "164916",
+                "reference_transcript": "WHEN THE MINISTER HEARD THESE WORDS HE REJOICED WITH GREAT JOY AND SAID O CHAMBERLAIN TELL ME THE TALE OF THE TWAIN AND WHAT BEFEL THEM AND THE CAUSE OF THEIR LONG ABSENCE",
+                "source_audio_path": "LibriSpeech/test-other/2033/164916/2033-164916-0002.flac",
+                "source_file_sha256": "aa1defbe9ede61d5909052db1077841f6d170ce315cee51f150ed89d775cd4a4",
+                "source_partition": "test-other",
+                "speaker_id": "2033",
+                "utterance_id": "2033-164916-0002"
+              },
+              {
+                "chapter_id": "164916",
+                "reference_transcript": "AFTER AWHILE THE DUST DISPERSED AND THERE APPEARED UNDER IT THE ARMY OF BAGHDAD AND KHORASAN A CONQUERING HOST LIKE THE FULL TIDE SEA AND SHAHRAZAD PERCEIVED THE DAWN OF DAY AND CEASED TO SAY HER PERMITTED SAY",
+                "source_audio_path": "LibriSpeech/test-other/2033/164916/2033-164916-0005.flac",
+                "source_file_sha256": "8cf8c2658dba0abf86f0868e3b09dea4148e4ab3cce4fa5309d62ad48d95a316",
+                "source_partition": "test-other",
+                "speaker_id": "2033",
+                "utterance_id": "2033-164916-0005"
+              },
+              {
+                "chapter_id": "164916",
+                "reference_transcript": "KNOW O CHIEF WAZIR THAT HERE WHERE YOU HAVE ENCOUNTERED ME ALLAH HATH GIVEN YOU REST FROM FATIGUE AND BRINGETH YOU YOUR DESIRE AFTER THE EASIEST OF FASHIONS FOR THAT HIS ALMIGHTY WILL RESTORETH TO YOU ZAU AL MAKAN AND HIS SISTER NUZHAT AL ZAMAN WHEREBY WE WILL SETTLE THE MATTER AS WE EASILY CAN",
+                "source_audio_path": "LibriSpeech/test-other/2033/164916/2033-164916-0001.flac",
+                "source_file_sha256": "f2a885c27a747587340a1b4122bb6b789cdd8a908fd342b61e7b0cf35b3a5bcb",
+                "source_partition": "test-other",
+                "speaker_id": "2033",
+                "utterance_id": "2033-164916-0001"
+              },
+              {
+                "chapter_id": "164916",
+                "reference_transcript": "THEN HE ADDED O MY UNCLE HOW SHALL I DO WITH MY BROTHER SHARRKAN",
+                "source_audio_path": "LibriSpeech/test-other/2033/164916/2033-164916-0004.flac",
+                "source_file_sha256": "49f87b2ca30db6ad9aa07f9fc59ad3335c759cf139709a3de2d384fb73ffe462",
+                "source_partition": "test-other",
+                "speaker_id": "2033",
+                "utterance_id": "2033-164916-0004"
+              }
+            ]
+          }
+        ],
+        "utterance_count": 120
+      }
+    ],
+    "total_speakers": 24,
+    "total_utterances": 240
+  },
+  "preprocessing_boundary": {
+    "canonical_preprocessed_file_sha256_present": false,
+    "later_binding_must_reference_freeze_digest": true,
+    "status": "NOT_CAPTURED_B2P06"
+  },
+  "schema_version": "000b2-public-subset-manifest-v1",
+  "selection_engine": {
+    "hash_algorithm": "SHA-256",
+    "policy_path": "research/000b2-public/subset-selection-policy.json",
+    "policy_sha256": "614b9fed602fd1d81683d0d4467237123f7e727c91f4f58f36084928227acca7",
+    "selection_material": "wispral-000b2-public-b2p03-v1",
+    "selector_path": "research/000b2-public/select_subset.py",
+    "selector_sha256": "0dda024641cfc3b0e63c2819d85ae6d81b598de3ab4c45220f39fda0d1f1104f"
+  },
+  "source_corpus": {
+    "archives": [
+      {
+        "archive_sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "bytes": 346663984,
+        "name": "test-clean.tar.gz",
+        "official_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "source_url": "https://www.openslr.org/resources/12/test-clean.tar.gz"
+      },
+      {
+        "archive_sha256": "d09c181bba5cf717b3dee7d4d592af11a3ee3a09e08ae025c5506f6ebe961c29",
+        "bytes": 328757843,
+        "name": "test-other.tar.gz",
+        "official_md5": "fb5a50374b501bb3bac4815ee91d3135",
+        "source_url": "https://www.openslr.org/resources/12/test-other.tar.gz"
+      }
+    ],
+    "corpus_source_path": "research/000b2-public/corpus-source.json",
+    "corpus_source_sha256": "c6f94311a5e973443793a1106d8a284eef15ff00dff6817397e904581b09394d",
+    "license": "CC BY 4.0",
+    "name": "LibriSpeech ASR corpus SLR12",
+    "resource_page": "https://www.openslr.org/12/"
+  },
+  "state": "FROZEN_SOURCE_MEMBERSHIP",
+  "task": "B2P04"
+}
