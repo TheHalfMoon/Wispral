@@ -297,6 +297,73 @@ def verify_synchronized_snapshot_deletion_rejected() -> None:
         require(not thread_errors, f"synchronized source-deletion worker failed: {thread_errors}")
 
 
+def verify_cross_partition_late_mutation_rejected() -> None:
+    """Mutate test-clean after its local validation while test-other finishes and require global revalidation failure."""
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        librispeech_root = build_valid_fixture(root)
+        speaker_id = speaker_ids("test-clean")[0]
+        chapter = chapter_id(speaker_id)
+        uid = utterance_id(speaker_id, chapter, 9999)
+        orphan_path = librispeech_root / "test-clean" / speaker_id / chapter / f"{uid}.flac"
+        clean_validated = threading.Event()
+        other_validation_started = threading.Event()
+        mutation_done = threading.Event()
+        thread_errors: list[BaseException] = []
+        original_revalidate = selector_module.require_snapshot_unchanged
+
+        def synchronized_revalidate(
+            root_fd: int,
+            snapshot: selector_module.SourceTreeSnapshot,
+            label: str,
+        ) -> None:
+            if label == "partition tree test-clean" and not clean_validated.is_set():
+                original_revalidate(root_fd, snapshot, label)
+                clean_validated.set()
+                return
+            if label == "partition tree test-other" and not other_validation_started.is_set():
+                other_validation_started.set()
+                if not mutation_done.wait(timeout=5):
+                    raise RuntimeError("cross-partition mutation worker did not finish")
+            original_revalidate(root_fd, snapshot, label)
+
+        def mutate_clean_during_other_validation() -> None:
+            try:
+                if not clean_validated.wait(timeout=5):
+                    raise RuntimeError("test-clean local validation did not complete")
+                if not other_validation_started.wait(timeout=5):
+                    raise RuntimeError("test-other validation did not start")
+                orphan_path.write_bytes(b"late-cross-partition-orphan")
+                mutation_done.set()
+            except BaseException as error:  # noqa: BLE001 - test thread reports exact synchronization failure.
+                thread_errors.append(error)
+                mutation_done.set()
+
+        selector_module.require_snapshot_unchanged = synchronized_revalidate
+        worker = threading.Thread(
+            target=mutate_clean_during_other_validation,
+            name="b2p03-cross-partition-late-mutation",
+        )
+        worker.start()
+        try:
+            try:
+                selector_module.select_subset(root)
+            except SelectionError as error:
+                require(
+                    "identity changed since validation" in str(error)
+                    or "changed after initial snapshot" in str(error),
+                    f"unexpected cross-partition late-mutation rejection reason: {error}",
+                )
+            else:
+                raise SystemExit("B2P03_SUBSET_SELECTION=FAIL: cross-partition late mutation unexpectedly accepted")
+        finally:
+            selector_module.require_snapshot_unchanged = original_revalidate
+            mutation_done.set()
+            worker.join(timeout=5)
+        require(not worker.is_alive(), "cross-partition late-mutation worker did not terminate")
+        require(not thread_errors, f"cross-partition late-mutation worker failed: {thread_errors}")
+
+
 def truncate_speaker_fixture(librispeech_root: Path, partition: str, speaker_id: str, keep: int) -> None:
     """Reduce one otherwise valid speaker to a smaller positive utterance count."""
     require(1 <= keep < 10, "variable-count fixture keep value must be within 1..9")
@@ -375,6 +442,8 @@ def verify_policy_boundaries() -> None:
     require("sha256_stable_fd" in source, "selector must hash the already-open validated source descriptor")
     require("sha256_file(" not in source, "selector must not reopen source audio by path for hashing")
     require("snapshot_inventory" in source and "snapshot.entries.items()" in source, "selector inventory must derive from validated snapshot")
+    require("PartitionDiscovery" in source, "selector must retain each partition snapshot beyond local discovery")
+    require("require_discovery_unchanged" in source, "selector must globally revalidate retained partition snapshots")
     require('partition_root.rglob("*.trans.txt")' not in source, "selector must not rediscover transcripts after snapshot")
     require('partition_root.rglob("*.flac")' not in source, "selector must not rediscover audio after snapshot")
 
@@ -455,6 +524,7 @@ def main() -> None:
     verify_symlinked_corpus_ancestor_rejected()
     verify_synchronized_regular_source_swap_rejected()
     verify_synchronized_snapshot_deletion_rejected()
+    verify_cross_partition_late_mutation_rejected()
     print("B2P03_SUBSET_SELECTION=PASS")
     print("B2P03_HASH_ORDERING=SHA256_FROZEN")
     print("B2P03_TRAVERSAL_ORDER_INDEPENDENT=YES")
@@ -468,6 +538,7 @@ def main() -> None:
     print("B2P03_SYMLINK_ANCESTRY_REJECTION=PASS")
     print("B2P03_SOURCE_RACE_REJECTION=PASS")
     print("B2P03_SNAPSHOT_DELETION_REJECTION=PASS")
+    print("B2P03_CROSS_PARTITION_LATE_MUTATION_REJECTION=PASS")
     print("B2P03_CANDIDATE_OUTPUT_DEPENDENCY=ABSENT")
     print("B2P03_SUBSET_MANIFEST_FROZEN=NO")
     print("B2P03_CANDIDATE_DECODING_STARTED=NO")
