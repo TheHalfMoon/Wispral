@@ -1,0 +1,74 @@
+name: Internal B2P07 Review Fix
+
+on:
+  push:
+    branches:
+      - docs/000b2-reconcile-after-b2p07
+    paths:
+      - '.github/workflows/internal-b2p07-review-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: docs/000b2-reconcile-after-b2p07
+          fetch-depth: 0
+
+      - name: Repair stale frontier and add regression
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          current_path = Path('specs/CURRENT.md')
+          current = current_path.read_text(encoding='utf-8')
+          old = ('B2P02 is canonical and post-merge verified. B2P03 deterministic subset-selection logic is canonical and post-merge verified at merge `83eca872148f329033c299f6671d275edf2d7b58`. '
+                 'B2P04 deterministic source-membership freeze is canonical and post-merge verified at merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` with manifest byte SHA-256 `5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb` and freeze digest `f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242`. '
+                 'B2P05 candidate identity revalidation is canonical and post-merge verified at merge `49538990fb4cf8223e9321261925206ed7ff5cee`. '
+                 'B2P06 attempt-bound preprocessing capture is canonical and post-merge verified at merge `3dceadd984ff307ce55745bf5f289890a2fac261` with evidence SHA-256 `d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011`; '
+                 'B2P07 is now authorized only to capture attempt-bound execution environment/hardware evidence while preserving CONTROLLED versus DIAGNOSTIC semantics. '
+                 'Candidate decoding, B2P08 attempt freeze, and primary decoding remain unauthorized during B2P07.')
+          new = ('B2P02 is canonical and post-merge verified. B2P03 deterministic subset-selection logic is canonical and post-merge verified at merge `83eca872148f329033c299f6671d275edf2d7b58`. '
+                 'B2P04 deterministic source-membership freeze is canonical and post-merge verified at merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` with manifest byte SHA-256 `5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb` and freeze digest `f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242`. '
+                 'B2P05 candidate identity revalidation is canonical and post-merge verified at merge `49538990fb4cf8223e9321261925206ed7ff5cee`. '
+                 'B2P06 attempt-bound preprocessing capture is canonical and post-merge verified at merge `3dceadd984ff307ce55745bf5f289890a2fac261` with evidence SHA-256 `d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011`. '
+                 'B2P07 attempt-bound execution-environment capture is canonical and post-merge verified at merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` with preserved raw/seal ancestry and `DIAGNOSTIC` performance semantics. '
+                 'B2P08 is now the only authorized bounded unit; candidate and primary decoding remain unauthorized until B2P08 is canonically qualified, post-merge verified, and reconciled.')
+          if current.count(old) != 1:
+              raise SystemExit(f'stale frontier replacement expected one match, found {current.count(old)}')
+          current_path.write_text(current.replace(old, new, 1), encoding='utf-8')
+
+          verifier_path = Path('research/000b2-public/verify_methodology.py')
+          verifier = verifier_path.read_text(encoding='utf-8')
+          anchor = '    require_absent(current, "current bounded execution unit `B2P07`", "current frontier stale unit")\n'
+          regression = (
+              anchor
+              + '    require_absent(current, "B2P07 is now authorized", "current frontier stale B2P07 authority wording")\n'
+              + '    require_absent(current, "B2P08 attempt freeze, and primary decoding remain unauthorized during B2P07", "current frontier stale B2P07 successor wording")\n'
+              + '    require_text(current, "B2P08 is now the only authorized bounded unit", "current frontier B2P08 baseline summary")\n'
+          )
+          if verifier.count(anchor) != 1:
+              raise SystemExit(f'verifier regression anchor expected one match, found {verifier.count(anchor)}')
+          verifier_path.write_text(verifier.replace(anchor, regression, 1), encoding='utf-8')
+          PY
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_methodology.py
+          git diff --check
+
+      - name: Commit final review repair
+        run: |
+          set -euo pipefail
+          rm .github/workflows/internal-b2p07-review-fix.yml
+          test -z "$(find research -type d -name __pycache__ -print -quit)"
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "docs(000b2): remove stale B2P07 frontier authority"
+          git push origin HEAD:docs/000b2-reconcile-after-b2p07
