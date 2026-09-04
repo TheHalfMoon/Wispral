@@ -22,6 +22,12 @@ jobs:
           python-version: '3.12'
       - name: Apply verified B2P08 reconciliation candidate
         run: python .github/internal-b2p08-reconciliation-v3.py
+      - name: Repair generated verifier ordering
+        run: |
+          set -euo pipefail
+          grep -F 'attempt.get("frozen") is (completed_through == "B2P08")' research/000b2-public/verify_subset_freeze.py
+          sed -i 's/attempt.get("frozen") is (completed_through == "B2P08")/attempt.get("frozen") is (readiness.get("completed_through") == "B2P08")/' research/000b2-public/verify_subset_freeze.py
+          grep -F 'attempt.get("frozen") is (readiness.get("completed_through") == "B2P08")' research/000b2-public/verify_subset_freeze.py
       - name: Verify reconciliation surfaces
         run: |
           set -euo pipefail
