@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import copy
 import importlib.util
 import json
 import tempfile
@@ -12,8 +13,10 @@ ROOT = Path(__file__).resolve().parents[2]
 HERE = ROOT / "research/000b2-public"
 ADAPTER_PATH = HERE / "score_public_wer.py"
 
+
 def fail(message: str) -> None:
     raise SystemExit(f"B2P08_PUBLIC_WER_VERIFIER=FAIL: {message}")
+
 
 def load_adapter():
     spec = importlib.util.spec_from_file_location("wispral_b2_public_wer", ADAPTER_PATH)
@@ -22,6 +25,7 @@ def load_adapter():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
 
 def synthetic_subset() -> dict:
     utterances = []
@@ -45,11 +49,56 @@ def synthetic_subset() -> dict:
         }
     }
 
+
+def expect_failure(callable_obj, label: str) -> None:
+    try:
+        callable_obj()
+    except Exception:
+        return
+    fail(f"{label} was accepted")
+
+
 def main() -> int:
     adapter = load_adapter()
     contract = adapter.verify_normalization_contract()
     if contract.get("algorithm") != "UNIT_COST_LEVENSHTEIN":
         fail("algorithm drift")
+
+    canonical_subset = adapter.load_json(adapter.DEFAULT_SUBSET, "canonical subset")
+    if not isinstance(canonical_subset, dict):
+        fail("canonical subset root drift")
+    adapter.verify_canonical_subset(canonical_subset)
+
+    tampered_subset = copy.deepcopy(canonical_subset)
+    first_partition = tampered_subset["membership"]["partitions"][0]
+    first_speaker = first_partition["speakers"][0]
+    first_utterance = first_speaker["utterances"][0]
+    first_utterance["reference_transcript"] += " TAMPERED"
+    expect_failure(
+        lambda: adapter.verify_canonical_subset(tampered_subset),
+        "tampered canonical subset with copied freeze digest",
+    )
+
+    original_scorer_path = adapter.SCORER_PATH
+    original_config_path = adapter.SCORER_CONFIG_PATH
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp = Path(temp_dir)
+        tampered_scorer = temp / "scorer.py"
+        tampered_scorer.write_bytes(original_scorer_path.read_bytes() + b"\n# tampered\n")
+        adapter.SCORER_PATH = tampered_scorer
+        expect_failure(adapter.load_core_scorer, "tampered core scorer implementation")
+        adapter.SCORER_PATH = original_scorer_path
+
+        tampered_config = temp / "scorer-config.json"
+        config = json.loads(original_config_path.read_text(encoding="utf-8"))
+        config["ordinary_wer"]["casefold"] = False
+        tampered_config.write_text(
+            json.dumps(config, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        adapter.SCORER_CONFIG_PATH = tampered_config
+        expect_failure(adapter.verify_normalization_contract, "tampered core scorer config")
+        adapter.SCORER_CONFIG_PATH = original_config_path
 
     subset = synthetic_subset()
     predictions = []
@@ -88,25 +137,24 @@ def main() -> int:
 
     invalid = [dict(row) for row in predictions]
     invalid[4] = {"utterance_id": "u-004", "outcome": "TIMEOUT", "hypothesis": "leak"}
-    try:
-        adapter.score_predictions(subset, invalid, require_canonical_subset=False)
-    except Exception:
-        pass
-    else:
-        fail("non-success transcript leakage was accepted")
+    expect_failure(
+        lambda: adapter.score_predictions(subset, invalid, require_canonical_subset=False),
+        "non-success transcript leakage",
+    )
 
     missing = predictions[:-1]
-    try:
-        adapter.score_predictions(subset, missing, require_canonical_subset=False)
-    except Exception:
-        pass
-    else:
-        fail("missing prediction was accepted")
+    expect_failure(
+        lambda: adapter.score_predictions(subset, missing, require_canonical_subset=False),
+        "missing prediction",
+    )
 
     print("B2P08_PUBLIC_WER_VERIFIER=PASS")
     print("B2P08_PUBLIC_WER_NORMALIZATION=NFC_CASEFOLD_PUNCT_SYMBOL_TO_SPACE")
     print("B2P08_PUBLIC_WER_ALGORITHM=UNIT_COST_LEVENSHTEIN")
+    print("B2P08_PUBLIC_WER_CANONICAL_SUBSET_IDENTITY=BOUND")
+    print("B2P08_PUBLIC_WER_CORE_SCORER_IDENTITY=BOUND")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

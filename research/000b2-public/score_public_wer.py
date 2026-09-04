@@ -9,6 +9,8 @@ reference text or vocabulary to a decoder and performs no network access.
 from __future__ import annotations
 
 import argparse
+import copy
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -20,6 +22,8 @@ SCORER_PATH = ROOT / "research/000b2-entry/scorer.py"
 SCORER_CONFIG_PATH = ROOT / "research/000b2-entry/scorer-config.json"
 DEFAULT_SUBSET = HERE / "subset-manifest.json"
 EXPECTED_SUBSET_FREEZE_DIGEST = "f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242"
+EXPECTED_CORE_SCORER_SHA256 = "7328cb34610218a703544a0de6dbfd5e0980b0a62131966119bca648855260e1"
+EXPECTED_CORE_CONFIG_SHA256 = "4d97d6b9e563bbbaf6cf455597f4c56e44c459a41c25d85f2f069c5fcbeec8e3"
 ALLOWED_OUTCOMES = {
     "SUCCESS",
     "TIMEOUT",
@@ -28,12 +32,15 @@ ALLOWED_OUTCOMES = {
     "MISSING_OUTPUT",
 }
 
+
 class PublicWerError(ValueError):
     """Raised when public WER inputs violate the frozen scoring contract."""
+
 
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise PublicWerError(message)
+
 
 def load_json(path: Path, label: str) -> Any:
     try:
@@ -41,14 +48,43 @@ def load_json(path: Path, label: str) -> Any:
     except (OSError, json.JSONDecodeError) as exc:
         raise PublicWerError(f"unable to load {label}: {path}: {exc}") from exc
 
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        while chunk := handle.read(1024 * 1024):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def canonical_json_bytes(value: dict[str, Any]) -> bytes:
+    return (
+        json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n"
+    ).encode("utf-8")
+
+
+def verify_core_scorer_identity() -> None:
+    require(
+        sha256_file(SCORER_PATH) == EXPECTED_CORE_SCORER_SHA256,
+        "canonical B2 scorer implementation bytes drift",
+    )
+    require(
+        sha256_file(SCORER_CONFIG_PATH) == EXPECTED_CORE_CONFIG_SHA256,
+        "canonical B2 scorer config bytes drift",
+    )
+
+
 def load_core_scorer():
+    verify_core_scorer_identity()
     spec = importlib.util.spec_from_file_location("wispral_b2_core_scorer", SCORER_PATH)
     require(spec is not None and spec.loader is not None, "unable to load canonical B2 scorer")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
+
 def verify_normalization_contract() -> dict[str, Any]:
+    verify_core_scorer_identity()
     config = load_json(SCORER_CONFIG_PATH, "scorer config")
     require(isinstance(config, dict), "scorer config root must be an object")
     ordinary = config.get("ordinary_wer")
@@ -63,12 +99,25 @@ def verify_normalization_contract() -> dict[str, Any]:
     require(ordinary == source_contract, "canonical ordinary-WER normalization drift")
     return {key: value for key, value in source_contract.items() if key != "panels"}
 
+
+def subset_freeze_digest(subset: dict[str, Any]) -> str:
+    projection = copy.deepcopy(subset)
+    require("freeze_digest_sha256" in projection, "public P0 subset freeze digest field missing")
+    projection["freeze_digest_sha256"] = None
+    return hashlib.sha256(canonical_json_bytes(projection)).hexdigest()
+
+
 def verify_canonical_subset(subset: dict[str, Any]) -> None:
     require(subset.get("frozen") is True, "public P0 subset must remain frozen")
     require(
         subset.get("freeze_digest_sha256") == EXPECTED_SUBSET_FREEZE_DIGEST,
-        "public P0 subset freeze digest drift",
+        "public P0 subset declared freeze digest drift",
     )
+    require(
+        subset_freeze_digest(subset) == EXPECTED_SUBSET_FREEZE_DIGEST,
+        "public P0 subset content identity drift",
+    )
+
 
 def flatten_references(subset: dict[str, Any]) -> dict[str, str]:
     membership = subset.get("membership")
@@ -95,8 +144,10 @@ def flatten_references(subset: dict[str, Any]) -> dict[str, str]:
     require(len(references) == 240, f"public P0 subset must contain exactly 240 utterances, found {len(references)}")
     return references
 
+
 def ratio(numerator: int, denominator: int):
     return None if denominator == 0 else numerator / denominator
+
 
 def score_predictions(
     subset: dict[str, Any],
@@ -175,6 +226,7 @@ def score_predictions(
         "per_utterance": per_utterance,
     }
 
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--subset", type=Path, default=DEFAULT_SUBSET)
@@ -192,6 +244,7 @@ def main() -> int:
     print(f"UTTERANCES={result['utterance_count']}")
     print(f"REFERENCE_WORDS={result['reference_words']}")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

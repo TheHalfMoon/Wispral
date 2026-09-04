@@ -70,7 +70,7 @@
     "primary_decoding_started": false,
     "raw_outputs_and_failures_must_be_preserved": true
   },
-  "freeze_digest_sha256": "afcafc5725774998a2f97ffa34aea9fcfc7f0856f633b3e51be9af605745d6a5",
+  "freeze_digest_sha256": "af4d5009e293daef5d8f629ca91af653f5f591448cd94d4555473a51e2d1da86",
   "frozen": true,
   "lane": "PUBLIC_CORPUS",
   "phase": "PRE_PRIMARY_FROZEN",
@@ -97,7 +97,7 @@
     },
     "public_p0_relabels_source_panel": false,
     "public_wer_adapter_path": "research/000b2-public/score_public_wer.py",
-    "public_wer_adapter_sha256": "6e8bc88a7d83e265c39c8196576c0b1a828794110c4739052be9474d7f3af5f2",
+    "public_wer_adapter_sha256": "581a0e4b0bb91d55a252b92871dbb1246b5fbc4466a5d94bceb35862744fc023",
     "result_driven_changes_allowed": false
   },
   "task": "B2P08"
