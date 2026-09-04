@@ -1,0 +1,125 @@
+name: Internal B2E01 Evidence Seal
+
+on:
+  push:
+    branches:
+      - research/000b2-b2e01-moonshine-compact
+    paths:
+      - '.github/workflows/internal-b2e01-seal.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: b2e01-evidence-seal
+  cancel-in-progress: false
+
+jobs:
+  seal-b2e01-evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      EXPECTED_SOURCE_REVISION: 1a39e9c177fce1f45c46854ffc58640a35dbe2d0
+      EXPECTED_RUN_ID: '33928586213'
+      EXPECTED_RUN_ATTEMPT: '1'
+      EXPECTED_JOB_ID: '101202392820'
+      EXPECTED_ARTIFACT_ID: '9957837509'
+      EXPECTED_ARTIFACT_NAME: b2e01-moonshine-compact-1a39e9c177fce1f45c46854ffc58640a35dbe2d0
+      EXPECTED_ARTIFACT_ZIP_SHA256: cf617a2453048bcb0dbd17b8a2a62389d5f90778bd9a79d4265bfc6f306b1367
+      EXPECTED_EVIDENCE_SHA256: af2c604a3f402789d69e424291c5f41a24eca0f575b1b26a3822da73dd0c4a8e
+      EXPECTED_PAYLOAD_SHA256: a8a15d33e9a2c0b2ab3c2c087f20b645175bf027b8aa0f4b7a954a69af5a3198
+    steps:
+      - name: Checkout exact sealing head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Download exact captured artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/b2e01-seal"
+          gh api \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "/repos/$GITHUB_REPOSITORY/actions/artifacts/$EXPECTED_ARTIFACT_ID/zip" \
+            > "$RUNNER_TEMP/b2e01-seal/artifact.zip"
+          echo "$EXPECTED_ARTIFACT_ZIP_SHA256  $RUNNER_TEMP/b2e01-seal/artifact.zip" | sha256sum --check --strict
+          unzip -q "$RUNNER_TEMP/b2e01-seal/artifact.zip" -d "$RUNNER_TEMP/b2e01-seal/unpacked"
+          test "$(find "$RUNNER_TEMP/b2e01-seal/unpacked" -maxdepth 1 -type f | wc -l)" -eq 1
+          test -f "$RUNNER_TEMP/b2e01-seal/unpacked/b2e01-moonshine-compact.json"
+          echo "$EXPECTED_EVIDENCE_SHA256  $RUNNER_TEMP/b2e01-seal/unpacked/b2e01-moonshine-compact.json" | sha256sum --check --strict
+
+      - name: Verify raw execution evidence before sealing
+        run: |
+          set -euo pipefail
+          python research/000b2-public/verify_b2e01.py \
+            --evidence "$RUNNER_TEMP/b2e01-seal/unpacked/b2e01-moonshine-compact.json"
+
+      - name: Seal raw evidence and GitHub provenance
+        run: |
+          set -euo pipefail
+          cp "$RUNNER_TEMP/b2e01-seal/unpacked/b2e01-moonshine-compact.json" \
+            research/000b2-public/b2e01-moonshine-compact.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          record = {
+              "schema_version": "000b2-public-b2e01-provenance-v1",
+              "task": "B2E01",
+              "attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+              "candidate_id": "moonshine-compact",
+              "capture": {
+                  "source_revision": os.environ["EXPECTED_SOURCE_REVISION"],
+                  "workflow_name": "Internal B2E01 Public C0 Capture",
+                  "run_id": int(os.environ["EXPECTED_RUN_ID"]),
+                  "run_attempt": int(os.environ["EXPECTED_RUN_ATTEMPT"]),
+                  "job_id": int(os.environ["EXPECTED_JOB_ID"]),
+                  "artifact_id": int(os.environ["EXPECTED_ARTIFACT_ID"]),
+                  "artifact_name": os.environ["EXPECTED_ARTIFACT_NAME"],
+                  "artifact_zip_sha256": os.environ["EXPECTED_ARTIFACT_ZIP_SHA256"],
+              },
+              "evidence": {
+                  "path": "research/000b2-public/b2e01-moonshine-compact.json",
+                  "raw_file_sha256": os.environ["EXPECTED_EVIDENCE_SHA256"],
+                  "payload_sha256": os.environ["EXPECTED_PAYLOAD_SHA256"],
+                  "input_count": 240,
+                  "decoded_count": 240,
+                  "failure_count": 0,
+              },
+              "claims": {
+                  "timing_semantics": "DIAGNOSTIC_ONLY",
+                  "comparative_performance_authorized": False,
+                  "b2e02_authorized": False,
+                  "human_developer_speech_accuracy_evidence": "ABSENT",
+                  "production_stt_selected": False,
+                  "product_code_authorized": False,
+              },
+              "provenance_status": "RECORDED_FROM_EXACT_GITHUB_ACTIONS_RUN_AND_ARTIFACT_METADATA",
+          }
+          Path("research/000b2-public/b2e01-provenance.json").write_text(
+              json.dumps(record, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+          test "$(sha256sum research/000b2-public/b2e01-moonshine-compact.json | cut -d' ' -f1)" = "$EXPECTED_EVIDENCE_SHA256"
+
+      - name: Commit sealed evidence forward-only
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            research/000b2-public/b2e01-moonshine-compact.json \
+            research/000b2-public/b2e01-provenance.json
+          git diff --cached --check
+          git diff --cached --quiet && { echo 'expected sealed evidence changes are absent' >&2; exit 1; }
+          git commit -m 'research(000b2): seal B2E01 moonshine-compact evidence'
+          git push origin HEAD:research/000b2-b2e01-moonshine-compact
