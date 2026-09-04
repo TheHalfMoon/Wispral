@@ -611,6 +611,9 @@ def main() -> None:
     require_text(current, "Execute and canonically qualify `B2P08` only", "current frontier next action")
     require_text(current, "Candidate and primary decoding remain unauthorized", "current frontier successor boundary")
     require_absent(current, "current bounded execution unit `B2P07`", "current frontier stale unit")
+    require_absent(current, "B2P07 is now authorized", "current frontier stale B2P07 authority wording")
+    require_absent(current, "B2P08 attempt freeze, and primary decoding remain unauthorized during B2P07", "current frontier stale B2P07 successor wording")
+    require_text(current, "B2P08 is now the only authorized bounded unit", "current frontier B2P08 baseline summary")
 
     require_text(current_state, B2P01_CANONICAL_MERGE, "current state B2P01 canonical proof")
     require_text(current_state, B2P02_CANONICAL_MERGE, "current state B2P02 canonical proof")
