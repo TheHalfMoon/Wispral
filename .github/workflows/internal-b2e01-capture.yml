@@ -1,6 +1,13 @@
 name: Internal B2E01 Public C0 Capture
 
 on:
+  push:
+    branches:
+      - research/000b2-b2e01-moonshine-compact
+    paths:
+      - '.github/workflows/internal-b2e01-capture.yml'
+      - 'research/000b2-public/decode_b2e01.py'
+      - 'research/000b2-public/verify_b2e01.py'
   pull_request:
     paths:
       - '.github/workflows/internal-b2e01-capture.yml'
@@ -19,7 +26,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     env:
-      B2E01_REVISION: ${{ github.event.pull_request.head.sha }}
+      B2E01_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
       B2E01_CONTAINER_IMAGE: python:3.12.11-bookworm@sha256:13c9584604a99ca134c4f41800f74ffc64ee6ac8cf555cf1e704a6087fc84f12
       FFMPEG_TAG: n9.0.1
       FFMPEG_REV: bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa
