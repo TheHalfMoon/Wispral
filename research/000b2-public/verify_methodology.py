@@ -46,6 +46,19 @@ B2P05_POSTMERGE_TRUSTED_MATERIALIZATION_RUN_ID = 33803832706
 B2P05_POSTMERGE_TRUSTED_PARTICIPANT_MATERIALS_RUN_ID = 33803832711
 B2P05_POSTMERGE_TRUSTED_PARTICIPANT_POLICY_RUN_ID = 33803832717
 B2P05_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID = 33803832657
+B2P06_CANONICAL_MERGE = "3dceadd984ff307ce55745bf5f289890a2fac261"
+B2P06_QUALIFIED_HEAD = "c5501daf14038ced0ba3ad2de1cad92cfb38302a"
+B2P06_EVIDENCE_SHA256 = "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011"
+B2P06_POSTMERGE_PREPROCESSING_RUN_ID = 33814736588
+B2P06_POSTMERGE_PREPROCESSING_JOB_ID = 100844238206
+B2P06_POSTMERGE_PREPROCESSING_ARTIFACT_ID = 9916141620
+B2P06_POSTMERGE_PREPROCESSING_ARTIFACT_DIGEST = "sha256:d0a6918fc7bf48e93053fab4fb3286c250a6c980456d893bb9c286f9697130b9"
+B2P06_POSTMERGE_CANDIDATE_REVALIDATION_RUN_ID = 33814736795
+B2P06_POSTMERGE_METHODOLOGY_RUN_ID = 33814736759
+B2P06_POSTMERGE_TRUSTED_MATERIALIZATION_RUN_ID = 33814736691
+B2P06_POSTMERGE_TRUSTED_PARTICIPANT_MATERIALS_RUN_ID = 33814736716
+B2P06_POSTMERGE_TRUSTED_PARTICIPANT_POLICY_RUN_ID = 33814736734
+B2P06_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID = 33814736663
 
 EXPECTED_ARCHIVES: dict[str, dict[str, Any]] = {
     "test-clean.tar.gz": {
@@ -166,7 +179,7 @@ def main() -> None:
     require(readiness.get("schema_version") == "000b2-public-readiness-v2", "readiness schema version drift")
     require(readiness.get("lane") == "PUBLIC_CORPUS", "readiness lane drift")
     require(readiness.get("state") == "READY", "public execution readiness must remain explicit")
-    require(readiness.get("completed_through") == "B2P05", "readiness completed_through must be B2P05")
+    require(readiness.get("completed_through") == "B2P06", "readiness completed_through must be B2P06")
 
     historical = readiness.get("historical_private_collection_lane")
     require(isinstance(historical, dict), "historical private lane must be an object")
@@ -219,7 +232,7 @@ def main() -> None:
     require_exact_keys(preprocessing, {"required_tool", "attempt_bound_capture_required", "resolved"}, "preprocessing")
     require(preprocessing.get("required_tool") == "FFmpeg 9.0.1", "preprocessing tool drift")
     require_bool(preprocessing, "attempt_bound_capture_required", True, "preprocessing")
-    require_bool(preprocessing, "resolved", False, "preprocessing")
+    require_bool(preprocessing, "resolved", True, "preprocessing")
 
     environment = readiness.get("execution_environment")
     require(isinstance(environment, dict), "execution environment contract must be an object")
@@ -243,10 +256,10 @@ def main() -> None:
     require_bool(guards, "product_code_authorized", False, "claim_guards")
 
     expected_next_action = (
-        "Execute B2P06 only: capture attempt-bound FFmpeg 9.0.1 preprocessing identity, configuration, and execution evidence while preserving the frozen B2P04 source membership and canonical B2P05 candidate identities. "
-        "Do not begin B2P07 environment capture, B2P08 attempt freeze, or candidate decoding until B2P06 is canonical."
+        "Execute B2P07 only: capture attempt-bound execution environment and hardware facts while preserving CONTROLLED versus DIAGNOSTIC semantics and the canonical B2P06 preprocessing evidence. "
+        "Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical."
     )
-    require(readiness.get("next_action") == expected_next_action, "next action must be exact B2P06-only instruction")
+    require(readiness.get("next_action") == expected_next_action, "next action must be exact B2P07-only instruction")
 
     corpus_source = load_object(corpus_source_path, "corpus-source")
     require_exact_keys(
@@ -513,14 +526,14 @@ def main() -> None:
     for task_id in ALL_TASK_IDS:
         matching_lines = [line for line in task_lines if f"`{task_id}`" in line]
         require(len(matching_lines) == 1, f"{task_id} must appear in exactly one checklist line")
-        expected_marker = "- [x]" if task_id in {"B2P01", "B2P02", "B2P03", "B2P04", "B2P05"} else "- [ ]"
+        expected_marker = "- [x]" if task_id in {"B2P01", "B2P02", "B2P03", "B2P04", "B2P05", "B2P06"} else "- [ ]"
         require(matching_lines[0].startswith(f"{expected_marker} `{task_id}`"), f"{task_id} checklist state must be {expected_marker}")
     require_text(tasks, "- [x] `B2P01` Record exact OpenSLR SLR12 source/license facts and official checksums in machine-readable provenance.", "public child tasks")
     require_text(tasks, "- [x] `B2P02` Materialize `test-clean.tar.gz` and `test-other.tar.gz` from an approved source or official mirror; verify official MD5 and record exact archive SHA-256.", "public child tasks")
     require_text(tasks, "- [x] `B2P03` Implement deterministic speaker/utterance subset selection independent of candidate outputs.", "public child tasks")
     require_text(tasks, "- [x] `B2P04` Freeze selected public-human subset manifest and manifest digest before candidate decoding.", "public child tasks")
     require_text(tasks, "- [x] `B2P05` Revalidate the six canonical candidate cells and artifact/runtime/model identities against live canonical evidence.", "public child tasks")
-    require_text(tasks, "- [ ] `B2P06` Capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration and execution evidence.", "public child tasks")
+    require_text(tasks, "- [x] `B2P06` Capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration and execution evidence.", "public child tasks")
 
     for phrase in (
         "These execution tasks become authorized only after the public-corpus amendment and frontier reconciliation are canonical on `main`.",
@@ -562,10 +575,17 @@ def main() -> None:
     require_text(current, f"job `{B2P05_POSTMERGE_LIVE_JOB_ID}`", "current frontier B2P05 live post-merge job proof")
     require_text(current, f"run `{B2P05_POSTMERGE_METHODOLOGY_RUN_ID}`", "current frontier B2P05 methodology post-merge run proof")
     require_text(current, f"job `{B2P05_POSTMERGE_METHODOLOGY_JOB_ID}`", "current frontier B2P05 methodology post-merge job proof")
-    require_text(current, "current bounded execution unit `B2P06`", "current frontier")
-    require_text(current, "Execute and canonically qualify `B2P06` only", "current frontier next action")
-    require_text(current, "B2P07 remains non-authorized", "current frontier successor boundary")
-    require_absent(current, "current bounded execution unit `B2P05`", "current frontier stale unit")
+    require_text(current, B2P06_CANONICAL_MERGE, "current frontier B2P06 canonical proof")
+    require_text(current, B2P06_QUALIFIED_HEAD, "current frontier B2P06 qualified-head proof")
+    require_text(current, f"run `{B2P06_POSTMERGE_PREPROCESSING_RUN_ID}`", "current frontier B2P06 preprocessing post-merge run proof")
+    require_text(current, f"job `{B2P06_POSTMERGE_PREPROCESSING_JOB_ID}`", "current frontier B2P06 preprocessing post-merge job proof")
+    require_text(current, f"artifact `{B2P06_POSTMERGE_PREPROCESSING_ARTIFACT_ID}`", "current frontier B2P06 preprocessing artifact proof")
+    require_text(current, B2P06_POSTMERGE_PREPROCESSING_ARTIFACT_DIGEST, "current frontier B2P06 artifact digest proof")
+    require_text(current, B2P06_EVIDENCE_SHA256, "current frontier B2P06 evidence digest proof")
+    require_text(current, "current bounded execution unit `B2P07`", "current frontier")
+    require_text(current, "Execute and canonically qualify `B2P07` only", "current frontier next action")
+    require_text(current, "B2P08 remains non-authorized", "current frontier successor boundary")
+    require_absent(current, "current bounded execution unit `B2P06`", "current frontier stale unit")
 
     require_text(current_state, B2P01_CANONICAL_MERGE, "current state B2P01 canonical proof")
     require_text(current_state, B2P02_CANONICAL_MERGE, "current state B2P02 canonical proof")
@@ -599,8 +619,21 @@ def main() -> None:
     require_text(current_state, f"run `{B2P05_POSTMERGE_TRUSTED_PARTICIPANT_MATERIALS_RUN_ID}`", "current state B2P05 trusted participant-materials run proof")
     require_text(current_state, f"run `{B2P05_POSTMERGE_TRUSTED_PARTICIPANT_POLICY_RUN_ID}`", "current state B2P05 trusted participant-policy run proof")
     require_text(current_state, f"run `{B2P05_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID}`", "current state B2P05 trusted human-authority run proof")
-    require_text(current_state, "current bounded execution unit is `B2P06`", "current state")
-    require_absent(current_state, "current bounded execution unit is `B2P05`", "current state stale unit")
+    require_text(current_state, B2P06_CANONICAL_MERGE, "current state B2P06 canonical proof")
+    require_text(current_state, B2P06_QUALIFIED_HEAD, "current state B2P06 qualified-head proof")
+    require_text(current_state, f"run `{B2P06_POSTMERGE_PREPROCESSING_RUN_ID}`", "current state B2P06 preprocessing post-merge run proof")
+    require_text(current_state, f"job `{B2P06_POSTMERGE_PREPROCESSING_JOB_ID}`", "current state B2P06 preprocessing post-merge job proof")
+    require_text(current_state, f"artifact `{B2P06_POSTMERGE_PREPROCESSING_ARTIFACT_ID}`", "current state B2P06 preprocessing artifact proof")
+    require_text(current_state, B2P06_POSTMERGE_PREPROCESSING_ARTIFACT_DIGEST, "current state B2P06 artifact digest proof")
+    require_text(current_state, B2P06_EVIDENCE_SHA256, "current state B2P06 evidence digest proof")
+    require_text(current_state, f"run `{B2P06_POSTMERGE_CANDIDATE_REVALIDATION_RUN_ID}`", "current state B2P06 candidate-revalidation run proof")
+    require_text(current_state, f"run `{B2P06_POSTMERGE_METHODOLOGY_RUN_ID}`", "current state B2P06 methodology run proof")
+    require_text(current_state, f"run `{B2P06_POSTMERGE_TRUSTED_MATERIALIZATION_RUN_ID}`", "current state B2P06 trusted-materialization run proof")
+    require_text(current_state, f"run `{B2P06_POSTMERGE_TRUSTED_PARTICIPANT_MATERIALS_RUN_ID}`", "current state B2P06 participant-materials run proof")
+    require_text(current_state, f"run `{B2P06_POSTMERGE_TRUSTED_PARTICIPANT_POLICY_RUN_ID}`", "current state B2P06 participant-policy run proof")
+    require_text(current_state, f"run `{B2P06_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID}`", "current state B2P06 human-authority run proof")
+    require_text(current_state, "current bounded execution unit is `B2P07`", "current state")
+    require_absent(current_state, "current bounded execution unit is `B2P06`", "current state stale unit")
 
     for label, text in (("parent spec", parent_spec), ("parent plan", parent_plan), ("parent tasks", parent_tasks)):
         require_text(text, "`000B2-unbiased-stt-bakeoff`", label)
@@ -669,7 +702,11 @@ def main() -> None:
     print(f"B2P05_CANONICAL_MERGE={B2P05_CANONICAL_MERGE}")
     print(f"B2P05_POSTMERGE_REVALIDATION_RUN_ID={B2P05_POSTMERGE_REVALIDATION_RUN_ID}")
     print(f"B2P05_POSTMERGE_METHODOLOGY_RUN_ID={B2P05_POSTMERGE_METHODOLOGY_RUN_ID}")
-    print("B2P06_FRONTIER=AUTHORIZED")
+    print("B2P06_PREPROCESSING_CAPTURE=PASS")
+    print(f"B2P06_CANONICAL_MERGE={B2P06_CANONICAL_MERGE}")
+    print(f"B2P06_POSTMERGE_PREPROCESSING_RUN_ID={B2P06_POSTMERGE_PREPROCESSING_RUN_ID}")
+    print(f"B2P06_EVIDENCE_SHA256={B2P06_EVIDENCE_SHA256}")
+    print("B2P07_FRONTIER=AUTHORIZED")
     print("STRUCTURED_READINESS_GUARDS=PASS")
     print("P0_D0_SEPARATION=PASS")
     print("PRE_DECODE_FREEZE_ORDERING=PASS")

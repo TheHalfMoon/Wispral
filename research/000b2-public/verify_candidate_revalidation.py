@@ -107,7 +107,7 @@ def family_map(registry: dict[str, Any]) -> dict[str, dict[str, Any]]:
 
 
 def verify_readiness_phase(base_readiness: dict[str, Any], readiness: dict[str, Any]) -> str:
-    """Accept only B2P05 execution or its canonical reconciliation, with later gates closed."""
+    """Accept B2P05 execution and canonical B2P05/B2P06 reconciliation phases with later gates closed."""
     require(base_readiness.get("state") == "READY", "canonical base public readiness must remain READY")
     require(base_readiness.get("completed_through") == "B2P04", "canonical B2P05 base must remain completed through B2P04")
     base_next = base_readiness.get("next_action")
@@ -115,7 +115,7 @@ def verify_readiness_phase(base_readiness: dict[str, Any], readiness: dict[str, 
 
     require(readiness.get("state") == "READY", "public readiness must remain READY")
     completed_through = readiness.get("completed_through")
-    require(completed_through in {"B2P04", "B2P05"}, "unsupported B2P05 readiness phase")
+    require(completed_through in {"B2P04", "B2P05", "B2P06"}, "unsupported B2P05/B2P06 readiness phase")
 
     public = readiness.get("public_human_baseline")
     preprocessing = readiness.get("preprocessing")
@@ -123,7 +123,7 @@ def verify_readiness_phase(base_readiness: dict[str, Any], readiness: dict[str, 
     attempt = readiness.get("attempt_manifest")
     guards = readiness.get("claim_guards")
     require(isinstance(public, dict) and public.get("candidate_decoding_started") is False, "candidate decoding must remain closed through B2P05 reconciliation")
-    require(isinstance(preprocessing, dict) and preprocessing.get("resolved") is False, "B2P06 preprocessing capture started before canonical B2P05 reconciliation")
+    require(isinstance(preprocessing, dict), "preprocessing readiness missing")
     require(isinstance(environment, dict) and environment.get("resolved") is False, "B2P07 environment capture started before canonical B2P05 reconciliation")
     require(isinstance(attempt, dict) and attempt.get("primary_decoding_started") is False and attempt.get("frozen") is False, "B2P08 attempt state advanced before canonical B2P05 reconciliation")
     require(isinstance(guards, dict), "claim guards missing")
@@ -132,13 +132,21 @@ def verify_readiness_phase(base_readiness: dict[str, Any], readiness: dict[str, 
 
     next_action = readiness.get("next_action")
     if completed_through == "B2P04":
+        require(preprocessing.get("resolved") is False, "B2P06 preprocessing capture started before B2P05 execution")
         require(isinstance(next_action, str) and next_action.startswith("Execute B2P05 only:"), "B2P05 execution phase next action drift")
         require("Do not begin candidate decoding, B2P06 preprocessing capture, or primary decoding until B2P05 is canonical." in next_action, "B2P05 execution boundary drift")
         return "EXECUTION"
 
-    require(isinstance(next_action, str) and next_action.startswith("Execute B2P06 only:"), "B2P05 reconciliation must authorize B2P06 only")
-    require("Do not begin B2P07 environment capture, B2P08 attempt freeze, or candidate decoding until B2P06 is canonical." in next_action, "B2P06 successor boundary drift")
-    return "RECONCILED"
+    if completed_through == "B2P05":
+        require(preprocessing.get("resolved") is False, "B2P06 preprocessing must remain unresolved at the B2P05 frontier")
+        require(isinstance(next_action, str) and next_action.startswith("Execute B2P06 only:"), "B2P05 reconciliation must authorize B2P06 only")
+        require("Do not begin B2P07 environment capture, B2P08 attempt freeze, or candidate decoding until B2P06 is canonical." in next_action, "B2P06 successor boundary drift")
+        return "B2P05_RECONCILED"
+
+    require(preprocessing.get("resolved") is True, "B2P06 reconciliation must mark preprocessing resolved")
+    require(isinstance(next_action, str) and next_action.startswith("Execute B2P07 only:"), "B2P06 reconciliation must authorize B2P07 only")
+    require("Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical." in next_action, "B2P07 successor boundary drift")
+    return "B2P06_RECONCILED"
 
 
 def verify_static_authority(trusted_base_root: Path) -> tuple[dict[str, Any], dict[str, Any]]:

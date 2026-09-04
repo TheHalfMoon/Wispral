@@ -2,7 +2,7 @@
   "schema_version": "000b2-public-readiness-v2",
   "lane": "PUBLIC_CORPUS",
   "state": "READY",
-  "completed_through": "B2P05",
+  "completed_through": "B2P06",
   "historical_private_collection_lane": {
     "preserved": true,
     "executed": false,
@@ -47,7 +47,7 @@
   "preprocessing": {
     "required_tool": "FFmpeg 9.0.1",
     "attempt_bound_capture_required": true,
-    "resolved": false
+    "resolved": true
   },
   "execution_environment": {
     "attempt_bound_capture_required": true,
@@ -64,5 +64,5 @@
     "production_stt_selected": false,
     "product_code_authorized": false
   },
-  "next_action": "Execute B2P06 only: capture attempt-bound FFmpeg 9.0.1 preprocessing identity, configuration, and execution evidence while preserving the frozen B2P04 source membership and canonical B2P05 candidate identities. Do not begin B2P07 environment capture, B2P08 attempt freeze, or candidate decoding until B2P06 is canonical."
+  "next_action": "Execute B2P07 only: capture attempt-bound execution environment and hardware facts while preserving CONTROLLED versus DIAGNOSTIC semantics and the canonical B2P06 preprocessing evidence. Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical."
 }
