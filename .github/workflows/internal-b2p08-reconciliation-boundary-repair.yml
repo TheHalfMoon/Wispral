@@ -1,0 +1,87 @@
+name: Internal B2P08 Reconciliation Boundary Repair
+
+on:
+  push:
+    branches:
+      - research/000b2-b2p08-reconciliation
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/000b2-b2p08-reconciliation
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          ref: 6135cd67c1b31e0be0b82ba202b6a6770d34b68d
+          path: trusted-base
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore historical successor-boundary assertions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('research/000b2-public/verify_candidate_revalidation.py')
+          text = path.read_text(encoding='utf-8')
+          repairs = [
+              (
+                  '        require(isinstance(next_action, str) and next_action.startswith("Execute B2P05 only:"), "B2P05 execution phase next action drift")\n        return "EXECUTION"\n',
+                  '        require(isinstance(next_action, str) and next_action.startswith("Execute B2P05 only:"), "B2P05 execution phase next action drift")\n        require("Do not begin candidate decoding, B2P06 preprocessing capture, or primary decoding until B2P05 is canonical." in next_action, "B2P05 execution boundary drift")\n        return "EXECUTION"\n',
+              ),
+              (
+                  '        require(isinstance(next_action, str) and next_action.startswith("Execute B2P06 only:"), "B2P05 reconciliation must authorize B2P06 only")\n        return "B2P05_RECONCILED"\n',
+                  '        require(isinstance(next_action, str) and next_action.startswith("Execute B2P06 only:"), "B2P05 reconciliation must authorize B2P06 only")\n        require("Do not begin B2P07 environment capture, B2P08 attempt freeze, or candidate decoding until B2P06 is canonical." in next_action, "B2P06 successor boundary drift")\n        return "B2P05_RECONCILED"\n',
+              ),
+              (
+                  '        require(isinstance(next_action, str) and next_action.startswith("Execute B2P07 only:"), "B2P06 reconciliation must authorize B2P07 only")\n        return "B2P06_RECONCILED"\n',
+                  '        require(isinstance(next_action, str) and next_action.startswith("Execute B2P07 only:"), "B2P06 reconciliation must authorize B2P07 only")\n        require("Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical." in next_action, "B2P07 successor boundary drift")\n        return "B2P06_RECONCILED"\n',
+              ),
+              (
+                  '        require(isinstance(next_action, str) and next_action.startswith("Execute B2P08 only:"), "B2P07 reconciliation must authorize B2P08 only")\n        return "B2P07_RECONCILED"\n',
+                  '        require(isinstance(next_action, str) and next_action.startswith("Execute B2P08 only:"), "B2P07 reconciliation must authorize B2P08 only")\n        require("Do not begin candidate or primary decoding until B2P08 is canonical." in next_action, "B2P08 successor boundary drift")\n        return "B2P07_RECONCILED"\n',
+              ),
+          ]
+          for old, new in repairs:
+              if new in text:
+                  continue
+              if text.count(old) != 1:
+                  raise SystemExit(f'historical successor-boundary anchor count={text.count(old)} for {old[:80]!r}')
+              text = text.replace(old, new, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+      - name: Verify restored historical boundaries
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            research/000b2-public/verify_candidate_revalidation.py \
+            research/000b2-public/capture_environment.py \
+            research/000b2-public/verify_methodology.py \
+            research/000b2-public/verify_subset_freeze.py
+          python research/000b2-public/verify_candidate_revalidation.py --trusted-base-root trusted-base
+          python research/000b2-public/verify_methodology.py
+          python research/000b2-public/verify_environment_capture.py
+          python research/000b2-public/verify_preprocessing_capture.py --static-only
+          python research/000b2-public/verify_subset_freeze.py
+          git diff --check dd65e23d29e7f83b9a94aba9c018928c7f9cc41d --
+      - name: Commit verified boundary repair
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/000b2-public/verify_candidate_revalidation.py
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo 'B2P05_HISTORICAL_BOUNDARY_REPAIR=NO_CHANGES'
+            exit 0
+          fi
+          git commit -m 'fix(000b2): preserve historical successor boundaries'
+          git push origin HEAD:research/000b2-b2p08-reconciliation
