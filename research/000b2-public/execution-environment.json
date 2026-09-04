@@ -1,0 +1,85 @@
+{
+  "authority": {
+    "attempt_state_path": "research/000b2-public/predecode-attempt-state.json",
+    "attempt_state_sha256": "2392ab6694ab56facd8eb1f00c095a5727e51cae90d6553e0eca32b7626a85de",
+    "b2p06_canonical_merge": "3dceadd984ff307ce55745bf5f289890a2fac261",
+    "b2p06_reconciliation_merge": "a45e69f3f03094c947104438ac1f0b2aa124b295",
+    "capture_primitive_path": "research/000b2-entry/environment/capture.py",
+    "capture_primitive_sha256": "4914349ba859744bf981cf6075a7d7850c6480684679eefc6cf959727c4f7fd0",
+    "capture_primitive_verifier_path": "research/000b2-entry/environment/verify_capture.py",
+    "capture_primitive_verifier_sha256": "c17788ea25db7b721c7f91dc7d76538d68ddc5c6e4f39dc2abdde8c57e95ec54",
+    "capture_workflow_path_at_revision": ".github/workflows/internal-b2p07-environment-capture.yml",
+    "capture_workflow_sha256": "53a5cf266c2b40b6286cca3498d6188ee6fa84041a32e11cdd1dfda49e0ddbeb",
+    "environment_contract_path": "research/000b2-entry/environment/contract.json",
+    "environment_contract_sha256": "1b1d255a5e8599fd5abb050a32de97edc4b0e214d5b83ea3c04da5308a719fdb",
+    "preprocessing_evidence_path": "research/000b2-public/preprocessing-capture.json",
+    "preprocessing_evidence_sha256": "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011"
+  },
+  "capture_provenance": {
+    "capture_kind": "GITHUB_HOSTED_DIAGNOSTIC",
+    "event_name": "push",
+    "github_job": "capture-b2p07-environment",
+    "github_ref": "refs/heads/research/000b2-b2p07-environment-capture",
+    "github_run_attempt": 1,
+    "github_run_id": 33859864538,
+    "repository_revision": "4211ba2eca5ffa8e49088a5ae432bd0da9b7177c",
+    "workflow_name": "Internal B2P07 Public Environment Capture"
+  },
+  "claim_guards": {
+    "b2p08_attempt_manifest_frozen": false,
+    "candidate_decoding_started": false,
+    "comparative_performance_authorized": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "performance_mode": "DIAGNOSTIC",
+    "primary_decoding_started": false,
+    "product_code_authorized": false,
+    "production_stt_selected": false
+  },
+  "environment": {
+    "canonical_wispral_revision": "e8841a68a7e37c7e4dd26ff73fe2566661c468b0",
+    "comparative_performance_authorized": false,
+    "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+    "environment_id": "x86_64:AMD EPYC 9V74 80-Core Processor:3e80c2c63bf88d13",
+    "hardware_fingerprint_sha256": "3e80c2c63bf88d13a10c358feaa250672a5250fb9cbc90e59bdb397912cac5cd",
+    "independent_control_attestation": false,
+    "kernel": "Linux runnervmgx7h7 6.17.0-1022-azure #22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+    "logical_cpu_count": 4,
+    "machine": "x86_64",
+    "memory_bytes": 16766414848,
+    "ordering": {
+      "attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+      "attempt_state_bound": true,
+      "attempt_state_sha256": "2392ab6694ab56facd8eb1f00c095a5727e51cae90d6553e0eca32b7626a85de",
+      "attempt_time_authority": false,
+      "canonical_wispral_revision": "e8841a68a7e37c7e4dd26ff73fe2566661c468b0",
+      "declared_primary_test_decoding_started": false,
+      "independent_chronology_attestation": false,
+      "mode": "ATTEMPT_STATE_BOUND"
+    },
+    "os": {
+      "release": "6.17.0-1022-azure",
+      "system": "Linux",
+      "version": "#22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026"
+    },
+    "performance_mode": "DIAGNOSTIC",
+    "performance_mode_claim_source": "OPERATOR_DECLARED",
+    "runner": {
+      "github_actions": true,
+      "github_hosted": true,
+      "image_os": "ubuntu24",
+      "image_version": "20260823.283.1",
+      "runner_arch": "X64",
+      "runner_environment": "github-hosted",
+      "runner_os": "Linux"
+    },
+    "schema_version": "000b2-execution-environment-v1",
+    "toolchain": {
+      "cmake": "cmake version 3.31.6",
+      "git": "git version 2.55.0",
+      "python": "3.12.14"
+    }
+  },
+  "lane": "PUBLIC_CORPUS",
+  "schema_version": "000b2-public-environment-capture-v1",
+  "task": "B2P07"
+}
