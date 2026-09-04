@@ -1,0 +1,41 @@
+name: Internal B2P08 Bootstrap Repair
+
+on:
+  push:
+    branches:
+      - research/000b2-b2p08-reconciliation
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/000b2-b2p08-reconciliation
+          fetch-depth: 0
+      - name: Repair exact CURRENT status anchor in bootstrap
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('.github/workflows/internal-b2p08-reconciliation-bootstrap.yml')
+          text = path.read_text(encoding='utf-8')
+          old_old = "          old_status = '**Status:** `READY` — B2P01 through B2P07 canonical; current bounded execution unit `B2P08`'"
+          old_new = "          new_status = '**Status:** `READY` — B2P01 through B2P08 canonical; current bounded execution unit `B2E01`'"
+          new_old = "          old_status = '**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 through B2P07 canonical; current bounded execution unit `B2P08`'"
+          new_new = "          new_status = '**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 through B2P08 canonical; current bounded execution unit `B2E01`'"
+          if text.count(old_old) != 1 or text.count(old_new) != 1:
+              raise SystemExit('bootstrap status assignment anchor drift')
+          text = text.replace(old_old, new_old, 1).replace(old_new, new_new, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/internal-b2p08-bootstrap-repair.yml
+          git add .github/workflows/internal-b2p08-reconciliation-bootstrap.yml
+          git diff --cached --check
+          git commit -m "ci(000b2): repair B2P08 reconciliation bootstrap anchor"
+          git push origin HEAD:research/000b2-b2p08-reconciliation
