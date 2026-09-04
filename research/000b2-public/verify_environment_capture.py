@@ -16,13 +16,30 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 CAPTURE_REL = Path("research/000b2-public/capture_environment.py")
 COMMITTED_EVIDENCE_REL = Path("research/000b2-public/execution-environment.json")
-EXPECTED_CAPTURE_COMMIT = "aa4711c083b652dfdb7a5d29a39a222125000131"
-EXPECTED_CAPTURE_EVIDENCE_BLOB = "d84e3e55d45a937a09e5898727b60c635144ac5c"
+EXPECTED_RAW_CAPTURE_COMMIT = "aa4711c083b652dfdb7a5d29a39a222125000131"
+EXPECTED_RAW_CAPTURE_EVIDENCE_BLOB = "d84e3e55d45a937a09e5898727b60c635144ac5c"
+EXPECTED_PROVENANCE_SEAL_COMMIT = "b8268cb4316a0d05c898bbf5b8bb3f7fe82d4937"
+EXPECTED_PROVENANCE_SEAL_PARENT = "144155eee8f99ad7cccee885c5360f631da0ed69"
+EXPECTED_SEALED_EVIDENCE_BLOB = "caf814bcb5e42fd769e6df1d9a54c1164535f86c"
 EXPECTED_CAPTURE_RUN_ID = 33859864538
 EXPECTED_CAPTURE_RUN_ATTEMPT = 1
 EXPECTED_CAPTURE_JOB = "capture-b2p07-environment"
+EXPECTED_CAPTURE_JOB_ID = 100981596254
 EXPECTED_CAPTURE_WORKFLOW_NAME = "Internal B2P07 Public Environment Capture"
 EXPECTED_CAPTURE_REF = "refs/heads/research/000b2-b2p07-environment-capture"
+EXPECTED_ARTIFACT_ID = 9931671160
+EXPECTED_ARTIFACT_NAME = "b2p07-environment-4211ba2eca5ffa8e49088a5ae432bd0da9b7177c"
+EXPECTED_ARTIFACT_ZIP_DIGEST = "sha256:ff527e3864159bdfb2199047306a0ead6387a5cc1b7748acc1de946753d77d9b"
+EXPECTED_PROVENANCE_STATUS = "RECORDED_GITHUB_API_METADATA_NOT_REQUERIED_BY_VERIFIER"
+RAW_CAPTURE_SCHEMA_VERSION = "000b2-public-environment-capture-v1"
+SEALED_CAPTURE_SCHEMA_VERSION = "000b2-public-environment-capture-v2"
+SEALED_PROVENANCE_FIELDS = {
+    "github_job_id",
+    "artifact_id",
+    "artifact_name",
+    "artifact_zip_digest",
+    "provenance_status",
+}
 SHA40_RE = re.compile(r"^[0-9a-f]{40}$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
@@ -92,68 +109,95 @@ def git_output(argv: list[str]) -> str:
         raise VerificationError(f"git {' '.join(argv)} failed: {exc}") from exc
 
 
+def require_ancestor(commit: str, current: str, label: str) -> None:
+    require(SHA40_RE.fullmatch(commit) is not None, f"{label} commit malformed")
+    try:
+        subprocess.run(
+            ["git", "merge-base", "--is-ancestor", commit, current],
+            cwd=ROOT,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=15,
+        )
+    except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
+        raise VerificationError(f"{label} commit is not an ancestor of the verification head") from exc
+
+
+def single_parent(commit: str, expected_parent: str, label: str) -> None:
+    commit_and_parents = git_output(["rev-list", "--parents", "-n", "1", commit]).strip().split()
+    require(len(commit_and_parents) == 2, f"{label} commit must have exactly one parent")
+    require(commit_and_parents[0] == commit, f"{label} commit identity drift")
+    require(commit_and_parents[1] == expected_parent, f"{label} commit parent drift")
+
+
+def exact_commit_changes(commit: str, expected: list[str], label: str) -> None:
+    changes = [
+        line
+        for line in git_output(["diff-tree", "--no-commit-id", "--name-status", "-r", commit]).splitlines()
+        if line
+    ]
+    require(changes == expected, f"{label} changed-file set drift")
+
+
 def verify_capture_revision(revision: str, workflow_path: str, expected_workflow_sha256: str) -> None:
     require(SHA40_RE.fullmatch(revision) is not None, "capture repository revision malformed")
     current = git_output(["rev-parse", "HEAD"]).strip()
     require(SHA40_RE.fullmatch(current) is not None, "current repository revision malformed")
-    try:
-        subprocess.run(
-            ["git", "merge-base", "--is-ancestor", revision, current],
-            cwd=ROOT,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=15,
-        )
-    except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
-        raise VerificationError("capture revision is not an ancestor of the verification head") from exc
+    require_ancestor(revision, current, "capture revision")
     historical = git_output(["show", f"{revision}:{workflow_path}"]).encode("utf-8")
     require(sha256_bytes(historical) == expected_workflow_sha256, "historical capture workflow bytes drift")
 
 
-def verify_capture_commit(revision: str) -> None:
-    require(SHA40_RE.fullmatch(EXPECTED_CAPTURE_COMMIT) is not None, "expected capture commit malformed")
-    require(SHA40_RE.fullmatch(EXPECTED_CAPTURE_EVIDENCE_BLOB) is not None, "expected capture evidence blob malformed")
+def verify_capture_and_seal_history(revision: str, evidence: dict[str, Any]) -> None:
     current = git_output(["rev-parse", "HEAD"]).strip()
     require(SHA40_RE.fullmatch(current) is not None, "current repository revision malformed")
-    try:
-        subprocess.run(
-            ["git", "merge-base", "--is-ancestor", EXPECTED_CAPTURE_COMMIT, current],
-            cwd=ROOT,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=15,
-        )
-    except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
-        raise VerificationError("capture evidence commit is not an ancestor of the verification head") from exc
 
-    commit_and_parents = git_output(["rev-list", "--parents", "-n", "1", EXPECTED_CAPTURE_COMMIT]).strip().split()
-    require(len(commit_and_parents) == 2, "capture evidence commit must have exactly one parent")
-    require(commit_and_parents[0] == EXPECTED_CAPTURE_COMMIT, "capture evidence commit identity drift")
-    require(commit_and_parents[1] == revision, "capture evidence commit parent is not the exact capture revision")
-
-    changes = [
-        line
-        for line in git_output(
-            ["diff-tree", "--no-commit-id", "--name-status", "-r", EXPECTED_CAPTURE_COMMIT]
-        ).splitlines()
-        if line
-    ]
-    require(
-        changes == [f"A\t{COMMITTED_EVIDENCE_REL.as_posix()}"],
-        "capture evidence commit must add only the committed B2P07 evidence file",
+    require_ancestor(EXPECTED_RAW_CAPTURE_COMMIT, current, "raw capture evidence")
+    single_parent(EXPECTED_RAW_CAPTURE_COMMIT, revision, "raw capture evidence")
+    exact_commit_changes(
+        EXPECTED_RAW_CAPTURE_COMMIT,
+        [f"A\t{COMMITTED_EVIDENCE_REL.as_posix()}"],
+        "raw capture evidence",
     )
-
-    historical_blob = git_output(
-        ["rev-parse", f"{EXPECTED_CAPTURE_COMMIT}:{COMMITTED_EVIDENCE_REL.as_posix()}"]
+    raw_blob = git_output(
+        ["rev-parse", f"{EXPECTED_RAW_CAPTURE_COMMIT}:{COMMITTED_EVIDENCE_REL.as_posix()}"]
     ).strip()
-    require(historical_blob == EXPECTED_CAPTURE_EVIDENCE_BLOB, "capture evidence blob identity drift")
-    current_blob = git_output(["rev-parse", f"HEAD:{COMMITTED_EVIDENCE_REL.as_posix()}"]).strip()
-    require(current_blob == EXPECTED_CAPTURE_EVIDENCE_BLOB, "committed B2P07 evidence bytes drifted after capture")
+    require(raw_blob == EXPECTED_RAW_CAPTURE_EVIDENCE_BLOB, "raw capture evidence blob identity drift")
+    raw_bytes = git_output(
+        ["show", f"{EXPECTED_RAW_CAPTURE_COMMIT}:{COMMITTED_EVIDENCE_REL.as_posix()}"]
+    ).encode("utf-8")
+    raw_evidence = load_object(raw_bytes, "historical raw B2P07 capture evidence")
+    require(raw_evidence.get("schema_version") == RAW_CAPTURE_SCHEMA_VERSION, "historical raw capture schema drift")
 
-    print(f"B2P07_CAPTURE_COMMIT={EXPECTED_CAPTURE_COMMIT}")
-    print(f"B2P07_CAPTURE_EVIDENCE_BLOB={EXPECTED_CAPTURE_EVIDENCE_BLOB}")
+    require_ancestor(EXPECTED_PROVENANCE_SEAL_COMMIT, current, "provenance seal")
+    single_parent(EXPECTED_PROVENANCE_SEAL_COMMIT, EXPECTED_PROVENANCE_SEAL_PARENT, "provenance seal")
+    exact_commit_changes(
+        EXPECTED_PROVENANCE_SEAL_COMMIT,
+        [f"M\t{COMMITTED_EVIDENCE_REL.as_posix()}"],
+        "provenance seal",
+    )
+    sealed_blob = git_output(
+        ["rev-parse", f"{EXPECTED_PROVENANCE_SEAL_COMMIT}:{COMMITTED_EVIDENCE_REL.as_posix()}"]
+    ).strip()
+    require(sealed_blob == EXPECTED_SEALED_EVIDENCE_BLOB, "sealed evidence blob identity drift")
+    current_blob = git_output(["rev-parse", f"HEAD:{COMMITTED_EVIDENCE_REL.as_posix()}"]).strip()
+    require(current_blob == EXPECTED_SEALED_EVIDENCE_BLOB, "sealed B2P07 evidence bytes drifted after provenance seal")
+
+    raw_projection = json.loads(json.dumps(evidence))
+    require(raw_projection.get("schema_version") == SEALED_CAPTURE_SCHEMA_VERSION, "sealed evidence schema drift")
+    raw_projection["schema_version"] = RAW_CAPTURE_SCHEMA_VERSION
+    projection_provenance = raw_projection.get("capture_provenance")
+    require(isinstance(projection_provenance, dict), "sealed capture provenance missing")
+    for field in SEALED_PROVENANCE_FIELDS:
+        require(field in projection_provenance, f"sealed provenance field missing: {field}")
+        projection_provenance.pop(field)
+    require(raw_projection == raw_evidence, "provenance seal changed captured payload fields")
+
+    print(f"B2P07_RAW_CAPTURE_COMMIT={EXPECTED_RAW_CAPTURE_COMMIT}")
+    print(f"B2P07_RAW_CAPTURE_EVIDENCE_BLOB={EXPECTED_RAW_CAPTURE_EVIDENCE_BLOB}")
+    print(f"B2P07_PROVENANCE_SEAL_COMMIT={EXPECTED_PROVENANCE_SEAL_COMMIT}")
+    print(f"B2P07_SEALED_EVIDENCE_BLOB={EXPECTED_SEALED_EVIDENCE_BLOB}")
 
 
 def verify_static_authority() -> tuple[Any, dict[str, Any]]:
@@ -166,6 +210,13 @@ def verify_static_authority() -> tuple[Any, dict[str, Any]]:
     require(authority.get("b2p06_reconciliation_merge") == capture.B2P06_RECONCILIATION_MERGE, "B2P06 reconciliation binding drift")
     require(authority.get("attempt_state_sha256") == capture.ATTEMPT_STATE_SHA256, "attempt-state authority digest drift")
     require(authority.get("preprocessing_evidence_sha256") == capture.PREPROCESSING_EVIDENCE_SHA256, "preprocessing authority digest drift")
+    require(capture.RAW_CAPTURE_SCHEMA_VERSION == RAW_CAPTURE_SCHEMA_VERSION, "raw capture schema constant drift")
+    require(capture.SEALED_CAPTURE_SCHEMA_VERSION == SEALED_CAPTURE_SCHEMA_VERSION, "sealed capture schema constant drift")
+    require(capture.RECORDED_CAPTURE_JOB_ID == EXPECTED_CAPTURE_JOB_ID, "recorded capture job id constant drift")
+    require(capture.RECORDED_ARTIFACT_ID == EXPECTED_ARTIFACT_ID, "recorded artifact id constant drift")
+    require(capture.RECORDED_ARTIFACT_NAME == EXPECTED_ARTIFACT_NAME, "recorded artifact name constant drift")
+    require(capture.RECORDED_ARTIFACT_ZIP_DIGEST == EXPECTED_ARTIFACT_ZIP_DIGEST, "recorded artifact digest constant drift")
+    require(capture.RECORDED_PROVENANCE_STATUS == EXPECTED_PROVENANCE_STATUS, "recorded provenance status constant drift")
     print("B2P07_STATIC_AUTHORITY=PASS")
     print(f"B2P07_B2P06_CANONICAL_MERGE={capture.B2P06_CANONICAL_MERGE}")
     print(f"B2P07_B2P06_RECONCILIATION_MERGE={capture.B2P06_RECONCILIATION_MERGE}")
@@ -181,7 +232,7 @@ def verify_evidence(path: Path) -> dict[str, Any]:
         set(evidence) == {"schema_version", "task", "lane", "authority", "capture_provenance", "environment", "claim_guards"},
         "B2P07 evidence top-level keys drift",
     )
-    require(evidence.get("schema_version") == "000b2-public-environment-capture-v1", "B2P07 evidence schema drift")
+    require(evidence.get("schema_version") == SEALED_CAPTURE_SCHEMA_VERSION, "B2P07 sealed evidence schema drift")
     require(evidence.get("task") == "B2P07", "B2P07 task identity drift")
     require(evidence.get("lane") == "PUBLIC_CORPUS", "B2P07 lane drift")
     require(evidence.get("authority") == expected_authority, "B2P07 authority block drift")
@@ -189,7 +240,22 @@ def verify_evidence(path: Path) -> dict[str, Any]:
     provenance = evidence.get("capture_provenance")
     require(isinstance(provenance, dict), "capture provenance missing")
     require(
-        set(provenance) == {"repository_revision", "event_name", "github_run_id", "github_run_attempt", "github_job", "workflow_name", "github_ref", "capture_kind"},
+        set(provenance)
+        == {
+            "repository_revision",
+            "event_name",
+            "github_run_id",
+            "github_run_attempt",
+            "github_job",
+            "github_job_id",
+            "workflow_name",
+            "github_ref",
+            "capture_kind",
+            "artifact_id",
+            "artifact_name",
+            "artifact_zip_digest",
+            "provenance_status",
+        },
         "capture provenance keys drift",
     )
     revision = provenance.get("repository_revision")
@@ -199,15 +265,20 @@ def verify_evidence(path: Path) -> dict[str, Any]:
     require(provenance.get("github_run_id") == EXPECTED_CAPTURE_RUN_ID, "capture run id drift")
     require(provenance.get("github_run_attempt") == EXPECTED_CAPTURE_RUN_ATTEMPT, "capture run attempt drift")
     require(provenance.get("github_job") == EXPECTED_CAPTURE_JOB, "capture job identity drift")
+    require(provenance.get("github_job_id") == EXPECTED_CAPTURE_JOB_ID, "recorded numeric capture job id drift")
     require(provenance.get("workflow_name") == EXPECTED_CAPTURE_WORKFLOW_NAME, "capture workflow identity drift")
     require(provenance.get("github_ref") == EXPECTED_CAPTURE_REF, "capture ref drift")
     require(provenance.get("capture_kind") == "GITHUB_HOSTED_DIAGNOSTIC", "capture kind drift")
+    require(provenance.get("artifact_id") == EXPECTED_ARTIFACT_ID, "recorded artifact id drift")
+    require(provenance.get("artifact_name") == EXPECTED_ARTIFACT_NAME, "recorded artifact name drift")
+    require(provenance.get("artifact_zip_digest") == EXPECTED_ARTIFACT_ZIP_DIGEST, "recorded artifact digest drift")
+    require(provenance.get("provenance_status") == EXPECTED_PROVENANCE_STATUS, "recorded provenance status drift")
     workflow_path = expected_authority.get("capture_workflow_path_at_revision")
     workflow_sha = expected_authority.get("capture_workflow_sha256")
     require(isinstance(workflow_path, str), "capture workflow authority path missing")
     require(isinstance(workflow_sha, str) and SHA256_RE.fullmatch(workflow_sha) is not None, "capture workflow authority digest malformed")
     verify_capture_revision(revision, workflow_path, workflow_sha)
-    verify_capture_commit(revision)
+    verify_capture_and_seal_history(revision, evidence)
 
     environment = evidence.get("environment")
     require(isinstance(environment, dict), "environment evidence missing")
@@ -275,6 +346,11 @@ def verify_evidence(path: Path) -> dict[str, Any]:
     print("B2P07_ENVIRONMENT_EVIDENCE=PASS")
     print(f"B2P07_CAPTURE_REVISION={revision}")
     print(f"B2P07_CAPTURE_RUN_ID={provenance['github_run_id']}")
+    print(f"B2P07_CAPTURE_JOB_ID={provenance['github_job_id']}")
+    print(f"B2P07_ARTIFACT_ID={provenance['artifact_id']}")
+    print(f"B2P07_ARTIFACT_NAME={provenance['artifact_name']}")
+    print(f"B2P07_ARTIFACT_ZIP_DIGEST={provenance['artifact_zip_digest']}")
+    print("B2P07_GITHUB_PROVENANCE=RECORDED_NOT_LIVE_REQUERIED")
     print(f"B2P07_ENVIRONMENT_ID={environment['environment_id']}")
     print("B2P07_PERFORMANCE_MODE=DIAGNOSTIC")
     print("B2P07_COMPARATIVE_PERFORMANCE_AUTHORIZED=NO")
