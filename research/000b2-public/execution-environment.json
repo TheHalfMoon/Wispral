@@ -16,12 +16,17 @@
     "preprocessing_evidence_sha256": "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011"
   },
   "capture_provenance": {
+    "artifact_id": 9931671160,
+    "artifact_name": "b2p07-environment-4211ba2eca5ffa8e49088a5ae432bd0da9b7177c",
+    "artifact_zip_digest": "sha256:ff527e3864159bdfb2199047306a0ead6387a5cc1b7748acc1de946753d77d9b",
     "capture_kind": "GITHUB_HOSTED_DIAGNOSTIC",
     "event_name": "push",
     "github_job": "capture-b2p07-environment",
+    "github_job_id": 100981596254,
     "github_ref": "refs/heads/research/000b2-b2p07-environment-capture",
     "github_run_attempt": 1,
     "github_run_id": 33859864538,
+    "provenance_status": "RECORDED_GITHUB_API_METADATA_NOT_REQUERIED_BY_VERIFIER",
     "repository_revision": "4211ba2eca5ffa8e49088a5ae432bd0da9b7177c",
     "workflow_name": "Internal B2P07 Public Environment Capture"
   },
@@ -80,6 +85,6 @@
     }
   },
   "lane": "PUBLIC_CORPUS",
-  "schema_version": "000b2-public-environment-capture-v1",
+  "schema_version": "000b2-public-environment-capture-v2",
   "task": "B2P07"
 }
