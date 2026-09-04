@@ -164,7 +164,8 @@ def verify_current_authority() -> str:
     environment = readiness.get("execution_environment")
     require(isinstance(environment, dict), "execution environment readiness must be an object")
     attempt = readiness.get("attempt_manifest")
-    require(isinstance(attempt, dict) and attempt.get("primary_decoding_started") is False and attempt.get("frozen") is False, "primary decoding and B2P08 freeze must remain closed")
+    require(isinstance(attempt, dict) and attempt.get("primary_decoding_started") is False, "primary decoding must remain closed")
+    require(attempt.get("frozen") is (readiness.get("completed_through") == "B2P08"), "B2P08 freeze state must match reconciliation phase")
     guards = readiness.get("claim_guards")
     require(isinstance(guards, dict), "claim_guards must be an object")
     require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human developer-speech evidence guard drift")
@@ -176,8 +177,8 @@ def verify_current_authority() -> str:
     tasks = TASKS_PATH.read_text(encoding="utf-8")
     current = CURRENT_PATH.read_text(encoding="utf-8")
     require("- [x] `B2P03`" in tasks, "B2P03 must remain complete")
-    if completed_through == "B2P07":
-        require(environment.get("resolved") is True, "B2P07 reconciliation must mark environment resolved")
+    if completed_through in {"B2P07", "B2P08"}:
+        require(environment.get("resolved") is True, "B2P07+ reconciliation must preserve environment resolution")
     else:
         require(environment.get("resolved") is False, "B2P07 environment must remain unresolved before B2P07 reconciliation")
 
@@ -244,6 +245,22 @@ def verify_current_authority() -> str:
         require("Execute and canonically qualify `B2P08` only" in current, "reconciled current view must authorize B2P08 only")
         require("Candidate and primary decoding remain unauthorized" in current, "reconciled frontier must keep decoding closed")
         return "B2P07"
+
+    if completed_through == "B2P08":
+        require(preprocessing.get("resolved") is True, "B2P08 reconciliation must preserve preprocessing resolution")
+        require(environment.get("resolved") is True, "B2P08 reconciliation must preserve environment resolution")
+        require(public.get("subset_manifest_frozen") is True, "B2P08 reconciliation must preserve the B2P04 frozen manifest")
+        require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2P08 reconciliation must authorize B2E01 only")
+        require("Do not begin B2E02 or any later candidate cell until B2E01 is canonical." in next_action, "B2E01 successor boundary drift")
+        require("- [x] `B2P06`" in tasks, "B2P06 must remain complete")
+        require("- [x] `B2P07`" in tasks, "B2P07 must remain complete")
+        require("- [x] `B2P08`" in tasks, "B2P08 reconciliation must mark B2P08 complete")
+        require("- [ ] `B2E01`" in tasks, "B2E01 must remain pending before execution")
+        require("- [ ] `B2E02`" in tasks, "B2E02 must remain unauthorized")
+        require("current bounded execution unit `B2E01`" in current, "reconciled frontier is not B2E01-only")
+        require("Execute and canonically qualify `B2E01` only" in current, "reconciled current view must authorize B2E01 only")
+        require("B2E02 and all later candidate cells remain unauthorized" in current, "reconciled frontier must keep later candidate cells closed")
+        return "B2P08"
 
     raise SystemExit(f"B2P04_FREEZE_VERIFIER=FAIL: unsupported completed_through state: {completed_through!r}")
 

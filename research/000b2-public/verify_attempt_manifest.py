@@ -20,6 +20,7 @@ READINESS_PATH = HERE / "readiness.json"
 TASKS_PATH = ROOT / "specs/000B2-public-corpus-bakeoff/tasks.md"
 CURRENT_PATH = ROOT / "specs/CURRENT.md"
 B2P07_RECONCILIATION_MERGE = "50ce9ac0ac3b3533d3df978a8b3a7e531f415b9c"
+B2P08_CANONICAL_MERGE = "dd65e23d29e7f83b9a94aba9c018928c7f9cc41d"
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 class VerificationError(ValueError):
@@ -84,29 +85,29 @@ def main() -> int:
 
     readiness = load_json(READINESS_PATH, "public readiness")
     require(readiness.get("state") == "READY", "public readiness drift")
-    require(readiness.get("completed_through") == "B2P07", "B2P08 execution requires canonical completion through B2P07")
+    require(readiness.get("completed_through") == "B2P08", "canonical reconciliation must complete B2P08")
     environment = readiness.get("execution_environment")
     attempt = readiness.get("attempt_manifest")
     guards = readiness.get("claim_guards")
     require(isinstance(environment, dict) and environment.get("resolved") is True, "B2P07 environment must be resolved")
     require(isinstance(attempt, dict), "readiness attempt_manifest missing")
-    require(attempt.get("frozen") is False, "canonical readiness must remain unreconciled during B2P08 execution PR")
+    require(attempt.get("frozen") is True, "canonical readiness must mark the B2P08 attempt frozen")
     require(attempt.get("primary_decoding_started") is False, "primary decoding started before B2P08 canonical reconciliation")
     require(isinstance(guards, dict), "claim guards missing")
     require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human evidence guard drift")
     require(guards.get("production_stt_selected") is False, "production STT selected during B2P08")
     require(guards.get("product_code_authorized") is False, "product code authorized during B2P08")
     next_action = readiness.get("next_action")
-    require(isinstance(next_action, str) and next_action.startswith("Execute B2P08 only:"), "B2P08 is not the sole canonical next action")
+    require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2E01 must be the sole canonical next action")
 
     tasks = TASKS_PATH.read_text(encoding="utf-8")
     current = CURRENT_PATH.read_text(encoding="utf-8")
     require("- [x] `B2P07`" in tasks, "B2P07 must remain complete")
-    require("- [ ] `B2P08`" in tasks, "B2P08 task must remain unchecked until separate reconciliation")
+    require("- [x] `B2P08`" in tasks, "B2P08 task must be checked after canonical reconciliation")
     require("- [ ] `B2E01`" in tasks, "B2E01 must remain closed during B2P08")
-    require("current bounded execution unit `B2P08`" in current, "CURRENT frontier must remain B2P08")
-    require("Execute and canonically qualify `B2P08` only" in current, "CURRENT must authorize B2P08 only")
-    require("Candidate and primary decoding remain unauthorized" in current, "CURRENT must keep decoding closed")
+    require("current bounded execution unit `B2E01`" in current, "CURRENT frontier must advance to B2E01")
+    require("Execute and canonically qualify `B2E01` only" in current, "CURRENT must authorize B2E01 only")
+    require("B2E02 and all later candidate cells remain unauthorized" in current, "CURRENT must bound decoding to B2E01")
 
     authority = manifest.get("authority")
     scoring = manifest.get("scoring")
@@ -142,12 +143,13 @@ def main() -> int:
 
     git("cat-file", "-e", f"{B2P07_RECONCILIATION_MERGE}^{{commit}}")
     git("merge-base", "--is-ancestor", B2P07_RECONCILIATION_MERGE, "HEAD")
+    git("merge-base", "--is-ancestor", B2P08_CANONICAL_MERGE, "HEAD")
     print("B2P08_ATTEMPT_MANIFEST_VERIFIER=PASS")
     print(f"B2P08_FREEZE_DIGEST={digest}")
     print("B2P08_FROZEN=YES")
     print("B2P08_CANDIDATE_DECODING_STARTED=NO")
     print("B2P08_PRIMARY_DECODING_STARTED=NO")
-    print("B2E01_AUTHORIZED=NO_UNTIL_CANONICAL_RECONCILIATION")
+    print("B2E01_AUTHORIZED=YES_BOUNDED_CANONICAL_FRONTIER")
     return 0
 
 if __name__ == "__main__":

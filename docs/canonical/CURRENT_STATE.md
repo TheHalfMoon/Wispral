@@ -28,6 +28,7 @@
 **000B2 B2P05 candidate-revalidation merge:** `49538990fb4cf8223e9321261925206ed7ff5cee`  
 **000B2 B2P06 preprocessing-capture merge:** `3dceadd984ff307ce55745bf5f289890a2fac261`
 **000B2 B2P07 execution-environment merge:** `4bd5306fa1d274d7b822b73e26172dd9c7058319`
+**000B2 B2P08 pre-decode attempt-freeze merge:** `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d`
 **Program status:** `SPEC_000_RESEARCH_ACTIVE`  
 **Active product implementation:** none  
 **Active parent specification:** `000-founding-research` — `REFINING`  
@@ -40,7 +41,7 @@
 **000B2 participant materials:** `CANONICAL_FROZEN`, participant consent `EXTERNAL_NOT_OBTAINED`  
 **Blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
 **Active execution successor:** `000B2-public-corpus-bakeoff` — `READY`  
-**Qualification chronology gate:** `SATISFIED` by PR #32 merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`; machine readiness reconciled by PR #33 merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`; B2P01 is canonical at PR #34 merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`; B2P02 is canonical at PR #35 merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c` and post-merge verified; B2P03 is canonical at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58` and post-merge verified; B2P04 is canonical at PR #39 merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` and post-merge verified; B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; B2P07 is canonical at PR #45 merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` and post-merge verified; current bounded execution unit is `B2P08`
+**Qualification chronology gate:** `SATISFIED` by PR #32 merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`; machine readiness reconciled by PR #33 merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`; B2P01 is canonical at PR #34 merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`; B2P02 is canonical at PR #35 merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c` and post-merge verified; B2P03 is canonical at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58` and post-merge verified; B2P04 is canonical at PR #39 merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` and post-merge verified; B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; B2P07 is canonical at PR #45 merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` and post-merge verified; current bounded execution unit is `B2E01`
 **Published release:** none
 
 Live GitHub and repository truth override this document.
@@ -244,6 +245,8 @@ Canonical post-merge environment run `33864082394`, job `100994833527`, checked 
 Comparative P0 decoding remains prohibited until `B2P01` through `B2P08` complete and the final pre-decode attempt manifest is frozen with `primary_decoding_started=false`.
 
 This methodology and remediation do not establish human developer-speech accuracy, accent/cadence coverage, Arabic support, general STT superiority, a production speech winner, or product/runtime implementation authority. All synthesis must preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT` unless genuine qualifying evidence becomes canonical through a separate route.
+
+PR #47 then completed B2P08 final pre-decode attempt freeze and merged by guarded expected-head squash as canonical commit `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d` from exact qualified head `a5ee2ccb48a301b623f775970c23434d3a50ccba`. The frozen attempt manifest digest is `af4d5009e293daef5d8f629ca91af653f5f591448cd94d4555473a51e2d1da86` and binds the exact six-cell candidate set, frozen public subset, attempt-bound FFmpeg preprocessing, DIAGNOSTIC execution environment, canonical scorer/config, and hardened public P0 WER adapter. Fresh exact-head attempt-freeze run `33872999455` and methodology run `33872999311` succeeded after all substantive review findings were repaired forward-only; fresh independent exact-head semantic review reported no actionable findings. Post-merge exact-SHA verification then completed all seven applicable push workflows successfully, including runs `33873343952`, `33873344061`, `33873344096`, `33873344252`, `33873344071`, `33873344118`, and `33873344044`. No candidate or primary decode had started at freeze, GitHub-hosted timing remained DIAGNOSTIC-only, and no production STT, product-code, or human developer-speech ranking authority was introduced. Canonical reconciliation therefore closes B2P08 and advances only the next dependency-ordered unit, B2E01.
 
 ## Historical private B2 blocked successor
 
