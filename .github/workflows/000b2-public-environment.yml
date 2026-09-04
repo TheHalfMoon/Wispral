@@ -63,7 +63,8 @@ jobs:
       - name: Compile B2P07 verifier surfaces
         run: |
           set -euo pipefail
-          python -m py_compile \
+          rm -rf "$RUNNER_TEMP/b2p07-pycache"
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/b2p07-pycache" python -m py_compile \
             research/000b2-public/capture_environment.py \
             research/000b2-public/verify_environment_capture.py \
             research/000b2-entry/environment/capture.py \
@@ -82,5 +83,6 @@ jobs:
       - name: Verify clean verifier execution
         run: |
           set -euo pipefail
+          rm -rf "$RUNNER_TEMP/b2p07-pycache"
           git diff --check
           test -z "$(git status --porcelain)"
