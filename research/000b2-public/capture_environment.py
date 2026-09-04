@@ -30,6 +30,13 @@ ATTEMPT_STATE_SHA256 = "2392ab6694ab56facd8eb1f00c095a5727e51cae90d6553e0eca32b7
 PREPROCESSING_EVIDENCE_SHA256 = "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011"
 B2P06_CANONICAL_MERGE = "3dceadd984ff307ce55745bf5f289890a2fac261"
 B2P06_RECONCILIATION_MERGE = "a45e69f3f03094c947104438ac1f0b2aa124b295"
+RAW_CAPTURE_SCHEMA_VERSION = "000b2-public-environment-capture-v1"
+SEALED_CAPTURE_SCHEMA_VERSION = "000b2-public-environment-capture-v2"
+RECORDED_CAPTURE_JOB_ID = 100981596254
+RECORDED_ARTIFACT_ID = 9931671160
+RECORDED_ARTIFACT_NAME = "b2p07-environment-4211ba2eca5ffa8e49088a5ae432bd0da9b7177c"
+RECORDED_ARTIFACT_ZIP_DIGEST = "sha256:ff527e3864159bdfb2199047306a0ead6387a5cc1b7748acc1de946753d77d9b"
+RECORDED_PROVENANCE_STATUS = "RECORDED_GITHUB_API_METADATA_NOT_REQUERIED_BY_VERIFIER"
 SHA40_RE = re.compile(r"^[0-9a-f]{40}$")
 
 
@@ -104,6 +111,40 @@ def positive_env_int(name: str) -> int:
     raw = os.environ.get(name, "")
     require(raw.isdigit() and int(raw) > 0, f"{name} missing or malformed")
     return int(raw)
+
+
+def seal_recorded_github_provenance(evidence: dict[str, Any]) -> dict[str, Any]:
+    """Add post-capture GitHub job/artifact metadata without changing captured payload fields."""
+    require(evidence.get("schema_version") == RAW_CAPTURE_SCHEMA_VERSION, "raw capture schema drift before provenance seal")
+    provenance = evidence.get("capture_provenance")
+    require(isinstance(provenance, dict), "raw capture provenance missing before seal")
+    require(
+        set(provenance)
+        == {
+            "repository_revision",
+            "event_name",
+            "github_run_id",
+            "github_run_attempt",
+            "github_job",
+            "workflow_name",
+            "github_ref",
+            "capture_kind",
+        },
+        "raw capture provenance keys drift before seal",
+    )
+    sealed = json.loads(json.dumps(evidence))
+    sealed["schema_version"] = SEALED_CAPTURE_SCHEMA_VERSION
+    sealed_provenance = sealed["capture_provenance"]
+    sealed_provenance.update(
+        {
+            "github_job_id": RECORDED_CAPTURE_JOB_ID,
+            "artifact_id": RECORDED_ARTIFACT_ID,
+            "artifact_name": RECORDED_ARTIFACT_NAME,
+            "artifact_zip_digest": RECORDED_ARTIFACT_ZIP_DIGEST,
+            "provenance_status": RECORDED_PROVENANCE_STATUS,
+        }
+    )
+    return sealed
 
 
 def verify_authority() -> dict[str, Any]:
@@ -221,7 +262,7 @@ def capture_public_environment() -> dict[str, Any]:
     require(isinstance(provenance["workflow_name"], str) and provenance["workflow_name"], "GITHUB_WORKFLOW missing")
 
     return {
-        "schema_version": "000b2-public-environment-capture-v1",
+        "schema_version": RAW_CAPTURE_SCHEMA_VERSION,
         "task": "B2P07",
         "lane": "PUBLIC_CORPUS",
         "authority": authority,
