@@ -1,0 +1,94 @@
+name: 000B2 Public Corpus Attempt Freeze
+
+on:
+  pull_request:
+    paths:
+      - 'research/000b2-public/attempt-manifest.json'
+      - 'research/000b2-public/freeze_attempt_manifest.py'
+      - 'research/000b2-public/verify_attempt_manifest.py'
+      - 'research/000b2-public/score_public_wer.py'
+      - 'research/000b2-public/verify_public_wer.py'
+      - 'research/000b2-public/predecode-attempt-state.json'
+      - 'research/000b2-public/subset-manifest.json'
+      - 'research/000b2-public/candidate-revalidation.json'
+      - 'research/000b2-public/preprocessing-capture.json'
+      - 'research/000b2-public/execution-environment.json'
+      - 'research/000b2-public/readiness.json'
+      - 'research/000b1/qualified-candidates.json'
+      - 'research/000b1/frozen-methodology.json'
+      - 'research/000b2-entry/scorer.py'
+      - 'research/000b2-entry/scorer-config.json'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+      - 'specs/CURRENT.md'
+      - '.github/workflows/000b2-public-attempt-freeze.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'research/000b2-public/attempt-manifest.json'
+      - 'research/000b2-public/freeze_attempt_manifest.py'
+      - 'research/000b2-public/verify_attempt_manifest.py'
+      - 'research/000b2-public/score_public_wer.py'
+      - 'research/000b2-public/verify_public_wer.py'
+      - 'research/000b2-public/predecode-attempt-state.json'
+      - 'research/000b2-public/subset-manifest.json'
+      - 'research/000b2-public/candidate-revalidation.json'
+      - 'research/000b2-public/preprocessing-capture.json'
+      - 'research/000b2-public/execution-environment.json'
+      - 'research/000b2-public/readiness.json'
+      - 'research/000b1/qualified-candidates.json'
+      - 'research/000b1/frozen-methodology.json'
+      - 'research/000b2-entry/scorer.py'
+      - 'research/000b2-entry/scorer-config.json'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+      - 'specs/CURRENT.md'
+      - '.github/workflows/000b2-public-attempt-freeze.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: b2p08-attempt-freeze-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-b2p08-attempt-freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      B2P08_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.B2P08_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up pinned Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify exact revision identity
+        run: |
+          test "$(git rev-parse HEAD)" = "$B2P08_REVISION"
+          test "$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')" = "3.12"
+          echo "B2P08_REVISION=$B2P08_REVISION"
+      - name: Compile bounded B2P08 Python surfaces
+        run: |
+          python -m py_compile \
+            research/000b2-public/freeze_attempt_manifest.py \
+            research/000b2-public/verify_attempt_manifest.py \
+            research/000b2-public/score_public_wer.py \
+            research/000b2-public/verify_public_wer.py
+      - name: Verify frozen public WER adapter
+        run: python research/000b2-public/verify_public_wer.py
+      - name: Verify committed B2P08 attempt freeze
+        run: python research/000b2-public/verify_attempt_manifest.py
+      - name: Reproduce exact manifest bytes
+        run: |
+          python research/000b2-public/freeze_attempt_manifest.py \
+            --output "$RUNNER_TEMP/attempt-manifest.json" \
+            --committed research/000b2-public/attempt-manifest.json
+          cmp "$RUNNER_TEMP/attempt-manifest.json" research/000b2-public/attempt-manifest.json
+      - name: Check diff whitespace
+        run: git diff --check HEAD^ HEAD
