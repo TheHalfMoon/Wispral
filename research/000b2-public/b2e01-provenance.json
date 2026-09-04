@@ -1,0 +1,33 @@
+{
+  "attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+  "candidate_id": "moonshine-compact",
+  "capture": {
+    "artifact_id": 9957837509,
+    "artifact_name": "b2e01-moonshine-compact-1a39e9c177fce1f45c46854ffc58640a35dbe2d0",
+    "artifact_zip_sha256": "cf617a2453048bcb0dbd17b8a2a62389d5f90778bd9a79d4265bfc6f306b1367",
+    "job_id": 101202392820,
+    "run_attempt": 1,
+    "run_id": 33928586213,
+    "source_revision": "1a39e9c177fce1f45c46854ffc58640a35dbe2d0",
+    "workflow_name": "Internal B2E01 Public C0 Capture"
+  },
+  "claims": {
+    "b2e02_authorized": false,
+    "comparative_performance_authorized": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "product_code_authorized": false,
+    "production_stt_selected": false,
+    "timing_semantics": "DIAGNOSTIC_ONLY"
+  },
+  "evidence": {
+    "decoded_count": 240,
+    "failure_count": 0,
+    "input_count": 240,
+    "path": "research/000b2-public/b2e01-moonshine-compact.json",
+    "payload_sha256": "a8a15d33e9a2c0b2ab3c2c087f20b645175bf027b8aa0f4b7a954a69af5a3198",
+    "raw_file_sha256": "af2c604a3f402789d69e424291c5f41a24eca0f575b1b26a3822da73dd0c4a8e"
+  },
+  "provenance_status": "RECORDED_FROM_EXACT_GITHUB_ACTIONS_RUN_AND_ARTIFACT_METADATA",
+  "schema_version": "000b2-public-b2e01-provenance-v1",
+  "task": "B2E01"
+}
