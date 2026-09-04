@@ -16,6 +16,11 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 CAPTURE_REL = Path("research/000b2-public/capture_environment.py")
 COMMITTED_EVIDENCE_REL = Path("research/000b2-public/execution-environment.json")
+EXPECTED_CAPTURE_RUN_ID = 33859864538
+EXPECTED_CAPTURE_RUN_ATTEMPT = 1
+EXPECTED_CAPTURE_JOB = "capture-b2p07-environment"
+EXPECTED_CAPTURE_WORKFLOW_NAME = "Internal B2P07 Public Environment Capture"
+EXPECTED_CAPTURE_REF = "refs/heads/research/000b2-b2p07-environment-capture"
 SHA40_RE = re.compile(r"^[0-9a-f]{40}$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
@@ -142,12 +147,13 @@ def verify_evidence(path: Path) -> dict[str, Any]:
     )
     revision = provenance.get("repository_revision")
     require(isinstance(revision, str), "capture revision missing")
+    require(revision == capture.CAPTURE_WORKFLOW_REVISION, "capture revision does not match frozen B2P07 capture revision")
     require(provenance.get("event_name") == "push", "capture event must be push")
-    require(isinstance(provenance.get("github_run_id"), int) and provenance["github_run_id"] > 0, "capture run id malformed")
-    require(isinstance(provenance.get("github_run_attempt"), int) and provenance["github_run_attempt"] > 0, "capture run attempt malformed")
-    require(isinstance(provenance.get("github_job"), str) and provenance["github_job"], "capture job identity missing")
-    require(isinstance(provenance.get("workflow_name"), str) and provenance["workflow_name"], "capture workflow identity missing")
-    require(isinstance(provenance.get("github_ref"), str) and provenance["github_ref"].startswith("refs/heads/"), "capture ref malformed")
+    require(provenance.get("github_run_id") == EXPECTED_CAPTURE_RUN_ID, "capture run id drift")
+    require(provenance.get("github_run_attempt") == EXPECTED_CAPTURE_RUN_ATTEMPT, "capture run attempt drift")
+    require(provenance.get("github_job") == EXPECTED_CAPTURE_JOB, "capture job identity drift")
+    require(provenance.get("workflow_name") == EXPECTED_CAPTURE_WORKFLOW_NAME, "capture workflow identity drift")
+    require(provenance.get("github_ref") == EXPECTED_CAPTURE_REF, "capture ref drift")
     require(provenance.get("capture_kind") == "GITHUB_HOSTED_DIAGNOSTIC", "capture kind drift")
     workflow_path = expected_authority.get("capture_workflow_path_at_revision")
     workflow_sha = expected_authority.get("capture_workflow_sha256")
