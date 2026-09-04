@@ -25,6 +25,16 @@ jobs:
         run: |
           set -euo pipefail
           python tools/internal_b2p07_reconcile.py
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('docs/canonical/CURRENT_STATE.md')
+          text = path.read_text(encoding='utf-8')
+          old = '**000B2 B2P06 preprocessing-capture merge:** `3dceadd984ff307ce55745bf5f289890a2fac261`  \n'
+          new = '**000B2 B2P06 preprocessing-capture merge:** `3dceadd984ff307ce55745bf5f289890a2fac261`\n'
+          if text.count(old) != 1:
+              raise SystemExit(f'format repair expected one match, found {text.count(old)}')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
 
       - name: Validate reconciled repository state
         run: |
