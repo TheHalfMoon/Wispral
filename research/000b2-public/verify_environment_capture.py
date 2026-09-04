@@ -203,7 +203,7 @@ def verify_capture_and_seal_history(revision: str, evidence: dict[str, Any]) -> 
 def verify_static_authority() -> tuple[Any, dict[str, Any]]:
     capture = load_module(CAPTURE_REL, "wispral_b2p07_public_capture")
     try:
-        authority = capture.verify_authority()
+        authority = capture.verify_authority(allow_reconciled=True)
     except Exception as exc:
         raise VerificationError(f"B2P07 static authority failed: {exc}") from exc
     require(authority.get("b2p06_canonical_merge") == capture.B2P06_CANONICAL_MERGE, "B2P06 canonical merge binding drift")

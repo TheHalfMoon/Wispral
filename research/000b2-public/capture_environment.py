@@ -147,7 +147,7 @@ def seal_recorded_github_provenance(evidence: dict[str, Any]) -> dict[str, Any]:
     return sealed
 
 
-def verify_authority() -> dict[str, Any]:
+def verify_authority(*, allow_reconciled: bool = False) -> dict[str, Any]:
     """Verify the canonical B2P07 entry frontier and return exact authority identities."""
     attempt_raw = safe_bytes(ATTEMPT_STATE_REL)
     preprocessing_raw = safe_bytes(PREPROCESSING_REL)
@@ -182,7 +182,7 @@ def verify_authority() -> dict[str, Any]:
 
     readiness = load_object(readiness_raw, "public readiness")
     require(readiness.get("state") == "READY", "public readiness must remain READY")
-    require(readiness.get("completed_through") == "B2P06", "B2P07 entry requires completion through B2P06")
+    completed_through = readiness.get("completed_through")
     public = readiness.get("public_human_baseline")
     preprocessing_state = readiness.get("preprocessing")
     environment_state = readiness.get("execution_environment")
@@ -190,7 +190,7 @@ def verify_authority() -> dict[str, Any]:
     guards = readiness.get("claim_guards")
     require(isinstance(public, dict) and public.get("candidate_decoding_started") is False, "candidate decoding must remain closed")
     require(isinstance(preprocessing_state, dict) and preprocessing_state.get("resolved") is True, "B2P06 preprocessing must be resolved")
-    require(isinstance(environment_state, dict) and environment_state.get("resolved") is False, "B2P07 readiness must remain unresolved until canonical reconciliation")
+    require(isinstance(environment_state, dict), "execution environment readiness missing")
     require(environment_state.get("hosted_runner_performance_mode") == "DIAGNOSTIC_ONLY", "hosted-runner policy drift")
     require(isinstance(attempt_state, dict) and attempt_state.get("frozen") is False, "B2P08 attempt manifest froze before B2P07")
     require(attempt_state.get("primary_decoding_started") is False, "primary decoding started before B2P07")
@@ -199,8 +199,16 @@ def verify_authority() -> dict[str, Any]:
     require(guards.get("production_stt_selected") is False, "production STT selected before B2P07")
     require(guards.get("product_code_authorized") is False, "product code authorized before B2P07")
     next_action = readiness.get("next_action")
-    require(isinstance(next_action, str) and next_action.startswith("Execute B2P07 only:"), "B2P07 is not the sole authorized next action")
-    require("Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical." in next_action, "B2P07 successor boundary drift")
+    if completed_through == "B2P06":
+        require(environment_state.get("resolved") is False, "B2P07 readiness must remain unresolved until canonical reconciliation")
+        require(isinstance(next_action, str) and next_action.startswith("Execute B2P07 only:"), "B2P07 is not the sole authorized next action")
+        require("Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical." in next_action, "B2P07 successor boundary drift")
+    elif allow_reconciled and completed_through == "B2P07":
+        require(environment_state.get("resolved") is True, "B2P07 reconciled readiness must mark environment resolved")
+        require(isinstance(next_action, str) and next_action.startswith("Execute B2P08 only:"), "B2P07 reconciled readiness must authorize B2P08 only")
+        require("Do not begin candidate or primary decoding until B2P08 is canonical." in next_action, "B2P08 successor boundary drift")
+    else:
+        raise CaptureError(f"B2P07 authority phase unsupported: completed_through={completed_through!r}, allow_reconciled={allow_reconciled}")
 
     contract = load_object(contract_raw, "environment contract")
     policy = contract.get("performance_claim_policy")
