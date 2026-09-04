@@ -1,0 +1,85 @@
+name: Internal B2P06 Reconciliation Finalizer
+
+on:
+  push:
+    branches:
+      - docs/000b2-reconcile-after-b2p06
+    paths:
+      - '.github/workflows/internal-b2p06-reconcile-finalize.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: docs/000b2-reconcile-after-b2p06
+          fetch-depth: 0
+      - name: Reapply verified reconciliation and remove temporary workflows
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import textwrap
+
+          workflow = Path('.github/workflows/internal-b2p06-reconcile.yml').read_text(encoding='utf-8')
+          start_marker = "          python - <<'PY'\n"
+          end_marker = "\n          PY\n\n          python -m py_compile"
+          start = workflow.find(start_marker)
+          if start < 0:
+              raise SystemExit('embedded reconciliation start marker missing')
+          start += len(start_marker)
+          end = workflow.find(end_marker, start)
+          if end < 0:
+              raise SystemExit('embedded reconciliation end marker missing')
+          code = textwrap.dedent(workflow[start:end])
+          exec(compile(code, 'embedded-b2p06-reconciliation', 'exec'), {})
+
+          path = Path('docs/canonical/CURRENT_STATE.md')
+          state = path.read_text(encoding='utf-8')
+          exact_header = '**000B2 B2P06 preprocessing-capture merge:** `3dceadd984ff307ce55745bf5f289890a2fac261`  \n'
+          clean_header = '**000B2 B2P06 preprocessing-capture merge:** `3dceadd984ff307ce55745bf5f289890a2fac261`\n'
+          if state.count(exact_header) != 1:
+              raise SystemExit('B2P06 header whitespace target drift')
+          state = state.replace(exact_header, clean_header, 1)
+
+          qualification_suffix = 'B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; current bounded execution unit is `B2P07`  \n'
+          clean_qualification_suffix = 'B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; current bounded execution unit is `B2P07`\n'
+          if state.count(qualification_suffix) != 1:
+              raise SystemExit('qualification-line whitespace target drift')
+          state = state.replace(qualification_suffix, clean_qualification_suffix, 1)
+          path.write_text(state, encoding='utf-8')
+          PY
+
+          python -m py_compile \
+            research/000b2-public/verify_subset_freeze.py \
+            research/000b2-public/verify_candidate_revalidation.py \
+            research/000b2-public/verify_methodology.py \
+            research/000b2-public/verify_preprocessing_capture.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py --static-only
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_methodology.py
+          git diff --check
+
+          git rm \
+            .github/workflows/internal-b2p06-reconcile.yml \
+            .github/workflows/internal-b2p06-reconcile-finalize.yml
+
+          test "$(git diff --name-only 3dceadd984ff307ce55745bf5f289890a2fac261...HEAD | sort | tr '\n' ' ')" = ".github/workflows/internal-b2p06-reconcile-finalize.yml .github/workflows/internal-b2p06-reconcile.yml "
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            docs/canonical/CURRENT_STATE.md \
+            research/000b2-public/readiness.json \
+            research/000b2-public/verify_candidate_revalidation.py \
+            research/000b2-public/verify_methodology.py \
+            research/000b2-public/verify_subset_freeze.py \
+            specs/000B2-public-corpus-bakeoff/tasks.md \
+            specs/CURRENT.md
+          git commit -m 'docs(000b2): reconcile frontier after B2P06'
+          git push origin HEAD:docs/000b2-reconcile-after-b2p06
