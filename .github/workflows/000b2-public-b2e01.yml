@@ -1,0 +1,66 @@
+name: 000B2 Public Corpus B2E01 Evidence
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/000b2-public-b2e01.yml'
+      - 'research/000b2-public/decode_b2e01.py'
+      - 'research/000b2-public/verify_b2e01.py'
+      - 'research/000b2-public/b2e01-moonshine-compact.json'
+      - 'research/000b2-public/b2e01-provenance.json'
+      - 'research/000b2-public/attempt-manifest.json'
+      - 'research/000b2-public/preprocessing-capture.json'
+      - 'research/000b2-public/readiness.json'
+      - 'specs/CURRENT.md'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/000b2-public-b2e01.yml'
+      - 'research/000b2-public/decode_b2e01.py'
+      - 'research/000b2-public/verify_b2e01.py'
+      - 'research/000b2-public/b2e01-moonshine-compact.json'
+      - 'research/000b2-public/b2e01-provenance.json'
+      - 'research/000b2-public/attempt-manifest.json'
+      - 'research/000b2-public/preprocessing-capture.json'
+      - 'research/000b2-public/readiness.json'
+      - 'specs/CURRENT.md'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: 000b2-b2e01-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-b2e01-evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Compile B2E01 execution and verifier sources
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            research/000b2-public/decode_b2e01.py \
+            research/000b2-public/verify_b2e01.py
+
+      - name: Verify sealed B2E01 execution evidence
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e01.py
+
+      - name: Preserve raw-data boundary
+        run: |
+          set -euo pipefail
+          test ! -e research/000b2-public/raw
+          test ! -e research/000b2-public/preprocessed
+          echo 'B2E01_RAW_DATA_BOUNDARY=PASS'
