@@ -1,0 +1,86 @@
+name: 000B2 Public Corpus Environment Evidence
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/000b2-public-environment.yml'
+      - 'research/000b2-public/capture_environment.py'
+      - 'research/000b2-public/verify_environment_capture.py'
+      - 'research/000b2-public/execution-environment.json'
+      - 'research/000b2-public/predecode-attempt-state.json'
+      - 'research/000b2-public/preprocessing-capture.json'
+      - 'research/000b2-public/readiness.json'
+      - 'research/000b2-entry/environment/contract.json'
+      - 'research/000b2-entry/environment/capture.py'
+      - 'research/000b2-entry/environment/verify_capture.py'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/000b2-public-environment.yml'
+      - 'research/000b2-public/capture_environment.py'
+      - 'research/000b2-public/verify_environment_capture.py'
+      - 'research/000b2-public/execution-environment.json'
+      - 'research/000b2-public/predecode-attempt-state.json'
+      - 'research/000b2-public/preprocessing-capture.json'
+      - 'research/000b2-public/readiness.json'
+      - 'research/000b2-entry/environment/contract.json'
+      - 'research/000b2-entry/environment/capture.py'
+      - 'research/000b2-entry/environment/verify_capture.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: b2p07-environment-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-public-corpus-environment:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      B2P07_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact revision with capture history
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.B2P07_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+
+      - name: Verify exact revision identity
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$B2P07_REVISION"
+          echo "B2P07_EXACT_VERIFICATION_REVISION=$B2P07_REVISION"
+
+      - name: Compile B2P07 verifier surfaces
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            research/000b2-public/capture_environment.py \
+            research/000b2-public/verify_environment_capture.py \
+            research/000b2-entry/environment/capture.py \
+            research/000b2-entry/environment/verify_capture.py
+
+      - name: Reverify historical environment primitive
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-entry/environment/verify_capture.py
+
+      - name: Verify committed B2P07 environment evidence
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_environment_capture.py
+
+      - name: Verify clean verifier execution
+        run: |
+          set -euo pipefail
+          git diff --check
+          test -z "$(git status --porcelain)"
