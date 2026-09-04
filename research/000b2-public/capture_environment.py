@@ -22,6 +22,8 @@ ENV_CONTRACT_REL = Path("research/000b2-entry/environment/contract.json")
 ENV_CAPTURE_PRIMITIVE_REL = Path("research/000b2-entry/environment/capture.py")
 ENV_VERIFY_PRIMITIVE_REL = Path("research/000b2-entry/environment/verify_capture.py")
 CAPTURE_WORKFLOW_REL = Path(".github/workflows/internal-b2p07-environment-capture.yml")
+CAPTURE_WORKFLOW_REVISION = "4211ba2eca5ffa8e49088a5ae432bd0da9b7177c"
+CAPTURE_WORKFLOW_SHA256 = "53a5cf266c2b40b6286cca3498d6188ee6fa84041a32e11cdd1dfda49e0ddbeb"
 ATTEMPT_ID = "000B2-PUBLIC-ATTEMPT-001"
 ATTEMPT_CANONICAL_REVISION = "e8841a68a7e37c7e4dd26ff73fe2566661c468b0"
 ATTEMPT_STATE_SHA256 = "2392ab6694ab56facd8eb1f00c095a5727e51cae90d6553e0eca32b7626a85de"
@@ -112,7 +114,6 @@ def verify_authority() -> dict[str, Any]:
     contract_raw = safe_bytes(ENV_CONTRACT_REL)
     primitive_raw = safe_bytes(ENV_CAPTURE_PRIMITIVE_REL)
     primitive_verify_raw = safe_bytes(ENV_VERIFY_PRIMITIVE_REL)
-    workflow_raw = safe_bytes(CAPTURE_WORKFLOW_REL)
 
     require(sha256_bytes(attempt_raw) == ATTEMPT_STATE_SHA256, "public predecode attempt-state bytes drift")
     require(sha256_bytes(preprocessing_raw) == PREPROCESSING_EVIDENCE_SHA256, "canonical B2P06 preprocessing evidence bytes drift")
@@ -181,7 +182,7 @@ def verify_authority() -> dict[str, Any]:
         "capture_primitive_verifier_path": str(ENV_VERIFY_PRIMITIVE_REL),
         "capture_primitive_verifier_sha256": sha256_bytes(primitive_verify_raw),
         "capture_workflow_path_at_revision": str(CAPTURE_WORKFLOW_REL),
-        "capture_workflow_sha256": sha256_bytes(workflow_raw),
+        "capture_workflow_sha256": CAPTURE_WORKFLOW_SHA256,
     }
 
 
