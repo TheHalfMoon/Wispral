@@ -200,6 +200,7 @@ def verify_authority(*, allow_reconciled: bool = False) -> dict[str, Any]:
     require(guards.get("product_code_authorized") is False, "product code authorized before B2P07")
     next_action = readiness.get("next_action")
     if completed_through == "B2P06":
+        require(attempt_state.get("frozen") is False, "B2P08 attempt must remain unfrozen at the B2P06 frontier")
         require(environment_state.get("resolved") is False, "B2P07 readiness must remain unresolved until canonical reconciliation")
         require(isinstance(next_action, str) and next_action.startswith("Execute B2P07 only:"), "B2P07 is not the sole authorized next action")
         require("Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical." in next_action, "B2P07 successor boundary drift")
@@ -213,7 +214,8 @@ def verify_authority(*, allow_reconciled: bool = False) -> dict[str, Any]:
             require(attempt_state.get("frozen") is True, "B2P08 reconciliation must mark attempt frozen")
             require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2P08 reconciliation must authorize B2E01 only")
             require("Do not begin B2E02 or any later candidate cell until B2E01 is canonical." in next_action, "B2E01 successor boundary drift")
-    else:        raise CaptureError(f"B2P07 authority phase unsupported: completed_through={completed_through!r}, allow_reconciled={allow_reconciled}")
+    else:
+        raise CaptureError(f"B2P07 authority phase unsupported: completed_through={completed_through!r}, allow_reconciled={allow_reconciled}")
 
     contract = load_object(contract_raw, "environment contract")
     policy = contract.get("performance_claim_policy")
