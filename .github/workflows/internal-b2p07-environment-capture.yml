@@ -1,0 +1,90 @@
+name: Internal B2P07 Public Environment Capture
+
+on:
+  push:
+    branches:
+      - research/000b2-b2p07-environment-capture
+    paths:
+      - '.github/workflows/internal-b2p07-environment-capture.yml'
+      - 'research/000b2-public/capture_environment.py'
+      - 'research/000b2-public/verify_environment_capture.py'
+
+permissions:
+  contents: write
+
+jobs:
+  capture-b2p07-environment:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      B2P07_REVISION: ${{ github.sha }}
+    steps:
+      - name: Checkout exact capture revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.B2P07_REVISION }}
+          fetch-depth: 0
+
+      - name: Set up pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+
+      - name: Verify exact capture revision
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$B2P07_REVISION"
+          echo "B2P07_EXACT_CAPTURE_REVISION=$B2P07_REVISION"
+
+      - name: Compile B2P07 capture and verifier
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            research/000b2-public/capture_environment.py \
+            research/000b2-public/verify_environment_capture.py \
+            research/000b2-entry/environment/capture.py \
+            research/000b2-entry/environment/verify_capture.py
+
+      - name: Reverify historical environment capture primitive
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-entry/environment/verify_capture.py
+
+      - name: Verify B2P07 static authority
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_environment_capture.py --static-only
+
+      - name: Capture GitHub-hosted B2P07 diagnostic environment
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/b2p07"
+          mkdir -p "$RUNNER_TEMP/b2p07"
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/capture_environment.py \
+            --output "$RUNNER_TEMP/b2p07/execution-environment.json"
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_environment_capture.py \
+            --evidence "$RUNNER_TEMP/b2p07/execution-environment.json"
+
+      - name: Upload exact B2P07 capture artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: b2p07-environment-${{ env.B2P07_REVISION }}
+          path: ${{ runner.temp }}/b2p07/execution-environment.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Commit exact captured evidence bytes
+        run: |
+          set -euo pipefail
+          cp "$RUNNER_TEMP/b2p07/execution-environment.json" research/000b2-public/execution-environment.json
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/000b2-public/execution-environment.json
+          git commit -m 'research(000b2): capture B2P07 hosted environment evidence'
+          git push origin HEAD:research/000b2-b2p07-environment-capture
+
+      - name: Remove transient capture bytes
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/b2p07"
