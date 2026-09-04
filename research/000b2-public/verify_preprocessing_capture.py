@@ -62,7 +62,7 @@ def validate_frontier() -> None:
     readiness = load_json(READINESS_PATH, "public readiness")
     require(readiness.get("state") == "READY", "public lane readiness drift")
     completed = readiness.get("completed_through")
-    require(completed in {"B2P05", "B2P06"}, "B2P06 verifier is valid only at the B2P05/B2P06 frontier")
+    require(completed in {"B2P05", "B2P06", "B2P07"}, "B2P06 verifier is valid through the B2P07-reconciled frontier")
     public = readiness.get("public_human_baseline")
     require(isinstance(public, dict), "public_human_baseline missing")
     require(public.get("subset_manifest_frozen") is True, "B2P04 subset must remain frozen")
@@ -73,7 +73,10 @@ def validate_frontier() -> None:
     require(preprocessing.get("attempt_bound_capture_required") is True, "attempt-bound preprocessing requirement drift")
     environment = readiness.get("execution_environment")
     require(isinstance(environment, dict), "execution environment readiness missing")
-    require(environment.get("resolved") is False, "B2P07 must remain unresolved during B2P06")
+    if completed == "B2P07":
+        require(environment.get("resolved") is True, "B2P07 reconciliation must mark environment resolved")
+    else:
+        require(environment.get("resolved") is False, "B2P07 must remain unresolved before B2P07 reconciliation")
     attempt = readiness.get("attempt_manifest")
     require(isinstance(attempt, dict), "attempt manifest readiness missing")
     require(attempt.get("frozen") is False, "B2P08 must remain unfrozen during B2P06")
@@ -92,11 +95,18 @@ def validate_frontier() -> None:
         require("- [ ] `B2P07`" in tasks, "B2P07 task must remain closed")
         require("Execute B2P06 only" in str(readiness.get("next_action")), "readiness must authorize B2P06 only")
         require("Execute and canonically qualify `B2P06` only" in current, "CURRENT must authorize B2P06 only")
-    else:
+    elif completed == "B2P06":
         require(preprocessing.get("resolved") is True, "canonical B2P06 reconciliation must mark preprocessing resolved")
         require("- [x] `B2P06`" in tasks, "canonical B2P06 task must be complete")
         require("- [ ] `B2P07`" in tasks, "B2P07 must remain open")
         require("B2P07" in str(readiness.get("next_action")), "canonical B2P06 reconciliation must advance to B2P07")
+    else:
+        require(preprocessing.get("resolved") is True, "B2P07 reconciliation must preserve preprocessing resolution")
+        require("- [x] `B2P06`" in tasks, "B2P06 must remain complete")
+        require("- [x] `B2P07`" in tasks, "B2P07 reconciliation must mark B2P07 complete")
+        require("- [ ] `B2P08`" in tasks, "B2P08 must remain open")
+        require("Execute B2P08 only" in str(readiness.get("next_action")), "B2P07 reconciliation must advance to B2P08")
+        require("Execute and canonically qualify `B2P08` only" in current, "CURRENT must authorize B2P08 only")
 
 
 def validate_evidence(path: Path) -> dict[str, Any]:

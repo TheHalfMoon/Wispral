@@ -12,7 +12,7 @@ These execution tasks become authorized only after the public-corpus amendment a
 - [x] `B2P04` Freeze selected public-human subset manifest and manifest digest before candidate decoding.
 - [x] `B2P05` Revalidate the six canonical candidate cells and artifact/runtime/model identities against live canonical evidence.
 - [x] `B2P06` Capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration and execution evidence.
-- [ ] `B2P07` Capture attempt-bound execution environment/hardware facts and preserve `CONTROLLED` versus `DIAGNOSTIC` semantics.
+- [x] `B2P07` Capture attempt-bound execution environment/hardware facts and preserve `CONTROLLED` versus `DIAGNOSTIC` semantics.
 - [ ] `B2P08` Freeze final pre-decode attempt manifest and verify `primary_decoding_started=false` at freeze.
 
 ## Phase E — public-human C0 execution
