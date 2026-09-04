@@ -289,8 +289,8 @@ Canonical research authority now contains:
 - canonical B2P05 six-cell candidate/runtime/model identity revalidation at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee`, including successful static/live candidate revalidation and six-lane canonical post-merge verification;
 - canonical B2P06 attempt-bound immutable preprocessing capture at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261`, including committed evidence SHA-256 `d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011` and successful seven-lane canonical post-merge verification;
 - canonical B2P07 attempt-bound execution-environment capture at PR #45 merge `4bd5306fa1d274d7b822b73e26172dd9c7058319`, including preserved raw/seal ancestry, recorded GitHub job/artifact provenance, `DIAGNOSTIC` performance semantics, and successful seven-lane canonical post-merge verification;
-- B2P08 authorized as the sole current bounded execution unit;
-- candidate revalidation, preprocessing capture, and execution-environment capture are complete; no comparative public-corpus decoding has started, B2P08 remains unfrozen until its own execution unit, and no production STT is selected.
+- B2E01 is now the only authorized bounded execution unit;
+- candidate revalidation, preprocessing capture, execution-environment capture, and final pre-decode attempt freeze are complete; no comparative public-corpus decoding has started, B2E01 is the sole authorized decoding unit, B2E02 and all later candidate cells remain unauthorized, and no production STT is selected.
 
 ## Current product thesis
 
@@ -335,4 +335,4 @@ Verified 000A, verified 000B1, canonical B2 entry preparation, canonical B2 auth
 
 ## Next canonical action
 
-Execute and canonically qualify `B2P08` only: freeze the final pre-decode attempt manifest for `000B2-PUBLIC-ATTEMPT-001`, binding the canonical B2P04 subset, B2P05 candidate revalidation, B2P06 preprocessing evidence, and B2P07 execution-environment evidence while verifying `primary_decoding_started=false`. B2P08 must not execute candidate or primary decoding. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`. Candidate and primary decoding remain unauthorized until B2P08 is canonically qualified, post-merge verified, and reconciled.
+Execute and canonically qualify `B2E01` only: decode the exact frozen P0 public-human subset with candidate cell 1 (`moonshine-compact`) under frozen C0. Preserve raw transcript, failure, and run evidence; keep repository/test-specific context and candidate-specific audio transforms OFF; and preserve GitHub-hosted timing as `DIAGNOSTIC_ONLY`. Do not begin B2E02 or any later candidate cell until B2E01 is separately qualified, merged, post-merge verified, and reconciled. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`. B2E02 and all later candidate cells remain unauthorized.

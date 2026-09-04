@@ -701,6 +701,9 @@ def main() -> None:
     require_text(current_state, B2P08_FREEZE_DIGEST, "current state B2P08 freeze proof")
     require_text(current_state, "current bounded execution unit is `B2E01`", "current state")
     require_absent(current_state, "current bounded execution unit is `B2P07`", "current state stale unit")
+    require_absent(current_state, "B2P08 authorized as the sole current bounded execution unit", "current state stale B2P08 authority")
+    require_absent(current_state, "B2P08 remains unfrozen until its own execution unit", "current state stale B2P08 freeze wording")
+    require_absent(current_state, "Execute and canonically qualify `B2P08` only", "current state stale B2P08 next action")
 
     for label, text in (("parent spec", parent_spec), ("parent plan", parent_plan), ("parent tasks", parent_tasks)):
         require_text(text, "`000B2-unbiased-stt-bakeoff`", label)
@@ -776,7 +779,7 @@ def main() -> None:
     print("B2P07_ENVIRONMENT_CAPTURE=PASS")
     print(f"B2P07_CANONICAL_MERGE={B2P07_CANONICAL_MERGE}")
     print(f"B2P07_POSTMERGE_ENVIRONMENT_RUN_ID={B2P07_POSTMERGE_ENVIRONMENT_RUN_ID}")
-    print("B2P08_FRONTIER=AUTHORIZED")
+    print("B2E01_FRONTIER=AUTHORIZED")
     print("STRUCTURED_READINESS_GUARDS=PASS")
     print("P0_D0_SEPARATION=PASS")
     print("PRE_DECODE_FREEZE_ORDERING=PASS")
