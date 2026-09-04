@@ -2,7 +2,7 @@
   "schema_version": "000b2-public-readiness-v2",
   "lane": "PUBLIC_CORPUS",
   "state": "READY",
-  "completed_through": "B2P07",
+  "completed_through": "B2P08",
   "historical_private_collection_lane": {
     "preserved": true,
     "executed": false,
@@ -55,7 +55,7 @@
     "hosted_runner_performance_mode": "DIAGNOSTIC_ONLY"
   },
   "attempt_manifest": {
-    "frozen": false,
+    "frozen": true,
     "primary_decoding_started": false
   },
   "claim_guards": {
@@ -64,5 +64,5 @@
     "production_stt_selected": false,
     "product_code_authorized": false
   },
-  "next_action": "Execute B2P08 only: freeze the final pre-decode attempt manifest while preserving the canonical B2P04 subset, B2P05 candidate revalidation, B2P06 preprocessing evidence, B2P07 execution-environment evidence, and primary_decoding_started=false. Do not begin candidate or primary decoding until B2P08 is canonical."
+  "next_action": "Execute B2E01 only: decode the exact frozen P0 public-human subset with candidate cell 1 (`moonshine-compact`) under frozen C0, preserve raw transcript/failure/run evidence, keep repository/test-specific context and candidate-specific audio transforms OFF, and preserve DIAGNOSTIC timing semantics. Do not begin B2E02 or any later candidate cell until B2E01 is canonical."
 }

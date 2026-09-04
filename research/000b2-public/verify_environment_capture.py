@@ -220,7 +220,7 @@ def verify_static_authority() -> tuple[Any, dict[str, Any]]:
     print("B2P07_STATIC_AUTHORITY=PASS")
     print(f"B2P07_B2P06_CANONICAL_MERGE={capture.B2P06_CANONICAL_MERGE}")
     print(f"B2P07_B2P06_RECONCILIATION_MERGE={capture.B2P06_RECONCILIATION_MERGE}")
-    print("B2P07_B2P08_ATTEMPT_MANIFEST_FROZEN=NO")
+    print("B2P07_HISTORICAL_EVIDENCE_PRECEDES_B2P08_FREEZE=YES")
     print("B2P07_CANDIDATE_DECODING_STARTED=NO")
     return capture, authority
 
