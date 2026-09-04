@@ -39,6 +39,7 @@ jobs:
           end = workflow.index("\n          PY", start)
           source = workflow[start:end]
           source = '\n'.join(line[10:] if line.startswith('          ') else line for line in source.splitlines())
+
           old_old = "old_status = '**Status:** `READY` — B2P01 through B2P07 canonical; current bounded execution unit `B2P08`'"
           old_new = "new_status = '**Status:** `READY` — B2P01 through B2P08 canonical; current bounded execution unit `B2E01`'"
           new_old = "old_status = '**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 through B2P07 canonical; current bounded execution unit `B2P08`'"
@@ -46,6 +47,20 @@ jobs:
           if source.count(old_old) != 1 or source.count(old_new) != 1:
               raise SystemExit('bootstrap source status anchor drift')
           source = source.replace(old_old, new_old, 1).replace(old_new, new_new, 1)
+
+          bad_old_indent = "old = '\\n'.join(line[4:] if line.startswith('    ') else line for line in old.splitlines())"
+          if source.count(bad_old_indent) != 1:
+              raise SystemExit('capture old-block indentation repair anchor drift')
+          source = source.replace(bad_old_indent, 'old = old', 1)
+          capture_guard = "if old not in capture:"
+          if source.count(capture_guard) != 1:
+              raise SystemExit('capture replacement guard anchor drift')
+          source = source.replace(
+              capture_guard,
+              "new = '\\n'.join(('    ' + line) if line else line for line in new.splitlines())\nif old not in capture:",
+              1,
+          )
+
           exec(compile(source, '<b2p08-reconciliation-bootstrap>', 'exec'), {'__name__': '__main__'})
           PY
       - name: Verify reconciliation surfaces
