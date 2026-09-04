@@ -1,0 +1,104 @@
+{
+  "attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+  "authority": {
+    "attempt_state": {
+      "attempt_origin_revision": "e8841a68a7e37c7e4dd26ff73fe2566661c468b0",
+      "path": "research/000b2-public/predecode-attempt-state.json",
+      "phase": "PRE_PRIMARY_CAPTURE",
+      "sha256": "2392ab6694ab56facd8eb1f00c095a5727e51cae90d6553e0eca32b7626a85de"
+    },
+    "b2p07_reconciliation_merge": "50ce9ac0ac3b3533d3df978a8b3a7e531f415b9c",
+    "candidate_revalidation": {
+      "candidate_registry_sha256": "2448daab15aea13d1e03c326e43b163337a4e3a09ec077bb0f25e3dd51499f1f",
+      "git_blob_sha1": "5db133d2bf9c3085dcfec8f228ed5520e02f772e",
+      "path": "research/000b2-public/candidate-revalidation.json",
+      "sha256": "aeca7b824d14388271b04c2dad953cecf5c47cd53cf3f70b766f4fe4dcac54b8"
+    },
+    "execution_environment": {
+      "comparative_performance_authorized": false,
+      "environment_id": "x86_64:AMD EPYC 9V74 80-Core Processor:3e80c2c63bf88d13",
+      "git_blob_sha1": "caf814bcb5e42fd769e6df1d9a54c1164535f86c",
+      "hardware_fingerprint_sha256": "3e80c2c63bf88d13a10c358feaa250672a5250fb9cbc90e59bdb397912cac5cd",
+      "path": "research/000b2-public/execution-environment.json",
+      "performance_mode": "DIAGNOSTIC",
+      "sha256": "2b8b521c28c771293648cbf86c7c1b20e820bacfc065074d7cfe2555745387ed"
+    },
+    "preprocessing": {
+      "git_blob_sha1": "89cbb28b7961042a1793c694692fe822c9414370",
+      "path": "research/000b2-public/preprocessing-capture.json",
+      "sha256": "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011"
+    },
+    "subset": {
+      "freeze_digest_sha256": "f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242",
+      "git_blob_sha1": "6acf7e787667512f08b2e7f333cc172310664a7e",
+      "path": "research/000b2-public/subset-manifest.json",
+      "sha256": "5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb"
+    }
+  },
+  "candidate_set": {
+    "b1_contract_version": "000b1-contract-v1",
+    "candidate_ids": [
+      "moonshine-compact",
+      "moonshine-balanced",
+      "whispercpp-compact",
+      "whispercpp-balanced",
+      "sherpa-onnx-compact",
+      "sherpa-onnx-balanced"
+    ],
+    "count": 6,
+    "frozen_methodology_git_blob_sha1": "0eee1c15b5e3fc98edd09f1aae0547afd3c078b5",
+    "frozen_methodology_path": "research/000b1/frozen-methodology.json",
+    "frozen_methodology_sha256": "fc177308926941e683f311a340b9e398f2c44ffa32963b3abc20aa359dbb09df",
+    "membership_change_after_freeze_allowed": false,
+    "registry_git_blob_sha1": "a77c442ae5d4dffa46a0494fbcffd56ecd772be3",
+    "registry_path": "research/000b1/qualified-candidates.json",
+    "registry_sha256": "2448daab15aea13d1e03c326e43b163337a4e3a09ec077bb0f25e3dd51499f1f"
+  },
+  "claims": {
+    "comparative_performance_authorized": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "human_developer_speech_ranking_authorized": false,
+    "product_code_authorized": false,
+    "production_stt_selected": false
+  },
+  "decoding_contract": {
+    "c0_repository_context": "OFF",
+    "c0_test_specific_context": "OFF",
+    "candidate_decoding_started": false,
+    "candidate_specific_audio_transform": "OFF",
+    "identical_frozen_audio_required_across_candidates": true,
+    "primary_decoding_started": false,
+    "raw_outputs_and_failures_must_be_preserved": true
+  },
+  "freeze_digest_sha256": "af4d5009e293daef5d8f629ca91af653f5f591448cd94d4555473a51e2d1da86",
+  "frozen": true,
+  "lane": "PUBLIC_CORPUS",
+  "phase": "PRE_PRIMARY_FROZEN",
+  "schema_version": "000b2-public-attempt-manifest-v1",
+  "scoring": {
+    "core_config_git_blob_sha1": "0634a3108ab0543fa1f8e9bc19015124feae7079",
+    "core_config_path": "research/000b2-entry/scorer-config.json",
+    "core_config_sha256": "4d97d6b9e563bbbaf6cf455597f4c56e44c459a41c25d85f2f069c5fcbeec8e3",
+    "core_scorer_git_blob_sha1": "21e4c67c00da9a11fb402241444598a104f1f2a7",
+    "core_scorer_path": "research/000b2-entry/scorer.py",
+    "core_scorer_sha256": "7328cb34610218a703544a0de6dbfd5e0980b0a62131966119bca648855260e1",
+    "ordinary_wer_source_panel_scope": [
+      "GENERAL_COLLATERAL"
+    ],
+    "public_p0_normalization": {
+      "algorithm": "UNIT_COST_LEVENSHTEIN",
+      "casefold": true,
+      "punctuation_and_symbol_categories_to_space": [
+        "P",
+        "S"
+      ],
+      "unicode_representation": "NFC",
+      "whitespace": "COLLAPSE_AND_SPLIT"
+    },
+    "public_p0_relabels_source_panel": false,
+    "public_wer_adapter_path": "research/000b2-public/score_public_wer.py",
+    "public_wer_adapter_sha256": "581a0e4b0bb91d55a252b92871dbb1246b5fbc4466a5d94bceb35862744fc023",
+    "result_driven_changes_allowed": false
+  },
+  "task": "B2P08"
+}
