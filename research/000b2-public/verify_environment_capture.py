@@ -16,6 +16,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 CAPTURE_REL = Path("research/000b2-public/capture_environment.py")
 COMMITTED_EVIDENCE_REL = Path("research/000b2-public/execution-environment.json")
+EXPECTED_CAPTURE_COMMIT = "aa4711c083b652dfdb7a5d29a39a222125000131"
+EXPECTED_CAPTURE_EVIDENCE_BLOB = "d84e3e55d45a937a09e5898727b60c635144ac5c"
 EXPECTED_CAPTURE_RUN_ID = 33859864538
 EXPECTED_CAPTURE_RUN_ATTEMPT = 1
 EXPECTED_CAPTURE_JOB = "capture-b2p07-environment"
@@ -109,6 +111,51 @@ def verify_capture_revision(revision: str, workflow_path: str, expected_workflow
     require(sha256_bytes(historical) == expected_workflow_sha256, "historical capture workflow bytes drift")
 
 
+def verify_capture_commit(revision: str) -> None:
+    require(SHA40_RE.fullmatch(EXPECTED_CAPTURE_COMMIT) is not None, "expected capture commit malformed")
+    require(SHA40_RE.fullmatch(EXPECTED_CAPTURE_EVIDENCE_BLOB) is not None, "expected capture evidence blob malformed")
+    current = git_output(["rev-parse", "HEAD"]).strip()
+    require(SHA40_RE.fullmatch(current) is not None, "current repository revision malformed")
+    try:
+        subprocess.run(
+            ["git", "merge-base", "--is-ancestor", EXPECTED_CAPTURE_COMMIT, current],
+            cwd=ROOT,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=15,
+        )
+    except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
+        raise VerificationError("capture evidence commit is not an ancestor of the verification head") from exc
+
+    commit_and_parents = git_output(["rev-list", "--parents", "-n", "1", EXPECTED_CAPTURE_COMMIT]).strip().split()
+    require(len(commit_and_parents) == 2, "capture evidence commit must have exactly one parent")
+    require(commit_and_parents[0] == EXPECTED_CAPTURE_COMMIT, "capture evidence commit identity drift")
+    require(commit_and_parents[1] == revision, "capture evidence commit parent is not the exact capture revision")
+
+    changes = [
+        line
+        for line in git_output(
+            ["diff-tree", "--no-commit-id", "--name-status", "-r", EXPECTED_CAPTURE_COMMIT]
+        ).splitlines()
+        if line
+    ]
+    require(
+        changes == [f"A\t{COMMITTED_EVIDENCE_REL.as_posix()}"],
+        "capture evidence commit must add only the committed B2P07 evidence file",
+    )
+
+    historical_blob = git_output(
+        ["rev-parse", f"{EXPECTED_CAPTURE_COMMIT}:{COMMITTED_EVIDENCE_REL.as_posix()}"]
+    ).strip()
+    require(historical_blob == EXPECTED_CAPTURE_EVIDENCE_BLOB, "capture evidence blob identity drift")
+    current_blob = git_output(["rev-parse", f"HEAD:{COMMITTED_EVIDENCE_REL.as_posix()}"]).strip()
+    require(current_blob == EXPECTED_CAPTURE_EVIDENCE_BLOB, "committed B2P07 evidence bytes drifted after capture")
+
+    print(f"B2P07_CAPTURE_COMMIT={EXPECTED_CAPTURE_COMMIT}")
+    print(f"B2P07_CAPTURE_EVIDENCE_BLOB={EXPECTED_CAPTURE_EVIDENCE_BLOB}")
+
+
 def verify_static_authority() -> tuple[Any, dict[str, Any]]:
     capture = load_module(CAPTURE_REL, "wispral_b2p07_public_capture")
     try:
@@ -160,6 +207,7 @@ def verify_evidence(path: Path) -> dict[str, Any]:
     require(isinstance(workflow_path, str), "capture workflow authority path missing")
     require(isinstance(workflow_sha, str) and SHA256_RE.fullmatch(workflow_sha) is not None, "capture workflow authority digest malformed")
     verify_capture_revision(revision, workflow_path, workflow_sha)
+    verify_capture_commit(revision)
 
     environment = evidence.get("environment")
     require(isinstance(environment, dict), "environment evidence missing")
