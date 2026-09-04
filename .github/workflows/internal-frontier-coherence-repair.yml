@@ -1,0 +1,82 @@
+name: Internal 000B2 Frontier Coherence Repair
+
+on:
+  push:
+    branches:
+      - research/000b2-frontier-coherence
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/000b2-frontier-coherence
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Repair canonical frontier coherence
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          current_path = Path('specs/CURRENT.md')
+          current = current_path.read_text(encoding='utf-8')
+
+          old_chronology = "B2P07 execution-environment capture became canonical at merge `4bd5306fa1d274d7b822b73e26172dd9c7058319`. `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`."
+          new_chronology = "B2P07 execution-environment capture became canonical at merge `4bd5306fa1d274d7b822b73e26172dd9c7058319`, and B2P08 pre-decode attempt freeze became canonical at merge `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d`. `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`."
+          if current.count(old_chronology) != 1:
+              raise SystemExit(f'expected exactly one stale active-frontier chronology occurrence, found {current.count(old_chronology)}')
+          current = current.replace(old_chronology, new_chronology)
+
+          old_frontier = "B2P01 through B2P07 are complete. B2P08 is the current bounded execution unit. Comparative decoding remains prohibited until the ordered pre-decode tasks `B2P01` through `B2P08` are genuinely complete and the final attempt manifest is frozen with `primary_decoding_started=false`."
+          new_frontier = "B2P01 through B2P08 are complete and the final attempt manifest is frozen with `primary_decoding_started=false`. B2E01 is the sole current bounded execution unit. B2E02 and all later candidate cells remain unauthorized until B2E01 is separately qualified, merged, post-merge verified, and reconciled."
+          if current.count(old_frontier) != 1:
+              raise SystemExit(f'expected exactly one stale active-frontier authority occurrence, found {current.count(old_frontier)}')
+          current = current.replace(old_frontier, new_frontier)
+          current_path.write_text(current, encoding='utf-8')
+
+          verifier_path = Path('research/000b2-public/verify_methodology.py')
+          verifier = verifier_path.read_text(encoding='utf-8')
+          anchor = '    require_text(current, "B2E01 is now the only authorized bounded unit", "current frontier B2E01 baseline summary")\n'
+          addition = (
+              anchor
+              + '    require_text(current, "B2P08 pre-decode attempt freeze became canonical at merge `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d`", "current frontier B2P08 active-route chronology")\n'
+              + '    require_text(current, "B2P01 through B2P08 are complete and the final attempt manifest is frozen with `primary_decoding_started=false`.", "current frontier post-B2P08 completion")\n'
+              + '    require_text(current, "B2E01 is the sole current bounded execution unit.", "current frontier B2E01 active-route authority")\n'
+              + '    require_absent(current, "B2P01 through B2P07 are complete. B2P08 is the current bounded execution unit.", "current frontier stale B2P08 authority")\n'
+              + '    require_absent(current, "Comparative decoding remains prohibited until the ordered pre-decode tasks `B2P01` through `B2P08` are genuinely complete", "current frontier stale pre-decode prohibition")\n'
+          )
+          if verifier.count(anchor) != 1:
+              raise SystemExit(f'expected exactly one verifier anchor, found {verifier.count(anchor)}')
+          verifier = verifier.replace(anchor, addition)
+          verifier_path.write_text(verifier, encoding='utf-8')
+          PY
+
+          python -m py_compile research/000b2-public/verify_methodology.py
+          python research/000b2-public/verify_methodology.py
+          git diff --check e11d228be5366840be234ed4822e481156125933 --
+      - name: Commit forward-only coherence repair
+        run: |
+          set -euo pipefail
+          git status --short
+          if git diff --quiet -- specs/CURRENT.md research/000b2-public/verify_methodology.py; then
+            echo 'No coherence repair diff produced.'
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add specs/CURRENT.md research/000b2-public/verify_methodology.py
+          if [ "$(git diff --cached --name-only | sort)" != $'research/000b2-public/verify_methodology.py\nspecs/CURRENT.md' ]; then
+            echo 'Unexpected staged scope:'
+            git diff --cached --name-only
+            exit 1
+          fi
+          git commit -m 'fix(000b2): reconcile executable frontier authority'
+          git push origin HEAD:research/000b2-frontier-coherence
