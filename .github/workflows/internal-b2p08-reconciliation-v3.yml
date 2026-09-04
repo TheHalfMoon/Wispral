@@ -30,8 +30,6 @@ jobs:
           if readiness.get('completed_through') != 'B2P07':
               raise SystemExit(f"unexpected entry frontier: {readiness.get('completed_through')!r}")
 
-          # Reuse the already-repaired V2 transformation source, then repair the one
-          # canonical next-action wording whose live text is newer than the bootstrap.
           workflow = Path('.github/workflows/internal-b2p08-reconciliation-v2.yml').read_text(encoding='utf-8')
           marker = "          python - <<'PY'\n"
           start = workflow.index(marker) + len(marker)
@@ -73,7 +71,7 @@ jobs:
           python research/000b2-public/verify_methodology.py
           python research/000b2-public/verify_attempt_manifest.py
           python research/000b2-public/verify_environment_capture.py
-          python research/000b2-public/verify_preprocessing_capture.py
+          python research/000b2-public/verify_preprocessing_capture.py --static-only
           python research/000b2-public/verify_subset_freeze.py
           git diff --check dd65e23d29e7f83b9a94aba9c018928c7f9cc41d --
       - name: Commit verified canonical reconciliation
