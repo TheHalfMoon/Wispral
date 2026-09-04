@@ -134,24 +134,28 @@ def verify_readiness_phase(base_readiness: dict[str, Any], readiness: dict[str, 
         require(environment.get("resolved") is False, "B2P07 environment capture started before B2P05 execution")
         require(preprocessing.get("resolved") is False, "B2P06 preprocessing capture started before B2P05 execution")
         require(isinstance(next_action, str) and next_action.startswith("Execute B2P05 only:"), "B2P05 execution phase next action drift")
+        require("Do not begin candidate decoding, B2P06 preprocessing capture, or primary decoding until B2P05 is canonical." in next_action, "B2P05 execution boundary drift")
         return "EXECUTION"
     if completed_through == "B2P05":
         require(attempt.get("frozen") is False, "B2P08 froze before B2P06 execution")
         require(environment.get("resolved") is False, "B2P07 environment capture started before B2P06 execution")
         require(preprocessing.get("resolved") is False, "B2P06 preprocessing must remain unresolved at the B2P05 frontier")
         require(isinstance(next_action, str) and next_action.startswith("Execute B2P06 only:"), "B2P05 reconciliation must authorize B2P06 only")
+        require("Do not begin B2P07 environment capture, B2P08 attempt freeze, or candidate decoding until B2P06 is canonical." in next_action, "B2P06 successor boundary drift")
         return "B2P05_RECONCILED"
     if completed_through == "B2P06":
         require(attempt.get("frozen") is False, "B2P08 froze before B2P07 execution")
         require(environment.get("resolved") is False, "B2P07 environment must remain unresolved at the B2P06 frontier")
         require(preprocessing.get("resolved") is True, "B2P06 reconciliation must mark preprocessing resolved")
         require(isinstance(next_action, str) and next_action.startswith("Execute B2P07 only:"), "B2P06 reconciliation must authorize B2P07 only")
+        require("Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical." in next_action, "B2P07 successor boundary drift")
         return "B2P06_RECONCILED"
     require(preprocessing.get("resolved") is True, "later reconciliation must preserve preprocessing resolution")
     require(environment.get("resolved") is True, "later reconciliation must preserve execution environment resolution")
     if completed_through == "B2P07":
         require(attempt.get("frozen") is False, "B2P08 attempt advanced before canonical reconciliation")
         require(isinstance(next_action, str) and next_action.startswith("Execute B2P08 only:"), "B2P07 reconciliation must authorize B2P08 only")
+        require("Do not begin candidate or primary decoding until B2P08 is canonical." in next_action, "B2P08 successor boundary drift")
         return "B2P07_RECONCILED"
     require(attempt.get("frozen") is True, "B2P08 reconciliation must mark the attempt manifest frozen")
     require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2P08 reconciliation must authorize B2E01 only")
