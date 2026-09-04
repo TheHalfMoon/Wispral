@@ -76,6 +76,17 @@ jobs:
               1,
           )
 
+          exec_marker = "write(method_path, method)"
+          if source.count(exec_marker) != 1:
+              raise SystemExit('methodology final-write anchor drift')
+          methodology_literal_patch = '''method = method.replace(
+              'require_text(tasks, "- [ ] `B2P08` Freeze final pre-decode attempt manifest and verify `primary_decoding_started=false` at freeze.", "public child tasks")',
+              'require_text(tasks, "- [x] `B2P08` Freeze final pre-decode attempt manifest and verify `primary_decoding_started=false` at freeze.", "public child tasks")',
+              1,
+          )
+          '''
+          source = source.replace(exec_marker, methodology_literal_patch + exec_marker, 1)
+
           exec(compile(source, '<b2p08-reconciliation-bootstrap>', 'exec'), {'__name__': '__main__'})
           PY
       - name: Verify reconciliation surfaces
