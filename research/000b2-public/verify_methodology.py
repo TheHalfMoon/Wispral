@@ -635,6 +635,11 @@ def main() -> None:
     require_absent(current, "B2P07 is now authorized", "current frontier stale B2P07 authority wording")
     require_absent(current, "B2P08 attempt freeze, and primary decoding remain unauthorized during B2P07", "current frontier stale B2P07 successor wording")
     require_text(current, "B2E01 is now the only authorized bounded unit", "current frontier B2E01 baseline summary")
+    require_text(current, "B2P08 pre-decode attempt freeze became canonical at merge `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d`", "current frontier B2P08 active-route chronology")
+    require_text(current, "B2P01 through B2P08 are complete and the final attempt manifest is frozen with `primary_decoding_started=false`.", "current frontier post-B2P08 completion")
+    require_text(current, "B2E01 is the sole current bounded execution unit.", "current frontier B2E01 active-route authority")
+    require_absent(current, "B2P01 through B2P07 are complete. B2P08 is the current bounded execution unit.", "current frontier stale B2P08 authority")
+    require_absent(current, "Comparative decoding remains prohibited until the ordered pre-decode tasks `B2P01` through `B2P08` are genuinely complete", "current frontier stale pre-decode prohibition")
 
     require_text(current_state, B2P01_CANONICAL_MERGE, "current state B2P01 canonical proof")
     require_text(current_state, B2P02_CANONICAL_MERGE, "current state B2P02 canonical proof")
