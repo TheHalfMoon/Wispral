@@ -1,0 +1,91 @@
+name: Internal B2P08 Reconciliation V2
+
+on:
+  push:
+    branches:
+      - research/000b2-b2p08-reconciliation
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/000b2-b2p08-reconciliation
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply corrected B2P08 reconciliation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          readiness = json.loads(Path('research/000b2-public/readiness.json').read_text(encoding='utf-8'))
+          completed = readiness.get('completed_through')
+          if completed == 'B2P08':
+              print('B2P08_RECONCILIATION_ALREADY_APPLIED=YES')
+              raise SystemExit(0)
+          if completed != 'B2P07':
+              raise SystemExit(f'unexpected reconciliation entry frontier: {completed!r}')
+
+          workflow = Path('.github/workflows/internal-b2p08-reconciliation-bootstrap.yml').read_text(encoding='utf-8')
+          marker = "          python - <<'PY'\n"
+          start = workflow.index(marker) + len(marker)
+          end = workflow.index("\n          PY", start)
+          source = workflow[start:end]
+          source = '\n'.join(line[10:] if line.startswith('          ') else line for line in source.splitlines())
+          old_old = "old_status = '**Status:** `READY` — B2P01 through B2P07 canonical; current bounded execution unit `B2P08`'"
+          old_new = "new_status = '**Status:** `READY` — B2P01 through B2P08 canonical; current bounded execution unit `B2E01`'"
+          new_old = "old_status = '**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 through B2P07 canonical; current bounded execution unit `B2P08`'"
+          new_new = "new_status = '**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 through B2P08 canonical; current bounded execution unit `B2E01`'"
+          if source.count(old_old) != 1 or source.count(old_new) != 1:
+              raise SystemExit('bootstrap source status anchor drift')
+          source = source.replace(old_old, new_old, 1).replace(old_new, new_new, 1)
+          exec(compile(source, '<b2p08-reconciliation-bootstrap>', 'exec'), {'__name__': '__main__'})
+          PY
+      - name: Verify reconciliation surfaces
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            research/000b2-public/capture_environment.py \
+            research/000b2-public/verify_candidate_revalidation.py \
+            research/000b2-public/verify_environment_capture.py \
+            research/000b2-public/verify_preprocessing_capture.py \
+            research/000b2-public/verify_subset_freeze.py \
+            research/000b2-public/verify_attempt_manifest.py \
+            research/000b2-public/verify_methodology.py
+          python research/000b2-public/verify_methodology.py
+          python research/000b2-public/verify_attempt_manifest.py
+          python research/000b2-public/verify_environment_capture.py
+          python research/000b2-public/verify_preprocessing_capture.py
+          python research/000b2-public/verify_subset_freeze.py
+          git diff --check dd65e23d29e7f83b9a94aba9c018928c7f9cc41d --
+      - name: Commit verified canonical reconciliation
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            docs/canonical/CURRENT_STATE.md \
+            specs/CURRENT.md \
+            specs/000B2-public-corpus-bakeoff/tasks.md \
+            research/000b2-public/readiness.json \
+            research/000b2-public/capture_environment.py \
+            research/000b2-public/verify_candidate_revalidation.py \
+            research/000b2-public/verify_environment_capture.py \
+            research/000b2-public/verify_preprocessing_capture.py \
+            research/000b2-public/verify_subset_freeze.py \
+            research/000b2-public/verify_attempt_manifest.py \
+            research/000b2-public/verify_methodology.py
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo 'B2P08_RECONCILIATION_COMMIT=NO_CHANGES'
+            exit 0
+          fi
+          git commit -m 'docs(000b2): reconcile frontier after B2P08'
+          git push origin HEAD:research/000b2-b2p08-reconciliation
