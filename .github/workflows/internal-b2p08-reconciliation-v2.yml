@@ -61,6 +61,21 @@ jobs:
               1,
           )
 
+          proof_insert = "method = method.replace(proof_anchor, proof_anchor + proof_checks, 1)"
+          state_insert = "method = method.replace(state_anchor, state_anchor + state_checks, 1)"
+          if source.count(proof_insert) != 1 or source.count(state_insert) != 1:
+              raise SystemExit('methodology insertion-boundary anchor drift')
+          source = source.replace(
+              proof_insert,
+              "method = method.replace(proof_anchor, proof_anchor + proof_checks + '\\n', 1)",
+              1,
+          )
+          source = source.replace(
+              state_insert,
+              "method = method.replace(state_anchor, state_anchor + state_checks + '\\n', 1)",
+              1,
+          )
+
           exec(compile(source, '<b2p08-reconciliation-bootstrap>', 'exec'), {'__name__': '__main__'})
           PY
       - name: Verify reconciliation surfaces
