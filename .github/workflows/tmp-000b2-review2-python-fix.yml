@@ -1,0 +1,78 @@
+name: Temporary 000B2 review-2 Python editor
+
+on:
+  push:
+    branches:
+      - docs/000b2-reconcile-after-b2e02
+
+permissions:
+  contents: write
+
+jobs:
+  apply-exact-review-fix:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out bounded branch head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: docs/000b2-reconcile-after-b2e02
+          fetch-depth: 0
+
+      - name: Apply exact anchored authority hardening
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "2c4ced73c917973f5a86f91aab2e9d7fc23cc664"
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path: str, old: str, new: str) -> None:
+              target = Path(path)
+              text = target.read_text(encoding="utf-8")
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f"expected exactly one anchored match in {path}, got {count}: {old!r}")
+              target.write_text(text.replace(old, new, 1), encoding="utf-8")
+
+          pre = "research/000b2-public/verify_preprocessing_capture.py"
+          replace_once(
+              pre,
+              "def validate_frontier() -> None:\n",
+              '''def validate_b2e03_authority(tasks: str, current: str, next_action: str) -> None:\n    """Require the complete predecessor chain and closed B2E03 successor boundary."""\n    require("- [x] `B2E01`" in tasks, "B2E01 predecessor must remain complete before B2E03 authorization")\n    require("- [x] `B2E02`" in tasks, "B2E02 reconciliation must mark B2E02 complete")\n    require("- [ ] `B2E03`" in tasks, "B2E03 must remain pending before execution")\n    require("- [ ] `B2E04`" in tasks, "B2E04 must remain unauthorized before B2E03 execution")\n    require("Execute B2E03 only" in next_action, "B2E02 reconciliation must advance to B2E03")\n    require(\n        "Do not begin B2E04 or any later candidate cell until B2E03 is canonical." in next_action,\n        "B2E03 readiness successor boundary drift",\n    )\n    require("Execute and canonically qualify `B2E03` only" in current, "CURRENT must authorize B2E03 only")\n    require(\n        "B2E04 and all later candidate cells remain unauthorized" in current,\n        "B2E03 CURRENT successor boundary drift",\n    )\n\n\ndef verify_b2e03_authority_regressions(tasks: str, current: str, next_action: str) -> None:\n    """Mutation-test the predecessor and successor authority guards in memory."""\n    mutations = (\n        (\n            tasks.replace("- [x] `B2E01`", "- [ ] `B2E01`", 1),\n            current,\n            next_action,\n            "B2E01 predecessor must remain complete before B2E03 authorization",\n        ),\n        (\n            tasks,\n            current,\n            next_action.replace("Do not begin B2E04 or any later candidate cell until B2E03 is canonical.", ""),\n            "B2E03 readiness successor boundary drift",\n        ),\n        (\n            tasks,\n            current.replace("B2E04 and all later candidate cells remain unauthorized", ""),\n            next_action,\n            "B2E03 CURRENT successor boundary drift",\n        ),\n        (\n            tasks.replace("- [ ] `B2E04`", "- [x] `B2E04`", 1),\n            current,\n            next_action,\n            "B2E04 must remain unauthorized before B2E03 execution",\n        ),\n    )\n    for mutated_tasks, mutated_current, mutated_next_action, expected in mutations:\n        try:\n            validate_b2e03_authority(mutated_tasks, mutated_current, mutated_next_action)\n        except SystemExit as error:\n            require(expected in str(error), f"B2E03 authority mutation rejected for an unexpected reason: {error}")\n        else:\n            raise SystemExit(f"B2P06_PREPROCESSING_CAPTURE=FAIL: B2E03 authority mutation accepted: {expected}")\n    print("B2E03_AUTHORITY_REGRESSION_GUARDS=PASS")\n\n\ndef validate_frontier() -> None:\n''',
+          )
+          replace_once(
+              pre,
+              '''        else:\n            require("- [x] `B2E02`" in tasks, "B2E02 reconciliation must mark B2E02 complete")\n            require("- [ ] `B2E03`" in tasks, "B2E03 must remain pending before execution")\n            require("Execute B2E03 only" in str(readiness.get("next_action")), "B2E02 reconciliation must advance to B2E03")\n            require("Execute and canonically qualify `B2E03` only" in current, "CURRENT must authorize B2E03 only")\n''',
+              '''        else:\n            next_action = str(readiness.get("next_action"))\n            validate_b2e03_authority(tasks, current, next_action)\n            verify_b2e03_authority_regressions(tasks, current, next_action)\n''',
+          )
+
+          subset = "research/000b2-public/verify_subset_freeze.py"
+          replace_once(
+              subset,
+              "def verify_current_authority() -> str:\n",
+              '''def validate_b2e03_task_chain(tasks: str) -> None:\n    """Require B2E01/B2E02 completion while keeping B2E03/B2E04 unexecuted."""\n    require("- [x] `B2E01`" in tasks, "B2E01 predecessor must remain complete before B2E03 authorization")\n    require("- [x] `B2E02`" in tasks, "B2E02 reconciliation must mark B2E02 complete")\n    require("- [ ] `B2E03`" in tasks, "B2E03 must remain pending before execution")\n    require("- [ ] `B2E04`" in tasks, "B2E04 must remain unauthorized before B2E03 execution")\n\n\ndef verify_b2e03_task_chain_regression(tasks: str) -> None:\n    """Mutation-test the B2E01 predecessor guard before accepting B2E03 authority."""\n    mutated = tasks.replace("- [x] `B2E01`", "- [ ] `B2E01`", 1)\n    try:\n        validate_b2e03_task_chain(mutated)\n    except SystemExit as error:\n        require(\n            "B2E01 predecessor must remain complete before B2E03 authorization" in str(error),\n            f"B2E01 predecessor mutation rejected for an unexpected reason: {error}",\n        )\n    else:\n        raise SystemExit("B2P04_FREEZE_VERIFIER=FAIL: B2E01 predecessor mutation was accepted")\n    print("B2P04_B2E03_PREDECESSOR_REGRESSION=PASS")\n\n\ndef verify_current_authority() -> str:\n''',
+          )
+          replace_once(
+              subset,
+              '''        require("Do not begin B2E04 or any later candidate cell until B2E03 is canonical." in next_action, "B2E03 successor boundary drift")\n        require("- [x] `B2E02`" in tasks, "B2E02 reconciliation must mark B2E02 complete")\n        require("- [ ] `B2E03`" in tasks, "B2E03 must remain pending before execution")\n        require("current bounded execution unit `B2E03`" in current, "reconciled frontier is not B2E03-only")\n''',
+              '''        require("Do not begin B2E04 or any later candidate cell until B2E03 is canonical." in next_action, "B2E03 successor boundary drift")\n        validate_b2e03_task_chain(tasks)\n        verify_b2e03_task_chain_regression(tasks)\n        require("current bounded execution unit `B2E03`" in current, "reconciled frontier is not B2E03-only")\n''',
+          )
+          PY
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py --static-only
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze.py
+          git diff --check
+
+      - name: Remove temporary editor and commit only durable fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/tmp-000b2-review2-python-fix.yml
+          git diff --check
+          test ! -d research/000b2-public/__pycache__
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            research/000b2-public/verify_preprocessing_capture.py \
+            research/000b2-public/verify_subset_freeze.py
+          git commit -m "fix(000b2): enforce B2E03 authority boundaries"
+          git push origin HEAD:docs/000b2-reconcile-after-b2e02
