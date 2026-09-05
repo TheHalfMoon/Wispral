@@ -36,6 +36,14 @@ RECONCILIATION_ALLOWED_PATHS = {
     "specs/000B2-public-corpus-bakeoff/tasks.md",
     "specs/CURRENT.md",
 }
+B2R01_REQUIRED_TASK_MERGE_PATHS = {
+    ".github/workflows/000b2-public-attempt-recovery.yml",
+    "research/000b2-public/attempt-001-invalidation.json",
+    "research/000b2-public/recovery-readiness.json",
+    "research/000b2-public/verify_attempt_001_invalidation.py",
+    "specs/000B2-public-corpus-bakeoff/recovery.md",
+    "specs/000B2-public-corpus-bakeoff/tasks.md",
+}
 EXPECTED_TRANSITION_POLICY = {
     "canonical_main_ref_required_after_first_completion": True,
     "one_recovery_task_per_reconciliation": True,
@@ -88,14 +96,41 @@ def git_success(*args: str) -> bool:
     ).returncode == 0
 
 
-def load_git_json(ref: str, path: str) -> dict[str, Any] | None:
+def git_show_text(ref: str, path: str) -> str | None:
     try:
-        text = git_output("show", f"{ref}:{path}")
+        return git_output("show", f"{ref}:{path}")
     except subprocess.CalledProcessError:
+        return None
+
+
+def load_git_json(ref: str, path: str) -> dict[str, Any] | None:
+    text = git_show_text(ref, path)
+    if text is None:
         return None
     value = json.loads(text)
     require(isinstance(value, dict), f"git object expected: {ref}:{path}")
     return value
+
+
+def git_blob_sha(ref: str, path: str) -> str | None:
+    try:
+        return git_output("rev-parse", f"{ref}:{path}")
+    except subprocess.CalledProcessError:
+        return None
+
+
+def git_commit_parents(commit: str) -> list[str]:
+    fields = git_output("rev-list", "--parents", "-n", "1", commit).split()
+    require(fields and fields[0] == commit, f"unable to inspect commit parents for {commit}")
+    return fields[1:]
+
+
+def git_changed_paths(base: str, head: str) -> set[str]:
+    return {
+        line
+        for line in git_output("diff", "--name-only", base, head).splitlines()
+        if line
+    }
 
 
 def recovery_completed_prefix(tasks: str) -> list[str]:
@@ -154,6 +189,62 @@ def validate_transition_proof_shape(
     return proof
 
 
+def verify_task_merge_boundary(
+    completed_task: str,
+    proof: dict[str, Any],
+    previous_completed: list[str],
+    previous_proofs: list[dict[str, Any]],
+) -> None:
+    """Prove a task merge is an execution/evidence merge, never a reused reconciliation merge."""
+    merge_sha = proof["canonical_task_merge"]
+    parents = git_commit_parents(merge_sha)
+    require(len(parents) >= 2, f"{completed_task} canonical task merge must be a merge commit")
+    first_parent = parents[0]
+    changed_paths = git_changed_paths(first_parent, merge_sha)
+
+    if completed_task == "B2R01":
+        require(first_parent == EXPECTED_MAIN, "B2R01 canonical merge first parent drift")
+        require(
+            B2R01_REQUIRED_TASK_MERGE_PATHS.issubset(changed_paths),
+            "B2R01 canonical task merge does not contain the qualified recovery unit",
+        )
+        require(
+            "specs/CURRENT.md" not in changed_paths and "docs/canonical/CURRENT_STATE.md" not in changed_paths,
+            "B2R01 task merge improperly includes canonical reconciliation authority",
+        )
+        merge_readiness = load_git_json(merge_sha, "research/000b2-public/recovery-readiness.json")
+        merge_tasks = git_show_text(merge_sha, "specs/000B2-public-corpus-bakeoff/tasks.md")
+        require(merge_readiness is not None and merge_tasks is not None, "B2R01 merge recovery authority missing")
+        require(recovery_completed_prefix(merge_tasks) == [], "B2R01 task merge must remain pending reconciliation")
+        require(merge_readiness.get("completed_recovery_tasks") == [], "B2R01 task merge completed itself before reconciliation")
+        require(merge_readiness.get("active_recovery_unit") == "B2R01", "B2R01 task merge active authority drift")
+        require(merge_readiness.get("transition_proofs") == [], "B2R01 task merge must not self-reconcile")
+        return
+
+    pre_readiness = load_git_json(first_parent, "research/000b2-public/recovery-readiness.json")
+    merge_readiness = load_git_json(merge_sha, "research/000b2-public/recovery-readiness.json")
+    pre_tasks = git_show_text(first_parent, "specs/000B2-public-corpus-bakeoff/tasks.md")
+    merge_tasks = git_show_text(merge_sha, "specs/000B2-public-corpus-bakeoff/tasks.md")
+    require(pre_readiness is not None and merge_readiness is not None, f"{completed_task} task merge recovery readiness missing")
+    require(pre_tasks is not None and merge_tasks is not None, f"{completed_task} task merge task ledger missing")
+
+    require(recovery_completed_prefix(pre_tasks) == previous_completed, f"{completed_task} first-parent recovery prefix drift")
+    require(pre_readiness.get("completed_recovery_tasks") == previous_completed, f"{completed_task} first-parent readiness completion drift")
+    require(pre_readiness.get("active_recovery_unit") == completed_task, f"{completed_task} was not canonical active unit before its task merge")
+    require(pre_readiness.get("transition_proofs") == previous_proofs, f"{completed_task} first-parent transition proof drift")
+
+    for path in sorted(RECONCILIATION_ALLOWED_PATHS):
+        require(
+            git_blob_sha(first_parent, path) == git_blob_sha(merge_sha, path),
+            f"{completed_task} task merge changed reconciliation authority path {path}",
+        )
+    require(merge_readiness == pre_readiness, f"{completed_task} task merge altered recovery readiness before reconciliation")
+    require(merge_tasks == pre_tasks, f"{completed_task} task merge altered recovery task ledger before reconciliation")
+
+    substantive_paths = changed_paths - RECONCILIATION_ALLOWED_PATHS
+    require(substantive_paths, f"{completed_task} task merge has no implementation/evidence change outside reconciliation authority")
+
+
 def authority_marker_requirements(
     completed_task: str,
     proof: dict[str, Any],
@@ -201,6 +292,7 @@ def verify_transition_authority(
                 git_success("merge-base", "--is-ancestor", previous_merge, merge_sha),
                 f"{completed_task} canonical merge predates its recovery predecessor",
             )
+        verify_task_merge_boundary(completed_task, proof, list(RECOVERY_TASKS[:index]), normalized.copy())
         normalized.append(proof)
 
     latest_task = completed[-1]
@@ -212,14 +304,7 @@ def verify_transition_authority(
         require(marker in current_state_text, f"CURRENT_STATE missing canonical recovery marker: {marker}")
 
     canonical_readiness = load_git_json(canonical_main_ref, "research/000b2-public/recovery-readiness.json")
-    canonical_tasks_text: str | None = None
-    try:
-        canonical_tasks_text = git_output(
-            "show",
-            f"{canonical_main_ref}:specs/000B2-public-corpus-bakeoff/tasks.md",
-        )
-    except subprocess.CalledProcessError:
-        canonical_tasks_text = None
+    canonical_tasks_text = git_show_text(canonical_main_ref, "specs/000B2-public-corpus-bakeoff/tasks.md")
 
     transition_already_canonical = False
     if canonical_readiness is not None and canonical_tasks_text is not None:
