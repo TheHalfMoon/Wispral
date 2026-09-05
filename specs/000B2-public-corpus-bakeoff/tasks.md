@@ -17,7 +17,7 @@ These execution tasks become authorized only after the public-corpus amendment a
 
 ## Phase E — public-human C0 execution
 
-- [ ] `B2E01` Decode the frozen P0 public-human subset with candidate cell 1 under C0.
+- [x] `B2E01` Decode the frozen P0 public-human subset with candidate cell 1 under C0.
 - [ ] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0.
 - [ ] `B2E03` Decode the identical frozen P0 subset with candidate cell 3 under C0.
 - [ ] `B2E04` Decode the identical frozen P0 subset with candidate cell 4 under C0.

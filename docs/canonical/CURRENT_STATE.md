@@ -29,6 +29,7 @@
 **000B2 B2P06 preprocessing-capture merge:** `3dceadd984ff307ce55745bf5f289890a2fac261`
 **000B2 B2P07 execution-environment merge:** `4bd5306fa1d274d7b822b73e26172dd9c7058319`
 **000B2 B2P08 pre-decode attempt-freeze merge:** `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d`
+**000B2 B2E01 moonshine-compact execution merge:** `bb3acfae1f39669d74118a564e57a131731484d3`
 **Program status:** `SPEC_000_RESEARCH_ACTIVE`  
 **Active product implementation:** none  
 **Active parent specification:** `000-founding-research` — `REFINING`  
@@ -41,7 +42,7 @@
 **000B2 participant materials:** `CANONICAL_FROZEN`, participant consent `EXTERNAL_NOT_OBTAINED`  
 **Blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
 **Active execution successor:** `000B2-public-corpus-bakeoff` — `READY`  
-**Qualification chronology gate:** `SATISFIED` by PR #32 merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`; machine readiness reconciled by PR #33 merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`; B2P01 is canonical at PR #34 merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`; B2P02 is canonical at PR #35 merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c` and post-merge verified; B2P03 is canonical at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58` and post-merge verified; B2P04 is canonical at PR #39 merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` and post-merge verified; B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; B2P07 is canonical at PR #45 merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` and post-merge verified; current bounded execution unit is `B2E01`
+**Qualification chronology gate:** `SATISFIED` by PR #32 merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`; machine readiness reconciled by PR #33 merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`; B2P01 is canonical at PR #34 merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`; B2P02 is canonical at PR #35 merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c` and post-merge verified; B2P03 is canonical at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58` and post-merge verified; B2P04 is canonical at PR #39 merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` and post-merge verified; B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; B2P07 is canonical at PR #45 merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` and post-merge verified; B2E01 is canonical at merge `bb3acfae1f39669d74118a564e57a131731484d3`; current bounded execution unit is `B2E02`
 **Published release:** none
 
 Live GitHub and repository truth override this document.
@@ -132,6 +133,12 @@ The entry-preparation unit canonically establishes:
 This does not create participant/media authority, primary human-speech evidence, independent process chronology, controlled-environment attestation, comparative ranking, or a frozen final B2 attempt.
 
 The historical entry-preparation closeout record is `research/000b2-entry/canonical-closeout.json`; current readiness is `research/000b2-entry/readiness.json`.
+
+## Canonical B2E01 public-human C0 execution proof
+
+PR #50 executed only candidate cell 1 (`moonshine-compact`) against the exact frozen P0 public-human subset under frozen C0 and merged as `bb3acfae1f39669d74118a564e57a131731484d3` from exact qualified head `9a2b4dd2d79c445d31a09a6c435af6cbe43e6808`. The guarded merge preserved capture/seal/provenance ancestry. Canonical evidence run `33928586213`, job `101202392820`, artifact `9957837509`, and the independently preserved duplicate run `33928583817`, job `101202331743`, artifact `9957866136`, contain the same 240 utterance identities and semantic records; both decoded 240/240 with zero failures. Timing remains `DIAGNOSTIC_ONLY`, no reference scoring or comparative ranking occurred, and `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`.
+
+Fresh independent CodeRabbit exact-range challenge comment `5551111214` inspected base `6607b1b1a13daebe1c267f82e3295be9b3bdea32` through head `9a2b4dd2d79c445d31a09a6c435af6cbe43e6808` and reported no actionable substantive findings. All seven exact-merge-head push workflows on `bb3acfae1f39669d74118a564e57a131731484d3` completed successfully. B2E01 Evidence run `33960299255`, job `101290913708`, checked out that exact merge, passed malformed/missing freeze-digest fail-closed tests, emitted `B2E01_EVIDENCE=PASS`, `B2E01_DECODED=240`, `B2E01_FAILURES=0`, `B2E01_DUPLICATE_SEMANTIC_EQUIVALENCE=PASS`, `B2E02_AUTHORIZED=NO`, and `B2E01_RAW_DATA_BOUNDARY=PASS`. This post-merge proof authorizes only canonical reconciliation; B2E02 becomes executable only after this reconciliation itself is exact-head qualified, independently reviewed, guarded-merged, and post-merge verified.
 
 ## Canonical B2 human-authority structure proof
 

@@ -107,7 +107,7 @@ def family_map(registry: dict[str, Any]) -> dict[str, dict[str, Any]]:
 
 
 def verify_readiness_phase(base_readiness: dict[str, Any], readiness: dict[str, Any]) -> str:
-    """Accept B2P05 execution and canonical reconciliations through B2P08 with later gates closed."""
+    """Accept B2P05 execution and canonical reconciliations through B2E01 with later gates closed."""
     require(base_readiness.get("state") == "READY", "canonical base public readiness must remain READY")
     require(base_readiness.get("completed_through") == "B2P04", "canonical B2P05 base must remain completed through B2P04")
     base_next = base_readiness.get("next_action")
@@ -115,13 +115,13 @@ def verify_readiness_phase(base_readiness: dict[str, Any], readiness: dict[str, 
 
     require(readiness.get("state") == "READY", "public readiness must remain READY")
     completed_through = readiness.get("completed_through")
-    require(completed_through in {"B2P04", "B2P05", "B2P06", "B2P07", "B2P08"}, "unsupported B2P05-B2P08 readiness phase")
+    require(completed_through in {"B2P04", "B2P05", "B2P06", "B2P07", "B2P08", "B2E01"}, "unsupported B2P05-B2E01 readiness phase")
     public = readiness.get("public_human_baseline")
     preprocessing = readiness.get("preprocessing")
     environment = readiness.get("execution_environment")
     attempt = readiness.get("attempt_manifest")
     guards = readiness.get("claim_guards")
-    require(isinstance(public, dict) and public.get("candidate_decoding_started") is False, "candidate decoding must remain closed through B2P08 reconciliation")
+    require(isinstance(public, dict) and public.get("candidate_decoding_started") is False, "historical readiness candidate-decoding flag must remain false through B2E01 reconciliation")
     require(isinstance(preprocessing, dict), "preprocessing readiness missing")
     require(isinstance(environment, dict), "execution environment readiness missing")
     require(isinstance(attempt, dict) and attempt.get("primary_decoding_started") is False, "primary decoding started before B2E01")
@@ -158,9 +158,13 @@ def verify_readiness_phase(base_readiness: dict[str, Any], readiness: dict[str, 
         require("Do not begin candidate or primary decoding until B2P08 is canonical." in next_action, "B2P08 successor boundary drift")
         return "B2P07_RECONCILED"
     require(attempt.get("frozen") is True, "B2P08 reconciliation must mark the attempt manifest frozen")
-    require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2P08 reconciliation must authorize B2E01 only")
-    require("Do not begin B2E02 or any later candidate cell until B2E01 is canonical." in next_action, "B2E01 successor boundary drift")
-    return "B2P08_RECONCILED"
+    if completed_through == "B2P08":
+        require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2P08 reconciliation must authorize B2E01 only")
+        require("Do not begin B2E02 or any later candidate cell until B2E01 is canonical." in next_action, "B2E01 successor boundary drift")
+        return "B2P08_RECONCILED"
+    require(isinstance(next_action, str) and next_action.startswith("Execute B2E02 only:"), "B2E01 reconciliation must authorize B2E02 only")
+    require("Do not begin B2E03 or any later candidate cell until B2E02 is canonical." in next_action, "B2E02 successor boundary drift")
+    return "B2E01_RECONCILED"
 
 def verify_static_authority(trusted_base_root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     """Bind B2P05 candidate data to immutable canonical-base authority and closed gates."""
