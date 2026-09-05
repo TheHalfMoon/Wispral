@@ -3,6 +3,6 @@
   "task": "B2E03",
   "candidate_id": "whispercpp-compact",
   "canonical_authority_base": "b326397cdd29fbb132b9c438ba2178626558efab",
-  "capture_sequence": 3,
-  "purpose": "Trigger the exact-head B2E03 public-human C0 capture after explicitly freezing the GREEDY beam sentinel to -1 and preserving all non-VAD fixed-step stream.cpp controls."
+  "capture_sequence": 4,
+  "purpose": "Trigger the reviewed exact-head B2E03 public-human C0 capture after matching pinned stream.cpp timestamp-display semantics, GREEDY beam sentinel -1, and all frozen non-VAD fixed-step controls."
 }
