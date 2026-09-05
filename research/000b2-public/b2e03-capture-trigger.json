@@ -3,6 +3,6 @@
   "task": "B2E03",
   "candidate_id": "whispercpp-compact",
   "canonical_authority_base": "b326397cdd29fbb132b9c438ba2178626558efab",
-  "capture_sequence": 6,
-  "purpose": "Trigger the final reviewed B2E03 public-human C0 capture in an isolated final concurrency group after all known stream.cpp semantic findings were fixed."
+  "capture_sequence": 7,
+  "purpose": "Trigger the canonical-candidate B2E03 public-human C0 capture after the permanent verifier was made valid across pre-reconciliation, post-reconciliation, and later canonical states."
 }
