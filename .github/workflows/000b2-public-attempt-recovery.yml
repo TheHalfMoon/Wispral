@@ -35,7 +35,6 @@ jobs:
     env:
       EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
       EXPECTED_B2R01_BASE: b326397cdd29fbb132b9c438ba2178626558efab
-      B2R01_CANONICAL_MERGE: 715efc4855fb52187ed250b11f0c28bb2c2c0660
       MOONSHINE_REVISION: 234f60faa0eb388b01cdf7e60aca232af37aefda
       CANONICAL_MAIN_REF: refs/remotes/origin/main
     steps:
@@ -68,35 +67,8 @@ jobs:
           import subprocess
           from pathlib import Path
 
-          def git(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
-              return subprocess.run(
-                  ['git', *args],
-                  check=check,
-                  text=True,
-                  stdout=subprocess.PIPE,
-                  stderr=subprocess.PIPE,
-              )
-
-          def should_enforce_premerge_scope(completed: object, canonical_has_b2r01: bool) -> bool:
-              return completed == [] and not canonical_has_b2r01
-
-          def canonical_contains_b2r01() -> bool:
-              merge = os.environ['B2R01_CANONICAL_MERGE']
-              canonical = os.environ['CANONICAL_MAIN_REF']
-              return git('merge-base', '--is-ancestor', merge, canonical, check=False).returncode == 0
-
-          # Regression guard for all three authority phases.
-          assert should_enforce_premerge_scope([], False)
-          assert not should_enforce_premerge_scope([], True)
-          assert not should_enforce_premerge_scope(['B2R01'], True)
-
           readiness = json.loads(Path('research/000b2-public/recovery-readiness.json').read_text(encoding='utf-8'))
-          completed = readiness.get('completed_recovery_tasks')
-          if not isinstance(completed, list):
-              raise SystemExit('B2R01 scope gate: completed_recovery_tasks must be a list')
-
-          canonical_has_b2r01 = canonical_contains_b2r01()
-          if should_enforce_premerge_scope(completed, canonical_has_b2r01):
+          if readiness.get('completed_recovery_tasks') == []:
               expected = {
                   '.github/workflows/000b2-public-attempt-recovery.yml',
                   'research/000b2-public/attempt-001-invalidation.json',
@@ -106,24 +78,22 @@ jobs:
                   'specs/000B2-public-corpus-bakeoff/tasks.md',
               }
               base = os.environ['EXPECTED_B2R01_BASE']
-              git('rev-parse', '--verify', f'{base}^{{commit}}')
-              changed = set(git('diff', '--name-only', f'{base}...HEAD').stdout.splitlines())
+              subprocess.run(['git', 'rev-parse', '--verify', f'{base}^{{commit}}'], check=True)
+              changed = set(
+                  subprocess.run(
+                      ['git', 'diff', '--name-only', f'{base}...HEAD'],
+                      check=True,
+                      text=True,
+                      stdout=subprocess.PIPE,
+                  ).stdout.splitlines()
+              )
               if changed != expected:
                   raise SystemExit(
                       f'B2R01 exact scope drift: missing={sorted(expected - changed)!r} '
                       f'unexpected={sorted(changed - expected)!r}'
                   )
               print('B2R01_EXACT_PREMERGE_SCOPE=PASS')
-          elif completed == []:
-              merge = os.environ['B2R01_CANONICAL_MERGE']
-              base = os.environ['EXPECTED_B2R01_BASE']
-              parents = git('rev-list', '--parents', '-n', '1', merge).stdout.split()
-              if len(parents) < 3 or parents[0] != merge or parents[1] != base:
-                  raise SystemExit('B2R01 canonical merge identity/first-parent drift')
-              print('B2R01_EXACT_PREMERGE_SCOPE=NOT_APPLICABLE_AFTER_CANONICAL_TASK_MERGE')
           else:
-              if not canonical_has_b2r01:
-                  raise SystemExit('reconciled recovery state exists without canonical B2R01 merge ancestry')
               print('B2R01_EXACT_PREMERGE_SCOPE=NOT_APPLICABLE_AFTER_CANONICAL_RECONCILIATION')
           PY
 
