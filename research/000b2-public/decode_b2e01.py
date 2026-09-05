@@ -122,6 +122,13 @@ def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]
     require(contract.get("raw_outputs_and_failures_must_be_preserved") is True, "raw-output preservation invariant drift")
     require(contract.get("candidate_decoding_started") is False, "frozen predecode manifest was rewritten after decoding")
     require(contract.get("primary_decoding_started") is False, "frozen predecode manifest was rewritten after decoding")
+    freeze_digest = attempt.get("freeze_digest_sha256")
+    require(
+        isinstance(freeze_digest, str)
+        and len(freeze_digest) == 64
+        and all(ch in SHA40 for ch in freeze_digest),
+        "attempt freeze digest missing or malformed",
+    )
 
     preprocessing = load_json(PREPROCESSING_CAPTURE_PATH, "B2P06 preprocessing capture")
     require(preprocessing.get("schema_version") == "000b2-public-preprocessing-capture-v1", "preprocessing capture schema drift")
