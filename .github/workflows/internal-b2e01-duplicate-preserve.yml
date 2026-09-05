@@ -1,0 +1,112 @@
+name: Internal B2E01 Duplicate Evidence Preservation
+
+on:
+  push:
+    branches:
+      - research/000b2-b2e01-moonshine-compact
+    paths:
+      - '.github/workflows/internal-b2e01-duplicate-preserve.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: internal-b2e01-duplicate-preserve
+  cancel-in-progress: false
+
+jobs:
+  preserve-duplicate-evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      EXPECTED_SOURCE: 1a39e9c177fce1f45c46854ffc58640a35dbe2d0
+      DUPLICATE_RUN_ID: '33928583817'
+      DUPLICATE_JOB_ID: '101202331743'
+      DUPLICATE_ARTIFACT_ID: '9957866136'
+      EXPECTED_ZIP_SHA256: 3ce79885b28491e2d9fcd5c0a4dd617c51a946c755d13f72dc198fb1d50e83ca
+      EXPECTED_JSON_SHA256: 5b7c9937836607a62f7319c59865b071b784d464aa35c07e53f15c2d65ea4f3e
+      DEST: research/000b2-public/b2e01-moonshine-compact-duplicate-run-33928583817.json
+    steps:
+      - name: Checkout preservation branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: research/000b2-b2e01-moonshine-compact
+          fetch-depth: 0
+
+      - name: Verify duplicate run identity and completed decode
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/${DUPLICATE_RUN_ID} --jq .head_sha)" = "$EXPECTED_SOURCE"
+          test "$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/${DUPLICATE_RUN_ID} --jq .event)" = "push"
+          test "$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/${DUPLICATE_RUN_ID} --jq .conclusion)" = "success"
+          gh api repos/${GITHUB_REPOSITORY}/actions/runs/${DUPLICATE_RUN_ID}/jobs --jq \
+            ".jobs[] | select(.id == ${DUPLICATE_JOB_ID}) | [.conclusion, (.steps[] | select(.name == \"Execute B2E01 moonshine-compact C0 decode\") | .conclusion)] | @tsv" \
+            | grep -Fx $'success\tsuccess'
+
+      - name: Download and verify exact duplicate artifact bytes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p .tmp-b2e01-duplicate
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/${DUPLICATE_ARTIFACT_ID}/zip > .tmp-b2e01-duplicate/artifact.zip
+          echo "${EXPECTED_ZIP_SHA256}  .tmp-b2e01-duplicate/artifact.zip" | sha256sum -c -
+          unzip -q .tmp-b2e01-duplicate/artifact.zip -d .tmp-b2e01-duplicate/extracted
+          candidate="$(find .tmp-b2e01-duplicate/extracted -type f -name 'b2e01-moonshine-compact.json' -print -quit)"
+          test -n "$candidate"
+          echo "${EXPECTED_JSON_SHA256}  ${candidate}" | sha256sum -c -
+          cp "$candidate" "$DEST"
+
+      - name: Verify duplicate semantic equivalence to canonical evidence
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          primary = json.loads(Path('research/000b2-public/b2e01-moonshine-compact.json').read_text())
+          duplicate = json.loads(Path('research/000b2-public/b2e01-moonshine-compact-duplicate-run-33928583817.json').read_text())
+
+          assert primary['run']['repository_revision'] == duplicate['run']['repository_revision'] == '1a39e9c177fce1f45c46854ffc58640a35dbe2d0'
+          assert primary['run']['github_run_id'] == 33928586213
+          assert duplicate['run']['github_run_id'] == 33928583817
+          assert primary['authority'] == duplicate['authority']
+          assert primary['candidate'] == duplicate['candidate']
+          assert primary['c0_controls'] == duplicate['c0_controls']
+          assert primary['claim_guards'] == duplicate['claim_guards']
+
+          def semantic_rows(evidence):
+              rows = []
+              for row in evidence['execution']['records']:
+                  clean = dict(row)
+                  clean.pop('decode_wall_seconds')
+                  rows.append(clean)
+              return rows
+
+          a = semantic_rows(primary)
+          b = semantic_rows(duplicate)
+          assert a == b
+          canonical = (json.dumps(a, ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n').encode()
+          observed = hashlib.sha256(canonical).hexdigest()
+          assert observed == 'e0216b7c82ddaa687d221b46eafd676e4e58a4f59856b817c9f1cb250d9cea34'
+          assert primary['execution']['decoded_count'] == duplicate['execution']['decoded_count'] == 240
+          assert primary['execution']['failure_count'] == duplicate['execution']['failure_count'] == 0
+          print('B2E01_DUPLICATE_SEMANTIC_EQUIVALENCE=PASS')
+          print(f'B2E01_DUPLICATE_SEMANTIC_RECORDS_SHA256={observed}')
+          PY
+
+      - name: Commit immutable duplicate evidence and remove internal workflow
+        run: |
+          set -euo pipefail
+          rm -rf .tmp-b2e01-duplicate
+          rm .github/workflows/internal-b2e01-duplicate-preserve.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$DEST" .github/workflows/internal-b2e01-duplicate-preserve.yml
+          test "$(git status --porcelain | wc -l)" -eq 2
+          git commit -m 'fix(000b2): preserve duplicate B2E01 capture evidence'
+          git push origin HEAD:research/000b2-b2e01-moonshine-compact
