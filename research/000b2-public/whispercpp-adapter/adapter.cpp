@@ -293,7 +293,8 @@ DecodeResult decode_one(whisper_context * ctx, const InputRow & input_row) {
             params.n_threads = kThreads;
             params.beam_search.beam_size = -1;
             params.audio_ctx = 0;
-            params.no_timestamps = true;
+            // Match pinned stream.cpp exactly: non-VAD mode suppresses timestamp
+            // printing but leaves whisper_full_params.no_timestamps at its default.
             params.no_context = true;
             params.tdrz_enable = false;
             params.temperature_inc = 0.0f;
