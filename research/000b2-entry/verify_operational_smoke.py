@@ -6,7 +6,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -43,6 +45,67 @@ def load(path: Path) -> Any:
 
 def fail(message: str) -> None:
     raise AssertionError(message)
+
+
+def git_output(*args: str) -> str:
+    return subprocess.run(
+        ["git", "-C", str(ROOT), *args],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=30,
+    ).stdout.strip()
+
+
+def verify_exact_workflow_subject(expected_checkout_sha: str) -> str:
+    """Bind a fresh PR aggregate to exact PR-head bytes without changing the workflow."""
+
+    checkout_sha = git_output("rev-parse", "HEAD")
+    if checkout_sha != expected_checkout_sha:
+        fail(f"workflow checkout differs from declared workflow subject: {checkout_sha}")
+
+    event_path_raw = os.environ.get("GITHUB_EVENT_PATH")
+    if not event_path_raw:
+        return checkout_sha
+    event_path = Path(event_path_raw)
+    if not event_path.is_file():
+        fail("GITHUB_EVENT_PATH is not a file")
+    event = load(event_path)
+    pull_request = event.get("pull_request") if isinstance(event, dict) else None
+    if not isinstance(pull_request, dict):
+        return checkout_sha
+
+    head = pull_request.get("head")
+    base = pull_request.get("base")
+    if not isinstance(head, dict) or not isinstance(base, dict):
+        fail("pull_request event head/base metadata missing")
+    head_sha = head.get("sha")
+    base_sha = base.get("sha")
+    if not isinstance(head_sha, str) or not SHA40.fullmatch(head_sha):
+        fail("pull_request event head SHA malformed")
+    if not isinstance(base_sha, str) or not SHA40.fullmatch(base_sha):
+        fail("pull_request event base SHA malformed")
+
+    if checkout_sha != head_sha:
+        commit_line = git_output("rev-list", "--parents", "-n", "1", "HEAD").split()
+        parents = commit_line[1:]
+        if head_sha not in parents or base_sha not in parents:
+            fail("PR merge checkout is not directly bound to event head/base")
+
+    subprocess.run(
+        ["git", "-C", str(ROOT), "fetch", "--depth=1", "--no-tags", "origin", head_sha],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        timeout=120,
+    )
+    checkout_tree = git_output("rev-parse", "HEAD^{tree}")
+    head_tree = git_output("rev-parse", f"{head_sha}^{{tree}}")
+    if checkout_tree != head_tree:
+        fail("workflow checkout tree differs from exact PR head tree")
+    return head_sha
 
 
 def digest_without(obj: dict[str, Any], field: str) -> str:
@@ -106,7 +169,14 @@ def expected_runtime_revisions() -> dict[str, str]:
     return revisions
 
 
-def verify_runtime(candidate_id: str, family: str, cell: dict[str, Any], expected_revision: str) -> None:
+def verify_runtime(
+    candidate_id: str,
+    family: str,
+    cell: dict[str, Any],
+    expected_revision: str,
+    *,
+    require_b2r02_source_build: bool,
+) -> None:
     runtime_revision = cell.get("runtime_revision")
     if runtime_revision != expected_revision:
         fail(f"runtime revision differs from frozen B1 authority: {candidate_id}")
@@ -122,6 +192,27 @@ def verify_runtime(candidate_id: str, family: str, cell: dict[str, Any], expecte
         expected_arch = 4 if candidate_id == "moonshine-compact" else 5
         if runtime.get("model_arch") != expected_arch or runtime.get("model_asset_root") != "quantized_26_08_21":
             fail(f"Moonshine model runtime identity drift: {candidate_id}")
+        if require_b2r02_source_build:
+            if runtime.get("source_repository") != "moonshine-ai/moonshine":
+                fail(f"Moonshine source repository identity drift: {candidate_id}")
+            if runtime.get("source_revision") != expected_revision:
+                fail(f"Moonshine source-built runtime revision drift: {candidate_id}")
+            if runtime.get("runtime_origin") != "PINNED_SOURCE_CHECKOUT_BUILD":
+                fail(f"Moonshine runtime is not bound to pinned source build: {candidate_id}")
+            if runtime.get("build_type") != "Release":
+                fail(f"Moonshine source build type drift: {candidate_id}")
+            source_tree = runtime.get("source_tree")
+            if not isinstance(source_tree, str) or not SHA40.fullmatch(source_tree):
+                fail(f"Moonshine source tree identity missing/malformed: {candidate_id}")
+            for field in (
+                "python_source_manifest_sha256",
+                "native_library_sha256",
+                "onnxruntime_sha256",
+                "cmake_cache_sha256",
+            ):
+                value = runtime.get(field)
+                if not isinstance(value, str) or not SHA256.fullmatch(value):
+                    fail(f"Moonshine source-build {field} missing/malformed: {candidate_id}")
     elif family == "sherpa-onnx":
         if runtime != {"distribution": "sherpa-onnx", "version": "1.13.7"}:
             fail(f"sherpa runtime identity drift: {candidate_id}")
@@ -136,13 +227,46 @@ def verify_runtime(candidate_id: str, family: str, cell: dict[str, Any], expecte
         fail(f"unexpected runtime family: {family}")
 
 
-def verify_execution(candidate_id: str, family: str, cell: dict[str, Any]) -> None:
+def verify_execution(
+    candidate_id: str,
+    family: str,
+    cell: dict[str, Any],
+    *,
+    require_b2r02_source_build: bool,
+) -> None:
     execution = cell.get("execution")
     if not isinstance(execution, dict) or execution.get("decode_completed") is not True:
         fail(f"decode path did not complete: {candidate_id}")
     if family == "moonshine":
         if execution.get("stream_api_executed") is not True:
             fail(f"Moonshine stream execution marker missing: {candidate_id}")
+        if require_b2r02_source_build:
+            required_true = (
+                "b2r02_streaming_c0_harness_executed",
+                "b2r02_static_verifier_executed",
+                "b2r02_pinned_upstream_source_verified",
+                "b2r02_runtime_built_from_verified_source",
+                "b2r02_runtime_imported_from_verified_source_copy",
+            )
+            for field in required_true:
+                if execution.get(field) is not True:
+                    fail(f"Moonshine B2R02 source/runtime proof missing: {candidate_id}:{field}")
+            if execution.get("speech_samples") != 32000:
+                fail(f"Moonshine B2R02 speech-sample trace drift: {candidate_id}")
+            if execution.get("speech_chunk_samples") != [8000, 8000, 8000, 8000]:
+                fail(f"Moonshine B2R02 feed schedule drift: {candidate_id}")
+            if execution.get("final_zero_pad_samples") != 10560:
+                fail(f"Moonshine B2R02 zero-suffix drift: {candidate_id}")
+            if execution.get("sample_rate_hz") != 16000:
+                fail(f"Moonshine B2R02 sample-rate drift: {candidate_id}")
+            if execution.get("transcription_interval_seconds") != 0.5:
+                fail(f"Moonshine B2R02 transcription interval drift: {candidate_id}")
+            if execution.get("vad_threshold") != 0.0:
+                fail(f"Moonshine B2R02 VAD threshold drift: {candidate_id}")
+            if execution.get("repository_context_used") is not False or execution.get("keyterms_used") is not False:
+                fail(f"Moonshine B2R02 bias guard drift: {candidate_id}")
+            if execution.get("transcript_text_retained") is not False:
+                fail(f"Moonshine B2R02 transcript retention drift: {candidate_id}")
     elif family == "sherpa-onnx":
         if execution.get("online_transducer_api_executed") is not True:
             fail(f"sherpa online transducer execution marker missing: {candidate_id}")
@@ -161,6 +285,7 @@ def verify_execution(candidate_id: str, family: str, cell: dict[str, Any]) -> No
 def verify(evidence_path: Path = EVIDENCE, expected_workflow: dict[str, Any] | None = None) -> None:
     evidence = load(evidence_path)
     workflow_authority = EXPECTED_WORKFLOW if expected_workflow is None else expected_workflow
+    require_b2r02_source_build = expected_workflow is not None
     if evidence.get("schema_version") != "000b2-operational-smoke-evidence-v1":
         fail("aggregate smoke schema drift")
     if evidence.get("purpose") != "B2_ENTRY_OPERATIONAL_QUALIFICATION_NON_PRIMARY":
@@ -199,6 +324,7 @@ def verify(evidence_path: Path = EVIDENCE, expected_workflow: dict[str, Any] | N
     if not isinstance(cells, list) or len(cells) != 6:
         fail("candidate evidence must contain exactly six cells")
     seen: set[str] = set()
+    moonshine_build_identity: dict[str, Any] | None = None
     for cell in cells:
         if not isinstance(cell, dict):
             fail("candidate evidence cell must be an object")
@@ -262,11 +388,44 @@ def verify(evidence_path: Path = EVIDENCE, expected_workflow: dict[str, Any] | N
         if observed != expected[candidate_id]:
             fail(f"artifact evidence differs from preregistered/materialized authority: {candidate_id}")
 
-        verify_runtime(candidate_id, family, cell, runtime_revisions[family])
-        verify_execution(candidate_id, family, cell)
+        verify_runtime(
+            candidate_id,
+            family,
+            cell,
+            runtime_revisions[family],
+            require_b2r02_source_build=require_b2r02_source_build,
+        )
+        verify_execution(
+            candidate_id,
+            family,
+            cell,
+            require_b2r02_source_build=require_b2r02_source_build,
+        )
+        if family == "moonshine" and require_b2r02_source_build:
+            runtime = cell["runtime"]
+            identity = {
+                key: runtime[key]
+                for key in (
+                    "source_repository",
+                    "source_revision",
+                    "source_tree",
+                    "runtime_origin",
+                    "python_source_manifest_sha256",
+                    "native_library_sha256",
+                    "onnxruntime_sha256",
+                    "cmake_cache_sha256",
+                    "build_type",
+                )
+            }
+            if moonshine_build_identity is None:
+                moonshine_build_identity = identity
+            elif identity != moonshine_build_identity:
+                fail("Moonshine compact/balanced source-build identity differs")
 
     if seen != set(EXPECTED_CELLS):
         fail("six-cell smoke allowlist incomplete")
+    if require_b2r02_source_build and moonshine_build_identity is None:
+        fail("Moonshine source-build aggregate identity missing")
 
 
 def main() -> int:
@@ -298,9 +457,11 @@ def main() -> int:
 
     evidence_path = EVIDENCE
     expected_workflow = None
+    exact_subject_sha = None
     if dynamic:
         if not SHA40.fullmatch(args.expected_head_sha):
             parser.error("--expected-head-sha must be a full lowercase Git SHA")
+        exact_subject_sha = verify_exact_workflow_subject(args.expected_head_sha)
         evidence_path = args.evidence
         expected_workflow = {
             "name": "000B2 Operational Smoke",
@@ -310,12 +471,15 @@ def main() -> int:
         }
     try:
         verify(evidence_path, expected_workflow)
-    except (AssertionError, OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+    except (AssertionError, OSError, ValueError, KeyError, TypeError, json.JSONDecodeError, subprocess.SubprocessError) as exc:
         print(f"VERIFY_000B2_OPERATIONAL_SMOKE=FAIL: {exc}", file=sys.stderr)
         return 1
     print("VERIFY_000B2_OPERATIONAL_SMOKE=PASS")
     print("CANDIDATES=6")
     print("OPERATIONAL_QUALIFICATION=SMOKE_PASS")
+    if exact_subject_sha is not None:
+        print(f"EXACT_PR_HEAD={exact_subject_sha}")
+        print("CHECKOUT_TREE_EQUALS_PR_HEAD=YES")
     print("PRIMARY_TEST_DECODING=NO")
     print("HUMAN_SPEECH=NO")
     print("COMPARATIVE_RANKING=NO")
