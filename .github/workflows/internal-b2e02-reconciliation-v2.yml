@@ -44,10 +44,24 @@ jobs:
                   raise SystemExit(f'unexpected YAML indentation in apply block: {line!r}')
           script = '\n'.join(extracted) + '\n'
 
-          insertion_anchor = '          # Canonical CURRENT: update frontier and record the exact B2E02 merge/post-merge proof.\n'
+          insertion_anchor = '# Canonical CURRENT: update frontier and record the exact B2E02 merge/post-merge proof.\n'
           if script.count(insertion_anchor) != 1:
               raise SystemExit(f'methodology insertion anchor drift: {script.count(insertion_anchor)}')
-          extension = '''          # Exact methodology frontier extension for post-B2E02 reconciliation.\n          p = Path("research/000b2-public/verify_methodology.py")\n          text = read(p)\n          text = once(\n              text,\n              '    require(readiness.get("completed_through") == "B2E01", "readiness completed_through must be B2E01")\\n',\n              '    require(readiness.get("completed_through") == "B2E02", "readiness completed_through must be B2E02")\\n',\n              "methodology exact completed_through",\n          )\n          old_next = '''    expected_next_action = (\\n        'Execute B2E02 only: decode the identical frozen P0 public-human subset with candidate cell 2 (`moonshine-balanced`) under unchanged frozen C0, preserve raw transcript/failure/run evidence, keep repository/test-specific context and candidate-specific audio transforms OFF, and preserve DIAGNOSTIC timing semantics. Do not begin B2E03 or any later candidate cell until B2E02 is canonical.'\\n    )\\n    require(readiness.get("next_action") == expected_next_action, "next action must be exact post-B2E01 B2E02-only instruction")\\n'''\n          new_next = '''    expected_next_action = (\\n        'Execute B2E03 only: decode the identical frozen P0 public-human subset with candidate cell 3 (`whispercpp-compact`) under unchanged frozen C0, preserve raw transcript/failure/run evidence, keep repository/test-specific context and candidate-specific audio transforms OFF, and preserve DIAGNOSTIC timing semantics. Do not begin B2E04 or any later candidate cell until B2E03 is canonical.'\\n    )\\n    require(readiness.get("next_action") == expected_next_action, "next action must be exact post-B2E02 B2E03-only instruction")\\n'''\n          text = once(text, old_next, new_next, "methodology exact next action")\n          write(p, text)\n\n'''
+          extension = """# Exact methodology frontier extension for post-B2E02 reconciliation.
+p = Path("research/000b2-public/verify_methodology.py")
+text = read(p)
+text = once(
+    text,
+    '    require(readiness.get("completed_through") == "B2E01", "readiness completed_through must be B2E01")\\n',
+    '    require(readiness.get("completed_through") == "B2E02", "readiness completed_through must be B2E02")\\n',
+    "methodology exact completed_through",
+)
+old_next = '''    expected_next_action = (\\n        'Execute B2E02 only: decode the identical frozen P0 public-human subset with candidate cell 2 (`moonshine-balanced`) under unchanged frozen C0, preserve raw transcript/failure/run evidence, keep repository/test-specific context and candidate-specific audio transforms OFF, and preserve DIAGNOSTIC timing semantics. Do not begin B2E03 or any later candidate cell until B2E02 is canonical.'\\n    )\\n    require(readiness.get("next_action") == expected_next_action, "next action must be exact post-B2E01 B2E02-only instruction")\\n'''
+new_next = '''    expected_next_action = (\\n        'Execute B2E03 only: decode the identical frozen P0 public-human subset with candidate cell 3 (`whispercpp-compact`) under unchanged frozen C0, preserve raw transcript/failure/run evidence, keep repository/test-specific context and candidate-specific audio transforms OFF, and preserve DIAGNOSTIC timing semantics. Do not begin B2E04 or any later candidate cell until B2E03 is canonical.'\\n    )\\n    require(readiness.get("next_action") == expected_next_action, "next action must be exact post-B2E02 B2E03-only instruction")\\n'''
+text = once(text, old_next, new_next, "methodology exact next action")
+write(p, text)
+
+"""
           script = script.replace(insertion_anchor, extension + insertion_anchor)
           Path('/tmp/reconcile-v2.sh').write_text(script, encoding='utf-8')
           PY
