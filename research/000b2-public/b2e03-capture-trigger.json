@@ -1,0 +1,8 @@
+{
+  "schema_version": "000b2-public-b2e03-capture-trigger-v1",
+  "task": "B2E03",
+  "candidate_id": "whispercpp-compact",
+  "canonical_authority_base": "b326397cdd29fbb132b9c438ba2178626558efab",
+  "capture_sequence": 1,
+  "purpose": "Trigger exactly one bounded B2E03 public-human C0 capture using the frozen whisper.cpp non-VAD fixed-step stream semantics."
+}
