@@ -84,6 +84,16 @@ B2P08_POSTMERGE_TRUSTED_MATERIALIZATION_RUN_ID = 33873344252
 B2P08_POSTMERGE_TRUSTED_PARTICIPANT_MATERIALS_RUN_ID = 33873344071
 B2P08_POSTMERGE_TRUSTED_PARTICIPANT_POLICY_RUN_ID = 33873344118
 B2P08_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID = 33873344044
+B2E01_CANONICAL_MERGE = "bb3acfae1f39669d74118a564e57a131731484d3"
+B2E01_QUALIFIED_HEAD = "9a2b4dd2d79c445d31a09a6c435af6cbe43e6808"
+B2E01_POSTMERGE_METHODOLOGY_RUN_ID = 33960299269
+B2E01_POSTMERGE_EVIDENCE_RUN_ID = 33960299255
+B2E01_POSTMERGE_CANDIDATE_REVALIDATION_RUN_ID = 33960299308
+B2E01_POSTMERGE_TRUSTED_MATERIALIZATION_RUN_ID = 33960299258
+B2E01_POSTMERGE_TRUSTED_PARTICIPANT_MATERIALS_RUN_ID = 33960299257
+B2E01_POSTMERGE_TRUSTED_PARTICIPANT_POLICY_RUN_ID = 33960299252
+B2E01_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID = 33960299250
+B2E01_POSTMERGE_EVIDENCE_JOB_ID = 101290913708
 EXPECTED_ARCHIVES: dict[str, dict[str, Any]] = {
     "test-clean.tar.gz": {
         "role": "test set, clean speech",
@@ -203,7 +213,7 @@ def main() -> None:
     require(readiness.get("schema_version") == "000b2-public-readiness-v2", "readiness schema version drift")
     require(readiness.get("lane") == "PUBLIC_CORPUS", "readiness lane drift")
     require(readiness.get("state") == "READY", "public execution readiness must remain explicit")
-    require(readiness.get("completed_through") == "B2P08", "readiness completed_through must be B2P08")
+    require(readiness.get("completed_through") == "B2E01", "readiness completed_through must be B2E01")
 
     historical = readiness.get("historical_private_collection_lane")
     require(isinstance(historical, dict), "historical private lane must be an object")
@@ -280,9 +290,9 @@ def main() -> None:
     require_bool(guards, "product_code_authorized", False, "claim_guards")
 
     expected_next_action = (
-        'Execute B2E01 only: decode the exact frozen P0 public-human subset with candidate cell 1 (`moonshine-compact`) under frozen C0, preserve raw transcript/failure/run evidence, keep repository/test-specific context and candidate-specific audio transforms OFF, and preserve DIAGNOSTIC timing semantics. Do not begin B2E02 or any later candidate cell until B2E01 is canonical.'
+        'Execute B2E02 only: decode the identical frozen P0 public-human subset with candidate cell 2 (`moonshine-balanced`) under unchanged frozen C0, preserve raw transcript/failure/run evidence, keep repository/test-specific context and candidate-specific audio transforms OFF, and preserve DIAGNOSTIC timing semantics. Do not begin B2E03 or any later candidate cell until B2E02 is canonical.'
     )
-    require(readiness.get("next_action") == expected_next_action, "next action must be exact B2P08-only instruction")
+    require(readiness.get("next_action") == expected_next_action, "next action must be exact post-B2E01 B2E02-only instruction")
 
     corpus_source = load_object(corpus_source_path, "corpus-source")
     require_exact_keys(
@@ -549,7 +559,7 @@ def main() -> None:
     for task_id in ALL_TASK_IDS:
         matching_lines = [line for line in task_lines if f"`{task_id}`" in line]
         require(len(matching_lines) == 1, f"{task_id} must appear in exactly one checklist line")
-        expected_marker = "- [x]" if task_id in {"B2P01", "B2P02", "B2P03", "B2P04", "B2P05", "B2P06", "B2P07", "B2P08"} else "- [ ]"
+        expected_marker = "- [x]" if task_id in {"B2P01", "B2P02", "B2P03", "B2P04", "B2P05", "B2P06", "B2P07", "B2P08", "B2E01"} else "- [ ]"
         require(matching_lines[0].startswith(f"{expected_marker} `{task_id}`"), f"{task_id} checklist state must be {expected_marker}")
     require_text(tasks, "- [x] `B2P01` Record exact OpenSLR SLR12 source/license facts and official checksums in machine-readable provenance.", "public child tasks")
     require_text(tasks, "- [x] `B2P02` Materialize `test-clean.tar.gz` and `test-other.tar.gz` from an approved source or official mirror; verify official MD5 and record exact archive SHA-256.", "public child tasks")
@@ -559,6 +569,8 @@ def main() -> None:
     require_text(tasks, "- [x] `B2P06` Capture attempt-bound FFmpeg `9.0.1` preprocessing identity/configuration and execution evidence.", "public child tasks")
     require_text(tasks, "- [x] `B2P07` Capture attempt-bound execution environment/hardware facts and preserve `CONTROLLED` versus `DIAGNOSTIC` semantics.", "public child tasks")
     require_text(tasks, "- [x] `B2P08` Freeze final pre-decode attempt manifest and verify `primary_decoding_started=false` at freeze.", "public child tasks")
+    require_text(tasks, "- [x] `B2E01` Decode the frozen P0 public-human subset with candidate cell 1 under C0.", "public child tasks")
+    require_text(tasks, "- [ ] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0.", "public child tasks")
 
     for phrase in (
         "These execution tasks become authorized only after the public-corpus amendment and frontier reconciliation are canonical on `main`.",
@@ -628,16 +640,23 @@ def main() -> None:
         B2P08_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID,
     ):
         require_text(current, f"run `{run_id}`", "current frontier B2P08 post-merge proof")
-    require_text(current, "current bounded execution unit `B2E01`", "current frontier")
-    require_text(current, "Execute and canonically qualify `B2E01` only", "current frontier next action")
-    require_text(current, "B2E02 and all later candidate cells remain unauthorized", "current frontier successor boundary")
+    require_text(current, B2E01_CANONICAL_MERGE, "current frontier B2E01 canonical proof")
+    require_text(current, B2E01_QUALIFIED_HEAD, "current frontier B2E01 qualified-head proof")
+    for run_id in (B2E01_POSTMERGE_METHODOLOGY_RUN_ID, B2E01_POSTMERGE_EVIDENCE_RUN_ID, B2E01_POSTMERGE_CANDIDATE_REVALIDATION_RUN_ID, B2E01_POSTMERGE_TRUSTED_MATERIALIZATION_RUN_ID, B2E01_POSTMERGE_TRUSTED_PARTICIPANT_MATERIALS_RUN_ID, B2E01_POSTMERGE_TRUSTED_PARTICIPANT_POLICY_RUN_ID, B2E01_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID):
+        require_text(current, f"run `{run_id}`", "current frontier B2E01 post-merge proof")
+    require_text(current, f"job `{B2E01_POSTMERGE_EVIDENCE_JOB_ID}`", "current frontier B2E01 evidence job proof")
+    require_text(current, "current bounded execution unit `B2E02`", "current frontier")
+    require_text(current, "Execute and canonically qualify `B2E02` only", "current frontier next action")
+    require_text(current, "Execute and canonically qualify `B2E02` only: decode the identical frozen P0 public-human subset with candidate cell 2 (`moonshine-balanced`) under unchanged frozen C0", "current frontier exact B2E02 candidate/action identity")
+    require_absent(current, "Execute and canonically qualify `B2E02` only: decode the exact frozen P0 public-human subset with candidate cell 1 (`moonshine-compact`) under frozen C0", "current frontier stale B2E01 candidate identity")
+    require_text(current, "B2E03 and all later candidate cells remain unauthorized", "current frontier successor boundary")
     require_absent(current, "current bounded execution unit `B2P07`", "current frontier stale unit")
     require_absent(current, "B2P07 is now authorized", "current frontier stale B2P07 authority wording")
     require_absent(current, "B2P08 attempt freeze, and primary decoding remain unauthorized during B2P07", "current frontier stale B2P07 successor wording")
-    require_text(current, "B2E01 is now the only authorized bounded unit", "current frontier B2E01 baseline summary")
+    require_text(current, "B2E01 is canonical and B2E02 is now the only authorized bounded unit", "current frontier B2E02 baseline summary")
     require_text(current, "B2P08 pre-decode attempt freeze became canonical at merge `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d`", "current frontier B2P08 active-route chronology")
-    require_text(current, "B2P01 through B2P08 are complete and the final attempt manifest is frozen with `primary_decoding_started=false`.", "current frontier post-B2P08 completion")
-    require_text(current, "B2E01 is the sole current bounded execution unit.", "current frontier B2E01 active-route authority")
+    require_text(current, "B2P01 through B2P08 and B2E01 are complete.", "current frontier post-B2E01 completion")
+    require_text(current, "B2E02 (`moonshine-balanced`) is the sole current bounded execution unit.", "current frontier B2E02 active-route authority")
     require_absent(current, "B2P01 through B2P07 are complete. B2P08 is the current bounded execution unit.", "current frontier stale B2P08 authority")
     require_absent(current, "Comparative decoding remains prohibited until the ordered pre-decode tasks `B2P01` through `B2P08` are genuinely complete", "current frontier stale pre-decode prohibition")
 
@@ -704,7 +723,9 @@ def main() -> None:
     require_text(current_state, B2P08_CANONICAL_MERGE, "current state B2P08 canonical proof")
     require_text(current_state, B2P08_QUALIFIED_HEAD, "current state B2P08 qualified-head proof")
     require_text(current_state, B2P08_FREEZE_DIGEST, "current state B2P08 freeze proof")
-    require_text(current_state, "current bounded execution unit is `B2E01`", "current state")
+    require_text(current_state, B2E01_CANONICAL_MERGE, "current state B2E01 canonical proof")
+    require_text(current_state, B2E01_QUALIFIED_HEAD, "current state B2E01 qualified-head proof")
+    require_text(current_state, "current bounded execution unit is `B2E02`", "current state")
     require_absent(current_state, "current bounded execution unit is `B2P07`", "current state stale unit")
     require_absent(current_state, "B2P08 authorized as the sole current bounded execution unit", "current state stale B2P08 authority")
     require_absent(current_state, "B2P08 remains unfrozen until its own execution unit", "current state stale B2P08 freeze wording")
