@@ -113,7 +113,7 @@ def static_frontier() -> None:
     elif completed == "B2E01":
         require(str(readiness.get("next_action", "")).startswith("Execute B2E02 only:"), "B2E02 is not sole post-B2E01 next action")
         require("- [x] `B2E01`" in tasks and "- [ ] `B2E02`" in tasks, "B2E01/B2E02 canonical task frontier drift")
-        require("B2E02 is the sole current bounded execution unit" in current, "CURRENT post-B2E01 frontier drift")
+        require("B2E02 (`moonshine-balanced`) is the sole current bounded execution unit" in current, "CURRENT post-B2E01 frontier drift")
     else:
         require("- [x] `B2E01`" in tasks, "later canonical state lost B2E01 completion")
 
