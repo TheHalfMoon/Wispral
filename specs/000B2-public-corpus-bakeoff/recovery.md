@@ -6,6 +6,14 @@ This recovery is activated by the existing 000B2 recovery rule: material drift a
 
 The triggering evidence is recorded in `research/000b2-public/attempt-001-invalidation.json` and verified by `research/000b2-public/verify_attempt_001_invalidation.py`.
 
+### Transitional authority precedence
+
+`research/000b2-public/readiness.json` is preserved byte-for-byte as the historical ATTEMPT-001 post-B2E02 readiness snapshot because historical evidence verifiers bind it. Once this recovery is canonical, it MUST NOT be treated as authority for new execution.
+
+`research/000b2-public/recovery-readiness.json` is the active machine-readable authority for new 000B2 execution during recovery. Its `authority_precedence=OVERRIDES_ATTEMPT_001_READY_SNAPSHOT_FOR_NEW_EXECUTION` field therefore closes B2E03 and every later ATTEMPT-001 primary decode even while the historical readiness snapshot still names B2E03. Canonical reconciliation after B2R01 must update `specs/CURRENT.md` and `docs/canonical/CURRENT_STATE.md` before B2R02 work begins.
+
+No recovery unit may use this transitional precedence to skip its predecessor. The recovery verifier requires a contiguous completed B2R prefix and binds the active recovery unit to the first pending task.
+
 ## Finding
 
 `000B2-PUBLIC-ATTEMPT-001` froze the Moonshine family to the pinned streaming integration with:
@@ -39,7 +47,7 @@ The cancelled B2E03 discovery run `33972588550` is not primary evidence. Halt ru
 
 Recovery is dependency ordered and fail closed:
 
-1. `B2R01` — canonically qualify the ATTEMPT-001 invalidation and keep all new primary decoding closed.
+1. `B2R01` — canonically qualify the ATTEMPT-001 invalidation and keep all new ATTEMPT-001 primary decoding closed.
 2. `B2R02` — implement and qualify a corrected Moonshine streaming C0 harness against non-primary material and pinned upstream source. It must demonstrate the exact 500 ms feed schedule, final 660 ms zero suffix, `vad_threshold=0.0`, unchanged context/keyterm guards, and frozen runtime/model identities without inspecting new primary results.
 3. `B2R03` — establish ATTEMPT-002-bound preprocessing and execution-environment evidence. Reuse of unchanged frozen inputs is allowed only by exact digest/provenance rebinding or fresh capture before primary decode; no result-driven input change is allowed.
 4. `B2R04` — freeze `000B2-PUBLIC-ATTEMPT-002` before any new primary decode. Candidate membership, subset membership, scorer, normalization, and C0 methodology remain unchanged except for correcting the implementation so it actually matches the already-frozen contract.
