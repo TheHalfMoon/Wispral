@@ -7,6 +7,8 @@ on:
       - 'research/000b1/frozen-methodology.json'
       - 'research/000b2-public/**'
       - 'specs/000B2-public-corpus-bakeoff/**'
+      - 'specs/CURRENT.md'
+      - 'docs/canonical/CURRENT_STATE.md'
   push:
     branches:
       - main
@@ -15,8 +17,11 @@ on:
       - 'research/000b1/frozen-methodology.json'
       - 'research/000b2-public/**'
       - 'specs/000B2-public-corpus-bakeoff/**'
+      - 'specs/CURRENT.md'
+      - 'docs/canonical/CURRENT_STATE.md'
 
 permissions:
+  actions: read
   contents: read
 
 concurrency:
@@ -30,6 +35,7 @@ jobs:
     env:
       EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
       MOONSHINE_REVISION: 234f60faa0eb388b01cdf7e60aca232af37aefda
+      CANONICAL_MAIN_REF: refs/remotes/origin/main
     steps:
       - name: Checkout exact revision
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -44,11 +50,59 @@ jobs:
           test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
           echo "EXACT_REVISION=$EXACT_REVISION"
 
-      - name: Verify local invalidation evidence
+      - name: Fetch canonical main authority
+        run: |
+          set -euo pipefail
+          git fetch --force --no-tags origin main:refs/remotes/origin/main
+          git rev-parse --verify "${CANONICAL_MAIN_REF}^{commit}"
+          echo "CANONICAL_MAIN_SHA=$(git rev-parse "$CANONICAL_MAIN_REF")"
+
+      - name: Verify local invalidation and transition authority
         run: |
           set -euo pipefail
           python -m py_compile research/000b2-public/verify_attempt_001_invalidation.py
-          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_001_invalidation.py --static-only
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_001_invalidation.py \
+            --static-only \
+            --canonical-main-ref "$CANONICAL_MAIN_REF"
+
+      - name: Verify canonical post-merge recovery run evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          readiness = json.loads(Path('research/000b2-public/recovery-readiness.json').read_text(encoding='utf-8'))
+          proofs = readiness.get('transition_proofs', [])
+          repository = os.environ['GITHUB_REPOSITORY']
+          expected_name = '000B2 Public Corpus Attempt Recovery'
+
+          for proof in proofs:
+              run_id = proof['post_merge_recovery_run_id']
+              expected_sha = proof['canonical_task_merge']
+              payload = subprocess.run(
+                  ['gh', 'api', f'repos/{repository}/actions/runs/{run_id}'],
+                  check=True,
+                  text=True,
+                  stdout=subprocess.PIPE,
+              ).stdout
+              run = json.loads(payload)
+              if run.get('name') != expected_name:
+                  raise SystemExit(f'run {run_id}: unexpected workflow name {run.get("name")!r}')
+              if run.get('event') != 'push':
+                  raise SystemExit(f'run {run_id}: expected push event, got {run.get("event")!r}')
+              if run.get('status') != 'completed' or run.get('conclusion') != 'success':
+                  raise SystemExit(f'run {run_id}: post-merge recovery verification is not successful')
+              if run.get('head_sha') != expected_sha:
+                  raise SystemExit(
+                      f'run {run_id}: head SHA {run.get("head_sha")!r} != canonical task merge {expected_sha!r}'
+                  )
+          print(f'CANONICAL_RECOVERY_TRANSITION_RUNS_VERIFIED={len(proofs)}')
+          PY
 
       - name: Fetch exact pinned Moonshine source
         run: |
@@ -65,7 +119,8 @@ jobs:
         run: |
           set -euo pipefail
           PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_001_invalidation.py \
-            --moonshine-source "$RUNNER_TEMP/moonshine"
+            --moonshine-source "$RUNNER_TEMP/moonshine" \
+            --canonical-main-ref "$CANONICAL_MAIN_REF"
 
       - name: Preserve historical evidence boundary
         run: |
