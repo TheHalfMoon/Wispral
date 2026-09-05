@@ -113,7 +113,7 @@ A second materially independent agent must exercise the same core interaction mo
 
 ### H4 — Developer context engine
 
-**Purpose:** improve technical speech interpretation using bounded repository context.
+**Purpose:** improve technical speech interpretation using bounded repository context and, only if later evidence justifies it, explicitly sourced prior session/conversation context.
 
 Expected capability class:
 
@@ -121,9 +121,12 @@ Expected capability class:
 - symbol/package/flag vocabulary support;
 - visible confidence and ambiguity;
 - context budgets;
-- deterministic fallback when no safe binding exists.
+- deterministic fallback when no safe binding exists;
+- source-scoped prior session/conversation retrieval with timestamps and provenance when separately qualified;
+- inspectable correction, deletion, recency, and retention boundaries for any persistent context;
+- an explicit rule that retrieved history may inform interpretation but does not silently authorize a current consequential action.
 
-**Entry:** WispralBench demonstrates a measurable baseline and a reproducible context-resolution hypothesis.
+**Entry:** WispralBench demonstrates a measurable baseline and a reproducible context-resolution hypothesis. Persistent conversation/session context requires separate evidence for utility, privacy, retention, correction, and authority safety before becoming an implementation requirement.
 
 ### H5 — Command / Aside semantics
 
@@ -190,6 +193,10 @@ Candidate capability class:
 
 Potential extension boundaries include agents, speech engines, context providers, policy providers, TTS, and UI clients.
 
+If repeated evidence eventually justifies a context-provider boundary, it should preserve one provenance/authority model across local providers and external interfaces. CLI, structured-protocol/MCP, and future API/SDK access should be evaluated as interoperable surfaces over the same semantics rather than as independent sources of authority.
+
+External conversation-context products are references or optional future integration candidates, not mandatory Wispral infrastructure. No hosted memory dependency, remote MCP server, or generic plugin system is authorized by this roadmap note.
+
 **Entry:** real repeated integrations justify extension points. No plugin system is authorized solely for architectural elegance.
 
 ### H12 — Cross-platform hardening and distribution
@@ -216,9 +223,15 @@ Benchmark families may include developer entity accuracy, turn detection, end-to
 
 ### H15 — Category expansion
 
-**Purpose:** evaluate whether the proven control plane should extend beyond coding agents to broader agentic software.
+**Purpose:** evaluate whether the proven control plane should extend beyond coding agents to broader agentic software, including whether conversation/session context can support safe cross-application control without turning Wispral into a generic meeting-notes or business-automation product.
 
 **Entry:** coding-agent product-market evidence exists. This horizon must not distract from establishing the core category.
+
+## External product-reference planning note
+
+`docs/research/CIRCLEBACK_REFERENCE.md` records Circleback as a conversation-context / MCP / CLI / API product reference. The useful lesson is the pattern `capture -> structured context -> agent access -> downstream action`, especially the need to keep source provenance, capture visibility, retention/correction, and execution authority separate.
+
+This reference does not authorize a hosted meeting recorder, mandatory cloud memory, generic business automation, screen capture by default, MCP implementation, or any change to the active executable specification frontier.
 
 ## Adoption ambition
 
