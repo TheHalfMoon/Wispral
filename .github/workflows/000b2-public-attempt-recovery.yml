@@ -77,26 +77,26 @@ jobs:
                   stderr=subprocess.PIPE,
               )
 
+          def should_enforce_premerge_scope(completed: object, canonical_has_b2r01: bool) -> bool:
+              return completed == [] and not canonical_has_b2r01
+
           def canonical_contains_b2r01() -> bool:
               merge = os.environ['B2R01_CANONICAL_MERGE']
               canonical = os.environ['CANONICAL_MAIN_REF']
               return git('merge-base', '--is-ancestor', merge, canonical, check=False).returncode == 0
+
+          # Regression guard for all three authority phases.
+          assert should_enforce_premerge_scope([], False)
+          assert not should_enforce_premerge_scope([], True)
+          assert not should_enforce_premerge_scope(['B2R01'], True)
 
           readiness = json.loads(Path('research/000b2-public/recovery-readiness.json').read_text(encoding='utf-8'))
           completed = readiness.get('completed_recovery_tasks')
           if not isinstance(completed, list):
               raise SystemExit('B2R01 scope gate: completed_recovery_tasks must be a list')
 
-          # Regression guard: the historical six-file B2R01 gate applies only before
-          # the exact canonical B2R01 merge exists on canonical main. Once that merge
-          # is canonical, later prerequisite/reconciliation work must not be mistaken
-          # for the original B2R01 implementation PR merely because reconciliation is pending.
-          assert (completed == [] and False) is True
-          assert not (completed == [] and True)
-          assert not (['B2R01'] == [] and True)
-
           canonical_has_b2r01 = canonical_contains_b2r01()
-          if completed == [] and not canonical_has_b2r01:
+          if should_enforce_premerge_scope(completed, canonical_has_b2r01):
               expected = {
                   '.github/workflows/000b2-public-attempt-recovery.yml',
                   'research/000b2-public/attempt-001-invalidation.json',
