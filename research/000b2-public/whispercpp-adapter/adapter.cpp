@@ -27,6 +27,8 @@ constexpr int kStepSamples = kSampleRate * kStepMs / 1000;
 constexpr int kLengthSamples = kSampleRate * kLengthMs / 1000;
 constexpr int kKeepSamples = kSampleRate * kKeepMs / 1000;
 constexpr int kFinalZeroSamples = 10560;
+constexpr int kFinalZeroFullChunkSamples = kStepSamples;
+constexpr int kFinalZeroShortChunkSamples = kFinalZeroSamples - kFinalZeroFullChunkSamples;
 constexpr int kNewLineEvery = std::max(1, kLengthMs / kStepMs - 1);
 
 struct Args {
@@ -48,6 +50,12 @@ struct DecodeResult {
     std::string failure_message;
     int failure_iteration = -1;
     int stream_iteration_count = 0;
+    int speech_sample_count = 0;
+    int speech_samples_delivered = 0;
+    int regular_speech_chunk_count = 0;
+    int final_speech_chunk_samples = 0;
+    int zero_suffix_samples_delivered = 0;
+    int zero_suffix_chunks_delivered = 0;
     double decode_wall_seconds = 0.0;
 };
 
@@ -182,13 +190,12 @@ std::vector<float> read_pcm_s16le_mono_16k(const std::string & path) {
     }
 
     std::vector<float> samples;
-    samples.reserve(pcm_bytes.size() / 2U + kFinalZeroSamples);
+    samples.reserve(pcm_bytes.size() / 2U);
     for (std::size_t i = 0; i < pcm_bytes.size(); i += 2) {
         const uint16_t raw = le16(pcm_bytes.data() + i);
         const int16_t sample = static_cast<int16_t>(raw);
         samples.push_back(static_cast<float>(sample) / 32768.0f);
     }
-    samples.insert(samples.end(), kFinalZeroSamples, 0.0f);
     return samples;
 }
 
@@ -258,27 +265,35 @@ std::string reconstruct_stream_text(const std::vector<std::string> & iterations)
 DecodeResult decode_one(whisper_context * ctx, const InputRow & input_row) {
     DecodeResult result;
     const auto started = std::chrono::steady_clock::now();
+    int iteration = 0;
     try {
-        const auto samples = read_pcm_s16le_mono_16k(input_row.path);
+        const auto speech = read_pcm_s16le_mono_16k(input_row.path);
+        if (speech.empty()) {
+            fail("canonical WAV contains no speech samples");
+        }
+        if (speech.size() > static_cast<std::size_t>(std::numeric_limits<int>::max())) {
+            fail("canonical WAV sample count exceeds adapter integer range");
+        }
+        result.speech_sample_count = static_cast<int>(speech.size());
+        result.regular_speech_chunk_count = result.speech_sample_count / kStepSamples;
+        result.final_speech_chunk_samples = result.speech_sample_count % kStepSamples;
+
         std::vector<float> old_samples;
         std::vector<float> window;
-        int iteration = 0;
 
-        for (std::size_t offset = 0;
-             offset + static_cast<std::size_t>(kStepSamples) <= samples.size();
-             offset += static_cast<std::size_t>(kStepSamples)) {
+        auto decode_chunk = [&](const float * new_samples, int new_count, bool zero_suffix) -> bool {
+            if (new_count <= 0 || new_count > kStepSamples) {
+                fail("feed chunk outside frozen 1..8000-sample range");
+            }
             const int take = std::min(
                 static_cast<int>(old_samples.size()),
-                std::max(0, kKeepSamples + kLengthSamples - kStepSamples));
+                std::max(0, kKeepSamples + kLengthSamples - new_count));
 
-            window.resize(static_cast<std::size_t>(take + kStepSamples));
+            window.resize(static_cast<std::size_t>(take + new_count));
             if (take > 0) {
                 std::copy(old_samples.end() - take, old_samples.end(), window.begin());
             }
-            std::copy(
-                samples.begin() + static_cast<std::ptrdiff_t>(offset),
-                samples.begin() + static_cast<std::ptrdiff_t>(offset + kStepSamples),
-                window.begin() + take);
+            std::copy(new_samples, new_samples + new_count, window.begin() + take);
             old_samples = window;
 
             whisper_full_params params = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
@@ -293,8 +308,8 @@ DecodeResult decode_one(whisper_context * ctx, const InputRow & input_row) {
             params.n_threads = kThreads;
             params.beam_search.beam_size = -1;
             params.audio_ctx = 0;
-            // Match pinned stream.cpp exactly: non-VAD mode suppresses timestamp
-            // printing but leaves whisper_full_params.no_timestamps at its default.
+            // Pinned stream.cpp suppresses timestamp printing in non-VAD mode but
+            // leaves whisper_full_params.no_timestamps at its runtime default.
             params.no_context = true;
             params.tdrz_enable = false;
             params.temperature_inc = 0.0f;
@@ -307,7 +322,7 @@ DecodeResult decode_one(whisper_context * ctx, const InputRow & input_row) {
                 result.failure_type = "WHISPER_FULL_ERROR";
                 result.failure_message = "whisper_full returned non-zero";
                 result.failure_iteration = iteration;
-                break;
+                return false;
             }
 
             std::string iteration_text;
@@ -320,12 +335,43 @@ DecodeResult decode_one(whisper_context * ctx, const InputRow & input_row) {
             }
             result.raw_lines.push_back(std::move(iteration_text));
             ++iteration;
+            if (zero_suffix) {
+                result.zero_suffix_samples_delivered += new_count;
+                ++result.zero_suffix_chunks_delivered;
+            } else {
+                result.speech_samples_delivered += new_count;
+            }
 
             if ((iteration % kNewLineEvery) == 0) {
                 if (window.size() < static_cast<std::size_t>(kKeepSamples)) {
                     fail("stream window shorter than frozen keep interval");
                 }
                 old_samples.assign(window.end() - kKeepSamples, window.end());
+            }
+            return true;
+        };
+
+        std::size_t offset = 0;
+        while (speech.size() - offset >= static_cast<std::size_t>(kStepSamples)) {
+            if (!decode_chunk(speech.data() + offset, kStepSamples, false)) {
+                break;
+            }
+            offset += static_cast<std::size_t>(kStepSamples);
+        }
+        if (result.status == "DECODED" && offset < speech.size()) {
+            const int final_count = static_cast<int>(speech.size() - offset);
+            if (!decode_chunk(speech.data() + offset, final_count, false)) {
+                result.status = "FAILED";
+            }
+        }
+
+        if (result.status == "DECODED") {
+            const std::vector<float> zero_full(static_cast<std::size_t>(kFinalZeroFullChunkSamples), 0.0f);
+            const std::vector<float> zero_short(static_cast<std::size_t>(kFinalZeroShortChunkSamples), 0.0f);
+            if (!decode_chunk(zero_full.data(), kFinalZeroFullChunkSamples, true)) {
+                result.status = "FAILED";
+            } else if (!decode_chunk(zero_short.data(), kFinalZeroShortChunkSamples, true)) {
+                result.status = "FAILED";
             }
         }
 
@@ -334,14 +380,24 @@ DecodeResult decode_one(whisper_context * ctx, const InputRow & input_row) {
         if (result.stream_iteration_count == 0 && result.status == "DECODED") {
             result.status = "FAILED";
             result.failure_type = "NO_STREAM_ITERATIONS";
-            result.failure_message = "frozen input plus zero tail produced no complete 500 ms decode step";
+            result.failure_message = "frozen input produced no decode iteration";
             result.failure_iteration = 0;
+        }
+        if (result.status == "DECODED" &&
+            (result.speech_samples_delivered != result.speech_sample_count ||
+             result.zero_suffix_samples_delivered != kFinalZeroSamples ||
+             result.zero_suffix_chunks_delivered != 2)) {
+            result.status = "FAILED";
+            result.failure_type = "FEED_ACCOUNTING_ERROR";
+            result.failure_message = "frozen speech or zero suffix was not delivered completely";
+            result.failure_iteration = iteration;
         }
     } catch (const std::exception & error) {
         result.status = "FAILED";
         result.failure_type = "ADAPTER_INPUT_ERROR";
         result.failure_message = error.what();
-        result.failure_iteration = result.stream_iteration_count;
+        result.failure_iteration = iteration;
+        result.stream_iteration_count = static_cast<int>(result.raw_lines.size());
         result.raw_transcript = reconstruct_stream_text(result.raw_lines);
     }
 
@@ -363,6 +419,12 @@ void write_result(std::ofstream & output, const InputRow & row, const DecodeResu
     output << "]"
            << ",\"raw_transcript\":" << json_escape(result.raw_transcript)
            << ",\"stream_iteration_count\":" << result.stream_iteration_count
+           << ",\"speech_sample_count\":" << result.speech_sample_count
+           << ",\"speech_samples_delivered\":" << result.speech_samples_delivered
+           << ",\"regular_speech_chunk_count\":" << result.regular_speech_chunk_count
+           << ",\"final_speech_chunk_samples\":" << result.final_speech_chunk_samples
+           << ",\"zero_suffix_samples_delivered\":" << result.zero_suffix_samples_delivered
+           << ",\"zero_suffix_chunks_delivered\":" << result.zero_suffix_chunks_delivered
            << ",\"decode_wall_seconds\":" << std::fixed << std::setprecision(9) << result.decode_wall_seconds
            << ",\"failure\":";
     if (result.status == "FAILED") {
@@ -420,6 +482,7 @@ int main(int argc, char ** argv) {
         std::cout << "ADAPTER_LENGTH_MS=" << kLengthMs << "\n";
         std::cout << "ADAPTER_KEEP_MS=" << kKeepMs << "\n";
         std::cout << "ADAPTER_FINAL_ZERO_SAMPLES=" << kFinalZeroSamples << "\n";
+        std::cout << "ADAPTER_FINAL_ZERO_CHUNKS=" << kFinalZeroFullChunkSamples << ',' << kFinalZeroShortChunkSamples << "\n";
         return 0;
     } catch (const std::exception & error) {
         std::cerr << "ADAPTER=FAIL: " << error.what() << "\n";
