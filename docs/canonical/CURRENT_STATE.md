@@ -42,7 +42,7 @@
 **000B2 participant materials:** `CANONICAL_FROZEN`, participant consent `EXTERNAL_NOT_OBTAINED`  
 **Blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
 **Active execution successor:** `000B2-public-corpus-bakeoff` — `READY`  
-**Qualification chronology gate:** `SATISFIED` by PR #32 merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`; machine readiness reconciled by PR #33 merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`; B2P01 is canonical at PR #34 merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`; B2P02 is canonical at PR #35 merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c` and post-merge verified; B2P03 is canonical at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58` and post-merge verified; B2P04 is canonical at PR #39 merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` and post-merge verified; B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; B2P07 is canonical at PR #45 merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` and post-merge verified; B2E01 is canonical at merge `bb3acfae1f39669d74118a564e57a131731484d3`; current bounded execution unit is `B2E03`
+**Qualification chronology gate:** `SATISFIED` by PR #32 merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`; machine readiness reconciled by PR #33 merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`; B2P01 is canonical at PR #34 merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`; B2P02 is canonical at PR #35 merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c` and post-merge verified; B2P03 is canonical at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58` and post-merge verified; B2P04 is canonical at PR #39 merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` and post-merge verified; B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; B2P07 is canonical at PR #45 merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` and post-merge verified; B2E01 is canonical at merge `bb3acfae1f39669d74118a564e57a131731484d3`; active recovery unit is `B2R02`; ATTEMPT-001 B2E03 and all later primary decoding are closed
 **Published release:** none
 
 Live GitHub and repository truth override this document.
@@ -296,8 +296,29 @@ Canonical research authority now contains:
 - canonical B2P05 six-cell candidate/runtime/model identity revalidation at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee`, including successful static/live candidate revalidation and six-lane canonical post-merge verification;
 - canonical B2P06 attempt-bound immutable preprocessing capture at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261`, including committed evidence SHA-256 `d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011` and successful seven-lane canonical post-merge verification;
 - canonical B2P07 attempt-bound execution-environment capture at PR #45 merge `4bd5306fa1d274d7b822b73e26172dd9c7058319`, including preserved raw/seal ancestry, recorded GitHub job/artifact provenance, `DIAGNOSTIC` performance semantics, and successful seven-lane canonical post-merge verification;
-- B2E01 and B2E02 are canonical; B2E03 (`whispercpp-compact`) is now the only authorized bounded unit;
-- candidate revalidation, preprocessing capture, execution-environment capture, final pre-decode attempt freeze, B2E01 decoding, and B2E02 decoding are complete; B2E03 is the sole authorized decoding unit, B2E04 and all later candidate cells remain unauthorized, no comparative scoring or ranking has begun, and no production STT is selected.
+- B2E01 and B2E02 remain canonical historical ATTEMPT-001 executions, but B2R01 invalidated ATTEMPT-001 for material execution drift; its outputs are ineligible for the canonical six-cell comparison and B2E03 plus every later ATTEMPT-001 primary decode are closed;
+- B2R01 is canonical at merge `715efc4855fb52187ed250b11f0c28bb2c2c0660`, exact-merge-head recovery run `33979925715` succeeded, ATTEMPT-002 is required but not frozen, B2R02 is the sole current recovery unit, no comparative scoring or ranking is available, and no production STT is selected.
+
+## Canonical B2R01 recovery reconciliation
+
+B2R01 records the material ATTEMPT-001 Moonshine C0 execution drift without rewriting any historical attempt, decoder, transcript, evidence, or provenance bytes. The task merge `715efc4855fb52187ed250b11f0c28bb2c2c0660` is canonical on `main`, and exact-head push run `33979925715` of `000B2 Public Corpus Attempt Recovery` succeeded on that merge. The old `research/000b2-public/readiness.json` remains a historical post-B2E02 snapshot only; `research/000b2-public/recovery-readiness.json` is the active execution authority.
+
+**Canonical recovery predecessor:** `B2R01`
+**Canonical B2R01 recovery merge:** `715efc4855fb52187ed250b11f0c28bb2c2c0660`
+**Canonical B2R01 post-merge recovery run:** `33979925715`
+**Active recovery unit:** `B2R02`
+
+ATTEMPT-001 comparative evidence is ineligible, candidate-superiority claims are unavailable, and no new ATTEMPT-001 primary decoding is authorized. ATTEMPT-002 is required but remains unfrozen with primary decode entry closed. B2R02 alone may qualify the corrected Moonshine streaming C0 harness against non-primary material and exact pinned upstream source. B2R03 and all later recovery units remain unauthorized until their predecessors are separately qualified, merged, post-merge verified, and reconciled.
+
+### Historical ATTEMPT-001 post-B2E02 snapshot wording — non-authoritative
+
+These literal strings describe only the superseded historical snapshot and are retained so immutable historical verifiers can prove what that snapshot said. They are not current authority:
+
+```text
+current bounded execution unit is `B2E03`
+Execute and canonically qualify `B2E03` only: decode the identical frozen P0 public-human subset with candidate cell 3 (`whispercpp-compact`) under unchanged frozen C0
+B2E04 and all later candidate cells remain unauthorized
+```
 
 ## Current product thesis
 
@@ -342,6 +363,6 @@ Verified 000A, verified 000B1, canonical B2 entry preparation, canonical B2 auth
 
 ## Next canonical action
 
-Execute and canonically qualify `B2E03` only: decode the identical frozen P0 public-human subset with candidate cell 3 (`whispercpp-compact`) under unchanged frozen C0. Preserve raw transcript, failure, and run evidence; keep repository/test-specific context and candidate-specific audio transforms OFF; and preserve GitHub-hosted timing as `DIAGNOSTIC_ONLY`. Do not begin B2E04 or any later candidate cell until B2E03 is separately qualified, merged, post-merge verified, and reconciled. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`. B2E04 and all later candidate cells remain unauthorized.
+Qualify `B2R02` only: implement and verify the corrected Moonshine streaming C0 harness against non-primary material and exact pinned upstream source. Demonstrate the frozen 500 ms / 8,000-sample feed schedule, final 660 ms / 10,560-sample zero suffix, `vad_threshold=0.0`, `transcription_interval_seconds=0.5`, unchanged repository/test-specific context and keyterm guards, and frozen runtime/model identities without inspecting new primary results. Keep all ATTEMPT-002 primary decoding closed until B2R04 is canonically reconciled. Do not begin B2R03 before B2R02 is separately qualified, merged, post-merge verified, and reconciled. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.
 
 B2E02 then executed candidate cell 2 (`moonshine-balanced`) under unchanged frozen C0 and merged by guarded expected-head merge commit as canonical commit `91588babc1f738c4284f53d40b4cd96dc13bfd50` from exact qualified head `1c4db3f5f857f7a813f4fbb8bc4593c5c5f066c1` against exact base `116dbd1734e01ec1280d6b530f0cb1dec867feb1`. The canonical capture decoded 240/240 inputs with 0 failures. A later duplicate capture was preserved as noncanonical evidence; frozen input and decode-status identities matched, while 10 raw transcripts differed. Canonical evidence selection preceded that duplicate and remained non-result-driven. Exact-merge-head post-merge verification succeeded 7/7: B2E02 Evidence `33964134856`, Methodology `33964134899`, Candidate Revalidation `33964134921`, Trusted Materialization `33964134877`, Trusted Participant Materials `33964134889`, Trusted Participant Policy `33964134896`, and Trusted Human Authority `33964134937`. B2E03 remained unauthorized throughout execution and post-merge verification.
