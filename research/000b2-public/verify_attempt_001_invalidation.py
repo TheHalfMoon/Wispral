@@ -18,6 +18,8 @@ RECOVERY_READINESS = PUBLIC / "recovery-readiness.json"
 ATTEMPT = PUBLIC / "attempt-manifest.json"
 FROZEN = ROOT / "research" / "000b1" / "frozen-methodology.json"
 TASKS = ROOT / "specs" / "000B2-public-corpus-bakeoff" / "tasks.md"
+CURRENT = ROOT / "specs" / "CURRENT.md"
+CURRENT_STATE = ROOT / "docs" / "canonical" / "CURRENT_STATE.md"
 
 EXPECTED_MAIN = "b326397cdd29fbb132b9c438ba2178626558efab"
 EXPECTED_ATTEMPT = "000B2-PUBLIC-ATTEMPT-001"
@@ -28,6 +30,20 @@ EXPECTED_B2E01_EVIDENCE_SHA256 = "af2c604a3f402789d69e424291c5f41a24eca0f575b1b2
 EXPECTED_B2E02_EVIDENCE_SHA256 = "8bc1b3e2e10bd7c64465b424f8dff5ffc84a153868459457d91e22e5cf3da253"
 RECOVERY_TASKS = tuple(f"B2R{index:02d}" for index in range(1, 13))
 PRIMARY_DECODE_RECOVERY_TASKS = set(RECOVERY_TASKS[4:10])
+RECONCILIATION_ALLOWED_PATHS = {
+    "docs/canonical/CURRENT_STATE.md",
+    "research/000b2-public/recovery-readiness.json",
+    "specs/000B2-public-corpus-bakeoff/tasks.md",
+    "specs/CURRENT.md",
+}
+EXPECTED_TRANSITION_POLICY = {
+    "canonical_main_ref_required_after_first_completion": True,
+    "one_recovery_task_per_reconciliation": True,
+    "canonical_task_merge_must_be_on_main": True,
+    "successful_post_merge_recovery_run_required": True,
+    "authority_documents_must_declare_successor": True,
+    "reconciliation_candidate_scope": sorted(RECONCILIATION_ALLOWED_PATHS),
+}
 
 
 class VerifyError(ValueError):
@@ -51,6 +67,35 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def git_output(*args: str) -> str:
+    return subprocess.run(
+        ["git", "-C", str(ROOT), *args],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    ).stdout.strip()
+
+
+def git_success(*args: str) -> bool:
+    return subprocess.run(
+        ["git", "-C", str(ROOT), *args],
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    ).returncode == 0
+
+
+def load_git_json(ref: str, path: str) -> dict[str, Any] | None:
+    try:
+        text = git_output("show", f"{ref}:{path}")
+    except subprocess.CalledProcessError:
+        return None
+    value = json.loads(text)
+    require(isinstance(value, dict), f"git object expected: {ref}:{path}")
+    return value
 
 
 def recovery_completed_prefix(tasks: str) -> list[str]:
@@ -80,13 +125,158 @@ def recovery_completed_prefix(tasks: str) -> list[str]:
     return completed
 
 
-def verify_recovery_readiness(tasks: str) -> None:
+def validate_transition_proof_shape(
+    proof: Any,
+    completed_task: str,
+    successor: str | None,
+) -> dict[str, Any]:
+    require(isinstance(proof, dict), f"{completed_task} transition proof malformed")
+    require(
+        set(proof) == {
+            "completed_task",
+            "canonical_task_merge",
+            "post_merge_recovery_run_id",
+            "successor_task",
+        },
+        f"{completed_task} transition proof key drift",
+    )
+    require(proof.get("completed_task") == completed_task, f"{completed_task} transition proof task drift")
+    merge_sha = proof.get("canonical_task_merge")
+    require(
+        isinstance(merge_sha, str)
+        and len(merge_sha) == 40
+        and all(char in "0123456789abcdef" for char in merge_sha),
+        f"{completed_task} canonical merge SHA malformed",
+    )
+    run_id = proof.get("post_merge_recovery_run_id")
+    require(isinstance(run_id, int) and run_id > 0, f"{completed_task} post-merge recovery run id malformed")
+    require(proof.get("successor_task") == successor, f"{completed_task} successor transition drift")
+    return proof
+
+
+def authority_marker_requirements(
+    completed_task: str,
+    proof: dict[str, Any],
+    active: str | None,
+) -> tuple[str, ...]:
+    successor_label = active if active is not None else "NONE"
+    return (
+        f"**Canonical recovery predecessor:** `{completed_task}`",
+        f"**Canonical {completed_task} recovery merge:** `{proof['canonical_task_merge']}`",
+        f"**Canonical {completed_task} post-merge recovery run:** `{proof['post_merge_recovery_run_id']}`",
+        f"**Active recovery unit:** `{successor_label}`",
+    )
+
+
+def verify_transition_authority(
+    readiness: dict[str, Any],
+    completed: list[str],
+    active: str | None,
+    canonical_main_ref: str | None,
+) -> None:
+    proofs = readiness.get("transition_proofs")
+    require(isinstance(proofs, list), "recovery transition proof ledger missing")
+    require(len(proofs) == len(completed), "recovery transition proof count must equal completed recovery count")
+
+    if not completed:
+        require(proofs == [], "transition proofs must be empty before B2R01 reconciliation")
+        return
+
+    require(canonical_main_ref is not None, "canonical main ref is required after the first completed recovery task")
+    require(git_success("rev-parse", "--verify", f"{canonical_main_ref}^{{commit}}"), "canonical main ref is not a commit")
+    canonical_tip = git_output("rev-parse", canonical_main_ref)
+
+    normalized: list[dict[str, Any]] = []
+    for index, completed_task in enumerate(completed):
+        successor = RECOVERY_TASKS[index + 1] if index + 1 < len(RECOVERY_TASKS) else None
+        proof = validate_transition_proof_shape(proofs[index], completed_task, successor)
+        merge_sha = proof["canonical_task_merge"]
+        require(
+            git_success("merge-base", "--is-ancestor", merge_sha, canonical_tip),
+            f"{completed_task} canonical task merge is not in canonical main ancestry",
+        )
+        if index:
+            previous_merge = normalized[index - 1]["canonical_task_merge"]
+            require(
+                git_success("merge-base", "--is-ancestor", previous_merge, merge_sha),
+                f"{completed_task} canonical merge predates its recovery predecessor",
+            )
+        normalized.append(proof)
+
+    latest_task = completed[-1]
+    latest_proof = normalized[-1]
+    current_text = CURRENT.read_text(encoding="utf-8")
+    current_state_text = CURRENT_STATE.read_text(encoding="utf-8")
+    for marker in authority_marker_requirements(latest_task, latest_proof, active):
+        require(marker in current_text, f"CURRENT missing canonical recovery marker: {marker}")
+        require(marker in current_state_text, f"CURRENT_STATE missing canonical recovery marker: {marker}")
+
+    canonical_readiness = load_git_json(canonical_main_ref, "research/000b2-public/recovery-readiness.json")
+    canonical_tasks_text: str | None = None
+    try:
+        canonical_tasks_text = git_output(
+            "show",
+            f"{canonical_main_ref}:specs/000B2-public-corpus-bakeoff/tasks.md",
+        )
+    except subprocess.CalledProcessError:
+        canonical_tasks_text = None
+
+    transition_already_canonical = False
+    if canonical_readiness is not None and canonical_tasks_text is not None:
+        canonical_completed = recovery_completed_prefix(canonical_tasks_text)
+        transition_already_canonical = (
+            canonical_completed == completed
+            and canonical_readiness.get("completed_recovery_tasks") == completed
+            and canonical_readiness.get("active_recovery_unit") == active
+            and canonical_readiness.get("transition_proofs") == normalized
+        )
+
+    if transition_already_canonical:
+        return
+
+    require(canonical_readiness is not None, "reconciliation candidate requires recovery readiness on canonical main")
+    require(canonical_tasks_text is not None, "reconciliation candidate requires recovery tasks on canonical main")
+    canonical_completed = recovery_completed_prefix(canonical_tasks_text)
+    canonical_active = canonical_readiness.get("active_recovery_unit")
+    canonical_proofs = canonical_readiness.get("transition_proofs")
+    require(isinstance(canonical_proofs, list), "canonical main transition proof ledger malformed")
+
+    require(
+        len(completed) == len(canonical_completed) + 1,
+        "reconciliation candidate must advance exactly one recovery task",
+    )
+    require(
+        completed[:-1] == canonical_completed,
+        "reconciliation candidate changed historical recovery completion state",
+    )
+    require(
+        latest_task == canonical_active,
+        "reconciliation candidate did not reconcile the canonical active recovery task",
+    )
+    require(
+        normalized[:-1] == canonical_proofs,
+        "reconciliation candidate changed prior canonical transition proofs",
+    )
+
+    changed_paths = {
+        line
+        for line in git_output("diff", "--name-only", f"{canonical_main_ref}...HEAD").splitlines()
+        if line
+    }
+    unexpected = sorted(changed_paths - RECONCILIATION_ALLOWED_PATHS)
+    require(
+        not unexpected,
+        f"reconciliation candidate mixes implementation/non-authority paths: {unexpected}",
+    )
+
+
+def verify_recovery_readiness(tasks: str, canonical_main_ref: str | None) -> None:
     readiness = load(RECOVERY_READINESS)
     completed = recovery_completed_prefix(tasks)
     completed_count = len(completed)
     active = RECOVERY_TASKS[completed_count] if completed_count < len(RECOVERY_TASKS) else None
 
-    require(readiness.get("schema_version") == "000b2-public-recovery-readiness-v1", "recovery readiness schema drift")
+    require(readiness.get("schema_version") == "000b2-public-recovery-readiness-v2", "recovery readiness schema drift")
     require(readiness.get("lane") == "PUBLIC_CORPUS", "recovery readiness lane drift")
     expected_state = (
         "RECOVERY_PENDING_CANONICALIZATION"
@@ -100,6 +290,7 @@ def verify_recovery_readiness(tasks: str) -> None:
         readiness.get("authority_precedence") == "OVERRIDES_ATTEMPT_001_READY_SNAPSHOT_FOR_NEW_EXECUTION",
         "recovery authority precedence drift",
     )
+    require(readiness.get("transition_policy") == EXPECTED_TRANSITION_POLICY, "recovery transition policy drift")
 
     historical = readiness.get("historical_readiness_snapshot", {})
     require(historical == {
@@ -133,7 +324,11 @@ def verify_recovery_readiness(tasks: str) -> None:
     if active is not None:
         require(active in next_action, f"recovery next action does not bind active unit {active}")
     if completed_count < 4:
-        require("primary" in next_action.lower() and ("closed" in next_action.lower() or "do not" in next_action.lower()), "pre-freeze recovery next action must keep primary decoding closed")
+        require(
+            "primary" in next_action.lower()
+            and ("closed" in next_action.lower() or "do not" in next_action.lower()),
+            "pre-freeze recovery next action must keep primary decoding closed",
+        )
 
     guards = readiness.get("claim_guards", {})
     require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "recovery human developer-speech evidence guard drift")
@@ -141,8 +336,10 @@ def verify_recovery_readiness(tasks: str) -> None:
     require(guards.get("production_stt_selected") is False, "recovery production STT selection opened")
     require(guards.get("product_code_authorized") is False, "recovery product code authority opened")
 
+    verify_transition_authority(readiness, completed, active, canonical_main_ref)
 
-def verify_local() -> None:
+
+def verify_local(canonical_main_ref: str | None) -> None:
     record = load(INVALIDATION)
     attempt = load(ATTEMPT)
     frozen = load(FROZEN)
@@ -256,7 +453,7 @@ def verify_local() -> None:
 
     tasks = TASKS.read_text(encoding="utf-8")
     require("ATTEMPT-001 evidence is historical and ineligible for comparative scoring" in tasks, "task ledger invalidation boundary missing")
-    verify_recovery_readiness(tasks)
+    verify_recovery_readiness(tasks, canonical_main_ref)
 
 
 def verify_upstream(source: Path) -> None:
@@ -290,13 +487,14 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--static-only", action="store_true")
     parser.add_argument("--moonshine-source", type=Path)
+    parser.add_argument("--canonical-main-ref")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     try:
-        verify_local()
+        verify_local(args.canonical_main_ref)
         if not args.static_only:
             require(args.moonshine_source is not None, "--moonshine-source is required unless --static-only is used")
             verify_upstream(args.moonshine_source)
