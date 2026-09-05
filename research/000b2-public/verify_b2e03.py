@@ -33,6 +33,9 @@ EXPECTED_MODEL_SOURCE_REVISION = "80da2d8bfee42b0e836fc3a9890373e5defc00a6"
 EXPECTED_MODEL_NAME = "ggml-base.en.bin"
 EXPECTED_MODEL_BYTES = 147964211
 EXPECTED_MODEL_SHA256 = "a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002"
+REGULAR_CHUNK_SAMPLES = 8000
+FINAL_ZERO_SAMPLES = 10560
+FINAL_ZERO_CHUNKS = [8000, 2560]
 EXPECTED_CANDIDATE_IDS = [
     "moonshine-compact",
     "moonshine-balanced",
@@ -280,7 +283,8 @@ def verify_evidence(evidence_path: Path) -> dict[str, Any]:
         "audio_ctx": 0,
         "beam_size": -1,
         "candidate_specific_audio_transform_used": False,
-        "finalization_zero_pad_samples": 10560,
+        "final_speech_chunk_preserved": True,
+        "finalization_zero_pad_samples": FINAL_ZERO_SAMPLES,
         "flash_attention": False,
         "identical_frozen_audio_required_across_candidates": True,
         "initial_prompt": None,
@@ -290,6 +294,7 @@ def verify_evidence(evidence_path: Path) -> dict[str, Any]:
         "length_ms": 5000,
         "max_tokens": 0,
         "prompt_carryover": False,
+        "regular_chunk_samples": REGULAR_CHUNK_SAMPLES,
         "repository_context_used": False,
         "sampling": "GREEDY",
         "single_segment": True,
@@ -301,6 +306,7 @@ def verify_evidence(evidence_path: Path) -> dict[str, Any]:
         "translate": False,
         "use_gpu": False,
         "vad": False,
+        "zero_suffix_chunk_samples": FINAL_ZERO_CHUNKS,
     }, "frozen whisper.cpp C0 controls drift")
 
     run = evidence.get("run")
@@ -324,6 +330,8 @@ def verify_evidence(evidence_path: Path) -> dict[str, Any]:
     failed = execution.get("failure_count")
     require(isinstance(decoded, int) and isinstance(failed, int) and decoded + failed == 240, "decode/failure count drift")
     require(execution.get("all_frozen_input_hashes_reverified") is True, "input-hash reverification missing")
+    require(execution.get("all_speech_samples_delivered_for_decoded_records") is True, "speech feed completeness attestation missing")
+    require(execution.get("all_zero_suffix_samples_delivered_for_decoded_records") is True, "zero-suffix feed completeness attestation missing")
     for key in ("reference_transcripts_loaded_by_decoder", "accuracy_scoring_performed", "comparative_ranking_present", "performance_claim_present"):
         require(execution.get(key) is False, f"forbidden execution claim: {key}")
     require(isinstance(execution.get("total_decode_wall_seconds"), (int, float)) and execution["total_decode_wall_seconds"] >= 0, "total timing malformed")
@@ -340,6 +348,12 @@ def verify_evidence(evidence_path: Path) -> dict[str, Any]:
         "raw_transcript",
         "failure",
         "stream_iteration_count",
+        "speech_sample_count",
+        "speech_samples_delivered",
+        "regular_speech_chunk_count",
+        "final_speech_chunk_samples",
+        "zero_suffix_samples_delivered",
+        "zero_suffix_chunks_delivered",
         "decode_wall_seconds",
     }
     seen: set[str] = set()
@@ -357,10 +371,29 @@ def verify_evidence(evidence_path: Path) -> dict[str, Any]:
         require(row.get("stream_iteration_count") == len(lines), f"stream iteration accounting drift: {uid}")
         require(row.get("raw_transcript") == reconstruct_stream_text(lines), f"raw stream reconstruction drift: {uid}")
         require(isinstance(row.get("decode_wall_seconds"), (int, float)) and row["decode_wall_seconds"] >= 0, f"timing malformed: {uid}")
+
+        speech_count = row.get("speech_sample_count")
+        speech_delivered = row.get("speech_samples_delivered")
+        regular_chunks = row.get("regular_speech_chunk_count")
+        final_chunk = row.get("final_speech_chunk_samples")
+        zero_delivered = row.get("zero_suffix_samples_delivered")
+        zero_chunks = row.get("zero_suffix_chunks_delivered")
+        require(speech_count == expected[uid].get("wav_frame_count"), f"speech sample count drift: {uid}")
+        require(isinstance(speech_delivered, int) and 0 <= speech_delivered <= speech_count, f"speech delivery accounting drift: {uid}")
+        require(regular_chunks == speech_count // REGULAR_CHUNK_SAMPLES, f"regular speech chunk count drift: {uid}")
+        require(final_chunk == speech_count % REGULAR_CHUNK_SAMPLES, f"final speech chunk drift: {uid}")
+        require(isinstance(zero_delivered, int) and 0 <= zero_delivered <= FINAL_ZERO_SAMPLES, f"zero-suffix delivery accounting drift: {uid}")
+        require(isinstance(zero_chunks, int) and 0 <= zero_chunks <= len(FINAL_ZERO_CHUNKS), f"zero-suffix chunk accounting drift: {uid}")
+        planned_iterations = regular_chunks + (1 if final_chunk else 0) + len(FINAL_ZERO_CHUNKS)
+        require(row["stream_iteration_count"] <= planned_iterations, f"stream iteration count exceeds frozen schedule: {uid}")
+
         if row.get("status") == "DECODED":
             observed_decoded += 1
             require(row.get("failure") is None, f"decoded row has failure: {uid}")
-            require(len(lines) > 0, f"decoded row has no stream iterations: {uid}")
+            require(row["stream_iteration_count"] == planned_iterations, f"decoded row did not execute full frozen feed schedule: {uid}")
+            require(speech_delivered == speech_count, f"decoded row did not preserve final speech feed: {uid}")
+            require(zero_delivered == FINAL_ZERO_SAMPLES, f"decoded row did not receive full zero suffix: {uid}")
+            require(zero_chunks == len(FINAL_ZERO_CHUNKS), f"decoded row zero-suffix chunk count drift: {uid}")
         elif row.get("status") == "FAILED":
             observed_failed += 1
             require(isinstance(row.get("failure"), dict), f"failure evidence missing: {uid}")
