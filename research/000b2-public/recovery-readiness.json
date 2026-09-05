@@ -41,14 +41,21 @@
       "canonical_task_merge": "715efc4855fb52187ed250b11f0c28bb2c2c0660",
       "post_merge_recovery_run_id": 33979925715,
       "successor_task": "B2R02"
+    },
+    {
+      "completed_task": "B2R02",
+      "canonical_task_merge": "8dc723efff01fd4461688962a2891bf9e8841f4d",
+      "post_merge_recovery_run_id": 33991218657,
+      "successor_task": "B2R03"
     }
   ],
   "completed_recovery_tasks": [
-    "B2R01"
+    "B2R01",
+    "B2R02"
   ],
-  "active_recovery_unit": "B2R02",
+  "active_recovery_unit": "B2R03",
   "qualified_workflow_change_paths": [],
-  "next_action": "Qualify B2R02 only: implement and verify the corrected Moonshine streaming C0 harness against non-primary material and exact pinned upstream source. Keep all ATTEMPT-002 primary decoding closed until B2R04 is canonically reconciled.",
+  "next_action": "Qualify B2R03 only: capture or cryptographically rebind ATTEMPT-002-bound preprocessing and execution-environment evidence without changing frozen subset, candidate, scorer, normalization, or C0 identities. Keep all ATTEMPT-002 primary decoding closed until B2R04 is canonically reconciled.",
   "claim_guards": {
     "human_developer_speech_accuracy_evidence": "ABSENT",
     "comparative_result_available": false,
