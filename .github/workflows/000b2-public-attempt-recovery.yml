@@ -1,0 +1,180 @@
+name: 000B2 Public Corpus Attempt Recovery
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/000b2-public-attempt-recovery.yml'
+      - 'research/000b1/frozen-methodology.json'
+      - 'research/000b2-public/**'
+      - 'specs/000B2-public-corpus-bakeoff/**'
+      - 'specs/CURRENT.md'
+      - 'docs/canonical/CURRENT_STATE.md'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/000b2-public-attempt-recovery.yml'
+      - 'research/000b1/frozen-methodology.json'
+      - 'research/000b2-public/**'
+      - 'specs/000B2-public-corpus-bakeoff/**'
+      - 'specs/CURRENT.md'
+      - 'docs/canonical/CURRENT_STATE.md'
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: 000b2-attempt-recovery-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-attempt-001-invalidation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+      EXPECTED_B2R01_BASE: b326397cdd29fbb132b9c438ba2178626558efab
+      MOONSHINE_REVISION: 234f60faa0eb388b01cdf7e60aca232af37aefda
+      CANONICAL_MAIN_REF: refs/remotes/origin/main
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.EXACT_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact revision identity
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+          echo "EXACT_REVISION=$EXACT_REVISION"
+
+      - name: Fetch canonical main authority
+        run: |
+          set -euo pipefail
+          git fetch --force --no-tags origin main:refs/remotes/origin/main
+          git rev-parse --verify "${CANONICAL_MAIN_REF}^{commit}"
+          echo "CANONICAL_MAIN_SHA=$(git rev-parse "$CANONICAL_MAIN_REF")"
+
+      - name: Verify exact B2R01 premerge scope
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          readiness = json.loads(Path('research/000b2-public/recovery-readiness.json').read_text(encoding='utf-8'))
+          if readiness.get('completed_recovery_tasks') == []:
+              expected = {
+                  '.github/workflows/000b2-public-attempt-recovery.yml',
+                  'research/000b2-public/attempt-001-invalidation.json',
+                  'research/000b2-public/recovery-readiness.json',
+                  'research/000b2-public/verify_attempt_001_invalidation.py',
+                  'specs/000B2-public-corpus-bakeoff/recovery.md',
+                  'specs/000B2-public-corpus-bakeoff/tasks.md',
+              }
+              base = os.environ['EXPECTED_B2R01_BASE']
+              subprocess.run(['git', 'rev-parse', '--verify', f'{base}^{{commit}}'], check=True)
+              changed = set(
+                  subprocess.run(
+                      ['git', 'diff', '--name-only', f'{base}...HEAD'],
+                      check=True,
+                      text=True,
+                      stdout=subprocess.PIPE,
+                  ).stdout.splitlines()
+              )
+              if changed != expected:
+                  raise SystemExit(
+                      f'B2R01 exact scope drift: missing={sorted(expected - changed)!r} '
+                      f'unexpected={sorted(changed - expected)!r}'
+                  )
+              print('B2R01_EXACT_PREMERGE_SCOPE=PASS')
+          else:
+              print('B2R01_EXACT_PREMERGE_SCOPE=NOT_APPLICABLE_AFTER_CANONICAL_RECONCILIATION')
+          PY
+
+      - name: Verify local invalidation and transition authority
+        run: |
+          set -euo pipefail
+          python -m py_compile research/000b2-public/verify_attempt_001_invalidation.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_001_invalidation.py \
+            --static-only \
+            --canonical-main-ref "$CANONICAL_MAIN_REF"
+
+      - name: Verify canonical post-merge recovery run evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          readiness = json.loads(Path('research/000b2-public/recovery-readiness.json').read_text(encoding='utf-8'))
+          proofs = readiness.get('transition_proofs', [])
+          repository = os.environ['GITHUB_REPOSITORY']
+          expected_name = '000B2 Public Corpus Attempt Recovery'
+          expected_workflow_id = 350986920
+          expected_path = '.github/workflows/000b2-public-attempt-recovery.yml'
+
+          for proof in proofs:
+              run_id = proof['post_merge_recovery_run_id']
+              expected_sha = proof['canonical_task_merge']
+              payload = subprocess.run(
+                  ['gh', 'api', f'repos/{repository}/actions/runs/{run_id}'],
+                  check=True,
+                  text=True,
+                  stdout=subprocess.PIPE,
+              ).stdout
+              run = json.loads(payload)
+              if run.get('workflow_id') != expected_workflow_id:
+                  raise SystemExit(
+                      f'run {run_id}: workflow id {run.get("workflow_id")!r} != qualified workflow {expected_workflow_id}'
+                  )
+              if run.get('path') != expected_path:
+                  raise SystemExit(f'run {run_id}: workflow path {run.get("path")!r} != {expected_path!r}')
+              if run.get('name') != expected_name:
+                  raise SystemExit(f'run {run_id}: unexpected workflow name {run.get("name")!r}')
+              if run.get('event') != 'push':
+                  raise SystemExit(f'run {run_id}: expected push event, got {run.get("event")!r}')
+              if run.get('status') != 'completed' or run.get('conclusion') != 'success':
+                  raise SystemExit(f'run {run_id}: post-merge recovery verification is not successful')
+              if run.get('head_sha') != expected_sha:
+                  raise SystemExit(
+                      f'run {run_id}: head SHA {run.get("head_sha")!r} != canonical task merge {expected_sha!r}'
+                  )
+          print(f'CANONICAL_RECOVERY_TRANSITION_RUNS_VERIFIED={len(proofs)}')
+          PY
+
+      - name: Fetch exact pinned Moonshine source
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/moonshine"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/moonshine-ai/moonshine.git
+          git -C "$SRC" fetch --depth=1 origin "$MOONSHINE_REVISION"
+          git -C "$SRC" checkout --detach FETCH_HEAD
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$MOONSHINE_REVISION"
+          git -C "$SRC" diff --quiet HEAD --
+
+      - name: Verify material drift against pinned upstream
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_001_invalidation.py \
+            --moonshine-source "$RUNNER_TEMP/moonshine" \
+            --canonical-main-ref "$CANONICAL_MAIN_REF"
+
+      - name: Preserve historical evidence boundary
+        run: |
+          set -euo pipefail
+          test ! -e research/000b2-public/raw
+          test ! -e research/000b2-public/preprocessed
+          test ! -e research/000b2-public/transcripts
+          echo 'ATTEMPT_001_HISTORY_PRESERVED=PASS'
+          echo 'ATTEMPT_001_NEW_PRIMARY_DECODE_AUTHORIZED=NO'

@@ -1,0 +1,49 @@
+{
+  "schema_version": "000b2-public-recovery-readiness-v2",
+  "lane": "PUBLIC_CORPUS",
+  "state": "RECOVERY_PENDING_CANONICALIZATION",
+  "authority_precedence": "OVERRIDES_ATTEMPT_001_READY_SNAPSHOT_FOR_NEW_EXECUTION",
+  "historical_readiness_snapshot": {
+    "path": "research/000b2-public/readiness.json",
+    "completed_through": "B2E02",
+    "role": "HISTORICAL_ATTEMPT_001_POST_B2E02_SNAPSHOT",
+    "active_execution_authority": false
+  },
+  "invalidated_attempt": {
+    "attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+    "invalidation_path": "research/000b2-public/attempt-001-invalidation.json",
+    "comparative_scoring_eligible": false,
+    "candidate_superiority_claim_eligible": false,
+    "new_primary_decode_authorized": false
+  },
+  "replacement_attempt": {
+    "attempt_id": "000B2-PUBLIC-ATTEMPT-002",
+    "required": true,
+    "frozen": false,
+    "primary_decode_entry_open": false
+  },
+  "transition_policy": {
+    "canonical_main_ref_required_after_first_completion": true,
+    "one_recovery_task_per_reconciliation": true,
+    "canonical_task_merge_must_be_on_main": true,
+    "successful_post_merge_recovery_run_required": true,
+    "authority_documents_must_declare_successor": true,
+    "reconciliation_candidate_scope": [
+      "docs/canonical/CURRENT_STATE.md",
+      "research/000b2-public/recovery-readiness.json",
+      "specs/000B2-public-corpus-bakeoff/tasks.md",
+      "specs/CURRENT.md"
+    ]
+  },
+  "transition_proofs": [],
+  "completed_recovery_tasks": [],
+  "active_recovery_unit": "B2R01",
+  "qualified_workflow_change_paths": [],
+  "next_action": "Canonically qualify B2R01 only: preserve ATTEMPT-001 as historical invalidated evidence, prove the material Moonshine execution drift against the exact pinned source, and keep all new primary decoding closed. Do not begin B2R02 until B2R01 is merged, post-merge verified, and canonically reconciled.",
+  "claim_guards": {
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "comparative_result_available": false,
+    "production_stt_selected": false,
+    "product_code_authorized": false
+  }
+}

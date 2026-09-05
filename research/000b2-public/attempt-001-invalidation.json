@@ -1,0 +1,84 @@
+{
+  "schema_version": "000b2-public-attempt-invalidation-v1",
+  "task": "B2R01",
+  "lane": "PUBLIC_CORPUS",
+  "attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+  "status": "INVALIDATED_MATERIAL_EXECUTION_DRIFT",
+  "discovered_against_canonical_main": "b326397cdd29fbb132b9c438ba2178626558efab",
+  "frozen_contract": {
+    "path": "research/000b1/frozen-methodology.json",
+    "sha256": "fc177308926941e683f311a340b9e398f2c44ffa32963b3abc20aa359dbb09df",
+    "moonshine_runtime_revision": "234f60faa0eb388b01cdf7e60aca232af37aefda",
+    "required_integration": "PINNED_STREAMING_API",
+    "feed_chunk_ms": 500,
+    "feed_chunk_samples": 8000,
+    "finalization_zero_pad_ms": 660,
+    "finalization_zero_pad_samples": 10560,
+    "vad_threshold": 0.0,
+    "transcription_interval_seconds": 0.5
+  },
+  "affected_canonical_execution": [
+    {
+      "task": "B2E01",
+      "candidate_id": "moonshine-compact",
+      "canonical_merge": "bb3acfae1f39669d74118a564e57a131731484d3",
+      "qualified_head": "9a2b4dd2d79c445d31a09a6c435af6cbe43e6808",
+      "decoder_path": "research/000b2-public/decode_b2e01.py",
+      "evidence_path": "research/000b2-public/b2e01-moonshine-compact.json",
+      "evidence_raw_file_sha256": "af2c604a3f402789d69e424291c5f41a24eca0f575b1b26a3822da73dd0c4a8e"
+    },
+    {
+      "task": "B2E02",
+      "candidate_id": "moonshine-balanced",
+      "canonical_merge": "91588babc1f738c4284f53d40b4cd96dc13bfd50",
+      "qualified_head": "1c4db3f5f857f7a813f4fbb8bc4593c5c5f066c1",
+      "decoder_path": "research/000b2-public/decode_b2e02.py",
+      "evidence_path": "research/000b2-public/b2e02-moonshine-balanced.json",
+      "evidence_raw_file_sha256": "8bc1b3e2e10bd7c64465b424f8dff5ffc84a153868459457d91e22e5cf3da253"
+    }
+  ],
+  "material_drift": [
+    {
+      "id": "MOONSHINE_OFFLINE_PATH_USED",
+      "severity": "MATERIAL",
+      "observed": "Both canonical Moonshine decoders call Transcriber.transcribe_without_streaming(audio).",
+      "contract_conflict": "The frozen Moonshine C0 integration requires the pinned streaming API with 500 ms incremental feeds and the universal 660 ms zero finalization suffix.",
+      "upstream_proof_required": true
+    },
+    {
+      "id": "MOONSHINE_VAD_THRESHOLD_DRIFT",
+      "severity": "MATERIAL",
+      "observed": "Neither canonical Moonshine decoder overrides the pinned runtime vad_threshold default of 0.5.",
+      "contract_conflict": "The frozen Moonshine C0 configuration requires vad_threshold=0.0.",
+      "upstream_proof_required": true
+    }
+  ],
+  "discovery_execution_boundary": {
+    "b2e03_cancelled_run_id": 33972588550,
+    "b2e03_cancelled_head": "bcbd27d28453b9e8fe820c03f016e3597d2dd107",
+    "b2e03_halt_run_id": 33973416932,
+    "b2e03_artifact_eligible_as_primary_evidence": false
+  },
+  "disposition": {
+    "historical_attempt_preserved": true,
+    "historical_b2e01_b2e02_evidence_bytes_must_remain_unchanged": true,
+    "attempt_001_eligible_for_comparative_scoring": false,
+    "attempt_001_eligible_for_candidate_superiority_claims": false,
+    "attempt_001_new_primary_decode_authorized": false,
+    "b2e03_or_later_attempt_001_execution_authorized": false,
+    "attempt_002_required": true,
+    "candidate_membership_change_authorized": false,
+    "subset_membership_change_authorized": false,
+    "scorer_or_normalization_change_authorized": false,
+    "production_stt_selected": false,
+    "product_code_authorized": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT"
+  },
+  "recovery_order": [
+    "Canonically qualify this B2R01 invalidation while all new ATTEMPT-001 primary decoding remains closed.",
+    "Qualify a corrected Moonshine C0 streaming harness against non-primary material and the exact pinned runtime source.",
+    "Capture or rebind attempt-bound preprocessing and execution-environment evidence for a new attempt without changing frozen subset membership, candidate membership, or scoring rules.",
+    "Freeze 000B2-PUBLIC-ATTEMPT-002 before any new primary candidate decode.",
+    "Execute all six candidate cells from cell 1 under the new attempt before scoring."
+  ]
+}
