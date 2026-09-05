@@ -140,7 +140,7 @@ The first push verification on `94e3b50009b5054db6ccd9bb3276facd1399399c` had th
 
 No `B2P01` provenance work, public archive materialization, fetched-byte SHA-256 capture, subset freeze, candidate decoding, comparative ranking, or product selection began before the remediation was canonical.
 
-The forward-only remediation was independently qualified and canonically merged by PR #32 as `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, from exact qualified head `596b5e4d6654c4d562de51d8a047c8196ce52c7d` against exact base `94e3b50009b5054db6ccd9bb3276facd1399399c`. Its applicable exact-head workflow lanes completed successfully, fresh independent CodeRabbit substantive review reported no actionable findings, no actionable review threads remained, and post-merge verification succeeded. Therefore `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`.
+The forward-only remediation was independently qualified and canonically merged by PR #32 as `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, from exact qualified head `596b5e4d6654c4d562de51d8a047c8196ce52c7d` against exact base `94e3b50009b5054db6ccd9bb3276facd1399399c`. Its applicable exact-head workflow lanes completed successfully, fresh independent CodeRabbit substantive review reported no actionable findings, no actionable review threads remained, guarded expected-head merge completed, and post-merge verification succeeded. Therefore `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`.
 
 PR #33 then reconciled the machine-readable public readiness state and canonically merged as `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7` from exact qualified head `990f7260475822839f1fe748f70460643de9b8ad` against exact base `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`. Exact-head `000B2 Public Corpus Methodology` run `33677613666` succeeded, a prior review finding was repaired forward-only, and fresh independent review of the repaired head completed clean. Canonical `research/000b2-public/readiness.json` became `READY` and made `B2P01` the sole next action until B2P01 itself became canonical.
 
@@ -301,3 +301,18 @@ Live canonical GitHub/repository truth overrides this file. After every merged r
 ## Next canonical action
 
 Qualify `B2R02` only: implement and verify the corrected Moonshine streaming C0 harness against non-primary material and exact pinned upstream source. Demonstrate the frozen 500 ms / 8,000-sample feed schedule, final 660 ms / 10,560-sample zero suffix, `vad_threshold=0.0`, `transcription_interval_seconds=0.5`, unchanged repository/test-specific context and keyterm guards, and frozen runtime/model identities without inspecting new primary results. Keep all ATTEMPT-002 primary decoding closed until B2R04 is canonically reconciled. Do not begin B2R03 before B2R02 is separately qualified, merged, post-merge verified, and reconciled.
+
+## Canonical B2R02 recovery reconciliation — latest authority
+
+This section supersedes the earlier B2R01 recovery-marker block for current execution authority. B2R02 is canonically implemented at task merge `8dc723efff01fd4461688962a2891bf9e8841f4d`. Exact task-merge push run `33991218657` of workflow `000B2 Public Corpus Attempt Recovery` (`workflow_id=350986920`, path `.github/workflows/000b2-public-attempt-recovery.yml`) completed successfully on that exact merge. Historical ATTEMPT-001 bytes and the B2R01 proof mechanism remain unchanged.
+
+**Canonical recovery predecessor:** `B2R02`
+**Canonical B2R02 recovery merge:** `8dc723efff01fd4461688962a2891bf9e8841f4d`
+**Canonical B2R02 post-merge recovery run:** `33991218657`
+**Active recovery unit:** `B2R03`
+
+ATTEMPT-002 remains required and unfrozen, and `primary_decode_entry_open=false`. B2R03 alone is authorized after this reconciliation becomes canonical: capture or cryptographically rebind ATTEMPT-002-bound preprocessing and execution-environment evidence without changing frozen subset, candidate, scorer, normalization, or C0 identities. No B2R04 or primary candidate decode is authorized by this reconciliation.
+
+## Latest canonical action
+
+Qualify `B2R03` only: establish ATTEMPT-002-bound preprocessing and execution-environment evidence through exact digest/provenance rebinding or fresh pre-primary capture as permitted by the recovery contract. Preserve the frozen subset, candidate set, scorer, normalization, and corrected C0 identities unchanged. Keep all ATTEMPT-002 primary decoding closed until B2R04 is separately qualified, merged, post-merge verified, and reconciled.
