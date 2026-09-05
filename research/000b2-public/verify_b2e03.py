@@ -77,19 +77,33 @@ def canonical(value: Any) -> bytes:
 
 def validate_frontier(readiness: dict[str, Any], tasks: str, current: str, attempt: dict[str, Any]) -> None:
     require(readiness.get("state") == "READY", "public lane is not READY")
-    require(readiness.get("completed_through") == "B2E02", "B2E03 requires canonical completion through B2E02")
+    completed = readiness.get("completed_through")
     next_action = readiness.get("next_action")
-    require(isinstance(next_action, str) and next_action.startswith("Execute B2E03 only:"), "B2E03 is not sole next action")
-    require("whispercpp-compact" in next_action, "B2E03 candidate identity missing")
-    require("Do not begin B2E04" in next_action, "B2E04+ closure missing")
+
+    if completed == "B2E02":
+        require(isinstance(next_action, str) and next_action.startswith("Execute B2E03 only:"), "B2E03 is not sole pre-reconciliation next action")
+        require("whispercpp-compact" in next_action, "B2E03 candidate identity missing")
+        require("Do not begin B2E04" in next_action, "B2E04+ closure missing before B2E03 reconciliation")
+        require("- [x] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0." in tasks, "B2E02 predecessor completion drift")
+        require("- [ ] `B2E03` Decode the identical frozen P0 subset with candidate cell 3 under C0." in tasks, "B2E03 task must remain pending during execution qualification")
+        require("- [ ] `B2E04` Decode the identical frozen P0 subset with candidate cell 4 under C0." in tasks, "B2E04 must remain unauthorized")
+        require("current bounded execution unit `B2E03`" in current, "CURRENT B2E03 frontier drift")
+        require("B2E03 (`whispercpp-compact`) is the sole current bounded execution unit" in current, "CURRENT B2E03 sole-unit authority missing")
+        require("B2E04 and all later candidate cells remain unauthorized" in current, "CURRENT B2E04+ closure missing")
+    elif completed == "B2E03":
+        require(isinstance(next_action, str) and next_action.startswith("Execute B2E04 only:"), "B2E04 is not sole post-B2E03 next action")
+        require("whispercpp-balanced" in next_action, "B2E04 candidate identity missing")
+        require("Do not begin B2E05" in next_action, "B2E05+ closure missing after B2E03 reconciliation")
+        require("- [x] `B2E03` Decode the identical frozen P0 subset with candidate cell 3 under C0." in tasks, "B2E03 canonical completion drift")
+        require("- [ ] `B2E04` Decode the identical frozen P0 subset with candidate cell 4 under C0." in tasks, "B2E04 task frontier drift")
+        require("current bounded execution unit `B2E04`" in current, "CURRENT B2E04 frontier drift")
+        require("B2E04 (`whispercpp-balanced`) is the sole current bounded execution unit" in current, "CURRENT B2E04 sole-unit authority missing")
+        require("B2E05 and all later candidate cells remain unauthorized" in current, "CURRENT B2E05+ closure missing")
+    else:
+        require("- [x] `B2E03` Decode the identical frozen P0 subset with candidate cell 3 under C0." in tasks, "later canonical state lost B2E03 completion")
 
     require("- [x] `B2E01` Decode the frozen P0 public-human subset with candidate cell 1 under C0." in tasks, "B2E01 predecessor completion drift")
     require("- [x] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0." in tasks, "B2E02 predecessor completion drift")
-    require("- [ ] `B2E03` Decode the identical frozen P0 subset with candidate cell 3 under C0." in tasks, "B2E03 task must remain pending during execution qualification")
-    require("- [ ] `B2E04` Decode the identical frozen P0 subset with candidate cell 4 under C0." in tasks, "B2E04 must remain unauthorized")
-    require("current bounded execution unit `B2E03`" in current, "CURRENT B2E03 frontier drift")
-    require("B2E03 (`whispercpp-compact`) is the sole current bounded execution unit" in current, "CURRENT B2E03 sole-unit authority missing")
-    require("B2E04 and all later candidate cells remain unauthorized" in current, "CURRENT B2E04+ closure missing")
 
     require(attempt.get("schema_version") == "000b2-public-attempt-manifest-v1", "attempt schema drift")
     require(attempt.get("frozen") is True, "attempt is not frozen")
@@ -131,13 +145,43 @@ def static_frontier() -> None:
     validate_frontier(readiness, tasks, current, attempt)
     require(sha(PREPROCESSING) == EXPECTED_PREPROCESSING, "preprocessing bytes drift")
 
-    bad_readiness = copy.deepcopy(readiness)
-    bad_readiness["completed_through"] = "B2E01"
-    expect_rejection("predecessor frontier", bad_readiness, tasks, current, attempt)
+    completed = readiness.get("completed_through")
+    if completed == "B2E02":
+        bad_readiness = copy.deepcopy(readiness)
+        bad_readiness["completed_through"] = "B2E01"
+        expect_rejection("predecessor frontier", bad_readiness, tasks, current, attempt)
 
-    bad_readiness = copy.deepcopy(readiness)
-    bad_readiness["next_action"] = str(bad_readiness["next_action"]).replace("Do not begin B2E04", "Begin B2E04")
-    expect_rejection("successor closure", bad_readiness, tasks, current, attempt)
+        bad_readiness = copy.deepcopy(readiness)
+        bad_readiness["next_action"] = str(bad_readiness["next_action"]).replace("Do not begin B2E04", "Begin B2E04")
+        expect_rejection("successor closure", bad_readiness, tasks, current, attempt)
+
+        bad_tasks = tasks.replace(
+            "- [x] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0.",
+            "- [ ] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0.",
+        )
+        expect_rejection("B2E02 completion", readiness, bad_tasks, current, attempt)
+
+        bad_current = current.replace("B2E04 and all later candidate cells remain unauthorized", "later frontier altered")
+        expect_rejection("CURRENT successor closure", readiness, tasks, bad_current, attempt)
+    elif completed == "B2E03":
+        bad_readiness = copy.deepcopy(readiness)
+        bad_readiness["next_action"] = str(bad_readiness["next_action"]).replace("Do not begin B2E05", "Begin B2E05")
+        expect_rejection("post-reconciliation successor closure", bad_readiness, tasks, current, attempt)
+
+        bad_tasks = tasks.replace(
+            "- [x] `B2E03` Decode the identical frozen P0 subset with candidate cell 3 under C0.",
+            "- [ ] `B2E03` Decode the identical frozen P0 subset with candidate cell 3 under C0.",
+        )
+        expect_rejection("B2E03 completion", readiness, bad_tasks, current, attempt)
+
+        bad_current = current.replace("B2E05 and all later candidate cells remain unauthorized", "later frontier altered")
+        expect_rejection("CURRENT post-reconciliation closure", readiness, tasks, bad_current, attempt)
+    else:
+        bad_tasks = tasks.replace(
+            "- [x] `B2E03` Decode the identical frozen P0 subset with candidate cell 3 under C0.",
+            "- [ ] `B2E03` Decode the identical frozen P0 subset with candidate cell 3 under C0.",
+        )
+        expect_rejection("historical B2E03 completion", readiness, bad_tasks, current, attempt)
 
     bad_attempt = copy.deepcopy(attempt)
     bad_attempt["freeze_digest_sha256"] = "0" * 64
@@ -146,15 +190,6 @@ def static_frontier() -> None:
     bad_attempt = copy.deepcopy(attempt)
     bad_attempt["candidate_set"]["candidate_ids"][2] = "whispercpp-balanced"
     expect_rejection("candidate cell identity", readiness, tasks, current, bad_attempt)
-
-    bad_tasks = tasks.replace(
-        "- [x] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0.",
-        "- [ ] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0.",
-    )
-    expect_rejection("B2E02 completion", readiness, bad_tasks, current, attempt)
-
-    bad_current = current.replace("B2E04 and all later candidate cells remain unauthorized", "later frontier altered")
-    expect_rejection("CURRENT successor closure", readiness, tasks, bad_current, attempt)
 
 
 def preprocessing_index() -> dict[str, dict[str, Any]]:
