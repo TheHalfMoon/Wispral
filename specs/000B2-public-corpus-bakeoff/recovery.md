@@ -25,6 +25,8 @@ Beginning with the B2R01-to-B2R02 transition, a checked recovery task is not suf
 
 The recovery workflow independently queries GitHub Actions and validates the recorded post-merge run identity, event, conclusion, workflow name, and exact head SHA. A run id written into repository evidence is not trusted by itself.
 
+A task merge and its later reconciliation merge are intentionally distinct. `B2R01` is additionally bound to the exact pre-recovery canonical base and the complete qualified B2R01 file set. For `B2R02` and later, the task merge must be a real merge commit whose first parent already names that B2R task as the canonical active unit. The four reconciliation-authority files must remain byte-identical across that task merge, while at least one implementation/evidence path outside those four files must actually change. Therefore a prior reconciliation merge cannot be recycled as proof that the active recovery task itself was implemented and merged.
+
 For every transition, both `specs/CURRENT.md` and `docs/canonical/CURRENT_STATE.md` must contain these exact authority markers for the latest completed unit:
 
 ```text
@@ -43,7 +45,7 @@ A PR that advances recovery authority beyond what canonical `main` already recor
 - `specs/CURRENT.md`;
 - `docs/canonical/CURRENT_STATE.md`.
 
-The verifier compares the candidate against `origin/main`. It rejects skipped recovery tasks, non-main task-merge identities, altered prior transition proofs, and any reconciliation candidate mixed with implementation or evidence-generation paths. Once the reconciliation is merged, successor implementation PRs are accepted only when their inherited recovery state and transition-proof ledger already match canonical `main`.
+The verifier compares the candidate against `origin/main`. It rejects skipped recovery tasks, non-main task-merge identities, altered prior transition proofs, reused reconciliation merges, and any reconciliation candidate mixed with implementation or evidence-generation paths. Once the reconciliation is merged, successor implementation PRs are accepted only when their inherited recovery state and transition-proof ledger already match canonical `main`.
 
 ## Finding
 
