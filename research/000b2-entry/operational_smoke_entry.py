@@ -4,9 +4,12 @@
 from __future__ import annotations
 
 import hashlib
+import importlib
 import importlib.metadata
 import importlib.util
 import json
+import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -21,6 +24,7 @@ AMENDMENT = HERE / "artifact-size-amendment.json"
 B2R02_HARNESS = HERE.parent / "000b2-public" / "moonshine_streaming_c0.py"
 B2R02_VERIFIER = HERE.parent / "000b2-public" / "verify_b2r02_moonshine_streaming.py"
 MOONSHINE_UPSTREAM_URL = "https://github.com/moonshine-ai/moonshine.git"
+MOONSHINE_RUNTIME_IDENTITY_NAME = "wispral-moonshine-source-build-identity.json"
 EXPECTED_CORRECTIONS = {
     ("sherpa-onnx-compact", "tokens.txt"),
     ("sherpa-onnx-balanced", "tokens.txt"),
@@ -35,6 +39,35 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def git_output(source: Path, *args: str) -> str:
+    return subprocess.run(
+        ["git", "-C", str(source), *args],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=30,
+    ).stdout.strip()
+
+
+def python_manifest(root: Path) -> dict[str, str]:
+    """Return a deterministic digest ledger for every Python source in a package tree."""
+
+    result: dict[str, str] = {}
+    for path in sorted(root.rglob("*.py")):
+        if path.is_symlink() or not path.is_file():
+            raise RuntimeError(f"unexpected Python source path in Moonshine runtime: {path}")
+        result[path.relative_to(root).as_posix()] = sha256_file(path)
+    if not result:
+        raise RuntimeError("Moonshine Python source manifest is empty")
+    return result
+
+
+def manifest_digest(manifest: dict[str, str]) -> str:
+    raw = (json.dumps(manifest, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
 
 
 def load_module(name: str, path: Path) -> Any:
@@ -101,30 +134,169 @@ def verified_pinned_moonshine_source(work_dir: Path, verifier: Any) -> Path:
             timeout=30,
         )
 
-    remote = subprocess.run(
-        ["git", "-C", str(source_root), "remote", "get-url", "origin"],
-        check=True,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        timeout=30,
-    ).stdout.strip()
+    remote = git_output(source_root, "remote", "get-url", "origin")
     if remote != MOONSHINE_UPSTREAM_URL:
         raise RuntimeError("Moonshine source checkout origin drift")
-
-    status = subprocess.run(
-        ["git", "-C", str(source_root), "status", "--porcelain=v1", "--untracked-files=all"],
-        check=True,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        timeout=30,
-    ).stdout.strip()
+    status = git_output(source_root, "status", "--porcelain=v1", "--untracked-files=all")
     if status:
         raise RuntimeError("Moonshine source checkout contains tracked or untracked drift")
 
     verifier.verify_pinned_upstream(source_root)
     return source_root
+
+
+def source_bound_moonshine_runtime(work_dir: Path, source_root: Path, verifier: Any) -> tuple[Path, dict[str, Any]]:
+    """Build and materialize a Moonshine Python/native runtime from the verified checkout itself."""
+
+    shared_root = work_dir.parent
+    build_root = shared_root / "moonshine-source-build"
+    runtime_root = shared_root / "moonshine-source-runtime"
+    runtime_package = runtime_root / "moonshine_voice"
+    identity_path = shared_root / MOONSHINE_RUNTIME_IDENTITY_NAME
+    source_package = source_root / "language-bindings" / "python" / "src" / "moonshine_voice"
+    core_root = source_root / "core"
+    source_ort = core_root / "third-party" / "onnxruntime" / "lib" / "linux" / "x86_64" / "libonnxruntime.so.1"
+    source_revision = git_output(source_root, "rev-parse", "HEAD")
+    source_tree = git_output(source_root, "rev-parse", "HEAD^{tree}")
+    source_python_manifest = python_manifest(source_package)
+    source_python_digest = manifest_digest(source_python_manifest)
+
+    if source_revision != verifier.EXPECTED_UPSTREAM_REVISION:
+        raise RuntimeError("Moonshine source revision changed before runtime build")
+    setup_py = source_root / "language-bindings" / "python" / "setup.py"
+    if 'version="0.1.5"' not in setup_py.read_text(encoding="utf-8"):
+        raise RuntimeError("pinned Moonshine Python package version drift")
+    if source_ort.is_symlink() or not source_ort.is_file():
+        raise RuntimeError("pinned Moonshine ONNX Runtime library missing")
+
+    def validate_existing_identity(identity: dict[str, Any]) -> bool:
+        if not runtime_package.is_dir() or runtime_package.is_symlink():
+            return False
+        native = runtime_package / "libmoonshine.so"
+        ort = runtime_package / "libonnxruntime.so.1"
+        cache = build_root / "CMakeCache.txt"
+        if any(path.is_symlink() or not path.is_file() for path in (native, ort, cache)):
+            return False
+        observed_python_manifest = python_manifest(runtime_package)
+        expected = {
+            "schema_version": "000b2-moonshine-source-build-identity-v1",
+            "source_repository": verifier.EXPECTED_UPSTREAM_REPOSITORY,
+            "source_revision": source_revision,
+            "source_tree": source_tree,
+            "release": "v0.1.5",
+            "python_source_manifest_sha256": source_python_digest,
+            "native_library_sha256": sha256_file(native),
+            "onnxruntime_sha256": sha256_file(ort),
+            "cmake_cache_sha256": sha256_file(cache),
+            "build_type": "Release",
+            "runtime_origin": "PINNED_SOURCE_CHECKOUT_BUILD",
+        }
+        if observed_python_manifest != source_python_manifest:
+            return False
+        return identity == expected
+
+    if identity_path.is_file() and not identity_path.is_symlink():
+        identity = json.loads(identity_path.read_text(encoding="utf-8"))
+        if isinstance(identity, dict) and validate_existing_identity(identity):
+            if git_output(source_root, "status", "--porcelain=v1", "--untracked-files=all"):
+                raise RuntimeError("Moonshine source checkout drifted after source build")
+            return runtime_root, identity
+        raise RuntimeError("existing Moonshine source-build identity is invalid")
+
+    if build_root.exists():
+        shutil.rmtree(build_root)
+    if runtime_root.exists():
+        shutil.rmtree(runtime_root)
+    build_root.mkdir(parents=True)
+
+    subprocess.run(
+        [
+            "cmake",
+            "-S",
+            str(core_root),
+            "-B",
+            str(build_root),
+            "-DCMAKE_BUILD_TYPE=Release",
+        ],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        timeout=300,
+    )
+    subprocess.run(
+        ["cmake", "--build", str(build_root), "--config", "Release", "-j2"],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        timeout=900,
+    )
+
+    built_native = build_root / "libmoonshine.so"
+    cache = build_root / "CMakeCache.txt"
+    if built_native.is_symlink() or not built_native.is_file():
+        raise RuntimeError("Moonshine source build did not produce libmoonshine.so")
+    if cache.is_symlink() or not cache.is_file():
+        raise RuntimeError("Moonshine source build CMake cache missing")
+    expected_home = f"CMAKE_HOME_DIRECTORY:INTERNAL={core_root}"
+    if expected_home not in cache.read_text(encoding="utf-8", errors="strict").splitlines():
+        raise RuntimeError("Moonshine CMake build is not bound to pinned core source")
+    if git_output(source_root, "status", "--porcelain=v1", "--untracked-files=all"):
+        raise RuntimeError("Moonshine source build mutated the verified checkout")
+
+    shutil.copytree(source_package, runtime_package)
+    shutil.copy2(built_native, runtime_package / "libmoonshine.so")
+    shutil.copy2(source_ort, runtime_package / "libonnxruntime.so.1")
+    if python_manifest(runtime_package) != source_python_manifest:
+        raise RuntimeError("materialized Moonshine Python runtime differs from pinned source")
+
+    identity = {
+        "schema_version": "000b2-moonshine-source-build-identity-v1",
+        "source_repository": verifier.EXPECTED_UPSTREAM_REPOSITORY,
+        "source_revision": source_revision,
+        "source_tree": source_tree,
+        "release": "v0.1.5",
+        "python_source_manifest_sha256": source_python_digest,
+        "native_library_sha256": sha256_file(runtime_package / "libmoonshine.so"),
+        "onnxruntime_sha256": sha256_file(runtime_package / "libonnxruntime.so.1"),
+        "cmake_cache_sha256": sha256_file(cache),
+        "build_type": "Release",
+        "runtime_origin": "PINNED_SOURCE_CHECKOUT_BUILD",
+    }
+    identity_path.write_text(json.dumps(identity, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if not validate_existing_identity(identity):
+        raise RuntimeError("Moonshine source-build identity failed self-verification")
+    return runtime_root, identity
+
+
+def import_source_bound_moonshine(runtime_root: Path, identity: dict[str, Any]) -> tuple[Any, Any, Any, Any]:
+    """Import Moonshine only from the source-built runtime root and prove the loaded native library path."""
+
+    if any(name == "moonshine_voice" or name.startswith("moonshine_voice.") for name in sys.modules):
+        raise RuntimeError("moonshine_voice was imported before source/runtime identity verification")
+    sys.path.insert(0, str(runtime_root))
+    importlib.invalidate_caches()
+
+    from moonshine_voice import ModelArch, Transcriber
+    from moonshine_voice.download import download_model_from_info, find_model_info
+    from moonshine_voice.moonshine_api import _MoonshineLib
+
+    package = importlib.import_module("moonshine_voice")
+    package_file = Path(package.__file__).resolve(strict=True)
+    expected_package = (runtime_root / "moonshine_voice").resolve(strict=True)
+    if package_file.parent != expected_package:
+        raise RuntimeError("Moonshine Python runtime was not imported from the verified source copy")
+
+    lib_wrapper = _MoonshineLib()
+    native_path = Path(lib_wrapper._lib._name).resolve(strict=True)
+    expected_native = expected_package / "libmoonshine.so"
+    if native_path != expected_native:
+        raise RuntimeError("Moonshine native runtime was not loaded from the pinned source build")
+    if sha256_file(native_path) != identity.get("native_library_sha256"):
+        raise RuntimeError("loaded Moonshine native library digest differs from source-build identity")
+
+    return ModelArch, Transcriber, download_model_from_info, find_model_info
 
 
 def canonical_amendment_sizes() -> dict[tuple[str, str], int]:
@@ -172,12 +344,6 @@ def bound_run_moonshine(candidate_id: str, work_dir: Path, wav_path: Path) -> di
     family, config = smoke.candidate_record(candidate_id)
     if family["family"] != "moonshine":
         raise RuntimeError("moonshine subcommand requires a Moonshine candidate")
-    version = importlib.metadata.version("moonshine-voice")
-    if version != "0.1.5":
-        raise RuntimeError(f"moonshine-voice version drift: {version}")
-
-    from moonshine_voice import ModelArch, Transcriber
-    from moonshine_voice.download import download_model_from_info, find_model_info
 
     harness = load_module("wispral_b2r02_operational_smoke", B2R02_HARNESS)
     verifier = load_module("wispral_b2r02_operational_verifier", B2R02_VERIFIER)
@@ -185,14 +351,18 @@ def bound_run_moonshine(candidate_id: str, work_dir: Path, wav_path: Path) -> di
     verifier.verify_structural_harness(harness)
     verifier.verify_qualification_evidence()
     source_root = verified_pinned_moonshine_source(work_dir, verifier)
+    runtime_root, build_identity = source_bound_moonshine_runtime(work_dir, source_root, verifier)
 
     if harness.EXPECTED_RUNTIME_REVISION != family["runtime"]["revision"]:
         raise RuntimeError("B2R02 harness runtime revision differs from candidate authority")
-    if harness.EXPECTED_RUNTIME_REVISION != verifier.EXPECTED_UPSTREAM_REVISION:
-        raise RuntimeError("B2R02 harness runtime revision differs from verified upstream source")
-    if harness.EXPECTED_RUNTIME_DISTRIBUTION != "moonshine-voice" or harness.EXPECTED_RUNTIME_VERSION != version:
+    if harness.EXPECTED_RUNTIME_REVISION != build_identity.get("source_revision"):
+        raise RuntimeError("B2R02 harness runtime revision differs from source-built runtime")
+    if harness.EXPECTED_RUNTIME_DISTRIBUTION != "moonshine-voice" or harness.EXPECTED_RUNTIME_VERSION != "0.1.5":
         raise RuntimeError("B2R02 harness runtime distribution/version drift")
 
+    ModelArch, Transcriber, download_model_from_info, find_model_info = import_source_bound_moonshine(
+        runtime_root, build_identity
+    )
     arch_by_id = {
         "moonshine-compact": ModelArch.SMALL_STREAMING,
         "moonshine-balanced": ModelArch.MEDIUM_STREAMING,
@@ -224,11 +394,18 @@ def bound_run_moonshine(candidate_id: str, work_dir: Path, wav_path: Path) -> di
         {
             "runtime": {
                 "distribution": "moonshine-voice",
-                "version": version,
+                "version": "0.1.5",
                 "model_arch": int(arch),
                 "model_asset_root": Path(model_path).name,
-                "verified_upstream_repository": verifier.EXPECTED_UPSTREAM_REPOSITORY,
-                "verified_upstream_revision": verifier.EXPECTED_UPSTREAM_REVISION,
+                "source_repository": build_identity["source_repository"],
+                "source_revision": build_identity["source_revision"],
+                "source_tree": build_identity["source_tree"],
+                "runtime_origin": build_identity["runtime_origin"],
+                "python_source_manifest_sha256": build_identity["python_source_manifest_sha256"],
+                "native_library_sha256": build_identity["native_library_sha256"],
+                "onnxruntime_sha256": build_identity["onnxruntime_sha256"],
+                "cmake_cache_sha256": build_identity["cmake_cache_sha256"],
+                "build_type": build_identity["build_type"],
             },
             "artifacts": artifacts,
             "execution": {
@@ -238,7 +415,8 @@ def bound_run_moonshine(candidate_id: str, work_dir: Path, wav_path: Path) -> di
                 "b2r02_streaming_c0_harness_executed": True,
                 "b2r02_static_verifier_executed": True,
                 "b2r02_pinned_upstream_source_verified": True,
-                "b2r02_pinned_upstream_source_checkout": source_root.name,
+                "b2r02_runtime_built_from_verified_source": True,
+                "b2r02_runtime_imported_from_verified_source_copy": True,
                 "speech_samples": trace.speech_samples,
                 "speech_chunk_samples": list(trace.speech_chunk_samples),
                 "final_zero_pad_samples": trace.zero_pad_samples,
