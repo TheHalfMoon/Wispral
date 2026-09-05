@@ -21,9 +21,10 @@ TASKS = ROOT / "specs" / "000B2-public-corpus-bakeoff" / "tasks.md"
 EXPECTED_MAIN = "b326397cdd29fbb132b9c438ba2178626558efab"
 EXPECTED_ATTEMPT = "000B2-PUBLIC-ATTEMPT-001"
 EXPECTED_FROZEN_SHA256 = "fc177308926941e683f311a340b9e398f2c44ffa32963b3abc20aa359dbb09df"
-EXPECTED_WHISPERLESS_MOONSHINE_REV = "234f60faa0eb388b01cdf7e60aca232af37aefda"
+EXPECTED_MOONSHINE_REV = "234f60faa0eb388b01cdf7e60aca232af37aefda"
 EXPECTED_B2E01_EVIDENCE_SHA256 = "af2c604a3f402789d69e424291c5f41a24eca0f575b1b26a3822da73dd0c4a8e"
 EXPECTED_B2E02_EVIDENCE_SHA256 = "8bc1b3e2e10bd7c64465b424f8dff5ffc84a153868459457d91e22e5cf3da253"
+RECOVERY_TASKS = tuple(f"B2R{index:02d}" for index in range(1, 13))
 
 
 class VerifyError(ValueError):
@@ -47,6 +48,29 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def verify_recovery_task_order(tasks: str) -> None:
+    """Require one contiguous completed prefix so recovery units cannot be skipped."""
+    states: list[tuple[str, bool]] = []
+    task_lines = tasks.splitlines()
+    for task in RECOVERY_TASKS:
+        matches = [line for line in task_lines if f"`{task}`" in line]
+        require(len(matches) == 1, f"{task} recovery task must appear exactly once")
+        line = matches[0]
+        if line.startswith("- [x]"):
+            states.append((task, True))
+        elif line.startswith("- [ ]"):
+            states.append((task, False))
+        else:
+            raise VerifyError(f"{task} recovery task has malformed checklist state")
+
+    pending_seen = False
+    for task, complete in states:
+        if not complete:
+            pending_seen = True
+        elif pending_seen:
+            raise VerifyError(f"recovery task ordering skipped a predecessor before {task}")
 
 
 def verify_local() -> None:
@@ -76,7 +100,7 @@ def verify_local() -> None:
     require(preprocessing.get("feed_chunk_samples") == 8000, "frozen feed chunk samples drift")
     require(preprocessing.get("finalization_zero_pad_ms") == 660, "frozen zero pad ms drift")
     require(preprocessing.get("finalization_zero_pad_samples") == 10560, "frozen zero pad samples drift")
-    require(moonshine.get("runtime_revision") == EXPECTED_WHISPERLESS_MOONSHINE_REV, "frozen Moonshine revision drift")
+    require(moonshine.get("runtime_revision") == EXPECTED_MOONSHINE_REV, "frozen Moonshine revision drift")
     require(str(moonshine.get("integration", "")).startswith("Pinned Moonshine Transcriber streaming API;"), "frozen Moonshine integration is not streaming API")
     require(moonshine.get("transcription_interval_seconds") == 0.5, "frozen Moonshine transcription interval drift")
     require(moonshine.get("vad_threshold") == 0.0, "frozen Moonshine VAD threshold drift")
@@ -85,7 +109,7 @@ def verify_local() -> None:
 
     frozen_record = record.get("frozen_contract", {})
     require(frozen_record.get("sha256") == EXPECTED_FROZEN_SHA256, "recorded frozen-contract digest drift")
-    require(frozen_record.get("moonshine_runtime_revision") == EXPECTED_WHISPERLESS_MOONSHINE_REV, "recorded Moonshine revision drift")
+    require(frozen_record.get("moonshine_runtime_revision") == EXPECTED_MOONSHINE_REV, "recorded Moonshine revision drift")
     require(frozen_record.get("feed_chunk_ms") == 500 and frozen_record.get("feed_chunk_samples") == 8000, "recorded feed schedule drift")
     require(frozen_record.get("finalization_zero_pad_ms") == 660 and frozen_record.get("finalization_zero_pad_samples") == 10560, "recorded finalization schedule drift")
     require(frozen_record.get("vad_threshold") == 0.0, "recorded VAD threshold drift")
@@ -162,9 +186,7 @@ def verify_local() -> None:
     require(disposition.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human developer-speech evidence guard drift")
 
     tasks = TASKS.read_text(encoding="utf-8")
-    for task in ("B2R01", "B2R02", "B2R03", "B2R04", "B2R05", "B2R06", "B2R07", "B2R08", "B2R09", "B2R10", "B2R11", "B2R12"):
-        matches = [line for line in tasks.splitlines() if f"`{task}`" in line]
-        require(len(matches) == 1 and matches[0].startswith("- [ ]"), f"{task} recovery task must be uniquely pending before B2R01 canonical reconciliation")
+    verify_recovery_task_order(tasks)
     require("ATTEMPT-001 evidence is historical and ineligible for comparative scoring" in tasks, "task ledger invalidation boundary missing")
 
 
@@ -176,7 +198,7 @@ def verify_upstream(source: Path) -> None:
         text=True,
         stdout=subprocess.PIPE,
     ).stdout.strip()
-    require(observed_revision == EXPECTED_WHISPERLESS_MOONSHINE_REV, "upstream Moonshine revision mismatch")
+    require(observed_revision == EXPECTED_MOONSHINE_REV, "upstream Moonshine revision mismatch")
     subprocess.run(["git", "-C", str(source), "diff", "--quiet", "HEAD", "--"], check=True)
 
     header = (source / "core" / "transcriber.h").read_text(encoding="utf-8")
