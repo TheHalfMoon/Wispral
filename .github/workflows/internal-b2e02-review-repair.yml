@@ -1,0 +1,105 @@
+name: Internal B2E02 Review Repair
+
+on:
+  push:
+    branches:
+      - research/000b2-b2e02-moonshine-balanced
+    paths:
+      - '.github/workflows/internal-b2e02-review-repair.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact B2E02 branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: research/000b2-b2e02-moonshine-balanced
+          fetch-depth: 0
+
+      - name: Apply reviewed fail-closed fixes and regression coverage
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          decoder = Path('research/000b2-public/decode_b2e02.py')
+          text = decoder.read_text(encoding='utf-8')
+
+          old = '''    head = subprocess.run(\n        ["git", "rev-parse", "HEAD"],\n        check=True,\n'''
+          new = '''    head = subprocess.run(\n        ["git", "rev-parse", "HEAD"],\n        cwd=ROOT,\n        check=True,\n'''
+          if text.count(old) != 1:
+              raise SystemExit(f'git_head repair anchor drift: {text.count(old)}')
+          text = text.replace(old, new)
+
+          old = '    require(isinstance(candidate_ids, list) and candidate_ids and candidate_ids[1] == CANDIDATE_ID, "candidate cell 2 drift")\n'
+          new = '''    require(\n        isinstance(candidate_ids, list) and len(candidate_ids) > 1 and candidate_ids[1] == CANDIDATE_ID,\n        "candidate cell 2 drift",\n    )\n'''
+          if text.count(old) != 1:
+              raise SystemExit(f'candidate bounds repair anchor drift: {text.count(old)}')
+          decoder.write_text(text.replace(old, new), encoding='utf-8')
+
+          workflow = Path('.github/workflows/000b2-public-b2e02.yml')
+          text = workflow.read_text(encoding='utf-8')
+          anchor = '''      - name: Verify sealed and reconciled B2E02 execution evidence\n        run: |\n          set -euo pipefail\n          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e02.py\n'''
+          step = '''      - name: Verify decoder repository identity and candidate bounds fail closed\n        shell: bash\n        run: |\n          set -euo pipefail\n          EXACT_REVISION="$EXACT_REVISION" python - <<'PY'\n          import importlib.util\n          import os\n          import tempfile\n          from pathlib import Path\n\n          path = Path("research/000b2-public/decode_b2e02.py").resolve()\n          spec = importlib.util.spec_from_file_location("decode_b2e02", path)\n          module = importlib.util.module_from_spec(spec)\n          assert spec.loader is not None\n          spec.loader.exec_module(module)\n          with tempfile.TemporaryDirectory() as tmp:\n              old = Path.cwd()\n              os.chdir(tmp)\n              try:\n                  assert module.git_head() == os.environ["EXACT_REVISION"]\n              finally:\n                  os.chdir(old)\n          PY\n\n          manifest=research/000b2-public/attempt-manifest.json\n          original="$RUNNER_TEMP/b2e02-candidate-manifest-original.json"\n          cp "$manifest" "$original"\n          cleanup() { cp "$original" "$manifest"; }\n          trap cleanup EXIT\n          python - <<'PY'\n          import json\n          from pathlib import Path\n\n          path = Path("research/000b2-public/attempt-manifest.json")\n          value = json.loads(path.read_text(encoding="utf-8"))\n          ids = value["candidate_set"]["candidate_ids"]\n          value["candidate_set"]["candidate_ids"] = ids[:1]\n          path.write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\\n", encoding="utf-8")\n          PY\n          rm -f "$RUNNER_TEMP/b2e02-candidate-output.json"\n          set +e\n          output=$(PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2e02.py \\\n            --work-dir "$RUNNER_TEMP/b2e02-candidate-work" \\\n            --preprocessed-root "$RUNNER_TEMP/b2e02-candidate-preprocessed" \\\n            --output "$RUNNER_TEMP/b2e02-candidate-output.json" 2>&1)\n          status=$?\n          set -e\n          printf '%s\\n' "$output"\n          test "$status" -eq 1\n          grep -Fqx 'B2E02_EXECUTION=FAIL: candidate cell 2 drift' <<<"$output"\n          test ! -e "$RUNNER_TEMP/b2e02-candidate-output.json"\n\n'''
+          if text.count(anchor) != 1:
+              raise SystemExit(f'workflow regression anchor drift: {text.count(anchor)}')
+          workflow.write_text(text.replace(anchor, step + anchor), encoding='utf-8')
+          PY
+
+          python -m py_compile research/000b2-public/decode_b2e02.py research/000b2-public/verify_b2e02.py
+          git diff --check
+
+          EXACT_REVISION="$(git rev-parse HEAD)" python - <<'PY'
+          import importlib.util
+          import os
+          import tempfile
+          from pathlib import Path
+
+          path = Path('research/000b2-public/decode_b2e02.py').resolve()
+          spec = importlib.util.spec_from_file_location('decode_b2e02', path)
+          module = importlib.util.module_from_spec(spec)
+          assert spec.loader is not None
+          spec.loader.exec_module(module)
+          with tempfile.TemporaryDirectory() as tmp:
+              old = Path.cwd()
+              os.chdir(tmp)
+              try:
+                  assert module.git_head() == os.environ['EXACT_REVISION']
+              finally:
+                  os.chdir(old)
+          PY
+
+          manifest=research/000b2-public/attempt-manifest.json
+          original="$RUNNER_TEMP/attempt.json"
+          cp "$manifest" "$original"
+          trap 'cp "$original" "$manifest"' EXIT
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('research/000b2-public/attempt-manifest.json')
+          v = json.loads(p.read_text(encoding='utf-8'))
+          v['candidate_set']['candidate_ids'] = v['candidate_set']['candidate_ids'][:1]
+          p.write_text(json.dumps(v, ensure_ascii=False, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          PY
+          set +e
+          out=$(PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2e02.py --work-dir "$RUNNER_TEMP/work" --preprocessed-root "$RUNNER_TEMP/pre" --output "$RUNNER_TEMP/out.json" 2>&1)
+          status=$?
+          set -e
+          printf '%s\n' "$out"
+          test "$status" -eq 1
+          grep -Fqx 'B2E02_EXECUTION=FAIL: candidate cell 2 drift' <<<"$out"
+          test ! -e "$RUNNER_TEMP/out.json"
+          cp "$original" "$manifest"
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/000b2-public/decode_b2e02.py .github/workflows/000b2-public-b2e02.yml
+          git diff --cached --check
+          git commit -m 'fix(000b2): harden B2E02 decoder review findings'
+          git push origin HEAD:research/000b2-b2e02-moonshine-balanced
