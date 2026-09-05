@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: b2e03-capture-${{ github.ref }}
+  group: b2e03-final-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
