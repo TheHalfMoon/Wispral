@@ -34,6 +34,7 @@ jobs:
     timeout-minutes: 10
     env:
       EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+      EXPECTED_B2R01_BASE: b326397cdd29fbb132b9c438ba2178626558efab
       MOONSHINE_REVISION: 234f60faa0eb388b01cdf7e60aca232af37aefda
       CANONICAL_MAIN_REF: refs/remotes/origin/main
     steps:
@@ -56,6 +57,45 @@ jobs:
           git fetch --force --no-tags origin main:refs/remotes/origin/main
           git rev-parse --verify "${CANONICAL_MAIN_REF}^{commit}"
           echo "CANONICAL_MAIN_SHA=$(git rev-parse "$CANONICAL_MAIN_REF")"
+
+      - name: Verify exact B2R01 premerge scope
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          readiness = json.loads(Path('research/000b2-public/recovery-readiness.json').read_text(encoding='utf-8'))
+          if readiness.get('completed_recovery_tasks') == []:
+              expected = {
+                  '.github/workflows/000b2-public-attempt-recovery.yml',
+                  'research/000b2-public/attempt-001-invalidation.json',
+                  'research/000b2-public/recovery-readiness.json',
+                  'research/000b2-public/verify_attempt_001_invalidation.py',
+                  'specs/000B2-public-corpus-bakeoff/recovery.md',
+                  'specs/000B2-public-corpus-bakeoff/tasks.md',
+              }
+              base = os.environ['EXPECTED_B2R01_BASE']
+              subprocess.run(['git', 'rev-parse', '--verify', f'{base}^{{commit}}'], check=True)
+              changed = set(
+                  subprocess.run(
+                      ['git', 'diff', '--name-only', f'{base}...HEAD'],
+                      check=True,
+                      text=True,
+                      stdout=subprocess.PIPE,
+                  ).stdout.splitlines()
+              )
+              if changed != expected:
+                  raise SystemExit(
+                      f'B2R01 exact scope drift: missing={sorted(expected - changed)!r} '
+                      f'unexpected={sorted(changed - expected)!r}'
+                  )
+              print('B2R01_EXACT_PREMERGE_SCOPE=PASS')
+          else:
+              print('B2R01_EXACT_PREMERGE_SCOPE=NOT_APPLICABLE_AFTER_CANONICAL_RECONCILIATION')
+          PY
 
       - name: Verify local invalidation and transition authority
         run: |
