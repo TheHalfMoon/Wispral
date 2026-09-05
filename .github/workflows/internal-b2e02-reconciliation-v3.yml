@@ -1,0 +1,29 @@
+name: Internal B2E02 Reconciliation V3
+
+on:
+  push:
+    branches:
+      - docs/000b2-reconcile-after-b2e02
+    paths:
+      - '.github/workflows/internal-b2e02-reconciliation-v3.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact reconciliation branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: docs/000b2-reconcile-after-b2e02
+          fetch-depth: 0
+
+      - name: Build bounded reconciliation script
+        run: python .github/scripts/internal_b2e02_reconcile_v3.py
+
+      - name: Apply and validate bounded reconciliation
+        shell: bash
+        run: bash /tmp/reconcile-v3.sh
