@@ -29,7 +29,7 @@ p = Path("research/000b2-public/verify_methodology.py")
 text = read(p)
 text = once(
     text,
-    '    require(readiness.get("completed_through") == "B2E01", "readiness completed_through must be B2E01")\\n',
+    '    require(readiness.get("completed_through") in {"B2E01", "B2E02"}, "readiness completed_through must be B2E01")\\n',
     '    require(readiness.get("completed_through") == "B2E02", "readiness completed_through must be B2E02")\\n',
     "methodology exact completed_through",
 )
