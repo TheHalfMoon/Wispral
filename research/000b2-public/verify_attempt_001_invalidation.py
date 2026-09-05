@@ -40,6 +40,19 @@ PROOF_MECHANISM_PATHS = {
     ".github/workflows/000b2-public-attempt-recovery.yml",
     "research/000b2-public/verify_attempt_001_invalidation.py",
 }
+HISTORICAL_ATTEMPT_001_PATHS = {
+    "research/000b2-public/attempt-manifest.json",
+    "research/000b2-public/predecode-attempt-state.json",
+    "research/000b2-public/readiness.json",
+    "research/000b2-public/decode_b2e01.py",
+    "research/000b2-public/decode_b2e02.py",
+    "research/000b2-public/b2e01-moonshine-compact.json",
+    "research/000b2-public/b2e01-moonshine-compact-duplicate-run-33928583817.json",
+    "research/000b2-public/b2e01-provenance.json",
+    "research/000b2-public/b2e02-moonshine-balanced.json",
+    "research/000b2-public/b2e02-moonshine-balanced-duplicate-run-33963021322.json",
+    "research/000b2-public/b2e02-provenance.json",
+}
 B2R01_REQUIRED_TASK_MERGE_PATHS = {
     ".github/workflows/000b2-public-attempt-recovery.yml",
     "research/000b2-public/attempt-001-invalidation.json",
@@ -141,6 +154,33 @@ def is_on_first_parent_chain(commit: str, tip: str) -> bool:
     return commit in set(git_output("rev-list", "--first-parent", tip).splitlines())
 
 
+def verify_historical_attempt_001_bytes(ref: str) -> None:
+    """Keep every ATTEMPT-001 execution artifact byte-identical to the fixed pre-recovery base."""
+    for path in sorted(HISTORICAL_ATTEMPT_001_PATHS):
+        expected_blob = git_blob_sha(EXPECTED_MAIN, path)
+        require(expected_blob is not None, f"historical baseline artifact missing at {EXPECTED_MAIN}: {path}")
+        observed_blob = git_blob_sha(ref, path)
+        require(observed_blob is not None, f"historical ATTEMPT-001 artifact missing at {ref}: {path}")
+        require(
+            observed_blob == expected_blob,
+            f"historical ATTEMPT-001 artifact bytes drifted from {EXPECTED_MAIN}: {path}",
+        )
+
+
+def qualified_workflow_change_paths(readiness: dict[str, Any]) -> set[str]:
+    """Return canonically pre-authorized non-proof workflow paths for one recovery task."""
+    value = readiness.get("qualified_workflow_change_paths", [])
+    require(isinstance(value, list), "qualified workflow change paths must be a list")
+    require(len(value) == len(set(value)), "qualified workflow change paths contain duplicates")
+    result: set[str] = set()
+    for path in value:
+        require(isinstance(path, str), "qualified workflow change path must be a string")
+        require(path.startswith(".github/workflows/"), f"qualified workflow path is outside workflows: {path}")
+        require(path not in PROOF_MECHANISM_PATHS, f"recovery proof mechanism cannot be separately authorized: {path}")
+        result.add(path)
+    return result
+
+
 def recovery_completed_prefix(tasks: str) -> list[str]:
     """Return the completed recovery prefix and reject skipped recovery units."""
     states: list[tuple[str, bool]] = []
@@ -224,6 +264,8 @@ def verify_task_merge_boundary(
     require(len(parents) >= 2, f"{completed_task} canonical task merge must be a merge commit")
     first_parent = parents[0]
     changed_paths = git_changed_paths(first_parent, merge_sha)
+    verify_historical_attempt_001_bytes(first_parent)
+    verify_historical_attempt_001_bytes(merge_sha)
 
     if completed_task == "B2R01":
         require(first_parent == EXPECTED_MAIN, "B2R01 canonical merge first parent drift")
@@ -235,6 +277,12 @@ def verify_task_merge_boundary(
             "specs/CURRENT.md" not in changed_paths and "docs/canonical/CURRENT_STATE.md" not in changed_paths,
             "B2R01 task merge improperly includes canonical reconciliation authority",
         )
+        unexpected_workflows = sorted(
+            path
+            for path in changed_paths
+            if path.startswith(".github/workflows/") and path not in PROOF_MECHANISM_PATHS
+        )
+        require(not unexpected_workflows, f"B2R01 task merge changes unqualified workflows: {unexpected_workflows}")
         merge_readiness = load_git_json(merge_sha, "research/000b2-public/recovery-readiness.json")
         merge_tasks = git_show_text(merge_sha, "specs/000B2-public-corpus-bakeoff/tasks.md")
         require(merge_readiness is not None and merge_tasks is not None, "B2R01 merge recovery authority missing")
@@ -242,6 +290,7 @@ def verify_task_merge_boundary(
         require(merge_readiness.get("completed_recovery_tasks") == [], "B2R01 task merge completed itself before reconciliation")
         require(merge_readiness.get("active_recovery_unit") == "B2R01", "B2R01 task merge active authority drift")
         require(merge_readiness.get("transition_proofs") == [], "B2R01 task merge must not self-reconcile")
+        require(qualified_workflow_change_paths(merge_readiness) == set(), "B2R01 must not pre-authorize workflow drift")
         return
 
     require(
@@ -298,6 +347,18 @@ def verify_task_merge_boundary(
             git_blob_sha(merge_sha, path) == root_blob,
             f"{completed_task} task merge changed qualified recovery proof mechanism {path}",
         )
+
+    allowed_workflows = qualified_workflow_change_paths(pre_readiness)
+    changed_workflows = {
+        path
+        for path in changed_paths
+        if path.startswith(".github/workflows/") and path not in PROOF_MECHANISM_PATHS
+    }
+    unexpected_workflows = sorted(changed_workflows - allowed_workflows)
+    require(
+        not unexpected_workflows,
+        f"{completed_task} task merge changes workflows without canonical pre-authorization: {unexpected_workflows}",
+    )
 
     substantive_paths = changed_paths - RECONCILIATION_ALLOWED_PATHS - PROOF_MECHANISM_PATHS
     require(substantive_paths, f"{completed_task} task merge has no implementation/evidence change outside authority/proof mechanisms")
@@ -359,11 +420,14 @@ def verify_transition_authority(
     transition_already_canonical = False
     if canonical_readiness is not None and canonical_tasks_text is not None:
         canonical_completed = recovery_completed_prefix(canonical_tasks_text)
+        authority_matches_canonical = all(
+            git_blob_sha("HEAD", path) == git_blob_sha(canonical_main_ref, path)
+            for path in RECONCILIATION_ALLOWED_PATHS
+        )
         transition_already_canonical = (
             canonical_completed == completed
-            and canonical_readiness.get("completed_recovery_tasks") == completed
-            and canonical_readiness.get("active_recovery_unit") == active
-            and canonical_readiness.get("transition_proofs") == normalized
+            and canonical_readiness == readiness
+            and authority_matches_canonical
         )
 
     if transition_already_canonical:
@@ -454,6 +518,7 @@ def verify_recovery_readiness(tasks: str, canonical_main_ref: str | None) -> Non
 
     require(readiness.get("completed_recovery_tasks") == completed, "recovery readiness completed-task ledger drift")
     require(readiness.get("active_recovery_unit") == active, "active recovery unit drift")
+    qualified_workflow_change_paths(readiness)
     next_action = readiness.get("next_action")
     require(isinstance(next_action, str) and next_action, "recovery next action missing")
     if active is not None:
@@ -478,6 +543,8 @@ def verify_local(canonical_main_ref: str | None) -> None:
     record = load(INVALIDATION)
     attempt = load(ATTEMPT)
     frozen = load(FROZEN)
+
+    verify_historical_attempt_001_bytes("HEAD")
 
     require(record.get("schema_version") == "000b2-public-attempt-invalidation-v1", "invalidation schema drift")
     require(record.get("task") == "B2R01", "invalidation task drift")
