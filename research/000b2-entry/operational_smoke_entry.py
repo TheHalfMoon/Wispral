@@ -4,9 +4,13 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.metadata
+import importlib.util
 import json
 import subprocess
+import sys
 from pathlib import Path
+from typing import Any
 
 import operational_smoke as smoke
 from verify_materialization import correction_map
@@ -14,6 +18,7 @@ from verify_materialization import correction_map
 HERE = Path(__file__).resolve().parent
 B1_REGISTRY = HERE.parent / "000b1" / "qualified-candidates.json"
 AMENDMENT = HERE / "artifact-size-amendment.json"
+B2R02_HARNESS = HERE.parent / "000b2-public" / "moonshine_streaming_c0.py"
 EXPECTED_CORRECTIONS = {
     ("sherpa-onnx-compact", "tokens.txt"),
     ("sherpa-onnx-balanced", "tokens.txt"),
@@ -28,6 +33,16 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def load_b2r02_harness() -> Any:
+    spec = importlib.util.spec_from_file_location("wispral_b2r02_operational_smoke", B2R02_HARNESS)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("unable to load B2R02 Moonshine streaming C0 harness")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def canonical_amendment_sizes() -> dict[tuple[str, str], int]:
@@ -67,6 +82,81 @@ def canonical_amendment_sizes() -> dict[tuple[str, str], int]:
             raise RuntimeError(f"artifact amendment size drift: {key}")
         result[key] = 5048
     return result
+
+
+def bound_run_moonshine(candidate_id: str, work_dir: Path, wav_path: Path) -> dict[str, Any]:
+    """Exercise the B2R02 adapter on deterministic non-primary smoke material."""
+
+    family, config = smoke.candidate_record(candidate_id)
+    if family["family"] != "moonshine":
+        raise RuntimeError("moonshine subcommand requires a Moonshine candidate")
+    version = importlib.metadata.version("moonshine-voice")
+    if version != "0.1.5":
+        raise RuntimeError(f"moonshine-voice version drift: {version}")
+
+    from moonshine_voice import ModelArch, Transcriber
+    from moonshine_voice.download import download_model_from_info, find_model_info
+
+    harness = load_b2r02_harness()
+    if harness.EXPECTED_RUNTIME_REVISION != family["runtime"]["revision"]:
+        raise RuntimeError("B2R02 harness runtime revision differs from candidate authority")
+    if harness.EXPECTED_RUNTIME_DISTRIBUTION != "moonshine-voice" or harness.EXPECTED_RUNTIME_VERSION != version:
+        raise RuntimeError("B2R02 harness runtime distribution/version drift")
+
+    arch_by_id = {
+        "moonshine-compact": ModelArch.SMALL_STREAMING,
+        "moonshine-balanced": ModelArch.MEDIUM_STREAMING,
+    }
+    arch = arch_by_id[candidate_id]
+    model_info = find_model_info("en", arch)
+    model_path, observed_arch = download_model_from_info(
+        model_info,
+        cache_root=work_dir / "moonshine-cache",
+        include_word_timestamps=False,
+    )
+    if observed_arch != arch:
+        raise RuntimeError("Moonshine architecture drift")
+    if Path(model_path).name != harness.EXPECTED_MODEL_ASSET_REVISION:
+        raise RuntimeError("Moonshine model asset revision drift")
+    artifacts = smoke.verify_artifacts(candidate_id, config, Path(model_path))
+
+    audio = smoke.read_wav_float(wav_path)
+    with harness.create_transcriber(
+        Transcriber,
+        model_path=model_path,
+        model_arch=arch,
+    ) as transcriber:
+        result, trace = harness.transcribe_streaming_c0(transcriber, audio)
+        line_count = len(result.lines) if result is not None else 0
+
+    report = smoke.base_report(candidate_id, family, config, smoke.generate_smoke_wav(wav_path))
+    report.update(
+        {
+            "runtime": {
+                "distribution": "moonshine-voice",
+                "version": version,
+                "model_arch": int(arch),
+                "model_asset_root": Path(model_path).name,
+            },
+            "artifacts": artifacts,
+            "execution": {
+                "stream_api_executed": True,
+                "decode_completed": True,
+                "result_line_count_observed": line_count,
+                "b2r02_streaming_c0_harness_executed": True,
+                "speech_samples": trace.speech_samples,
+                "speech_chunk_samples": list(trace.speech_chunk_samples),
+                "final_zero_pad_samples": trace.zero_pad_samples,
+                "sample_rate_hz": trace.sample_rate_hz,
+                "transcription_interval_seconds": harness.TRANSCRIPTION_INTERVAL_SECONDS,
+                "vad_threshold": harness.MOONSHINE_C0_OPTIONS["vad_threshold"],
+                "repository_context_used": False,
+                "keyterms_used": False,
+                "transcript_text_retained": False,
+            },
+        }
+    )
+    return report
 
 
 def observed_whisper_source_revision(cli_path: Path) -> str:
@@ -152,6 +242,7 @@ def bound_run_whisper(
 
 
 smoke.amendment_sizes = canonical_amendment_sizes
+smoke.run_moonshine = bound_run_moonshine
 smoke.run_whisper = bound_run_whisper
 
 if __name__ == "__main__":
