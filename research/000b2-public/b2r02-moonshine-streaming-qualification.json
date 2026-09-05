@@ -1,0 +1,75 @@
+{
+  "schema_version": "000b2-public-b2r02-moonshine-streaming-qualification-v1",
+  "task": "B2R02",
+  "authority_main": "b6425789ebc02f3e270a7ba53f463aad0f8c451a",
+  "purpose": "QUALIFY_CORRECTED_MOONSHINE_STREAMING_C0_WITHOUT_PRIMARY_RESULT_ACCESS",
+  "pinned_upstream_source": {
+    "repository": "moonshine-ai/moonshine",
+    "revision": "234f60faa0eb388b01cdf7e60aca232af37aefda",
+    "git_blobs": {
+      "language-bindings/python/src/moonshine_voice/transcriber.py": "7193028a24c47b2914c552e2edfd143212899f4f",
+      "core/transcriber.h": "58e1c30c2d3003c3a785583bad49e6bf646bd3bd",
+      "core/moonshine-c-api.cpp": "b5effa3a8bb5aa6e735961d777ea6e3109eb784c",
+      "docs/api/options.md": "1691d525ee198c2d86b8e895a9dae1ad915234c2"
+    },
+    "verified_contract": {
+      "python_streaming_api_present": true,
+      "transcription_interval_option_present": true,
+      "vad_threshold_option_present": true,
+      "pinned_default_vad_threshold": 0.5,
+      "vad_zero_disables_vad": true
+    }
+  },
+  "non_primary_qualification": {
+    "synthetic_non_speech": true,
+    "synthetic_input_sha256": "860debf008a4702098968ca7b113ea8df7ee0188c9ca08c7c1e9437466876c38",
+    "speech_samples": 32000,
+    "speech_chunk_samples": [8000, 8000, 8000, 8000],
+    "final_zero_pad_samples": 10560,
+    "sample_rate_hz": 16000,
+    "transcription_interval_seconds": 0.5,
+    "vad_threshold": 0.0,
+    "repository_context_used": false,
+    "keyterms_used": false,
+    "transcript_text_retained": false,
+    "accuracy_scoring_performed": false,
+    "supporting_runtime_proof": {
+      "role": "SUPPORTING_NON_PRIMARY_RUNTIME_QUALIFICATION_PRE_FINAL_HEAD",
+      "workflow_name": "000B2 Operational Smoke",
+      "workflow_id": 347608659,
+      "workflow_run_id": 33986015873,
+      "run_head_sha": "37b309d529654c208694f9bc7167186b66d35394",
+      "moonshine_job_id": 101359522305,
+      "moonshine_job_conclusion": "success",
+      "artifact_id": 9975169725,
+      "artifact_name": "smoke-moonshine-33986015873-1",
+      "artifact_zip_digest": "sha256:cff9003f7dbade644d985ff004deb5d4de93e214040b395b69e36786c29194c7",
+      "cell_evidence_payload_sha256": {
+        "moonshine-compact": "a7713a43ad75281a5ae69e2d07e19b6062917911b33107fc4964f5c5e5b69314",
+        "moonshine-balanced": "c5e53d81a706b12c3a789057c88186cba787ffc941b83345e0537c9308c74454"
+      },
+      "note": "Supporting implementation evidence only. Final merge qualification requires fresh applicable CI on the exact final PR head."
+    }
+  },
+  "runtime_model_identity_basis": {
+    "runtime_repository": "moonshine-ai/moonshine",
+    "runtime_revision": "234f60faa0eb388b01cdf7e60aca232af37aefda",
+    "runtime_distribution": "moonshine-voice",
+    "runtime_distribution_version": "0.1.5",
+    "model_asset_revision": "quantized_26_08_21",
+    "latest_canonical_main_live_revalidation_run_id": 33984268736
+  },
+  "claim_guards": {
+    "primary_decode_performed": false,
+    "reference_transcripts_loaded": false,
+    "accuracy_scoring_performed": false,
+    "comparative_ranking_present": false,
+    "candidate_superiority_claim_present": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "production_stt_selected": false,
+    "product_code_authorized": false,
+    "b2r03_authorized_by_this_artifact": false,
+    "attempt_002_primary_decode_authorized": false
+  },
+  "harness_sha256": "c0f0093cda7ca036c8a97178364b3840ce7093386a8cb711ccef5f183a4453c0"
+}
