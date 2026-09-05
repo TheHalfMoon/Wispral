@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: b2e03-capture-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   capture-b2e03:
@@ -183,7 +183,6 @@ jobs:
           import re
           import subprocess
 
-          workspace = pathlib.Path(os.environ['GITHUB_WORKSPACE']).resolve()
           src = pathlib.Path(os.environ['SRC']).resolve()
           build = pathlib.Path(os.environ['BUILD']).resolve()
           adapter_dir = pathlib.Path(os.environ['ADAPTER_DIR']).resolve()
