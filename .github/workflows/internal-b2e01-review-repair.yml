@@ -1,0 +1,114 @@
+name: Internal B2E01 Review Repair
+
+on:
+  push:
+    branches:
+      - research/000b2-b2e01-moonshine-compact
+    paths:
+      - '.github/workflows/internal-b2e01-review-repair.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repair branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: research/000b2-b2e01-moonshine-compact
+          fetch-depth: 0
+
+      - name: Apply fail-closed freeze-digest repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          decoder = Path('research/000b2-public/decode_b2e01.py')
+          text = decoder.read_text(encoding='utf-8')
+          old = '''    require(contract.get("candidate_decoding_started") is False, "frozen predecode manifest was rewritten after decoding")
+              require(contract.get("primary_decoding_started") is False, "frozen predecode manifest was rewritten after decoding")
+
+              preprocessing = load_json(PREPROCESSING_CAPTURE_PATH, "B2P06 preprocessing capture")'''.replace('              ', '    ')
+          new = '''    require(contract.get("candidate_decoding_started") is False, "frozen predecode manifest was rewritten after decoding")
+              require(contract.get("primary_decoding_started") is False, "frozen predecode manifest was rewritten after decoding")
+              freeze_digest = attempt.get("freeze_digest_sha256")
+              require(
+                  isinstance(freeze_digest, str)
+                  and len(freeze_digest) == 64
+                  and all(ch in SHA40 for ch in freeze_digest),
+                  "attempt freeze digest missing or malformed",
+              )
+
+              preprocessing = load_json(PREPROCESSING_CAPTURE_PATH, "B2P06 preprocessing capture")'''.replace('              ', '    ')
+          if text.count(old) != 1:
+              raise SystemExit('decoder authority insertion point drift')
+          decoder.write_text(text.replace(old, new), encoding='utf-8')
+
+          workflow = Path('.github/workflows/000b2-public-b2e01.yml')
+          text = workflow.read_text(encoding='utf-8')
+          anchor = '''      - name: Verify sealed and reconciled B2E01 execution evidence
+              run: |
+                set -euo pipefail
+                PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e01.py
+          '''.replace('              ', '        ')
+          negative = '''      - name: Verify invalid attempt freeze digest fails closed
+              shell: bash
+              run: |
+                set -euo pipefail
+                manifest=research/000b2-public/attempt-manifest.json
+                original="$RUNNER_TEMP/b2e01-attempt-manifest-original.json"
+                cp "$manifest" "$original"
+                cleanup() { cp "$original" "$manifest"; }
+                trap cleanup EXIT
+
+                for mode in missing malformed; do
+                  cp "$original" "$manifest"
+                  MODE="$mode" python - <<'PYTEST'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path("research/000b2-public/attempt-manifest.json")
+          value = json.loads(path.read_text(encoding="utf-8"))
+          if os.environ["MODE"] == "missing":
+              value.pop("freeze_digest_sha256", None)
+          else:
+              value["freeze_digest_sha256"] = "not-a-valid-digest"
+          path.write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+          PYTEST
+                  rm -f "$RUNNER_TEMP/b2e01-negative-output.json"
+                  set +e
+                  output=$(PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2e01.py \
+                    --work-dir "$RUNNER_TEMP/b2e01-negative-work" \
+                    --preprocessed-root "$RUNNER_TEMP/b2e01-negative-preprocessed" \
+                    --output "$RUNNER_TEMP/b2e01-negative-output.json" 2>&1)
+                  status=$?
+                  set -e
+                  printf '%s\\n' "$output"
+                  test "$status" -eq 1
+                  grep -Fqx 'B2E01_EXECUTION=FAIL: attempt freeze digest missing or malformed' <<<"$output"
+                  test ! -e "$RUNNER_TEMP/b2e01-negative-output.json"
+                done
+
+          '''.replace('              ', '        ')
+          if text.count(anchor) != 1:
+              raise SystemExit('permanent workflow insertion point drift')
+          workflow.write_text(text.replace(anchor, negative + anchor), encoding='utf-8')
+          PY
+
+      - name: Remove temporary repair workflow and commit atomically
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/internal-b2e01-review-repair.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/000b2-public/decode_b2e01.py .github/workflows/000b2-public-b2e01.yml .github/workflows/internal-b2e01-review-repair.yml
+          git diff --cached --check
+          git commit -m 'fix(000b2): fail closed on B2E01 freeze digest'
+          git push origin HEAD:research/000b2-b2e01-moonshine-compact
