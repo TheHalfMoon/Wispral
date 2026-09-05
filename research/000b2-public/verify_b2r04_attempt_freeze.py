@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import subprocess
@@ -17,13 +18,27 @@ RECOVERY = PUBLIC / "recovery-readiness.json"
 TASKS = ROOT / "specs" / "000B2-public-corpus-bakeoff" / "tasks.md"
 CURRENT = ROOT / "specs" / "CURRENT.md"
 CURRENT_STATE = ROOT / "docs" / "canonical" / "CURRENT_STATE.md"
+HARNESS = PUBLIC / "moonshine_streaming_c0.py"
+PUBLIC_WER = PUBLIC / "score_public_wer.py"
 
 ATTEMPT_002 = "000B2-PUBLIC-ATTEMPT-002"
 B2R03_RECONCILIATION = "cd527d7e5a8361ff01cb11b85fe552986f44e742"
 HISTORICAL_ATTEMPT_001_BLOB = "411b67d95d3c06264742c7a9d00eea10ac7f9bb6"
+LEGACY_ATTEMPT_VERIFIER_BLOB = "7678ba756241bf1cdd29df0126b3527f5f1274d7"
+CORRECTED_C0_HARNESS_BLOB = "9012f30133df31e88cd489e7612d7991ac0cce25"
+CORRECTED_C0_HARNESS_SHA256 = "c0f0093cda7ca036c8a97178364b3840ce7093386a8cb711ccef5f183a4453c0"
+PUBLIC_WER_BLOB = "f5719cee1f3dfee1c84d7a5e4c7c25620ded1e2d"
+PUBLIC_WER_SHA256 = "581a0e4b0bb91d55a252b92871dbb1246b5fbc4466a5d94bceb35862744fc023"
 FREEZE_DIGEST = "600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8"
 RECOVERY_TASKS = tuple(f"B2R{index:02d}" for index in range(1, 13))
 PRIMARY_DECODE_TASKS = set(RECOVERY_TASKS[4:10])
+B2R04_TASK_PATHS = {
+    "research/000b2-public/attempt-002-manifest.json",
+    "research/000b2-public/freeze_attempt_002_manifest.py",
+    "research/000b2-public/verify_attempt_manifest.py",
+    "research/000b2-public/verify_attempt_manifest_legacy.py",
+    "research/000b2-public/verify_b2r04_attempt_freeze.py",
+}
 
 
 class VerifyError(RuntimeError):
@@ -41,6 +56,14 @@ def load_json(path: Path) -> dict[str, Any]:
     return value
 
 
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def git_output(*args: str) -> str:
     try:
         return subprocess.run(
@@ -53,6 +76,14 @@ def git_output(*args: str) -> str:
         ).stdout.strip()
     except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
         raise VerifyError(f"git {' '.join(args)} failed: {exc}") from exc
+
+
+def git_blob(path: str) -> str:
+    return git_output("rev-parse", f"HEAD:{path}")
+
+
+def changed_paths(base: str, head: str = "HEAD") -> set[str]:
+    return {line for line in git_output("diff", "--name-only", base, head).splitlines() if line}
 
 
 def load_freezer():
@@ -80,7 +111,25 @@ def completed_prefix(tasks: str) -> list[str]:
     return completed
 
 
+def verify_frozen_dependency_bytes() -> None:
+    require(sha256_file(HARNESS) == CORRECTED_C0_HARNESS_SHA256, "corrected Moonshine C0 harness SHA-256 drift")
+    require(
+        git_blob("research/000b2-public/moonshine_streaming_c0.py") == CORRECTED_C0_HARNESS_BLOB,
+        "corrected Moonshine C0 harness Git blob drift",
+    )
+    require(sha256_file(PUBLIC_WER) == PUBLIC_WER_SHA256, "public WER adapter SHA-256 drift")
+    require(
+        git_blob("research/000b2-public/score_public_wer.py") == PUBLIC_WER_BLOB,
+        "public WER adapter Git blob drift",
+    )
+    require(
+        git_blob("research/000b2-public/verify_attempt_manifest_legacy.py") == LEGACY_ATTEMPT_VERIFIER_BLOB,
+        "legacy B2P08 attempt verifier is not the exact historical blob",
+    )
+
+
 def verify_manifest() -> None:
+    verify_frozen_dependency_bytes()
     freezer = load_freezer()
     expected = freezer.build_manifest()
     observed = load_json(MANIFEST)
@@ -135,7 +184,7 @@ def verify_authority() -> str:
     require(replacement.get("required") is True, "replacement attempt requirement weakened")
     require(readiness.get("qualified_workflow_change_paths") == [], "B2R04 must not inherit workflow-change authority")
     require(
-        git_output("rev-parse", "HEAD:research/000b2-public/attempt-manifest.json") == HISTORICAL_ATTEMPT_001_BLOB,
+        git_blob("research/000b2-public/attempt-manifest.json") == HISTORICAL_ATTEMPT_001_BLOB,
         "historical ATTEMPT-001 manifest bytes drift",
     )
     git_output("merge-base", "--is-ancestor", B2R03_RECONCILIATION, "HEAD")
@@ -146,6 +195,10 @@ def verify_authority() -> str:
         require(replacement.get("primary_decode_entry_open") is False, "primary decode entry opened before B2R04 reconciliation")
         require("- [ ] `B2R04`" in tasks, "B2R04 must remain pending in task PR")
         require("- [ ] `B2R05`" in tasks, "B2R05 must remain pending during B2R04 task PR")
+        require(
+            changed_paths(B2R03_RECONCILIATION) == B2R04_TASK_PATHS,
+            "B2R04 task stage contains paths outside the exact qualified five-file freeze scope",
+        )
         for text, label in ((current, "CURRENT"), (current_state, "CURRENT_STATE")):
             require("**Canonical recovery predecessor:** `B2R03`" in text, f"{label} recovery predecessor drift")
             require("**Active recovery unit:** `B2R04`" in text, f"{label} does not authorize B2R04")
