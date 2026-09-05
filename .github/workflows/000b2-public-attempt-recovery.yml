@@ -74,4 +74,4 @@ jobs:
           test ! -e research/000b2-public/preprocessed
           test ! -e research/000b2-public/transcripts
           echo 'ATTEMPT_001_HISTORY_PRESERVED=PASS'
-          echo 'NEW_PRIMARY_DECODE_AUTHORIZED=NO'
+          echo 'ATTEMPT_001_NEW_PRIMARY_DECODE_AUTHORIZED=NO'
