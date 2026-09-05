@@ -647,6 +647,8 @@ def main() -> None:
     require_text(current, f"job `{B2E01_POSTMERGE_EVIDENCE_JOB_ID}`", "current frontier B2E01 evidence job proof")
     require_text(current, "current bounded execution unit `B2E02`", "current frontier")
     require_text(current, "Execute and canonically qualify `B2E02` only", "current frontier next action")
+    require_text(current, "Execute and canonically qualify `B2E02` only: decode the identical frozen P0 public-human subset with candidate cell 2 (`moonshine-balanced`) under unchanged frozen C0", "current frontier exact B2E02 candidate/action identity")
+    require_absent(current, "Execute and canonically qualify `B2E02` only: decode the exact frozen P0 public-human subset with candidate cell 1 (`moonshine-compact`) under frozen C0", "current frontier stale B2E01 candidate identity")
     require_text(current, "B2E03 and all later candidate cells remain unauthorized", "current frontier successor boundary")
     require_absent(current, "current bounded execution unit `B2P07`", "current frontier stale unit")
     require_absent(current, "B2P07 is now authorized", "current frontier stale B2P07 authority wording")
