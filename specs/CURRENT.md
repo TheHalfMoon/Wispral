@@ -1,6 +1,6 @@
 # Wispral Specification Frontier
 
-**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 execution frontier `READY`; B2P01 through B2P08 canonical; current bounded execution unit `B2E03`
+**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 recovery active; B2R01 canonical and post-merge verified; active recovery unit `B2R02`; ATTEMPT-001 B2E03 and all later primary decoding closed
 
 **Canonical public-corpus methodology merge:** `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` from PR #28, merged from exact head `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` against exact base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`. Live chronology did not prove the required independent semantic review before that merge; the resulting qualification debt was repaired forward-only by PR #32 at canonical merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, and machine readiness was reconciled by PR #33 at canonical merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`.
 
@@ -102,7 +102,7 @@ The intended active B2 execution route is:
 
 State: `READY`
 
-The bounded methodology amendment became canonical at merge `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`, the public-frontier reconciliation became canonical at merge `94e3b50009b5054db6ccd9bb3276facd1399399c`, the qualification-chronology remediation became canonical at merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, the machine readiness reconciliation became canonical at merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`, B2P01 provenance became canonical at merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`, B2P02 archive-byte verification became canonical at merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c`, B2P03 deterministic subset selection became canonical at merge `83eca872148f329033c299f6671d275edf2d7b58`, B2P04 subset-manifest freeze became canonical at merge `4c4e758f22b54fa62256e57bfbd344adc817df8e`, B2P05 candidate revalidation became canonical at merge `49538990fb4cf8223e9321261925206ed7ff5cee`, B2P06 preprocessing capture became canonical at merge `3dceadd984ff307ce55745bf5f289890a2fac261`, B2P07 execution-environment capture became canonical at merge `4bd5306fa1d274d7b822b73e26172dd9c7058319`, and B2P08 pre-decode attempt freeze became canonical at merge `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d`. `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`. B2P01 through B2P08, B2E01, and B2E02 are complete. The final pre-decode attempt manifest remains historically frozen with `primary_decoding_started=false`. B2E01 is canonical at merge `bb3acfae1f39669d74118a564e57a131731484d3`. B2E03 (`whispercpp-compact`) is the sole current bounded execution unit. B2E04 and all later candidate cells remain unauthorized until B2E03 is separately qualified, merged, post-merge verified, and reconciled.
+The bounded methodology amendment became canonical at merge `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`, the public-frontier reconciliation became canonical at merge `94e3b50009b5054db6ccd9bb3276facd1399399c`, the qualification-chronology remediation became canonical at merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, the machine readiness reconciliation became canonical at merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`, B2P01 provenance became canonical at merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`, B2P02 archive-byte verification became canonical at merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c`, B2P03 deterministic subset selection became canonical at merge `83eca872148f329033c299f6671d275edf2d7b58`, B2P04 subset-manifest freeze became canonical at merge `4c4e758f22b54fa62256e57bfbd344adc817df8e`, B2P05 candidate revalidation became canonical at merge `49538990fb4cf8223e9321261925206ed7ff5cee`, B2P06 preprocessing capture became canonical at merge `3dceadd984ff307ce55745bf5f289890a2fac261`, B2P07 execution-environment capture became canonical at merge `4bd5306fa1d274d7b822b73e26172dd9c7058319`, and B2P08 pre-decode attempt freeze became canonical at merge `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d`. `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`. B2P01 through B2P08, B2E01, and B2E02 are complete. The final pre-decode attempt manifest remains historically frozen with `primary_decoding_started=false`. B2E01 is canonical at merge `bb3acfae1f39669d74118a564e57a131731484d3`. ATTEMPT-001 is now historical and ineligible for comparative scoring because B2R01 is canonical at merge `715efc4855fb52187ed250b11f0c28bb2c2c0660`; B2E03 and every later ATTEMPT-001 primary decode are closed. `research/000b2-public/recovery-readiness.json` is the active machine-readable execution authority. B2R02 is the sole current bounded recovery unit, and all ATTEMPT-002 primary decoding remains closed until B2R04 is canonically reconciled.
 
 Rationale:
 
@@ -177,7 +177,7 @@ B2P02 exact archive-byte evidence records:
 - post-merge bounded observation artifact `9891735545` has ZIP digest `sha256:b0187d8b664a212a100d6d1515773891315d5af9e137178507c3b079d9edca6b`;
 - the large upstream archive bytes were deleted after hashing and are not committed to the repository.
 
-B2P02 is canonical and post-merge verified. B2P03 deterministic subset-selection logic is canonical and post-merge verified at merge `83eca872148f329033c299f6671d275edf2d7b58`. B2P04 deterministic source-membership freeze is canonical and post-merge verified at merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` with manifest byte SHA-256 `5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb` and freeze digest `f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242`. B2P05 candidate identity revalidation is canonical and post-merge verified at merge `49538990fb4cf8223e9321261925206ed7ff5cee`. B2P06 attempt-bound preprocessing capture is canonical and post-merge verified at merge `3dceadd984ff307ce55745bf5f289890a2fac261` with evidence SHA-256 `d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011`. B2P07 attempt-bound execution-environment capture is canonical and post-merge verified at merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` with preserved raw/seal ancestry and `DIAGNOSTIC` performance semantics. B2P08 is canonical and post-merge verified. B2E01 and B2E02 are canonical. B2E03 (`whispercpp-compact`) is now the only authorized bounded unit; B2E04 and all later candidate cells remain unauthorized until B2E03 is separately qualified, merged, post-merge verified, and reconciled.
+B2P02 is canonical and post-merge verified. B2P03 deterministic subset-selection logic is canonical and post-merge verified at merge `83eca872148f329033c299f6671d275edf2d7b58`. B2P04 deterministic source-membership freeze is canonical and post-merge verified at merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` with manifest byte SHA-256 `5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb` and freeze digest `f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242`. B2P05 candidate identity revalidation is canonical and post-merge verified at merge `49538990fb4cf8223e9321261925206ed7ff5cee`. B2P06 attempt-bound preprocessing capture is canonical and post-merge verified at merge `3dceadd984ff307ce55745bf5f289890a2fac261` with evidence SHA-256 `d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011`. B2P07 attempt-bound execution-environment capture is canonical and post-merge verified at merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` with preserved raw/seal ancestry and `DIAGNOSTIC` performance semantics. B2P08 is canonical and post-merge verified. B2E01 and B2E02 remain canonical historical ATTEMPT-001 executions. B2R01 invalidated ATTEMPT-001 for material execution drift, so B2E03 and every later ATTEMPT-001 primary decode are closed; B2R02 is the sole current bounded recovery unit.
 
 P0 supports only bounded ordinary read-English recognition evidence on the exact frozen public subset. It MUST NOT be described as developer speech.
 
@@ -269,10 +269,35 @@ No Rust product implementation, Cargo workspace, permanent speech engine integra
 
 The public-corpus amendment and canonical chronology remediation do not weaken this gate.
 
+## Canonical B2R01 recovery reconciliation
+
+B2R01 invalidation is canonical at merge `715efc4855fb52187ed250b11f0c28bb2c2c0660` and exact-merge-head recovery workflow run `33979925715` succeeded. The historical ATTEMPT-001 `readiness.json` remains byte-preserved evidence only; `recovery-readiness.json` overrides it for every new execution decision.
+
+**Canonical recovery predecessor:** `B2R01`
+**Canonical B2R01 recovery merge:** `715efc4855fb52187ed250b11f0c28bb2c2c0660`
+**Canonical B2R01 post-merge recovery run:** `33979925715`
+**Active recovery unit:** `B2R02`
+
+ATTEMPT-001 is ineligible for comparative scoring and candidate-superiority claims. No new ATTEMPT-001 primary decode is authorized. ATTEMPT-002 is required but not frozen, and its primary decode entry remains closed. B2R02 may use only non-primary material and exact pinned upstream source to qualify the corrected Moonshine streaming C0 harness. No B2R03 or later recovery work is authorized before B2R02 is separately qualified, merged, post-merge verified, and reconciled.
+
+### Historical ATTEMPT-001 post-B2E02 snapshot wording — non-authoritative
+
+The following strings are retained only as a literal description of the superseded ATTEMPT-001 post-B2E02 snapshot so historical evidence verifiers can continue proving what the old snapshot said. They MUST NOT be interpreted as current execution authority; `recovery-readiness.json` and the recovery markers above supersede them for new execution:
+
+```text
+current bounded execution unit `B2E03`
+B2E01 and B2E02 are canonical. B2E03 (`whispercpp-compact`) is now the only authorized bounded unit
+B2P01 through B2P08, B2E01, and B2E02 are complete.
+B2P08 pre-decode attempt freeze became canonical at merge `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d`
+B2E03 (`whispercpp-compact`) is the sole current bounded execution unit.
+Execute and canonically qualify `B2E03` only: decode the identical frozen P0 public-human subset with candidate cell 3 (`whispercpp-compact`) under unchanged frozen C0
+B2E04 and all later candidate cells remain unauthorized
+```
+
 ## Live-truth rule
 
 Live canonical GitHub/repository truth overrides this file. After every merged research/refinement unit, re-read current authority before starting dependent work.
 
 ## Next canonical action
 
-Execute and canonically qualify `B2E03` only: decode the identical frozen P0 public-human subset with candidate cell 3 (`whispercpp-compact`) under unchanged frozen C0, preserving raw transcript/failure/run evidence while keeping repository/test-specific context and candidate-specific audio transforms OFF and preserving `DIAGNOSTIC_ONLY` timing semantics. B2E04 and all later candidate cells remain unauthorized until B2E03 is separately qualified, merged, post-merge verified, and reconciled.
+Qualify `B2R02` only: implement and verify the corrected Moonshine streaming C0 harness against non-primary material and exact pinned upstream source. Demonstrate the frozen 500 ms / 8,000-sample feed schedule, final 660 ms / 10,560-sample zero suffix, `vad_threshold=0.0`, `transcription_interval_seconds=0.5`, unchanged repository/test-specific context and keyterm guards, and frozen runtime/model identities without inspecting new primary results. Keep all ATTEMPT-002 primary decoding closed until B2R04 is canonically reconciled. Do not begin B2R03 before B2R02 is separately qualified, merged, post-merge verified, and reconciled.

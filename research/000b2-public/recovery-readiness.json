@@ -1,7 +1,7 @@
 {
   "schema_version": "000b2-public-recovery-readiness-v2",
   "lane": "PUBLIC_CORPUS",
-  "state": "RECOVERY_PENDING_CANONICALIZATION",
+  "state": "RECOVERY_READY",
   "authority_precedence": "OVERRIDES_ATTEMPT_001_READY_SNAPSHOT_FOR_NEW_EXECUTION",
   "historical_readiness_snapshot": {
     "path": "research/000b2-public/readiness.json",
@@ -35,11 +35,20 @@
       "specs/CURRENT.md"
     ]
   },
-  "transition_proofs": [],
-  "completed_recovery_tasks": [],
-  "active_recovery_unit": "B2R01",
+  "transition_proofs": [
+    {
+      "completed_task": "B2R01",
+      "canonical_task_merge": "715efc4855fb52187ed250b11f0c28bb2c2c0660",
+      "post_merge_recovery_run_id": 33979925715,
+      "successor_task": "B2R02"
+    }
+  ],
+  "completed_recovery_tasks": [
+    "B2R01"
+  ],
+  "active_recovery_unit": "B2R02",
   "qualified_workflow_change_paths": [],
-  "next_action": "Canonically qualify B2R01 only: preserve ATTEMPT-001 as historical invalidated evidence, prove the material Moonshine execution drift against the exact pinned source, and keep all new primary decoding closed. Do not begin B2R02 until B2R01 is merged, post-merge verified, and canonically reconciled.",
+  "next_action": "Qualify B2R02 only: implement and verify the corrected Moonshine streaming C0 harness against non-primary material and exact pinned upstream source. Keep all ATTEMPT-002 primary decoding closed until B2R04 is canonically reconciled.",
   "claim_guards": {
     "human_developer_speech_accuracy_evidence": "ABSENT",
     "comparative_result_available": false,
