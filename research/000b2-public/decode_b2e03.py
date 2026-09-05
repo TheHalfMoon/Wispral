@@ -46,6 +46,7 @@ EXPECTED_UTTERANCES = 240
 REGULAR_CHUNK_SAMPLES = 8000
 FINAL_ZERO_SAMPLES = 10560
 FINAL_ZERO_CHUNKS = [8000, 2560]
+RAW_TRANSCRIPT_MATERIALIZATION = "STREAM_CPP_COMMIT_EVERY_9_PLUS_FINAL_PENDING"
 EXPECTED_CANDIDATE_IDS = [
     "moonshine-compact",
     "moonshine-balanced",
@@ -93,10 +94,10 @@ def canonical_json_bytes(value: Any) -> bytes:
 
 def reconstruct_stream_text(iterations: list[str]) -> str:
     result = ""
-    for index, text in enumerate(iterations, start=1):
-        result += text
-        if index % 9 == 0:
-            result += "\n"
+    for committed in range(9, len(iterations) + 1, 9):
+        result += iterations[committed - 1] + "\n"
+    if iterations and len(iterations) % 9:
+        result += iterations[-1]
     return result
 
 
@@ -418,6 +419,7 @@ def execute(
             "identical_frozen_audio_required_across_candidates": True,
             "finalization_zero_pad_samples": FINAL_ZERO_SAMPLES,
             "zero_suffix_chunk_samples": FINAL_ZERO_CHUNKS,
+            "raw_transcript_materialization": RAW_TRANSCRIPT_MATERIALIZATION,
         },
         "run": runtime_provenance(),
         "execution": {
