@@ -26,6 +26,9 @@
     "canonical_main_ref_required_after_first_completion": true,
     "one_recovery_task_per_reconciliation": true,
     "canonical_task_merge_must_be_on_main": true,
+    "task_merge_must_be_distinct_from_reconciliation": true,
+    "task_merge_authority_files_must_be_unchanged_after_b2r01": true,
+    "task_merge_requires_non_authority_change": true,
     "successful_post_merge_recovery_run_required": true,
     "authority_documents_must_declare_successor": true,
     "reconciliation_candidate_scope": [
