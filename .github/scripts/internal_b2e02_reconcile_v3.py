@@ -89,5 +89,11 @@ if script.count(state_write_anchor) != 1:
     raise SystemExit(f'CURRENT_STATE live-frontier anchor drift: {script.count(state_write_anchor)}')
 script = script.replace(state_write_anchor, state_write_new, 1)
 
+# Match the canonical B2P06 verifier contract: static frontier verification is an explicit mode.
+preprocess_call = 'PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py\n'
+if script.count(preprocess_call) != 1:
+    raise SystemExit(f'preprocessing verification invocation drift: {script.count(preprocess_call)}')
+script = script.replace(preprocess_call, 'PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py --static-only\n', 1)
+
 OUT.write_text(script, encoding='utf-8')
 print(f'WROTE={OUT}')
