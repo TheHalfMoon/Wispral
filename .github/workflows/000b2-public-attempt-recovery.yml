@@ -1,0 +1,91 @@
+name: 000B2 Public Corpus Attempt Recovery
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/000b2-public-attempt-recovery.yml'
+      - 'research/000b2-public/attempt-001-invalidation.json'
+      - 'research/000b2-public/verify_attempt_001_invalidation.py'
+      - 'research/000b2-public/b2e01-moonshine-compact.json'
+      - 'research/000b2-public/b2e02-moonshine-balanced.json'
+      - 'research/000b2-public/attempt-manifest.json'
+      - 'research/000b1/frozen-methodology.json'
+      - 'research/000b2-public/decode_b2e01.py'
+      - 'research/000b2-public/decode_b2e02.py'
+      - 'specs/000B2-public-corpus-bakeoff/recovery.md'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/000b2-public-attempt-recovery.yml'
+      - 'research/000b2-public/attempt-001-invalidation.json'
+      - 'research/000b2-public/verify_attempt_001_invalidation.py'
+      - 'research/000b2-public/b2e01-moonshine-compact.json'
+      - 'research/000b2-public/b2e02-moonshine-balanced.json'
+      - 'research/000b2-public/attempt-manifest.json'
+      - 'research/000b1/frozen-methodology.json'
+      - 'research/000b2-public/decode_b2e01.py'
+      - 'research/000b2-public/decode_b2e02.py'
+      - 'specs/000B2-public-corpus-bakeoff/recovery.md'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: 000b2-attempt-recovery-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-attempt-001-invalidation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+      MOONSHINE_REVISION: 234f60faa0eb388b01cdf7e60aca232af37aefda
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.EXACT_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact revision identity
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+          echo "EXACT_REVISION=$EXACT_REVISION"
+
+      - name: Verify local invalidation evidence
+        run: |
+          set -euo pipefail
+          python -m py_compile research/000b2-public/verify_attempt_001_invalidation.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_001_invalidation.py --static-only
+
+      - name: Fetch exact pinned Moonshine source
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/moonshine"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/moonshine-ai/moonshine.git
+          git -C "$SRC" fetch --depth=1 origin "$MOONSHINE_REVISION"
+          git -C "$SRC" checkout --detach FETCH_HEAD
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$MOONSHINE_REVISION"
+          git -C "$SRC" diff --quiet HEAD --
+
+      - name: Verify material drift against pinned upstream
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_001_invalidation.py \
+            --moonshine-source "$RUNNER_TEMP/moonshine"
+
+      - name: Preserve historical evidence boundary
+        run: |
+          set -euo pipefail
+          test ! -e research/000b2-public/raw
+          test ! -e research/000b2-public/preprocessed
+          test ! -e research/000b2-public/transcripts
+          echo 'ATTEMPT_001_HISTORY_PRESERVED=PASS'
+          echo 'NEW_PRIMARY_DECODE_AUTHORIZED=NO'
