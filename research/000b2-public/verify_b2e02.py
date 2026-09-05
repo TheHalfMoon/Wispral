@@ -275,7 +275,6 @@ def verify_provenance(evidence: dict[str, Any]) -> None:
     require(reconciliation == {
         "b2e03_authorized": False,
         "canonical_evidence_source_count": 1,
-        "cause": "POST_SEAL_VERIFY_B2E02_CHANGE_MATCHED_CAPTURE_WORKFLOW_PATH_FILTER_BEFORE_CAPTURE_BOOTSTRAP_REMOVAL",
         "decode_capture_count_for_cell_2": 2,
         "input_identity_equivalence": "PASS",
         "raw_transcript_difference_count": EXPECTED_DUPLICATE_TRANSCRIPT_DIFFERENCES,
