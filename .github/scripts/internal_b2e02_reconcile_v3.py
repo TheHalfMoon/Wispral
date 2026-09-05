@@ -36,6 +36,9 @@ text = once(
 old_next = '''    expected_next_action = (\\n        'Execute B2E02 only: decode the identical frozen P0 public-human subset with candidate cell 2 (`moonshine-balanced`) under unchanged frozen C0, preserve raw transcript/failure/run evidence, keep repository/test-specific context and candidate-specific audio transforms OFF, and preserve DIAGNOSTIC timing semantics. Do not begin B2E03 or any later candidate cell until B2E02 is canonical.'\\n    )\\n    require(readiness.get("next_action") == expected_next_action, "next action must be exact post-B2E01 B2E02-only instruction")\\n'''
 new_next = '''    expected_next_action = (\\n        'Execute B2E03 only: decode the identical frozen P0 public-human subset with candidate cell 3 (`whispercpp-compact`) under unchanged frozen C0, preserve raw transcript/failure/run evidence, keep repository/test-specific context and candidate-specific audio transforms OFF, and preserve DIAGNOSTIC timing semantics. Do not begin B2E04 or any later candidate cell until B2E03 is canonical.'\\n    )\\n    require(readiness.get("next_action") == expected_next_action, "next action must be exact post-B2E02 B2E03-only instruction")\\n'''
 text = once(text, old_next, new_next, "methodology exact next action")
+old_task = '    require_text(tasks, "- [ ] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0.", "public child tasks")\\n'
+new_task = '    require_text(tasks, "- [x] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0.", "public child tasks")\\n    require_text(tasks, "- [ ] `B2E03` Decode the identical frozen P0 subset with candidate cell 3 under C0.", "public child tasks")\\n'
+text = once(text, old_task, new_task, "methodology exact task frontier")
 write(p, text)
 
 """
