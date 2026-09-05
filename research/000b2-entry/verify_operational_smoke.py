@@ -106,7 +106,14 @@ def expected_runtime_revisions() -> dict[str, str]:
     return revisions
 
 
-def verify_runtime(candidate_id: str, family: str, cell: dict[str, Any], expected_revision: str) -> None:
+def verify_runtime(
+    candidate_id: str,
+    family: str,
+    cell: dict[str, Any],
+    expected_revision: str,
+    *,
+    require_b2r02_source_build: bool,
+) -> None:
     runtime_revision = cell.get("runtime_revision")
     if runtime_revision != expected_revision:
         fail(f"runtime revision differs from frozen B1 authority: {candidate_id}")
@@ -122,26 +129,27 @@ def verify_runtime(candidate_id: str, family: str, cell: dict[str, Any], expecte
         expected_arch = 4 if candidate_id == "moonshine-compact" else 5
         if runtime.get("model_arch") != expected_arch or runtime.get("model_asset_root") != "quantized_26_08_21":
             fail(f"Moonshine model runtime identity drift: {candidate_id}")
-        if runtime.get("source_repository") != "moonshine-ai/moonshine":
-            fail(f"Moonshine source repository identity drift: {candidate_id}")
-        if runtime.get("source_revision") != expected_revision:
-            fail(f"Moonshine source-built runtime revision drift: {candidate_id}")
-        if runtime.get("runtime_origin") != "PINNED_SOURCE_CHECKOUT_BUILD":
-            fail(f"Moonshine runtime is not bound to pinned source build: {candidate_id}")
-        if runtime.get("build_type") != "Release":
-            fail(f"Moonshine source build type drift: {candidate_id}")
-        source_tree = runtime.get("source_tree")
-        if not isinstance(source_tree, str) or not SHA40.fullmatch(source_tree):
-            fail(f"Moonshine source tree identity missing/malformed: {candidate_id}")
-        for field in (
-            "python_source_manifest_sha256",
-            "native_library_sha256",
-            "onnxruntime_sha256",
-            "cmake_cache_sha256",
-        ):
-            value = runtime.get(field)
-            if not isinstance(value, str) or not SHA256.fullmatch(value):
-                fail(f"Moonshine source-build {field} missing/malformed: {candidate_id}")
+        if require_b2r02_source_build:
+            if runtime.get("source_repository") != "moonshine-ai/moonshine":
+                fail(f"Moonshine source repository identity drift: {candidate_id}")
+            if runtime.get("source_revision") != expected_revision:
+                fail(f"Moonshine source-built runtime revision drift: {candidate_id}")
+            if runtime.get("runtime_origin") != "PINNED_SOURCE_CHECKOUT_BUILD":
+                fail(f"Moonshine runtime is not bound to pinned source build: {candidate_id}")
+            if runtime.get("build_type") != "Release":
+                fail(f"Moonshine source build type drift: {candidate_id}")
+            source_tree = runtime.get("source_tree")
+            if not isinstance(source_tree, str) or not SHA40.fullmatch(source_tree):
+                fail(f"Moonshine source tree identity missing/malformed: {candidate_id}")
+            for field in (
+                "python_source_manifest_sha256",
+                "native_library_sha256",
+                "onnxruntime_sha256",
+                "cmake_cache_sha256",
+            ):
+                value = runtime.get(field)
+                if not isinstance(value, str) or not SHA256.fullmatch(value):
+                    fail(f"Moonshine source-build {field} missing/malformed: {candidate_id}")
     elif family == "sherpa-onnx":
         if runtime != {"distribution": "sherpa-onnx", "version": "1.13.7"}:
             fail(f"sherpa runtime identity drift: {candidate_id}")
@@ -156,39 +164,46 @@ def verify_runtime(candidate_id: str, family: str, cell: dict[str, Any], expecte
         fail(f"unexpected runtime family: {family}")
 
 
-def verify_execution(candidate_id: str, family: str, cell: dict[str, Any]) -> None:
+def verify_execution(
+    candidate_id: str,
+    family: str,
+    cell: dict[str, Any],
+    *,
+    require_b2r02_source_build: bool,
+) -> None:
     execution = cell.get("execution")
     if not isinstance(execution, dict) or execution.get("decode_completed") is not True:
         fail(f"decode path did not complete: {candidate_id}")
     if family == "moonshine":
         if execution.get("stream_api_executed") is not True:
             fail(f"Moonshine stream execution marker missing: {candidate_id}")
-        required_true = (
-            "b2r02_streaming_c0_harness_executed",
-            "b2r02_static_verifier_executed",
-            "b2r02_pinned_upstream_source_verified",
-            "b2r02_runtime_built_from_verified_source",
-            "b2r02_runtime_imported_from_verified_source_copy",
-        )
-        for field in required_true:
-            if execution.get(field) is not True:
-                fail(f"Moonshine B2R02 source/runtime proof missing: {candidate_id}:{field}")
-        if execution.get("speech_samples") != 32000:
-            fail(f"Moonshine B2R02 speech-sample trace drift: {candidate_id}")
-        if execution.get("speech_chunk_samples") != [8000, 8000, 8000, 8000]:
-            fail(f"Moonshine B2R02 feed schedule drift: {candidate_id}")
-        if execution.get("final_zero_pad_samples") != 10560:
-            fail(f"Moonshine B2R02 zero-suffix drift: {candidate_id}")
-        if execution.get("sample_rate_hz") != 16000:
-            fail(f"Moonshine B2R02 sample-rate drift: {candidate_id}")
-        if execution.get("transcription_interval_seconds") != 0.5:
-            fail(f"Moonshine B2R02 transcription interval drift: {candidate_id}")
-        if execution.get("vad_threshold") != 0.0:
-            fail(f"Moonshine B2R02 VAD threshold drift: {candidate_id}")
-        if execution.get("repository_context_used") is not False or execution.get("keyterms_used") is not False:
-            fail(f"Moonshine B2R02 bias guard drift: {candidate_id}")
-        if execution.get("transcript_text_retained") is not False:
-            fail(f"Moonshine B2R02 transcript retention drift: {candidate_id}")
+        if require_b2r02_source_build:
+            required_true = (
+                "b2r02_streaming_c0_harness_executed",
+                "b2r02_static_verifier_executed",
+                "b2r02_pinned_upstream_source_verified",
+                "b2r02_runtime_built_from_verified_source",
+                "b2r02_runtime_imported_from_verified_source_copy",
+            )
+            for field in required_true:
+                if execution.get(field) is not True:
+                    fail(f"Moonshine B2R02 source/runtime proof missing: {candidate_id}:{field}")
+            if execution.get("speech_samples") != 32000:
+                fail(f"Moonshine B2R02 speech-sample trace drift: {candidate_id}")
+            if execution.get("speech_chunk_samples") != [8000, 8000, 8000, 8000]:
+                fail(f"Moonshine B2R02 feed schedule drift: {candidate_id}")
+            if execution.get("final_zero_pad_samples") != 10560:
+                fail(f"Moonshine B2R02 zero-suffix drift: {candidate_id}")
+            if execution.get("sample_rate_hz") != 16000:
+                fail(f"Moonshine B2R02 sample-rate drift: {candidate_id}")
+            if execution.get("transcription_interval_seconds") != 0.5:
+                fail(f"Moonshine B2R02 transcription interval drift: {candidate_id}")
+            if execution.get("vad_threshold") != 0.0:
+                fail(f"Moonshine B2R02 VAD threshold drift: {candidate_id}")
+            if execution.get("repository_context_used") is not False or execution.get("keyterms_used") is not False:
+                fail(f"Moonshine B2R02 bias guard drift: {candidate_id}")
+            if execution.get("transcript_text_retained") is not False:
+                fail(f"Moonshine B2R02 transcript retention drift: {candidate_id}")
     elif family == "sherpa-onnx":
         if execution.get("online_transducer_api_executed") is not True:
             fail(f"sherpa online transducer execution marker missing: {candidate_id}")
@@ -207,6 +222,7 @@ def verify_execution(candidate_id: str, family: str, cell: dict[str, Any]) -> No
 def verify(evidence_path: Path = EVIDENCE, expected_workflow: dict[str, Any] | None = None) -> None:
     evidence = load(evidence_path)
     workflow_authority = EXPECTED_WORKFLOW if expected_workflow is None else expected_workflow
+    require_b2r02_source_build = expected_workflow is not None
     if evidence.get("schema_version") != "000b2-operational-smoke-evidence-v1":
         fail("aggregate smoke schema drift")
     if evidence.get("purpose") != "B2_ENTRY_OPERATIONAL_QUALIFICATION_NON_PRIMARY":
@@ -309,9 +325,20 @@ def verify(evidence_path: Path = EVIDENCE, expected_workflow: dict[str, Any] | N
         if observed != expected[candidate_id]:
             fail(f"artifact evidence differs from preregistered/materialized authority: {candidate_id}")
 
-        verify_runtime(candidate_id, family, cell, runtime_revisions[family])
-        verify_execution(candidate_id, family, cell)
-        if family == "moonshine":
+        verify_runtime(
+            candidate_id,
+            family,
+            cell,
+            runtime_revisions[family],
+            require_b2r02_source_build=require_b2r02_source_build,
+        )
+        verify_execution(
+            candidate_id,
+            family,
+            cell,
+            require_b2r02_source_build=require_b2r02_source_build,
+        )
+        if family == "moonshine" and require_b2r02_source_build:
             runtime = cell["runtime"]
             identity = {
                 key: runtime[key]
@@ -334,7 +361,7 @@ def verify(evidence_path: Path = EVIDENCE, expected_workflow: dict[str, Any] | N
 
     if seen != set(EXPECTED_CELLS):
         fail("six-cell smoke allowlist incomplete")
-    if moonshine_build_identity is None:
+    if require_b2r02_source_build and moonshine_build_identity is None:
         fail("Moonshine source-build aggregate identity missing")
 
 
