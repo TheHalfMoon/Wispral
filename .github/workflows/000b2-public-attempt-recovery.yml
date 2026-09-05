@@ -80,6 +80,8 @@ jobs:
           proofs = readiness.get('transition_proofs', [])
           repository = os.environ['GITHUB_REPOSITORY']
           expected_name = '000B2 Public Corpus Attempt Recovery'
+          expected_workflow_id = 350986920
+          expected_path = '.github/workflows/000b2-public-attempt-recovery.yml'
 
           for proof in proofs:
               run_id = proof['post_merge_recovery_run_id']
@@ -91,6 +93,12 @@ jobs:
                   stdout=subprocess.PIPE,
               ).stdout
               run = json.loads(payload)
+              if run.get('workflow_id') != expected_workflow_id:
+                  raise SystemExit(
+                      f'run {run_id}: workflow id {run.get("workflow_id")!r} != qualified workflow {expected_workflow_id}'
+                  )
+              if run.get('path') != expected_path:
+                  raise SystemExit(f'run {run_id}: workflow path {run.get("path")!r} != {expected_path!r}')
               if run.get('name') != expected_name:
                   raise SystemExit(f'run {run_id}: unexpected workflow name {run.get("name")!r}')
               if run.get('event') != 'push':
