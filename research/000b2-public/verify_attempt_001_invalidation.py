@@ -174,7 +174,7 @@ def verify_local() -> None:
     for key in (
         "attempt_001_eligible_for_comparative_scoring",
         "attempt_001_eligible_for_candidate_superiority_claims",
-        "new_primary_decode_authorized",
+        "attempt_001_new_primary_decode_authorized",
         "b2e03_or_later_attempt_001_execution_authorized",
         "candidate_membership_change_authorized",
         "subset_membership_change_authorized",
@@ -234,7 +234,7 @@ def main() -> int:
         print("B2R01_ATTEMPT_001_INVALIDATION=PASS")
         print("ATTEMPT_001_COMPARATIVE_EVIDENCE=INELIGIBLE")
         print("ATTEMPT_002_REQUIRED=YES")
-        print("NEW_PRIMARY_DECODE_AUTHORIZED=NO")
+        print("ATTEMPT_001_NEW_PRIMARY_DECODE_AUTHORIZED=NO")
         return 0
     except (VerifyError, OSError, subprocess.CalledProcessError, json.JSONDecodeError) as error:
         print(f"B2R01_ATTEMPT_001_INVALIDATION=FAIL: {error}", file=sys.stderr)
