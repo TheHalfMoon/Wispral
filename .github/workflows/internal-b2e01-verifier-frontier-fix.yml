@@ -1,0 +1,44 @@
+name: Internal B2E01 Verifier Frontier Fix
+
+on:
+  push:
+    branches:
+      - docs/000b2-reconcile-after-b2e01
+    paths:
+      - '.github/workflows/internal-b2e01-verifier-frontier-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout reconciliation branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: docs/000b2-reconcile-after-b2e01
+          fetch-depth: 0
+
+      - name: Align B2E01 post-reconciliation frontier assertion
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('research/000b2-public/verify_b2e01.py')
+          text = p.read_text(encoding='utf-8')
+          old = 'require("B2E02 is the sole current bounded execution unit" in current, "CURRENT post-B2E01 frontier drift")'
+          new = 'require("B2E02 (`moonshine-balanced`) is the sole current bounded execution unit" in current, "CURRENT post-B2E01 frontier drift")'
+          if text.count(old) != 1:
+              raise SystemExit(f'expected one post-B2E01 frontier assertion, found {text.count(old)}')
+          p.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+          python -m py_compile research/000b2-public/verify_b2e01.py
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/000b2-public/verify_b2e01.py
+          git commit -m 'fix(000b2): align B2E01 reconciled frontier assertion'
+          git push origin HEAD:docs/000b2-reconcile-after-b2e01
