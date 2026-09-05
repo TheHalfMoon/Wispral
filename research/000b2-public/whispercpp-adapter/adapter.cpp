@@ -291,9 +291,11 @@ DecodeResult decode_one(whisper_context * ctx, const InputRow & input_row) {
             params.max_tokens = 0;
             params.language = "en";
             params.n_threads = kThreads;
+            params.beam_search.beam_size = -1;
             params.audio_ctx = 0;
             params.no_timestamps = true;
             params.no_context = true;
+            params.tdrz_enable = false;
             params.temperature_inc = 0.0f;
             params.initial_prompt = nullptr;
             params.prompt_tokens = nullptr;
