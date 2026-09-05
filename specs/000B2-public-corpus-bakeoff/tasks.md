@@ -19,7 +19,7 @@ These execution tasks become authorized only after the public-corpus amendment a
 
 ATTEMPT-001 evidence is historical and ineligible for comparative scoring once B2R01 is canonical. B2E01/B2E02 checklist completion below records that those historical execution units occurred; it does not make their ATTEMPT-001 outputs valid six-cell comparison evidence. B2E03 and later ATTEMPT-001 execution must remain closed. The active recovery contract is `recovery.md`.
 
-- [ ] `B2R01` Canonically record ATTEMPT-001 material execution drift, preserve historical evidence bytes, and close all new primary decoding.
+- [x] `B2R01` Canonically record ATTEMPT-001 material execution drift, preserve historical evidence bytes, and close all new primary decoding.
 - [ ] `B2R02` Implement and qualify the corrected Moonshine streaming C0 harness against non-primary material and exact pinned upstream source.
 - [ ] `B2R03` Capture or cryptographically rebind ATTEMPT-002-bound preprocessing and execution-environment evidence without changing frozen subset, candidate, scorer, or normalization identities.
 - [ ] `B2R04` Freeze `000B2-PUBLIC-ATTEMPT-002` before any new primary candidate decode.
