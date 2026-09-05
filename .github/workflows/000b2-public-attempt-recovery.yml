@@ -4,31 +4,17 @@ on:
   pull_request:
     paths:
       - '.github/workflows/000b2-public-attempt-recovery.yml'
-      - 'research/000b2-public/attempt-001-invalidation.json'
-      - 'research/000b2-public/verify_attempt_001_invalidation.py'
-      - 'research/000b2-public/b2e01-moonshine-compact.json'
-      - 'research/000b2-public/b2e02-moonshine-balanced.json'
-      - 'research/000b2-public/attempt-manifest.json'
       - 'research/000b1/frozen-methodology.json'
-      - 'research/000b2-public/decode_b2e01.py'
-      - 'research/000b2-public/decode_b2e02.py'
-      - 'specs/000B2-public-corpus-bakeoff/recovery.md'
-      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+      - 'research/000b2-public/**'
+      - 'specs/000B2-public-corpus-bakeoff/**'
   push:
     branches:
       - main
     paths:
       - '.github/workflows/000b2-public-attempt-recovery.yml'
-      - 'research/000b2-public/attempt-001-invalidation.json'
-      - 'research/000b2-public/verify_attempt_001_invalidation.py'
-      - 'research/000b2-public/b2e01-moonshine-compact.json'
-      - 'research/000b2-public/b2e02-moonshine-balanced.json'
-      - 'research/000b2-public/attempt-manifest.json'
       - 'research/000b1/frozen-methodology.json'
-      - 'research/000b2-public/decode_b2e01.py'
-      - 'research/000b2-public/decode_b2e02.py'
-      - 'specs/000B2-public-corpus-bakeoff/recovery.md'
-      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+      - 'research/000b2-public/**'
+      - 'specs/000B2-public-corpus-bakeoff/**'
 
 permissions:
   contents: read
