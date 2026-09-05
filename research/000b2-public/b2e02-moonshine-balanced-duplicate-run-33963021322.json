@@ -1,0 +1,3287 @@
+{
+  "attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+  "authority": {
+    "attempt_freeze_digest_sha256": "af4d5009e293daef5d8f629ca91af653f5f591448cd94d4555473a51e2d1da86",
+    "attempt_manifest_path": "research/000b2-public/attempt-manifest.json",
+    "attempt_manifest_sha256": "ddc4c7c796830e4cf27e8d4860fe86b3d9e91d7cb6ea8175c1fad9d122f5184e",
+    "canonical_authority_base": "116dbd1734e01ec1280d6b530f0cb1dec867feb1",
+    "preprocessing_capture_path": "research/000b2-public/preprocessing-capture.json",
+    "preprocessing_capture_sha256": "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011"
+  },
+  "c0_controls": {
+    "candidate_specific_audio_transform_used": false,
+    "context": null,
+    "identical_frozen_audio_required_across_candidates": true,
+    "keyterms": [],
+    "repository_context_used": false,
+    "test_specific_context_used": false
+  },
+  "candidate": {
+    "artifacts": [
+      {
+        "path": "adapter.ort",
+        "sha256": "3f2a287def57cc094367a0eec3c4f5fc36a32ec420e86764b696920991b20281",
+        "size_bytes": 3651296
+      },
+      {
+        "path": "cross_kv.ort",
+        "sha256": "642f6e21cd305be79342207c6f9e6b681d469d55bc48c72b27b84846fb71fd1e",
+        "size_bytes": 11643776
+      },
+      {
+        "path": "decoder_kv.ort",
+        "sha256": "193bb366492b74fc4ad338c6778e8d8eb916aaa11b5aa264f9057f4db7759486",
+        "size_bytes": 146972408
+      },
+      {
+        "path": "encoder.ort",
+        "sha256": "12915e76ebac7dd287c5ea63965d06103a53ba1ce242a4a34f318f3958c60c37",
+        "size_bytes": 94705376
+      },
+      {
+        "path": "frontend.model.ort",
+        "sha256": "95768855c70c8251eeecc05fedf69999da1b8ab16f605c9f457fd3354b0ad6b5",
+        "size_bytes": 28720
+      },
+      {
+        "path": "frontend.weights.ort",
+        "sha256": "5ac941f490cbe035b335b99a414cc393d62d4c6f9f2423495b286870d271d709",
+        "size_bytes": 11889560
+      },
+      {
+        "path": "streaming_config.json",
+        "sha256": "28e83b7a28e91472692a035e0dae3116422ae43aeb2bef5ed822c44ce89b88af",
+        "size_bytes": 513
+      },
+      {
+        "path": "tokenizer.bin",
+        "sha256": "6884b35fd6377d4c4d32336a0bc152f36b64d1e45b6503683cdc238250a8472d",
+        "size_bytes": 249974
+      }
+    ],
+    "candidate_id": "moonshine-balanced",
+    "cell_index": 2,
+    "family": "moonshine",
+    "model_arch": 5,
+    "model_asset_root": "quantized_26_08_21",
+    "runtime_distribution": "moonshine-voice",
+    "runtime_revision": "234f60faa0eb388b01cdf7e60aca232af37aefda",
+    "runtime_version": "0.1.5",
+    "tier": "BALANCED"
+  },
+  "claim_guards": {
+    "b2e03_authorized": false,
+    "candidate_decoding_started": true,
+    "completed_through": "B2E02_EXECUTION_ONLY",
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "primary_decoding_started": true,
+    "product_code_authorized": false,
+    "production_stt_selected": false
+  },
+  "evidence_payload_sha256": "601bccfe660db1e3f2b7b1348841c0cfb6152f085c86b9aa2f853e1dce3d0d51",
+  "execution": {
+    "accuracy_scoring_performed": false,
+    "all_frozen_input_hashes_reverified": true,
+    "comparative_ranking_present": false,
+    "decoded_count": 240,
+    "failure_count": 0,
+    "input_count": 240,
+    "performance_claim_present": false,
+    "records": [
+      {
+        "canonical_preprocessed_file_sha256": "83846c148bcee80f27aea285d41a673a966c43777292b70b51134c7d1e759320",
+        "decode_wall_seconds": 0.432828239,
+        "failure": null,
+        "raw_lines": [
+          "When they were outside, Unge simply latched the door and started up the path."
+        ],
+        "raw_transcript": "When they were outside, Unge simply latched the door and started up the path.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1284-1180-0004"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "8c95de4d2396174beaf67e3ced40ed9d5f54874fd0a290f5df911f2f55e908b0",
+        "decode_wall_seconds": 0.928694328,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "Unk knocked at the door of the house, and a chubby, pleasant faced woman dressed all in blue, opened it and greeted the visitors with a smile."
+        ],
+        "raw_transcript": "Unk knocked at the door of the house, and a chubby, pleasant faced woman dressed all in blue, opened it and greeted the visitors with a smile.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1284-1180-0010"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "605bf77c58a7f75656e540c255715d1e2d1d504e8ef1436d98356ee39946a11f",
+        "decode_wall_seconds": 1.230796154,
+        "failure": null,
+        "raw_lines": [
+          "At one end stood a great fireplace, in which a blue log was blazing with a blue flame, and over the fire hung four kettles in a row, all bubbling and steaming at a great.",
+          "at a great rate."
+        ],
+        "raw_transcript": "At one end stood a great fireplace, in which a blue log was blazing with a blue flame, and over the fire hung four kettles in a row, all bubbling and steaming at a great. at a great rate.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1284-1180-0017"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "902ef806de76102a39faa79672a0b2a0c7b365d00e14daf261b4d582c1bff921",
+        "decode_wall_seconds": 1.591590281,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "You must know, said Marguerite, when they were all seated together on the broad window seat.",
+          "That my husband foolishly gave away all the powder of life he first made to Old Mombi, the witch who used to live in the country of the Gillikins to the north of here."
+        ],
+        "raw_transcript": "Yeah You must know, said Marguerite, when they were all seated together on the broad window seat. That my husband foolishly gave away all the powder of life he first made to Old Mombi, the witch who used to live in the country of the Gillikins to the north of here.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1284-1180-0019"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "b41700e5fc915cb8b0ecadb47174254ee04a99cf360ca8bc9544fa9e4e33b064",
+        "decode_wall_seconds": 1.744293195,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "When I found it, I said to myself that it would do nicely for my servant girl, for when she was brought to life, she would not be proud nor haughty as the glass cat is.",
+          "For such a dreadful mixture of colours would discourage her from trying to be as dignified as the blue munchkins are."
+        ],
+        "raw_transcript": "When I found it, I said to myself that it would do nicely for my servant girl, for when she was brought to life, she would not be proud nor haughty as the glass cat is. For such a dreadful mixture of colours would discourage her from trying to be as dignified as the blue munchkins are.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1284-1180-0030"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "94db6a52988bba18cca99341789ddcc9feb57a4ed798cfc74323f5c9fb2d1416",
+        "decode_wall_seconds": 0.351081046,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "No, I forgot all about the brains, exclaimed the woman."
+        ],
+        "raw_transcript": "No, I forgot all about the brains, exclaimed the woman.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1284-1181-0005"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "8090f478f9dacc2d593a011b0b692da9593bdf32252d3ec59244af0bc723c463",
+        "decode_wall_seconds": 0.430943021,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "She poured into the dish a quantity from each of these bottles."
+        ],
+        "raw_transcript": "She poured into the dish a quantity from each of these bottles.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1284-1181-0007"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "2d326d39c92300c7173576f5d732e38784b08860687fe7794059f4c5cb54b800",
+        "decode_wall_seconds": 0.872033469,
+        "failure": null,
+        "raw_lines": [
+          "I am not allowed to perform magic except for my own amusement, he told his visitors, as he lighted up hype with a crooked stem and began to smoke."
+        ],
+        "raw_transcript": "I am not allowed to perform magic except for my own amusement, he told his visitors, as he lighted up hype with a crooked stem and began to smoke.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1284-1181-0016"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "e6d8ce9c40ff29aa84994a3ec7224bcdab42676dc68bf034271c6fcbabde33ad",
+        "decode_wall_seconds": 0.727148341,
+        "failure": null,
+        "raw_lines": [
+          "The grateful applause of the clergy has consecrated the memory of a prince who indulged their passions and promoted their interests."
+        ],
+        "raw_transcript": "The grateful applause of the clergy has consecrated the memory of a prince who indulged their passions and promoted their interests.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1284-134647-0000"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "549202684d458b744e38be67ce81dbc3fbc91988e5fafd9abdef6195295b2995",
+        "decode_wall_seconds": 1.771695699,
+        "failure": null,
+        "raw_lines": [
+          "Constantine easily believed that the heretics who presumed to dispute his opinions or to oppose his commands were guilty of the most absurd and criminal.",
+          "Criminal obstinacy.",
+          "And that a seasonable application of moderate severities might save those unhappy men from the danger of an everlasting condemnation."
+        ],
+        "raw_transcript": "Constantine easily believed that the heretics who presumed to dispute his opinions or to oppose his commands were guilty of the most absurd and criminal. Criminal obstinacy. And that a seasonable application of moderate severities might save those unhappy men from the danger of an everlasting condemnation.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1284-134647-0003"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "a78332e525e51b20b3d965666369658f7b06a77b168554abfbc2178eb4dbf515",
+        "decode_wall_seconds": 0.594169346,
+        "failure": null,
+        "raw_lines": [
+          "Yet here are we within a short range of the scaroons, and not a sign of a trail, have we crossed?"
+        ],
+        "raw_transcript": "Yet here are we within a short range of the scaroons, and not a sign of a trail, have we crossed?",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1320-122612-0005"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "bb73b20ffd9567996d98de8b7da738e2b27cf831d6f5c30f7304e11304ca7bf3",
+        "decode_wall_seconds": 0.59209361,
+        "failure": null,
+        "raw_lines": [
+          "There was something in his air and manner that betrayed to the scout the utter confusion of the state of his mind."
+        ],
+        "raw_transcript": "There was something in his air and manner that betrayed to the scout the utter confusion of the state of his mind.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1320-122617-0003"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "6a587ab59f0c1b6ad748a771573d5e360c81635c617ab448fce8f18f8a3a21bc",
+        "decode_wall_seconds": 0.454134785,
+        "failure": null,
+        "raw_lines": [
+          "\"'The bear shook his shaggy sides, \"'and then a well-known voice replied,"
+        ],
+        "raw_transcript": "\"'The bear shook his shaggy sides, \"'and then a well-known voice replied,",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1320-122617-0005"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "1c08ece148ef66519f1b85bf12e470505acf8a48df77a19009df8de16778c363",
+        "decode_wall_seconds": 1.967681648,
+        "failure": null,
+        "raw_lines": [
+          "Come come, returned Hawkeye, uncasing his honest countenance, the better to assure the wavering confidence of his companion. You may see a skin which, if it be not.",
+          "Be not as white as one of the gentle ones, as no tinge of red to it that the winds of the heaven and the sun have not bestowed. Now let us to business."
+        ],
+        "raw_transcript": "Come come, returned Hawkeye, uncasing his honest countenance, the better to assure the wavering confidence of his companion. You may see a skin which, if it be not. Be not as white as one of the gentle ones, as no tinge of red to it that the winds of the heaven and the sun have not bestowed. Now let us to business.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1320-122617-0007"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "d9aeea70cd58c73b9eda5e042c567e6d6e68433dc60a45df051927f8c314614a",
+        "decode_wall_seconds": 0.846880386,
+        "failure": null,
+        "raw_lines": [
+          "The task will not be difficult, returned David, hesitating.",
+          "Though I greatly fear, your presence would rather increase than mitigate his unhappy fortunes."
+        ],
+        "raw_transcript": "The task will not be difficult, returned David, hesitating. Though I greatly fear, your presence would rather increase than mitigate his unhappy fortunes.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1320-122617-0010"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "3f7a35055aeb1eceb1b6dbdc08ae8b707f611913520f83d22bf41e300647cf97",
+        "decode_wall_seconds": 0.890723424,
+        "failure": null,
+        "raw_lines": [
+          "The lodge in which Uncas was confined was in the very centre of the village, and in a situation perhaps more difficult than any other to approach or leave without observation."
+        ],
+        "raw_transcript": "The lodge in which Uncas was confined was in the very centre of the village, and in a situation perhaps more difficult than any other to approach or leave without observation.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1320-122617-0011"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "297e113d635ff0c01b32861c86fd8c1f642610690bd6d3a73d2af058d9826d86",
+        "decode_wall_seconds": 0.421211061,
+        "failure": null,
+        "raw_lines": [
+          "The Delawares are children of the tortoise, and they outstrip the deer."
+        ],
+        "raw_transcript": "The Delawares are children of the tortoise, and they outstrip the deer.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1320-122617-0022"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "f9b958537699adee46c69a17d052b19e65ae910903a4ca8dd1630b6f597e110a",
+        "decode_wall_seconds": 0.736555362,
+        "failure": null,
+        "raw_lines": [
+          "uncas who had already approached the door in readiness to lead the way now recoiled and placed himself once more in the bottom of the lodge"
+        ],
+        "raw_transcript": "uncas who had already approached the door in readiness to lead the way now recoiled and placed himself once more in the bottom of the lodge",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1320-122617-0023"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "10f0fa4e28acc72ee075f7292c3ade542cca41efc618a5fa07f06ab6b9cde50f",
+        "decode_wall_seconds": 0.543293597,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "Well, what can't be done by main courage in war must be done by circumvention."
+        ],
+        "raw_transcript": "Yeah. Well, what can't be done by main courage in war must be done by circumvention.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1320-122617-0026"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "f46da8a392448c039e4293fc96fb4cf9df184598a1107a355262fb2286664e10",
+        "decode_wall_seconds": 0.537905043,
+        "failure": null,
+        "raw_lines": [
+          "As soon as these dispositions were made, the scout turned to David and gave him his parting instructions."
+        ],
+        "raw_transcript": "As soon as these dispositions were made, the scout turned to David and gave him his parting instructions.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1320-122617-0027"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "5465c0d95ee5c7d205c5b19214e1591fd02b7f60f5748369be3b246b024b3476",
+        "decode_wall_seconds": 0.440751671,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "I had to read it over carefully as the text must be absolutely correct."
+        ],
+        "raw_transcript": "Yeah I had to read it over carefully as the text must be absolutely correct.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1580-141083-0004"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "7bc81f78eaf078205e54c9a1d5cfcd472dbad7c679a85b75672251e1428ba24a",
+        "decode_wall_seconds": 0.464163499,
+        "failure": null,
+        "raw_lines": [
+          "Holmes turned away and stooped suddenly to the floor.",
+          "Hello, what is this?"
+        ],
+        "raw_transcript": "Holmes turned away and stooped suddenly to the floor. Hello, what is this?",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1580-141083-0035"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "3d20237d0e256308c4e2fa977126c227379b5d72595bf364063cf168fe0b393a",
+        "decode_wall_seconds": 0.321081427,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "Did you look at these papers on the table?"
+        ],
+        "raw_transcript": "Yeah Did you look at these papers on the table?",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1580-141083-0047"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "52c56c891cd3928a6aabf0ad6ebc9f519c72070f24aed4e79b0e8e6389c6e3ea",
+        "decode_wall_seconds": 0.41718178,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "I really don't think he knew much about it, Mister Holmes."
+        ],
+        "raw_transcript": "Yeah I really don't think he knew much about it, Mister Holmes.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1580-141083-0050"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "e94c44deafb1101c078b7a2b6eee6b96b26773fc16a3a92a0ec80586bcb7e089",
+        "decode_wall_seconds": 0.238475418,
+        "failure": null,
+        "raw_lines": [
+          "You don't seem to realize the position."
+        ],
+        "raw_transcript": "You don't seem to realize the position.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1580-141084-0006"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "20701922f428301c2bc2809dd9ce1c57677925aabc5cef0845c97f70afd3c641",
+        "decode_wall_seconds": 0.248003427,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "And one more this morning."
+        ],
+        "raw_transcript": "And one more this morning.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1580-141084-0022"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "d0f2adb40a38a748da355d94614264f703c1b947441e340d652eede4e048a984",
+        "decode_wall_seconds": 0.650068392,
+        "failure": null,
+        "raw_lines": [
+          "If this matter is not to become public, we must give ourselves certain powers and resolve ourselves into a small private court-martial."
+        ],
+        "raw_transcript": "If this matter is not to become public, we must give ourselves certain powers and resolve ourselves into a small private court-martial.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1580-141084-0026"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "386fd202d774d66e6e3e2fabf37d0a60c1d61a60dd475915b014ea793c84fdb0",
+        "decode_wall_seconds": 0.283100604,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "No, sir, certainly not."
+        ],
+        "raw_transcript": "No, sir, certainly not.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1580-141084-0027"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "b35c14e3353478b9e95460247d75273762216fb15e06dcd16a3f513d5d89e7dc",
+        "decode_wall_seconds": 0.217996769,
+        "failure": null,
+        "raw_lines": [
+          "Just close the door, said Holmes."
+        ],
+        "raw_transcript": "Just close the door, said Holmes.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1580-141084-0030"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "a2765d079d0d556267155e17dcfa9afb8c41f74a79ae5f23955cdfb528dfb8b9",
+        "decode_wall_seconds": 0.643047072,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "He returned, carrying his jumping shoes, which are provided as you are aware, with several sharp spikes."
+        ],
+        "raw_transcript": "Yeah He returned, carrying his jumping shoes, which are provided as you are aware, with several sharp spikes.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "1580-141084-0040"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "279592c344f672c72c9cfc88f0ae5af4df06138fc03f26b275e0f7f8d3a77e00",
+        "decode_wall_seconds": 0.374850082,
+        "failure": null,
+        "raw_lines": [
+          "you who were always accusing people of being shoppy at helston"
+        ],
+        "raw_transcript": "you who were always accusing people of being shoppy at helston",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "1688-142285-0005"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "a0158ff80873ed1b5356f8851a99eeed6194017db4ac03c0d444d0ec24a1c8cc",
+        "decode_wall_seconds": 0.587625586,
+        "failure": null,
+        "raw_lines": [
+          "I really was very much afraid of showing him how much shocked I was at some parts of what he said."
+        ],
+        "raw_transcript": "I really was very much afraid of showing him how much shocked I was at some parts of what he said.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "1688-142285-0007"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "73b43d4f7d86857dd6d69b175d34cb64dad6039b9cee5fd561bddca901412908",
+        "decode_wall_seconds": 0.271028917,
+        "failure": null,
+        "raw_lines": [
+          "not vicious",
+          "He never said that."
+        ],
+        "raw_transcript": "not vicious He never said that.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "1688-142285-0019"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "868f50aa214933382ee9355dca4ebae7e9fbd8078d82564f6b99fa2f609b3b95",
+        "decode_wall_seconds": 1.473102147,
+        "failure": null,
+        "raw_lines": [
+          "but though she received caresses and fond words back again",
+          "In such profusion.",
+          "As would have gladdened her formerly.",
+          "Yet she felt.",
+          "But there was a secret withheld from her.",
+          "And she believed it bore serious reference to her mother's health."
+        ],
+        "raw_transcript": "but though she received caresses and fond words back again In such profusion. As would have gladdened her formerly. Yet she felt. But there was a secret withheld from her. And she believed it bore serious reference to her mother's health.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "1688-142285-0032"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "376619d6e8725c3f7efd5268c012af32abe08fb5940e35724698804281e88666",
+        "decode_wall_seconds": 0.314608387,
+        "failure": null,
+        "raw_lines": [
+          "At last.",
+          "She said in a low voice."
+        ],
+        "raw_transcript": "At last. She said in a low voice.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "1688-142285-0043"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "39ea83fa89ba7b3d2fda458aef6194e2e7c80c1b53a3fddd8f204bd71763f954",
+        "decode_wall_seconds": 0.25330973,
+        "failure": null,
+        "raw_lines": [
+          "Not worse than many others, I reckon."
+        ],
+        "raw_transcript": "Not worse than many others, I reckon.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "1688-142285-0046"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "73672177a3a205df36321cb940577132b9dda9bcb3ea93ad9cbf69945292a5fd",
+        "decode_wall_seconds": 0.556621607,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "I should have thought of it again when I was less busy.",
+          "May I go with you now?"
+        ],
+        "raw_transcript": "I should have thought of it again when I was less busy. May I go with you now?",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "1688-142285-0050"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "45a0bcae8497c616d93eb74cb19da4c14dd92b08a05d2cdd88bb959f2c44cccb",
+        "decode_wall_seconds": 0.413909237,
+        "failure": null,
+        "raw_lines": [
+          "But you'll be there, Father, ye shall.",
+          "Oh my heart."
+        ],
+        "raw_transcript": "But you'll be there, Father, ye shall. Oh my heart.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "1688-142285-0070"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "3c5935a2b8854421ef7571393cfd04bcc5388d0182fe083f684a24a5a498681d",
+        "decode_wall_seconds": 0.375365317,
+        "failure": null,
+        "raw_lines": [
+          "No, mama.",
+          "That Anne Buckley would never have done."
+        ],
+        "raw_transcript": "No, mama. That Anne Buckley would never have done.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "1688-142285-0079"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "7e5f291d8a55b94049b0f0fd54932270a36072cfc4006c25a2df5342dae5c66d",
+        "decode_wall_seconds": 0.366793693,
+        "failure": null,
+        "raw_lines": [
+          "What would you do papa?",
+          "How would you set about it?"
+        ],
+        "raw_transcript": "What would you do papa? How would you set about it?",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "1688-142285-0083"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "3b5d6d6f24c8e5d5aea5d94e23612c68cb2d6b6c9d1435c340edf1294641dfdd",
+        "decode_wall_seconds": 0.340311947,
+        "failure": null,
+        "raw_lines": [
+          "Tell me what happened.",
+          "Guadzala Makan."
+        ],
+        "raw_transcript": "Tell me what happened. Guadzala Makan.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2033-164914-0005"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "683ba6526ed31dc95f8bcb45c7af5cecd2002dcb5eb8339a0b1cecdc31bfdeaa",
+        "decode_wall_seconds": 0.208462759,
+        "failure": null,
+        "raw_lines": [
+          "Return quickly and linger not."
+        ],
+        "raw_transcript": "Return quickly and linger not.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2033-164914-0012"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "b7629d19fb11d611bb8d7ed8e8eb851ec1c7bc948b6ffb94f45642791ed9f067",
+        "decode_wall_seconds": 0.746580819,
+        "failure": null,
+        "raw_lines": [
+          "Then she threw herself upon him.",
+          "And he gathered her to his bosom.",
+          "And the twain fell down in a fainting fit."
+        ],
+        "raw_transcript": "Then she threw herself upon him. And he gathered her to his bosom. And the twain fell down in a fainting fit.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2033-164915-0001"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "23c12d17f07f2b26fd038de3e83139d5a2e58ab7680348da7ecadd91f2010d28",
+        "decode_wall_seconds": 0.942375329,
+        "failure": null,
+        "raw_lines": [
+          "When the eunuch saw this case,",
+          "He wondered at them.",
+          "And throwing over them somewhat to cover them.",
+          "Waited.",
+          "Till they should recover."
+        ],
+        "raw_transcript": "When the eunuch saw this case, He wondered at them. And throwing over them somewhat to cover them. Waited. Till they should recover.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2033-164915-0002"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "06a5b861c314132758e730da8662d194611b4213ec9483a4a0966781ebc53ffb",
+        "decode_wall_seconds": 0.881714277,
+        "failure": null,
+        "raw_lines": [
+          "so it was agreed that we go to Damascus and fetch thence the king's son Sharkan",
+          "And make him sultan over his father's realm."
+        ],
+        "raw_transcript": "so it was agreed that we go to Damascus and fetch thence the king's son Sharkan And make him sultan over his father's realm.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2033-164915-0016"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "33a8d9abdd04b8ff98b0895ba0fa14be1298835fdff91b731cfa584d2c53795f",
+        "decode_wall_seconds": 2.352149526,
+        "failure": null,
+        "raw_lines": [
+          "No, o chief wazir,",
+          "That here,",
+          "Where you have encountered me?",
+          "Allah has given you rest from fatigue",
+          "2. And bring us you your desire. 3.",
+          "After the easiest of fashions.",
+          "For that his almighty will restore it to you Zawa Makan",
+          "and his sister Nusat al-Zaman.",
+          "Whereby we will settle the matter as we easily can."
+        ],
+        "raw_transcript": "No, o chief wazir, That here, Where you have encountered me? Allah has given you rest from fatigue 2. And bring us you your desire. 3. After the easiest of fashions. For that his almighty will restore it to you Zawa Makan and his sister Nusat al-Zaman. Whereby we will settle the matter as we easily can.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2033-164916-0001"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "4df56392d3989d5e95bb3906e3b02dfa0cbf79fc3f6fd653f6e24d76955c07e3",
+        "decode_wall_seconds": 1.239754744,
+        "failure": null,
+        "raw_lines": [
+          "When the minister heard these words, he rejoiced with great joy.",
+          "And said",
+          "O Chamberlain,",
+          "Tell me the tale of the twain.",
+          "And what befell them?",
+          "And the cause of their long absence."
+        ],
+        "raw_transcript": "When the minister heard these words, he rejoiced with great joy. And said O Chamberlain, Tell me the tale of the twain. And what befell them? And the cause of their long absence.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2033-164916-0002"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "3be887669bd6ba9e4dfe15eae94588d8152b528d79e8f3dc432032d3752049c6",
+        "decode_wall_seconds": 0.555663262,
+        "failure": null,
+        "raw_lines": [
+          "Then he added,",
+          "O my uncle!",
+          "How shall I do with my brother Sharkan?"
+        ],
+        "raw_transcript": "Then he added, O my uncle! How shall I do with my brother Sharkan?",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2033-164916-0004"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "2c5531bd072c9f6bce19c4cb7d215dc243894ac25b7547e853a20f3baf7dc6ca",
+        "decode_wall_seconds": 1.580074604,
+        "failure": null,
+        "raw_lines": [
+          "After a while,",
+          "The dust dispersed.",
+          "And there appeared under it the army of Baghdad and Khorasan.",
+          "A conquering host.",
+          "like the full tide C",
+          "And Shahrazad perceived the dawn of day.",
+          "And ceased to say her permitted say."
+        ],
+        "raw_transcript": "After a while, The dust dispersed. And there appeared under it the army of Baghdad and Khorasan. A conquering host. like the full tide C And Shahrazad perceived the dawn of day. And ceased to say her permitted say.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2033-164916-0005"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "f07512564563ae1e52b76b0e4d0cf43a7ca3ec4b52729cb85c5122814c61f608",
+        "decode_wall_seconds": 1.35902103,
+        "failure": null,
+        "raw_lines": [
+          "Moreover, the Sultan commanded his wazir Dandan.",
+          "Call a ten days' halt of the army.",
+          "That he might be private with him,",
+          "And learn from him.",
+          "How and wherefore?",
+          "his father had been slain"
+        ],
+        "raw_transcript": "Moreover, the Sultan commanded his wazir Dandan. Call a ten days' halt of the army. That he might be private with him, And learn from him. How and wherefore? his father had been slain",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2033-164916-0009"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "e489e190c610ce0224b99f12fde2c12fdc8dc7dd6004dbb9759fd3c7153e249f",
+        "decode_wall_seconds": 0.186313368,
+        "failure": null,
+        "raw_lines": [
+          "What matter about my shadow?"
+        ],
+        "raw_transcript": "What matter about my shadow?",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2414-128292-0002"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "cc7dfd245a84591dc36a21e84b6026cc2e731784472e2ddb2ba219624dcceaa3",
+        "decode_wall_seconds": 0.404505867,
+        "failure": null,
+        "raw_lines": [
+          "Verily, my folly hath grown big.",
+          "In the mountains."
+        ],
+        "raw_transcript": "Verily, my folly hath grown big. In the mountains.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2414-128292-0005"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "18897e2cac4490f55c887a13138278088eca808ac92c4158286734016bc5e3b6",
+        "decode_wall_seconds": 0.215677954,
+        "failure": null,
+        "raw_lines": [
+          "How have i still inclination?"
+        ],
+        "raw_transcript": "How have i still inclination?",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2414-128292-0019"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "3ee47237577506446adc15e7d088e719710fe7ea6da1f3230a88e541d5164191",
+        "decode_wall_seconds": 0.502292728,
+        "failure": null,
+        "raw_lines": [
+          "42 I ask and seek",
+          "And i saw it",
+          "but have not found it"
+        ],
+        "raw_transcript": "42 I ask and seek And i saw it but have not found it",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2414-128292-0022"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "4a30edb6e6e022f67904f3ec00ac048aa3703047d4920f81558329ca6c8328b9",
+        "decode_wall_seconds": 0.375148421,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "they sleep quietly",
+          "They enjoy their new security"
+        ],
+        "raw_transcript": "Yeah they sleep quietly They enjoy their new security",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2414-128292-0027"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "ec521e49ac55f06535f67246db16eb7173a63a9d56e1fdb95cd26cd118c9f860",
+        "decode_wall_seconds": 0.435587664,
+        "failure": null,
+        "raw_lines": [
+          "Let the tiger eat the man",
+          "For men are an ungrateful race."
+        ],
+        "raw_transcript": "Let the tiger eat the man For men are an ungrateful race.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2414-159411-0009"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "7ac0ede8e1ed57762a6555857fd66769dceb79b99c8c66c90691f388721b7df0",
+        "decode_wall_seconds": 0.340859572,
+        "failure": null,
+        "raw_lines": [
+          "On what must i give judgment",
+          "asked the eagle."
+        ],
+        "raw_transcript": "On what must i give judgment asked the eagle.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2414-159411-0015"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "285817a44518abd62648c7a08956ce63e938a13ae343ad07763d2a6e9f76ffb5",
+        "decode_wall_seconds": 0.194100708,
+        "failure": null,
+        "raw_lines": [
+          "Where was the tiger then?"
+        ],
+        "raw_transcript": "Where was the tiger then?",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2414-159411-0027"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "2420498b13dd850c4424cdf7e2d6bbe7b087befd3e59abc9d1b7f54482c5a269",
+        "decode_wall_seconds": 0.368906846,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "\"Shirt and bolted,\" said the Brahmin."
+        ],
+        "raw_transcript": "\"Shirt and bolted,\" said the Brahmin.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2414-159411-0030"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "7f428b44a9ad93de485a05af35b1205506f15c1d0b747abd77d42c1a5d57c64b",
+        "decode_wall_seconds": 1.440121185,
+        "failure": null,
+        "raw_lines": [
+          "That's accomplished.",
+          "He excited the admiration of every silly cockette.",
+          "And the envy of every flattering account",
+          "but by all young gentlemen and ladies of understanding",
+          "he was heartily despised",
+          "As a male civilized monkey."
+        ],
+        "raw_transcript": "That's accomplished. He excited the admiration of every silly cockette. And the envy of every flattering account but by all young gentlemen and ladies of understanding he was heartily despised As a male civilized monkey.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "2414-165385-0000"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "703d025fb177631893b585b90b18b453c8c503ac9cc3f6cdc55cf5c222e87fdf",
+        "decode_wall_seconds": 0.346222181,
+        "failure": null,
+        "raw_lines": [
+          "He mentions the apostles first because they were appointed directly by God."
+        ],
+        "raw_transcript": "He mentions the apostles first because they were appointed directly by God.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "2830-3980-0013"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "a5ec555819b7bbb61c74e54cfbb4b705d94055fe63bc2267bc7129ba7f8fb8d7",
+        "decode_wall_seconds": 0.586967203,
+        "failure": null,
+        "raw_lines": [
+          "These perverters of the righteousness of Christ resist the Father and the Son and the works of them both."
+        ],
+        "raw_transcript": "These perverters of the righteousness of Christ resist the Father and the Son and the works of them both.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "2830-3980-0023"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "7fa2d40e1da3bfffdd07de34fc04b8b6c3747811a7b83956831d7a17aa11039a",
+        "decode_wall_seconds": 0.521461877,
+        "failure": null,
+        "raw_lines": [
+          "They do not go where the enemies of the gospel predominate.",
+          "They go where the Christians are."
+        ],
+        "raw_transcript": "They do not go where the enemies of the gospel predominate. They go where the Christians are.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "2830-3980-0030"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "c25a94b9a43c0e3c45e417d417ea7ebd3b03a40850cfdf33f5109ff6c7512144",
+        "decode_wall_seconds": 0.552899052,
+        "failure": null,
+        "raw_lines": [
+          "Wherever the means of grace are found, there is the Holy Church, even though Antichrist reigns there."
+        ],
+        "raw_transcript": "Wherever the means of grace are found, there is the Holy Church, even though Antichrist reigns there.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "2830-3980-0036"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "484131bb23b40e5ff4387f201cf2e0dee3a654e4afa2028dbc230bd04c480b8b",
+        "decode_wall_seconds": 0.280542616,
+        "failure": null,
+        "raw_lines": [
+          "Men should not speculate about the nature of God."
+        ],
+        "raw_transcript": "Men should not speculate about the nature of God.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "2830-3980-0045"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "ec6fee96bf085e3531ebb029f1d6633b6be89a22450c403033f3f9fa32646c01",
+        "decode_wall_seconds": 0.884398442,
+        "failure": null,
+        "raw_lines": [
+          "that Christ is very God",
+          "is apparent in that Paul ascribes to him divine powers equally with the Father",
+          "As for instance, the power to dispense grace and peace."
+        ],
+        "raw_transcript": "that Christ is very God is apparent in that Paul ascribes to him divine powers equally with the Father As for instance, the power to dispense grace and peace.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "2830-3980-0054"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "d38ebb412ef0e8b3a785c487a9fcf7fb18fdf87da3da8a31b3dd174cb928e572",
+        "decode_wall_seconds": 0.695201784,
+        "failure": null,
+        "raw_lines": [
+          "To bestow peace and grace lies in the province of God.",
+          "Who alone can create these blessings?",
+          "The angels cannot."
+        ],
+        "raw_transcript": "To bestow peace and grace lies in the province of God. Who alone can create these blessings? The angels cannot.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "2830-3980-0055"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "d1b6e99c017beffecbf9f2f35c306426b10bf24f3b941168cf32bb3c7251a519",
+        "decode_wall_seconds": 0.295718938,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "Muhammad also speaks highly of Christ."
+        ],
+        "raw_transcript": "Yeah. Muhammad also speaks highly of Christ.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "2830-3980-0058"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "a6cd7679b9b32b7fd4a13cb325cb5c83023e62fd9167ae3c9092057e6aa13dc7",
+        "decode_wall_seconds": 0.566620598,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "Underscore these words.",
+          "For they are full of comfort for sore consciences."
+        ],
+        "raw_transcript": "Yeah Underscore these words. For they are full of comfort for sore consciences.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "2830-3980-0063"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "03e21cde3bd10b057f2212c2671dd32103fd7c56dee4453fad4892509a563d56",
+        "decode_wall_seconds": 0.323672369,
+        "failure": null,
+        "raw_lines": [
+          "But we are careless.",
+          "we make light of sin"
+        ],
+        "raw_transcript": "But we are careless. we make light of sin",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "2830-3980-0070"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "9b6be193aea553d2ed176dce715812454be347b97118a197ccdd9cdc742c7553",
+        "decode_wall_seconds": 1.099820474,
+        "failure": null,
+        "raw_lines": [
+          "sherbin run his eyes slow along the crowd",
+          "And wherever it struck, the people tried a little to out-gaze him.",
+          "But they couldn't.",
+          "They dropped their eyes and looked sneaky."
+        ],
+        "raw_transcript": "sherbin run his eyes slow along the crowd And wherever it struck, the people tried a little to out-gaze him. But they couldn't. They dropped their eyes and looked sneaky.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3005-163389-0003"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "cede9eebb80f66e7b5b04ffba9762547ebdc1be7cbb35a189b44a3d6ae08c641",
+        "decode_wall_seconds": 0.21934563,
+        "failure": null,
+        "raw_lines": [
+          "The average man's a coward."
+        ],
+        "raw_transcript": "The average man's a coward.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3005-163389-0004"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "6348a4385412cc3373bd27100e3a31480f7b1509a90aa725750be0d483224a30",
+        "decode_wall_seconds": 0.244417779,
+        "failure": null,
+        "raw_lines": [
+          "No, I say, as it don't."
+        ],
+        "raw_transcript": "No, I say, as it don't.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3005-163390-0012"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "142534306ae3937ab7f771ed65dca01d1f965795ba94e61a5a6d8fd692c75a69",
+        "decode_wall_seconds": 0.49644913,
+        "failure": null,
+        "raw_lines": [
+          "Well,",
+          "henry he takes a notion he wants to get up some trouble with this country"
+        ],
+        "raw_transcript": "Well, henry he takes a notion he wants to get up some trouble with this country",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3005-163390-0018"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "d0e1980a74c4b4e7c01bd0b09aba38b0c9a7b50093a0dd3c9d7fc15a11236a50",
+        "decode_wall_seconds": 0.214027662,
+        "failure": null,
+        "raw_lines": [
+          "I lay, I make you mine."
+        ],
+        "raw_transcript": "I lay, I make you mine.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3005-163390-0029"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "05568291f9d9969c1214fe09484a4590dfbbcebd91aedabf13391b10ba311bfd",
+        "decode_wall_seconds": 0.633675913,
+        "failure": null,
+        "raw_lines": [
+          "Which was sound enough judgment,",
+          "But you take the average man.",
+          "And he wouldn't wait for him to hire."
+        ],
+        "raw_transcript": "Which was sound enough judgment, But you take the average man. And he wouldn't wait for him to hire.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3005-163391-0000"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "2631c93f6e5f79c1d3664c2984dda6bac6e1f5b9862ed64f50acfd7ef36db390",
+        "decode_wall_seconds": 0.377569693,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "Your uncle's been up to the town every day to fetch"
+        ],
+        "raw_transcript": "Yeah Your uncle's been up to the town every day to fetch",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3005-163399-0008"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "c72a4b37c27fa2001edb7c2b747461f8ad492385a25bfc60203ab8b9c74214ad",
+        "decode_wall_seconds": 0.492520551,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "pretty soon she made the cold chills streak all down my back because she says"
+        ],
+        "raw_transcript": "pretty soon she made the cold chills streak all down my back because she says",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3005-163399-0013"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "2fcefdcaabbfd0ae43fa5c8c5a185178a7bd8c1b6acee3614f06ec189c2d2c68",
+        "decode_wall_seconds": 0.218694796,
+        "failure": null,
+        "raw_lines": [
+          "The old gentleman stared and says,"
+        ],
+        "raw_transcript": "The old gentleman stared and says,",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3005-163399-0026"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "498aed40209b866f57b366e10b515fe69263a828d4b867604e045c7fd0c12791",
+        "decode_wall_seconds": 0.447913829,
+        "failure": null,
+        "raw_lines": [
+          "Then I says to myself.",
+          "S'pose time sore comes down on that boat."
+        ],
+        "raw_transcript": "Then I says to myself. S'pose time sore comes down on that boat.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3005-163399-0030"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "08635f513b4d36b9bc16e5fc8a509817d3facbb5fdb8d4053bd60c73d9b95c43",
+        "decode_wall_seconds": 0.457358933,
+        "failure": null,
+        "raw_lines": [
+          "Yes.",
+          "But if I should already ask for something?",
+          "What?"
+        ],
+        "raw_transcript": "Yes. But if I should already ask for something? What?",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3997-180294-0001"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "9b6c5983fffdfd87b38258353f505c2a8221beb9df41778f83f63bc0232c334d",
+        "decode_wall_seconds": 0.209437552,
+        "failure": null,
+        "raw_lines": [
+          "How?",
+          "Why?"
+        ],
+        "raw_transcript": "How? Why?",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3997-180294-0020"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "130d312fc6cb838049e276b2ba52210aeca28cc5a052bd83db03f253f0f52092",
+        "decode_wall_seconds": 0.467703216,
+        "failure": null,
+        "raw_lines": [
+          "My dear Prudence, I answered,",
+          "He did not know what you are saying."
+        ],
+        "raw_transcript": "My dear Prudence, I answered, He did not know what you are saying.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3997-180297-0004"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "ac11490f7edfd2ce6bffb89a3b1eb3e3199c66325e39d957c366dee0edeb7e63",
+        "decode_wall_seconds": 0.852752531,
+        "failure": null,
+        "raw_lines": [
+          "I fancied for a moment that I might give myself that happiness for six months,",
+          "You will not have it.",
+          "You insisted on lowering the means."
+        ],
+        "raw_transcript": "I fancied for a moment that I might give myself that happiness for six months, You will not have it. You insisted on lowering the means.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3997-180297-0010"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "c01269e30c048ba0da1160a70fe5ac06ae93ec1a18d2bd90985920617f42b4e3",
+        "decode_wall_seconds": 0.346536707,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "Never do they give you advice which does not look great."
+        ],
+        "raw_transcript": "Yeah Never do they give you advice which does not look great.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3997-180297-0018"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "76b3dbea44e558531557872acb33ce37dfc54ea4234cc46d7cb0477d39c8bfd5",
+        "decode_wall_seconds": 0.751897714,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "\"'Such a man I found in the Duke!'",
+          "But the Duke is old, and the old age neither protects nor consoles."
+        ],
+        "raw_transcript": "\"'Such a man I found in the Duke!' But the Duke is old, and the old age neither protects nor consoles.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3997-180297-0020"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "0aa93344beca251c8d7496267cdd31c31f3752c1277d02cb35eff12a87cb3065",
+        "decode_wall_seconds": 0.545543961,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "I tore the letter into fragments and kissed with tears the hand that gave it to me."
+        ],
+        "raw_transcript": "Yeah. I tore the letter into fragments and kissed with tears the hand that gave it to me.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3997-180297-0027"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "9db644fcd7b94dd3a3b5c7c4a11aa6d812aecf2606f022ccc708aec18e65483d",
+        "decode_wall_seconds": 1.429926652,
+        "failure": null,
+        "raw_lines": [
+          "Wasn't anything going on that this trifling member of the buzzard family didn't find out about a metal inn.",
+          "He could ask more questions than Peter Rabbit can.",
+          "And anybody that can do that,",
+          "He has got to ask a lot."
+        ],
+        "raw_transcript": "Wasn't anything going on that this trifling member of the buzzard family didn't find out about a metal inn. He could ask more questions than Peter Rabbit can. And anybody that can do that, He has got to ask a lot.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3997-182399-0008"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "bcccc2bb18e7cd4eb56c51c04cd106d25b27f47a046e7b240b0668b3658dba1a",
+        "decode_wall_seconds": 0.219158049,
+        "failure": null,
+        "raw_lines": [
+          "Everybody looked at Peter and laughed."
+        ],
+        "raw_transcript": "Everybody looked at Peter and laughed.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3997-182399-0009"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "093c4a7874820727929ad1e2b57ab7b5b4f3d8df9baf5e29dd2563baff3c3538",
+        "decode_wall_seconds": 0.681639731,
+        "failure": null,
+        "raw_lines": [
+          "So we are set on the chimney-tops whenever old Jack Frost gets to strain down where he have no business."
+        ],
+        "raw_transcript": "So we are set on the chimney-tops whenever old Jack Frost gets to strain down where he have no business.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "3997-182399-0010"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "e63fddd0e5df486af0617ba6572391786094708e17bdb21708caf2761ab86ccd",
+        "decode_wall_seconds": 0.68536371,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "after several months were wasted and pierre would neither work nor put men to work upon the piece i made him give it back"
+        ],
+        "raw_transcript": "Yeah. after several months were wasted and pierre would neither work nor put men to work upon the piece i made him give it back",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4294-14317-0015"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "680bc73ea663c96858c3ab0b6f9acdc4c5caf305bc37791d54bdf5628345bc48",
+        "decode_wall_seconds": 0.301991825,
+        "failure": null,
+        "raw_lines": [
+          "Having this excellent resolve in heart, I reached my home."
+        ],
+        "raw_transcript": "Having this excellent resolve in heart, I reached my home.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4294-14317-0018"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "8efe772de196cd895a704200b8515d791f41a917c8809a96ff1dda451002dfd8",
+        "decode_wall_seconds": 0.644792595,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "A faint glimmer of light on the opposite wall.",
+          "Shows me the keyhole."
+        ],
+        "raw_transcript": "Yeah. A faint glimmer of light on the opposite wall. Shows me the keyhole.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4294-35475-0015"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "bf3143caa6ca3ea7652528fe62fdecc11edbc0dec18e62445cc8aaab84bd589e",
+        "decode_wall_seconds": 1.45639953,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "To him who could bring her back to her father's castle should be given the throne and kingdom.",
+          "As well as the princess herself.",
+          "So from far and near, indeed, from almost every country under the sun, came knights and princes to fight the ogre."
+        ],
+        "raw_transcript": "Yeah. To him who could bring her back to her father's castle should be given the throne and kingdom. As well as the princess herself. So from far and near, indeed, from almost every country under the sun, came knights and princes to fight the ogre.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4294-35475-0023"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "b52830d10a8b236b78be3ac10e8082ca7988c927b1b74883f28a4bf2c247d735",
+        "decode_wall_seconds": 0.268591233,
+        "failure": null,
+        "raw_lines": [
+          "The half-lights of doubt pained him."
+        ],
+        "raw_transcript": "The half-lights of doubt pained him.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4294-9934-0005"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "c52bee1d868e783b46bd87eb29a7323b5fff953c3d615a03418785c254b086f7",
+        "decode_wall_seconds": 1.141447313,
+        "failure": null,
+        "raw_lines": [
+          "Whatever may have been his desire to remain where he was, he could not halt there.",
+          "He was irresistibly constrained to continue.",
+          "To advance.",
+          "To examine, to think, to march further,"
+        ],
+        "raw_transcript": "Whatever may have been his desire to remain where he was, he could not halt there. He was irresistibly constrained to continue. To advance. To examine, to think, to march further,",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4294-9934-0006"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "a6fc15dc987e37a9be79c9f8e086d0173fee2c9b4ee1e386441111fdcbe59146",
+        "decode_wall_seconds": 0.340846419,
+        "failure": null,
+        "raw_lines": [
+          "What are you going to do?",
+          "I do not know."
+        ],
+        "raw_transcript": "What are you going to do? I do not know.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4294-9934-0013"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "36ead9c7cc04852164d42d6026f5460ef0da95274626bd09953a7b8c9a12a676",
+        "decode_wall_seconds": 0.328864005,
+        "failure": null,
+        "raw_lines": [
+          "No, it is not good. what will you do after that?"
+        ],
+        "raw_transcript": "No, it is not good. what will you do after that?",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4294-9934-0017"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "af4c05b17b50ab63a18879725b9d8c7fe283cff32c32d99927954bea0308af46",
+        "decode_wall_seconds": 1.04466743,
+        "failure": null,
+        "raw_lines": [
+          "One morning, on his return from the law school, Maurice found a letter from his aunt,",
+          "And a sixty pistol, that is to say six hundred francs in gold.",
+          "In a sealed box."
+        ],
+        "raw_transcript": "One morning, on his return from the law school, Maurice found a letter from his aunt, And a sixty pistol, that is to say six hundred francs in gold. In a sealed box.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4294-9934-0027"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "0da4573af558881c4c9084d3c77943eab5ed3d664484a798eff23a8530c5338b",
+        "decode_wall_seconds": 0.246228381,
+        "failure": null,
+        "raw_lines": [
+          "At that moment he had three francs left."
+        ],
+        "raw_transcript": "At that moment he had three francs left.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4294-9934-0029"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "f3dd20c0b790e2d16140b225e95e536a0f5951aca4584bff3a4cc62d0d1f42de",
+        "decode_wall_seconds": 0.257456587,
+        "failure": null,
+        "raw_lines": [
+          "She doesn't take up with anybody, you know."
+        ],
+        "raw_transcript": "She doesn't take up with anybody, you know.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "4446-2271-0007"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "ee82ae2cfd8957507917d398bd08f18c06cd45abc2fc255de0531066d3edaf12",
+        "decode_wall_seconds": 0.60376637,
+        "failure": null,
+        "raw_lines": [
+          "Irene Burgoyne, one of her family, told me in confidence that there was a romance somewhere back in the beginning."
+        ],
+        "raw_transcript": "Irene Burgoyne, one of her family, told me in confidence that there was a romance somewhere back in the beginning.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "4446-2271-0008"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "e35f6698bee318470f3950d11d6fc552421b38a8875c52e328b9be364a2da9d3",
+        "decode_wall_seconds": 0.553124945,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "I say, Sir Harry, the little girl's going famously to-night, isn't she?"
+        ],
+        "raw_transcript": "Yeah. I say, Sir Harry, the little girl's going famously to-night, isn't she?",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "4446-2271-0012"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "87a0a10c2c86a3bc4b2fc3c12d68e8702c444fb045b5d2b1714ff4097d42d382",
+        "decode_wall_seconds": 0.406842414,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "After that, it was easy to forget, actually to forget."
+        ],
+        "raw_transcript": "Yeah. After that, it was easy to forget, actually to forget.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "4446-2271-0019"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "b7f95d30bfa594ed065225e7b80fe6de1738c32469e45db8253da1af917d0ca3",
+        "decode_wall_seconds": 0.826594823,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "when bartley arrived at bedford square on sunday evening marie the pretty little french girl met him at the door and conducted him upstairs"
+        ],
+        "raw_transcript": "when bartley arrived at bedford square on sunday evening marie the pretty little french girl met him at the door and conducted him upstairs",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "4446-2273-0003"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "1160c3011740afab584c252e80265b73c5b1b6e6fde53f04ead4804a0215a17e",
+        "decode_wall_seconds": 0.378055027,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "Do you remember that first walk we took together in Paris?"
+        ],
+        "raw_transcript": "Yeah. Do you remember that first walk we took together in Paris?",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "4446-2273-0018"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "9b11ac2b93eeeaefcdfe65d602babea9948b8ca1b71d42e9361c2c1d5b980b82",
+        "decode_wall_seconds": 0.301846664,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "Bartley bent lowered over the fire."
+        ],
+        "raw_transcript": "Yeah. Bartley bent lowered over the fire.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "4446-2275-0011"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "cd6e9fbd3256a2ee9ea6911eed590908f82314d5b41b64205906524affb251a1",
+        "decode_wall_seconds": 0.319766958,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "I can't stand seeing you miserable."
+        ],
+        "raw_transcript": "Yeah. I can't stand seeing you miserable.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "4446-2275-0014"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "7d55c6cfbec744841ab371aaaebe80ba287ccaf72ae29730e77bfa87227fbab0",
+        "decode_wall_seconds": 0.288857367,
+        "failure": null,
+        "raw_lines": [
+          "He pulled up a window as if the air were heavy."
+        ],
+        "raw_transcript": "He pulled up a window as if the air were heavy.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "4446-2275-0015"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "b54faae2576aba08bad79dee5581e395a20de1c17bfd9154410444805c6e0ac2",
+        "decode_wall_seconds": 0.392799069,
+        "failure": null,
+        "raw_lines": [
+          "You see, loving someone as I love you makes the whole world different."
+        ],
+        "raw_transcript": "You see, loving someone as I love you makes the whole world different.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "4446-2275-0041"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "5896a58a467acd90eb560ad1265ae53675c0086df5bda587416e3a4644733e91",
+        "decode_wall_seconds": 0.253945647,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "Say, you know something?"
+        ],
+        "raw_transcript": "Yeah. Say, you know something?",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4852-28311-0000"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "8aad360f733dce37a5a1eacb4d3f244470c787c7693e085bfa98bcc253e4abe1",
+        "decode_wall_seconds": 0.293071747,
+        "failure": null,
+        "raw_lines": [
+          "I think he really needs it",
+          "In pursuit of"
+        ],
+        "raw_transcript": "I think he really needs it In pursuit of",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4852-28311-0008"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "029da6379dc0279171d76cdbeb7184ba9496935fe21ceaa3b3affc3749cb1639",
+        "decode_wall_seconds": 0.717538247,
+        "failure": null,
+        "raw_lines": [
+          "But the name still showed at the prow and many a time Chris safe at home in bed sailed imaginary voyages in the Mirabelle."
+        ],
+        "raw_transcript": "But the name still showed at the prow and many a time Chris safe at home in bed sailed imaginary voyages in the Mirabelle.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4852-28311-0023"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "fa5643678414f4e161074f5845823d1ffcf6c12f705dabcaa37ca29882e268cb",
+        "decode_wall_seconds": 0.409335746,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "Crisp, Linkedin looked again. Yes, they were still there."
+        ],
+        "raw_transcript": "Crisp, Linkedin looked again. Yes, they were still there.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4852-28312-0007"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "456e0fa7528332f1e734e3a0428f114ac1e43fa20dc2d7207325bb31917d267f",
+        "decode_wall_seconds": 0.194657236,
+        "failure": null,
+        "raw_lines": [
+          "Yes, sir, yes, sir."
+        ],
+        "raw_transcript": "Yes, sir, yes, sir.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4852-28312-0009"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "a98ed08854f7170fd2ed80b2996bb62b392b1ae358ddf6cbfde2c1dc5cbb6790",
+        "decode_wall_seconds": 0.445202432,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "I...",
+          "I just wondered if the place was still open."
+        ],
+        "raw_transcript": "Yeah I... I just wondered if the place was still open.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4852-28312-0013"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "8d0d8c0838a6c9f0be8995d0bb6211864143e74dcc4d6e58fd398f0fc4d67ab6",
+        "decode_wall_seconds": 0.433777837,
+        "failure": null,
+        "raw_lines": [
+          "He guessed there must be a lively fire in that room beyond."
+        ],
+        "raw_transcript": "He guessed there must be a lively fire in that room beyond.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4852-28312-0015"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "dfeea36845bf22e2a1f3cdc3f180383e20d0546f105af6ed1c6cb56f0161e0c2",
+        "decode_wall_seconds": 0.645940683,
+        "failure": null,
+        "raw_lines": [
+          "A courtyard was sparsely lit by a flaring torture, too.",
+          "Showing a swinging sign hung on the post"
+        ],
+        "raw_transcript": "A courtyard was sparsely lit by a flaring torture, too. Showing a swinging sign hung on the post",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4852-28312-0027"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "678c58215ede0a81df3af3ef09763f56ca5765d5cc949a5a289aa0a490a967f1",
+        "decode_wall_seconds": 0.672877065,
+        "failure": null,
+        "raw_lines": [
+          "With infinite caution, Chris closed the doors silently behind him, and running lightly forward, reached the figure of the Negro boy."
+        ],
+        "raw_transcript": "With infinite caution, Chris closed the doors silently behind him, and running lightly forward, reached the figure of the Negro boy.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4852-28319-0024"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "2e40bd31d107f3b307d542fb7d1ba689949e9906b45febfc9f44f3a79b1e8217",
+        "decode_wall_seconds": 0.4142623,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "Captain blizzards round pink faced creased in its winning smile"
+        ],
+        "raw_transcript": "Yeah Captain blizzards round pink faced creased in its winning smile",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "4852-28330-0017"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "cd9ef9dd57eb44395be1ad0f152d3fbef7a51bf6753d304ef141235797ce78c9",
+        "decode_wall_seconds": 0.347659554,
+        "failure": null,
+        "raw_lines": [
+          "He seemed born to please without being conscious of the power he possessed."
+        ],
+        "raw_transcript": "He seemed born to please without being conscious of the power he possessed.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "5105-28233-0001"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "49ec92e3be6a7a723136ed9c052df21856e7e681c5cebb98ba433cd5d8f47149",
+        "decode_wall_seconds": 0.869237693,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "It must be owned, and no one was more ready to confess it than himself.",
+          "That his literary attainments were by no means of a high order."
+        ],
+        "raw_transcript": "It must be owned, and no one was more ready to confess it than himself. That his literary attainments were by no means of a high order.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "5105-28233-0002"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "170f0ea2f2d069cedad7deb9cce98b1bb89bbf785dd3c3095af449cc6ac24171",
+        "decode_wall_seconds": 1.142511374,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "When a private in the eighth Cavalry,",
+          "He had been on the point of quitting the army at twenty-eight years of age.",
+          "But unexpectedly, he had been appointed orderly to Captain Servivat."
+        ],
+        "raw_transcript": "When a private in the eighth Cavalry, He had been on the point of quitting the army at twenty-eight years of age. But unexpectedly, he had been appointed orderly to Captain Servivat.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "5105-28233-0008"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "4534532328520e9cd4107ac5b8e82b82dcdf7915f22649ec22d1adab8cb4b59b",
+        "decode_wall_seconds": 0.48999659,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "Servadac took it for granted that the dobryna was endeavoring to put in."
+        ],
+        "raw_transcript": "Yeah Servadac took it for granted that the dobryna was endeavoring to put in.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "5105-28240-0007"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "ab906d3551034253f5c0a11a16c440107d20ceb0cf61e5986fc4291c037ae82b",
+        "decode_wall_seconds": 0.245036426,
+        "failure": null,
+        "raw_lines": [
+          "Captain Servadac hastened toward him."
+        ],
+        "raw_transcript": "Captain Servadac hastened toward him.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "5105-28240-0010"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "c8953648f2483ea7e1598e16bb4951d70cef726c568fb44d2919fbe09b2a8fc6",
+        "decode_wall_seconds": 0.273064608,
+        "failure": null,
+        "raw_lines": [
+          "Are you certain that this is the Mediterranean?"
+        ],
+        "raw_transcript": "Are you certain that this is the Mediterranean?",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "5105-28240-0014"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "db39e975595bcb33136e4eadb08e10d2db223a7921535ac711b8d279aec9122f",
+        "decode_wall_seconds": 0.296068279,
+        "failure": null,
+        "raw_lines": [
+          "You will take me on board, Count, will you not?"
+        ],
+        "raw_transcript": "You will take me on board, Count, will you not?",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "5105-28240-0018"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "2a80b3b867a6a27f87bdddc6ae520705d3e068c089c973787e548faf1022bfb5",
+        "decode_wall_seconds": 0.524646852,
+        "failure": null,
+        "raw_lines": [
+          "My yacht is at your service, sir, even should you require to make a tour around the world."
+        ],
+        "raw_transcript": "My yacht is at your service, sir, even should you require to make a tour around the world.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "5105-28240-0019"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "425617e89d7bfb293b124674ee1ca39b7d58dbb0f3acfabbdf89fa84c8122521",
+        "decode_wall_seconds": 1.136140382,
+        "failure": null,
+        "raw_lines": [
+          "Before starting, it was indispensable that the engine of the Dobrina should be repaired.",
+          "To sail under canvas only would, in contrary winds and rough seas.",
+          "Be both tedious and difficult."
+        ],
+        "raw_transcript": "Before starting, it was indispensable that the engine of the Dobrina should be repaired. To sail under canvas only would, in contrary winds and rough seas. Be both tedious and difficult.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "5105-28240-0021"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "373cc4347a46f52e5db3896a3f0c4da8191edf932c70c2b25a9508207e55a3b2",
+        "decode_wall_seconds": 2.53901876,
+        "failure": null,
+        "raw_lines": [
+          "To the surprise of all, and especially of Lieutenant Procope,",
+          "The line indicated a bottom at a nearly uniform depth.",
+          "Of from four to five fathoms.",
+          "And although the sounding was persevered with continuously for more than two hours over a considerable area.",
+          "The differences of level were insignificant.",
+          "Not corresponding in any degree to what would be expected over the sight of a city that had been terraced like the seats of an amphitheatre."
+        ],
+        "raw_transcript": "To the surprise of all, and especially of Lieutenant Procope, The line indicated a bottom at a nearly uniform depth. Of from four to five fathoms. And although the sounding was persevered with continuously for more than two hours over a considerable area. The differences of level were insignificant. Not corresponding in any degree to what would be expected over the sight of a city that had been terraced like the seats of an amphitheatre.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "5105-28241-0015"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "762c76c8f7cff252ae844a028a230c89ddb8f41a503bba15eec2578b5315b2a6",
+        "decode_wall_seconds": 0.719364819,
+        "failure": null,
+        "raw_lines": [
+          "There was a very natural savagery and dejection there.",
+          "And a wild leer in his yellow eyes.",
+          "Rachel sat down."
+        ],
+        "raw_transcript": "There was a very natural savagery and dejection there. And a wild leer in his yellow eyes. Rachel sat down.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "5442-32873-0001"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "3f32a0e26579c1bb270b5cbf967e074db997b175fd14d9e248987cf69fd4f571",
+        "decode_wall_seconds": 0.34975658,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "Or frightful, frightful!",
+          "Is it a dream?"
+        ],
+        "raw_transcript": "Or frightful, frightful! Is it a dream?",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "5442-32873-0003"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "452dd56da7038fe2716e847b9845d143647c62e595cc6acde6b253ce3e9bd296",
+        "decode_wall_seconds": 0.595569369,
+        "failure": null,
+        "raw_lines": [
+          "I'll stay here, that is, in the drawing-room, she answered.",
+          "And the face was withdrawn,"
+        ],
+        "raw_transcript": "I'll stay here, that is, in the drawing-room, she answered. And the face was withdrawn,",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "5442-32873-0012"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "c717df61f6e69530c2c7cc7b9980d48385bd459863ef745e0c88947d84cd7102",
+        "decode_wall_seconds": 0.625272443,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "If I thought you'd fail me now, Tamar, I should never come back.",
+          "Goodnight, Thomas."
+        ],
+        "raw_transcript": "If I thought you'd fail me now, Tamar, I should never come back. Goodnight, Thomas.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "5442-32873-0019"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "91bc17de92ecebcd890189808d60ba1e33e1944a4a8794c4db7bc3c662997ec2",
+        "decode_wall_seconds": 0.531575157,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "The act said that in case of difference of opinion,",
+          "They must be about it."
+        ],
+        "raw_transcript": "Yeah. The act said that in case of difference of opinion, They must be about it.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "5442-41168-0000"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "84549ed15dcd9480e7839233c917d7fdd7436bf1f4541779051d107674f6d359",
+        "decode_wall_seconds": 0.7437293,
+        "failure": null,
+        "raw_lines": [
+          "To escape from this painful feeling, he went away into the other room.",
+          "Where there was nobody except the waiters at the refreshment bar."
+        ],
+        "raw_transcript": "To escape from this painful feeling, he went away into the other room. Where there was nobody except the waiters at the refreshment bar.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "5442-41168-0011"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "4b9c96e6659f569071592d28fac5e4a609c5359f853731c1d860265f292544a5",
+        "decode_wall_seconds": 1.093868555,
+        "failure": null,
+        "raw_lines": [
+          "He particularly liked the way one grey whisked earth waiter",
+          "Who showed us corn for the other younger ones,",
+          "And was jeered at by them.",
+          "was teaching them how to fold up napkins properly."
+        ],
+        "raw_transcript": "He particularly liked the way one grey whisked earth waiter Who showed us corn for the other younger ones, And was jeered at by them. was teaching them how to fold up napkins properly.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "5442-41168-0012"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "ab6ded1b0f0f16c86ff58d7a4bf4cc667a0e6e5a8c0911b4dc9e5349056a0949",
+        "decode_wall_seconds": 1.74477538,
+        "failure": null,
+        "raw_lines": [
+          "11. Do not care to eat",
+          "And he was not smoking.",
+          "He did not want to join his own friends.",
+          "that is sojit ivanovitch",
+          "Stepan Arkadyevitch,",
+          "Tversky and the rest,",
+          "Because Vronsky in his equities uniform",
+          "Was standing with them in eager conversation."
+        ],
+        "raw_transcript": "11. Do not care to eat And he was not smoking. He did not want to join his own friends. that is sojit ivanovitch Stepan Arkadyevitch, Tversky and the rest, Because Vronsky in his equities uniform Was standing with them in eager conversation.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "5442-41169-0000"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "5a0a57c411c5eb86385e9be6d75d7e2f667829e4e52c8b7534ae4459e95b888b",
+        "decode_wall_seconds": 0.435546237,
+        "failure": null,
+        "raw_lines": [
+          "So there will be no one to keep it up.",
+          "And yet one does it."
+        ],
+        "raw_transcript": "So there will be no one to keep it up. And yet one does it.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "5442-41169-0020"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "f7339b759e763d885bfead4aa0ac061c6dfc4fbd662e711c74c05baf495080dc",
+        "decode_wall_seconds": 0.535578314,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "There's a class instinct too.",
+          "A what one ought and ought not to do."
+        ],
+        "raw_transcript": "There's a class instinct too. A what one ought and ought not to do.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "5442-41169-0029"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "1f80807530048fb8737390a0cc75e26243ed59c26b6ee83bb3292832071043bb",
+        "decode_wall_seconds": 0.290270561,
+        "failure": null,
+        "raw_lines": [
+          "Cries of a Nottingham, a Nottingham."
+        ],
+        "raw_transcript": "Cries of a Nottingham, a Nottingham.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "61-70968-0012"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "ff31051f2d46f887710efa2091c153c13600f0e5bac5472d9d13352b84f1f027",
+        "decode_wall_seconds": 0.645828815,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "The strollers took their part in it with hearty zest, now that they had some chance of beating off their foes."
+        ],
+        "raw_transcript": "The strollers took their part in it with hearty zest, now that they had some chance of beating off their foes.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "61-70968-0026"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "9b1eff89d60fdb6d9e013bf7245fdbbfa1ab7f59c946a5c66827334f9242fa9c",
+        "decode_wall_seconds": 0.874578109,
+        "failure": null,
+        "raw_lines": [
+          "Taking advantage of this, the squire's few men redoubled their efforts, and encouraged by robins and the little strollers, cries fought their way to him."
+        ],
+        "raw_transcript": "Taking advantage of this, the squire's few men redoubled their efforts, and encouraged by robins and the little strollers, cries fought their way to him.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "61-70968-0035"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "aaac97122c1bd6d77d4e0a615fa5e2096e6c2b0d8548f5ae74374654c527fe70",
+        "decode_wall_seconds": 0.271990585,
+        "failure": null,
+        "raw_lines": [
+          "George Montfichet will never forget this day."
+        ],
+        "raw_transcript": "George Montfichet will never forget this day.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "61-70968-0036"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "4b1b01600af3f12431810e6a940391189f844a8a41c6813b2bcb0469584ee3dc",
+        "decode_wall_seconds": 0.358064554,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "If for a whim you beggar yourself, I cannot stay you."
+        ],
+        "raw_transcript": "If for a whim you beggar yourself, I cannot stay you.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "61-70970-0003"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "7e319934849010a63f68433173d8bd760601e03c6ea6cddff8a70ccc3bc649cd",
+        "decode_wall_seconds": 0.296904779,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "Never that, sir,, he had said,"
+        ],
+        "raw_transcript": "Yeah Never that, sir,, he had said,",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "61-70970-0006"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "36d4d0cfbce11924d4f203637bd23622a77a4cad3526411d23bd2a8c3711c501",
+        "decode_wall_seconds": 0.581284504,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "As any in England, I would say, said Camewell proudly, that is in his day."
+        ],
+        "raw_transcript": "As any in England, I would say, said Camewell proudly, that is in his day.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "61-70970-0011"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "d59f79a54e64f21837748fdf5dfc835c01c8e7d884298ab5b230099ba269e869",
+        "decode_wall_seconds": 0.539348717,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "Will?",
+          "Whispered Robin, opening his door as he spoke. Are you ready?"
+        ],
+        "raw_transcript": "Will? Whispered Robin, opening his door as he spoke. Are you ready?",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "61-70970-0020"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "3e885517dde7d6545a4acd11a96a15216a8b9044a53ec464b0a56d27351648a0",
+        "decode_wall_seconds": 0.444960207,
+        "failure": null,
+        "raw_lines": [
+          "From the blackness behind the light, they heard a voice.",
+          "Warrantans."
+        ],
+        "raw_transcript": "From the blackness behind the light, they heard a voice. Warrantans.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "61-70970-0029"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "1d1114df0035711106588040ce4213d1e89300100263a2ef7a25a44689e5e154",
+        "decode_wall_seconds": 0.49642486,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "They regained their apartment, apparently without disturbing the household of gain-love."
+        ],
+        "raw_transcript": "Yeah They regained their apartment, apparently without disturbing the household of gain-love.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "61-70970-0040"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "06a553fd837e8331a4ba4b53ef25f6b1fd631589d157ba26d942e9992244c660",
+        "decode_wall_seconds": 0.965922623,
+        "failure": null,
+        "raw_lines": [
+          "And the detective's professional instincts got the upper hand of his friendliness..",
+          "Not the least in the world.",
+          "Not as much as you do.",
+          "Was the cool answer."
+        ],
+        "raw_transcript": "And the detective's professional instincts got the upper hand of his friendliness.. Not the least in the world. Not as much as you do. Was the cool answer.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "6432-63722-0018"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "4e5d203925e8266108ab49c14efc21f45bde3b9a252f8e6f145b845a26c9ab28",
+        "decode_wall_seconds": 0.835849905,
+        "failure": null,
+        "raw_lines": [
+          "I happened to see those candlesticks in the window of Singafut's shop the other day.",
+          "And I made up my mind to buy them when I had a chance."
+        ],
+        "raw_transcript": "I happened to see those candlesticks in the window of Singafut's shop the other day. And I made up my mind to buy them when I had a chance.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "6432-63722-0019"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "a6c9c9c0a0609bfcfe92c47d92d36f721fe3e7f51a963456f14078b6a97ee89a",
+        "decode_wall_seconds": 0.288588881,
+        "failure": null,
+        "raw_lines": [
+          "Sure, held so tight we could hardly get it out."
+        ],
+        "raw_transcript": "Sure, held so tight we could hardly get it out.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "6432-63722-0026"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "157f884c8d794bb86e634eec20a04a1ddee879575146fef584c9694893f84729",
+        "decode_wall_seconds": 0.167724077,
+        "failure": null,
+        "raw_lines": [
+          "Simply because this watch"
+        ],
+        "raw_transcript": "Simply because this watch",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "6432-63722-0041"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "22e98f8372c3343cb3fd434eb4c919494836e624dd3cdc1c791fde775e567909",
+        "decode_wall_seconds": 0.67142367,
+        "failure": null,
+        "raw_lines": [
+          "Chuckled the Colonel.",
+          "As he skilfully played the luckless trout,",
+          "Now struggling to get loose from the hook."
+        ],
+        "raw_transcript": "Chuckled the Colonel. As he skilfully played the luckless trout, Now struggling to get loose from the hook.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "6432-63723-0000"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "0550a0846286572dee44bfd8dbc1088b09f035f1b6a4c9030edce425a8f4e972",
+        "decode_wall_seconds": 0.306126706,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "No, I wasn't thinking of that."
+        ],
+        "raw_transcript": "No, I wasn't thinking of that.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "6432-63723-0003"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "3b1e9d5b685e60388b56b309c79728605d86305413a1e9546764ab7dabf66e10",
+        "decode_wall_seconds": 0.255807762,
+        "failure": null,
+        "raw_lines": [
+          "It had a double reputation, so to speak."
+        ],
+        "raw_transcript": "It had a double reputation, so to speak.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "6432-63723-0020"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "18e9f6741670f746c268ac785b2fde79b9a48581e9152ae5c271d90a4b5fda07",
+        "decode_wall_seconds": 1.142078543,
+        "failure": null,
+        "raw_lines": [
+          "Grave, and even reverend, the conventions assembled in its ballroom, and politicians of the upper, if not better class, were frequently seen in its dining-room or cafe.",
+          "F.A."
+        ],
+        "raw_transcript": "Grave, and even reverend, the conventions assembled in its ballroom, and politicians of the upper, if not better class, were frequently seen in its dining-room or cafe. F.A.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "6432-63723-0021"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "5b6a4b18f6a59b2ec31ca560312e9c348894eb7de80d65f4154a8ae6ae16e923",
+        "decode_wall_seconds": 0.43545832,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "Now, as to certain matters in the store on the morning of the murder,"
+        ],
+        "raw_transcript": "Now, as to certain matters in the store on the morning of the murder,",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "6432-63723-0044"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "f576a79985199ce60b578b5a1a7b7795b6b59de6855b15c50ff455c5bef49f73",
+        "decode_wall_seconds": 0.783364358,
+        "failure": null,
+        "raw_lines": [
+          "I went over them near the day and noticed some were missing.",
+          "Though I saw them all when I paid a visit to her just a short time before she was killed."
+        ],
+        "raw_transcript": "I went over them near the day and noticed some were missing. Though I saw them all when I paid a visit to her just a short time before she was killed.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "6432-63723-0055"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "e8b6cc90f904bb96ff2d1815b1b6205f3d61ed3e0874700f9b464c78100fcb89",
+        "decode_wall_seconds": 0.566528155,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "In autumn.",
+          "The woodcutters always came and felled some of the largest trees."
+        ],
+        "raw_transcript": "Yeah In autumn. The woodcutters always came and felled some of the largest trees.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "672-122797-0007"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "64c967e8d1ccb0bfe1831eceaf0354153fc646be323b24a79d9cee2a48d4fed7",
+        "decode_wall_seconds": 0.320446884,
+        "failure": null,
+        "raw_lines": [
+          "Rejoice in thy growth, said the sunbeam."
+        ],
+        "raw_transcript": "Rejoice in thy growth, said the sunbeam.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "672-122797-0010"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "18c68e00cd9434477fa69c475e48410ad37a63fa67b6acd20a1661246a5de351",
+        "decode_wall_seconds": 0.726631317,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "But the tree,",
+          "Did not rejoice at all.",
+          "He grew and grew and was green both winter and summer."
+        ],
+        "raw_transcript": "But the tree, Did not rejoice at all. He grew and grew and was green both winter and summer.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "672-122797-0020"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "ea1a8b30b768bf0222e66f21d3de560e81ab884c12900d8cf8d983cb96a219bf",
+        "decode_wall_seconds": 1.666297052,
+        "failure": null,
+        "raw_lines": [
+          "The axe struck deep into the very pith.",
+          "The tree fell to the earth with a sigh.",
+          "He felt a pang.",
+          "It was like a swoon.",
+          "He could not think of happiness.",
+          "For he was sorrowful at being separated from his home.",
+          "From the place where he had sprung up."
+        ],
+        "raw_transcript": "The axe struck deep into the very pith. The tree fell to the earth with a sigh. He felt a pang. It was like a swoon. He could not think of happiness. For he was sorrowful at being separated from his home. From the place where he had sprung up.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "672-122797-0022"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "f9ddf488b4ac7e88d8fb9e0b0d446947def3a27e5a9a65287b257c67a797f198",
+        "decode_wall_seconds": 1.324940691,
+        "failure": null,
+        "raw_lines": [
+          "There too were large easy chairs, silken sofas, large tables, full of picture books and full of toys worth hundreds and hundreds of.",
+          "100s of crowns.",
+          "At least.",
+          "The children said so."
+        ],
+        "raw_transcript": "There too were large easy chairs, silken sofas, large tables, full of picture books and full of toys worth hundreds and hundreds of. 100s of crowns. At least. The children said so.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "672-122797-0026"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "9d4a2dcdc1de6f2b11076e7cf0d2770970ed903740b4d699fbd047db859014a2",
+        "decode_wall_seconds": 0.242541368,
+        "failure": null,
+        "raw_lines": [
+          "How kind man is, after all!"
+        ],
+        "raw_transcript": "How kind man is, after all!",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "672-122797-0047"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "5fea61ccbea44affdae908d5fedfa39c41a7643c938a7b6e525e3f58b6b16450",
+        "decode_wall_seconds": 0.4765067,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "Who is humpy, dumpy?",
+          "Asked the mice."
+        ],
+        "raw_transcript": "Who is humpy, dumpy? Asked the mice.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "672-122797-0058"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "e9b5b2f8700f7fa3a02b6683ff14093dde79cef38130c9ff77bfa0aa3cd97018",
+        "decode_wall_seconds": 0.220407647,
+        "failure": null,
+        "raw_lines": [
+          "It is a very stupid story."
+        ],
+        "raw_transcript": "It is a very stupid story.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "672-122797-0060"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "145728ec90e2a99a42515a2890d6bdec465953ee621faaa2c7d524091ddf9217",
+        "decode_wall_seconds": 0.441863761,
+        "failure": null,
+        "raw_lines": [
+          "Why, one morning there came a quantity of people and set to work in the loft."
+        ],
+        "raw_transcript": "Why, one morning there came a quantity of people and set to work in the loft.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "672-122797-0066"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "60e872202349eceed97ff51eea0209b3882d551c045285c34d5a1d271c173595",
+        "decode_wall_seconds": 0.568317807,
+        "failure": null,
+        "raw_lines": [
+          "The golden star of tinsel was still on the top of the tree and glittered in the sunshine."
+        ],
+        "raw_transcript": "The golden star of tinsel was still on the top of the tree and glittered in the sunshine.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "672-122797-0070"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "71d4bf4d69ad1bef5eb082296dbe7bf02d6948218a0508290c0fa810944bfe0b",
+        "decode_wall_seconds": 0.424483591,
+        "failure": null,
+        "raw_lines": [
+          "They were received in the little office by a man named Markham, who was the judge."
+        ],
+        "raw_transcript": "They were received in the little office by a man named Markham, who was the judge.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "6829-68769-0009"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "f5590c067c886a21413fe4cce08cc5db2228b93263d5f2acd4d538c87c02672b",
+        "decode_wall_seconds": 0.393827009,
+        "failure": null,
+        "raw_lines": [
+          "Worse, Tom, worse than error, replied the jailer gloomily."
+        ],
+        "raw_transcript": "Worse, Tom, worse than error, replied the jailer gloomily.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "6829-68769-0017"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "03bba5150f7a290b4667bfa96f4be003b0e08b1430455e2e18fef023d253a655",
+        "decode_wall_seconds": 0.429569365,
+        "failure": null,
+        "raw_lines": [
+          "He spoke simply, but paced up and down the narrow cell in front of them."
+        ],
+        "raw_transcript": "He spoke simply, but paced up and down the narrow cell in front of them.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "6829-68769-0026"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "d711c15ee42e680666773fab7370197073c9f1362572248885f6a63900a9a063",
+        "decode_wall_seconds": 0.324846909,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "I'm not electioneering just now."
+        ],
+        "raw_transcript": "Yeah. I'm not electioneering just now.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "6829-68769-0041"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "a334df4bd225cb32a16499026f1465e528a419c1096c113ea23c901c20d18955",
+        "decode_wall_seconds": 0.222616821,
+        "failure": null,
+        "raw_lines": [
+          "I'll pay all the cost besides."
+        ],
+        "raw_transcript": "I'll pay all the cost besides.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "6829-68769-0045"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "9b8d313ae630be0677df66f4589ddb942652f1a9d9e9b6d5b25337280fb8065a",
+        "decode_wall_seconds": 0.344030298,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "beth uneasy at his silence nudged him"
+        ],
+        "raw_transcript": "Yeah. beth uneasy at his silence nudged him",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "6829-68769-0050"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "1a69cacd178dc3e50ffc7bc3c3b1ad55ed3dbf21e0b8fe98596829a3921455c5",
+        "decode_wall_seconds": 0.790009252,
+        "failure": null,
+        "raw_lines": [
+          "The weak need contingency must be strengthened and fortified, and a couple of hundred votes in one way or the other secured from the opposition."
+        ],
+        "raw_transcript": "The weak need contingency must be strengthened and fortified, and a couple of hundred votes in one way or the other secured from the opposition.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "6829-68771-0002"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "c5f8fed96deac07476a9e8b0dd2752a4e3c5f164af584587f4f5f364b2e4bb52",
+        "decode_wall_seconds": 0.460654211,
+        "failure": null,
+        "raw_lines": [
+          "\"'You speak like an educated person,' said Beth wonderingly. \"'Where is your home?'"
+        ],
+        "raw_transcript": "\"'You speak like an educated person,' said Beth wonderingly. \"'Where is your home?'",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "6829-68771-0023"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "1c814388f947ae04b00e1bd08df574ed245f5d26584cc4294bcac3b1d96657f3",
+        "decode_wall_seconds": 0.348626596,
+        "failure": null,
+        "raw_lines": [
+          "She even seemed mildly amused at the attention she attracted."
+        ],
+        "raw_transcript": "She even seemed mildly amused at the attention she attracted.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "6829-68771-0028"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "a9de097a09132f526d408b29efbd69e811d6a4265b337bba7196131f76f1f4c9",
+        "decode_wall_seconds": 0.36771513,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "\"'I wish I knew myself,' she cried, she cried."
+        ],
+        "raw_transcript": "Yeah. \"'I wish I knew myself,' she cried, she cried.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "6829-68771-0034"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "6c75b37e80b09c7a39d75b802ae8b23d88b730c3375ba8b4120a9748ed83553b",
+        "decode_wall_seconds": 0.414352353,
+        "failure": null,
+        "raw_lines": [
+          "It might have seemed that a trout of this size was a fairly substantial meal."
+        ],
+        "raw_transcript": "It might have seemed that a trout of this size was a fairly substantial meal.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "7176-88083-0006"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "f2a495dc603d24c18d8c2c4773ad78f7aae31e8f60f934e9469108bf31d960f0",
+        "decode_wall_seconds": 0.431215851,
+        "failure": null,
+        "raw_lines": [
+          "Straightway the hawk glided from his perch and darted after him."
+        ],
+        "raw_transcript": "Straightway the hawk glided from his perch and darted after him.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "7176-88083-0016"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "58a57b297ac057bfd30c508f2016cc400cd67439c6a41baead137e1b363ee6a4",
+        "decode_wall_seconds": 0.472700442,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "But at this point in the rapids, it was impossible for him to stay down."
+        ],
+        "raw_transcript": "Yeah. But at this point in the rapids, it was impossible for him to stay down.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "7176-88083-0017"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "915ed268885a5b1a9dbbef845c157e139563de27a82c54dc2a2e4e424414ad00",
+        "decode_wall_seconds": 0.602413236,
+        "failure": null,
+        "raw_lines": [
+          "As he flew, his downreaching clutching talons were not half a yard above the fugitive's head."
+        ],
+        "raw_transcript": "As he flew, his downreaching clutching talons were not half a yard above the fugitive's head.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "7176-88083-0019"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "964729d7961a9739e1624c13bc24488d7a6e40b3992ef17d06238204d913af8c",
+        "decode_wall_seconds": 1.029318333,
+        "failure": null,
+        "raw_lines": [
+          "The hawk, embittered by the loss of his first quarry, had become as dogged in pursuit as a weasel, not to be shaken off or evaded or deceived."
+        ],
+        "raw_transcript": "The hawk, embittered by the loss of his first quarry, had become as dogged in pursuit as a weasel, not to be shaken off or evaded or deceived.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "7176-88083-0022"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "c6bfdd1f5660b1a1a665760876070474e42fd10c360117f74ca799d840a03096",
+        "decode_wall_seconds": 0.221534689,
+        "failure": null,
+        "raw_lines": [
+          "Ham, to be or not to be."
+        ],
+        "raw_transcript": "Ham, to be or not to be.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "7176-92135-0010"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "b24b4edc43388fc61ed80514327f03ef33c878f7234d26a6a0db0515c5f47252",
+        "decode_wall_seconds": 1.809400555,
+        "failure": null,
+        "raw_lines": [
+          "Indeed, in resolution being the keynote of Hamlet's \"Salad de Qui\", a clever player could to some extent indicate the whole 30 lines by a silage working of the jaw.",
+          "Of the job, but at the same time it would be idle to deny that he would miss the finer shades of the dramatist's meaning."
+        ],
+        "raw_transcript": "Indeed, in resolution being the keynote of Hamlet's \"Salad de Qui\", a clever player could to some extent indicate the whole 30 lines by a silage working of the jaw. Of the job, but at the same time it would be idle to deny that he would miss the finer shades of the dramatist's meaning.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "7176-92135-0012"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "206895b1af02869c238c351950a69dc9910c1061456437156944f768d7286686",
+        "decode_wall_seconds": 0.64951527,
+        "failure": null,
+        "raw_lines": [
+          "In the old \"Badly Made\" play, it was frequently necessary for one of the characters to take the audience into his confidence."
+        ],
+        "raw_transcript": "In the old \"Badly Made\" play, it was frequently necessary for one of the characters to take the audience into his confidence.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "7176-92135-0017"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "7c5026ecfd23afde63948c985be42a2fe7ba7e8093c53b48e1e10d952821cafa",
+        "decode_wall_seconds": 0.260408255,
+        "failure": null,
+        "raw_lines": [
+          "I want double nine.",
+          "Hello?"
+        ],
+        "raw_transcript": "I want double nine. Hello?",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "7176-92135-0019"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "8124f10c6116a0b0df748e766ac66c1e8412419b016cadac1e7ad183915b5b40",
+        "decode_wall_seconds": 0.721799775,
+        "failure": null,
+        "raw_lines": [
+          "In novels, the hero has often pushed his meals away untasted, but no steed hero would do anything so unnatural as this."
+        ],
+        "raw_transcript": "In novels, the hero has often pushed his meals away untasted, but no steed hero would do anything so unnatural as this.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "7176-92135-0042"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "c04bcf38f54c8be366f772faa48104d58ce0d5a5728387b54bfcb53e5051727b",
+        "decode_wall_seconds": 0.436135192,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "He brought him to the ground with a single blow across the kidneys."
+        ],
+        "raw_transcript": "He brought him to the ground with a single blow across the kidneys.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8131-117016-0027"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "dd31f3406abc07c97a195a8e0b73b46677d4354ac268d07efeb507d9ba549165",
+        "decode_wall_seconds": 0.600621208,
+        "failure": null,
+        "raw_lines": [
+          "Yet fitted with the dire predictions of security,",
+          "And what the spying Gordon was going to do according to them."
+        ],
+        "raw_transcript": "Yet fitted with the dire predictions of security, And what the spying Gordon was going to do according to them.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8131-117016-0053"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "57ad914d3c2a938f032b2d9e440122719ce39c93cde2b48cc69941b81eae8924",
+        "decode_wall_seconds": 0.409092205,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "Because Izzy is always honest according to how he sees it."
+        ],
+        "raw_transcript": "Because Izzy is always honest according to how he sees it.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8131-117016-0056"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "17d2997f298d64f5fe1f1550a4ac00a17c6be7fa163e0111c3aae5d2433e03d6",
+        "decode_wall_seconds": 0.452968806,
+        "failure": null,
+        "raw_lines": [
+          "Must have been making a big contact in something.",
+          "50-50?"
+        ],
+        "raw_transcript": "Must have been making a big contact in something. 50-50?",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8131-117017-0012"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "74faf811ee13ad6e583f0a4be8ab32a0544ae7c5bceb6a12ee2956a7197c8719",
+        "decode_wall_seconds": 0.640692975,
+        "failure": null,
+        "raw_lines": [
+          "Gordon had heard of the friendly interest charged on the side here.",
+          "But he shook his head.",
+          "Wrong is the"
+        ],
+        "raw_transcript": "Gordon had heard of the friendly interest charged on the side here. But he shook his head. Wrong is the",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8131-117017-0022"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "2e3ecb3eac93108e9c9363c5acde0eaa28618bfe4ae05402235570c268238a90",
+        "decode_wall_seconds": 1.900863313,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "And if any of the other cops had private rackets of their own,",
+          "Izzy was undoubtedly the man to find it out.",
+          "and use the information.",
+          "With a beat such as that.",
+          "Even going halves.",
+          "And with all the graph to the upper brackets",
+          "He'd still be able to make his pile in a matter of months."
+        ],
+        "raw_transcript": "And if any of the other cops had private rackets of their own, Izzy was undoubtedly the man to find it out. and use the information. With a beat such as that. Even going halves. And with all the graph to the upper brackets He'd still be able to make his pile in a matter of months.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8131-117017-0030"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "0e0079e1e7bdc00b6667ec6d4dc59accf6ff240b843f6a9c6ec0de1ff7169483",
+        "decode_wall_seconds": 0.453360622,
+        "failure": null,
+        "raw_lines": [
+          "The captain looked completely beaten as he came into the room and dropped into the bench."
+        ],
+        "raw_transcript": "The captain looked completely beaten as he came into the room and dropped into the bench.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8131-117017-0031"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "17c642693ba6b4bf2af92a39ad96e2b996bd2124e9e5a3c86262861bbe97548b",
+        "decode_wall_seconds": 0.389694363,
+        "failure": null,
+        "raw_lines": [
+          "Credit had been established again.",
+          "And the businesses were open."
+        ],
+        "raw_transcript": "Credit had been established again. And the businesses were open.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8131-117029-0003"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "7ad90e941d1f48876e0aec0b819da35b488df9d7c2511a379e51fb83239a0e71",
+        "decode_wall_seconds": 1.029515443,
+        "failure": null,
+        "raw_lines": [
+          "That's Mars. Gordon echoed the other's comment.",
+          "Why don't you pull off the planet fats?",
+          "You could go back to Earth, I'd guess.",
+          "The other nodded."
+        ],
+        "raw_transcript": "That's Mars. Gordon echoed the other's comment. Why don't you pull off the planet fats? You could go back to Earth, I'd guess. The other nodded.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8131-117029-0010"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "872ba78c4d85dbed36ea4d6c434a28f293a7868ded7f0ce999e44b9503eb5b1a",
+        "decode_wall_seconds": 0.650427179,
+        "failure": null,
+        "raw_lines": [
+          "And I paid her the pay we owe you from the time you began using your badge.",
+          "She's out shopping."
+        ],
+        "raw_transcript": "And I paid her the pay we owe you from the time you began using your badge. She's out shopping.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8131-117029-0018"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "5b5e66e1209c09239289cf5daa4d2e70e5184100fba432e53a4df43c6d3dee1d",
+        "decode_wall_seconds": 1.870348682,
+        "failure": null,
+        "raw_lines": [
+          "While the former foretold that the Scottish Covenanters.",
+          "were secretly forming a union with the English Parliament.",
+          "And inculcated the necessity of preventing them by some vigorous undertaking.",
+          "The latter still insisted",
+          "That every such attempt would precipitate them into measures to which otherwise they were not perhaps inclined."
+        ],
+        "raw_transcript": "While the former foretold that the Scottish Covenanters. were secretly forming a union with the English Parliament. And inculcated the necessity of preventing them by some vigorous undertaking. The latter still insisted That every such attempt would precipitate them into measures to which otherwise they were not perhaps inclined.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8224-274381-0002"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "a8761cb0650b19ff324049b451ecbd966ec8a75cb4a0e1377dd06e3b50dfbab9",
+        "decode_wall_seconds": 1.133870035,
+        "failure": null,
+        "raw_lines": [
+          "The king's ears were now open to Montrose's councils.",
+          "Who proposed none but the boldest and most daring?",
+          "Agreeably to the desperate state of the royal cause in Scotland."
+        ],
+        "raw_transcript": "The king's ears were now open to Montrose's councils. Who proposed none but the boldest and most daring? Agreeably to the desperate state of the royal cause in Scotland.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8224-274381-0003"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "7bf8c57cf2f655f9d3ffd525d0f4c8e7a97a2307d2de7b58a8f093b6986402b7",
+        "decode_wall_seconds": 0.752822182,
+        "failure": null,
+        "raw_lines": [
+          "By quick marches through these inaccessible mountains.",
+          "That general freed himself from the superior forces of the Covenanters."
+        ],
+        "raw_transcript": "By quick marches through these inaccessible mountains. That general freed himself from the superior forces of the Covenanters.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8224-274381-0007"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "232d67820e03e6d0295f4ce4c3a3f1c197581859a771ee420c52087130ef2e9d",
+        "decode_wall_seconds": 1.711145601,
+        "failure": null,
+        "raw_lines": [
+          "With these and some reinforcements of the Athol men and Macdonalds, whom he had recalled.",
+          "Montrose fell suddenly upon Argyle's country.",
+          "And let loose upon it all the rage of war.",
+          "Carrying off the cattle, burning the houses and putting the inhabitants to the sword."
+        ],
+        "raw_transcript": "With these and some reinforcements of the Athol men and Macdonalds, whom he had recalled. Montrose fell suddenly upon Argyle's country. And let loose upon it all the rage of war. Carrying off the cattle, burning the houses and putting the inhabitants to the sword.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8224-274381-0008"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "fd724fb29fb68ed0e1f55e580b827fe6cc892b7f7dae05497376ebac28534342",
+        "decode_wall_seconds": 1.434632245,
+        "failure": null,
+        "raw_lines": [
+          "Historians at least.",
+          "Perhaps from their own ignorance and inexperience.",
+          "Have not remarked any thing but a headlong, impetuous conduct.",
+          "Each party hurrying to a battle.",
+          "Where valor and fortune chiefly determine the success."
+        ],
+        "raw_transcript": "Historians at least. Perhaps from their own ignorance and inexperience. Have not remarked any thing but a headlong, impetuous conduct. Each party hurrying to a battle. Where valor and fortune chiefly determine the success.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8224-274381-0017"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "f2a327d57bb4644f44fb196a47edf44698a580260c861cb91546d7a76365a26f",
+        "decode_wall_seconds": 0.306728371,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "Or hath he given us any gift?"
+        ],
+        "raw_transcript": "Yeah Or hath he given us any gift?",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8224-274384-0003"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "974484841e5bf438f5973fa9cad58eb5a147e926a3ede71363405644a208d15c",
+        "decode_wall_seconds": 0.719311175,
+        "failure": null,
+        "raw_lines": [
+          "Another preacher, after reproaching him to his face with his misgovernment.",
+          "Ordered this psalm to be sung."
+        ],
+        "raw_transcript": "Another preacher, after reproaching him to his face with his misgovernment. Ordered this psalm to be sung.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8224-274384-0005"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "1748e3b33c9411f0bdcd6e42a7e9dbe0261a998f59ac391f2499735db8499652",
+        "decode_wall_seconds": 0.367787301,
+        "failure": null,
+        "raw_lines": [
+          "The Parliament and the Scots laid their proposals before the King."
+        ],
+        "raw_transcript": "The Parliament and the Scots laid their proposals before the King.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8224-274384-0009"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "6884a1424702e54ae99f5cf7b14d69ac2f1071ad714916c4e6c36b22b079aa80",
+        "decode_wall_seconds": 1.190590912,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "Before the settlement of terms",
+          "The administration must be possessed entirely by the parliaments of both kingdoms.",
+          "And how incompatible that scheme with the liberty of the king?",
+          "Is easily imagined."
+        ],
+        "raw_transcript": "Yeah. Before the settlement of terms The administration must be possessed entirely by the parliaments of both kingdoms. And how incompatible that scheme with the liberty of the king? Is easily imagined.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8224-274384-0010"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "ac1b95f0e3a7d07a8a7d7a5fdcb24338eb2983cb2bee11b9c26dd1b36b13c36f",
+        "decode_wall_seconds": 0.486352649,
+        "failure": null,
+        "raw_lines": [
+          "His death,",
+          "In this conjuncture",
+          "Was a public misfortune."
+        ],
+        "raw_transcript": "His death, In this conjuncture Was a public misfortune.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8224-274384-0013"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "0f189dd6d997565973db83dd1693737f8cb020c3ec0fb5893bb550e5a0460dd9",
+        "decode_wall_seconds": 1.082684652,
+        "failure": null,
+        "raw_lines": [
+          "There is no logical impossibility in the hypothesis that the world sprang into being five minutes ago.",
+          "Exactly as it then was with the population that remembered a wholly unreal past."
+        ],
+        "raw_transcript": "There is no logical impossibility in the hypothesis that the world sprang into being five minutes ago. Exactly as it then was with the population that remembered a wholly unreal past.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8230-279154-0004"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "ee9fc691d23e8dd84a225a95b8dc0ec5418facb37d9df5611a5f335883e0a820",
+        "decode_wall_seconds": 0.718279702,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "All that I am doing is to use its logical tunability as a help in the analysis of what occurs when we remember."
+        ],
+        "raw_transcript": "All that I am doing is to use its logical tunability as a help in the analysis of what occurs when we remember.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8230-279154-0005"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "18259a4859df6b2c6ed4ef87f4dc2747d7ef6377929e7c316dfa021aff44d2c1",
+        "decode_wall_seconds": 1.390023385,
+        "failure": null,
+        "raw_lines": [
+          "Habit is a concept involving the occurrence of similar events at different times. If the behaviorist feels confident that there is such a phenomenon as habit, that",
+          "That can only be because he trusts his memory when it assures him that there have been other times"
+        ],
+        "raw_transcript": "Habit is a concept involving the occurrence of similar events at different times. If the behaviorist feels confident that there is such a phenomenon as habit, that That can only be because he trusts his memory when it assures him that there have been other times",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8230-279154-0007"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "ab5899e4b5325bcf7d7303e9153aa1f4205b54aacb107da0a06e45121c5d69e7",
+        "decode_wall_seconds": 0.279129252,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "Familiarity is a filling capable of degrees."
+        ],
+        "raw_transcript": "Familiarity is a filling capable of degrees.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8230-279154-0012"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "a909a7c30dbe40491c511e78c5bddf9d731202f2bf8f7547baae4d89853a4312",
+        "decode_wall_seconds": 0.986219322,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "There is, of course.",
+          "A difference between knowing the temporal relation of a remembered event to the present and knowing the time order of two remembered events."
+        ],
+        "raw_transcript": "Yeah There is, of course. A difference between knowing the temporal relation of a remembered event to the present and knowing the time order of two remembered events.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8230-279154-0018"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "c34cab405892581bbe9165a5ea7f69a5fc8adacf8f6f01a68f8c20f0365d5a5b",
+        "decode_wall_seconds": 0.687951241,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "If we had retained the subject or act in knowledge, the whole problem of memory would have been comparatively simple."
+        ],
+        "raw_transcript": "Yeah If we had retained the subject or act in knowledge, the whole problem of memory would have been comparatively simple.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8230-279154-0020"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "7bb901d553d1c503ff5b84797e81d0ea1fefe02907b46fa1e192d29314970146",
+        "decode_wall_seconds": 2.014947533,
+        "failure": null,
+        "raw_lines": [
+          "We might provisionally, though perhaps not quite correctly, define memory as that way of knowing about the past which has no analogue in our knowledge of the.",
+          "Of the future.",
+          "Such a definition would at least serve to mark the problem with which we are concerned, though some expectations may deserve to rank with memory as regards immediate.",
+          "In media, C.."
+        ],
+        "raw_transcript": "We might provisionally, though perhaps not quite correctly, define memory as that way of knowing about the past which has no analogue in our knowledge of the. Of the future. Such a definition would at least serve to mark the problem with which we are concerned, though some expectations may deserve to rank with memory as regards immediate. In media, C..",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8230-279154-0025"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "01c2b4eea853adf51612ee0ce651389e9ab5659e6d32de5643f909939927604d",
+        "decode_wall_seconds": 0.771830567,
+        "failure": null,
+        "raw_lines": [
+          "This distinction is vital to the understanding of memory, but it is not so easy to carry out in practice as it is to draw in theory."
+        ],
+        "raw_transcript": "This distinction is vital to the understanding of memory, but it is not so easy to carry out in practice as it is to draw in theory.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8230-279154-0026"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "dae55b42902512710c9fed5970adfdcabe7e33cbcc8c45e3e9326d0010d8f077",
+        "decode_wall_seconds": 0.329073618,
+        "failure": null,
+        "raw_lines": [
+          "It is this that is of interest to theory of knowledge."
+        ],
+        "raw_transcript": "It is this that is of interest to theory of knowledge.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8230-279154-0032"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "41cd11aa2b1d9c5a2437b57a3114d7b082e3264570a03e76f085f8144116ae9c",
+        "decode_wall_seconds": 1.726021208,
+        "failure": null,
+        "raw_lines": [
+          "Recognition in this sense",
+          "Does not necessarily involve more than a habit of association.",
+          "The kind of object we are seeing at the moment.",
+          "is associated with the word cat.",
+          "Or with an auditory image of purring, or whatever other characteristic we may happen to recognize in the cat of the moment."
+        ],
+        "raw_transcript": "Recognition in this sense Does not necessarily involve more than a habit of association. The kind of object we are seeing at the moment. is associated with the word cat. Or with an auditory image of purring, or whatever other characteristic we may happen to recognize in the cat of the moment.",
+        "source_partition": "test-clean",
+        "status": "DECODED",
+        "utterance_id": "8230-279154-0037"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "e1afc5c59e6fd43265426253fcfa71cbf1f1ba7cc437c270d002e1c7d1bb3330",
+        "decode_wall_seconds": 0.934292357,
+        "failure": null,
+        "raw_lines": [
+          "Old Mister Dinsmore had accepted a pressing invitation from his granddaughter and her husband to join the party.",
+          "And with the addition of servants, it was a large one."
+        ],
+        "raw_transcript": "Old Mister Dinsmore had accepted a pressing invitation from his granddaughter and her husband to join the party. And with the addition of servants, it was a large one.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8280-266249-0000"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "17c5bfecc32390354311dc06dc98e97e49dc1738143c8cc4c070c221ea2443e5",
+        "decode_wall_seconds": 0.889158949,
+        "failure": null,
+        "raw_lines": [
+          "as they were in no haste and the confinement of a railroad car would be very irksome to the younger children",
+          "it had been decided to make the journey by water"
+        ],
+        "raw_transcript": "as they were in no haste and the confinement of a railroad car would be very irksome to the younger children it had been decided to make the journey by water",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8280-266249-0001"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "2b7addb7e8f0c4261d399a103738cb1af668b741508de0b1df6b886b4eb57dff",
+        "decode_wall_seconds": 0.247959521,
+        "failure": null,
+        "raw_lines": [
+          "do you son was the smiling rejoinder"
+        ],
+        "raw_transcript": "do you son was the smiling rejoinder",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8280-266249-0008"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "97d44034d52ac16113c0631301a32633787b6dfad31066cd19948fea14111681",
+        "decode_wall_seconds": 0.539947047,
+        "failure": null,
+        "raw_lines": [
+          "Yeah.",
+          "With all my heart, if you will step into the gentleman's cabin where there is a light."
+        ],
+        "raw_transcript": "Yeah. With all my heart, if you will step into the gentleman's cabin where there is a light.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8280-266249-0013"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "f1e7c14513b1362cf49e540246c93612ce8d4568a425a183ca186c0de80eb192",
+        "decode_wall_seconds": 0.411919068,
+        "failure": null,
+        "raw_lines": [
+          "Is it strange then that smokers and chewers have a thousand ailments?"
+        ],
+        "raw_transcript": "Is it strange then that smokers and chewers have a thousand ailments?",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8280-266249-0017"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "37c988aa3c65426f767926af6245d0c6ebc81264a8a2fc3f9d919efdd990d28b",
+        "decode_wall_seconds": 0.964541474,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "no sir",
+          "What?",
+          "Know ye not that your body is the temple of the Holy Ghost, which is in you?",
+          "which ye have of god and ye are not your own"
+        ],
+        "raw_transcript": "no sir What? Know ye not that your body is the temple of the Holy Ghost, which is in you? which ye have of god and ye are not your own",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8280-266249-0023"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "3201b2ed8b752b74a95d81dabb95f4c5046ed02f6214601174c22ef89868bc14",
+        "decode_wall_seconds": 0.740621549,
+        "failure": null,
+        "raw_lines": [
+          "Yeah",
+          "there was a pause broken by young horace who had been watching a group of men gathered about a table at the further end of the room"
+        ],
+        "raw_transcript": "Yeah there was a pause broken by young horace who had been watching a group of men gathered about a table at the further end of the room",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8280-266249-0029"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "9c226977623a7ae81227230760174f9a12cc9459ae934f273ac5f5a08ff38ce0",
+        "decode_wall_seconds": 0.583093765,
+        "failure": null,
+        "raw_lines": [
+          "i wonder which of us it is remarked the first looking hard at our party",
+          "I don't know, but..."
+        ],
+        "raw_transcript": "i wonder which of us it is remarked the first looking hard at our party I don't know, but...",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8280-266249-0038"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "51b26cff03c6c29bfeaa58907b6b5cc04c6437ba929c2ef40209e79b4aa723cb",
+        "decode_wall_seconds": 0.783625991,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "They heard him in silence.",
+          "With a cool, phlegmatic indifference, most exasperating to one in his present mood."
+        ],
+        "raw_transcript": "They heard him in silence. With a cool, phlegmatic indifference, most exasperating to one in his present mood.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8280-266249-0041"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "4fb1ad769227aa6e708b894aec0e4f18a51310dcf5d8d6ce00893b6331bbd086",
+        "decode_wall_seconds": 1.113830355,
+        "failure": null,
+        "raw_lines": [
+          "A deep groan startled them.",
+          "And they sprang to their feet, pale and trembling with sudden terror.",
+          "Each holding his breath.",
+          "And straining his ear to catch a repetition of the dread sound."
+        ],
+        "raw_transcript": "A deep groan startled them. And they sprang to their feet, pale and trembling with sudden terror. Each holding his breath. And straining his ear to catch a repetition of the dread sound.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8280-266249-0052"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "28cb906ee0fb0b3eef44c884cc8e35aea1aa3b5fec232196e6458bc6f21b5dd0",
+        "decode_wall_seconds": 0.289984546,
+        "failure": null,
+        "raw_lines": [
+          "When it was the seven hundred and eighteenth night,"
+        ],
+        "raw_transcript": "When it was the seven hundred and eighteenth night,",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8461-258277-0000"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "3c4ce28ae93cd0930f4fffc07d4c421be2c410b93b00482428d5a4b0452b553d",
+        "decode_wall_seconds": 0.964021842,
+        "failure": null,
+        "raw_lines": [
+          "",
+          "So he told him what had befallen him, and added, If I know whither the rascal is gone, and where to find the knave,",
+          "I would pay him out."
+        ],
+        "raw_transcript": "So he told him what had befallen him, and added, If I know whither the rascal is gone, and where to find the knave, I would pay him out.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8461-258277-0010"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "c7380d612b7191083d4ec4bf9e96b2ec4949c01893aa2d22abeb55ff5b458ad4",
+        "decode_wall_seconds": 0.86171329,
+        "failure": null,
+        "raw_lines": [
+          "Answered Hassan, I know where he is.",
+          "And opening the door of the closet showed him the sweetmeat cellar within, drugged and senseless."
+        ],
+        "raw_transcript": "Answered Hassan, I know where he is. And opening the door of the closet showed him the sweetmeat cellar within, drugged and senseless.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8461-258277-0012"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "51093b7e9ea2ed499a06b06c0e4f83b2ae365a34ca59f31e23e5941815269fd8",
+        "decode_wall_seconds": 0.393324121,
+        "failure": null,
+        "raw_lines": [
+          "He replied, I have forty lads, but they are in Cairo."
+        ],
+        "raw_transcript": "He replied, I have forty lads, but they are in Cairo.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8461-258277-0016"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "1b0d6c55a3f66bc1aee79fd8a9e48e285406a66e3900916d66e807394971c836",
+        "decode_wall_seconds": 1.447089199,
+        "failure": null,
+        "raw_lines": [
+          "She returned in a little more than ten minutes, in the freshest toilette.",
+          "All pale, shimmering blue like the spring sky.",
+          "With poor grey gloves, and boots, and parasol,",
+          "And a bonnet that seemed made of azure butterflies."
+        ],
+        "raw_transcript": "She returned in a little more than ten minutes, in the freshest toilette. All pale, shimmering blue like the spring sky. With poor grey gloves, and boots, and parasol, And a bonnet that seemed made of azure butterflies.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8461-278226-0005"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "66abb3853488bbd5b283585b1deea24fc58319fbacf4b7c62942259cf4199df0",
+        "decode_wall_seconds": 0.670612785,
+        "failure": null,
+        "raw_lines": [
+          "De Brecy bowed low and in silence.",
+          "Threw himself upon a horse,",
+          "And galloped off through the wood."
+        ],
+        "raw_transcript": "De Brecy bowed low and in silence. Threw himself upon a horse, And galloped off through the wood.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8461-281231-0025"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "80ec1e8038b5ae8f2d637ead32152660c410941b8f0200a4007a8382b7894a0c",
+        "decode_wall_seconds": 0.758132453,
+        "failure": null,
+        "raw_lines": [
+          "During all this time, Michael of York sat mournfully apart, grieving for the loss of his daily-loved daughter, Rebecca."
+        ],
+        "raw_transcript": "During all this time, Michael of York sat mournfully apart, grieving for the loss of his daily-loved daughter, Rebecca.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8461-281231-0028"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "52bb00ec819d57b0abb6e888f543fe6c74d280b11194ce655928ac8d1552b238",
+        "decode_wall_seconds": 1.592546495,
+        "failure": null,
+        "raw_lines": [
+          "The templar is fled.",
+          "Said the bracey.",
+          "In answer to the prince's eager questions.",
+          "From the birth you will never see more, and,",
+          "He added in a low and emphatic tone.",
+          "Richard is in England.",
+          "I have seen him and spoken with him."
+        ],
+        "raw_transcript": "The templar is fled. Said the bracey. In answer to the prince's eager questions. From the birth you will never see more, and, He added in a low and emphatic tone. Richard is in England. I have seen him and spoken with him.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8461-281231-0030"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "758b7a3a4b5ee41e9b5b3ae33a7da03c889cc6cdbbcf7b3bcf1b25ea2789150d",
+        "decode_wall_seconds": 1.273106306,
+        "failure": null,
+        "raw_lines": [
+          "He appeared to the bracelet to assist him in his project, and became at once deeply suspicious of the knight's loyalty towards him when he declined to lift hand against the man who had.",
+          "Who had spared his own life."
+        ],
+        "raw_transcript": "He appeared to the bracelet to assist him in his project, and became at once deeply suspicious of the knight's loyalty towards him when he declined to lift hand against the man who had. Who had spared his own life.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8461-281231-0031"
+      },
+      {
+        "canonical_preprocessed_file_sha256": "2f91e570352fdf9465c32d368737f4fad382896a9b8564ded5f62f15a8503bbf",
+        "decode_wall_seconds": 0.651059748,
+        "failure": null,
+        "raw_lines": [
+          "At his feet was placed the table occupied by two scribes, whose duty it was to record the proceedings of the day."
+        ],
+        "raw_transcript": "At his feet was placed the table occupied by two scribes, whose duty it was to record the proceedings of the day.",
+        "source_partition": "test-other",
+        "status": "DECODED",
+        "utterance_id": "8461-281231-0037"
+      }
+    ],
+    "reference_transcripts_loaded_by_decoder": false,
+    "total_decode_wall_seconds": 159.435746372
+  },
+  "run": {
+    "comparative_performance_authorized": false,
+    "container_image": "python:3.12.11-bookworm@sha256:13c9584604a99ca134c4f41800f74ffc64ee6ac8cf555cf1e704a6087fc84f12",
+    "github_job": "capture-b2e02",
+    "github_repository": "TheHalfMoon/Wispral",
+    "github_run_attempt": 1,
+    "github_run_id": 33963021322,
+    "machine": "x86_64",
+    "python": "3.12.11",
+    "repository_revision": "76611d5436f1ca6313d5c0832a02e3e7583b0337",
+    "runner_arch": "X64",
+    "runner_os": "Linux",
+    "system": "Linux",
+    "timing_semantics": "DIAGNOSTIC_ONLY"
+  },
+  "schema_version": "000b2-public-b2e02-decode-v1",
+  "state": "C0_PRIMARY_DECODE_CAPTURED",
+  "task": "B2E02"
+}
