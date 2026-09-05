@@ -36,6 +36,7 @@ EXPECTED_MODEL_SHA256 = "a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897af
 REGULAR_CHUNK_SAMPLES = 8000
 FINAL_ZERO_SAMPLES = 10560
 FINAL_ZERO_CHUNKS = [8000, 2560]
+RAW_TRANSCRIPT_MATERIALIZATION = "STREAM_CPP_COMMIT_EVERY_9_PLUS_FINAL_PENDING"
 EXPECTED_CANDIDATE_IDS = [
     "moonshine-compact",
     "moonshine-balanced",
@@ -235,10 +236,10 @@ def verify_build_identity(identity: dict[str, Any]) -> None:
 
 def reconstruct_stream_text(iterations: list[str]) -> str:
     result = ""
-    for index, text in enumerate(iterations, start=1):
-        result += text
-        if index % 9 == 0:
-            result += "\n"
+    for committed in range(9, len(iterations) + 1, 9):
+        result += iterations[committed - 1] + "\n"
+    if iterations and len(iterations) % 9:
+        result += iterations[-1]
     return result
 
 
@@ -294,6 +295,7 @@ def verify_evidence(evidence_path: Path) -> dict[str, Any]:
         "length_ms": 5000,
         "max_tokens": 0,
         "prompt_carryover": False,
+        "raw_transcript_materialization": RAW_TRANSCRIPT_MATERIALIZATION,
         "regular_chunk_samples": REGULAR_CHUNK_SAMPLES,
         "repository_context_used": False,
         "sampling": "GREEDY",
@@ -369,7 +371,7 @@ def verify_evidence(evidence_path: Path) -> dict[str, Any]:
         lines = row.get("raw_lines")
         require(isinstance(lines, list) and all(isinstance(value, str) for value in lines), f"raw iteration lines malformed: {uid}")
         require(row.get("stream_iteration_count") == len(lines), f"stream iteration accounting drift: {uid}")
-        require(row.get("raw_transcript") == reconstruct_stream_text(lines), f"raw stream reconstruction drift: {uid}")
+        require(row.get("raw_transcript") == reconstruct_stream_text(lines), f"effective stream transcript reconstruction drift: {uid}")
         require(isinstance(row.get("decode_wall_seconds"), (int, float)) and row["decode_wall_seconds"] >= 0, f"timing malformed: {uid}")
 
         speech_count = row.get("speech_sample_count")
