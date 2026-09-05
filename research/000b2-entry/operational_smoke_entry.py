@@ -19,6 +19,7 @@ HERE = Path(__file__).resolve().parent
 B1_REGISTRY = HERE.parent / "000b1" / "qualified-candidates.json"
 AMENDMENT = HERE / "artifact-size-amendment.json"
 B2R02_HARNESS = HERE.parent / "000b2-public" / "moonshine_streaming_c0.py"
+B2R02_VERIFIER = HERE.parent / "000b2-public" / "verify_b2r02_moonshine_streaming.py"
 EXPECTED_CORRECTIONS = {
     ("sherpa-onnx-compact", "tokens.txt"),
     ("sherpa-onnx-balanced", "tokens.txt"),
@@ -35,10 +36,10 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def load_b2r02_harness() -> Any:
-    spec = importlib.util.spec_from_file_location("wispral_b2r02_operational_smoke", B2R02_HARNESS)
+def load_module(name: str, path: Path) -> Any:
+    spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
-        raise RuntimeError("unable to load B2R02 Moonshine streaming C0 harness")
+        raise RuntimeError(f"unable to load module: {path}")
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
@@ -97,7 +98,12 @@ def bound_run_moonshine(candidate_id: str, work_dir: Path, wav_path: Path) -> di
     from moonshine_voice import ModelArch, Transcriber
     from moonshine_voice.download import download_model_from_info, find_model_info
 
-    harness = load_b2r02_harness()
+    harness = load_module("wispral_b2r02_operational_smoke", B2R02_HARNESS)
+    verifier = load_module("wispral_b2r02_operational_verifier", B2R02_VERIFIER)
+    verifier.verify_canonical_authority(harness)
+    verifier.verify_structural_harness(harness)
+    verifier.verify_qualification_evidence()
+
     if harness.EXPECTED_RUNTIME_REVISION != family["runtime"]["revision"]:
         raise RuntimeError("B2R02 harness runtime revision differs from candidate authority")
     if harness.EXPECTED_RUNTIME_DISTRIBUTION != "moonshine-voice" or harness.EXPECTED_RUNTIME_VERSION != version:
@@ -144,6 +150,7 @@ def bound_run_moonshine(candidate_id: str, work_dir: Path, wav_path: Path) -> di
                 "decode_completed": True,
                 "result_line_count_observed": line_count,
                 "b2r02_streaming_c0_harness_executed": True,
+                "b2r02_static_verifier_executed": True,
                 "speech_samples": trace.speech_samples,
                 "speech_chunk_samples": list(trace.speech_chunk_samples),
                 "final_zero_pad_samples": trace.zero_pad_samples,
