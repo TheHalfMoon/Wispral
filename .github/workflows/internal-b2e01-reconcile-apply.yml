@@ -1,0 +1,259 @@
+name: Internal B2E01 Reconciliation Apply
+
+on:
+  push:
+    branches:
+      - docs/000b2-reconcile-after-b2e01
+    paths:
+      - '.github/workflows/internal-b2e01-reconcile-apply.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout reconciliation branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: docs/000b2-reconcile-after-b2e01
+          fetch-depth: 0
+
+      - name: Apply bounded B2E01 reconciliation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          ROOT = Path('.')
+          B2E01_MERGE = 'bb3acfae1f39669d74118a564e57a131731484d3'
+          B2E01_HEAD = '9a2b4dd2d79c445d31a09a6c435af6cbe43e6808'
+          NEXT = 'Execute B2E02 only: decode the identical frozen P0 public-human subset with candidate cell 2 (`moonshine-balanced`) under unchanged frozen C0, preserve raw transcript/failure/run evidence, keep repository/test-specific context and candidate-specific audio transforms OFF, and preserve DIAGNOSTIC timing semantics. Do not begin B2E03 or any later candidate cell until B2E02 is canonical.'
+
+          def replace(path, old, new, count=1):
+              p = ROOT / path
+              text = p.read_text(encoding='utf-8')
+              actual = text.count(old)
+              if actual != count:
+                  raise SystemExit(f'{path}: expected {count} occurrences, found {actual}: {old[:120]!r}')
+              p.write_text(text.replace(old, new), encoding='utf-8')
+
+          def replace_at_least(path, old, new, minimum=1):
+              p = ROOT / path
+              text = p.read_text(encoding='utf-8')
+              actual = text.count(old)
+              if actual < minimum:
+                  raise SystemExit(f'{path}: expected at least {minimum} occurrences, found {actual}: {old[:120]!r}')
+              p.write_text(text.replace(old, new), encoding='utf-8')
+
+          # Machine-readable canonical frontier.
+          p = ROOT / 'research/000b2-public/readiness.json'
+          readiness = json.loads(p.read_text(encoding='utf-8'))
+          if readiness.get('completed_through') != 'B2P08':
+              raise SystemExit('readiness frontier drift before B2E01 reconciliation')
+          if not str(readiness.get('next_action', '')).startswith('Execute B2E01 only:'):
+              raise SystemExit('readiness B2E01 sole-action authority drift')
+          readiness['completed_through'] = 'B2E01'
+          readiness['next_action'] = NEXT
+          p.write_text(json.dumps(readiness, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          replace(
+              'specs/000B2-public-corpus-bakeoff/tasks.md',
+              '- [ ] `B2E01` Decode the frozen P0 public-human subset with candidate cell 1 under C0.',
+              '- [x] `B2E01` Decode the frozen P0 public-human subset with candidate cell 1 under C0.',
+          )
+
+          # Canonical current views. Preserve historical B2E01 evidence and move only the executable frontier.
+          current = ROOT / 'specs/CURRENT.md'
+          text = current.read_text(encoding='utf-8')
+          if '**Canonical B2E01 moonshine-compact execution merge:**' in text:
+              raise SystemExit('CURRENT already contains B2E01 canonical reconciliation')
+          proof = (
+              '**Canonical B2E01 moonshine-compact execution merge:** `bb3acfae1f39669d74118a564e57a131731484d3` from PR #50, merged by guarded expected-head merge commit from exact qualified head `9a2b4dd2d79c445d31a09a6c435af6cbe43e6808` against exact base `6607b1b1a13daebe1c267f82e3295be9b3bdea32`. The merge preserved capture/seal/provenance ancestry. Fresh exact-head B2E01 Evidence and Methodology qualification succeeded before merge, fresh independent CodeRabbit exact-range challenge comment `5551111214` reported no actionable substantive findings, and all seven exact-merge-head push workflows succeeded after merge. Canonical B2E01 Evidence run `33960299255`, job `101290913708`, checked out exact merge `bb3acfae1f39669d74118a564e57a131731484d3`, passed both fail-closed malformed freeze-digest regressions, reproduced `B2E01_EVIDENCE=PASS`, 240/240 decoded with 0 failures, duplicate semantic equivalence PASS, and raw-data boundary PASS. B2E02 was still unauthorized during that post-merge verification.\n\n'
+          )
+          marker = 'This file owns the executable specification frontier.'
+          if text.count(marker) != 1:
+              raise SystemExit('CURRENT frontier marker drift')
+          text = text.replace(marker, proof + marker)
+          replacements = [
+              ('current bounded execution unit `B2E01`', 'current bounded execution unit `B2E02`'),
+              ('B2E01 is the sole current bounded execution unit.', 'B2E02 is the sole current bounded execution unit.'),
+              ('B2E02 and all later candidate cells remain unauthorized', 'B2E03 and all later candidate cells remain unauthorized'),
+              ('Execute and canonically qualify `B2E01` only', 'Execute and canonically qualify `B2E02` only'),
+              ('B2E01 is now the only authorized bounded unit', 'B2E01 is canonical and B2E02 is now the only authorized bounded unit'),
+          ]
+          for old, new in replacements:
+              if old not in text:
+                  raise SystemExit(f'CURRENT missing frontier phrase: {old}')
+              text = text.replace(old, new)
+          old_route = 'B2P01 through B2P08 are complete and the final attempt manifest is frozen with `primary_decoding_started=false`. B2E02 is the sole current bounded execution unit. B2E03 and all later candidate cells remain unauthorized until B2E01 is separately qualified, merged, post-merge verified, and reconciled.'
+          if old_route in text:
+              text = text.replace(old_route, 'B2P01 through B2P08 and B2E01 are complete. The final pre-decode attempt manifest remains historically frozen with `primary_decoding_started=false`. B2E01 is canonical at merge `bb3acfae1f39669d74118a564e57a131731484d3`. B2E02 (`moonshine-balanced`) is the sole current bounded execution unit. B2E03 and all later candidate cells remain unauthorized until B2E02 is separately qualified, merged, post-merge verified, and reconciled.')
+          current.write_text(text, encoding='utf-8')
+
+          state = ROOT / 'docs/canonical/CURRENT_STATE.md'
+          text = state.read_text(encoding='utf-8')
+          if '**000B2 B2E01 moonshine-compact execution merge:**' in text:
+              raise SystemExit('CURRENT_STATE already contains B2E01 canonical reconciliation')
+          anchor = '**000B2 B2P08 pre-decode attempt-freeze merge:** `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d`\n'
+          if text.count(anchor) != 1:
+              raise SystemExit('CURRENT_STATE B2P08 merge header drift')
+          text = text.replace(anchor, anchor + '**000B2 B2E01 moonshine-compact execution merge:** `bb3acfae1f39669d74118a564e57a131731484d3`\n')
+          text = text.replace('current bounded execution unit is `B2E01`', 'B2E01 is canonical at merge `bb3acfae1f39669d74118a564e57a131731484d3`; current bounded execution unit is `B2E02`')
+          proof_heading = '## Canonical B2E01 public-human C0 execution proof\n\n'
+          proof_body = (
+              'PR #50 executed only candidate cell 1 (`moonshine-compact`) against the exact frozen P0 public-human subset under frozen C0 and merged as `bb3acfae1f39669d74118a564e57a131731484d3` from exact qualified head `9a2b4dd2d79c445d31a09a6c435af6cbe43e6808`. The guarded merge preserved capture/seal/provenance ancestry. Canonical evidence run `33928586213`, job `101202392820`, artifact `9957837509`, and the independently preserved duplicate run `33928583817`, job `101202331743`, artifact `9957866136`, contain the same 240 utterance identities and semantic records; both decoded 240/240 with zero failures. Timing remains `DIAGNOSTIC_ONLY`, no reference scoring or comparative ranking occurred, and `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`.\n\n'
+              'Fresh independent CodeRabbit exact-range challenge comment `5551111214` inspected base `6607b1b1a13daebe1c267f82e3295be9b3bdea32` through head `9a2b4dd2d79c445d31a09a6c435af6cbe43e6808` and reported no actionable substantive findings. All seven exact-merge-head push workflows on `bb3acfae1f39669d74118a564e57a131731484d3` completed successfully. B2E01 Evidence run `33960299255`, job `101290913708`, checked out that exact merge, passed malformed/missing freeze-digest fail-closed tests, emitted `B2E01_EVIDENCE=PASS`, `B2E01_DECODED=240`, `B2E01_FAILURES=0`, `B2E01_DUPLICATE_SEMANTIC_EQUIVALENCE=PASS`, `B2E02_AUTHORIZED=NO`, and `B2E01_RAW_DATA_BOUNDARY=PASS`. This post-merge proof authorizes only canonical reconciliation; B2E02 becomes executable only after this reconciliation itself is exact-head qualified, independently reviewed, guarded-merged, and post-merge verified.\n\n'
+          )
+          insert_before = '## Canonical B2 human-authority structure proof\n'
+          if text.count(insert_before) != 1:
+              raise SystemExit('CURRENT_STATE insertion heading drift')
+          text = text.replace(insert_before, proof_heading + proof_body + insert_before)
+          state.write_text(text, encoding='utf-8')
+
+          # Historical verifier phase extensions.
+          replace(
+              'research/000b2-public/capture_environment.py',
+              'elif allow_reconciled and completed_through in {"B2P07", "B2P08"}:',
+              'elif allow_reconciled and completed_through in {"B2P07", "B2P08", "B2E01"}:',
+          )
+          replace(
+              'research/000b2-public/capture_environment.py',
+              '        else:\n            require(attempt_state.get("frozen") is True, "B2P08 reconciliation must mark attempt frozen")\n            require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2P08 reconciliation must authorize B2E01 only")\n            require("Do not begin B2E02 or any later candidate cell until B2E01 is canonical." in next_action, "B2E01 successor boundary drift")',
+              '        elif completed_through == "B2P08":\n            require(attempt_state.get("frozen") is True, "B2P08 reconciliation must mark attempt frozen")\n            require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2P08 reconciliation must authorize B2E01 only")\n            require("Do not begin B2E02 or any later candidate cell until B2E01 is canonical." in next_action, "B2E01 successor boundary drift")\n        else:\n            require(attempt_state.get("frozen") is True, "post-B2E01 reconciliation must preserve the frozen attempt")\n            require(isinstance(next_action, str) and next_action.startswith("Execute B2E02 only:"), "B2E01 reconciliation must authorize B2E02 only")\n            require("Do not begin B2E03 or any later candidate cell until B2E02 is canonical." in next_action, "B2E02 successor boundary drift")',
+          )
+
+          replace(
+              'research/000b2-public/verify_candidate_revalidation.py',
+              '"""Accept B2P05 execution and canonical reconciliations through B2P08 with later gates closed."""',
+              '"""Accept B2P05 execution and canonical reconciliations through B2E01 with later gates closed."""',
+          )
+          replace(
+              'research/000b2-public/verify_candidate_revalidation.py',
+              'completed_through in {"B2P04", "B2P05", "B2P06", "B2P07", "B2P08"}',
+              'completed_through in {"B2P04", "B2P05", "B2P06", "B2P07", "B2P08", "B2E01"}',
+          )
+          replace(
+              'research/000b2-public/verify_candidate_revalidation.py',
+              '"unsupported B2P05-B2P08 readiness phase"',
+              '"unsupported B2P05-B2E01 readiness phase"',
+          )
+          replace(
+              'research/000b2-public/verify_candidate_revalidation.py',
+              '"candidate decoding must remain closed through B2P08 reconciliation"',
+              '"historical readiness candidate-decoding flag must remain false through B2E01 reconciliation"',
+          )
+          replace(
+              'research/000b2-public/verify_candidate_revalidation.py',
+              '    require(attempt.get("frozen") is True, "B2P08 reconciliation must mark the attempt manifest frozen")\n    require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2P08 reconciliation must authorize B2E01 only")\n    require("Do not begin B2E02 or any later candidate cell until B2E01 is canonical." in next_action, "B2E01 successor boundary drift")\n    return "B2P08_RECONCILED"',
+              '    require(attempt.get("frozen") is True, "B2P08 reconciliation must mark the attempt manifest frozen")\n    if completed_through == "B2P08":\n        require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2P08 reconciliation must authorize B2E01 only")\n        require("Do not begin B2E02 or any later candidate cell until B2E01 is canonical." in next_action, "B2E01 successor boundary drift")\n        return "B2P08_RECONCILED"\n    require(isinstance(next_action, str) and next_action.startswith("Execute B2E02 only:"), "B2E01 reconciliation must authorize B2E02 only")\n    require("Do not begin B2E03 or any later candidate cell until B2E02 is canonical." in next_action, "B2E02 successor boundary drift")\n    return "B2E01_RECONCILED"',
+          )
+
+          replace(
+              'research/000b2-public/verify_preprocessing_capture.py',
+              'completed in {"B2P05", "B2P06", "B2P07", "B2P08"}',
+              'completed in {"B2P05", "B2P06", "B2P07", "B2P08", "B2E01"}',
+          )
+          replace(
+              'research/000b2-public/verify_preprocessing_capture.py',
+              '"B2P06 verifier is valid through the B2P08-reconciled frontier"',
+              '"B2P06 verifier is valid through the B2E01-reconciled frontier"',
+          )
+          replace(
+              'research/000b2-public/verify_preprocessing_capture.py',
+              'if completed in {"B2P07", "B2P08"}:',
+              'if completed in {"B2P07", "B2P08", "B2E01"}:',
+          )
+          replace(
+              'research/000b2-public/verify_preprocessing_capture.py',
+              'require(attempt.get("frozen") is (completed == "B2P08"), "B2P08 freeze state must match reconciliation phase")',
+              'require(attempt.get("frozen") is (completed in {"B2P08", "B2E01"}), "B2P08 freeze state must remain frozen through B2E01 reconciliation")',
+          )
+          replace(
+              'research/000b2-public/verify_preprocessing_capture.py',
+              '        else:\n            require("- [x] `B2P08`" in tasks, "B2P08 reconciliation must mark B2P08 complete")\n            require("- [ ] `B2E01`" in tasks, "B2E01 must remain pending before execution")\n            require("- [ ] `B2E02`" in tasks, "B2E02 must remain unauthorized")\n            require("Execute B2E01 only" in str(readiness.get("next_action")), "B2P08 reconciliation must advance to B2E01")\n            require("Execute and canonically qualify `B2E01` only" in current, "CURRENT must authorize B2E01 only")',
+              '        elif completed == "B2P08":\n            require("- [x] `B2P08`" in tasks, "B2P08 reconciliation must mark B2P08 complete")\n            require("- [ ] `B2E01`" in tasks, "B2E01 must remain pending before execution")\n            require("- [ ] `B2E02`" in tasks, "B2E02 must remain unauthorized")\n            require("Execute B2E01 only" in str(readiness.get("next_action")), "B2P08 reconciliation must advance to B2E01")\n            require("Execute and canonically qualify `B2E01` only" in current, "CURRENT must authorize B2E01 only")\n        else:\n            require("- [x] `B2E01`" in tasks, "B2E01 reconciliation must mark B2E01 complete")\n            require("- [ ] `B2E02`" in tasks, "B2E02 must remain pending before execution")\n            require("Execute B2E02 only" in str(readiness.get("next_action")), "B2E01 reconciliation must advance to B2E02")\n            require("Execute and canonically qualify `B2E02` only" in current, "CURRENT must authorize B2E02 only")',
+          )
+
+          replace(
+              'research/000b2-public/verify_subset_freeze.py',
+              'readiness.get("completed_through") == "B2P08"',
+              'readiness.get("completed_through") in {"B2P08", "B2E01"}',
+          )
+          replace(
+              'research/000b2-public/verify_subset_freeze.py',
+              'if completed_through in {"B2P07", "B2P08"}:',
+              'if completed_through in {"B2P07", "B2P08", "B2E01"}:',
+          )
+          replace(
+              'research/000b2-public/verify_subset_freeze.py',
+              '        return "B2P08"\n\n    raise SystemExit(f"B2P04_FREEZE_VERIFIER=FAIL: unsupported completed_through state: {completed_through!r}")',
+              '        return "B2P08"\n\n    if completed_through == "B2E01":\n        require(preprocessing.get("resolved") is True, "B2E01 reconciliation must preserve preprocessing resolution")\n        require(environment.get("resolved") is True, "B2E01 reconciliation must preserve environment resolution")\n        require(public.get("subset_manifest_frozen") is True, "B2E01 reconciliation must preserve the B2P04 frozen manifest")\n        require(isinstance(next_action, str) and next_action.startswith("Execute B2E02 only:"), "B2E01 reconciliation must authorize B2E02 only")\n        require("Do not begin B2E03 or any later candidate cell until B2E02 is canonical." in next_action, "B2E02 successor boundary drift")\n        require("- [x] `B2P08`" in tasks, "B2P08 must remain complete")\n        require("- [x] `B2E01`" in tasks, "B2E01 reconciliation must mark B2E01 complete")\n        require("- [ ] `B2E02`" in tasks, "B2E02 must remain pending before execution")\n        require("current bounded execution unit `B2E02`" in current, "reconciled frontier is not B2E02-only")\n        require("Execute and canonically qualify `B2E02` only" in current, "reconciled current view must authorize B2E02 only")\n        require("B2E03 and all later candidate cells remain unauthorized" in current, "reconciled frontier must keep later candidate cells closed")\n        return "B2E01"\n\n    raise SystemExit(f"B2P04_FREEZE_VERIFIER=FAIL: unsupported completed_through state: {completed_through!r}")',
+          )
+
+          replace(
+              'research/000b2-public/verify_attempt_manifest.py',
+              'require(readiness.get("completed_through") == "B2P08", "canonical reconciliation must complete B2P08")',
+              'require(readiness.get("completed_through") in {"B2P08", "B2E01"}, "canonical reconciliation must be B2P08 or B2E01")',
+          )
+          replace(
+              'research/000b2-public/verify_attempt_manifest.py',
+              '    next_action = readiness.get("next_action")\n    require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2E01 must be the sole canonical next action")\n',
+              '    next_action = readiness.get("next_action")\n    completed = readiness.get("completed_through")\n    if completed == "B2P08":\n        require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2E01 must be the sole canonical next action")\n    else:\n        require(isinstance(next_action, str) and next_action.startswith("Execute B2E02 only:"), "B2E02 must be the sole canonical next action")\n',
+          )
+          replace(
+              'research/000b2-public/verify_attempt_manifest.py',
+              '    require("- [x] `B2P08`" in tasks, "B2P08 task must be checked after canonical reconciliation")\n    require("- [ ] `B2E01`" in tasks, "B2E01 must remain closed during B2P08")\n    require("current bounded execution unit `B2E01`" in current, "CURRENT frontier must advance to B2E01")\n    require("Execute and canonically qualify `B2E01` only" in current, "CURRENT must authorize B2E01 only")\n    require("B2E02 and all later candidate cells remain unauthorized" in current, "CURRENT must bound decoding to B2E01")',
+              '    require("- [x] `B2P08`" in tasks, "B2P08 task must be checked after canonical reconciliation")\n    if completed == "B2P08":\n        require("- [ ] `B2E01`" in tasks, "B2E01 must remain closed during B2P08")\n        require("current bounded execution unit `B2E01`" in current, "CURRENT frontier must advance to B2E01")\n        require("Execute and canonically qualify `B2E01` only" in current, "CURRENT must authorize B2E01 only")\n        require("B2E02 and all later candidate cells remain unauthorized" in current, "CURRENT must bound decoding to B2E01")\n    else:\n        require("- [x] `B2E01`" in tasks, "B2E01 must be checked after canonical reconciliation")\n        require("- [ ] `B2E02`" in tasks, "B2E02 must remain pending before execution")\n        require("current bounded execution unit `B2E02`" in current, "CURRENT frontier must advance to B2E02")\n        require("Execute and canonically qualify `B2E02` only" in current, "CURRENT must authorize B2E02 only")\n        require("B2E03 and all later candidate cells remain unauthorized" in current, "CURRENT must bound decoding to B2E02")',
+          )
+
+          # Methodology verifier moves its exact canonical frontier from B2P08/B2E01 to B2E01/B2E02.
+          m = 'research/000b2-public/verify_methodology.py'
+          replace(m, 'B2P08_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID = 33873344044\n', 'B2P08_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID = 33873344044\nB2E01_CANONICAL_MERGE = "bb3acfae1f39669d74118a564e57a131731484d3"\nB2E01_QUALIFIED_HEAD = "9a2b4dd2d79c445d31a09a6c435af6cbe43e6808"\nB2E01_POSTMERGE_METHODOLOGY_RUN_ID = 33960299269\nB2E01_POSTMERGE_EVIDENCE_RUN_ID = 33960299255\nB2E01_POSTMERGE_CANDIDATE_REVALIDATION_RUN_ID = 33960299308\nB2E01_POSTMERGE_TRUSTED_MATERIALIZATION_RUN_ID = 33960299258\nB2E01_POSTMERGE_TRUSTED_PARTICIPANT_MATERIALS_RUN_ID = 33960299257\nB2E01_POSTMERGE_TRUSTED_PARTICIPANT_POLICY_RUN_ID = 33960299252\nB2E01_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID = 33960299250\nB2E01_POSTMERGE_EVIDENCE_JOB_ID = 101290913708\n')
+          replace(m, 'require(readiness.get("completed_through") == "B2P08", "readiness completed_through must be B2P08")', 'require(readiness.get("completed_through") == "B2E01", "readiness completed_through must be B2E01")')
+          replace(m, "        'Execute B2E01 only: decode the exact frozen P0 public-human subset with candidate cell 1 (`moonshine-compact`) under frozen C0, preserve raw transcript/failure/run evidence, keep repository/test-specific context and candidate-specific audio transforms OFF, and preserve DIAGNOSTIC timing semantics. Do not begin B2E02 or any later candidate cell until B2E01 is canonical.'", "        'Execute B2E02 only: decode the identical frozen P0 public-human subset with candidate cell 2 (`moonshine-balanced`) under unchanged frozen C0, preserve raw transcript/failure/run evidence, keep repository/test-specific context and candidate-specific audio transforms OFF, and preserve DIAGNOSTIC timing semantics. Do not begin B2E03 or any later candidate cell until B2E02 is canonical.'")
+          replace(m, '"next action must be exact B2P08-only instruction"', '"next action must be exact post-B2E01 B2E02-only instruction"')
+          replace(m, 'expected_marker = "- [x]" if task_id in {"B2P01", "B2P02", "B2P03", "B2P04", "B2P05", "B2P06", "B2P07", "B2P08"} else "- [ ]"', 'expected_marker = "- [x]" if task_id in {"B2P01", "B2P02", "B2P03", "B2P04", "B2P05", "B2P06", "B2P07", "B2P08", "B2E01"} else "- [ ]"')
+          replace(m, '    require_text(tasks, "- [x] `B2P08` Freeze final pre-decode attempt manifest and verify `primary_decoding_started=false` at freeze.", "public child tasks")\n', '    require_text(tasks, "- [x] `B2P08` Freeze final pre-decode attempt manifest and verify `primary_decoding_started=false` at freeze.", "public child tasks")\n    require_text(tasks, "- [x] `B2E01` Decode the frozen P0 public-human subset with candidate cell 1 under C0.", "public child tasks")\n    require_text(tasks, "- [ ] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0.", "public child tasks")\n')
+          replace(m, '    require_text(current, "current bounded execution unit `B2E01`", "current frontier")\n    require_text(current, "Execute and canonically qualify `B2E01` only", "current frontier next action")\n    require_text(current, "B2E02 and all later candidate cells remain unauthorized", "current frontier successor boundary")', '    require_text(current, B2E01_CANONICAL_MERGE, "current frontier B2E01 canonical proof")\n    require_text(current, B2E01_QUALIFIED_HEAD, "current frontier B2E01 qualified-head proof")\n    for run_id in (B2E01_POSTMERGE_METHODOLOGY_RUN_ID, B2E01_POSTMERGE_EVIDENCE_RUN_ID, B2E01_POSTMERGE_CANDIDATE_REVALIDATION_RUN_ID, B2E01_POSTMERGE_TRUSTED_MATERIALIZATION_RUN_ID, B2E01_POSTMERGE_TRUSTED_PARTICIPANT_MATERIALS_RUN_ID, B2E01_POSTMERGE_TRUSTED_PARTICIPANT_POLICY_RUN_ID, B2E01_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID):\n        require_text(current, f"run `{run_id}`", "current frontier B2E01 post-merge proof")\n    require_text(current, f"job `{B2E01_POSTMERGE_EVIDENCE_JOB_ID}`", "current frontier B2E01 evidence job proof")\n    require_text(current, "current bounded execution unit `B2E02`", "current frontier")\n    require_text(current, "Execute and canonically qualify `B2E02` only", "current frontier next action")\n    require_text(current, "B2E03 and all later candidate cells remain unauthorized", "current frontier successor boundary")')
+          replace(m, '    require_text(current, "B2E01 is now the only authorized bounded unit", "current frontier B2E01 baseline summary")', '    require_text(current, "B2E01 is canonical and B2E02 is now the only authorized bounded unit", "current frontier B2E02 baseline summary")')
+          replace(m, '    require_text(current, "B2P01 through B2P08 are complete and the final attempt manifest is frozen with `primary_decoding_started=false`.", "current frontier post-B2P08 completion")\n    require_text(current, "B2E01 is the sole current bounded execution unit.", "current frontier B2E01 active-route authority")', '    require_text(current, "B2P01 through B2P08 and B2E01 are complete.", "current frontier post-B2E01 completion")\n    require_text(current, "B2E02 (`moonshine-balanced`) is the sole current bounded execution unit.", "current frontier B2E02 active-route authority")')
+          replace(m, '    require_text(current_state, "current bounded execution unit is `B2E01`", "current state")', '    require_text(current_state, B2E01_CANONICAL_MERGE, "current state B2E01 canonical proof")\n    require_text(current_state, B2E01_QUALIFIED_HEAD, "current state B2E01 qualified-head proof")\n    require_text(current_state, "current bounded execution unit is `B2E02`", "current state")')
+
+          print('B2E01_RECONCILIATION_PATCH=PASS')
+          PY
+
+      - name: Validate reconciled frontier
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            research/000b2-public/capture_environment.py \
+            research/000b2-public/verify_attempt_manifest.py \
+            research/000b2-public/verify_candidate_revalidation.py \
+            research/000b2-public/verify_preprocessing_capture.py \
+            research/000b2-public/verify_subset_freeze.py \
+            research/000b2-public/verify_methodology.py \
+            research/000b2-public/verify_b2e01.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_methodology.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_manifest.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e01.py
+          git diff --check
+          test ! -e research/000b2-public/raw
+          test ! -e research/000b2-public/preprocessed
+
+      - name: Remove temporary workflow and commit reconciliation
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/internal-b2e01-reconcile-apply.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'docs(000b2): reconcile frontier after B2E01'
+          git push origin HEAD:docs/000b2-reconcile-after-b2e01
