@@ -1,0 +1,67 @@
+name: Internal B2E02 Frontier Text Repair
+
+on:
+  push:
+    branches:
+      - docs/000b2-reconcile-after-b2e01
+    paths:
+      - '.github/workflows/internal-b2e02-frontier-text-repair.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout reconciliation branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: docs/000b2-reconcile-after-b2e01
+          fetch-depth: 0
+
+      - name: Repair exact B2E02 canonical frontier wording and regression gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          current_path = Path('specs/CURRENT.md')
+          current = current_path.read_text(encoding='utf-8')
+
+          stale_summary = 'B2E01 is canonical and B2E02 is now the only authorized bounded unit; B2E03 and all later candidate cells remain unauthorized until B2E01 is canonically qualified, post-merge verified, and reconciled.'
+          fixed_summary = 'B2E01 is canonical and B2E02 is now the only authorized bounded unit; B2E03 and all later candidate cells remain unauthorized until B2E02 is separately qualified, merged, post-merge verified, and reconciled.'
+          if current.count(stale_summary) != 1:
+              raise SystemExit(f'stale summary drift: {current.count(stale_summary)}')
+          current = current.replace(stale_summary, fixed_summary)
+
+          stale_action = 'Execute and canonically qualify `B2E02` only: decode the exact frozen P0 public-human subset with candidate cell 1 (`moonshine-compact`) under frozen C0, preserving raw transcript/failure/run evidence and keeping repository/test-specific context, candidate-specific audio transforms, and comparative timing claims disabled. B2E03 and all later candidate cells remain unauthorized until B2E01 is canonically qualified, post-merge verified, and reconciled.'
+          fixed_action = 'Execute and canonically qualify `B2E02` only: decode the identical frozen P0 public-human subset with candidate cell 2 (`moonshine-balanced`) under unchanged frozen C0, preserving raw transcript/failure/run evidence while keeping repository/test-specific context and candidate-specific audio transforms OFF and preserving `DIAGNOSTIC_ONLY` timing semantics. B2E03 and all later candidate cells remain unauthorized until B2E02 is separately qualified, merged, post-merge verified, and reconciled.'
+          if current.count(stale_action) != 1:
+              raise SystemExit(f'stale next action drift: {current.count(stale_action)}')
+          current = current.replace(stale_action, fixed_action)
+          current_path.write_text(current, encoding='utf-8')
+
+          verifier_path = Path('research/000b2-public/verify_methodology.py')
+          verifier = verifier_path.read_text(encoding='utf-8')
+          anchor = '    require_text(current, "Execute and canonically qualify `B2E02` only", "current frontier next action")\n'
+          addition = anchor + '    require_text(current, "Execute and canonically qualify `B2E02` only: decode the identical frozen P0 public-human subset with candidate cell 2 (`moonshine-balanced`) under unchanged frozen C0", "current frontier exact B2E02 candidate/action identity")\n    require_absent(current, "Execute and canonically qualify `B2E02` only: decode the exact frozen P0 public-human subset with candidate cell 1 (`moonshine-compact`) under frozen C0", "current frontier stale B2E01 candidate identity")\n'
+          if verifier.count(anchor) != 1:
+              raise SystemExit(f'methodology next-action anchor drift: {verifier.count(anchor)}')
+          verifier = verifier.replace(anchor, addition)
+          verifier_path.write_text(verifier, encoding='utf-8')
+          PY
+
+          python -m py_compile research/000b2-public/verify_methodology.py research/000b2-public/verify_b2e01.py research/000b2-public/decode_b2e01.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_methodology.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_manifest.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e01.py
+          git diff --check
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add specs/CURRENT.md research/000b2-public/verify_methodology.py
+          git commit -m 'fix(000b2): bind B2E02 frontier to moonshine-balanced'
+          git push origin HEAD:docs/000b2-reconcile-after-b2e01
