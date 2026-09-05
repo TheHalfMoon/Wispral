@@ -1,0 +1,116 @@
+name: 000B2 Public Corpus B2E01 Evidence
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/000b2-public-b2e01.yml'
+      - 'research/000b2-public/decode_b2e01.py'
+      - 'research/000b2-public/verify_b2e01.py'
+      - 'research/000b2-public/b2e01-moonshine-compact.json'
+      - 'research/000b2-public/b2e01-moonshine-compact-duplicate-run-33928583817.json'
+      - 'research/000b2-public/b2e01-provenance.json'
+      - 'research/000b2-public/attempt-manifest.json'
+      - 'research/000b2-public/preprocessing-capture.json'
+      - 'research/000b2-public/readiness.json'
+      - 'specs/CURRENT.md'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/000b2-public-b2e01.yml'
+      - 'research/000b2-public/decode_b2e01.py'
+      - 'research/000b2-public/verify_b2e01.py'
+      - 'research/000b2-public/b2e01-moonshine-compact.json'
+      - 'research/000b2-public/b2e01-moonshine-compact-duplicate-run-33928583817.json'
+      - 'research/000b2-public/b2e01-provenance.json'
+      - 'research/000b2-public/attempt-manifest.json'
+      - 'research/000b2-public/preprocessing-capture.json'
+      - 'research/000b2-public/readiness.json'
+      - 'specs/CURRENT.md'
+      - 'specs/000B2-public-corpus-bakeoff/tasks.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: 000b2-b2e01-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-b2e01-evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.EXACT_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact revision identity
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+          echo "EXACT_REVISION=$EXACT_REVISION"
+
+      - name: Compile B2E01 execution and verifier sources
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            research/000b2-public/decode_b2e01.py \
+            research/000b2-public/verify_b2e01.py
+
+      - name: Verify invalid attempt freeze digest fails closed
+        shell: bash
+        run: |
+          set -euo pipefail
+          manifest=research/000b2-public/attempt-manifest.json
+          original="$RUNNER_TEMP/b2e01-attempt-manifest-original.json"
+          cp "$manifest" "$original"
+          cleanup() { cp "$original" "$manifest"; }
+          trap cleanup EXIT
+
+          for mode in missing malformed; do
+            cp "$original" "$manifest"
+            MODE="$mode" python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path("research/000b2-public/attempt-manifest.json")
+          value = json.loads(path.read_text(encoding="utf-8"))
+          if os.environ["MODE"] == "missing":
+              value.pop("freeze_digest_sha256", None)
+          else:
+              value["freeze_digest_sha256"] = "not-a-valid-digest"
+          path.write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          PY
+            rm -f "$RUNNER_TEMP/b2e01-negative-output.json"
+            set +e
+            output=$(PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2e01.py \
+              --work-dir "$RUNNER_TEMP/b2e01-negative-work" \
+              --preprocessed-root "$RUNNER_TEMP/b2e01-negative-preprocessed" \
+              --output "$RUNNER_TEMP/b2e01-negative-output.json" 2>&1)
+            status=$?
+            set -e
+            printf '%s\n' "$output"
+            test "$status" -eq 1
+            grep -Fqx 'B2E01_EXECUTION=FAIL: attempt freeze digest missing or malformed' <<<"$output"
+            test ! -e "$RUNNER_TEMP/b2e01-negative-output.json"
+          done
+
+      - name: Verify sealed and reconciled B2E01 execution evidence
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e01.py
+
+      - name: Preserve raw-data boundary
+        run: |
+          set -euo pipefail
+          test ! -e research/000b2-public/raw
+          test ! -e research/000b2-public/preprocessed
+          echo 'B2E01_RAW_DATA_BOUNDARY=PASS'
