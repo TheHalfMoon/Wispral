@@ -88,6 +88,19 @@ def git_head() -> str:
 
 
 def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    # Validate the immutable attempt identity shape before execution-frontier authority.
+    # This is a side-effect-free preflight: a malformed freeze digest must fail closed
+    # for the specific provenance reason even after B2E01 has become canonical, while
+    # a valid manifest still cannot execute B2E01 once the frontier has advanced.
+    attempt = load_json(ATTEMPT_MANIFEST_PATH, "frozen attempt manifest")
+    freeze_digest = attempt.get("freeze_digest_sha256")
+    require(
+        isinstance(freeze_digest, str)
+        and len(freeze_digest) == 64
+        and all(ch in SHA40 for ch in freeze_digest),
+        "attempt freeze digest missing or malformed",
+    )
+
     readiness = load_json(READINESS_PATH, "public readiness")
     require(readiness.get("state") == "READY", "public B2 lane is not READY")
     require(readiness.get("completed_through") == "B2P08", "B2E01 authority requires canonical completion through B2P08")
@@ -103,7 +116,6 @@ def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]
     require("- [ ] `B2E01` Decode the frozen P0 public-human subset with candidate cell 1 under C0." in tasks, "B2E01 task state drift")
     require("- [ ] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0." in tasks, "B2E02 task state drift")
 
-    attempt = load_json(ATTEMPT_MANIFEST_PATH, "frozen attempt manifest")
     require(attempt.get("schema_version") == "000b2-public-attempt-manifest-v1", "attempt manifest schema drift")
     require(attempt.get("attempt_id") == ATTEMPT_ID, "attempt id drift")
     require(attempt.get("frozen") is True, "attempt manifest is not frozen")
@@ -122,14 +134,6 @@ def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]
     require(contract.get("raw_outputs_and_failures_must_be_preserved") is True, "raw-output preservation invariant drift")
     require(contract.get("candidate_decoding_started") is False, "frozen predecode manifest was rewritten after decoding")
     require(contract.get("primary_decoding_started") is False, "frozen predecode manifest was rewritten after decoding")
-    freeze_digest = attempt.get("freeze_digest_sha256")
-    require(
-        isinstance(freeze_digest, str)
-        and len(freeze_digest) == 64
-        and all(ch in SHA40 for ch in freeze_digest),
-        "attempt freeze digest missing or malformed",
-    )
-
     preprocessing = load_json(PREPROCESSING_CAPTURE_PATH, "B2P06 preprocessing capture")
     require(preprocessing.get("schema_version") == "000b2-public-preprocessing-capture-v1", "preprocessing capture schema drift")
     execution = preprocessing.get("execution")
