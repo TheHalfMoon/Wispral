@@ -23,9 +23,13 @@ Beginning with the B2R01-to-B2R02 transition, a checked recovery task is not suf
 - `post_merge_recovery_run_id` — a successful `push` run of `000B2 Public Corpus Attempt Recovery` whose `head_sha` is exactly that canonical task merge;
 - `successor_task` — the next B2R unit, or `null` only after B2R12.
 
-The recovery workflow independently queries GitHub Actions and validates the recorded post-merge run identity, event, conclusion, workflow name, and exact head SHA. A run id written into repository evidence is not trusted by itself.
+The recovery workflow independently queries GitHub Actions and validates the recorded post-merge run. The proof is bound to the qualified workflow identity, not merely to a display name: `workflow_id=350986920` and `path=.github/workflows/000b2-public-attempt-recovery.yml` are required in addition to the expected workflow name, `push` event, completed-success conclusion, and exact task-merge `head_sha`. A run id written into repository evidence is never trusted by itself, and a second workflow with the same display name cannot satisfy transition proof.
 
-A task merge and its later reconciliation merge are intentionally distinct. `B2R01` is additionally bound to the exact pre-recovery canonical base and the complete qualified B2R01 file set. For `B2R02` and later, the task merge must be a real merge commit whose first parent already names that B2R task as the canonical active unit. The four reconciliation-authority files must remain byte-identical across that task merge, while at least one implementation/evidence path outside those four files must actually change. Therefore a prior reconciliation merge cannot be recycled as proof that the active recovery task itself was implemented and merged.
+A task merge and its later reconciliation merge are intentionally distinct. `B2R01` is additionally bound to the exact pre-recovery canonical base and the complete qualified B2R01 file set. For `B2R02` and later, the task merge must be a real merge commit whose first parent is on canonical `main` first-parent history and already names that B2R task as the canonical active unit. The four reconciliation-authority files must remain byte-identical across that task merge, while at least one implementation/evidence path outside those four files and the recovery proof mechanism must actually change. Therefore a prior reconciliation merge cannot be recycled as proof that the active recovery task itself was implemented and merged.
+
+The B2R01-qualified recovery workflow and verifier form an immutable transition-proof mechanism for later B2R task merges. Later task merges and their canonical first parents must preserve those two blobs exactly. They also may not add or modify any other `.github/workflows/` path unless that exact path was already listed in the canonical first-parent `recovery-readiness.json.qualified_workflow_change_paths`. The recovery proof workflow/verifier themselves can never be authorized through that field. B2R01 begins with an empty `qualified_workflow_change_paths` list.
+
+ATTEMPT-001 execution history is also immutable across the entire recovery. The recovery verifier binds the historical attempt manifest, predecode/readiness state, B2E01/B2E02 decoders, canonical outputs, duplicate-run outputs, and provenance records to their exact Git blob identities at pre-recovery canonical main `b326397cdd29fbb132b9c438ba2178626558efab`. It checks those identities at the current recovery head and at both sides of every recorded task merge, so historical bytes cannot be modified temporarily and restored only before reconciliation.
 
 For every transition, both `specs/CURRENT.md` and `docs/canonical/CURRENT_STATE.md` must contain these exact authority markers for the latest completed unit:
 
@@ -45,7 +49,7 @@ A PR that advances recovery authority beyond what canonical `main` already recor
 - `specs/CURRENT.md`;
 - `docs/canonical/CURRENT_STATE.md`.
 
-The verifier compares the candidate against `origin/main`. It rejects skipped recovery tasks, non-main task-merge identities, altered prior transition proofs, reused reconciliation merges, and any reconciliation candidate mixed with implementation or evidence-generation paths. Once the reconciliation is merged, successor implementation PRs are accepted only when their inherited recovery state and transition-proof ledger already match canonical `main`.
+The verifier compares the candidate against `origin/main`. It rejects skipped recovery tasks, non-main task-merge identities, altered prior transition proofs, reused reconciliation merges, workflow-proof substitution, historical-byte drift, and any reconciliation candidate mixed with implementation or evidence-generation paths. Once the reconciliation is merged, successor implementation PRs are accepted only when their inherited recovery state and transition-proof ledger already match canonical `main`.
 
 ## Finding
 
