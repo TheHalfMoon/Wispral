@@ -1,0 +1,49 @@
+name: Internal B2E01 Reconciliation Repair
+
+on:
+  push:
+    branches:
+      - docs/000b2-reconcile-after-b2e01
+    paths:
+      - '.github/workflows/internal-b2e01-reconcile-repair.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout reconciliation branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: docs/000b2-reconcile-after-b2e01
+          fetch-depth: 0
+
+      - name: Repair explicit post-merge run proof
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('.github/workflows/internal-b2e01-reconcile-apply.yml')
+          text = p.read_text(encoding='utf-8')
+          old = 'and all seven exact-merge-head push workflows succeeded after merge. Canonical B2E01 Evidence run `33960299255`, job `101290913708`'
+          new = 'and all seven exact-merge-head push workflows succeeded after merge: Methodology run `33960299269`, B2E01 Evidence run `33960299255`, Candidate Revalidation run `33960299308`, Trusted Materialization run `33960299258`, Trusted Participant Materials run `33960299257`, Trusted Participant Policy run `33960299252`, and Trusted Human Authority run `33960299250`. Canonical B2E01 Evidence run `33960299255`, job `101290913708`'
+          if text.count(old) != 1:
+              raise SystemExit(f'apply workflow proof literal drift: found {text.count(old)}')
+          p.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+
+      - name: Remove repair workflow and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/internal-b2e01-reconcile-repair.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/internal-b2e01-reconcile-apply.yml .github/workflows/internal-b2e01-reconcile-repair.yml
+          git diff --cached --check
+          git commit -m 'ci(000b2): repair reconciliation proof literals'
+          git push origin HEAD:docs/000b2-reconcile-after-b2e01
