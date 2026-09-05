@@ -62,7 +62,7 @@ def validate_frontier() -> None:
     readiness = load_json(READINESS_PATH, "public readiness")
     require(readiness.get("state") == "READY", "public lane readiness drift")
     completed = readiness.get("completed_through")
-    require(completed in {"B2P05", "B2P06", "B2P07", "B2P08", "B2E01"}, "B2P06 verifier is valid through the B2E01-reconciled frontier")
+    require(completed in {"B2P05", "B2P06", "B2P07", "B2P08", "B2E01", "B2E02"}, "B2P06 verifier is valid through the B2E02-reconciled frontier")
     public = readiness.get("public_human_baseline")
     require(isinstance(public, dict), "public_human_baseline missing")
     require(public.get("subset_manifest_frozen") is True, "B2P04 subset must remain frozen")
@@ -73,13 +73,13 @@ def validate_frontier() -> None:
     require(preprocessing.get("attempt_bound_capture_required") is True, "attempt-bound preprocessing requirement drift")
     environment = readiness.get("execution_environment")
     require(isinstance(environment, dict), "execution environment readiness missing")
-    if completed in {"B2P07", "B2P08", "B2E01"}:
+    if completed in {"B2P07", "B2P08", "B2E01", "B2E02"}:
         require(environment.get("resolved") is True, "B2P07+ reconciliation must preserve environment resolution")
     else:
         require(environment.get("resolved") is False, "B2P07 must remain unresolved before B2P07 reconciliation")
     attempt = readiness.get("attempt_manifest")
     require(isinstance(attempt, dict), "attempt manifest readiness missing")
-    require(attempt.get("frozen") is (completed in {"B2P08", "B2E01"}), "B2P08 freeze state must remain frozen through B2E01 reconciliation")
+    require(attempt.get("frozen") is (completed in {"B2P08", "B2E01", "B2E02"}), "B2P08 freeze state must remain frozen through B2E01 reconciliation")
     require(attempt.get("primary_decoding_started") is False, "primary decoding already started")
     guards = readiness.get("claim_guards")
     require(isinstance(guards, dict), "claim guards missing")
@@ -114,11 +114,16 @@ def validate_frontier() -> None:
             require("- [ ] `B2E02`" in tasks, "B2E02 must remain unauthorized")
             require("Execute B2E01 only" in str(readiness.get("next_action")), "B2P08 reconciliation must advance to B2E01")
             require("Execute and canonically qualify `B2E01` only" in current, "CURRENT must authorize B2E01 only")
-        else:
+        elif completed == "B2E01":
             require("- [x] `B2E01`" in tasks, "B2E01 reconciliation must mark B2E01 complete")
             require("- [ ] `B2E02`" in tasks, "B2E02 must remain pending before execution")
             require("Execute B2E02 only" in str(readiness.get("next_action")), "B2E01 reconciliation must advance to B2E02")
             require("Execute and canonically qualify `B2E02` only" in current, "CURRENT must authorize B2E02 only")
+        else:
+            require("- [x] `B2E02`" in tasks, "B2E02 reconciliation must mark B2E02 complete")
+            require("- [ ] `B2E03`" in tasks, "B2E03 must remain pending before execution")
+            require("Execute B2E03 only" in str(readiness.get("next_action")), "B2E02 reconciliation must advance to B2E03")
+            require("Execute and canonically qualify `B2E03` only" in current, "CURRENT must authorize B2E03 only")
 
 
 def validate_evidence(path: Path) -> dict[str, Any]:

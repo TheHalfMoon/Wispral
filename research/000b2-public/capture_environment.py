@@ -204,7 +204,7 @@ def verify_authority(*, allow_reconciled: bool = False) -> dict[str, Any]:
         require(environment_state.get("resolved") is False, "B2P07 readiness must remain unresolved until canonical reconciliation")
         require(isinstance(next_action, str) and next_action.startswith("Execute B2P07 only:"), "B2P07 is not the sole authorized next action")
         require("Do not begin B2P08 attempt freeze or candidate decoding until B2P07 is canonical." in next_action, "B2P07 successor boundary drift")
-    elif allow_reconciled and completed_through in {"B2P07", "B2P08", "B2E01"}:
+    elif allow_reconciled and completed_through in {"B2P07", "B2P08", "B2E01", "B2E02"}:
         require(environment_state.get("resolved") is True, "later reconciliation must preserve B2P07 environment resolution")
         if completed_through == "B2P07":
             require(attempt_state.get("frozen") is False, "B2P08 attempt froze before B2P08 reconciliation")
@@ -214,10 +214,14 @@ def verify_authority(*, allow_reconciled: bool = False) -> dict[str, Any]:
             require(attempt_state.get("frozen") is True, "B2P08 reconciliation must mark attempt frozen")
             require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2P08 reconciliation must authorize B2E01 only")
             require("Do not begin B2E02 or any later candidate cell until B2E01 is canonical." in next_action, "B2E01 successor boundary drift")
-        else:
+        elif completed_through == "B2E01":
             require(attempt_state.get("frozen") is True, "post-B2E01 reconciliation must preserve the frozen attempt")
             require(isinstance(next_action, str) and next_action.startswith("Execute B2E02 only:"), "B2E01 reconciliation must authorize B2E02 only")
             require("Do not begin B2E03 or any later candidate cell until B2E02 is canonical." in next_action, "B2E02 successor boundary drift")
+        else:
+            require(attempt_state.get("frozen") is True, "post-B2E02 reconciliation must preserve the frozen attempt")
+            require(isinstance(next_action, str) and next_action.startswith("Execute B2E03 only:"), "B2E02 reconciliation must authorize B2E03 only")
+            require("Do not begin B2E04 or any later candidate cell until B2E03 is canonical." in next_action, "B2E03 successor boundary drift")
     else:
         raise CaptureError(f"B2P07 authority phase unsupported: completed_through={completed_through!r}, allow_reconciled={allow_reconciled}")
 
