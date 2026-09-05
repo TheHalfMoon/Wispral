@@ -85,7 +85,7 @@ def main() -> int:
 
     readiness = load_json(READINESS_PATH, "public readiness")
     require(readiness.get("state") == "READY", "public readiness drift")
-    require(readiness.get("completed_through") in {"B2P08", "B2E01"}, "canonical reconciliation must be B2P08 or B2E01")
+    require(readiness.get("completed_through") in {"B2P08", "B2E01", "B2E02"}, "canonical reconciliation must be B2P08 or B2E01")
     environment = readiness.get("execution_environment")
     attempt = readiness.get("attempt_manifest")
     guards = readiness.get("claim_guards")
@@ -101,8 +101,10 @@ def main() -> int:
     completed = readiness.get("completed_through")
     if completed == "B2P08":
         require(isinstance(next_action, str) and next_action.startswith("Execute B2E01 only:"), "B2E01 must be the sole canonical next action")
-    else:
+    elif completed == "B2E01":
         require(isinstance(next_action, str) and next_action.startswith("Execute B2E02 only:"), "B2E02 must be the sole canonical next action")
+    else:
+        require(isinstance(next_action, str) and next_action.startswith("Execute B2E03 only:"), "B2E03 must be the sole canonical next action")
 
     tasks = TASKS_PATH.read_text(encoding="utf-8")
     current = CURRENT_PATH.read_text(encoding="utf-8")
@@ -113,12 +115,18 @@ def main() -> int:
         require("current bounded execution unit `B2E01`" in current, "CURRENT frontier must advance to B2E01")
         require("Execute and canonically qualify `B2E01` only" in current, "CURRENT must authorize B2E01 only")
         require("B2E02 and all later candidate cells remain unauthorized" in current, "CURRENT must bound decoding to B2E01")
-    else:
+    elif completed == "B2E01":
         require("- [x] `B2E01`" in tasks, "B2E01 must be checked after canonical reconciliation")
         require("- [ ] `B2E02`" in tasks, "B2E02 must remain pending before execution")
         require("current bounded execution unit `B2E02`" in current, "CURRENT frontier must advance to B2E02")
         require("Execute and canonically qualify `B2E02` only" in current, "CURRENT must authorize B2E02 only")
         require("B2E03 and all later candidate cells remain unauthorized" in current, "CURRENT must bound decoding to B2E02")
+    else:
+        require("- [x] `B2E01`" in tasks and "- [x] `B2E02`" in tasks, "B2E01/B2E02 must remain checked")
+        require("- [ ] `B2E03`" in tasks, "B2E03 must remain pending before execution")
+        require("current bounded execution unit `B2E03`" in current, "CURRENT frontier must advance to B2E03")
+        require("Execute and canonically qualify `B2E03` only" in current, "CURRENT must authorize B2E03 only")
+        require("B2E04 and all later candidate cells remain unauthorized" in current, "CURRENT must bound decoding to B2E03")
 
     authority = manifest.get("authority")
     scoring = manifest.get("scoring")

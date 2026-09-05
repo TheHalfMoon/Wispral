@@ -101,6 +101,15 @@ def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]
         and all(ch in SHA40 for ch in freeze_digest),
         "attempt freeze digest missing or malformed",
     )
+    candidate_set_preflight = attempt.get("candidate_set")
+    require(isinstance(candidate_set_preflight, dict), "attempt candidate set missing")
+    candidate_ids_preflight = candidate_set_preflight.get("candidate_ids")
+    require(
+        isinstance(candidate_ids_preflight, list)
+        and len(candidate_ids_preflight) > 1
+        and candidate_ids_preflight[1] == CANDIDATE_ID,
+        "candidate cell 2 drift",
+    )
 
     readiness = load_json(READINESS_PATH, "public readiness")
     require(readiness.get("state") == "READY", "public B2 lane is not READY")

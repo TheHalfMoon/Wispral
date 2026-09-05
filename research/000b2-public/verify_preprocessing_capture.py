@@ -50,6 +50,62 @@ def canonical_json_bytes(value: Any) -> bytes:
     return (json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
 
 
+def validate_b2e03_authority(tasks: str, current: str, next_action: str) -> None:
+    """Require the complete predecessor chain and closed B2E03 successor boundary."""
+    require("- [x] `B2E01`" in tasks, "B2E01 predecessor must remain complete before B2E03 authorization")
+    require("- [x] `B2E02`" in tasks, "B2E02 reconciliation must mark B2E02 complete")
+    require("- [ ] `B2E03`" in tasks, "B2E03 must remain pending before execution")
+    require("- [ ] `B2E04`" in tasks, "B2E04 must remain unauthorized before B2E03 execution")
+    require("Execute B2E03 only" in next_action, "B2E02 reconciliation must advance to B2E03")
+    require(
+        "Do not begin B2E04 or any later candidate cell until B2E03 is canonical." in next_action,
+        "B2E03 readiness successor boundary drift",
+    )
+    require("Execute and canonically qualify `B2E03` only" in current, "CURRENT must authorize B2E03 only")
+    require(
+        "B2E04 and all later candidate cells remain unauthorized" in current,
+        "B2E03 CURRENT successor boundary drift",
+    )
+
+
+def verify_b2e03_authority_regressions(tasks: str, current: str, next_action: str) -> None:
+    """Mutation-test the predecessor and successor authority guards in memory."""
+    mutations = (
+        (
+            tasks.replace("- [x] `B2E01`", "- [ ] `B2E01`", 1),
+            current,
+            next_action,
+            "B2E01 predecessor must remain complete before B2E03 authorization",
+        ),
+        (
+            tasks,
+            current,
+            next_action.replace("Do not begin B2E04 or any later candidate cell until B2E03 is canonical.", ""),
+            "B2E03 readiness successor boundary drift",
+        ),
+        (
+            tasks,
+            current.replace("B2E04 and all later candidate cells remain unauthorized", ""),
+            next_action,
+            "B2E03 CURRENT successor boundary drift",
+        ),
+        (
+            tasks.replace("- [ ] `B2E04`", "- [x] `B2E04`", 1),
+            current,
+            next_action,
+            "B2E04 must remain unauthorized before B2E03 execution",
+        ),
+    )
+    for mutated_tasks, mutated_current, mutated_next_action, expected in mutations:
+        try:
+            validate_b2e03_authority(mutated_tasks, mutated_current, mutated_next_action)
+        except SystemExit as error:
+            require(expected in str(error), f"B2E03 authority mutation rejected for an unexpected reason: {error}")
+        else:
+            raise SystemExit(f"B2P06_PREPROCESSING_CAPTURE=FAIL: B2E03 authority mutation accepted: {expected}")
+    print("B2E03_AUTHORITY_REGRESSION_GUARDS=PASS")
+
+
 def validate_frontier() -> None:
     state, _ = preprocess_subset.validate_attempt_state()
     _, membership = preprocess_subset.validate_subset_manifest()
@@ -62,7 +118,7 @@ def validate_frontier() -> None:
     readiness = load_json(READINESS_PATH, "public readiness")
     require(readiness.get("state") == "READY", "public lane readiness drift")
     completed = readiness.get("completed_through")
-    require(completed in {"B2P05", "B2P06", "B2P07", "B2P08", "B2E01"}, "B2P06 verifier is valid through the B2E01-reconciled frontier")
+    require(completed in {"B2P05", "B2P06", "B2P07", "B2P08", "B2E01", "B2E02"}, "B2P06 verifier is valid through the B2E02-reconciled frontier")
     public = readiness.get("public_human_baseline")
     require(isinstance(public, dict), "public_human_baseline missing")
     require(public.get("subset_manifest_frozen") is True, "B2P04 subset must remain frozen")
@@ -73,13 +129,13 @@ def validate_frontier() -> None:
     require(preprocessing.get("attempt_bound_capture_required") is True, "attempt-bound preprocessing requirement drift")
     environment = readiness.get("execution_environment")
     require(isinstance(environment, dict), "execution environment readiness missing")
-    if completed in {"B2P07", "B2P08", "B2E01"}:
+    if completed in {"B2P07", "B2P08", "B2E01", "B2E02"}:
         require(environment.get("resolved") is True, "B2P07+ reconciliation must preserve environment resolution")
     else:
         require(environment.get("resolved") is False, "B2P07 must remain unresolved before B2P07 reconciliation")
     attempt = readiness.get("attempt_manifest")
     require(isinstance(attempt, dict), "attempt manifest readiness missing")
-    require(attempt.get("frozen") is (completed in {"B2P08", "B2E01"}), "B2P08 freeze state must remain frozen through B2E01 reconciliation")
+    require(attempt.get("frozen") is (completed in {"B2P08", "B2E01", "B2E02"}), "B2P08 freeze state must remain frozen through B2E01 reconciliation")
     require(attempt.get("primary_decoding_started") is False, "primary decoding already started")
     guards = readiness.get("claim_guards")
     require(isinstance(guards, dict), "claim guards missing")
@@ -114,11 +170,15 @@ def validate_frontier() -> None:
             require("- [ ] `B2E02`" in tasks, "B2E02 must remain unauthorized")
             require("Execute B2E01 only" in str(readiness.get("next_action")), "B2P08 reconciliation must advance to B2E01")
             require("Execute and canonically qualify `B2E01` only" in current, "CURRENT must authorize B2E01 only")
-        else:
+        elif completed == "B2E01":
             require("- [x] `B2E01`" in tasks, "B2E01 reconciliation must mark B2E01 complete")
             require("- [ ] `B2E02`" in tasks, "B2E02 must remain pending before execution")
             require("Execute B2E02 only" in str(readiness.get("next_action")), "B2E01 reconciliation must advance to B2E02")
             require("Execute and canonically qualify `B2E02` only" in current, "CURRENT must authorize B2E02 only")
+        else:
+            next_action = str(readiness.get("next_action"))
+            validate_b2e03_authority(tasks, current, next_action)
+            verify_b2e03_authority_regressions(tasks, current, next_action)
 
 
 def validate_evidence(path: Path) -> dict[str, Any]:

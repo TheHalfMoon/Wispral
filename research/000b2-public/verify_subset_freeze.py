@@ -152,6 +152,29 @@ def verify_static_boundaries() -> None:
         require(required in source, f"freeze engine missing required boundary marker: {required}")
 
 
+def validate_b2e03_task_chain(tasks: str) -> None:
+    """Require B2E01/B2E02 completion while keeping B2E03/B2E04 unexecuted."""
+    require("- [x] `B2E01`" in tasks, "B2E01 predecessor must remain complete before B2E03 authorization")
+    require("- [x] `B2E02`" in tasks, "B2E02 reconciliation must mark B2E02 complete")
+    require("- [ ] `B2E03`" in tasks, "B2E03 must remain pending before execution")
+    require("- [ ] `B2E04`" in tasks, "B2E04 must remain unauthorized before B2E03 execution")
+
+
+def verify_b2e03_task_chain_regression(tasks: str) -> None:
+    """Mutation-test the B2E01 predecessor guard before accepting B2E03 authority."""
+    mutated = tasks.replace("- [x] `B2E01`", "- [ ] `B2E01`", 1)
+    try:
+        validate_b2e03_task_chain(mutated)
+    except SystemExit as error:
+        require(
+            "B2E01 predecessor must remain complete before B2E03 authorization" in str(error),
+            f"B2E01 predecessor mutation rejected for an unexpected reason: {error}",
+        )
+    else:
+        raise SystemExit("B2P04_FREEZE_VERIFIER=FAIL: B2E01 predecessor mutation was accepted")
+    print("B2P04_B2E03_PREDECESSOR_REGRESSION=PASS")
+
+
 def verify_current_authority() -> str:
     """Require and return the exact current authority phase while preserving the B2P04 freeze."""
     readiness = load_object(READINESS_PATH, "public readiness")
@@ -165,7 +188,7 @@ def verify_current_authority() -> str:
     require(isinstance(environment, dict), "execution environment readiness must be an object")
     attempt = readiness.get("attempt_manifest")
     require(isinstance(attempt, dict) and attempt.get("primary_decoding_started") is False, "primary decoding must remain closed")
-    require(attempt.get("frozen") is (readiness.get("completed_through") in {"B2P08", "B2E01"}), "B2P08 freeze state must match reconciliation phase")
+    require(attempt.get("frozen") is (readiness.get("completed_through") in {"B2P08", "B2E01", "B2E02"}), "B2P08 freeze state must remain frozen through B2E02 reconciliation")
     guards = readiness.get("claim_guards")
     require(isinstance(guards, dict), "claim_guards must be an object")
     require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human developer-speech evidence guard drift")
@@ -177,7 +200,7 @@ def verify_current_authority() -> str:
     tasks = TASKS_PATH.read_text(encoding="utf-8")
     current = CURRENT_PATH.read_text(encoding="utf-8")
     require("- [x] `B2P03`" in tasks, "B2P03 must remain complete")
-    if completed_through in {"B2P07", "B2P08", "B2E01"}:
+    if completed_through in {"B2P07", "B2P08", "B2E01", "B2E02"}:
         require(environment.get("resolved") is True, "B2P07+ reconciliation must preserve environment resolution")
     else:
         require(environment.get("resolved") is False, "B2P07 environment must remain unresolved before B2P07 reconciliation")
@@ -275,6 +298,20 @@ def verify_current_authority() -> str:
         require("Execute and canonically qualify `B2E02` only" in current, "reconciled current view must authorize B2E02 only")
         require("B2E03 and all later candidate cells remain unauthorized" in current, "reconciled frontier must keep later candidate cells closed")
         return "B2E01"
+
+    if completed_through == "B2E02":
+        require(preprocessing.get("resolved") is True, "B2E02 reconciliation must preserve preprocessing resolution")
+        require(environment.get("resolved") is True, "B2E02 reconciliation must preserve environment resolution")
+        require(public.get("subset_manifest_frozen") is True, "B2E02 reconciliation must preserve the B2P04 frozen manifest")
+        require(attempt.get("frozen") is True, "B2E02 reconciliation must preserve the frozen attempt")
+        require(isinstance(next_action, str) and next_action.startswith("Execute B2E03 only:"), "B2E02 reconciliation must authorize B2E03 only")
+        require("Do not begin B2E04 or any later candidate cell until B2E03 is canonical." in next_action, "B2E03 successor boundary drift")
+        validate_b2e03_task_chain(tasks)
+        verify_b2e03_task_chain_regression(tasks)
+        require("current bounded execution unit `B2E03`" in current, "reconciled frontier is not B2E03-only")
+        require("Execute and canonically qualify `B2E03` only" in current, "reconciled current view must authorize B2E03 only")
+        require("B2E04 and all later candidate cells remain unauthorized" in current, "reconciled frontier must keep later candidate cells closed")
+        return "B2E02"
 
     raise SystemExit(f"B2P04_FREEZE_VERIFIER=FAIL: unsupported completed_through state: {completed_through!r}")
 
