@@ -6,6 +6,7 @@ on:
       - docs/000b2-reconcile-after-b2e02
     paths:
       - '.github/workflows/internal-b2e02-reconciliation-v3.yml'
+      - '.github/scripts/internal_b2e02_reconcile_v3.py'
 
 permissions:
   contents: write
