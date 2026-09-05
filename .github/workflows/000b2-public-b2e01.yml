@@ -7,6 +7,7 @@ on:
       - 'research/000b2-public/decode_b2e01.py'
       - 'research/000b2-public/verify_b2e01.py'
       - 'research/000b2-public/b2e01-moonshine-compact.json'
+      - 'research/000b2-public/b2e01-moonshine-compact-duplicate-run-33928583817.json'
       - 'research/000b2-public/b2e01-provenance.json'
       - 'research/000b2-public/attempt-manifest.json'
       - 'research/000b2-public/preprocessing-capture.json'
@@ -21,6 +22,7 @@ on:
       - 'research/000b2-public/decode_b2e01.py'
       - 'research/000b2-public/verify_b2e01.py'
       - 'research/000b2-public/b2e01-moonshine-compact.json'
+      - 'research/000b2-public/b2e01-moonshine-compact-duplicate-run-33928583817.json'
       - 'research/000b2-public/b2e01-provenance.json'
       - 'research/000b2-public/attempt-manifest.json'
       - 'research/000b2-public/preprocessing-capture.json'
@@ -62,7 +64,7 @@ jobs:
             research/000b2-public/decode_b2e01.py \
             research/000b2-public/verify_b2e01.py
 
-      - name: Verify sealed B2E01 execution evidence
+      - name: Verify sealed and reconciled B2E01 execution evidence
         run: |
           set -euo pipefail
           PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e01.py
