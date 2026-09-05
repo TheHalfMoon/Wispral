@@ -14,17 +14,20 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 PUBLIC = ROOT / "research" / "000b2-public"
 INVALIDATION = PUBLIC / "attempt-001-invalidation.json"
+RECOVERY_READINESS = PUBLIC / "recovery-readiness.json"
 ATTEMPT = PUBLIC / "attempt-manifest.json"
 FROZEN = ROOT / "research" / "000b1" / "frozen-methodology.json"
 TASKS = ROOT / "specs" / "000B2-public-corpus-bakeoff" / "tasks.md"
 
 EXPECTED_MAIN = "b326397cdd29fbb132b9c438ba2178626558efab"
 EXPECTED_ATTEMPT = "000B2-PUBLIC-ATTEMPT-001"
+EXPECTED_REPLACEMENT_ATTEMPT = "000B2-PUBLIC-ATTEMPT-002"
 EXPECTED_FROZEN_SHA256 = "fc177308926941e683f311a340b9e398f2c44ffa32963b3abc20aa359dbb09df"
 EXPECTED_MOONSHINE_REV = "234f60faa0eb388b01cdf7e60aca232af37aefda"
 EXPECTED_B2E01_EVIDENCE_SHA256 = "af2c604a3f402789d69e424291c5f41a24eca0f575b1b26a3822da73dd0c4a8e"
 EXPECTED_B2E02_EVIDENCE_SHA256 = "8bc1b3e2e10bd7c64465b424f8dff5ffc84a153868459457d91e22e5cf3da253"
 RECOVERY_TASKS = tuple(f"B2R{index:02d}" for index in range(1, 13))
+PRIMARY_DECODE_RECOVERY_TASKS = set(RECOVERY_TASKS[4:10])
 
 
 class VerifyError(ValueError):
@@ -50,8 +53,8 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def verify_recovery_task_order(tasks: str) -> None:
-    """Require one contiguous completed prefix so recovery units cannot be skipped."""
+def recovery_completed_prefix(tasks: str) -> list[str]:
+    """Return the completed recovery prefix and reject skipped recovery units."""
     states: list[tuple[str, bool]] = []
     task_lines = tasks.splitlines()
     for task in RECOVERY_TASKS:
@@ -65,12 +68,78 @@ def verify_recovery_task_order(tasks: str) -> None:
         else:
             raise VerifyError(f"{task} recovery task has malformed checklist state")
 
+    completed: list[str] = []
     pending_seen = False
     for task, complete in states:
         if not complete:
             pending_seen = True
         elif pending_seen:
             raise VerifyError(f"recovery task ordering skipped a predecessor before {task}")
+        else:
+            completed.append(task)
+    return completed
+
+
+def verify_recovery_readiness(tasks: str) -> None:
+    readiness = load(RECOVERY_READINESS)
+    completed = recovery_completed_prefix(tasks)
+    completed_count = len(completed)
+    active = RECOVERY_TASKS[completed_count] if completed_count < len(RECOVERY_TASKS) else None
+
+    require(readiness.get("schema_version") == "000b2-public-recovery-readiness-v1", "recovery readiness schema drift")
+    require(readiness.get("lane") == "PUBLIC_CORPUS", "recovery readiness lane drift")
+    expected_state = (
+        "RECOVERY_PENDING_CANONICALIZATION"
+        if completed_count == 0
+        else "RECOVERY_READY"
+        if active is not None
+        else "RECOVERY_COMPLETE"
+    )
+    require(readiness.get("state") == expected_state, f"recovery readiness state must be {expected_state}")
+    require(
+        readiness.get("authority_precedence") == "OVERRIDES_ATTEMPT_001_READY_SNAPSHOT_FOR_NEW_EXECUTION",
+        "recovery authority precedence drift",
+    )
+
+    historical = readiness.get("historical_readiness_snapshot", {})
+    require(historical == {
+        "path": "research/000b2-public/readiness.json",
+        "completed_through": "B2E02",
+        "role": "HISTORICAL_ATTEMPT_001_POST_B2E02_SNAPSHOT",
+        "active_execution_authority": False,
+    }, "historical readiness snapshot boundary drift")
+
+    invalidated = readiness.get("invalidated_attempt", {})
+    require(invalidated == {
+        "attempt_id": EXPECTED_ATTEMPT,
+        "invalidation_path": "research/000b2-public/attempt-001-invalidation.json",
+        "comparative_scoring_eligible": False,
+        "candidate_superiority_claim_eligible": False,
+        "new_primary_decode_authorized": False,
+    }, "invalidated attempt readiness boundary drift")
+
+    replacement = readiness.get("replacement_attempt", {})
+    expected_frozen = completed_count >= 4
+    expected_decode_open = active in PRIMARY_DECODE_RECOVERY_TASKS
+    require(replacement.get("attempt_id") == EXPECTED_REPLACEMENT_ATTEMPT, "replacement attempt id drift")
+    require(replacement.get("required") is True, "replacement attempt requirement weakened")
+    require(replacement.get("frozen") is expected_frozen, "replacement attempt freeze state drift")
+    require(replacement.get("primary_decode_entry_open") is expected_decode_open, "replacement attempt decode-entry authority drift")
+
+    require(readiness.get("completed_recovery_tasks") == completed, "recovery readiness completed-task ledger drift")
+    require(readiness.get("active_recovery_unit") == active, "active recovery unit drift")
+    next_action = readiness.get("next_action")
+    require(isinstance(next_action, str) and next_action, "recovery next action missing")
+    if active is not None:
+        require(active in next_action, f"recovery next action does not bind active unit {active}")
+    if completed_count < 4:
+        require("primary" in next_action.lower() and ("closed" in next_action.lower() or "do not" in next_action.lower()), "pre-freeze recovery next action must keep primary decoding closed")
+
+    guards = readiness.get("claim_guards", {})
+    require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "recovery human developer-speech evidence guard drift")
+    require(guards.get("comparative_result_available") is (completed_count >= 12), "recovery comparative-result state drift")
+    require(guards.get("production_stt_selected") is False, "recovery production STT selection opened")
+    require(guards.get("product_code_authorized") is False, "recovery product code authority opened")
 
 
 def verify_local() -> None:
@@ -186,8 +255,8 @@ def verify_local() -> None:
     require(disposition.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human developer-speech evidence guard drift")
 
     tasks = TASKS.read_text(encoding="utf-8")
-    verify_recovery_task_order(tasks)
     require("ATTEMPT-001 evidence is historical and ineligible for comparative scoring" in tasks, "task ledger invalidation boundary missing")
+    verify_recovery_readiness(tasks)
 
 
 def verify_upstream(source: Path) -> None:
