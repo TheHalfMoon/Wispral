@@ -43,6 +43,9 @@ EXPECTED_MODEL_SHA256 = "a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897af
 EXPECTED_FREEZE = "af4d5009e293daef5d8f629ca91af653f5f591448cd94d4555473a51e2d1da86"
 EXPECTED_PREPROCESSING = "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011"
 EXPECTED_UTTERANCES = 240
+REGULAR_CHUNK_SAMPLES = 8000
+FINAL_ZERO_SAMPLES = 10560
+FINAL_ZERO_CHUNKS = [8000, 2560]
 EXPECTED_CANDIDATE_IDS = [
     "moonshine-compact",
     "moonshine-balanced",
@@ -86,6 +89,15 @@ def sha256_bytes(data: bytes) -> str:
 
 def canonical_json_bytes(value: Any) -> bytes:
     return (json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
+
+
+def reconstruct_stream_text(iterations: list[str]) -> str:
+    result = ""
+    for index, text in enumerate(iterations, start=1):
+        result += text
+        if index % 9 == 0:
+            result += "\n"
+    return result
 
 
 def git_head() -> str:
@@ -211,7 +223,7 @@ def runtime_provenance() -> dict[str, Any]:
     }
 
 
-def parse_adapter_output(path: Path, expected_ids: set[str]) -> dict[str, dict[str, Any]]:
+def parse_adapter_output(path: Path, expected: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
     rows: dict[str, dict[str, Any]] = {}
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
@@ -225,20 +237,40 @@ def parse_adapter_output(path: Path, expected_ids: set[str]) -> dict[str, dict[s
             raise DecodeError(f"malformed adapter JSONL: {error}") from error
         require(isinstance(row, dict), "adapter row must be an object")
         uid = row.get("utterance_id")
-        require(isinstance(uid, str) and uid in expected_ids and uid not in rows, f"adapter utterance identity drift: {uid}")
+        require(isinstance(uid, str) and uid in expected and uid not in rows, f"adapter utterance identity drift: {uid}")
         require(row.get("status") in {"DECODED", "FAILED"}, f"adapter status drift: {uid}")
         require(isinstance(row.get("raw_lines"), list) and all(isinstance(value, str) for value in row["raw_lines"]), f"adapter raw lines malformed: {uid}")
         require(isinstance(row.get("raw_transcript"), str), f"adapter raw transcript malformed: {uid}")
+        require(row["raw_transcript"] == reconstruct_stream_text(row["raw_lines"]), f"adapter raw stream reconstruction drift: {uid}")
         require(isinstance(row.get("stream_iteration_count"), int) and row["stream_iteration_count"] >= 0, f"adapter iteration count malformed: {uid}")
         require(row["stream_iteration_count"] == len(row["raw_lines"]), f"adapter iteration accounting drift: {uid}")
         require(isinstance(row.get("decode_wall_seconds"), (int, float)) and row["decode_wall_seconds"] >= 0, f"adapter timing malformed: {uid}")
+
+        speech_count = row.get("speech_sample_count")
+        speech_delivered = row.get("speech_samples_delivered")
+        regular_chunks = row.get("regular_speech_chunk_count")
+        final_chunk = row.get("final_speech_chunk_samples")
+        zero_delivered = row.get("zero_suffix_samples_delivered")
+        zero_chunks = row.get("zero_suffix_chunks_delivered")
+        require(speech_count == expected[uid].get("wav_frame_count"), f"adapter speech sample count drift: {uid}")
+        require(isinstance(speech_delivered, int) and 0 <= speech_delivered <= speech_count, f"adapter speech delivery accounting drift: {uid}")
+        require(regular_chunks == speech_count // REGULAR_CHUNK_SAMPLES, f"adapter regular speech chunk count drift: {uid}")
+        require(final_chunk == speech_count % REGULAR_CHUNK_SAMPLES, f"adapter final speech chunk drift: {uid}")
+        require(isinstance(zero_delivered, int) and 0 <= zero_delivered <= FINAL_ZERO_SAMPLES, f"adapter zero-suffix delivery accounting drift: {uid}")
+        require(isinstance(zero_chunks, int) and 0 <= zero_chunks <= len(FINAL_ZERO_CHUNKS), f"adapter zero-suffix chunk accounting drift: {uid}")
+        planned_iterations = regular_chunks + (1 if final_chunk else 0) + len(FINAL_ZERO_CHUNKS)
+        require(row["stream_iteration_count"] <= planned_iterations, f"adapter stream iteration count exceeds frozen feed schedule: {uid}")
+
         if row["status"] == "DECODED":
             require(row.get("failure") is None, f"decoded adapter row has failure: {uid}")
-            require(row["stream_iteration_count"] > 0, f"decoded adapter row has no iterations: {uid}")
+            require(row["stream_iteration_count"] == planned_iterations, f"decoded adapter row did not execute full frozen feed schedule: {uid}")
+            require(speech_delivered == speech_count, f"decoded adapter row did not preserve full speech feed: {uid}")
+            require(zero_delivered == FINAL_ZERO_SAMPLES, f"decoded adapter row did not deliver full zero suffix: {uid}")
+            require(zero_chunks == len(FINAL_ZERO_CHUNKS), f"decoded adapter row zero-suffix chunk count drift: {uid}")
         else:
             require(isinstance(row.get("failure"), dict), f"failed adapter row lacks failure evidence: {uid}")
         rows[uid] = row
-    require(set(rows) == expected_ids, "adapter output membership drift")
+    require(set(rows) == set(expected), "adapter output membership drift")
     return rows
 
 
@@ -304,7 +336,7 @@ def execute(
         timeout=5400,
     )
     require(proc.returncode == 0, f"whisper.cpp adapter failed with exit code {proc.returncode}: {proc.stdout[-4000:]}")
-    adapter_rows = parse_adapter_output(adapter_output, set(indexed))
+    adapter_rows = parse_adapter_output(adapter_output, indexed)
 
     records: list[dict[str, Any]] = []
     for uid in sorted(indexed):
@@ -320,6 +352,12 @@ def execute(
                 "raw_transcript": observed["raw_transcript"],
                 "failure": observed["failure"],
                 "stream_iteration_count": observed["stream_iteration_count"],
+                "speech_sample_count": observed["speech_sample_count"],
+                "speech_samples_delivered": observed["speech_samples_delivered"],
+                "regular_speech_chunk_count": observed["regular_speech_chunk_count"],
+                "final_speech_chunk_samples": observed["final_speech_chunk_samples"],
+                "zero_suffix_samples_delivered": observed["zero_suffix_samples_delivered"],
+                "zero_suffix_chunks_delivered": observed["zero_suffix_chunks_delivered"],
                 "decode_wall_seconds": observed["decode_wall_seconds"],
             }
         )
@@ -356,6 +394,8 @@ def execute(
             "language": "en",
             "threads": 4,
             "step_ms": 500,
+            "regular_chunk_samples": REGULAR_CHUNK_SAMPLES,
+            "final_speech_chunk_preserved": True,
             "length_ms": 5000,
             "keep_ms": 200,
             "max_tokens": 0,
@@ -376,7 +416,8 @@ def execute(
             "test_specific_context_used": False,
             "candidate_specific_audio_transform_used": False,
             "identical_frozen_audio_required_across_candidates": True,
-            "finalization_zero_pad_samples": 10560,
+            "finalization_zero_pad_samples": FINAL_ZERO_SAMPLES,
+            "zero_suffix_chunk_samples": FINAL_ZERO_CHUNKS,
         },
         "run": runtime_provenance(),
         "execution": {
@@ -384,6 +425,14 @@ def execute(
             "decoded_count": decoded,
             "failure_count": failed,
             "all_frozen_input_hashes_reverified": True,
+            "all_speech_samples_delivered_for_decoded_records": all(
+                row["status"] != "DECODED" or row["speech_samples_delivered"] == row["speech_sample_count"]
+                for row in records
+            ),
+            "all_zero_suffix_samples_delivered_for_decoded_records": all(
+                row["status"] != "DECODED" or row["zero_suffix_samples_delivered"] == FINAL_ZERO_SAMPLES
+                for row in records
+            ),
             "reference_transcripts_loaded_by_decoder": False,
             "accuracy_scoring_performed": False,
             "comparative_ranking_present": False,
