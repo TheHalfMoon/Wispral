@@ -61,6 +61,14 @@ SOURCE_IDENTITIES = {
         None,
         "90fb99d2c6ef1d7cd9d698e70a9e0a9837155bce",
     ),
+    "research/000b2-public/moonshine_streaming_c0.py": (
+        "c0f0093cda7ca036c8a97178364b3840ce7093386a8cb711ccef5f183a4453c0",
+        "9012f30133df31e88cd489e7612d7991ac0cce25",
+    ),
+    "research/000b2-public/score_public_wer.py": (
+        "581a0e4b0bb91d55a252b92871dbb1246b5fbc4466a5d94bceb35862744fc023",
+        "f5719cee1f3dfee1c84d7a5e4c7c25620ded1e2d",
+    ),
 }
 
 CANDIDATES = [
