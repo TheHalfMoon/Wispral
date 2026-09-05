@@ -1,0 +1,105 @@
+name: Temporary B2R01 reconciliation compatibility qualification
+
+on:
+  push:
+    branches:
+      - research/000b2-reconcile-b2r01
+    paths:
+      - 'tmp_patch_b2r01_reconciliation.py'
+      - '.github/workflows/tmp-b2r01-reconciliation-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact branch revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Fetch canonical main
+        run: |
+          set -euo pipefail
+          git fetch --force --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "715efc4855fb52187ed250b11f0c28bb2c2c0660"
+
+      - name: Apply fail-closed authority patch
+        run: |
+          set -euo pipefail
+          python tmp_patch_b2r01_reconciliation.py
+
+      - name: Create candidate commit without temporary helpers
+        run: |
+          set -euo pipefail
+          git config user.name "TheHalfMoon"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm tmp_patch_b2r01_reconciliation.py .github/workflows/tmp-b2r01-reconciliation-patch.yml
+          git add specs/CURRENT.md docs/canonical/CURRENT_STATE.md
+          git commit -m "docs(000b2): reconcile B2R01 recovery authority"
+
+      - name: Verify exact four-file reconciliation scope
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only refs/remotes/origin/main...HEAD | sort)
+          printf '%s\n' "${changed[@]}"
+          expected=(
+            'docs/canonical/CURRENT_STATE.md'
+            'research/000b2-public/recovery-readiness.json'
+            'specs/000B2-public-corpus-bakeoff/tasks.md'
+            'specs/CURRENT.md'
+          )
+          test "${#changed[@]}" -eq "${#expected[@]}"
+          for i in "${!expected[@]}"; do
+            test "${changed[$i]}" = "${expected[$i]}"
+          done
+          echo 'B2R01_RECONCILIATION_SCOPE=PASS'
+
+      - name: Verify legacy historical gates and recovery authority together
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            research/000b2-public/verify_methodology.py \
+            research/000b2-public/verify_subset_freeze.py \
+            research/000b2-public/verify_attempt_manifest.py \
+            research/000b2-public/verify_b2e01.py \
+            research/000b2-public/verify_b2e02.py \
+            research/000b2-public/verify_attempt_001_invalidation.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_methodology.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_subset_freeze.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_manifest.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e01.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e02.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_001_invalidation.py \
+            --static-only \
+            --canonical-main-ref refs/remotes/origin/main
+          echo 'B2R01_RECONCILIATION_COMBINED_QUALIFICATION=PASS'
+
+      - name: Verify authority is unambiguous
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          for path in (Path('specs/CURRENT.md'), Path('docs/canonical/CURRENT_STATE.md')):
+              text = path.read_text(encoding='utf-8')
+              assert '**Canonical recovery predecessor:** `B2R01`' in text
+              assert '**Canonical B2R01 recovery merge:** `715efc4855fb52187ed250b11f0c28bb2c2c0660`' in text
+              assert '**Canonical B2R01 post-merge recovery run:** `33979925715`' in text
+              assert '**Active recovery unit:** `B2R02`' in text
+              assert 'Historical ATTEMPT-001 post-B2E02 snapshot wording — non-authoritative' in text
+              next_part = text.rsplit('## Next canonical action', 1)
+              assert len(next_part) == 2
+              assert 'B2R02' in next_part[1]
+              assert 'ATTEMPT-002 primary decoding closed until B2R04' in next_part[1]
+              assert 'B2E03` only' not in next_part[1]
+          print('B2R01_AUTHORITY_UNAMBIGUOUS=PASS')
+          PY
+
+      - name: Push qualified candidate
+        run: |
+          set -euo pipefail
+          git push origin HEAD:research/000b2-reconcile-b2r01
