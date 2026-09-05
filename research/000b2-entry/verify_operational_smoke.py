@@ -88,10 +88,10 @@ def verify_exact_workflow_subject(expected_checkout_sha: str) -> str:
         fail("pull_request event base SHA malformed")
 
     if checkout_sha != head_sha:
-        commit_line = git_output("rev-list", "--parents", "-n", "1", "HEAD").split()
-        parents = commit_line[1:]
-        if head_sha not in parents or base_sha not in parents:
-            fail("PR merge checkout is not directly bound to event head/base")
+        raw_commit = git_output("cat-file", "-p", "HEAD").splitlines()
+        parents = [line.removeprefix("parent ") for line in raw_commit if line.startswith("parent ")]
+        if parents != [base_sha, head_sha]:
+            fail("PR merge checkout is not directly and exactly bound to event base/head")
 
     subprocess.run(
         ["git", "-C", str(ROOT), "fetch", "--depth=1", "--no-tags", "origin", head_sha],
