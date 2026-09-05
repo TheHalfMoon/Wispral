@@ -10,10 +10,9 @@ permissions:
 
 jobs:
   apply-exact-review-fix:
-    if: github.sha == 'c1f4c3f53e6ea7daa6ab20fa03f633bb873ff085'
     runs-on: ubuntu-24.04
     steps:
-      - name: Check out exact branch head
+      - name: Check out bounded branch head
         uses: actions/checkout@v4
         with:
           ref: docs/000b2-reconcile-after-b2e02
@@ -23,7 +22,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "c1f4c3f53e6ea7daa6ab20fa03f633bb873ff085"
+          test "$(git rev-parse HEAD^)" = "dc0509c99a2cb472ba61285b76ff79a8292e6aad"
           python - <<'PY'
           from pathlib import Path
 
