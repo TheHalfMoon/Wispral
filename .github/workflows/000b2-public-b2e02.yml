@@ -7,6 +7,7 @@ on:
       - 'research/000b2-public/decode_b2e02.py'
       - 'research/000b2-public/verify_b2e02.py'
       - 'research/000b2-public/b2e02-moonshine-balanced.json'
+      - 'research/000b2-public/b2e02-moonshine-balanced-duplicate-run-33963021322.json'
       - 'research/000b2-public/b2e02-provenance.json'
       - 'research/000b2-public/attempt-manifest.json'
       - 'research/000b2-public/preprocessing-capture.json'
@@ -21,6 +22,7 @@ on:
       - 'research/000b2-public/decode_b2e02.py'
       - 'research/000b2-public/verify_b2e02.py'
       - 'research/000b2-public/b2e02-moonshine-balanced.json'
+      - 'research/000b2-public/b2e02-moonshine-balanced-duplicate-run-33963021322.json'
       - 'research/000b2-public/b2e02-provenance.json'
       - 'research/000b2-public/attempt-manifest.json'
       - 'research/000b2-public/preprocessing-capture.json'
@@ -101,7 +103,7 @@ jobs:
             test ! -e "$RUNNER_TEMP/b2e02-negative-output.json"
           done
 
-      - name: Verify sealed B2E02 execution evidence and provenance
+      - name: Verify sealed and reconciled B2E02 execution evidence
         run: |
           set -euo pipefail
           PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e02.py
