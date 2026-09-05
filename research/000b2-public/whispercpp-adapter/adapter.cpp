@@ -253,11 +253,14 @@ std::string json_escape(const std::string & value) {
 
 std::string reconstruct_stream_text(const std::vector<std::string> & iterations) {
     std::string result;
-    for (std::size_t i = 0; i < iterations.size(); ++i) {
-        result += iterations[i];
-        if (((i + 1) % static_cast<std::size_t>(kNewLineEvery)) == 0U) {
-            result.push_back('\n');
-        }
+    for (std::size_t committed = static_cast<std::size_t>(kNewLineEvery);
+         committed <= iterations.size();
+         committed += static_cast<std::size_t>(kNewLineEvery)) {
+        result += iterations[committed - 1];
+        result.push_back('\n');
+    }
+    if (!iterations.empty() && (iterations.size() % static_cast<std::size_t>(kNewLineEvery)) != 0U) {
+        result += iterations.back();
     }
     return result;
 }
