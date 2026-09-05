@@ -17,6 +17,7 @@ HERE = ROOT / "research/000b2-public"
 MANIFEST_PATH = HERE / "attempt-manifest.json"
 FREEZER_PATH = HERE / "freeze_attempt_manifest.py"
 READINESS_PATH = HERE / "readiness.json"
+RECOVERY_READINESS = HERE / "recovery-readiness.json"
 TASKS_PATH = ROOT / "specs/000B2-public-corpus-bakeoff/tasks.md"
 CURRENT_PATH = ROOT / "specs/CURRENT.md"
 B2P07_RECONCILIATION_MERGE = "50ce9ac0ac3b3533d3df978a8b3a7e531f415b9c"
@@ -37,6 +38,54 @@ def load_json(path: Path, label: str) -> dict[str, Any]:
         raise VerificationError(f"unable to load {label}: {path}: {exc}") from exc
     require(isinstance(value, dict), f"{label} root must be an object")
     return value
+
+
+def verify_recovery_precedence(tasks: str, current: str) -> str | None:
+    """Validate recovery authority without promoting the historical ATTEMPT-001 readiness snapshot."""
+    if not RECOVERY_READINESS.is_file():
+        return None
+    recovery = load_json(RECOVERY_READINESS, "recovery readiness")
+    recovery_tasks = tuple(f"B2R{index:02d}" for index in range(1, 13))
+    completed = recovery.get("completed_recovery_tasks")
+    require(isinstance(completed, list), "recovery completed-task ledger must be a list")
+    require(completed == list(recovery_tasks[: len(completed)]), "recovery completed-task ledger must be a contiguous prefix")
+    active = recovery_tasks[len(completed)] if len(completed) < len(recovery_tasks) else None
+    expected_state = "RECOVERY_PENDING_CANONICALIZATION" if not completed else "RECOVERY_READY" if active is not None else "RECOVERY_COMPLETE"
+    require(recovery.get("schema_version") == "000b2-public-recovery-readiness-v2", "recovery readiness schema drift")
+    require(recovery.get("lane") == "PUBLIC_CORPUS", "recovery readiness lane drift")
+    require(recovery.get("state") == expected_state, "recovery readiness state drift")
+    require(recovery.get("authority_precedence") == "OVERRIDES_ATTEMPT_001_READY_SNAPSHOT_FOR_NEW_EXECUTION", "recovery authority precedence drift")
+    require(recovery.get("active_recovery_unit") == active, "recovery active unit drift")
+    invalidated = recovery.get("invalidated_attempt")
+    require(isinstance(invalidated, dict), "invalidated attempt recovery boundary missing")
+    require(invalidated.get("attempt_id") == "000B2-PUBLIC-ATTEMPT-001", "invalidated attempt id drift")
+    require(invalidated.get("comparative_scoring_eligible") is False, "invalidated ATTEMPT-001 scoring authority reopened")
+    require(invalidated.get("candidate_superiority_claim_eligible") is False, "invalidated ATTEMPT-001 superiority authority reopened")
+    require(invalidated.get("new_primary_decode_authorized") is False, "invalidated ATTEMPT-001 primary authority reopened")
+    replacement = recovery.get("replacement_attempt")
+    require(isinstance(replacement, dict), "replacement attempt recovery boundary missing")
+    require(replacement.get("attempt_id") == "000B2-PUBLIC-ATTEMPT-002", "replacement attempt id drift")
+    require(replacement.get("required") is True, "replacement attempt requirement weakened")
+    require(replacement.get("frozen") is (len(completed) >= 4), "replacement attempt freeze state drift")
+    require(replacement.get("primary_decode_entry_open") is (active in set(recovery_tasks[4:10])), "replacement attempt primary-entry authority drift")
+    next_action = recovery.get("next_action")
+    require(isinstance(next_action, str) and next_action, "recovery next action missing")
+    if active is not None:
+        require(active in next_action, "recovery next action does not bind active recovery unit")
+    if len(completed) < 4:
+        require("primary" in next_action.lower() and ("closed" in next_action.lower() or "do not" in next_action.lower()), "pre-freeze recovery next action must keep primary decoding closed")
+    if expected_state == "RECOVERY_PENDING_CANONICALIZATION":
+        require("- [ ] `B2R01`" in tasks, "B2R01 must remain pending before canonical reconciliation")
+    else:
+        require("- [x] `B2R01`" in tasks, "B2R01 completion lost after recovery reconciliation")
+        label = active if active is not None else "NONE"
+        require(f"**Active recovery unit:** `{label}`" in current, "CURRENT recovery marker drift")
+        next_section = current.rsplit("## Next canonical action", 1)
+        require(len(next_section) == 2, "CURRENT next-action section missing during recovery")
+        if active is not None:
+            require(active in next_section[1], "CURRENT next action does not bind active recovery unit")
+    return expected_state
+
 
 def load_freezer():
     spec = importlib.util.spec_from_file_location("wispral_b2p08_freezer", FREEZER_PATH)
@@ -123,10 +172,11 @@ def main() -> int:
         require("B2E03 and all later candidate cells remain unauthorized" in current, "CURRENT must bound decoding to B2E02")
     else:
         require("- [x] `B2E01`" in tasks and "- [x] `B2E02`" in tasks, "B2E01/B2E02 must remain checked")
-        require("- [ ] `B2E03`" in tasks, "B2E03 must remain pending before execution")
-        require("current bounded execution unit `B2E03`" in current, "CURRENT frontier must advance to B2E03")
-        require("Execute and canonically qualify `B2E03` only" in current, "CURRENT must authorize B2E03 only")
-        require("B2E04 and all later candidate cells remain unauthorized" in current, "CURRENT must bound decoding to B2E03")
+        require("- [ ] `B2E03`" in tasks, "B2E03 must remain pending under historical ATTEMPT-001")
+        recovery_state = verify_recovery_precedence(tasks, current)
+        if recovery_state is None or recovery_state == "RECOVERY_PENDING_CANONICALIZATION":
+            require("current bounded execution unit `B2E03`" in current, "transitional historical CURRENT frontier must remain B2E03")
+            require("Execute and canonically qualify `B2E03` only" in current, "transitional historical CURRENT must name B2E03")
 
     authority = manifest.get("authority")
     scoring = manifest.get("scoring")
@@ -168,7 +218,10 @@ def main() -> int:
     print("B2P08_FROZEN=YES")
     print("B2P08_CANDIDATE_DECODING_STARTED=NO")
     print("B2P08_PRIMARY_DECODING_STARTED=NO")
-    print("B2E01_AUTHORIZED=YES_BOUNDED_CANONICAL_FRONTIER")
+    if RECOVERY_READINESS.is_file():
+        print("ATTEMPT_001_PRIMARY_AUTHORITY=CLOSED_BY_RECOVERY_PRECEDENCE")
+    else:
+        print("B2E03_AUTHORIZED=YES_BOUNDED_CANONICAL_FRONTIER")
     return 0
 
 if __name__ == "__main__":

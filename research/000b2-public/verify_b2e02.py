@@ -20,6 +20,7 @@ PROVENANCE = PUBLIC / "b2e02-provenance.json"
 ATTEMPT = PUBLIC / "attempt-manifest.json"
 PREPROCESSING = PUBLIC / "preprocessing-capture.json"
 READINESS = PUBLIC / "readiness.json"
+RECOVERY_READINESS = PUBLIC / "recovery-readiness.json"
 TASKS = ROOT / "specs" / "000B2-public-corpus-bakeoff" / "tasks.md"
 CURRENT = ROOT / "specs" / "CURRENT.md"
 
@@ -67,6 +68,54 @@ def load(path: Path) -> dict[str, Any]:
     return value
 
 
+
+def verify_recovery_precedence(tasks: str, current: str) -> str | None:
+    """Validate recovery authority without promoting the historical ATTEMPT-001 readiness snapshot."""
+    if not RECOVERY_READINESS.is_file():
+        return None
+    recovery = load(RECOVERY_READINESS)
+    recovery_tasks = tuple(f"B2R{index:02d}" for index in range(1, 13))
+    completed = recovery.get("completed_recovery_tasks")
+    require(isinstance(completed, list), "recovery completed-task ledger must be a list")
+    require(completed == list(recovery_tasks[: len(completed)]), "recovery completed-task ledger must be a contiguous prefix")
+    active = recovery_tasks[len(completed)] if len(completed) < len(recovery_tasks) else None
+    expected_state = "RECOVERY_PENDING_CANONICALIZATION" if not completed else "RECOVERY_READY" if active is not None else "RECOVERY_COMPLETE"
+    require(recovery.get("schema_version") == "000b2-public-recovery-readiness-v2", "recovery readiness schema drift")
+    require(recovery.get("lane") == "PUBLIC_CORPUS", "recovery readiness lane drift")
+    require(recovery.get("state") == expected_state, "recovery readiness state drift")
+    require(recovery.get("authority_precedence") == "OVERRIDES_ATTEMPT_001_READY_SNAPSHOT_FOR_NEW_EXECUTION", "recovery authority precedence drift")
+    require(recovery.get("active_recovery_unit") == active, "recovery active unit drift")
+    invalidated = recovery.get("invalidated_attempt")
+    require(isinstance(invalidated, dict), "invalidated attempt recovery boundary missing")
+    require(invalidated.get("attempt_id") == "000B2-PUBLIC-ATTEMPT-001", "invalidated attempt id drift")
+    require(invalidated.get("comparative_scoring_eligible") is False, "invalidated ATTEMPT-001 scoring authority reopened")
+    require(invalidated.get("candidate_superiority_claim_eligible") is False, "invalidated ATTEMPT-001 superiority authority reopened")
+    require(invalidated.get("new_primary_decode_authorized") is False, "invalidated ATTEMPT-001 primary authority reopened")
+    replacement = recovery.get("replacement_attempt")
+    require(isinstance(replacement, dict), "replacement attempt recovery boundary missing")
+    require(replacement.get("attempt_id") == "000B2-PUBLIC-ATTEMPT-002", "replacement attempt id drift")
+    require(replacement.get("required") is True, "replacement attempt requirement weakened")
+    require(replacement.get("frozen") is (len(completed) >= 4), "replacement attempt freeze state drift")
+    require(replacement.get("primary_decode_entry_open") is (active in set(recovery_tasks[4:10])), "replacement attempt primary-entry authority drift")
+    next_action = recovery.get("next_action")
+    require(isinstance(next_action, str) and next_action, "recovery next action missing")
+    if active is not None:
+        require(active in next_action, "recovery next action does not bind active recovery unit")
+    if len(completed) < 4:
+        require("primary" in next_action.lower() and ("closed" in next_action.lower() or "do not" in next_action.lower()), "pre-freeze recovery next action must keep primary decoding closed")
+    if expected_state == "RECOVERY_PENDING_CANONICALIZATION":
+        require("- [ ] `B2R01`" in tasks, "B2R01 must remain pending before canonical reconciliation")
+    else:
+        require("- [x] `B2R01`" in tasks, "B2R01 completion lost after recovery reconciliation")
+        label = active if active is not None else "NONE"
+        require(f"**Active recovery unit:** `{label}`" in current, "CURRENT recovery marker drift")
+        next_section = current.rsplit("## Next canonical action", 1)
+        require(len(next_section) == 2, "CURRENT next-action section missing during recovery")
+        if active is not None:
+            require(active in next_section[1], "CURRENT next action does not bind active recovery unit")
+    return expected_state
+
+
 def sha(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -91,9 +140,11 @@ def static_frontier() -> None:
         require("- [x] `B2E01`" in tasks and "- [ ] `B2E02`" in tasks and "- [ ] `B2E03`" in tasks, "B2E02 execution PR self-reconciled canonical task state")
         require("B2E02 (`moonshine-balanced`) is the sole current bounded execution unit" in current, "CURRENT pre-reconciliation B2E02 frontier drift")
     elif completed == "B2E02":
-        require(str(readiness.get("next_action", "")).startswith("Execute B2E03 only:"), "B2E03 is not sole post-B2E02 next action")
-        require("- [x] `B2E02`" in tasks and "- [ ] `B2E03`" in tasks, "B2E02/B2E03 canonical task frontier drift")
-        require("B2E03" in current and "whispercpp-compact" in current and "sole current bounded execution unit" in current, "CURRENT post-B2E02 frontier drift")
+        require(str(readiness.get("next_action", "")).startswith("Execute B2E03 only:"), "historical ATTEMPT-001 B2E03 next action drift")
+        require("- [x] `B2E02`" in tasks and "- [ ] `B2E03`" in tasks, "historical B2E02/B2E03 task frontier drift")
+        recovery_state = verify_recovery_precedence(tasks, current)
+        if recovery_state is None or recovery_state == "RECOVERY_PENDING_CANONICALIZATION":
+            require("B2E03" in current and "whispercpp-compact" in current and "sole current bounded execution unit" in current, "transitional historical CURRENT B2E03 frontier drift")
     else:
         require("- [x] `B2E02`" in tasks, "later canonical state lost B2E02 completion")
 

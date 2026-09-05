@@ -178,6 +178,7 @@ def index_records(records: Any, expected_names: set[str], label: str) -> dict[st
 
 def main() -> None:
     readiness_path = ROOT / "research/000b2-public/readiness.json"
+    recovery_readiness_path = ROOT / "research/000b2-public/recovery-readiness.json"
     corpus_source_path = ROOT / "research/000b2-public/corpus-source.json"
     materialization_path = ROOT / "research/000b2-public/archive-materialization.json"
     materializer_path = ROOT / "research/000b2-public/materialize_archives.py"
@@ -199,7 +200,7 @@ def main() -> None:
     founding_tasks_path = ROOT / "specs/000-founding-research/tasks.md"
 
     required_paths = (
-        readiness_path, corpus_source_path, materialization_path, materializer_path,
+        readiness_path, recovery_readiness_path, corpus_source_path, materialization_path, materializer_path,
         materialization_workflow_path, subset_policy_path, subset_selector_path, subset_verifier_path,
         subset_workflow_path, subset_manifest_path, subset_freeze_workflow_path, spec_path, plan_path, tasks_path, parent_spec_path,
         parent_plan_path, parent_tasks_path, current_path, current_state_path, founding_tasks_path,
@@ -301,7 +302,58 @@ def main() -> None:
     expected_next_action = (
         'Execute B2E03 only: decode the identical frozen P0 public-human subset with candidate cell 3 (`whispercpp-compact`) under unchanged frozen C0, preserve raw transcript/failure/run evidence, keep repository/test-specific context and candidate-specific audio transforms OFF, and preserve DIAGNOSTIC timing semantics. Do not begin B2E04 or any later candidate cell until B2E03 is canonical.'
     )
-    require(readiness.get("next_action") == expected_next_action, "next action must be exact post-B2E02 B2E03-only instruction")
+    require(readiness.get("next_action") == expected_next_action, "historical ATTEMPT-001 readiness next action drift")
+
+
+    recovery = load_object(recovery_readiness_path, "recovery readiness")
+    recovery_tasks = tuple(f"B2R{index:02d}" for index in range(1, 13))
+    recovery_completed = recovery.get("completed_recovery_tasks")
+    require(isinstance(recovery_completed, list), "recovery completed-task ledger must be a list")
+    require(
+        recovery_completed == list(recovery_tasks[: len(recovery_completed)]),
+        "recovery completed-task ledger must be a contiguous prefix",
+    )
+    recovery_active = recovery_tasks[len(recovery_completed)] if len(recovery_completed) < len(recovery_tasks) else None
+    expected_recovery_state = (
+        "RECOVERY_PENDING_CANONICALIZATION"
+        if not recovery_completed
+        else "RECOVERY_READY"
+        if recovery_active is not None
+        else "RECOVERY_COMPLETE"
+    )
+    require(recovery.get("schema_version") == "000b2-public-recovery-readiness-v2", "recovery readiness schema drift")
+    require(recovery.get("lane") == "PUBLIC_CORPUS", "recovery readiness lane drift")
+    require(recovery.get("state") == expected_recovery_state, "recovery readiness state drift")
+    require(
+        recovery.get("authority_precedence") == "OVERRIDES_ATTEMPT_001_READY_SNAPSHOT_FOR_NEW_EXECUTION",
+        "recovery authority precedence drift",
+    )
+    require(recovery.get("active_recovery_unit") == recovery_active, "recovery active unit drift")
+    invalidated_attempt = recovery.get("invalidated_attempt")
+    require(isinstance(invalidated_attempt, dict), "invalidated attempt recovery boundary missing")
+    require(invalidated_attempt.get("attempt_id") == "000B2-PUBLIC-ATTEMPT-001", "invalidated attempt id drift")
+    require(invalidated_attempt.get("comparative_scoring_eligible") is False, "invalidated attempt scoring authority reopened")
+    require(invalidated_attempt.get("candidate_superiority_claim_eligible") is False, "invalidated attempt superiority authority reopened")
+    require(invalidated_attempt.get("new_primary_decode_authorized") is False, "ATTEMPT-001 primary decode authority reopened")
+    replacement_attempt = recovery.get("replacement_attempt")
+    require(isinstance(replacement_attempt, dict), "replacement attempt recovery boundary missing")
+    require(replacement_attempt.get("attempt_id") == "000B2-PUBLIC-ATTEMPT-002", "replacement attempt id drift")
+    require(replacement_attempt.get("required") is True, "replacement attempt requirement weakened")
+    require(replacement_attempt.get("frozen") is (len(recovery_completed) >= 4), "replacement attempt freeze state drift")
+    require(
+        replacement_attempt.get("primary_decode_entry_open") is (recovery_active in set(recovery_tasks[4:10])),
+        "replacement attempt primary-entry authority drift",
+    )
+    recovery_next_action = recovery.get("next_action")
+    require(isinstance(recovery_next_action, str) and recovery_next_action, "recovery next action missing")
+    if recovery_active is not None:
+        require(recovery_active in recovery_next_action, "recovery next action does not bind the active recovery unit")
+    if len(recovery_completed) < 4:
+        require(
+            "primary" in recovery_next_action.lower()
+            and ("closed" in recovery_next_action.lower() or "do not" in recovery_next_action.lower()),
+            "pre-freeze recovery next action must keep primary decoding closed",
+        )
 
     corpus_source = load_object(corpus_source_path, "corpus-source")
     require_exact_keys(
@@ -659,18 +711,28 @@ def main() -> None:
     require_text(current, B2E02_QUALIFIED_HEAD, "current frontier B2E02 qualified-head proof")
     for run_id in (B2E02_POSTMERGE_EVIDENCE_RUN_ID, B2E02_POSTMERGE_METHODOLOGY_RUN_ID, B2E02_POSTMERGE_CANDIDATE_REVALIDATION_RUN_ID, B2E02_POSTMERGE_TRUSTED_MATERIALIZATION_RUN_ID, B2E02_POSTMERGE_TRUSTED_PARTICIPANT_MATERIALS_RUN_ID, B2E02_POSTMERGE_TRUSTED_PARTICIPANT_POLICY_RUN_ID, B2E02_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID):
         require_text(current, f"run `{run_id}`", "current frontier B2E02 post-merge proof")
-    require_text(current, "current bounded execution unit `B2E03`", "current frontier")
-    require_text(current, "Execute and canonically qualify `B2E03` only", "current frontier next action")
-    require_text(current, "Execute and canonically qualify `B2E03` only: decode the identical frozen P0 public-human subset with candidate cell 3 (`whispercpp-compact`) under unchanged frozen C0", "current frontier exact B2E03 candidate/action identity")
+    if expected_recovery_state == "RECOVERY_PENDING_CANONICALIZATION":
+        require_text(current, "current bounded execution unit `B2E03`", "transitional historical current frontier")
+        require_text(current, "Execute and canonically qualify `B2E03` only", "transitional historical current next action")
+    else:
+        recovery_label = recovery_active if recovery_active is not None else "NONE"
+        require_text(current, f"**Active recovery unit:** `{recovery_label}`", "current recovery frontier")
+        current_next_section = current.rsplit("## Next canonical action", 1)
+        require(len(current_next_section) == 2, "CURRENT next-action section missing")
+        if recovery_active is not None:
+            require_text(current_next_section[1], recovery_active, "CURRENT recovery next action")
+        require_text(current, "ATTEMPT-001", "current recovery historical-attempt boundary")
+        require_text(current, "ATTEMPT-002", "current recovery replacement-attempt boundary")
     require_absent(current, "Execute and canonically qualify `B2E01` only: decode the exact frozen P0 public-human subset with candidate cell 1 (`moonshine-compact`) under frozen C0", "current frontier stale B2E01 candidate identity")
     require_text(current, "B2E04 and all later candidate cells remain unauthorized", "current frontier successor boundary")
     require_absent(current, "current bounded execution unit `B2P07`", "current frontier stale unit")
     require_absent(current, "B2P07 is now authorized", "current frontier stale B2P07 authority wording")
     require_absent(current, "B2P08 attempt freeze, and primary decoding remain unauthorized during B2P07", "current frontier stale B2P07 successor wording")
-    require_text(current, "B2E01 and B2E02 are canonical. B2E03 (`whispercpp-compact`) is now the only authorized bounded unit", "current frontier B2E03 baseline summary")
+    if expected_recovery_state == "RECOVERY_PENDING_CANONICALIZATION":
+        require_text(current, "B2E01 and B2E02 are canonical. B2E03 (`whispercpp-compact`) is now the only authorized bounded unit", "transitional historical B2E03 summary")
+        require_text(current, "B2E03 (`whispercpp-compact`) is the sole current bounded execution unit.", "transitional historical B2E03 active-route authority")
     require_text(current, "B2P08 pre-decode attempt freeze became canonical at merge `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d`", "current frontier B2P08 active-route chronology")
     require_text(current, "B2P01 through B2P08, B2E01, and B2E02 are complete.", "current frontier post-B2E02 completion")
-    require_text(current, "B2E03 (`whispercpp-compact`) is the sole current bounded execution unit.", "current frontier B2E03 active-route authority")
     require_absent(current, "B2P01 through B2P07 are complete. B2P08 is the current bounded execution unit.", "current frontier stale B2P08 authority")
     require_absent(current, "Comparative decoding remains prohibited until the ordered pre-decode tasks `B2P01` through `B2P08` are genuinely complete", "current frontier stale pre-decode prohibition")
 
@@ -743,9 +805,18 @@ def main() -> None:
     require_text(current_state, B2E02_QUALIFIED_HEAD, "current state B2E02 qualified-head proof")
     for run_id in (B2E02_POSTMERGE_EVIDENCE_RUN_ID, B2E02_POSTMERGE_METHODOLOGY_RUN_ID, B2E02_POSTMERGE_CANDIDATE_REVALIDATION_RUN_ID, B2E02_POSTMERGE_TRUSTED_MATERIALIZATION_RUN_ID, B2E02_POSTMERGE_TRUSTED_PARTICIPANT_MATERIALS_RUN_ID, B2E02_POSTMERGE_TRUSTED_PARTICIPANT_POLICY_RUN_ID, B2E02_POSTMERGE_TRUSTED_HUMAN_AUTHORITY_RUN_ID):
         require_text(current_state, f"`{run_id}`", "current state B2E02 post-merge proof")
-    require_text(current_state, "current bounded execution unit is `B2E03`", "current state")
-    require_text(current_state, "Execute and canonically qualify `B2E03` only", "current state next action")
-    require_text(current_state, "Execute and canonically qualify `B2E03` only: decode the identical frozen P0 public-human subset with candidate cell 3 (`whispercpp-compact`) under unchanged frozen C0", "current state exact B2E03 candidate/action identity")
+    if expected_recovery_state == "RECOVERY_PENDING_CANONICALIZATION":
+        require_text(current_state, "current bounded execution unit is `B2E03`", "transitional historical current state")
+        require_text(current_state, "Execute and canonically qualify `B2E03` only", "transitional historical current-state next action")
+    else:
+        recovery_label = recovery_active if recovery_active is not None else "NONE"
+        require_text(current_state, f"**Active recovery unit:** `{recovery_label}`", "current-state recovery frontier")
+        state_next_section = current_state.rsplit("## Next canonical action", 1)
+        require(len(state_next_section) == 2, "CURRENT_STATE next-action section missing")
+        if recovery_active is not None:
+            require_text(state_next_section[1], recovery_active, "CURRENT_STATE recovery next action")
+        require_text(current_state, "ATTEMPT-001", "current-state recovery historical-attempt boundary")
+        require_text(current_state, "ATTEMPT-002", "current-state recovery replacement-attempt boundary")
     require_absent(current_state, "Execute and canonically qualify `B2E01` only: decode the exact frozen P0 public-human subset with candidate cell 1 (`moonshine-compact`) under frozen C0", "current state stale B2E01 next action")
     require_absent(current_state, "B2E01 is now the only authorized bounded execution unit", "current state stale B2E01-only authority")
     require_absent(current_state, "B2E01 is the sole authorized decoding unit, B2E02 and all later candidate cells remain unauthorized", "current state stale B2E01-only decoding authority")
@@ -828,7 +899,9 @@ def main() -> None:
     print("B2P07_ENVIRONMENT_CAPTURE=PASS")
     print(f"B2P07_CANONICAL_MERGE={B2P07_CANONICAL_MERGE}")
     print(f"B2P07_POSTMERGE_ENVIRONMENT_RUN_ID={B2P07_POSTMERGE_ENVIRONMENT_RUN_ID}")
-    print("B2E03_FRONTIER=AUTHORIZED")
+    print("B2E03_FRONTIER=CLOSED_BY_RECOVERY_PRECEDENCE")
+    print(f"RECOVERY_AUTHORITY_STATE={expected_recovery_state}")
+    print(f"RECOVERY_ACTIVE_UNIT={recovery_active if recovery_active is not None else 'NONE'}")
     print("STRUCTURED_READINESS_GUARDS=PASS")
     print("P0_D0_SEPARATION=PASS")
     print("PRE_DECODE_FREEZE_ORDERING=PASS")
