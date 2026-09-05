@@ -64,7 +64,7 @@
     "historical_b2e01_b2e02_evidence_bytes_must_remain_unchanged": true,
     "attempt_001_eligible_for_comparative_scoring": false,
     "attempt_001_eligible_for_candidate_superiority_claims": false,
-    "new_primary_decode_authorized": false,
+    "attempt_001_new_primary_decode_authorized": false,
     "b2e03_or_later_attempt_001_execution_authorized": false,
     "attempt_002_required": true,
     "candidate_membership_change_authorized": false,
@@ -75,7 +75,7 @@
     "human_developer_speech_accuracy_evidence": "ABSENT"
   },
   "recovery_order": [
-    "Canonically qualify this B2R01 invalidation while all new primary decoding remains closed.",
+    "Canonically qualify this B2R01 invalidation while all new ATTEMPT-001 primary decoding remains closed.",
     "Qualify a corrected Moonshine C0 streaming harness against non-primary material and the exact pinned runtime source.",
     "Capture or rebind attempt-bound preprocessing and execution-environment evidence for a new attempt without changing frozen subset membership, candidate membership, or scoring rules.",
     "Freeze 000B2-PUBLIC-ATTEMPT-002 before any new primary candidate decode.",
