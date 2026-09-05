@@ -20,6 +20,7 @@ B1_REGISTRY = HERE.parent / "000b1" / "qualified-candidates.json"
 AMENDMENT = HERE / "artifact-size-amendment.json"
 B2R02_HARNESS = HERE.parent / "000b2-public" / "moonshine_streaming_c0.py"
 B2R02_VERIFIER = HERE.parent / "000b2-public" / "verify_b2r02_moonshine_streaming.py"
+MOONSHINE_UPSTREAM_URL = "https://github.com/moonshine-ai/moonshine.git"
 EXPECTED_CORRECTIONS = {
     ("sherpa-onnx-compact", "tokens.txt"),
     ("sherpa-onnx-balanced", "tokens.txt"),
@@ -44,6 +45,86 @@ def load_module(name: str, path: Path) -> Any:
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
+
+
+def verified_pinned_moonshine_source(work_dir: Path, verifier: Any) -> Path:
+    """Materialize and fail-closed verify the exact pinned Moonshine source checkout."""
+
+    source_root = work_dir.parent / "moonshine-source"
+    git_dir = source_root / ".git"
+    if source_root.is_symlink() or git_dir.is_symlink():
+        raise RuntimeError("Moonshine source checkout path must not be a symlink")
+
+    if not git_dir.is_dir():
+        if source_root.exists() and (not source_root.is_dir() or any(source_root.iterdir())):
+            raise RuntimeError("Moonshine source checkout path exists with unexpected contents")
+        source_root.mkdir(parents=True, exist_ok=True)
+        subprocess.run(
+            ["git", "init", str(source_root)],
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=30,
+        )
+        subprocess.run(
+            ["git", "-C", str(source_root), "remote", "add", "origin", MOONSHINE_UPSTREAM_URL],
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=30,
+        )
+        subprocess.run(
+            [
+                "git",
+                "-C",
+                str(source_root),
+                "fetch",
+                "--depth=1",
+                "--no-tags",
+                "origin",
+                verifier.EXPECTED_UPSTREAM_REVISION,
+            ],
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=120,
+        )
+        subprocess.run(
+            ["git", "-C", str(source_root), "checkout", "--detach", "FETCH_HEAD"],
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=30,
+        )
+
+    remote = subprocess.run(
+        ["git", "-C", str(source_root), "remote", "get-url", "origin"],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        timeout=30,
+    ).stdout.strip()
+    if remote != MOONSHINE_UPSTREAM_URL:
+        raise RuntimeError("Moonshine source checkout origin drift")
+
+    status = subprocess.run(
+        ["git", "-C", str(source_root), "status", "--porcelain=v1", "--untracked-files=all"],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        timeout=30,
+    ).stdout.strip()
+    if status:
+        raise RuntimeError("Moonshine source checkout contains tracked or untracked drift")
+
+    verifier.verify_pinned_upstream(source_root)
+    return source_root
 
 
 def canonical_amendment_sizes() -> dict[tuple[str, str], int]:
@@ -103,9 +184,12 @@ def bound_run_moonshine(candidate_id: str, work_dir: Path, wav_path: Path) -> di
     verifier.verify_canonical_authority(harness)
     verifier.verify_structural_harness(harness)
     verifier.verify_qualification_evidence()
+    source_root = verified_pinned_moonshine_source(work_dir, verifier)
 
     if harness.EXPECTED_RUNTIME_REVISION != family["runtime"]["revision"]:
         raise RuntimeError("B2R02 harness runtime revision differs from candidate authority")
+    if harness.EXPECTED_RUNTIME_REVISION != verifier.EXPECTED_UPSTREAM_REVISION:
+        raise RuntimeError("B2R02 harness runtime revision differs from verified upstream source")
     if harness.EXPECTED_RUNTIME_DISTRIBUTION != "moonshine-voice" or harness.EXPECTED_RUNTIME_VERSION != version:
         raise RuntimeError("B2R02 harness runtime distribution/version drift")
 
@@ -143,6 +227,8 @@ def bound_run_moonshine(candidate_id: str, work_dir: Path, wav_path: Path) -> di
                 "version": version,
                 "model_arch": int(arch),
                 "model_asset_root": Path(model_path).name,
+                "verified_upstream_repository": verifier.EXPECTED_UPSTREAM_REPOSITORY,
+                "verified_upstream_revision": verifier.EXPECTED_UPSTREAM_REVISION,
             },
             "artifacts": artifacts,
             "execution": {
@@ -151,6 +237,8 @@ def bound_run_moonshine(candidate_id: str, work_dir: Path, wav_path: Path) -> di
                 "result_line_count_observed": line_count,
                 "b2r02_streaming_c0_harness_executed": True,
                 "b2r02_static_verifier_executed": True,
+                "b2r02_pinned_upstream_source_verified": True,
+                "b2r02_pinned_upstream_source_checkout": source_root.name,
                 "speech_samples": trace.speech_samples,
                 "speech_chunk_samples": list(trace.speech_chunk_samples),
                 "final_zero_pad_samples": trace.zero_pad_samples,
