@@ -14,6 +14,37 @@ The triggering evidence is recorded in `research/000b2-public/attempt-001-invali
 
 No recovery unit may use this transitional precedence to skip its predecessor. The recovery verifier requires a contiguous completed B2R prefix and binds the active recovery unit to the first pending task.
 
+### Canonical recovery transition proof
+
+Beginning with the B2R01-to-B2R02 transition, a checked recovery task is not sufficient successor authority by itself. Every completed recovery unit must append exactly one ordered entry to `recovery-readiness.json.transition_proofs` containing:
+
+- `completed_task` — the just-completed B2R unit;
+- `canonical_task_merge` — the exact merge commit for that unit, which must already be an ancestor of canonical `main`;
+- `post_merge_recovery_run_id` — a successful `push` run of `000B2 Public Corpus Attempt Recovery` whose `head_sha` is exactly that canonical task merge;
+- `successor_task` — the next B2R unit, or `null` only after B2R12.
+
+The recovery workflow independently queries GitHub Actions and validates the recorded post-merge run identity, event, conclusion, workflow name, and exact head SHA. A run id written into repository evidence is not trusted by itself.
+
+For every transition, both `specs/CURRENT.md` and `docs/canonical/CURRENT_STATE.md` must contain these exact authority markers for the latest completed unit:
+
+```text
+**Canonical recovery predecessor:** `B2Rxx`
+**Canonical B2Rxx recovery merge:** `<40-hex canonical merge>`
+**Canonical B2Rxx post-merge recovery run:** `<run id>`
+**Active recovery unit:** `B2Ryy`
+```
+
+Use `NONE` for the active unit only after B2R12 is reconciled.
+
+A PR that advances recovery authority beyond what canonical `main` already records is a reconciliation candidate, not an execution PR. It may advance exactly one recovery task and may change only:
+
+- `research/000b2-public/recovery-readiness.json`;
+- `specs/000B2-public-corpus-bakeoff/tasks.md`;
+- `specs/CURRENT.md`;
+- `docs/canonical/CURRENT_STATE.md`.
+
+The verifier compares the candidate against `origin/main`. It rejects skipped recovery tasks, non-main task-merge identities, altered prior transition proofs, and any reconciliation candidate mixed with implementation or evidence-generation paths. Once the reconciliation is merged, successor implementation PRs are accepted only when their inherited recovery state and transition-proof ledger already match canonical `main`.
+
 ## Finding
 
 `000B2-PUBLIC-ATTEMPT-001` froze the Moonshine family to the pinned streaming integration with:
