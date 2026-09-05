@@ -1,0 +1,71 @@
+{
+  "attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+  "candidate_id": "moonshine-balanced",
+  "canonical_evidence_source": {
+    "artifact_id": 9968333519,
+    "artifact_name": "b2e02-moonshine-balanced-43cab310662b6e8eb1ea25b6d8e39a6dbf14a17e",
+    "artifact_zip_sha256": "0cb9ae81262a6af0a5eb2382ac1fccdae6488c8a04d8551a912bdf8ff9d818ad",
+    "conclusion": "success",
+    "event": "push",
+    "evidence_path": "research/000b2-public/b2e02-moonshine-balanced.json",
+    "evidence_payload_sha256": "ad2baccb196313323b0284d5672f94d9ffae551f0b2af38cc29b4be082e6a6aa",
+    "evidence_raw_file_sha256": "8bc1b3e2e10bd7c64465b424f8dff5ffc84a153868459457d91e22e5cf3da253",
+    "job_id": 101295384896,
+    "role": "CANONICAL_EVIDENCE_SOURCE",
+    "run_attempt": 1,
+    "run_id": 33962004933,
+    "selection_basis": "CANONICAL_EVIDENCE_WAS_SEALED_BEFORE_DUPLICATE_RUN_STARTED; NOT_RESULT_DRIVEN",
+    "semantic_records_sha256": "5d3a4f43768e7a862267f76df36a5e3dc9c8ec523b7156494c3b739096bc0bb1",
+    "source_revision": "43cab310662b6e8eb1ea25b6d8e39a6dbf14a17e",
+    "workflow_name": "Internal B2E02 Public C0 Capture"
+  },
+  "claims": {
+    "b2e03_authorized": false,
+    "comparative_performance_authorized": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "product_code_authorized": false,
+    "production_stt_selected": false,
+    "timing_semantics": "DIAGNOSTIC_ONLY"
+  },
+  "duplicate_reconciliation": {
+    "b2e03_authorized": false,
+    "canonical_evidence_source_count": 1,
+    "decode_capture_count_for_cell_2": 2,
+    "input_identity_equivalence": "PASS",
+    "raw_transcript_difference_count": 10,
+    "raw_transcript_identity_equivalence": "DIFF",
+    "result_driven_evidence_selection": false,
+    "status_identity_equivalence": "PASS",
+    "timing_values_are_diagnostic_only": true
+  },
+  "provenance_status": "RECORDED_FROM_EXACT_GITHUB_ACTIONS_RUN_ARTIFACT_AND_DUPLICATE_RECONCILIATION_METADATA",
+  "related_capture_runs": [
+    {
+      "artifact_id": 9968588759,
+      "artifact_name": "b2e02-moonshine-balanced-76611d5436f1ca6313d5c0832a02e3e7583b0337",
+      "artifact_zip_sha256": "daa2236bd1bee96a4c241671eefe622d9353c3f5481691aa453640f3f6888c9a",
+      "conclusion": "failure",
+      "decoder_capture_status": "CAPTURED_240_DECODED_0_FAILED",
+      "event": "push",
+      "evidence_path": "research/000b2-public/b2e02-moonshine-balanced-duplicate-run-33963021322.json",
+      "evidence_payload_sha256": "601bccfe660db1e3f2b7b1348841c0cfb6152f085c86b9aa2f853e1dce3d0d51",
+      "evidence_raw_file_sha256": "f21cf41533787b3045cf9209b150949ad646d50f702c89640d57c95c47085bc1",
+      "input_identity_equivalence": "PASS",
+      "job_id": 101298112856,
+      "post_decode_verifier_failure": "recorded payload digest drift",
+      "raw_transcript_difference_count": 10,
+      "raw_transcript_identity_equivalence": "DIFF",
+      "reconciliation_status": "PRESERVED_AND_COMPARED_TO_CANONICAL_EVIDENCE",
+      "role": "FAILED_WORKFLOW_AFTER_SUCCESSFUL_DECODE_NONCANONICAL",
+      "run_attempt": 1,
+      "run_id": 33963021322,
+      "selection_effect": "NONE",
+      "semantic_records_sha256": "76665968a9b315a69534342570080d693cd44ac82cd888a78aaa743ccb947386",
+      "source_revision": "76611d5436f1ca6313d5c0832a02e3e7583b0337",
+      "status_identity_equivalence": "PASS",
+      "workflow_name": "Internal B2E02 Public C0 Capture"
+    }
+  ],
+  "schema_version": "000b2-public-b2e02-provenance-v2",
+  "task": "B2E02"
+}
