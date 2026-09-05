@@ -21,7 +21,7 @@ ATTEMPT-001 evidence is historical and ineligible for comparative scoring once B
 
 - [x] `B2R01` Canonically record ATTEMPT-001 material execution drift, preserve historical evidence bytes, and close all new primary decoding.
 - [x] `B2R02` Implement and qualify the corrected Moonshine streaming C0 harness against non-primary material and exact pinned upstream source.
-- [ ] `B2R03` Capture or cryptographically rebind ATTEMPT-002-bound preprocessing and execution-environment evidence without changing frozen subset, candidate, scorer, or normalization identities.
+- [x] `B2R03` Capture or cryptographically rebind ATTEMPT-002-bound preprocessing and execution-environment evidence without changing frozen subset, candidate, scorer, or normalization identities.
 - [ ] `B2R04` Freeze `000B2-PUBLIC-ATTEMPT-002` before any new primary candidate decode.
 - [ ] `B2R05` Execute candidate cell 1 (`moonshine-compact`) under ATTEMPT-002 and unchanged frozen C0.
 - [ ] `B2R06` Execute candidate cell 2 (`moonshine-balanced`) under ATTEMPT-002 and unchanged frozen C0.

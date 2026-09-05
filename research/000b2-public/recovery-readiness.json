@@ -47,15 +47,22 @@
       "canonical_task_merge": "8dc723efff01fd4461688962a2891bf9e8841f4d",
       "post_merge_recovery_run_id": 33991218657,
       "successor_task": "B2R03"
+    },
+    {
+      "completed_task": "B2R03",
+      "canonical_task_merge": "6904fa7dd55e35c08e76044a18ebf9a95c65e038",
+      "post_merge_recovery_run_id": 33995766496,
+      "successor_task": "B2R04"
     }
   ],
   "completed_recovery_tasks": [
     "B2R01",
-    "B2R02"
+    "B2R02",
+    "B2R03"
   ],
-  "active_recovery_unit": "B2R03",
+  "active_recovery_unit": "B2R04",
   "qualified_workflow_change_paths": [],
-  "next_action": "Qualify B2R03 only: capture or cryptographically rebind ATTEMPT-002-bound preprocessing and execution-environment evidence without changing frozen subset, candidate, scorer, normalization, or C0 identities. Keep all ATTEMPT-002 primary decoding closed until B2R04 is canonically reconciled.",
+  "next_action": "Qualify B2R04 only: freeze 000B2-PUBLIC-ATTEMPT-002 before any new primary candidate decode while preserving the frozen subset, candidate, scorer, normalization, corrected C0, and B2R03 preexecution evidence identities. Keep B2R05 and every primary candidate decode closed until B2R04 is canonically merged, post-merge verified, and reconciled.",
   "claim_guards": {
     "human_developer_speech_accuracy_evidence": "ABSENT",
     "comparative_result_available": false,
