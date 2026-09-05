@@ -6,7 +6,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -43,6 +45,67 @@ def load(path: Path) -> Any:
 
 def fail(message: str) -> None:
     raise AssertionError(message)
+
+
+def git_output(*args: str) -> str:
+    return subprocess.run(
+        ["git", "-C", str(ROOT), *args],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=30,
+    ).stdout.strip()
+
+
+def verify_exact_workflow_subject(expected_checkout_sha: str) -> str:
+    """Bind a fresh PR aggregate to exact PR-head bytes without changing the workflow."""
+
+    checkout_sha = git_output("rev-parse", "HEAD")
+    if checkout_sha != expected_checkout_sha:
+        fail(f"workflow checkout differs from declared workflow subject: {checkout_sha}")
+
+    event_path_raw = os.environ.get("GITHUB_EVENT_PATH")
+    if not event_path_raw:
+        return checkout_sha
+    event_path = Path(event_path_raw)
+    if not event_path.is_file():
+        fail("GITHUB_EVENT_PATH is not a file")
+    event = load(event_path)
+    pull_request = event.get("pull_request") if isinstance(event, dict) else None
+    if not isinstance(pull_request, dict):
+        return checkout_sha
+
+    head = pull_request.get("head")
+    base = pull_request.get("base")
+    if not isinstance(head, dict) or not isinstance(base, dict):
+        fail("pull_request event head/base metadata missing")
+    head_sha = head.get("sha")
+    base_sha = base.get("sha")
+    if not isinstance(head_sha, str) or not SHA40.fullmatch(head_sha):
+        fail("pull_request event head SHA malformed")
+    if not isinstance(base_sha, str) or not SHA40.fullmatch(base_sha):
+        fail("pull_request event base SHA malformed")
+
+    if checkout_sha != head_sha:
+        commit_line = git_output("rev-list", "--parents", "-n", "1", "HEAD").split()
+        parents = commit_line[1:]
+        if head_sha not in parents or base_sha not in parents:
+            fail("PR merge checkout is not directly bound to event head/base")
+
+    subprocess.run(
+        ["git", "-C", str(ROOT), "fetch", "--depth=1", "--no-tags", "origin", head_sha],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        timeout=120,
+    )
+    checkout_tree = git_output("rev-parse", "HEAD^{tree}")
+    head_tree = git_output("rev-parse", f"{head_sha}^{{tree}}")
+    if checkout_tree != head_tree:
+        fail("workflow checkout tree differs from exact PR head tree")
+    return head_sha
 
 
 def digest_without(obj: dict[str, Any], field: str) -> str:
@@ -394,9 +457,11 @@ def main() -> int:
 
     evidence_path = EVIDENCE
     expected_workflow = None
+    exact_subject_sha = None
     if dynamic:
         if not SHA40.fullmatch(args.expected_head_sha):
             parser.error("--expected-head-sha must be a full lowercase Git SHA")
+        exact_subject_sha = verify_exact_workflow_subject(args.expected_head_sha)
         evidence_path = args.evidence
         expected_workflow = {
             "name": "000B2 Operational Smoke",
@@ -406,12 +471,15 @@ def main() -> int:
         }
     try:
         verify(evidence_path, expected_workflow)
-    except (AssertionError, OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+    except (AssertionError, OSError, ValueError, KeyError, TypeError, json.JSONDecodeError, subprocess.SubprocessError) as exc:
         print(f"VERIFY_000B2_OPERATIONAL_SMOKE=FAIL: {exc}", file=sys.stderr)
         return 1
     print("VERIFY_000B2_OPERATIONAL_SMOKE=PASS")
     print("CANDIDATES=6")
     print("OPERATIONAL_QUALIFICATION=SMOKE_PASS")
+    if exact_subject_sha is not None:
+        print(f"EXACT_PR_HEAD={exact_subject_sha}")
+        print("CHECKOUT_TREE_EQUALS_PR_HEAD=YES")
     print("PRIMARY_TEST_DECODING=NO")
     print("HUMAN_SPEECH=NO")
     print("COMPARATIVE_RANKING=NO")
