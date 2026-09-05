@@ -3,6 +3,6 @@
   "task": "B2E03",
   "candidate_id": "whispercpp-compact",
   "canonical_authority_base": "b326397cdd29fbb132b9c438ba2178626558efab",
-  "capture_sequence": 9,
-  "purpose": "Trigger the exact-head B2E03 public-human C0 capture after enforcing complete frozen speech-plus-zero feed delivery, pinned stream.cpp GREEDY/non-VAD controls, effective overwrite-style transcript materialization, and verifier validity across canonical reconciliation states."
+  "capture_sequence": 10,
+  "purpose": "Intentionally halt B2E03 capture after discovering material frozen-C0 methodology drift in canonical B2E01/B2E02 Moonshine execution. No B2E03 evidence is authorized from this invalidated attempt."
 }
