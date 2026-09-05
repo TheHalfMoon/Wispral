@@ -1,0 +1,318 @@
+name: Internal B2E03 Public C0 Capture
+
+on:
+  push:
+    branches:
+      - research/000b2-b2e03-whispercpp-compact
+    paths:
+      - '.github/workflows/internal-b2e03-capture.yml'
+      - 'research/000b2-public/decode_b2e03.py'
+      - 'research/000b2-public/verify_b2e03.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: b2e03-capture-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  capture-b2e03:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      B2E03_REVISION: ${{ github.sha }}
+      B2E03_PREPROCESSING_CONTAINER_IMAGE: python:3.12.11-bookworm@sha256:13c9584604a99ca134c4f41800f74ffc64ee6ac8cf555cf1e704a6087fc84f12
+      FFMPEG_TAG: n9.0.1
+      FFMPEG_REV: bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa
+      FFMPEG_ROOT: /evidence/toolchain
+      WHISPER_REV: 371b5a7561823ab2bb32142d2751e35e7534727b
+      MODEL_REV: 80da2d8bfee42b0e836fc3a9890373e5defc00a6
+      MODEL_NAME: ggml-base.en.bin
+      MODEL_BYTES: '147964211'
+      MODEL_SHA256: a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002
+
+    steps:
+      - name: Checkout exact B2E03 source revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.B2E03_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact revision and static B2E03 authority
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$B2E03_REVISION"
+          python -m py_compile \
+            research/000b2-public/decode_b2e03.py \
+            research/000b2-public/verify_b2e03.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e03.py --static-only
+
+      - name: Verify B2E03 authority guards fail closed
+        shell: bash
+        run: |
+          set -euo pipefail
+          tasks=specs/000B2-public-corpus-bakeoff/tasks.md
+          readiness=research/000b2-public/readiness.json
+          attempt=research/000b2-public/attempt-manifest.json
+          cp "$tasks" "$RUNNER_TEMP/b2e03-tasks-original"
+          cp "$readiness" "$RUNNER_TEMP/b2e03-readiness-original"
+          cp "$attempt" "$RUNNER_TEMP/b2e03-attempt-original"
+          restore() {
+            cp "$RUNNER_TEMP/b2e03-tasks-original" "$tasks"
+            cp "$RUNNER_TEMP/b2e03-readiness-original" "$readiness"
+            cp "$RUNNER_TEMP/b2e03-attempt-original" "$attempt"
+          }
+          trap restore EXIT
+
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("specs/000B2-public-corpus-bakeoff/tasks.md")
+          text = path.read_text(encoding="utf-8")
+          old = "- [x] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0."
+          assert text.count(old) == 1
+          path.write_text(text.replace(old, old.replace("[x]", "[ ]"), 1), encoding="utf-8")
+          PY
+          set +e
+          output=$(PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e03.py --static-only 2>&1)
+          status=$?
+          set -e
+          printf '%s\n' "$output"
+          test "$status" -eq 1
+          grep -F 'B2E03_EVIDENCE=FAIL: B2E03 predecessor completion drift' <<<"$output"
+          restore
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("research/000b2-public/readiness.json")
+          value = json.loads(path.read_text(encoding="utf-8"))
+          suffix = " Do not begin B2E04 or any later candidate cell until B2E03 is canonical."
+          assert value["next_action"].endswith(suffix)
+          value["next_action"] = value["next_action"][:-len(suffix)]
+          path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
+          PY
+          set +e
+          output=$(PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e03.py --static-only 2>&1)
+          status=$?
+          set -e
+          printf '%s\n' "$output"
+          test "$status" -eq 1
+          grep -F 'B2E03_EVIDENCE=FAIL: B2E04+ closure missing' <<<"$output"
+          restore
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("research/000b2-public/attempt-manifest.json")
+          value = json.loads(path.read_text(encoding="utf-8"))
+          value["candidate_set"]["candidate_ids"] = value["candidate_set"]["candidate_ids"][:2]
+          path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          PY
+          set +e
+          output=$(PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2e03.py \
+            --work-dir "$RUNNER_TEMP/negative-work" \
+            --preprocessed-root "$RUNNER_TEMP/negative-preprocessed" \
+            --whisper-source "$RUNNER_TEMP/missing-source" \
+            --cli "$RUNNER_TEMP/missing-cli" \
+            --model "$RUNNER_TEMP/missing-model" \
+            --output "$RUNNER_TEMP/negative.json" 2>&1)
+          status=$?
+          set -e
+          printf '%s\n' "$output"
+          test "$status" -eq 1
+          grep -F 'B2E03_EXECUTION=FAIL: candidate cell 3 drift' <<<"$output"
+          test ! -e "$RUNNER_TEMP/negative.json"
+          restore
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("research/000b2-public/attempt-manifest.json")
+          value = json.loads(path.read_text(encoding="utf-8"))
+          value["freeze_digest_sha256"] = "not-a-valid-digest"
+          path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          PY
+          set +e
+          output=$(PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2e03.py \
+            --work-dir "$RUNNER_TEMP/negative-work" \
+            --preprocessed-root "$RUNNER_TEMP/negative-preprocessed" \
+            --whisper-source "$RUNNER_TEMP/missing-source" \
+            --cli "$RUNNER_TEMP/missing-cli" \
+            --model "$RUNNER_TEMP/missing-model" \
+            --output "$RUNNER_TEMP/negative.json" 2>&1)
+          status=$?
+          set -e
+          printf '%s\n' "$output"
+          test "$status" -eq 1
+          grep -F 'B2E03_EXECUTION=FAIL: attempt freeze digest missing or malformed' <<<"$output"
+          test ! -e "$RUNNER_TEMP/negative.json"
+          restore
+
+          git diff --quiet -- "$tasks" "$readiness" "$attempt"
+
+      - name: Pull exact immutable preprocessing container
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/b2e03"
+          mkdir -p "$RUNNER_TEMP/b2e03/home" "$RUNNER_TEMP/b2e03/work"
+          docker pull --platform linux/amd64 "$B2E03_PREPROCESSING_CONTAINER_IMAGE"
+          test "$(docker image inspect "$B2E03_PREPROCESSING_CONTAINER_IMAGE" --format '{{.Os}}')" = "linux"
+          test "$(docker image inspect "$B2E03_PREPROCESSING_CONTAINER_IMAGE" --format '{{.Architecture}}')" = "amd64"
+
+      - name: Fetch exact FFmpeg release
+        run: |
+          set -euo pipefail
+          docker run --rm --platform linux/amd64 \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/evidence/home \
+            -e FFMPEG_ROOT \
+            -e FFMPEG_TAG \
+            -e FFMPEG_REV \
+            -v "$RUNNER_TEMP/b2e03:/evidence" \
+            "$B2E03_PREPROCESSING_CONTAINER_IMAGE" \
+            bash -lc '
+              set -euo pipefail
+              rm -rf "$FFMPEG_ROOT"
+              mkdir -p "$FFMPEG_ROOT"
+              SRC="$FFMPEG_ROOT/FFmpeg"
+              git init "$SRC"
+              git -C "$SRC" remote add origin https://github.com/FFmpeg/FFmpeg.git
+              git -C "$SRC" fetch --depth=1 origin "refs/tags/$FFMPEG_TAG:refs/tags/$FFMPEG_TAG"
+              test "$(git -C "$SRC" rev-list -n1 "$FFMPEG_TAG")" = "$FFMPEG_REV"
+              git -C "$SRC" checkout --detach "$FFMPEG_REV"
+            '
+
+      - name: Build bounded FFmpeg 9.0.1 preprocessing tool
+        run: |
+          set -euo pipefail
+          docker run --rm --platform linux/amd64 --network none \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/evidence/home \
+            -e FFMPEG_ROOT \
+            -v "$RUNNER_TEMP/b2e03:/evidence" \
+            "$B2E03_PREPROCESSING_CONTAINER_IMAGE" \
+            bash -lc '
+              set -euo pipefail
+              SRC="$FFMPEG_ROOT/FFmpeg"
+              PREFIX="$FFMPEG_ROOT/install"
+              cd "$SRC"
+              ./configure \
+                --prefix="$PREFIX" \
+                --disable-everything \
+                --disable-doc \
+                --disable-debug \
+                --disable-ffplay \
+                --disable-ffprobe \
+                --disable-network \
+                --disable-autodetect \
+                --disable-x86asm \
+                --enable-protocol=file \
+                --enable-demuxer=flac,wav \
+                --enable-muxer=wav \
+                --enable-decoder=flac,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le \
+                --enable-encoder=pcm_s16le \
+                --enable-parser=flac \
+                --enable-filter=aresample,aformat \
+                --enable-swresample
+              make -j2 ffmpeg
+              make install
+              "$PREFIX/bin/ffmpeg" -version | head -n 1
+            '
+
+      - name: Reproduce exact frozen P0 preprocessing bytes
+        run: |
+          set -euo pipefail
+          docker run --rm --platform linux/amd64 \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/evidence/home \
+            -e FFMPEG_ROOT \
+            -v "$GITHUB_WORKSPACE:/workspace:ro" \
+            -v "$RUNNER_TEMP/b2e03:/evidence" \
+            -w /workspace \
+            "$B2E03_PREPROCESSING_CONTAINER_IMAGE" \
+            bash -lc '
+              set -euo pipefail
+              PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/preprocess_subset.py \
+                --ffmpeg "$FFMPEG_ROOT/install/bin/ffmpeg" \
+                --work-dir /evidence/work \
+                --output /evidence/preprocessing-capture.json
+              PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py \
+                --compare-committed /evidence/preprocessing-capture.json
+            '
+
+      - name: Fetch exact whisper.cpp source and build CPU CLI
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/b2e03/whisper.cpp"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/ggml-org/whisper.cpp.git
+          git -C "$SRC" fetch --depth=1 origin "$WHISPER_REV"
+          git -C "$SRC" checkout --detach FETCH_HEAD
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$WHISPER_REV"
+          git -C "$SRC" diff --quiet HEAD --
+          cmake -S "$SRC" -B "$SRC/build" \
+            -DGGML_CUDA=OFF \
+            -DGGML_METAL=OFF \
+            -DWHISPER_BUILD_TESTS=OFF \
+            -DWHISPER_BUILD_EXAMPLES=ON \
+            -DCMAKE_BUILD_TYPE=Release
+          test "$(git -C "$SRC" diff --name-only HEAD --)" = "bindings/javascript/package.json"
+          git -C "$SRC" checkout -- bindings/javascript/package.json
+          git -C "$SRC" diff --quiet HEAD --
+          cmake --build "$SRC/build" --target whisper-cli -j2
+          git -C "$SRC" diff --quiet HEAD --
+          "$SRC/build/bin/whisper-cli" --version
+          sha256sum "$SRC/build/bin/whisper-cli" "$SRC/build/CMakeCache.txt"
+
+      - name: Download exact pinned whispercpp-compact model
+        run: |
+          set -euo pipefail
+          MODELS="$RUNNER_TEMP/b2e03/models"
+          mkdir -p "$MODELS"
+          BASE="https://huggingface.co/ggerganov/whisper.cpp/resolve/$MODEL_REV"
+          curl --fail --location --retry 3 --retry-all-errors \
+            "$BASE/$MODEL_NAME" -o "$MODELS/$MODEL_NAME"
+          test "$(stat -c %s "$MODELS/$MODEL_NAME")" = "$MODEL_BYTES"
+          printf '%s  %s\n' "$MODEL_SHA256" "$MODELS/$MODEL_NAME" | sha256sum --check -
+
+      - name: Execute B2E03 whispercpp-compact C0 decode
+        run: |
+          set -euo pipefail
+          export B2E03_PREPROCESSING_CONTAINER_IMAGE
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2e03.py \
+            --work-dir "$RUNNER_TEMP/b2e03/whisper-work" \
+            --preprocessed-root "$RUNNER_TEMP/b2e03/work/preprocessed" \
+            --whisper-source "$RUNNER_TEMP/b2e03/whisper.cpp" \
+            --cli "$RUNNER_TEMP/b2e03/whisper.cpp/build/bin/whisper-cli" \
+            --model "$RUNNER_TEMP/b2e03/models/$MODEL_NAME" \
+            --output "$RUNNER_TEMP/b2e03/b2e03-whispercpp-compact.json" \
+            --timeout-seconds 5400
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e03.py \
+            --evidence "$RUNNER_TEMP/b2e03/b2e03-whispercpp-compact.json"
+
+      - name: Preserve raw-data boundary
+        run: |
+          set -euo pipefail
+          test ! -e research/000b2-public/raw
+          test ! -e research/000b2-public/preprocessed
+          test ! -e research/000b2-public/transcripts
+          echo 'B2E03_RAW_DATA_BOUNDARY=PASS'
+
+      - name: Upload bounded B2E03 execution evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: b2e03-whispercpp-compact-${{ env.B2E03_REVISION }}
+          path: ${{ runner.temp }}/b2e03/b2e03-whispercpp-compact.json
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Remove transient corpus, model, source, transcripts, and toolchain
+        if: always()
+        run: |
+          rm -rf "$RUNNER_TEMP/b2e03"
+          test ! -e research/000b2-public/raw
+          test ! -e research/000b2-public/preprocessed
+          test ! -e research/000b2-public/transcripts
