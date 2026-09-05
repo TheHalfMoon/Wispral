@@ -77,6 +77,7 @@ def canonical_json_bytes(value: Any) -> bytes:
 def git_head() -> str:
     head = subprocess.run(
         ["git", "rev-parse", "HEAD"],
+        cwd=ROOT,
         check=True,
         text=True,
         stdout=subprocess.PIPE,
@@ -124,7 +125,10 @@ def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]
     candidate_set = attempt.get("candidate_set")
     require(isinstance(candidate_set, dict), "attempt candidate set missing")
     candidate_ids = candidate_set.get("candidate_ids")
-    require(isinstance(candidate_ids, list) and candidate_ids and candidate_ids[1] == CANDIDATE_ID, "candidate cell 2 drift")
+    require(
+        isinstance(candidate_ids, list) and len(candidate_ids) > 1 and candidate_ids[1] == CANDIDATE_ID,
+        "candidate cell 2 drift",
+    )
     require(candidate_set.get("membership_change_after_freeze_allowed") is False, "candidate membership became mutable")
     contract = attempt.get("decoding_contract")
     require(isinstance(contract, dict), "attempt decoding contract missing")
