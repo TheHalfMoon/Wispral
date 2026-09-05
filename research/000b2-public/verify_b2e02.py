@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify committed B2E02 moonshine-balanced C0 execution evidence."""
+"""Verify sealed B2E02 moonshine-balanced C0 execution evidence and provenance."""
 
 from __future__ import annotations
 
@@ -15,20 +15,31 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 PUBLIC = ROOT / "research" / "000b2-public"
 EVIDENCE = PUBLIC / "b2e02-moonshine-balanced.json"
+PROVENANCE = PUBLIC / "b2e02-provenance.json"
 ATTEMPT = PUBLIC / "attempt-manifest.json"
 PREPROCESSING = PUBLIC / "preprocessing-capture.json"
 READINESS = PUBLIC / "readiness.json"
 TASKS = ROOT / "specs" / "000B2-public-corpus-bakeoff" / "tasks.md"
 CURRENT = ROOT / "specs" / "CURRENT.md"
+
 EXPECTED_BASE = "116dbd1734e01ec1280d6b530f0cb1dec867feb1"
+EXPECTED_SOURCE_REVISION = "43cab310662b6e8eb1ea25b6d8e39a6dbf14a17e"
 EXPECTED_FREEZE = "af4d5009e293daef5d8f629ca91af653f5f591448cd94d4555473a51e2d1da86"
 EXPECTED_PREPROCESSING = "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011"
+EXPECTED_RAW_EVIDENCE_SHA256 = "8bc1b3e2e10bd7c64465b424f8dff5ffc84a153868459457d91e22e5cf3da253"
+EXPECTED_PAYLOAD_SHA256 = "ad2baccb196313323b0284d5672f94d9ffae551f0b2af38cc29b4be082e6a6aa"
+EXPECTED_CAPTURE_RUN_ID = 33962004933
+EXPECTED_CAPTURE_RUN_ATTEMPT = 1
+EXPECTED_CAPTURE_JOB_ID = 101295384896
+EXPECTED_ARTIFACT_ID = 9968333519
+EXPECTED_ARTIFACT_NAME = "b2e02-moonshine-balanced-43cab310662b6e8eb1ea25b6d8e39a6dbf14a17e"
+EXPECTED_ARTIFACT_ZIP_SHA256 = "0cb9ae81262a6af0a5eb2382ac1fccdae6488c8a04d8551a912bdf8ff9d818ad"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 SHA64 = re.compile(r"^[0-9a-f]{64}$")
 
 
 class VerifyError(ValueError):
-    pass
+    """Raised when committed B2E02 evidence fails closed."""
 
 
 def require(value: bool, message: str) -> None:
@@ -43,11 +54,11 @@ def load(path: Path) -> dict[str, Any]:
 
 
 def sha(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as f:
-        for chunk in iter(lambda: f.read(1024 * 1024), b""):
-            h.update(chunk)
-    return h.hexdigest()
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def canonical(value: Any) -> bytes:
@@ -56,19 +67,32 @@ def canonical(value: Any) -> bytes:
 
 def static_frontier() -> None:
     readiness = load(READINESS)
-    require(readiness.get("completed_through") == "B2E01", "pre-B2E02 readiness drift")
-    require(str(readiness.get("next_action", "")).startswith("Execute B2E02 only:"), "B2E02 is not sole next action")
-    require("Do not begin B2E03" in readiness["next_action"], "B2E03 closure missing")
     tasks = TASKS.read_text(encoding="utf-8")
     current = CURRENT.read_text(encoding="utf-8")
-    require("- [x] `B2E01`" in tasks and "- [ ] `B2E02`" in tasks and "- [ ] `B2E03`" in tasks, "execution PR task frontier drift")
-    require("B2E02 (`moonshine-balanced`) is the sole current bounded execution unit" in current, "CURRENT frontier drift")
+    completed = readiness.get("completed_through")
+
+    if completed == "B2E01":
+        require(str(readiness.get("next_action", "")).startswith("Execute B2E02 only:"), "B2E02 is not sole pre-reconciliation next action")
+        require("Do not begin B2E03" in readiness["next_action"], "B2E03 closure missing before B2E02 reconciliation")
+        require("- [x] `B2E01`" in tasks and "- [ ] `B2E02`" in tasks and "- [ ] `B2E03`" in tasks, "B2E02 execution PR self-reconciled canonical task state")
+        require("B2E02 (`moonshine-balanced`) is the sole current bounded execution unit" in current, "CURRENT pre-reconciliation B2E02 frontier drift")
+    elif completed == "B2E02":
+        require(str(readiness.get("next_action", "")).startswith("Execute B2E03 only:"), "B2E03 is not sole post-B2E02 next action")
+        require("- [x] `B2E02`" in tasks and "- [ ] `B2E03`" in tasks, "B2E02/B2E03 canonical task frontier drift")
+        require("B2E03" in current and "whispercpp-compact" in current and "sole current bounded execution unit" in current, "CURRENT post-B2E02 frontier drift")
+    else:
+        require("- [x] `B2E02`" in tasks, "later canonical state lost B2E02 completion")
+
     attempt = load(ATTEMPT)
     require(attempt.get("frozen") is True, "attempt is not frozen")
     require(attempt.get("attempt_id") == "000B2-PUBLIC-ATTEMPT-001", "attempt id drift")
     require(attempt.get("freeze_digest_sha256") == EXPECTED_FREEZE, "attempt freeze digest drift")
     contract = attempt.get("decoding_contract", {})
-    require(contract.get("candidate_decoding_started") is False and contract.get("primary_decoding_started") is False, "historical predecode manifest mutated")
+    require(
+        contract.get("candidate_decoding_started") is False
+        and contract.get("primary_decoding_started") is False,
+        "historical predecode manifest mutated",
+    )
 
 
 def preprocessing_index() -> dict[str, dict[str, Any]]:
@@ -80,11 +104,60 @@ def preprocessing_index() -> dict[str, dict[str, Any]]:
     return result
 
 
+def verify_provenance(evidence: dict[str, Any]) -> None:
+    require(sha(EVIDENCE) == EXPECTED_RAW_EVIDENCE_SHA256, "raw canonical B2E02 evidence bytes drift")
+    provenance = load(PROVENANCE)
+    require(provenance == {
+        "attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+        "candidate_id": "moonshine-balanced",
+        "capture": {
+            "artifact_id": EXPECTED_ARTIFACT_ID,
+            "artifact_name": EXPECTED_ARTIFACT_NAME,
+            "artifact_zip_sha256": EXPECTED_ARTIFACT_ZIP_SHA256,
+            "event": "push",
+            "job_id": EXPECTED_CAPTURE_JOB_ID,
+            "run_attempt": EXPECTED_CAPTURE_RUN_ATTEMPT,
+            "run_id": EXPECTED_CAPTURE_RUN_ID,
+            "source_revision": EXPECTED_SOURCE_REVISION,
+            "workflow_name": "Internal B2E02 Public C0 Capture",
+        },
+        "claims": {
+            "b2e03_authorized": False,
+            "comparative_performance_authorized": False,
+            "human_developer_speech_accuracy_evidence": "ABSENT",
+            "product_code_authorized": False,
+            "production_stt_selected": False,
+            "timing_semantics": "DIAGNOSTIC_ONLY",
+        },
+        "evidence": {
+            "decoded_count": 240,
+            "failure_count": 0,
+            "input_count": 240,
+            "path": "research/000b2-public/b2e02-moonshine-balanced.json",
+            "payload_sha256": EXPECTED_PAYLOAD_SHA256,
+            "raw_file_sha256": EXPECTED_RAW_EVIDENCE_SHA256,
+        },
+        "provenance_status": "RECORDED_FROM_EXACT_GITHUB_ACTIONS_RUN_AND_ARTIFACT_METADATA",
+        "schema_version": "000b2-public-b2e02-provenance-v1",
+        "selection_basis": "SOLE_SUCCESSFUL_AUTHORIZED_B2E02_CAPTURE_RUN; NOT_RESULT_DRIVEN",
+        "task": "B2E02",
+    }, "B2E02 provenance drift")
+
+    run = evidence.get("run", {})
+    require(run.get("repository_revision") == EXPECTED_SOURCE_REVISION, "evidence source revision mismatch")
+    require(run.get("github_run_id") == EXPECTED_CAPTURE_RUN_ID, "evidence run id mismatch")
+    require(run.get("github_run_attempt") == EXPECTED_CAPTURE_RUN_ATTEMPT, "evidence run attempt mismatch")
+    require(run.get("github_job") == "capture-b2e02", "evidence job name drift")
+
+
 def verify(path: Path) -> dict[str, Any]:
     evidence = load(path)
-    payload = evidence.pop("evidence_payload_sha256", None)
+    recorded_payload = evidence.get("evidence_payload_sha256")
+    require(recorded_payload == EXPECTED_PAYLOAD_SHA256, "recorded payload digest drift")
+    unsigned = dict(evidence)
+    payload = unsigned.pop("evidence_payload_sha256", None)
     require(isinstance(payload, str) and SHA64.fullmatch(payload) is not None, "payload digest missing")
-    require(hashlib.sha256(canonical(evidence)).hexdigest() == payload, "payload digest mismatch")
+    require(hashlib.sha256(canonical(unsigned)).hexdigest() == payload, "payload digest mismatch")
     require(evidence.get("schema_version") == "000b2-public-b2e02-decode-v1", "schema drift")
     require(evidence.get("task") == "B2E02" and evidence.get("state") == "C0_PRIMARY_DECODE_CAPTURED", "task/state drift")
 
@@ -101,24 +174,26 @@ def verify(path: Path) -> dict[str, Any]:
     require(candidate.get("runtime_revision") == "234f60faa0eb388b01cdf7e60aca232af37aefda", "runtime revision drift")
     require(candidate.get("model_arch") == 5 and candidate.get("model_asset_root") == "quantized_26_08_21", "model identity drift")
     artifacts = candidate.get("artifacts")
-    require(isinstance(artifacts, list) and artifacts, "artifact evidence missing")
+    require(isinstance(artifacts, list) and len(artifacts) == 8, "artifact evidence cardinality drift")
     for row in artifacts:
+        require(isinstance(row, dict), "artifact row malformed")
         require(isinstance(row.get("sha256"), str) and SHA64.fullmatch(row["sha256"]) is not None, "artifact digest malformed")
+        require(isinstance(row.get("size_bytes"), int) and row["size_bytes"] > 0, "artifact size malformed")
 
     require(evidence.get("c0_controls") == {
-        "repository_context_used": False,
-        "test_specific_context_used": False,
         "candidate_specific_audio_transform_used": False,
-        "keyterms": [],
         "context": None,
         "identical_frozen_audio_required_across_candidates": True,
+        "keyterms": [],
+        "repository_context_used": False,
+        "test_specific_context_used": False,
     }, "C0 controls drift")
 
     run = evidence.get("run", {})
     source = run.get("repository_revision")
     require(isinstance(source, str) and SHA40.fullmatch(source) is not None, "source revision malformed")
+    require(source == EXPECTED_SOURCE_REVISION, "source revision drift")
     subprocess.run(["git", "cat-file", "-e", f"{source}^{{commit}}"], check=True)
-    subprocess.run(["git", "merge-base", "--is-ancestor", source, "HEAD"], check=True)
     require(run.get("github_repository") == "TheHalfMoon/Wispral", "repository provenance drift")
     require(run.get("timing_semantics") == "DIAGNOSTIC_ONLY" and run.get("comparative_performance_authorized") is False, "timing semantics drift")
 
@@ -160,6 +235,7 @@ def verify(path: Path) -> dict[str, Any]:
     require(guards.get("completed_through") == "B2E02_EXECUTION_ONLY" and guards.get("b2e03_authorized") is False, "execution/reconciliation boundary drift")
     require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human developer-speech claim drift")
     require(guards.get("production_stt_selected") is False and guards.get("product_code_authorized") is False, "product authority drift")
+    verify_provenance(evidence)
     return evidence
 
 
