@@ -15,7 +15,24 @@ These execution tasks become authorized only after the public-corpus amendment a
 - [x] `B2P07` Capture attempt-bound execution environment/hardware facts and preserve `CONTROLLED` versus `DIAGNOSTIC` semantics.
 - [x] `B2P08` Freeze final pre-decode attempt manifest and verify `primary_decoding_started=false` at freeze.
 
-## Phase E — public-human C0 execution
+## Phase R — material-drift recovery
+
+ATTEMPT-001 evidence is historical and ineligible for comparative scoring once B2R01 is canonical. B2E01/B2E02 checklist completion below records that those historical execution units occurred; it does not make their ATTEMPT-001 outputs valid six-cell comparison evidence. B2E03 and later ATTEMPT-001 execution must remain closed. The active recovery contract is `recovery.md`.
+
+- [ ] `B2R01` Canonically record ATTEMPT-001 material execution drift, preserve historical evidence bytes, and close all new primary decoding.
+- [ ] `B2R02` Implement and qualify the corrected Moonshine streaming C0 harness against non-primary material and exact pinned upstream source.
+- [ ] `B2R03` Capture or cryptographically rebind ATTEMPT-002-bound preprocessing and execution-environment evidence without changing frozen subset, candidate, scorer, or normalization identities.
+- [ ] `B2R04` Freeze `000B2-PUBLIC-ATTEMPT-002` before any new primary candidate decode.
+- [ ] `B2R05` Execute candidate cell 1 (`moonshine-compact`) under ATTEMPT-002 and unchanged frozen C0.
+- [ ] `B2R06` Execute candidate cell 2 (`moonshine-balanced`) under ATTEMPT-002 and unchanged frozen C0.
+- [ ] `B2R07` Execute candidate cell 3 (`whispercpp-compact`) under ATTEMPT-002 and unchanged frozen C0.
+- [ ] `B2R08` Execute candidate cell 4 (`whispercpp-balanced`) under ATTEMPT-002 and unchanged frozen C0.
+- [ ] `B2R09` Execute candidate cell 5 (`sherpa-onnx-compact`) under ATTEMPT-002 and unchanged frozen C0.
+- [ ] `B2R10` Execute candidate cell 6 (`sherpa-onnx-balanced`) under ATTEMPT-002 and unchanged frozen C0.
+- [ ] `B2R11` Preserve ATTEMPT-002 raw transcripts, failures, runtime observations, and exact run identities for every cell.
+- [ ] `B2R12` Score ATTEMPT-002 P0 outputs using the already-frozen normalization/scoring contract without result-driven changes.
+
+## Phase E — historical ATTEMPT-001 public-human C0 execution ledger
 
 - [x] `B2E01` Decode the frozen P0 public-human subset with candidate cell 1 under C0.
 - [x] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0.
