@@ -1,0 +1,131 @@
+{
+  "attempt_id": "000B2-PUBLIC-ATTEMPT-002",
+  "authority": {
+    "candidate_revalidation": {
+      "candidate_registry_sha256": "2448daab15aea13d1e03c326e43b163337a4e3a09ec077bb0f25e3dd51499f1f",
+      "git_blob_sha1": "5db133d2bf9c3085dcfec8f228ed5520e02f772e",
+      "path": "research/000b2-public/candidate-revalidation.json",
+      "sha256": "aeca7b824d14388271b04c2dad953cecf5c47cd53cf3f70b766f4fe4dcac54b8"
+    },
+    "execution_environment": {
+      "bound_attempt_id": "000B2-PUBLIC-ATTEMPT-002",
+      "comparative_performance_authorized": false,
+      "environment_id": "x86_64:AMD EPYC 9V74 80-Core Processor:3e80c2c63bf88d13",
+      "git_blob_sha1": "caf814bcb5e42fd769e6df1d9a54c1164535f86c",
+      "hardware_fingerprint_sha256": "3e80c2c63bf88d13a10c358feaa250672a5250fb9cbc90e59bdb397912cac5cd",
+      "path": "research/000b2-public/execution-environment.json",
+      "performance_mode": "DIAGNOSTIC",
+      "reuse_mode": "CRYPTOGRAPHIC_PROVENANCE_REBIND",
+      "sha256": "2b8b521c28c771293648cbf86c7c1b20e820bacfc065074d7cfe2555745387ed",
+      "source_attempt_id": "000B2-PUBLIC-ATTEMPT-001"
+    },
+    "preprocessing": {
+      "bound_attempt_id": "000B2-PUBLIC-ATTEMPT-002",
+      "git_blob_sha1": "89cbb28b7961042a1793c694692fe822c9414370",
+      "path": "research/000b2-public/preprocessing-capture.json",
+      "reuse_mode": "CRYPTOGRAPHIC_PROVENANCE_REBIND",
+      "sha256": "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011",
+      "source_attempt_id": "000B2-PUBLIC-ATTEMPT-001"
+    },
+    "subset": {
+      "freeze_digest_sha256": "f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242",
+      "git_blob_sha1": "6acf7e787667512f08b2e7f333cc172310664a7e",
+      "path": "research/000b2-public/subset-manifest.json",
+      "sha256": "5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb"
+    }
+  },
+  "candidate_set": {
+    "b1_contract_version": "000b1-contract-v1",
+    "candidate_ids": [
+      "moonshine-compact",
+      "moonshine-balanced",
+      "whispercpp-compact",
+      "whispercpp-balanced",
+      "sherpa-onnx-compact",
+      "sherpa-onnx-balanced"
+    ],
+    "count": 6,
+    "frozen_methodology_git_blob_sha1": "0eee1c15b5e3fc98edd09f1aae0547afd3c078b5",
+    "frozen_methodology_path": "research/000b1/frozen-methodology.json",
+    "frozen_methodology_sha256": "fc177308926941e683f311a340b9e398f2c44ffa32963b3abc20aa359dbb09df",
+    "membership_change_after_freeze_allowed": false,
+    "registry_git_blob_sha1": "a77c442ae5d4dffa46a0494fbcffd56ecd772be3",
+    "registry_path": "research/000b1/qualified-candidates.json",
+    "registry_sha256": "2448daab15aea13d1e03c326e43b163337a4e3a09ec077bb0f25e3dd51499f1f"
+  },
+  "claims": {
+    "b2r05_authorized": false,
+    "comparative_performance_authorized": false,
+    "comparative_result_available": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "human_developer_speech_ranking_authorized": false,
+    "product_code_authorized": false,
+    "production_stt_selected": false
+  },
+  "corrected_c0": {
+    "harness_path": "research/000b2-public/moonshine_streaming_c0.py",
+    "harness_sha256": "c0f0093cda7ca036c8a97178364b3840ce7093386a8cb711ccef5f183a4453c0",
+    "model_asset_revision": "quantized_26_08_21",
+    "qualification_git_blob_sha1": "90fb99d2c6ef1d7cd9d698e70a9e0a9837155bce",
+    "qualification_path": "research/000b2-public/b2r02-moonshine-streaming-qualification.json",
+    "runtime_distribution": "moonshine-voice",
+    "runtime_distribution_version": "0.1.5",
+    "runtime_revision": "234f60faa0eb388b01cdf7e60aca232af37aefda"
+  },
+  "decoding_contract": {
+    "c0_repository_context": "OFF",
+    "c0_test_specific_context": "OFF",
+    "candidate_decoding_started": false,
+    "candidate_run_runtime_observations_must_be_preserved_separately": true,
+    "candidate_specific_audio_transform": "OFF",
+    "identical_frozen_audio_required_across_candidates": true,
+    "primary_decoding_started": false,
+    "raw_outputs_and_failures_must_be_preserved": true
+  },
+  "freeze_digest_sha256": "600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8",
+  "frozen": true,
+  "lane": "PUBLIC_CORPUS",
+  "phase": "PRE_PRIMARY_FROZEN",
+  "recovery_authority": {
+    "b2r03_post_merge_recovery_run_id": 33995766496,
+    "b2r03_reconciliation_merge": "cd527d7e5a8361ff01cb11b85fe552986f44e742",
+    "b2r03_task_merge": "6904fa7dd55e35c08e76044a18ebf9a95c65e038",
+    "preexecution_rebinding": {
+      "git_blob_sha1": "49ba712b6a71ae69313c06b724833de1a95099b4",
+      "path": "research/000b2-public/b2r03-preexecution-rebinding.json",
+      "sha256": "f9cda5168e6cafb6a1e9e6898f394ec3987b37af50c53c15cf63bc136c1f2df1"
+    },
+    "preexecution_state": {
+      "git_blob_sha1": "0e860485dae45cbc7b5f3c92d4f238983a9db285",
+      "path": "research/000b2-public/attempt-002-preexecution-state.json",
+      "sha256": "1390fd4df3ec3c0599db68283b8e967be5f059232756302dcc3dfd8d09ca6734"
+    }
+  },
+  "schema_version": "000b2-public-attempt-002-manifest-v1",
+  "scoring": {
+    "core_config_git_blob_sha1": "0634a3108ab0543fa1f8e9bc19015124feae7079",
+    "core_config_path": "research/000b2-entry/scorer-config.json",
+    "core_config_sha256": "4d97d6b9e563bbbaf6cf455597f4c56e44c459a41c25d85f2f069c5fcbeec8e3",
+    "core_scorer_git_blob_sha1": "21e4c67c00da9a11fb402241444598a104f1f2a7",
+    "core_scorer_path": "research/000b2-entry/scorer.py",
+    "core_scorer_sha256": "7328cb34610218a703544a0de6dbfd5e0980b0a62131966119bca648855260e1",
+    "ordinary_wer_source_panel_scope": [
+      "GENERAL_COLLATERAL"
+    ],
+    "public_p0_normalization": {
+      "algorithm": "UNIT_COST_LEVENSHTEIN",
+      "casefold": true,
+      "punctuation_and_symbol_categories_to_space": [
+        "P",
+        "S"
+      ],
+      "unicode_representation": "NFC",
+      "whitespace": "COLLAPSE_AND_SPLIT"
+    },
+    "public_p0_relabels_source_panel": false,
+    "public_wer_adapter_path": "research/000b2-public/score_public_wer.py",
+    "public_wer_adapter_sha256": "581a0e4b0bb91d55a252b92871dbb1246b5fbc4466a5d94bceb35862744fc023",
+    "result_driven_changes_allowed": false
+  },
+  "task": "B2R04"
+}
