@@ -1,0 +1,102 @@
+name: Internal B2E01 Digest Preflight Fix
+
+on:
+  push:
+    branches:
+      - docs/000b2-reconcile-after-b2e01
+    paths:
+      - '.github/workflows/internal-b2e01-digest-preflight-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout reconciliation branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: docs/000b2-reconcile-after-b2e01
+          fetch-depth: 0
+
+      - name: Move attempt digest shape validation ahead of closed-frontier rejection
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('research/000b2-public/decode_b2e01.py')
+          text = p.read_text(encoding='utf-8')
+
+          anchor = 'def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:\n    readiness = load_json(READINESS_PATH, "public readiness")\n'
+          replacement = '''def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:\n    # Validate the immutable attempt identity shape before execution-frontier authority.\n    # This is a side-effect-free preflight: a malformed freeze digest must fail closed\n    # for the specific provenance reason even after B2E01 has become canonical, while\n    # a valid manifest still cannot execute B2E01 once the frontier has advanced.\n    attempt = load_json(ATTEMPT_MANIFEST_PATH, "frozen attempt manifest")\n    freeze_digest = attempt.get("freeze_digest_sha256")\n    require(\n        isinstance(freeze_digest, str)\n        and len(freeze_digest) == 64\n        and all(ch in SHA40 for ch in freeze_digest),\n        "attempt freeze digest missing or malformed",\n    )\n\n    readiness = load_json(READINESS_PATH, "public readiness")\n'''
+          if text.count(anchor) != 1:
+              raise SystemExit(f'authority anchor drift: {text.count(anchor)}')
+          text = text.replace(anchor, replacement)
+
+          old_load = '    attempt = load_json(ATTEMPT_MANIFEST_PATH, "frozen attempt manifest")\n    require(attempt.get("schema_version") == "000b2-public-attempt-manifest-v1", "attempt manifest schema drift")\n'
+          new_load = '    require(attempt.get("schema_version") == "000b2-public-attempt-manifest-v1", "attempt manifest schema drift")\n'
+          if text.count(old_load) != 1:
+              raise SystemExit(f'attempt load anchor drift: {text.count(old_load)}')
+          text = text.replace(old_load, new_load)
+
+          old_digest = '''    freeze_digest = attempt.get("freeze_digest_sha256")\n    require(\n        isinstance(freeze_digest, str)\n        and len(freeze_digest) == 64\n        and all(ch in SHA40 for ch in freeze_digest),\n        "attempt freeze digest missing or malformed",\n    )\n\n'''
+          # One copy is now the preflight; remove only the later duplicate copy.
+          if text.count(old_digest) != 2:
+              raise SystemExit(f'expected preflight + legacy digest blocks, found {text.count(old_digest)}')
+          first = text.find(old_digest)
+          second = text.find(old_digest, first + len(old_digest))
+          text = text[:second] + text[second + len(old_digest):]
+
+          p.write_text(text, encoding='utf-8')
+          PY
+
+          python -m py_compile research/000b2-public/decode_b2e01.py research/000b2-public/verify_b2e01.py
+
+          # Prove malformed/missing digests now fail for the intended reason.
+          manifest=research/000b2-public/attempt-manifest.json
+          original="$RUNNER_TEMP/attempt-original.json"
+          cp "$manifest" "$original"
+          cleanup() { cp "$original" "$manifest"; }
+          trap cleanup EXIT
+          for mode in missing malformed; do
+            cp "$original" "$manifest"
+            MODE="$mode" python - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = Path('research/000b2-public/attempt-manifest.json')
+          value = json.loads(path.read_text(encoding='utf-8'))
+          if os.environ['MODE'] == 'missing':
+              value.pop('freeze_digest_sha256', None)
+          else:
+              value['freeze_digest_sha256'] = 'not-a-valid-digest'
+          path.write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          PY
+            set +e
+            output=$(PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2e01.py --work-dir "$RUNNER_TEMP/work" --preprocessed-root "$RUNNER_TEMP/pre" --output "$RUNNER_TEMP/out.json" 2>&1)
+            status=$?
+            set -e
+            test "$status" -eq 1
+            grep -Fqx 'B2E01_EXECUTION=FAIL: attempt freeze digest missing or malformed' <<<"$output"
+            test ! -e "$RUNNER_TEMP/out.json"
+          done
+          cp "$original" "$manifest"
+
+          # Prove a valid manifest remains non-executable after reconciliation.
+          set +e
+          output=$(PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2e01.py --work-dir "$RUNNER_TEMP/work-valid" --preprocessed-root "$RUNNER_TEMP/pre-valid" --output "$RUNNER_TEMP/out-valid.json" 2>&1)
+          status=$?
+          set -e
+          test "$status" -eq 1
+          grep -Fqx 'B2E01_EXECUTION=FAIL: B2E01 authority requires canonical completion through B2P08' <<<"$output"
+          test ! -e "$RUNNER_TEMP/out-valid.json"
+
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/000b2-public/decode_b2e01.py
+          git commit -m 'fix(000b2): validate B2E01 freeze digest before frontier rejection'
+          git push origin HEAD:docs/000b2-reconcile-after-b2e01
