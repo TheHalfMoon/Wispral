@@ -39,12 +39,21 @@ jobs:
   verify-b2e01-evidence:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    env:
+      EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - name: Checkout exact revision
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
+          ref: ${{ env.EXACT_REVISION }}
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Verify exact revision identity
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+          echo "EXACT_REVISION=$EXACT_REVISION"
 
       - name: Compile B2E01 execution and verifier sources
         run: |
