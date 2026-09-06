@@ -6,6 +6,7 @@ on:
       - docs/000b2-b2r06-reconciliation
     paths:
       - .github/workflows/internal-b2r06-stale-authority-repair.yml
+      - research/000b2-public/internal_b2r06_stale_authority_repair.py
 
 permissions:
   contents: write
@@ -28,7 +29,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$GITHUB_REF_NAME" = "docs/000b2-b2r06-reconciliation"
-          test "$(git rev-parse HEAD^)" = "d50ef71259aa892dc3acbfcee3e25c3bac953147"
+          test "$(git rev-parse HEAD^)" = "bfbc6b526f4b3a6d90f4a9521458b4b29eee41a2"
           git fetch --no-tags origin main
           test "$(git rev-parse origin/main)" = "2460eae15260423b3a06d50d9119ae2459ff41c7"
           test -f research/000b2-public/internal_b2r06_stale_authority_repair.py
