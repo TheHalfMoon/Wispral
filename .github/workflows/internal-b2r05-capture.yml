@@ -1,0 +1,200 @@
+name: Internal B2R05 ATTEMPT-002 Capture
+
+on:
+  push:
+    branches:
+      - research/000b2-b2r05-execution
+    paths:
+      - '.github/workflows/internal-b2r05-capture.yml'
+      - 'research/000b2-public/decode_b2r05.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: b2r05-capture-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  capture-b2r05:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      B2R05_REVISION: ${{ github.sha }}
+      FFMPEG_TAG: n9.0.1
+      FFMPEG_REV: bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa
+    steps:
+      - name: Checkout exact B2R05 execution revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.B2R05_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up bound Python runtime
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12.14'
+
+      - name: Verify exact revision and frozen B2R05 authority
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$B2R05_REVISION"
+          test "$(python -c 'import platform; print(platform.python_version())')" = "3.12.14"
+          python -m py_compile \
+            research/000b2-public/decode_b2r05.py \
+            research/000b2-public/moonshine_streaming_c0.py \
+            research/000b2-public/verify_b2r02_moonshine_streaming.py \
+            research/000b2-public/verify_b2r04_attempt_freeze.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r04_attempt_freeze.py
+
+      - name: Fetch exact FFmpeg release
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r05-toolchain"
+          SRC="$ROOT/FFmpeg"
+          rm -rf "$ROOT"
+          mkdir -p "$ROOT"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/FFmpeg/FFmpeg.git
+          git -C "$SRC" fetch --depth=1 origin "refs/tags/$FFMPEG_TAG:refs/tags/$FFMPEG_TAG"
+          test "$(git -C "$SRC" rev-list -n1 "$FFMPEG_TAG")" = "$FFMPEG_REV"
+          git -C "$SRC" checkout --detach "$FFMPEG_REV"
+          git -C "$SRC" diff --quiet HEAD --
+
+      - name: Build bounded FFmpeg 9.0.1 preprocessing tool
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r05-toolchain"
+          SRC="$ROOT/FFmpeg"
+          PREFIX="$ROOT/install"
+          cd "$SRC"
+          ./configure \
+            --prefix="$PREFIX" \
+            --disable-everything \
+            --disable-doc \
+            --disable-debug \
+            --disable-ffplay \
+            --disable-ffprobe \
+            --disable-network \
+            --disable-autodetect \
+            --disable-x86asm \
+            --enable-protocol=file \
+            --enable-demuxer=flac,wav \
+            --enable-muxer=wav \
+            --enable-decoder=flac,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le \
+            --enable-encoder=pcm_s16le \
+            --enable-parser=flac \
+            --enable-filter=aresample,aformat \
+            --enable-swresample
+          make -j2 ffmpeg
+          make install
+          "$PREFIX/bin/ffmpeg" -version | head -n 1
+
+      - name: Reproduce exact frozen P0 preprocessing bytes
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/b2r05-work"
+          mkdir -p "$RUNNER_TEMP/b2r05-work"
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/preprocess_subset.py \
+            --ffmpeg "$RUNNER_TEMP/b2r05-toolchain/install/bin/ffmpeg" \
+            --work-dir "$RUNNER_TEMP/b2r05-work" \
+            --output "$RUNNER_TEMP/b2r05-preprocessing-capture.json"
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py \
+            --compare-committed "$RUNNER_TEMP/b2r05-preprocessing-capture.json"
+
+      - name: Install Moonshine release dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-input 'moonshine-voice==0.1.5'
+          python - <<'PY'
+          import importlib.metadata
+          assert importlib.metadata.version('moonshine-voice') == '0.1.5'
+          print('MOONSHINE_DISTRIBUTION_VERSION=0.1.5')
+          PY
+
+      - name: Execute B2R05 moonshine-compact streaming C0 decode
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2r05.py \
+            --work-dir "$RUNNER_TEMP/b2r05-runtime" \
+            --preprocessed-root "$RUNNER_TEMP/b2r05-work/preprocessed" \
+            --output "$RUNNER_TEMP/b2r05-moonshine-compact.json"
+
+      - name: Verify bounded B2R05 capture semantics
+        run: |
+          set -euo pipefail
+          EVIDENCE="$RUNNER_TEMP/b2r05-moonshine-compact.json" python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          value = json.loads(Path(os.environ['EVIDENCE']).read_text(encoding='utf-8'))
+          assert value['schema_version'] == '000b2-public-b2r05-decode-v1'
+          assert value['task'] == 'B2R05'
+          assert value['attempt_id'] == '000B2-PUBLIC-ATTEMPT-002'
+          assert value['candidate']['cell_index'] == 1
+          assert value['candidate']['candidate_id'] == 'moonshine-compact'
+          assert value['authority']['attempt_freeze_digest_sha256'] == '600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8'
+          controls = value['c0_controls']
+          assert controls['repository_context_used'] is False
+          assert controls['test_specific_context_used'] is False
+          assert controls['candidate_specific_audio_transform_used'] is False
+          assert controls['keyterms'] == [] and controls['context'] is None
+          assert controls['feed_chunk_samples'] == 8000
+          assert controls['final_zero_pad_samples'] == 10560
+          assert controls['vad_threshold'] == 0.0
+          execution = value['execution']
+          assert execution['input_count'] == 240
+          assert execution['decoded_count'] + execution['failure_count'] == 240
+          assert execution['all_frozen_input_hashes_reverified'] is True
+          assert execution['reference_transcripts_loaded_by_decoder'] is False
+          assert execution['accuracy_scoring_performed'] is False
+          assert execution['comparative_ranking_present'] is False
+          assert execution['performance_claim_present'] is False
+          assert len(execution['records']) == 240
+          for row in execution['records']:
+              if row['status'] == 'DECODED':
+                  trace = row['feed_trace']
+                  chunks = trace['speech_chunk_samples']
+                  assert chunks and all(0 < size <= 8000 for size in chunks)
+                  assert all(size == 8000 for size in chunks[:-1])
+                  assert sum(chunks) == trace['speech_samples']
+                  assert trace['zero_pad_samples'] == 10560
+                  assert trace['sample_rate_hz'] == 16000
+                  assert trace['stream_started'] is True
+                  assert trace['stream_stopped'] is True
+              else:
+                  assert row['status'] == 'FAILED'
+                  assert row['failure'] is not None
+          guards = value['claim_guards']
+          assert guards == {
+              'human_developer_speech_accuracy_evidence': 'ABSENT',
+              'comparative_result_available': False,
+              'comparative_performance_authorized': False,
+              'production_stt_selected': False,
+              'product_code_authorized': False,
+              'b2r06_authorized': False,
+          }
+          print('B2R05_CAPTURE_SEMANTICS=PASS')
+          PY
+
+      - name: Upload bounded B2R05 execution evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: b2r05-moonshine-compact-${{ env.B2R05_REVISION }}
+          path: ${{ runner.temp }}/b2r05-moonshine-compact.json
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Remove transient corpus, runtime, model cache, and toolchain
+        if: always()
+        run: |
+          rm -rf \
+            "$RUNNER_TEMP/b2r05-work" \
+            "$RUNNER_TEMP/b2r05-runtime" \
+            "$RUNNER_TEMP/b2r05-toolchain" \
+            "$RUNNER_TEMP/b2r05-preprocessing-capture.json"
+          test ! -e research/000b2-public/raw
+          test ! -e research/000b2-public/preprocessed
