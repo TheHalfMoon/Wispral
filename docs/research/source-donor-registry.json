@@ -1,7 +1,7 @@
 {
   "schema_version": "wispral-source-donor-registry-v1",
   "status": "NON_EXECUTABLE_RESEARCH_REGISTER",
-  "prepared_date": "2026-09-06",
+  "prepared_date": "2026-09-07",
   "canonical_base": "16104eacf2d571276452d173ddb54c089faccd0e",
   "founder_permission_statement": {
     "reported": true,
@@ -147,6 +147,30 @@
       "boundaries": ["CAPTURE_RUNTIME", "ACTIVATION", "SURFACE_ADAPTERS", "DIAGNOSTICS_DISTRIBUTION"],
       "horizons": ["H1", "H11", "H12"],
       "jobs": ["rust-native-shortcut-boundary", "capture-readiness-ack", "race-tests", "host-path-capabilities", "diagnostics", "engine-governance", "subprocess-isolation"]
+    },
+    {
+      "id": "superwhisper-commercial",
+      "url": "https://superwhisper.com",
+      "class": "PRODUCT_ARCHITECTURE_REFERENCE",
+      "source_code_rights_inferred": false,
+      "boundaries": ["ACTIVATION", "STT_PROVIDER", "CONTEXT_RESOLVER", "TURN_INTERACTION", "SURFACE_ADAPTERS"],
+      "horizons": ["H1", "H4", "H5", "H6", "H11", "H12"],
+      "jobs": ["system-wide-ptt-reference", "stt-rewrite-stage-separation", "explicit-local-cloud-routing", "context-mode-visibility", "context-capture-timing-reference"],
+      "claim_guard": "PUBLIC_PRODUCT_AND_BENCHMARK_CLAIMS_ARE_NOT_WISPRAL_EVIDENCE"
+    },
+    {
+      "id": "opensuperwhisper",
+      "repository": "Starmel/OpenSuperWhisper",
+      "url": "https://github.com/Starmel/OpenSuperWhisper",
+      "class": "DONOR_CANDIDATE",
+      "reviewed_revision": "bef6bc0421d0c010e8f2fb4288c0d74978c8b964",
+      "license": "MIT",
+      "official_superwhisper_affiliation_inferred": false,
+      "platform_scope_observed": "macOS-Apple-Silicon",
+      "boundaries": ["CAPTURE_RUNTIME", "ACTIVATION", "STT_PROVIDER", "TURN_INTERACTION", "DIAGNOSTICS_DISTRIBUTION"],
+      "horizons": ["H1", "H9", "H11", "H12"],
+      "jobs": ["modifier-only-hotkeys", "mouse-button-ptt", "microphone-hotplug-selection", "minimal-transcription-engine-contract", "serialized-provider-access", "queued-cancellation", "source-file-ownership-semantics"],
+      "transitive_assets_require_separate_review": true
     },
     {
       "id": "meetily-local",
