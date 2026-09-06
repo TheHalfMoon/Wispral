@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Composite attempt verifier for historical B2P08 and recovery B2R04/B2R05/B2R06."""
+"""Composite attempt verifier for historical B2P08 and recovery B2R04/B2R05/B2R06/B2R07."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ LEGACY_VERIFIER = PUBLIC / "verify_attempt_manifest_legacy.py"
 B2R04_VERIFIER = PUBLIC / "verify_b2r04_attempt_freeze.py"
 B2R05_VERIFIER = PUBLIC / "verify_b2r05.py"
 B2R06_VERIFIER = PUBLIC / "verify_b2r06.py"
+B2R07_VERIFIER = PUBLIC / "verify_b2r07.py"
 
 
 class CompositeVerificationError(RuntimeError):
@@ -45,7 +46,8 @@ def main() -> int:
     run_verifier(B2R04_VERIFIER, "wispral_b2r04_attempt_freeze")
     run_verifier(B2R05_VERIFIER, "wispral_b2r05_execution_evidence")
     run_verifier(B2R06_VERIFIER, "wispral_b2r06_execution_evidence")
-    print("B2P08_B2R04_B2R05_AND_B2R06_ATTEMPT_VERIFIER=PASS")
+    run_verifier(B2R07_VERIFIER, "wispral_b2r07_execution_evidence")
+    print("B2P08_B2R04_B2R05_B2R06_AND_B2R07_ATTEMPT_VERIFIER=PASS")
     return 0
 
 
