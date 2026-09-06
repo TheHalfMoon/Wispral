@@ -138,7 +138,7 @@ def validate_current_authority() -> tuple[dict[str, Any], dict[str, Any], dict[s
     require(
         candidate_set.get("candidate_ids")
         == [
-            "moonshine-balanced",
+            "moonshine-compact",
             "moonshine-balanced",
             "whispercpp-compact",
             "whispercpp-balanced",
