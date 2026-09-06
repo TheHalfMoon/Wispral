@@ -20,9 +20,9 @@ ENTRY = ROOT / "research" / "000b2-entry"
 sys.path.insert(0, str(ENTRY))
 sys.path.insert(0, str(PUBLIC))
 
+import moonshine_streaming_c0 as c0  # noqa: E402
 import operational_smoke  # noqa: E402
 import operational_smoke_entry  # noqa: E402
-import moonshine_streaming_c0 as c0  # noqa: E402
 
 RECOVERY_READINESS = PUBLIC / "recovery-readiness.json"
 ATTEMPT_002 = PUBLIC / "attempt-002-manifest.json"
@@ -89,15 +89,20 @@ def git_head() -> str:
     return head
 
 
-def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:
-    freeze_verifier = operational_smoke_entry.load_module("wispral_b2r05_b2r04_verifier", B2R04_VERIFIER)
-    freeze_verifier.verify_manifest()
-    require(freeze_verifier.verify_authority() == "CANONICAL_FROZEN", "B2R04 canonical freeze authority is not active")
+def validate_current_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    """Bind execution to current B2R05 authority without replaying stale B2R02 frontier gates."""
+
+    freeze = operational_smoke_entry.load_module("wispral_b2r05_b2r04_verifier", B2R04_VERIFIER)
+    freeze.verify_manifest()
+    require(freeze.verify_authority() == "CANONICAL_FROZEN", "B2R04 canonical ATTEMPT-002 freeze is not active")
 
     readiness = load_json(RECOVERY_READINESS, "recovery readiness")
     require(readiness.get("state") == "RECOVERY_READY", "recovery lane is not ready")
     require(readiness.get("active_recovery_unit") == TASK, "B2R05 is not the active recovery unit")
-    require(readiness.get("completed_recovery_tasks") == ["B2R01", "B2R02", "B2R03", "B2R04"], "recovery predecessor prefix drift")
+    require(
+        readiness.get("completed_recovery_tasks") == ["B2R01", "B2R02", "B2R03", "B2R04"],
+        "B2R05 predecessor ledger drift",
+    )
     require(readiness.get("qualified_workflow_change_paths") == [], "B2R05 unexpectedly authorizes workflow drift")
     replacement = readiness.get("replacement_attempt")
     require(isinstance(replacement, dict), "replacement attempt authority missing")
@@ -106,25 +111,30 @@ def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]
     require(replacement.get("primary_decode_entry_open") is True, "ATTEMPT-002 primary decode entry is closed")
     guards = readiness.get("claim_guards")
     require(isinstance(guards, dict), "recovery claim guards missing")
-    require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human developer-speech claim guard drift")
-    require(guards.get("comparative_result_available") is False, "comparative result became available before scoring")
-    require(guards.get("production_stt_selected") is False, "production STT selected before scoring")
+    require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "developer-speech claim guard drift")
+    require(guards.get("comparative_result_available") is False, "comparative result opened before scoring")
+    require(guards.get("production_stt_selected") is False, "production STT selected during recovery")
     require(guards.get("product_code_authorized") is False, "product code authorized during recovery")
 
     attempt = load_json(ATTEMPT_002, "ATTEMPT-002 manifest")
+    require(attempt.get("schema_version") == "000b2-public-attempt-002-manifest-v1", "ATTEMPT-002 schema drift")
     require(attempt.get("attempt_id") == ATTEMPT_ID, "ATTEMPT-002 id drift")
     require(attempt.get("frozen") is True and attempt.get("phase") == "PRE_PRIMARY_FROZEN", "ATTEMPT-002 freeze state drift")
     require(attempt.get("freeze_digest_sha256") == EXPECTED_FREEZE_DIGEST, "ATTEMPT-002 freeze digest drift")
     candidate_set = attempt.get("candidate_set")
     require(isinstance(candidate_set, dict), "ATTEMPT-002 candidate set missing")
-    require(candidate_set.get("candidate_ids") == [
-        "moonshine-compact",
-        "moonshine-balanced",
-        "whispercpp-compact",
-        "whispercpp-balanced",
-        "sherpa-onnx-compact",
-        "sherpa-onnx-balanced",
-    ], "ATTEMPT-002 candidate order drift")
+    require(
+        candidate_set.get("candidate_ids")
+        == [
+            "moonshine-compact",
+            "moonshine-balanced",
+            "whispercpp-compact",
+            "whispercpp-balanced",
+            "sherpa-onnx-compact",
+            "sherpa-onnx-balanced",
+        ],
+        "ATTEMPT-002 candidate order drift",
+    )
     require(candidate_set.get("registry_sha256") == EXPECTED_REGISTRY_SHA256, "candidate registry binding drift")
     contract = attempt.get("decoding_contract")
     require(isinstance(contract, dict), "ATTEMPT-002 decoding contract missing")
@@ -132,14 +142,16 @@ def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]
     require(contract.get("c0_test_specific_context") == "OFF", "test-specific context is not OFF")
     require(contract.get("candidate_specific_audio_transform") == "OFF", "candidate-specific audio transform is not OFF")
     require(contract.get("identical_frozen_audio_required_across_candidates") is True, "identical frozen audio invariant drift")
-    require(contract.get("raw_outputs_and_failures_must_be_preserved") is True, "raw-output preservation invariant drift")
+    require(contract.get("raw_outputs_and_failures_must_be_preserved") is True, "raw output preservation invariant drift")
     corrected = attempt.get("corrected_c0")
     require(isinstance(corrected, dict), "corrected C0 binding missing")
+    require(corrected.get("harness_path") == "research/000b2-public/moonshine_streaming_c0.py", "C0 harness path drift")
     require(corrected.get("harness_sha256") == EXPECTED_C0_SHA256, "corrected C0 harness binding drift")
     require(sha256_file(PUBLIC / "moonshine_streaming_c0.py") == EXPECTED_C0_SHA256, "corrected C0 harness bytes drift")
     require(corrected.get("runtime_revision") == c0.EXPECTED_RUNTIME_REVISION, "Moonshine runtime revision drift")
-    require(corrected.get("runtime_distribution_version") == c0.EXPECTED_RUNTIME_VERSION, "Moonshine runtime version drift")
-    require(corrected.get("model_asset_revision") == c0.EXPECTED_MODEL_ASSET_REVISION, "Moonshine model asset revision drift")
+    require(corrected.get("runtime_distribution") == c0.EXPECTED_RUNTIME_DISTRIBUTION, "Moonshine distribution drift")
+    require(corrected.get("runtime_distribution_version") == c0.EXPECTED_RUNTIME_VERSION, "Moonshine version drift")
+    require(corrected.get("model_asset_revision") == c0.EXPECTED_MODEL_ASSET_REVISION, "Moonshine asset revision drift")
 
     preprocessing = load_json(PREPROCESSING, "preprocessing evidence")
     require(sha256_file(PREPROCESSING) == EXPECTED_PREPROCESSING_SHA256, "preprocessing evidence bytes drift")
@@ -147,7 +159,7 @@ def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]
     require(isinstance(execution, dict), "preprocessing execution block missing")
     records = execution.get("records")
     require(isinstance(records, list) and len(records) == EXPECTED_UTTERANCES, "preprocessing record count drift")
-    require(execution.get("all_source_hashes_reverified") is True, "source hashes were not reverified by frozen preprocessing evidence")
+    require(execution.get("all_source_hashes_reverified") is True, "source hashes were not reverified")
     require(execution.get("all_outputs_verified_pcm_s16le_mono_16000hz") is True, "preprocessing format invariant drift")
 
     rebinding = load_json(REBINDING, "B2R03 preexecution rebinding")
@@ -160,19 +172,18 @@ def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]
     require(preserved.get("candidate_registry_sha256") == EXPECTED_REGISTRY_SHA256, "candidate identity drift")
     require(preserved.get("c0_repository_context") == "OFF", "B2R03 repository context drift")
     require(preserved.get("c0_test_specific_context") == "OFF", "B2R03 test-specific context drift")
-    require(preserved.get("candidate_specific_audio_transform") == "OFF", "B2R03 candidate-specific transform drift")
+    require(preserved.get("candidate_specific_audio_transform") == "OFF", "B2R03 candidate transform drift")
     environment = rebinding.get("execution_environment_rebinding")
     require(isinstance(environment, dict), "B2R03 environment rebinding missing")
     require(environment.get("bound_attempt_id") == ATTEMPT_ID, "B2R03 environment attempt binding drift")
-    require(environment.get("performance_mode") == "DIAGNOSTIC", "B2R03 environment timing semantics drift")
+    require(environment.get("performance_mode") == "DIAGNOSTIC", "B2R03 timing semantics drift")
     require(environment.get("comparative_performance_authorized") is False, "comparative timing unexpectedly authorized")
-    return readiness, attempt, preprocessing, rebinding
+    return attempt, preprocessing, rebinding
 
 
 def build_preprocessing_index(preprocessing: dict[str, Any]) -> dict[str, dict[str, Any]]:
-    records = preprocessing["execution"]["records"]
     indexed: dict[str, dict[str, Any]] = {}
-    for row in records:
+    for row in preprocessing["execution"]["records"]:
         require(isinstance(row, dict), "preprocessing record must be an object")
         uid = row.get("utterance_id")
         require(isinstance(uid, str) and uid, "preprocessing utterance id missing")
@@ -180,6 +191,18 @@ def build_preprocessing_index(preprocessing: dict[str, Any]) -> dict[str, dict[s
         indexed[uid] = row
     require(len(indexed) == EXPECTED_UTTERANCES, "preprocessing index cardinality drift")
     return indexed
+
+
+def qualify_reusable_b2r02_harness() -> Any:
+    """Revalidate reusable B2R02 implementation evidence, excluding its historical active-task gate."""
+
+    verifier = operational_smoke_entry.load_module("wispral_b2r05_b2r02_verifier", B2R02_VERIFIER)
+    verifier.verify_structural_harness(c0)
+    verifier.verify_qualification_evidence()
+    require(verifier.EXPECTED_UPSTREAM_REVISION == c0.EXPECTED_RUNTIME_REVISION, "B2R02 upstream revision binding drift")
+    require(verifier.EXPECTED_RUNTIME_VERSION == c0.EXPECTED_RUNTIME_VERSION, "B2R02 runtime version binding drift")
+    require(verifier.EXPECTED_MODEL_ASSET_REVISION == c0.EXPECTED_MODEL_ASSET_REVISION, "B2R02 model asset binding drift")
+    return verifier
 
 
 def runtime_provenance(build_identity: dict[str, Any], rebinding: dict[str, Any]) -> dict[str, Any]:
@@ -209,7 +232,7 @@ def runtime_provenance(build_identity: dict[str, Any], rebinding: dict[str, Any]
 
 
 def execute(work_dir: Path, preprocessed_root: Path) -> dict[str, Any]:
-    _, attempt, preprocessing, rebinding = validate_authority()
+    attempt, preprocessing, rebinding = validate_current_authority()
     indexed = build_preprocessing_index(preprocessing)
 
     family, config = operational_smoke.candidate_record(CANDIDATE_ID)
@@ -217,10 +240,7 @@ def execute(work_dir: Path, preprocessed_root: Path) -> dict[str, Any]:
     require(family.get("runtime", {}).get("revision") == c0.EXPECTED_RUNTIME_REVISION, "candidate runtime revision drift")
     require(config.get("id") == CANDIDATE_ID and config.get("tier") == "COMPACT", "candidate cell 1 configuration drift")
 
-    verifier = operational_smoke_entry.load_module("wispral_b2r05_b2r02_verifier", B2R02_VERIFIER)
-    verifier.verify_canonical_authority(c0)
-    verifier.verify_structural_harness(c0)
-    verifier.verify_qualification_evidence()
+    verifier = qualify_reusable_b2r02_harness()
     source_root = operational_smoke_entry.verified_pinned_moonshine_source(work_dir, verifier)
     runtime_root, build_identity = operational_smoke_entry.source_bound_moonshine_runtime(work_dir, source_root, verifier)
     ModelArch, Transcriber, download_model_from_info, find_model_info = operational_smoke_entry.import_source_bound_moonshine(
