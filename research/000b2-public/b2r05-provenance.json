@@ -30,6 +30,21 @@
   "related_execution_attempts": [
     {
       "role": "FAILED_PRE_PRIMARY_NONCANONICAL",
+      "workflow_name": "Internal B2R05 ATTEMPT-002 Moonshine Compact Capture",
+      "run_id": 34030579352,
+      "run_attempt": 1,
+      "job_id": 101479220024,
+      "source_branch": "execution/000b2-b2r05-moonshine-compact",
+      "source_revision": "92d8521d5ccd02839969884ee570777b2473a72f",
+      "conclusion": "failure",
+      "failure_stage": "FROZEN_PREPROCESSING_REPRODUCTION",
+      "primary_decode_started": false,
+      "artifact_count": 0,
+      "reconciliation": "REJECTED_BEFORE_PRIMARY_DECODE_BECAUSE_PREPROCESSING_TOOLCHAIN_IDENTITY_DID_NOT_REPRODUCE_COMMITTED_BYTES",
+      "selection_effect": "NONE"
+    },
+    {
+      "role": "FAILED_PRE_PRIMARY_NONCANONICAL",
       "workflow_name": "Internal B2R05 ATTEMPT-002 Capture",
       "run_id": 34030672630,
       "run_attempt": 1,
