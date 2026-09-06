@@ -1,0 +1,273 @@
+{
+  "schema_version": "wispral-source-donor-registry-v1",
+  "status": "NON_EXECUTABLE_RESEARCH_REGISTER",
+  "prepared_date": "2026-09-06",
+  "canonical_base": "16104eacf2d571276452d173ddb54c089faccd0e",
+  "founder_permission_statement": {
+    "reported": true,
+    "scope": "All previously discussed source projects may be evaluated, adapted, and reused for Wispral subject to valid rights and repository provenance requirements.",
+    "provenance_still_required": true,
+    "permission_terms_must_be_recorded_when_relieved_from_upstream_incompatibility": true
+  },
+  "adoption_states": [
+    "REFERENCE",
+    "DONOR_CANDIDATE",
+    "QUALIFIED_DONOR",
+    "ADAPTATION_CANDIDATE",
+    "PRODUCT_ADOPTED"
+  ],
+  "sources": [
+    {
+      "id": "acp-rust-sdk",
+      "repository": "agentclientprotocol/rust-sdk",
+      "url": "https://github.com/agentclientprotocol/rust-sdk",
+      "class": "QUALIFIED_EXISTING",
+      "boundaries": ["AGENT_TRANSPORT", "TRUST_POLICY"],
+      "horizons": ["H0", "H2", "H3", "H8"],
+      "jobs": ["structured-agent-protocol", "cancellation", "permissions", "session-lifecycle"]
+    },
+    {
+      "id": "acp-registry",
+      "repository": "agentclientprotocol/registry",
+      "url": "https://github.com/agentclientprotocol/registry",
+      "class": "QUALIFIED_EXISTING",
+      "boundaries": ["AGENT_TRANSPORT"],
+      "horizons": ["H0", "H8"],
+      "jobs": ["agent-discovery-reference"]
+    },
+    {
+      "id": "opencode",
+      "repository": "anomalyco/opencode",
+      "url": "https://github.com/anomalyco/opencode",
+      "class": "DONOR_CANDIDATE",
+      "boundaries": ["AGENT_TRANSPORT", "TRUST_POLICY", "SESSION_EVENT_JOURNAL"],
+      "horizons": ["H2", "H3", "H7", "H8"],
+      "jobs": ["permission-engine-reference", "pty-process-lifecycle", "bounded-events", "client-server-separation"]
+    },
+    {
+      "id": "zed",
+      "repository": "zed-industries/zed",
+      "url": "https://github.com/zed-industries/zed",
+      "class": "ARCHITECTURE_REFERENCE_SELECTIVE_DONOR",
+      "boundaries": ["AGENT_TRANSPORT", "CONTEXT_RESOLVER", "SESSION_EVENT_JOURNAL", "SURFACE_ADAPTERS"],
+      "horizons": ["H2", "H3", "H4", "H8"],
+      "jobs": ["acp-client-patterns", "agent-thread-organization", "project-worktree-context"]
+    },
+    {
+      "id": "backtalk",
+      "repository": "jaredrhod/backtalk",
+      "url": "https://github.com/jaredrhod/backtalk",
+      "class": "DONOR_CANDIDATE",
+      "boundaries": ["ACTIVATION", "TURN_INTERACTION", "AGENT_TRANSPORT"],
+      "horizons": ["H1", "H2", "H6"],
+      "jobs": ["agent-voice-layer-reference"]
+    },
+    {
+      "id": "munder-difflin",
+      "repository": "chaitanyagiri/munder-difflin",
+      "url": "https://github.com/chaitanyagiri/munder-difflin",
+      "class": "PRODUCT_REFERENCE_SELECTIVE_DONOR",
+      "boundaries": ["SESSION_EVENT_JOURNAL", "SURFACE_ADAPTERS"],
+      "horizons": ["H3", "H8"],
+      "jobs": ["multi-agent-lifecycle-visibility", "human-gates"]
+    },
+    {
+      "id": "speech-to-cli",
+      "repository": "techempower-org/speech-to-cli",
+      "url": "https://github.com/techempower-org/speech-to-cli",
+      "class": "DONOR_CANDIDATE",
+      "boundaries": ["TURN_INTERACTION", "AGENT_TRANSPORT"],
+      "horizons": ["H1", "H2", "H9"],
+      "jobs": ["voice-to-terminal-prototype"]
+    },
+    {
+      "id": "voice-interface-terminal-agent",
+      "repository": "vidhan66/voice-interface-terminal-agent",
+      "url": "https://github.com/vidhan66/voice-interface-terminal-agent",
+      "class": "DONOR_CANDIDATE",
+      "boundaries": ["TURN_INTERACTION", "AGENT_TRANSPORT"],
+      "horizons": ["H1", "H2", "H9"],
+      "jobs": ["voice-to-terminal-prototype", "technical-token-failure-reference"]
+    },
+    {
+      "id": "moonshine",
+      "repository": "moonshine-ai/moonshine",
+      "url": "https://github.com/moonshine-ai/moonshine",
+      "class": "QUALIFIED_EXISTING",
+      "revision": "234f60faa0eb388b01cdf7e60aca232af37aefda",
+      "license": "MIT",
+      "boundaries": ["STT_PROVIDER"],
+      "horizons": ["H0", "H1", "H11"],
+      "jobs": ["local-streaming-stt", "keyterms-context-research"]
+    },
+    {
+      "id": "whispercpp",
+      "repository": "ggml-org/whisper.cpp",
+      "url": "https://github.com/ggml-org/whisper.cpp",
+      "class": "QUALIFIED_EXISTING",
+      "release": "b4938",
+      "revision": "371b5a7561823ab2bb32142d2751e35e7534727b",
+      "license": "MIT",
+      "boundaries": ["STT_PROVIDER"],
+      "horizons": ["H0", "H1", "H11"],
+      "jobs": ["local-cpu-asr", "streaming-adapter"]
+    },
+    {
+      "id": "sherpa-onnx",
+      "repository": "k2-fsa/sherpa-onnx",
+      "url": "https://github.com/k2-fsa/sherpa-onnx",
+      "class": "QUALIFIED_EXISTING",
+      "release": "v1.13.7",
+      "revision": "917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e",
+      "license": "Apache-2.0",
+      "boundaries": ["STT_PROVIDER"],
+      "horizons": ["H0", "H1", "H11"],
+      "jobs": ["cross-platform-streaming-asr", "rust-api", "context-hotword-research"]
+    },
+    {
+      "id": "openwhispr",
+      "repository": "OpenWhispr/openwhispr",
+      "url": "https://github.com/OpenWhispr/openwhispr",
+      "class": "DONOR_CANDIDATE",
+      "reviewed_revision": "a9cf27b49bdcc9069922641ec39ac06d3483a125",
+      "license": "MIT",
+      "boundaries": ["CAPTURE_RUNTIME", "ACTIVATION", "AUDIO_CONDITIONING", "TURN_INTERACTION", "DIAGNOSTICS_DISTRIBUTION"],
+      "horizons": ["H1", "H9", "H10", "H12"],
+      "jobs": ["cross-platform-hotkeys", "background-tray-lifecycle", "system-audio-capture", "long-lived-capture", "echo-bleed-analysis", "autostart-repair"]
+    },
+    {
+      "id": "voicestudio",
+      "repository": "debpalash/VoiceStudio",
+      "url": "https://github.com/debpalash/VoiceStudio",
+      "class": "PERMISSION_REPORTED_DONOR_CANDIDATE",
+      "reviewed_revision": "53ff367c1fdde695f17673707cd46e2b27d41546",
+      "public_application_license": "AGPL-3.0-only",
+      "separate_permission_reported": true,
+      "permission_evidence_required_before_incompatible_import": true,
+      "boundaries": ["CAPTURE_RUNTIME", "ACTIVATION", "SURFACE_ADAPTERS", "DIAGNOSTICS_DISTRIBUTION"],
+      "horizons": ["H1", "H11", "H12"],
+      "jobs": ["rust-native-shortcut-boundary", "capture-readiness-ack", "race-tests", "host-path-capabilities", "diagnostics", "engine-governance", "subprocess-isolation"]
+    },
+    {
+      "id": "meetily-local",
+      "repository": "Hankanman/Meetily-Local",
+      "url": "https://github.com/Hankanman/Meetily-Local",
+      "class": "DONOR_CANDIDATE",
+      "boundaries": ["CAPTURE_RUNTIME", "AUDIO_CONDITIONING"],
+      "horizons": ["H0", "H9", "H10"],
+      "jobs": ["linux-pipewire-capture", "system-audio-reference"]
+    },
+    {
+      "id": "graphify",
+      "repository": "Graphify-Labs/graphify",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "class": "DONOR_CANDIDATE",
+      "boundaries": ["CONTEXT_RESOLVER"],
+      "horizons": ["H4", "H11"],
+      "jobs": ["repository-graph", "incremental-invalidation", "context-packs", "resolver-fixtures"]
+    },
+    {
+      "id": "code-graph-rag",
+      "repository": "vitali87/code-graph-rag",
+      "url": "https://github.com/vitali87/code-graph-rag",
+      "class": "DONOR_CANDIDATE",
+      "boundaries": ["CONTEXT_RESOLVER"],
+      "horizons": ["H4"],
+      "jobs": ["code-graph-retrieval-reference"]
+    },
+    {
+      "id": "circleback",
+      "class": "PRODUCT_REFERENCE",
+      "boundaries": ["CONTEXT_RESOLVER", "SURFACE_ADAPTERS"],
+      "horizons": ["H4", "H11", "H15"],
+      "jobs": ["conversation-context-provenance", "visible-capture", "interface-convergence"]
+    },
+    {
+      "id": "silero-vad",
+      "class": "IDENTITY_PIN_REQUIRED",
+      "boundaries": ["AUDIO_CONDITIONING", "TURN_INTERACTION"],
+      "horizons": ["H9"],
+      "jobs": ["vad", "endpoint-observation"]
+    },
+    {
+      "id": "ten-vad",
+      "class": "IDENTITY_PIN_REQUIRED",
+      "boundaries": ["AUDIO_CONDITIONING", "TURN_INTERACTION"],
+      "horizons": ["H9"],
+      "jobs": ["vad", "endpoint-observation"]
+    },
+    {
+      "id": "deepfilternet",
+      "class": "IDENTITY_PIN_REQUIRED",
+      "boundaries": ["AUDIO_CONDITIONING"],
+      "horizons": ["H9", "H10"],
+      "jobs": ["optional-local-denoise"]
+    },
+    {
+      "id": "rnnoise",
+      "class": "IDENTITY_PIN_REQUIRED",
+      "boundaries": ["AUDIO_CONDITIONING"],
+      "horizons": ["H9", "H10"],
+      "jobs": ["optional-local-denoise"]
+    },
+    {
+      "id": "openwakeword",
+      "class": "IDENTITY_PIN_REQUIRED",
+      "boundaries": ["ACTIVATION", "TURN_INTERACTION"],
+      "horizons": ["H9"],
+      "jobs": ["optional-wake-mode"]
+    },
+    {
+      "id": "pyannote",
+      "class": "DEFERRED",
+      "boundaries": ["AUDIO_CONDITIONING"],
+      "horizons": ["H15"],
+      "jobs": ["diarization-if-future-multi-speaker-job-exists"]
+    },
+    {
+      "id": "moss-transcribe-diarize",
+      "class": "IDENTITY_PIN_REQUIRED_DEFERRED",
+      "boundaries": ["STT_PROVIDER", "AUDIO_CONDITIONING"],
+      "horizons": ["H15"],
+      "jobs": ["combined-transcription-diarization-reference"]
+    },
+    {
+      "id": "parakeet-nemo",
+      "class": "IDENTITY_PIN_REQUIRED_DEFERRED",
+      "boundaries": ["STT_PROVIDER"],
+      "horizons": ["H11"],
+      "jobs": ["future-hardware-accelerated-asr"]
+    },
+    {
+      "id": "omnilingual-asr",
+      "class": "IDENTITY_PIN_REQUIRED_DEFERRED",
+      "boundaries": ["STT_PROVIDER"],
+      "horizons": ["H11"],
+      "jobs": ["future-broad-language-asr"]
+    }
+  ],
+  "global_import_requirements": [
+    "exact_upstream_repository",
+    "exact_upstream_revision",
+    "exact_upstream_paths",
+    "license_or_permission_basis",
+    "required_notices",
+    "transitive_dependencies",
+    "model_data_binary_asset_licenses",
+    "security_notes",
+    "platform_notes",
+    "named_wispral_job",
+    "wispral_architecture_boundary",
+    "minimal_adaptation_surface",
+    "acceptance_tests",
+    "fallback_or_removal_behavior",
+    "independent_review"
+  ],
+  "claim_guards": {
+    "external_benchmark_establishes_wispral_claim": false,
+    "retrieved_context_silently_authorizes_action": false,
+    "donor_application_scope_becomes_wispral_scope_automatically": false,
+    "source_permission_implies_model_or_dataset_permission": false,
+    "registry_entry_authorizes_current_product_code": false
+  }
+}
