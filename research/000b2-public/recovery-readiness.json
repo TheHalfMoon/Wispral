@@ -59,17 +59,24 @@
       "canonical_task_merge": "cdf8e4c13a1e17fe5e0db7bc360e5fbbeef496e0",
       "post_merge_recovery_run_id": 33998872408,
       "successor_task": "B2R05"
+    },
+    {
+      "completed_task": "B2R05",
+      "canonical_task_merge": "f0ec8b70497769332e1ddc6053e4d32f993b5efc",
+      "post_merge_recovery_run_id": 34035710870,
+      "successor_task": "B2R06"
     }
   ],
   "completed_recovery_tasks": [
     "B2R01",
     "B2R02",
     "B2R03",
-    "B2R04"
+    "B2R04",
+    "B2R05"
   ],
-  "active_recovery_unit": "B2R05",
+  "active_recovery_unit": "B2R06",
   "qualified_workflow_change_paths": [],
-  "next_action": "Qualify B2R05 only: execute candidate cell 1 (moonshine-compact) under 000B2-PUBLIC-ATTEMPT-002 using the canonically frozen corrected streaming C0 contract and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R06 and every later candidate cell closed until B2R05 is canonically merged, post-merge verified, and reconciled.",
+  "next_action": "Qualify B2R06 only: execute candidate cell 2 (moonshine-balanced) under 000B2-PUBLIC-ATTEMPT-002 using the canonically frozen corrected streaming C0 contract and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R07 and every later candidate cell closed until B2R06 is canonically merged, post-merge verified, and reconciled.",
   "claim_guards": {
     "human_developer_speech_accuracy_evidence": "ABSENT",
     "comparative_result_available": false,
