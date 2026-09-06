@@ -35,7 +35,7 @@ C0_SHA256 = "c0f0093cda7ca036c8a97178364b3840ce7093386a8cb711ccef5f183a4453c0"
 EVIDENCE_SHA256 = "c14aaae1ca974e30fee73a7d672bb20910eb9e501601020c5a3f11332d4f00f8"
 EVIDENCE_SIZE = 152226
 PAYLOAD_SHA256 = "254f0a8f7d0954b3c26ed01aafef8b0c061aae1ceb2fffc2f7b2a0a84aca5cfd"
-PROVENANCE_SHA256 = "7389debb665ef03ec87ddf51e7eb3b1507c57a184f9218787b4eb83a31f4d799"
+PROVENANCE_SHA256 = "5050254cfd600678a462fb6530831a76e59482b6f8040cb64b4bee881ca58f4a"
 RUN_ID = 34031165041
 JOB_ID = 101480807527
 WORKFLOW_ID = 351513766
@@ -140,8 +140,11 @@ def verify_provenance() -> None:
             "raw evidence provenance drift")
     require(source.get("evidence_payload_sha256") == PAYLOAD_SHA256, "payload provenance drift")
     related = p.get("related_execution_attempts")
-    require(isinstance(related, list) and [r.get("run_id") for r in related] == [34030672630, 34030712272, 34030872729],
-            "failed attempt chronology drift")
+    require(
+        isinstance(related, list)
+        and [r.get("run_id") for r in related] == [34030579352, 34030672630, 34030712272, 34030872729],
+        "failed attempt chronology drift",
+    )
     for row in related:
         require(row.get("role") == "FAILED_PRE_PRIMARY_NONCANONICAL" and row.get("primary_decode_started") is False,
                 "failed attempt primary-boundary drift")
