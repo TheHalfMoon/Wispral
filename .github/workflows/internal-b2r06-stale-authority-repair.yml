@@ -22,17 +22,79 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Verify exact bootstrap state
+      - name: Verify exact repair bootstrap and canonical base
         shell: bash
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$GITHUB_REF_NAME" = "docs/000b2-b2r06-reconciliation"
-          test -f research/000b2-public/internal_b2r06_stale_authority_repair.py
+          test "$(git rev-parse HEAD^)" = "7210527547f5603726f0b82fadda9ed2d09b3070"
+          git fetch --no-tags origin main
+          test "$(git rev-parse origin/main)" = "2460eae15260423b3a06d50d9119ae2459ff41c7"
+          test -f .github/b2r06-stale-authority-repair.txt
           test -f .github/workflows/internal-b2r06-stale-authority-repair.yml
 
-      - name: Execute fail-closed authority repair
+      - name: Repair stale current-authority narrative fail closed
         shell: bash
         run: |
           set -euo pipefail
-          python research/000b2-public/internal_b2r06_stale_authority_repair.py
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("specs/CURRENT.md")
+          text = path.read_text(encoding="utf-8")
+          old = (
+              "B2R04 is canonical and post-merge verified at task merge "
+              "`cdf8e4c13a1e17fe5e0db7bc360e5fbbeef496e0` with exact recovery run "
+              "`33998872408`; this reconciliation makes B2R05 the sole current bounded recovery unit. "
+              "ATTEMPT-002 is canonically frozen and primary decode entry is open only for B2R05; "
+              "B2R06 and every later cell remain closed."
+          )
+          new = (
+              "B2R06 is canonical and post-merge verified at task merge "
+              "`2460eae15260423b3a06d50d9119ae2459ff41c7` with exact recovery run "
+              "`34043039708`; this reconciliation makes B2R07 the sole current bounded recovery unit. "
+              "ATTEMPT-002 is canonically frozen and primary decode entry is open only for B2R07; "
+              "B2R08 and every later cell remain closed."
+          )
+          if text.count(old) != 1:
+              raise SystemExit("expected exactly one stale B2R04/B2R05 authority paragraph")
+          if "the latest B2R06 recovery markers below supersede them for new execution" not in text:
+              raise SystemExit("second review finding is not already repaired")
+          text = text.replace(old, new)
+          if old in text:
+              raise SystemExit("stale authority paragraph survived replacement")
+          path.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Verify reconciliation semantics and exact four-path scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/b2r06-stale-authority-repair.txt
+          rm .github/workflows/internal-b2r06-stale-authority-repair.yml
+          python research/000b2-public/verify_b2r06.py
+          python research/000b2-public/verify_attempt_manifest.py
+          git diff --check
+          mapfile -t changed < <(git diff --name-only origin/main | sort)
+          expected=(
+            "docs/canonical/CURRENT_STATE.md"
+            "research/000b2-public/recovery-readiness.json"
+            "specs/000B2-public-corpus-bakeoff/tasks.md"
+            "specs/CURRENT.md"
+          )
+          mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
+          test "${#changed[@]}" -eq 4
+          test "$(printf '%s\n' "${changed[@]}")" = "$(printf '%s\n' "${expected_sorted[@]}")"
+
+      - name: Commit and push clean reconciliation candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add specs/CURRENT.md
+          git add -u .github/b2r06-stale-authority-repair.txt .github/workflows/internal-b2r06-stale-authority-repair.yml
+          git diff --cached --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(000b2): resolve B2R06 reconciliation review findings"
+          git push origin HEAD:docs/000b2-b2r06-reconciliation
