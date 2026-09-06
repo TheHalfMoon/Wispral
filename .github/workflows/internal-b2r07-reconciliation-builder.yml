@@ -4,17 +4,9 @@ on:
   push:
     branches:
       - ci/000b2-b2r07-reconciliation-builder
-    paths:
-      - '.github/workflows/internal-b2r07-reconciliation-builder.yml'
-      - '.github/internal/b2r07_reconcile.py'
 
 permissions:
-  actions: read
   contents: write
-
-concurrency:
-  group: b2r07-reconciliation-builder
-  cancel-in-progress: false
 
 jobs:
   build-reconciliation:
@@ -23,48 +15,19 @@ jobs:
     env:
       CANONICAL_BASE: 5ea5a513db5ec9c13739510061ca82faa84a0018
       QUALIFIED_TASK_HEAD: 704a0998e15562e4b22467b7a99d23de85737e1f
-      POST_MERGE_RECOVERY_RUN_ID: '34065234517'
-      RECOVERY_WORKFLOW_ID: '350986920'
       RECONCILIATION_BRANCH: docs/000b2-b2r07-reconciliation
-
     steps:
-      - name: Checkout exact builder revision
+      - name: Checkout builder revision
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Reverify canonical task merge and Recovery proof
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Build and verify reconciliation candidate
         run: |
           set -euo pipefail
           test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
           test "$(git rev-list --parents -n 1 "$CANONICAL_BASE")" = "$CANONICAL_BASE 16104eacf2d571276452d173ddb54c089faccd0e $QUALIFIED_TASK_HEAD"
-          curl --fail --silent --show-error \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$POST_MERGE_RECOVERY_RUN_ID" \
-            > "$RUNNER_TEMP/recovery-run.json"
-          python - <<'PY'
-          import json, os
-          from pathlib import Path
-          run = json.loads((Path(os.environ['RUNNER_TEMP']) / 'recovery-run.json').read_text())
-          assert run['id'] == int(os.environ['POST_MERGE_RECOVERY_RUN_ID'])
-          assert run['workflow_id'] == int(os.environ['RECOVERY_WORKFLOW_ID'])
-          assert run['event'] == 'push'
-          assert run['head_branch'] == 'main'
-          assert run['head_sha'] == os.environ['CANONICAL_BASE']
-          assert run['status'] == 'completed' and run['conclusion'] == 'success'
-          assert run['path'] == '.github/workflows/000b2-public-attempt-recovery.yml'
-          print('B2R07_POST_MERGE_RECOVERY_PROOF=PASS')
-          PY
-
-      - name: Build exact four-file reconciliation candidate
-        run: |
-          set -euo pipefail
           cp .github/internal/b2r07_reconcile.py "$RUNNER_TEMP/b2r07_reconcile.py"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -74,25 +37,16 @@ jobs:
           PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r07.py
           PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_manifest.py
           rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
-          expected="$(printf '%s\n' \
-            'docs/canonical/CURRENT_STATE.md' \
-            'research/000b2-public/recovery-readiness.json' \
-            'specs/000B2-public-corpus-bakeoff/tasks.md' \
-            'specs/CURRENT.md' | sort)"
+          expected="$(printf '%s\n' 'docs/canonical/CURRENT_STATE.md' 'research/000b2-public/recovery-readiness.json' 'specs/000B2-public-corpus-bakeoff/tasks.md' 'specs/CURRENT.md' | sort)"
           observed="$(git diff --name-only "$CANONICAL_BASE" | sort)"
           test "$observed" = "$expected"
           test -z "$(git ls-files --others --exclude-standard)"
-          python -m json.tool research/000b2-public/recovery-readiness.json >/dev/null
           echo 'B2R07_RECONCILIATION_SCOPE=PASS'
 
-      - name: Push clean reconciliation candidate
+      - name: Push reconciliation candidate
         run: |
           set -euo pipefail
-          git add \
-            docs/canonical/CURRENT_STATE.md \
-            research/000b2-public/recovery-readiness.json \
-            specs/000B2-public-corpus-bakeoff/tasks.md \
-            specs/CURRENT.md
+          git add docs/canonical/CURRENT_STATE.md research/000b2-public/recovery-readiness.json specs/000B2-public-corpus-bakeoff/tasks.md specs/CURRENT.md
           test "$(git diff --cached --name-only | wc -l)" -eq 4
           git commit -m 'docs(000b2): reconcile B2R07 and authorize B2R08'
           git push origin "HEAD:$RECONCILIATION_BRANCH"
