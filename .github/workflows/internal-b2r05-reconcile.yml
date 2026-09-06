@@ -1,0 +1,265 @@
+name: Internal B2R05 Reconciliation
+
+on:
+  push:
+    branches:
+      - docs/000b2-b2r05-reconciliation
+    paths:
+      - '.github/workflows/internal-b2r05-reconcile.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: internal-b2r05-reconcile-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      EXPECTED_BASE: f0ec8b70497769332e1ddc6053e4d32f993b5efc
+      EXPECTED_TASK_MERGE: f0ec8b70497769332e1ddc6053e4d32f993b5efc
+      EXPECTED_TASK_HEAD: b1a3f5866fed1eb4df590d134322eb82904cec78
+      EXPECTED_TASK_FIRST_PARENT: 9c777ae4f4aaf8387cf54bfa4e8afe80e053ff69
+      EXPECTED_POST_MERGE_RUN: '34035710870'
+      TARGET_BRANCH: docs/000b2-b2r05-reconciliation
+    steps:
+      - name: Checkout reconciliation branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify bootstrap and canonical base
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_BASE"
+          git fetch --force --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$EXPECTED_BASE"
+          changed="$(git diff --name-only "$EXPECTED_BASE...HEAD")"
+          test "$changed" = '.github/workflows/internal-b2r05-reconcile.yml'
+          echo "B2R05_RECONCILIATION_BOOTSTRAP=PASS"
+
+      - name: Apply exact one-step recovery reconciliation
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          BASE = "f0ec8b70497769332e1ddc6053e4d32f993b5efc"
+          TASK_HEAD = "b1a3f5866fed1eb4df590d134322eb82904cec78"
+          FIRST_PARENT = "9c777ae4f4aaf8387cf54bfa4e8afe80e053ff69"
+          RUN_ID = 34035710870
+          FREEZE = "600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8"
+
+          readiness_path = Path("research/000b2-public/recovery-readiness.json")
+          tasks_path = Path("specs/000B2-public-corpus-bakeoff/tasks.md")
+          current_path = Path("specs/CURRENT.md")
+          state_path = Path("docs/canonical/CURRENT_STATE.md")
+
+          readiness = json.loads(readiness_path.read_text(encoding="utf-8"))
+          assert readiness["schema_version"] == "000b2-public-recovery-readiness-v2"
+          assert readiness["state"] == "RECOVERY_READY"
+          assert readiness["completed_recovery_tasks"] == ["B2R01", "B2R02", "B2R03", "B2R04"]
+          assert readiness["active_recovery_unit"] == "B2R05"
+          assert readiness["qualified_workflow_change_paths"] == []
+          assert readiness["replacement_attempt"] == {
+              "attempt_id": "000B2-PUBLIC-ATTEMPT-002",
+              "required": True,
+              "frozen": True,
+              "primary_decode_entry_open": True,
+          }
+          assert readiness["transition_proofs"][-1] == {
+              "completed_task": "B2R04",
+              "canonical_task_merge": "cdf8e4c13a1e17fe5e0db7bc360e5fbbeef496e0",
+              "post_merge_recovery_run_id": 33998872408,
+              "successor_task": "B2R05",
+          }
+          assert readiness["claim_guards"] == {
+              "human_developer_speech_accuracy_evidence": "ABSENT",
+              "comparative_result_available": False,
+              "production_stt_selected": False,
+              "product_code_authorized": False,
+          }
+          assert readiness["transition_policy"]["reconciliation_candidate_scope"] == [
+              "docs/canonical/CURRENT_STATE.md",
+              "research/000b2-public/recovery-readiness.json",
+              "specs/000B2-public-corpus-bakeoff/tasks.md",
+              "specs/CURRENT.md",
+          ]
+          readiness["transition_proofs"].append({
+              "completed_task": "B2R05",
+              "canonical_task_merge": BASE,
+              "post_merge_recovery_run_id": RUN_ID,
+              "successor_task": "B2R06",
+          })
+          readiness["completed_recovery_tasks"].append("B2R05")
+          readiness["active_recovery_unit"] = "B2R06"
+          readiness["next_action"] = (
+              "Qualify B2R06 only: execute candidate cell 2 (moonshine-balanced) under "
+              "000B2-PUBLIC-ATTEMPT-002 using the canonically frozen corrected streaming C0 contract "
+              "and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, "
+              "exact run identity, frozen input identities, and claim guards. Keep B2R07 and every later "
+              "candidate cell closed until B2R06 is canonically merged, post-merge verified, and reconciled."
+          )
+          readiness_path.write_text(json.dumps(readiness, indent=2) + "\n", encoding="utf-8")
+
+          tasks = tasks_path.read_text(encoding="utf-8")
+          old_task = "- [ ] `B2R05` Execute candidate cell 1 (`moonshine-compact`) under ATTEMPT-002 and unchanged frozen C0."
+          new_task = "- [x] `B2R05` Execute candidate cell 1 (`moonshine-compact`) under ATTEMPT-002 and unchanged frozen C0."
+          assert tasks.count(old_task) == 1
+          assert new_task not in tasks
+          tasks = tasks.replace(old_task, new_task, 1)
+          assert "- [ ] `B2R06` Execute candidate cell 2 (`moonshine-balanced`) under ATTEMPT-002 and unchanged frozen C0." in tasks
+          tasks_path.write_text(tasks, encoding="utf-8")
+
+          current = current_path.read_text(encoding="utf-8")
+          old_status = (
+              "public-corpus B2 recovery active; B2R01 through B2R04 canonical and post-merge verified; "
+              "active recovery unit `B2R05`; ATTEMPT-001 B2E03 and all later primary decoding closed"
+          )
+          new_status = (
+              "public-corpus B2 recovery active; B2R01 through B2R05 canonical and post-merge verified; "
+              "active recovery unit `B2R06`; ATTEMPT-001 B2E03 and all later primary decoding closed"
+          )
+          assert current.count(old_status) == 1
+          current = current.replace(old_status, new_status, 1)
+
+          current_section_pattern = re.compile(
+              r"## Canonical B2R04 recovery reconciliation — latest authority\n\n.*?\n## Next canonical action\n\n"
+              r"Qualify `B2R05` only: execute candidate cell 1 \(`moonshine-compact`\) under `000B2-PUBLIC-ATTEMPT-002` "
+              r"using the canonically frozen corrected streaming C0 contract and identical frozen public audio\. Preserve raw transcripts, failures, "
+              r"runtime observations, exact run identity, frozen input identities, and claim guards\. Keep B2R06 and every later candidate cell closed "
+              r"until B2R05 is separately qualified, merged, post-merge verified, and reconciled\.",
+              re.S,
+          )
+          current_replacement = f"""## Canonical B2R05 recovery reconciliation — latest authority
+
+This section is the sole current recovery-action authority in this document. B2R05 is canonically implemented at real task merge `{BASE}` from exact qualified head `{TASK_HEAD}` against first parent `{FIRST_PARENT}`. Exact task-merge push run `{RUN_ID}` of workflow `000B2 Public Corpus Attempt Recovery` (`workflow_id=350986920`, path `.github/workflows/000b2-public-attempt-recovery.yml`) completed successfully on that exact merge. The canonical B2R05 evidence remains bound to capture run `34031165041`, job `101480807527`, artifact `9989016229`, 240 frozen inputs, 209 decoded outputs, and 31 preserved frozen-C0 pre-inference >12-second rejections. No reference transcripts were loaded and no accuracy scoring or comparative ranking was performed. Historical ATTEMPT-001 bytes and the immutable recovery proof mechanism remain unchanged.
+
+**Canonical recovery predecessor:** `B2R05`
+**Canonical B2R05 recovery merge:** `{BASE}`
+**Canonical B2R05 post-merge recovery run:** `{RUN_ID}`
+**Active recovery unit:** `B2R06`
+
+ATTEMPT-002 remains canonically frozen with freeze digest `{FREEZE}`, and `primary_decode_entry_open=true` only because B2R06 is the active primary-decode recovery unit. B2R06 alone is authorized after this reconciliation becomes canonical: execute candidate cell 2 (`moonshine-balanced`) against the identical frozen P0 public-human audio using the corrected Moonshine streaming C0 contract. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and all claim guards. B2R07 and every later candidate cell remain unauthorized until B2R06 is separately qualified, merged, post-merge verified, and reconciled.
+
+## Next canonical action
+
+Qualify `B2R06` only: execute candidate cell 2 (`moonshine-balanced`) under `000B2-PUBLIC-ATTEMPT-002` using the canonically frozen corrected streaming C0 contract and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R07 and every later candidate cell closed until B2R06 is separately qualified, merged, post-merge verified, and reconciled."""
+          current, count = current_section_pattern.subn(current_replacement, current, count=1)
+          assert count == 1
+          current_path.write_text(current, encoding="utf-8")
+
+          state = state_path.read_text(encoding="utf-8")
+          old_tail = (
+              "B2R04 is canonical and post-merge verified at task merge `cdf8e4c13a1e17fe5e0db7bc360e5fbbeef496e0` "
+              "with recovery run `33998872408`; ATTEMPT-002 is frozen; active recovery unit is `B2R05`; only B2R05 primary decode is open; "
+              "ATTEMPT-001 B2E03 and all later primary decoding are closed"
+          )
+          new_tail = (
+              f"B2R05 is canonical and post-merge verified at task merge `{BASE}` with recovery run `{RUN_ID}`; "
+              "ATTEMPT-002 is frozen; active recovery unit is `B2R06`; only B2R06 primary decode is open; "
+              "ATTEMPT-001 B2E03 and all later primary decoding are closed"
+          )
+          assert state.count(old_tail) == 1
+          state = state.replace(old_tail, new_tail, 1)
+
+          old_state_next = (
+              "Qualify `B2R05` only: execute candidate cell 1 (`moonshine-compact`) under `000B2-PUBLIC-ATTEMPT-002` "
+              "using the canonically frozen corrected streaming C0 contract and identical frozen public audio. Preserve raw transcripts, failures, "
+              "runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R06 and every later candidate cell closed "
+              "until B2R05 is separately qualified, merged, post-merge verified, and reconciled. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, "
+              "historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`."
+          )
+          new_state_next = (
+              "Qualify `B2R06` only: execute candidate cell 2 (`moonshine-balanced`) under `000B2-PUBLIC-ATTEMPT-002` "
+              "using the canonically frozen corrected streaming C0 contract and identical frozen public audio. Preserve raw transcripts, failures, "
+              "runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R07 and every later candidate cell closed "
+              "until B2R06 is separately qualified, merged, post-merge verified, and reconciled. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, "
+              "historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`."
+          )
+          assert state.count(old_state_next) == 1
+          state = state.replace(old_state_next, new_state_next, 1)
+
+          state_section_pattern = re.compile(
+              r"## Canonical B2R04 recovery reconciliation — latest authority\n\n.*\Z",
+              re.S,
+          )
+          state_replacement = f"""## Canonical B2R05 recovery reconciliation — latest authority
+
+This section is the sole current recovery-marker authority in this document. PR #65 merged the separately qualified B2R05 implementation as real task merge `{BASE}` from exact final head `{TASK_HEAD}` against first parent `{FIRST_PARENT}`. The final five-file task diff preserved all four reconciliation-authority files, the immutable recovery proof workflow/verifier mechanism, workflows, and ATTEMPT-001 historical bytes. Fresh independent exact-range review on review-only PR #66 reported no actionable substantive findings on the exact task head. Exact task-merge push run `{RUN_ID}` of `000B2 Public Corpus Attempt Recovery` (`workflow_id=350986920`, path `.github/workflows/000b2-public-attempt-recovery.yml`) completed successfully with `head_sha={BASE}`.
+
+The canonical B2R05 primary capture remains GitHub Actions run `34031165041`, job `101480807527`, artifact `9989016229`, with exact evidence file SHA-256 `c14aaae1ca974e30fee73a7d672bb20910eb9e501601020c5a3f11332d4f00f8` and canonical payload digest `254f0a8f7d0954b3c26ed01aafef8b0c061aae1ceb2fffc2f7b2a0a84aca5cfd`. It records 240 frozen inputs, 209 decoded outputs, and 31 preserved `C0HarnessError` pre-inference rejections enforcing the frozen 12-second primary utterance bound. The failures were preserved without retry or C0 change. Reference transcripts were not loaded; accuracy scoring and comparative ranking were not performed; timing remains diagnostic only.
+
+**Canonical recovery predecessor:** `B2R05`
+**Canonical B2R05 recovery merge:** `{BASE}`
+**Canonical B2R05 post-merge recovery run:** `{RUN_ID}`
+**Active recovery unit:** `B2R06`
+
+ATTEMPT-001 remains historical and ineligible for comparative scoring. ATTEMPT-002 remains canonically frozen with freeze digest `{FREEZE}`. `primary_decode_entry_open=true` only for the active recovery unit B2R06. B2R06 alone is authorized after this reconciliation becomes canonical: execute candidate cell 2 (`moonshine-balanced`) against the identical frozen P0 public-human audio using the corrected Moonshine streaming C0 contract, while preserving raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and all claim guards. B2R07 and every later ATTEMPT-002 candidate cell remain unauthorized until B2R06 is separately qualified, merged, post-merge verified, and reconciled.
+"""
+          state, count = state_section_pattern.subn(state_replacement, state, count=1)
+          assert count == 1
+          state_path.write_text(state, encoding="utf-8")
+
+          print("B2R05_RECONCILIATION_TRANSFORM=PASS")
+          PY
+
+      - name: Remove temporary helper and verify final net scope
+        run: |
+          set -euo pipefail
+          rm .github/workflows/internal-b2r05-reconcile.yml
+          expected="$(printf '%s\n' \
+            'docs/canonical/CURRENT_STATE.md' \
+            'research/000b2-public/recovery-readiness.json' \
+            'specs/000B2-public-corpus-bakeoff/tasks.md' \
+            'specs/CURRENT.md' | sort)"
+          actual="$(git diff --name-only "$EXPECTED_BASE" -- | sort)"
+          test "$actual" = "$expected"
+          echo "B2R05_RECONCILIATION_SCOPE=PASS"
+
+      - name: Commit candidate locally
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          expected="$(printf '%s\n' \
+            'docs/canonical/CURRENT_STATE.md' \
+            'research/000b2-public/recovery-readiness.json' \
+            'specs/000B2-public-corpus-bakeoff/tasks.md' \
+            'specs/CURRENT.md' | sort)"
+          staged="$(git diff --cached --name-only "$EXPECTED_BASE" | sort)"
+          test "$staged" = "$expected"
+          git commit -m 'docs(000b2): reconcile B2R05 and authorize B2R06'
+          test "$(git diff --name-only "$EXPECTED_BASE...HEAD" | sort)" = "$expected"
+          echo "B2R05_RECONCILIATION_COMMIT=$(git rev-parse HEAD)"
+
+      - name: Verify recovery candidate fail closed
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            research/000b2-public/verify_attempt_001_invalidation.py \
+            research/000b2-public/verify_b2r05.py \
+            research/000b2-public/verify_attempt_manifest.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_001_invalidation.py \
+            --static-only \
+            --canonical-main-ref refs/remotes/origin/main
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r05.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_manifest.py
+          echo "B2R05_RECONCILIATION_STATIC_VERIFICATION=PASS"
+
+      - name: Reconfirm canonical main and push exact candidate
+        run: |
+          set -euo pipefail
+          git fetch --force --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$EXPECTED_BASE"
+          test "$(git show -s --format=%P "$EXPECTED_TASK_MERGE")" = "$EXPECTED_TASK_FIRST_PARENT $EXPECTED_TASK_HEAD"
+          git push origin "HEAD:refs/heads/$TARGET_BRANCH"
+          echo "B2R05_RECONCILIATION_PUSH=PASS"
