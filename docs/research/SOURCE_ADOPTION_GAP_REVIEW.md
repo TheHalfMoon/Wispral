@@ -1,7 +1,7 @@
 # Source Adoption Gap Review
 
 **Status:** non-executable architecture/security review  
-**Prepared:** 2026-09-06  
+**Prepared:** 2026-09-07  
 **Reviewed against:** `docs/canonical/ARCHITECTURE_INVARIANTS.md`, `docs/security/THREAT_MODEL.md`, `docs/research/SOURCE_ADOPTION_STRATEGY.md`
 
 ## Review question
@@ -282,7 +282,7 @@ When separate permission is relied upon, the import record should explicitly ans
 - may Wispral redistribute binaries?;
 - under which license/notice terms?;
 - does permission cover future upstream versions or only a specific snapshot?;
-- does it cover model/data/assets or code only?;
+- does it cover model/data/assets or code only?
 
 This is a provenance requirement, not a demand to expose private legal correspondence publicly when that would be inappropriate. The canonical record may reference a controlled evidence location and state only the operative rights needed by the repository.
 
@@ -295,6 +295,32 @@ Names such as `Silero VAD`, `TEN VAD`, `Parakeet`, `Omnilingual ASR`, or special
 ### Required gate
 
 An `IDENTITY_PIN_REQUIRED` registry entry cannot advance to `QUALIFIED_DONOR` until exact repository, commit/release, source paths, and relevant asset identities are recorded.
+
+## Gap G16 — Context capture time and focus identity must be explicit
+
+### Risk
+
+Voice products can capture different context classes at different moments. A selected-text snapshot may be taken when recording begins, clipboard data may come from a short time window around the utterance, and active-application context may be collected only after ASR finishes. If focus changes while speech is being processed, the context observed later may belong to a different application, window, repository, terminal, or document than the context the user intended when speaking.
+
+This creates correctness and authority risk. A technically accurate transcript can be interpreted against the wrong target, and a user can reasonably believe the original focused surface remained authoritative when it did not.
+
+### Required gate
+
+Any donor-derived screen/application/selection/clipboard/repository context mechanism must record and expose, where applicable:
+
+- capture timestamp or monotonic event position;
+- originating turn/session identity;
+- application/process identity;
+- window/document/workspace/repository identity;
+- focus identity at capture time;
+- context class (`selected_text`, `clipboard`, `application`, `repository`, or another explicit class);
+- whether the context was captured at activation, during speech, after STT, or on explicit refresh;
+- whether focus changed between activation and context capture;
+- whether the context was refreshed, rejected, or retained after such a change.
+
+A later focus change must not silently rebind a consequential voice instruction to a different target. If the active job intentionally uses late-bound context, that policy must be explicit and visible rather than an incidental timing effect.
+
+Context collection must also remain minimized: enabling a richer context mode does not authorize unrelated screen, clipboard, filesystem, or repository capture.
 
 ## Final architecture alignment
 
@@ -312,7 +338,8 @@ The amended plan now explicitly preserves all founding invariants relevant to ex
 - terminal-native first surface;
 - push-to-talk before hands-free;
 - non-voice accessibility;
-- benchmark instrumentation as architecture.
+- benchmark instrumentation as architecture;
+- context snapshots bound to explicit time/source/focus identity rather than incidental UI timing.
 
 ## Readiness disposition
 
@@ -321,7 +348,7 @@ The external-source planning system is ready for later executable specifications
 1. a source-adoption architecture strategy;
 2. a human-readable donor registry;
 3. a machine-readable source registry;
-4. source-specific capture references;
+4. source-specific capture references, including commercial-product and open-source donor distinctions;
 5. this invariant/threat-model gap review;
 6. explicit import/provenance/security gates.
 
