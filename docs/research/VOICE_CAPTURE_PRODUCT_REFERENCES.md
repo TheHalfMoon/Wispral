@@ -1,8 +1,8 @@
 # Voice Capture Product and Architecture References
 
 **Status:** product / architecture / donor-qualification reference only  
-**Source class:** external public repositories; no executable authority  
-**Accessed:** 2026-09-06  
+**Source class:** external public repositories and public product documentation; no executable authority  
+**Accessed:** 2026-09-07  
 **Companions:** `SOURCE_ADOPTION_STRATEGY.md`, `SOURCE_DONOR_REGISTRY.md`, `source-donor-registry.json`
 
 ## Permission posture
@@ -12,6 +12,8 @@ The Founder reports separate permission to use the source code of all previously
 That statement allows the project to treat otherwise useful implementation as a donor candidate instead of automatically limiting it to architecture study. Repository provenance remains mandatory: whenever an import relies on permission beyond the upstream public license, the exact permission/rights basis must be recorded in the responsible import evidence before canonical adoption.
 
 This is especially important because Wispral has not yet selected its own repository license. The project must remain able to explain how every copied implementation may be redistributed under the eventual canonical license.
+
+Public product documentation is different from source-code permission. A commercial product reference may inform UX, architecture questions, and threat modeling, but it does not create source-code rights or establish Wispral benchmark claims.
 
 ## Source snapshots
 
@@ -34,9 +36,30 @@ This is especially important because Wispral has not yet selected its own reposi
 
 **Donor classification:** `PERMISSION_REPORTED_DONOR_CANDIDATE`. Architecture and product patterns may be used immediately as research input. Direct code adaptation becomes eligible when the responsible task records the exact separate permission/rights basis relied upon, required attribution/notices, source revision/paths, and any model/dependency terms separately.
 
+### Superwhisper commercial product
+
+- Product: `https://superwhisper.com`
+- Source posture: commercial product/public documentation reference; no source-code relationship is assumed.
+- Public product behavior reviewed on 2026-09-07 includes system-wide push-to-talk dictation, on-device and cloud speech models, an optional language-model rewrite stage, custom modes, context-aware formatting, file/meeting transcription, and cross-app text delivery.
+- Public documentation describes context classes including active-application text, selected text, and recent clipboard content, with different capture times.
+
+**Reference classification:** `PRODUCT_REFERENCE` / `ARCHITECTURE_REFERENCE`. Superwhisper is useful for product and boundary lessons only. Its published model speed/error numbers, privacy/compliance statements, and product claims are external claims and are not Wispral evidence.
+
+### OpenSuperWhisper
+
+- Repository: `Starmel/OpenSuperWhisper`
+- Reviewed revision: `bef6bc0421d0c010e8f2fb4288c0d74978c8b964`
+- License: MIT
+- Platform at the reviewed revision: macOS Apple Silicon.
+- The repository describes two transcription engines: Whisper and Parakeet via FluidAudio, global shortcuts including modifier-only keys, mouse-button triggers, hold-to-record behavior, microphone selection, drag/drop audio queueing, and multiple-language support.
+- Relevant source seams inspected include `TranscriptionEngine.swift`, `TranscriptionService.swift`, `TranscriptionQueue.swift`, `ModifierKeyMonitor.swift`, `MouseButtonMonitor.swift`, `MicrophoneService.swift`, `FileDropHandler.swift`, `WhisperEngine.swift`, and `FluidAudioEngine.swift`.
+- The repository contains upstream submodules for `whisper.cpp` and Asian autocorrect; those remain separately licensed/provenanced dependencies.
+
+**Donor classification:** `CODE_DONOR_CANDIDATE`, subject to exact per-file dependency/provenance review before adaptation. No affiliation with, derivation from, or source relationship to the commercial Superwhisper product is inferred from the similar name. Treat them as independent references unless independent evidence establishes otherwise.
+
 ## Why these references matter to Wispral
 
-Wispral's mission is trustworthy, low-friction voice control for independent AI coding agents. These projects are useful because they contain mature desktop voice-capture mechanics that can inform later Wispral qualification without changing the founding product boundary.
+Wispral's mission is trustworthy, low-friction voice control for independent AI coding agents. These projects are useful because they contain mature desktop voice-capture mechanics or product lessons that can inform later Wispral qualification without changing the founding product boundary.
 
 They are **not** templates for turning Wispral into a generic dictation suite, meeting-notes product, voice-cloning studio, hosted memory service, or Electron IDE.
 
@@ -122,6 +145,76 @@ VoiceStudio exposes desktop, local REST/SSE/WebSocket, OpenAI-compatible audio, 
 
 **Wispral lesson:** H11 may later benefit from multiple interfaces over one semantic control model, but CLI/MCP/API surfaces must not become independent authority systems. Current roadmap gates remain unchanged.
 
+## Superwhisper product patterns worth carrying forward
+
+### Separate speech recognition from rewrite/interpretation
+
+Superwhisper publicly describes a two-stage pipeline: a speech-recognition model produces text, followed optionally by a language model that rewrites or formats the result.
+
+**Wispral lesson:** keep raw STT evidence and downstream interpretation/transformation as separate typed stages with separate provider identity, timing, provenance, cancellation, and failure semantics. A language-model rewrite must never silently replace the transcript used for audit or benchmark evidence.
+
+### Explicit local/cloud provider posture
+
+Superwhisper exposes local and cloud speech/language choices rather than presenting them as one opaque engine.
+
+**Wispral lesson:** any future remote provider must be explicit in current state, credentials, network path, fallback policy, and evidence. Local failure must not silently route speech to cloud. Provider choice belongs to policy/configuration, not hidden adapter behavior.
+
+### Context-aware modes are policy surfaces
+
+Superwhisper uses modes to control which model and context classes are used and how text is transformed.
+
+**Wispral lesson:** if Wispral later supports context-enriched voice instructions, the enabled context classes and transformation policy should be explicit, inspectable, and tied to a named user job. Do not build a generic prompt-mode system merely because a dictation product has one.
+
+### Context capture timing is part of provenance
+
+Superwhisper documentation describes selected text as captured at recording start, clipboard context in a bounded time window around dictation, and application context after voice processing. It also documents that changing windows before application-context capture can change what is observed.
+
+**Wispral lesson:** context must carry capture time, source identity, focus/window identity where applicable, and the turn/session it belongs to. A later focus change must not silently rebind a spoken instruction to a different repository/app/window context. Context capture should be minimized to the classes needed by the active job.
+
+### Visible capture and cancellation state
+
+Superwhisper exposes recording, context-capture, stop, and cancel states in its recording UI.
+
+**Wispral lesson:** every consequential capture/context stage should have a non-voice observable state, including terminal-visible state during founding horizons. Cancellation semantics still require backend evidence that execution actually stopped.
+
+## OpenSuperWhisper patterns worth qualifying
+
+### Minimal transcription-engine protocol
+
+`TranscriptionEngine.swift` defines a small provider surface around initialization, transcription, cancellation, model-loaded state, engine identity, and supported languages. `TranscriptionService.swift` owns engine selection and serializes access so a shared engine context is not used concurrently.
+
+**Wispral lesson:** H11 provider replaceability benefits from a small Wispral-owned contract. However, do not copy the current special-casing of concrete engine classes for progress reporting; a Wispral provider contract should expose progress/events generically if required.
+
+### Modifier-only and left/right-specific activation
+
+`ModifierKeyMonitor.swift` distinguishes left/right Command, Option, Shift, Control, and Fn using a `CGEvent` tap. It observes press/release transitions and attempts to re-enable the event tap after timeout/user-input disablement.
+
+**Wispral lesson:** macOS PTT feasibility should explicitly test modifier-only and side-specific shortcuts, tap disable/re-enable behavior, accessibility permission loss, repeated transitions, and teardown. A failed event tap must become typed state/diagnostics, not only a console print.
+
+### Mouse-button activation with event consumption
+
+`MouseButtonMonitor.swift` can bind middle/extra mouse buttons and consume the matched event so the focused app does not also execute its normal action.
+
+**Wispral lesson:** alternate PTT controls can materially reduce keyboard friction, but event consumption is an authority-bearing behavior. Any future mouse-button binding must be explicit, reversible, observable, and tested so unbound events pass through unchanged.
+
+### Microphone identity, hot-plug, and fallback
+
+`MicrophoneService.swift` enumerates audio devices, observes connect/disconnect events, persists a selected microphone, detects Bluetooth/Continuity characteristics, and falls back when the selected device disappears.
+
+**Wispral lesson:** H1 should treat input-device identity and device-change events as part of capture state. Fallback must be visible; the runtime must not silently switch from a selected external microphone to another device during a consequential turn.
+
+### Queue, cancellation, and source-file ownership
+
+`TranscriptionQueue.swift` serializes queued work, tracks the current recording, propagates cancellation to the provider task, rejects missing source files, and differentiates temporary microphone recordings from user-provided imported files when moving/copying/deleting data.
+
+**Wispral lesson:** later queued/offline jobs should make ownership/retention explicit, preserve user-owned sources, and keep cancellation semantics independent of UI state. The founding PTT path does not require importing a file-transcription product surface.
+
+### Multiple local engines without monolithic inheritance
+
+At the reviewed revision, OpenSuperWhisper supports Whisper and Parakeet/FluidAudio behind the same application-level engine protocol.
+
+**Wispral lesson:** the useful donor seam is provider isolation and switching mechanics, not the particular engine ranking. Wispral's canonical bakeoff remains the only authority for current STT selection.
+
 ## Candidate carry-forward matrix
 
 | Pattern | Primary source | Wispral horizon | Current disposition |
@@ -139,6 +232,15 @@ VoiceStudio exposes desktop, local REST/SSE/WebSocket, OpenAI-compatible audio, 
 | Engine subprocess isolation | VoiceStudio | H11 | `ARCHITECTURE/DONOR_CANDIDATE` |
 | Self-check and scrubbed diagnostics | VoiceStudio | H12 | `PERMISSION_REPORTED_DONOR_CANDIDATE` |
 | REST/WebSocket/MCP convergence | VoiceStudio | H11 | `DEFERRED_RESEARCH` |
+| STT -> optional LM rewrite separation | Superwhisper | H5, H6, H11 | `PRODUCT/ARCHITECTURE_REFERENCE` |
+| Explicit local/cloud model posture | Superwhisper | H11, H12 | `PRODUCT/SECURITY_REFERENCE` |
+| Context-mode visibility and minimization | Superwhisper | H4, H5, H6 | `PRODUCT/ARCHITECTURE_REFERENCE` |
+| Context capture timing/focus provenance | Superwhisper | H4, H5, H6 | `SECURITY/ARCHITECTURE_REFERENCE` |
+| Modifier-only / side-specific macOS PTT | OpenSuperWhisper | H1, H9 | `DONOR_CANDIDATE` |
+| Mouse-button PTT with explicit consumption | OpenSuperWhisper | H1, H9 | `DONOR_CANDIDATE` |
+| Microphone hot-plug/selection state | OpenSuperWhisper | H1, H12 | `DONOR_CANDIDATE` |
+| Minimal local transcription provider protocol | OpenSuperWhisper | H11 | `DONOR_CANDIDATE` |
+| Queued cancellation/source ownership | OpenSuperWhisper | H11, H12 | `DONOR_CANDIDATE`; file-transcription UI remains out of founding scope |
 
 ## Legal and provenance rules
 
@@ -146,9 +248,11 @@ VoiceStudio exposes desktop, local REST/SSE/WebSocket, OpenAI-compatible audio, 
 2. Treat model/tokenizer/data/binary assets as separately licensed unless exact permission evidence includes them.
 3. For OpenWhispr, preserve required MIT notices for substantial copied portions and still inspect dependency/native-helper terms.
 4. For VoiceStudio, record exact separate permission terms before copying AGPL-covered implementation into a Wispral tree whose canonical license may differ.
-5. Do not import external workflows, dependency lockfiles, native binaries, model weights, telemetry, cloud services, or generated artifacts merely because source code is eligible for use.
-6. External benchmark claims remain experiment-design inputs, not Wispral qualification evidence.
-7. Any adopted donor code must be tied to an authorized Wispral task and independently tested against Wispral's own acceptance criteria.
+5. For OpenSuperWhisper, preserve required MIT notices for substantial copied portions and separately qualify `whisper.cpp`, FluidAudio/Parakeet assets, Asian autocorrect, models, binaries, and any other transitive dependency before adoption.
+6. Do not infer that OpenSuperWhisper is an official/open-source version of the commercial Superwhisper product from naming similarity.
+7. Do not import external workflows, dependency lockfiles, native binaries, model weights, telemetry, cloud services, or generated artifacts merely because source code is eligible for use.
+8. External benchmark claims remain experiment-design inputs, not Wispral qualification evidence.
+9. Any adopted donor code must be tied to an authorized Wispral task and independently tested against Wispral's own acceptance criteria.
 
 ## Explicit non-goals created by this reference
 
@@ -156,12 +260,15 @@ This research reference does not authorize:
 
 - a generic meeting recorder or meeting-notes product;
 - always-on or invisible microphone/system-audio capture;
+- screen/application/clipboard context capture by default;
 - screen capture by default;
 - voice cloning, dubbing, audiobook production, or broad TTS studio functionality;
 - an Electron IDE;
 - a hosted note/memory platform;
-- cloud transcription as a requirement;
+- cloud transcription as a requirement or silent fallback;
+- a generic prompt/mode marketplace;
 - a plugin marketplace;
+- macOS-only product architecture merely because OpenSuperWhisper is macOS-native;
 - any change to the active `000B2` recovery frontier, candidate set, C0 methodology, scorer, or claim guards.
 
 ## Relationship to the active frontier
