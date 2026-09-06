@@ -62,7 +62,8 @@ def replace_next_action(text: str, label: str) -> str:
     require(text.count(marker) == 1, f"{label}: next-action marker drift")
     start = text.index(marker) + len(marker)
     end = text.find("\n\n", start)
-    require(end != -1, f"{label}: next-action paragraph boundary missing")
+    if end == -1:
+        end = len(text)
     current = text[start:end]
     require(current.startswith("Qualify `B2R06` only:"), f"{label}: B2R06 next action drift")
     return text[:start] + NEXT_MARKDOWN + text[end:]
