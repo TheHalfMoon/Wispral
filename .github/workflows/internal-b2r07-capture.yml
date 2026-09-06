@@ -1,0 +1,414 @@
+name: Internal B2R07 ATTEMPT-002 Capture
+
+on:
+  push:
+    branches:
+      - research/000b2-b2r07-execution
+    paths:
+      - '.github/workflows/internal-b2r07-capture.yml'
+      - 'research/000b2-public/decode_b2r07.py'
+      - 'research/000b2-public/whispercpp-adapter/CMakeLists.txt'
+      - 'research/000b2-public/whispercpp-adapter/adapter.cpp'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: b2r07-attempt-002-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  capture-b2r07:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      B2R07_REVISION: ${{ github.sha }}
+      CANONICAL_BASE: 16104eacf2d571276452d173ddb54c089faccd0e
+      TASK_HEAD: b47468377804e6db4e57b32cc2af05fcc3288ca5
+      B2R07_CONTAINER_IMAGE: python:3.12.11-bookworm@sha256:13c9584604a99ca134c4f41800f74ffc64ee6ac8cf555cf1e704a6087fc84f12
+      FFMPEG_TAG: n9.0.1
+      FFMPEG_REV: bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa
+      FFMPEG_ROOT: /evidence/toolchain
+      WHISPER_REV: 371b5a7561823ab2bb32142d2751e35e7534727b
+      WHISPER_TREE: 3d7ce4f956997cfa325c7556533aba5604278463
+      MODEL_REV: 80da2d8bfee42b0e836fc3a9890373e5defc00a6
+      MODEL_NAME: ggml-base.en.bin
+      MODEL_BYTES: '147964211'
+      MODEL_SHA256: a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002
+      DECODER_BLOB: 09f89a77c2339177b45ef09758f2387e44c650af
+      ADAPTER_CMAKE_BLOB: e975e7d4afd0f580881b17a7e9c2856634ec61e7
+      ADAPTER_SOURCE_BLOB: e7405cd343532b7d9dff8b667bfc7591f50631d9
+
+    steps:
+      - name: Checkout exact B2R07 source revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.B2R07_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact current B2R07 authority before external material access
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$B2R07_REVISION"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/research/000b2-b2r07-whispercpp-compact | cut -f1)" = "$TASK_HEAD"
+          test "$(git hash-object research/000b2-public/decode_b2r07.py)" = "$DECODER_BLOB"
+          test "$(git hash-object research/000b2-public/whispercpp-adapter/CMakeLists.txt)" = "$ADAPTER_CMAKE_BLOB"
+          test "$(git hash-object research/000b2-public/whispercpp-adapter/adapter.cpp)" = "$ADAPTER_SOURCE_BLOB"
+          PYTHONDONTWRITEBYTECODE=1 python -m py_compile research/000b2-public/decode_b2r07.py
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import importlib.util
+          from pathlib import Path
+          path = Path('research/000b2-public/decode_b2r07.py')
+          spec = importlib.util.spec_from_file_location('wispral_b2r07_capture_decoder', path)
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          module.validate_authority()
+          assert module.TASK == 'B2R07'
+          assert module.ATTEMPT_ID == '000B2-PUBLIC-ATTEMPT-002'
+          assert module.CANDIDATE_ID == 'whispercpp-compact'
+          print('B2R07_PRE_EXTERNAL_AUTHORITY=PASS')
+          print('B2R08_AUTHORIZED=NO')
+          PY
+          git diff --quiet HEAD --
+
+      - name: Pull exact immutable preprocessing container
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/b2r07"
+          mkdir -p "$RUNNER_TEMP/b2r07/home" "$RUNNER_TEMP/b2r07/work"
+          docker pull --platform linux/amd64 "$B2R07_CONTAINER_IMAGE"
+          test "$(docker image inspect "$B2R07_CONTAINER_IMAGE" --format '{{.Os}}')" = "linux"
+          test "$(docker image inspect "$B2R07_CONTAINER_IMAGE" --format '{{.Architecture}}')" = "amd64"
+
+      - name: Fetch exact FFmpeg release
+        run: |
+          set -euo pipefail
+          docker run --rm --platform linux/amd64 \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/evidence/home \
+            -e FFMPEG_ROOT \
+            -e FFMPEG_TAG \
+            -e FFMPEG_REV \
+            -v "$RUNNER_TEMP/b2r07:/evidence" \
+            "$B2R07_CONTAINER_IMAGE" \
+            bash -lc '
+              set -euo pipefail
+              rm -rf "$FFMPEG_ROOT"
+              mkdir -p "$FFMPEG_ROOT"
+              SRC="$FFMPEG_ROOT/FFmpeg"
+              git init "$SRC"
+              git -C "$SRC" remote add origin https://github.com/FFmpeg/FFmpeg.git
+              git -C "$SRC" fetch --depth=1 origin "refs/tags/$FFMPEG_TAG:refs/tags/$FFMPEG_TAG"
+              test "$(git -C "$SRC" rev-list -n1 "$FFMPEG_TAG")" = "$FFMPEG_REV"
+              git -C "$SRC" checkout --detach "$FFMPEG_REV"
+            '
+
+      - name: Build bounded FFmpeg 9.0.1 preprocessing tool
+        run: |
+          set -euo pipefail
+          docker run --rm --platform linux/amd64 --network none \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/evidence/home \
+            -e FFMPEG_ROOT \
+            -v "$RUNNER_TEMP/b2r07:/evidence" \
+            "$B2R07_CONTAINER_IMAGE" \
+            bash -lc '
+              set -euo pipefail
+              SRC="$FFMPEG_ROOT/FFmpeg"
+              PREFIX="$FFMPEG_ROOT/install"
+              cd "$SRC"
+              ./configure \
+                --prefix="$PREFIX" \
+                --disable-everything \
+                --disable-doc \
+                --disable-debug \
+                --disable-ffplay \
+                --disable-ffprobe \
+                --disable-network \
+                --disable-autodetect \
+                --disable-x86asm \
+                --enable-protocol=file \
+                --enable-demuxer=flac,wav \
+                --enable-muxer=wav \
+                --enable-decoder=flac,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le \
+                --enable-encoder=pcm_s16le \
+                --enable-parser=flac \
+                --enable-filter=aresample,aformat \
+                --enable-swresample
+              make -j2 ffmpeg
+              make install
+              "$PREFIX/bin/ffmpeg" -version | head -n 1
+            '
+
+      - name: Reproduce exact frozen P0 preprocessing bytes
+        run: |
+          set -euo pipefail
+          docker run --rm --platform linux/amd64 \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/evidence/home \
+            -e FFMPEG_ROOT \
+            -v "$GITHUB_WORKSPACE:/workspace:ro" \
+            -v "$RUNNER_TEMP/b2r07:/evidence" \
+            -w /workspace \
+            "$B2R07_CONTAINER_IMAGE" \
+            bash -lc '
+              set -euo pipefail
+              PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/preprocess_subset.py \
+                --ffmpeg "$FFMPEG_ROOT/install/bin/ffmpeg" \
+                --work-dir /evidence/work \
+                --output /evidence/preprocessing-capture.json
+              PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py \
+                --compare-committed /evidence/preprocessing-capture.json
+            '
+
+      - name: Fetch exact whisper.cpp source
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/b2r07/whisper.cpp"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/ggml-org/whisper.cpp.git
+          git -C "$SRC" fetch --depth=1 origin "$WHISPER_REV"
+          git -C "$SRC" checkout --detach FETCH_HEAD
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$WHISPER_REV"
+          test "$(git -C "$SRC" rev-parse HEAD^{tree})" = "$WHISPER_TREE"
+          git -C "$SRC" diff --quiet HEAD --
+
+      - name: Build exact CPU-only Wispral stream adapter
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/b2r07/whisper.cpp"
+          BUILD="$RUNNER_TEMP/b2r07/whisper-build"
+          ADAPTER_DIR="$GITHUB_WORKSPACE/research/000b2-public/whispercpp-adapter"
+          cmake -S "$ADAPTER_DIR" -B "$BUILD" \
+            -DWHISPER_SOURCE_DIR="$SRC" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DGGML_CUDA=OFF \
+            -DGGML_METAL=OFF \
+            -DWHISPER_BUILD_TESTS=OFF \
+            -DWHISPER_BUILD_EXAMPLES=OFF
+          changed="$(git -C "$SRC" diff --name-only HEAD --)"
+          if [ -n "$changed" ]; then
+            test "$changed" = "bindings/javascript/package.json"
+            git -C "$SRC" checkout -- bindings/javascript/package.json
+          fi
+          git -C "$SRC" diff --quiet HEAD --
+          cmake --build "$BUILD" --target wispral-whispercpp-c0 -j2
+          git -C "$SRC" diff --quiet HEAD --
+          "$BUILD/wispral-whispercpp-c0" --version
+
+          export SRC BUILD ADAPTER_DIR
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import pathlib
+          import re
+          import subprocess
+
+          src = pathlib.Path(os.environ['SRC']).resolve()
+          build = pathlib.Path(os.environ['BUILD']).resolve()
+          adapter_dir = pathlib.Path(os.environ['ADAPTER_DIR']).resolve()
+          binary = build / 'wispral-whispercpp-c0'
+          cache = build / 'CMakeCache.txt'
+
+          def sha(path: pathlib.Path) -> str:
+              h = hashlib.sha256()
+              with path.open('rb') as handle:
+                  for chunk in iter(lambda: handle.read(1024 * 1024), b''):
+                      h.update(chunk)
+              return h.hexdigest()
+
+          def sha_text(text: str) -> str:
+              return hashlib.sha256(text.encode('utf-8')).hexdigest()
+
+          cache_text = cache.read_text(encoding='utf-8', errors='strict')
+          match = re.search(r'^CMAKE_CXX_COMPILER:FILEPATH=(.+)$', cache_text, re.MULTILINE)
+          if match is None:
+              match = re.search(r'^CMAKE_CXX_COMPILER:STRING=(.+)$', cache_text, re.MULTILINE)
+          if match is None:
+              raise SystemExit('CMAKE_CXX_COMPILER missing from cache')
+          compiler = match.group(1).strip()
+          compiler_version = subprocess.run([compiler, '--version'], check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout
+          cmake_version = subprocess.run(['cmake', '--version'], check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout
+          source_revision = subprocess.run(['git', '-C', str(src), 'rev-parse', 'HEAD'], check=True, text=True, stdout=subprocess.PIPE).stdout.strip()
+          source_tree = subprocess.run(['git', '-C', str(src), 'rev-parse', 'HEAD^{tree}'], check=True, text=True, stdout=subprocess.PIPE).stdout.strip()
+          subprocess.run(['git', '-C', str(src), 'diff', '--quiet', 'HEAD', '--'], check=True)
+
+          identity = {
+              'schema_version': '000b2-whisper-build-identity-v2',
+              'source_revision': source_revision,
+              'source_tree': source_tree,
+              'build_type': 'Release',
+              'ggml_cuda': 'OFF',
+              'ggml_metal': 'OFF',
+              'whisper_build_tests': 'OFF',
+              'whisper_build_examples': 'OFF',
+              'target': 'wispral-whispercpp-c0',
+              'adapter_source_path': 'research/000b2-public/whispercpp-adapter/adapter.cpp',
+              'adapter_source_sha256': sha(adapter_dir / 'adapter.cpp'),
+              'adapter_cmake_path': 'research/000b2-public/whispercpp-adapter/CMakeLists.txt',
+              'adapter_cmake_sha256': sha(adapter_dir / 'CMakeLists.txt'),
+              'adapter_binary_sha256': sha(binary),
+              'cmake_cache_sha256': sha(cache),
+              'compiler_version_sha256': sha_text(compiler_version),
+              'cmake_version_sha256': sha_text(cmake_version),
+          }
+          (build / 'wispral-build-identity.json').write_text(json.dumps(identity, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print(f"WHISPER_BUILD_SOURCE={source_revision}")
+          print(f"WHISPER_BUILD_TREE={source_tree}")
+          print(f"WHISPER_ADAPTER_SHA256={identity['adapter_binary_sha256']}")
+          PY
+
+      - name: Download exact pinned whispercpp-compact model
+        run: |
+          set -euo pipefail
+          MODELS="$RUNNER_TEMP/b2r07/models"
+          mkdir -p "$MODELS"
+          BASE="https://huggingface.co/ggerganov/whisper.cpp/resolve/$MODEL_REV"
+          curl --fail --location --retry 3 --retry-all-errors "$BASE/$MODEL_NAME" -o "$MODELS/$MODEL_NAME"
+          test "$(stat -c %s "$MODELS/$MODEL_NAME")" = "$MODEL_BYTES"
+          printf '%s  %s\n' "$MODEL_SHA256" "$MODELS/$MODEL_NAME" | sha256sum --check -
+
+      - name: Execute B2R07 whispercpp-compact C0 primary decode
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2r07.py \
+            --work-dir "$RUNNER_TEMP/b2r07/adapter-work" \
+            --preprocessed-root "$RUNNER_TEMP/b2r07/work/preprocessed" \
+            --model "$RUNNER_TEMP/b2r07/models/$MODEL_NAME" \
+            --adapter "$RUNNER_TEMP/b2r07/whisper-build/wispral-whispercpp-c0" \
+            --build-identity "$RUNNER_TEMP/b2r07/whisper-build/wispral-build-identity.json" \
+            --output "$RUNNER_TEMP/b2r07/b2r07-whispercpp-compact.json"
+
+      - name: Verify bounded B2R07 evidence semantics without scoring
+        run: |
+          set -euo pipefail
+          EVIDENCE="$RUNNER_TEMP/b2r07/b2r07-whispercpp-compact.json"
+          export EVIDENCE
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path(os.environ['EVIDENCE'])
+          data = json.loads(path.read_text(encoding='utf-8'))
+          assert data['schema_version'] == '000b2-public-b2r07-decode-v1'
+          assert data['task'] == 'B2R07'
+          assert data['state'] == 'ATTEMPT_002_C0_PRIMARY_DECODE_CAPTURED'
+          assert data['attempt_id'] == '000B2-PUBLIC-ATTEMPT-002'
+          assert data['candidate']['cell_index'] == 3
+          assert data['candidate']['candidate_id'] == 'whispercpp-compact'
+          assert data['candidate']['runtime_revision'] == '371b5a7561823ab2bb32142d2751e35e7534727b'
+          assert data['candidate']['runtime_source_tree'] == '3d7ce4f956997cfa325c7556533aba5604278463'
+          assert data['candidate']['model_source_revision'] == '80da2d8bfee42b0e836fc3a9890373e5defc00a6'
+          assert data['candidate']['model'] == 'ggml-base.en.bin'
+          assert data['authority']['canonical_authority_base'] == '16104eacf2d571276452d173ddb54c089faccd0e'
+          assert data['authority']['attempt_freeze_digest_sha256'] == '600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8'
+          assert data['authority']['preprocessing_capture_sha256'] == 'd90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011'
+          assert data['run']['repository_revision'] == os.environ['B2R07_REVISION']
+          assert data['run']['github_repository'] == 'TheHalfMoon/Wispral'
+          assert data['run']['github_run_id'] == int(os.environ['GITHUB_RUN_ID'])
+          assert data['run']['github_run_attempt'] == int(os.environ['GITHUB_RUN_ATTEMPT'])
+          assert data['run']['github_job'] == 'capture-b2r07'
+          assert data['run']['timing_semantics'] == 'DIAGNOSTIC_ONLY'
+          assert data['run']['comparative_performance_authorized'] is False
+
+          controls = data['c0_controls']
+          expected = {
+              'language': 'en', 'threads': 4, 'step_ms': 500,
+              'regular_chunk_samples': 8000, 'final_speech_chunk_preserved': True,
+              'length_ms': 5000, 'keep_ms': 200, 'max_tokens': 0,
+              'audio_ctx': 0, 'beam_size': -1, 'sampling': 'GREEDY',
+              'temperature_fallback': 'OFF', 'translate': False,
+              'keep_context': False, 'initial_prompt': None,
+              'prompt_carryover': False, 'vad': False, 'timestamps': False,
+              'single_segment': True, 'use_gpu': False, 'flash_attention': False,
+              'repository_context_used': False, 'test_specific_context_used': False,
+              'candidate_specific_audio_transform_used': False,
+              'identical_frozen_audio_required_across_candidates': True,
+              'finalization_zero_pad_samples': 10560,
+              'zero_suffix_chunk_samples': [8000, 2560],
+              'raw_transcript_materialization': 'STREAM_CPP_COMMIT_EVERY_9_PLUS_FINAL_PENDING',
+          }
+          assert controls == expected
+
+          execution = data['execution']
+          assert execution['input_count'] == 240
+          assert execution['decoded_count'] + execution['failure_count'] == 240
+          assert execution['all_frozen_input_hashes_reverified'] is True
+          assert execution['all_speech_samples_delivered_for_decoded_records'] is True
+          assert execution['all_zero_suffix_samples_delivered_for_decoded_records'] is True
+          assert execution['reference_transcripts_loaded_by_decoder'] is False
+          assert execution['accuracy_scoring_performed'] is False
+          assert execution['comparative_ranking_present'] is False
+          assert execution['performance_claim_present'] is False
+          records = execution['records']
+          assert len(records) == 240
+          assert len({row['utterance_id'] for row in records}) == 240
+          assert all(row['status'] in {'DECODED', 'FAILED'} for row in records)
+          assert sum(row['status'] == 'DECODED' for row in records) == execution['decoded_count']
+          assert sum(row['status'] == 'FAILED' for row in records) == execution['failure_count']
+          for row in records:
+              assert isinstance(row['raw_lines'], list)
+              assert isinstance(row['raw_transcript'], str)
+              if row['status'] == 'DECODED':
+                  assert row['failure'] is None
+                  assert row['speech_samples_delivered'] == row['speech_sample_count']
+                  assert row['zero_suffix_samples_delivered'] == 10560
+                  assert row['zero_suffix_chunks_delivered'] == 2
+              else:
+                  assert isinstance(row['failure'], dict)
+
+          guards = data['claim_guards']
+          assert guards == {
+              'human_developer_speech_accuracy_evidence': 'ABSENT',
+              'comparative_result_available': False,
+              'comparative_performance_authorized': False,
+              'production_stt_selected': False,
+              'product_code_authorized': False,
+              'b2r08_authorized': False,
+          }
+          claimed = data['evidence_payload_sha256']
+          payload = dict(data)
+          del payload['evidence_payload_sha256']
+          encoded = (json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n').encode('utf-8')
+          assert hashlib.sha256(encoded).hexdigest() == claimed
+          print(f"B2R07_EVIDENCE_SHA256={hashlib.sha256(path.read_bytes()).hexdigest()}")
+          print(f"B2R07_PAYLOAD_SHA256={claimed}")
+          print(f"B2R07_DECODED={execution['decoded_count']}")
+          print(f"B2R07_FAILURES={execution['failure_count']}")
+          print('B2R07_SEMANTICS=PASS')
+          print('B2R08_AUTHORIZED=NO')
+          PY
+
+      - name: Preserve raw-data boundary
+        run: |
+          set -euo pipefail
+          test ! -e research/000b2-public/raw
+          test ! -e research/000b2-public/preprocessed
+          test ! -e research/000b2-public/transcripts
+          git diff --quiet HEAD --
+          echo 'B2R07_RAW_DATA_BOUNDARY=PASS'
+
+      - name: Upload bounded B2R07 execution evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: b2r07-whispercpp-compact-${{ env.B2R07_REVISION }}
+          path: |
+            ${{ runner.temp }}/b2r07/b2r07-whispercpp-compact.json
+            ${{ runner.temp }}/b2r07/whisper-build/wispral-build-identity.json
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Remove transient corpus, model, source, adapter output, and toolchain
+        if: always()
+        run: |
+          rm -rf "$RUNNER_TEMP/b2r07"
+          test ! -e research/000b2-public/raw
+          test ! -e research/000b2-public/preprocessed
+          test ! -e research/000b2-public/transcripts
