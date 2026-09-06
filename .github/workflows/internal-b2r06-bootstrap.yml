@@ -1,0 +1,26 @@
+name: Internal B2R06 Decoder Bootstrap
+
+on:
+  push:
+    branches:
+      - research/000b2-b2r06-execution
+    paths:
+      - '.github/workflows/internal-b2r06-bootstrap.yml'
+      - 'research/000b2-public/internal_b2r06_bootstrap.py'
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap-b2r06:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact bootstrap revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Generate identical clean and execution decoders
+        run: python research/000b2-public/internal_b2r06_bootstrap.py
