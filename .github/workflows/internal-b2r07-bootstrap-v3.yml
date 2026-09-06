@@ -124,6 +124,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git fetch origin "$TASK_BRANCH:refs/remotes/origin/$TASK_BRANCH"
+          git reset --hard "$B2R07_REVISION"
           git switch -c b2r07-task "origin/$TASK_BRANCH"
           test "$(git rev-parse HEAD)" = "$CANONICAL_BASE"
           mkdir -p research/000b2-public/whispercpp-adapter
