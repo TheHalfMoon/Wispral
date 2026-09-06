@@ -24,7 +24,6 @@ jobs:
       B2R05_REVISION: ${{ github.sha }}
       FFMPEG_TAG: n9.0.1
       FFMPEG_REV: bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa
-      FFMPEG_ROOT: ${{ runner.temp }}/b2r05/toolchain
     steps:
       - name: Checkout exact B2R05 execution revision
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -37,6 +36,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12.14'
+
+      - name: Bind transient execution paths
+        run: |
+          set -euo pipefail
+          echo "FFMPEG_ROOT=$RUNNER_TEMP/b2r05/toolchain" >> "$GITHUB_ENV"
 
       - name: Verify exact revision and static B2R05 authority
         run: |
