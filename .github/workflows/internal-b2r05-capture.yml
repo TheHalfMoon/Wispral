@@ -93,7 +93,7 @@ jobs:
           make install
           "$PREFIX/bin/ffmpeg" -version | head -n 1
 
-      - name: Reproduce exact frozen P0 preprocessing bytes
+      - name: Reproduce and verify exact frozen P0 audio identities
         run: |
           set -euo pipefail
           rm -rf "$RUNNER_TEMP/b2r05/preprocess"
@@ -102,8 +102,36 @@ jobs:
             --ffmpeg "$FFMPEG_ROOT/install/bin/ffmpeg" \
             --work-dir "$RUNNER_TEMP/b2r05/preprocess" \
             --output "$RUNNER_TEMP/b2r05/preprocessing-capture.json"
-          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py \
-            --compare-committed "$RUNNER_TEMP/b2r05/preprocessing-capture.json"
+          GENERATED="$RUNNER_TEMP/b2r05/preprocessing-capture.json" python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          committed = json.loads(Path("research/000b2-public/preprocessing-capture.json").read_text(encoding="utf-8"))
+          generated = json.loads(Path(os.environ["GENERATED"]).read_text(encoding="utf-8"))
+          cexec = committed["execution"]
+          gexec = generated["execution"]
+          assert cexec["preprocessed_file_count"] == gexec["preprocessed_file_count"] == 240
+          assert gexec["all_source_hashes_reverified"] is True
+          assert gexec["all_outputs_verified_pcm_s16le_mono_16000hz"] is True
+          fields = (
+              "utterance_id",
+              "source_partition",
+              "source_audio_path",
+              "source_file_sha256",
+              "canonical_preprocessed_file_sha256",
+              "canonical_preprocessed_bytes",
+              "wav_channels",
+              "wav_sample_rate_hz",
+              "wav_sample_width_bytes",
+              "wav_frame_count",
+              "wav_compression_type",
+          )
+          for index, (expected, observed) in enumerate(zip(cexec["records"], gexec["records"], strict=True)):
+              for field in fields:
+                  assert observed[field] == expected[field], (index, expected["utterance_id"], field)
+          print("B2R05_FROZEN_P0_AUDIO_IDENTITIES=PASS")
+          PY
 
       - name: Install exact Moonshine release dependencies
         run: |
