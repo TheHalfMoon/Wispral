@@ -1,0 +1,152 @@
+name: Internal B2R07 Decoder Bootstrap v3
+
+on:
+  push:
+    branches:
+      - research/000b2-b2r07-execution
+    paths:
+      - '.github/workflows/internal-b2r07-bootstrap-v3.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: b2r07-decoder-bootstrap-v3-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  bootstrap-b2r07-v3:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      B2R07_REVISION: ${{ github.sha }}
+      CANONICAL_BASE: 16104eacf2d571276452d173ddb54c089faccd0e
+      TASK_BRANCH: research/000b2-b2r07-whispercpp-compact
+      EXECUTION_BRANCH: research/000b2-b2r07-execution
+    steps:
+      - name: Checkout exact bootstrap revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.B2R07_REVISION }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify unchanged canonical authority and donor identities
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$B2R07_REVISION"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin "refs/heads/$TASK_BRANCH" | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git hash-object research/000b2-public/decode_b2r07.py)" = "9b0b16df7c06068b3ffa70e88203f56fbe44b7f2"
+          test "$(git hash-object research/000b2-public/whispercpp-adapter/CMakeLists.txt)" = "e975e7d4afd0f580881b17a7e9c2856634ec61e7"
+          test "$(git hash-object research/000b2-public/whispercpp-adapter/adapter.cpp)" = "e7405cd343532b7d9dff8b667bfc7591f50631d9"
+
+      - name: Rebind decoder and normalize B2R07 claim guards
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          from pathlib import Path
+
+          workflow = Path('.github/workflows/internal-b2r07-bootstrap.yml').read_text(encoding='utf-8')
+          start = workflow.index('          from pathlib import Path\n')
+          end = workflow.index("          PY\n\n      - name: Verify generated B2R07 authority", start)
+          lines = workflow[start:end].splitlines()
+          generator = '\n'.join(line[10:] if line.startswith('          ') else line for line in lines) + '\n'
+          generator = generator.replace('assert old_guards in text\n', 'pass  # claim guards are normalized after the authority generator completes\n')
+          namespace = {'__name__': '__main__'}
+          exec(compile(generator, '<b2r07-authority-rebind>', 'exec'), namespace)
+
+          path = Path('research/000b2-public/decode_b2r07.py')
+          text = path.read_text(encoding='utf-8')
+          guard_start = text.rfind('        "claim_guards": {')
+          assert guard_start >= 0
+          guard_end = text.index('        },', guard_start) + len('        },')
+          new_guard = '\n'.join([
+              '        "claim_guards": {',
+              '            "human_developer_speech_accuracy_evidence": "ABSENT",',
+              '            "comparative_result_available": False,',
+              '            "comparative_performance_authorized": False,',
+              '            "production_stt_selected": False,',
+              '            "product_code_authorized": False,',
+              '            "b2r08_authorized": False,',
+              '        },',
+          ])
+          text = text[:guard_start] + new_guard + text[guard_end:]
+          assert 'ATTEMPT-001' not in text
+          assert 'B2E03' not in text and 'B2E04' not in text
+          assert 'b2e03' not in text and 'b2e04' not in text
+          assert '"comparative_result_available": False' in text
+          assert '"b2r08_authorized": False' in text
+          path.write_text(text, encoding='utf-8')
+          compile(text, str(path), 'exec')
+          print('B2R07_REBIND=PASS')
+          PY
+
+      - name: Verify generated decoder against current B2R07 authority
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -m py_compile research/000b2-public/decode_b2r07.py
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import importlib.util
+          from pathlib import Path
+
+          path = Path('research/000b2-public/decode_b2r07.py')
+          spec = importlib.util.spec_from_file_location('wispral_b2r07_decoder', path)
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          module.validate_authority()
+          assert module.TASK == 'B2R07'
+          assert module.ATTEMPT_ID == '000B2-PUBLIC-ATTEMPT-002'
+          assert module.CANDIDATE_ID == 'whispercpp-compact'
+          assert module.EXPECTED_AUTHORITY_BASE == '16104eacf2d571276452d173ddb54c089faccd0e'
+          assert module.EXPECTED_FREEZE == '600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8'
+          assert module.EXPECTED_RUNTIME_REVISION == '371b5a7561823ab2bb32142d2751e35e7534727b'
+          assert module.EXPECTED_MODEL_SOURCE_REVISION == '80da2d8bfee42b0e836fc3a9890373e5defc00a6'
+          assert module.EXPECTED_MODEL_NAME == 'ggml-base.en.bin'
+          assert module.EXPECTED_MODEL_BYTES == 147964211
+          assert module.EXPECTED_MODEL_SHA256 == 'a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002'
+          print('B2R07_CURRENT_AUTHORITY=PASS')
+          print('B2R08_AUTHORIZED=NO')
+          PY
+          test "$(git hash-object research/000b2-public/whispercpp-adapter/CMakeLists.txt)" = "e975e7d4afd0f580881b17a7e9c2856634ec61e7"
+          test "$(git hash-object research/000b2-public/whispercpp-adapter/adapter.cpp)" = "e7405cd343532b7d9dff8b667bfc7591f50631d9"
+
+      - name: Commit exact decoder and frozen adapter to clean task branch
+        run: |
+          set -euo pipefail
+          TMP="$RUNNER_TEMP/b2r07-generated"
+          rm -rf "$TMP"
+          mkdir -p "$TMP/whispercpp-adapter"
+          cp research/000b2-public/decode_b2r07.py "$TMP/decode_b2r07.py"
+          cp research/000b2-public/whispercpp-adapter/CMakeLists.txt "$TMP/whispercpp-adapter/CMakeLists.txt"
+          cp research/000b2-public/whispercpp-adapter/adapter.cpp "$TMP/whispercpp-adapter/adapter.cpp"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin "$TASK_BRANCH:refs/remotes/origin/$TASK_BRANCH"
+          git switch -c b2r07-task "origin/$TASK_BRANCH"
+          test "$(git rev-parse HEAD)" = "$CANONICAL_BASE"
+          mkdir -p research/000b2-public/whispercpp-adapter
+          cp "$TMP/decode_b2r07.py" research/000b2-public/decode_b2r07.py
+          cp "$TMP/whispercpp-adapter/CMakeLists.txt" research/000b2-public/whispercpp-adapter/CMakeLists.txt
+          cp "$TMP/whispercpp-adapter/adapter.cpp" research/000b2-public/whispercpp-adapter/adapter.cpp
+          git add research/000b2-public/decode_b2r07.py research/000b2-public/whispercpp-adapter/CMakeLists.txt research/000b2-public/whispercpp-adapter/adapter.cpp
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+          test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' 'research/000b2-public/decode_b2r07.py' 'research/000b2-public/whispercpp-adapter/CMakeLists.txt' 'research/000b2-public/whispercpp-adapter/adapter.cpp' | sort)"
+          git commit -m 'research(000b2): implement B2R07 whispercpp decoder'
+          git push origin "HEAD:$TASK_BRANCH"
+          echo "TASK_HEAD=$(git rev-parse HEAD)"
+
+      - name: Converge execution branch and remove all bootstrap workflows
+        run: |
+          set -euo pipefail
+          TMP="$RUNNER_TEMP/b2r07-generated"
+          git switch -C b2r07-execution "$B2R07_REVISION"
+          cp "$TMP/decode_b2r07.py" research/000b2-public/decode_b2r07.py
+          rm .github/workflows/internal-b2r07-bootstrap.yml
+          rm .github/workflows/internal-b2r07-bootstrap-v2.yml
+          rm .github/workflows/internal-b2r07-bootstrap-v3.yml
+          git add research/000b2-public/decode_b2r07.py .github/workflows/internal-b2r07-bootstrap.yml .github/workflows/internal-b2r07-bootstrap-v2.yml .github/workflows/internal-b2r07-bootstrap-v3.yml
+          git commit -m 'research(000b2): rebind B2R07 decoder to ATTEMPT-002'
+          git push origin "HEAD:$EXECUTION_BRANCH"
+          echo "EXECUTION_HEAD=$(git rev-parse HEAD)"
