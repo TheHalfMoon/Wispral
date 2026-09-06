@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -78,6 +79,8 @@ def main() -> int:
 
     run("python", "research/000b2-public/verify_b2r06.py")
     run("python", "research/000b2-public/verify_attempt_manifest.py")
+    for cache in ROOT.rglob("__pycache__"):
+        shutil.rmtree(cache, ignore_errors=True)
     run("git", "diff", "--check", BASE)
     changed = set(run("git", "diff", "--name-only", BASE, capture=True).splitlines())
     require(changed == ALLOWED, f"final reconciliation scope drift: {sorted(changed)!r}")
