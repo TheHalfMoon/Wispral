@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Execute bounded B2E03 C0 decoding for the frozen whispercpp-compact cell."""
+"""Execute bounded B2R07 C0 decoding for the frozen whispercpp-compact cell."""
 
 from __future__ import annotations
 
@@ -21,27 +21,34 @@ sys.path.insert(0, str(ENTRY))
 
 import operational_smoke  # noqa: E402
 
-READINESS_PATH = PUBLIC / "readiness.json"
-ATTEMPT_MANIFEST_PATH = PUBLIC / "attempt-manifest.json"
+READINESS_PATH = PUBLIC / "recovery-readiness.json"
+ATTEMPT_MANIFEST_PATH = PUBLIC / "attempt-002-manifest.json"
 PREPROCESSING_CAPTURE_PATH = PUBLIC / "preprocessing-capture.json"
+REBINDING_PATH = PUBLIC / "b2r03-preexecution-rebinding.json"
+FROZEN_METHODOLOGY_PATH = ROOT / "research" / "000b1" / "frozen-methodology.json"
+CANDIDATE_REGISTRY_PATH = ROOT / "research" / "000b1" / "qualified-candidates.json"
+CANONICAL_CURRENT_PATH = ROOT / "docs" / "canonical" / "CURRENT_STATE.md"
 CURRENT_PATH = ROOT / "specs" / "CURRENT.md"
 TASKS_PATH = ROOT / "specs" / "000B2-public-corpus-bakeoff" / "tasks.md"
 ADAPTER_SOURCE_PATH = PUBLIC / "whispercpp-adapter" / "adapter.cpp"
 ADAPTER_CMAKE_PATH = PUBLIC / "whispercpp-adapter" / "CMakeLists.txt"
 
-SCHEMA = "000b2-public-b2e03-decode-v1"
-TASK = "B2E03"
-ATTEMPT_ID = "000B2-PUBLIC-ATTEMPT-001"
+SCHEMA = "000b2-public-b2r07-decode-v1"
+TASK = "B2R07"
+ATTEMPT_ID = "000B2-PUBLIC-ATTEMPT-002"
 CANDIDATE_ID = "whispercpp-compact"
-EXPECTED_AUTHORITY_BASE = "b326397cdd29fbb132b9c438ba2178626558efab"
+EXPECTED_AUTHORITY_BASE = "16104eacf2d571276452d173ddb54c089faccd0e"
 EXPECTED_RUNTIME_REVISION = "371b5a7561823ab2bb32142d2751e35e7534727b"
 EXPECTED_RUNTIME_TREE = "3d7ce4f956997cfa325c7556533aba5604278463"
 EXPECTED_MODEL_SOURCE_REVISION = "80da2d8bfee42b0e836fc3a9890373e5defc00a6"
 EXPECTED_MODEL_NAME = "ggml-base.en.bin"
 EXPECTED_MODEL_BYTES = 147964211
 EXPECTED_MODEL_SHA256 = "a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002"
-EXPECTED_FREEZE = "af4d5009e293daef5d8f629ca91af653f5f591448cd94d4555473a51e2d1da86"
+EXPECTED_FREEZE = "600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8"
 EXPECTED_PREPROCESSING = "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011"
+EXPECTED_REBINDING = "f9cda5168e6cafb6a1e9e6898f394ec3987b37af50c53c15cf63bc136c1f2df1"
+EXPECTED_FROZEN_METHODOLOGY = "fc177308926941e683f311a340b9e398f2c44ffa32963b3abc20aa359dbb09df"
+EXPECTED_REGISTRY = "2448daab15aea13d1e03c326e43b163337a4e3a09ec077bb0f25e3dd51499f1f"
 EXPECTED_UTTERANCES = 240
 REGULAR_CHUNK_SAMPLES = 8000
 FINAL_ZERO_SAMPLES = 10560
@@ -59,7 +66,7 @@ SHA40 = set("0123456789abcdef")
 
 
 class DecodeError(ValueError):
-    """Raised when B2E03 authority or execution invariants fail closed."""
+    """Raised when B2R07 authority or execution invariants fail closed."""
 
 
 def require(condition: bool, message: str) -> None:
@@ -116,58 +123,81 @@ def git_head() -> str:
 
 
 def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
-    attempt = load_json(ATTEMPT_MANIFEST_PATH, "frozen attempt manifest")
-    require(attempt.get("schema_version") == "000b2-public-attempt-manifest-v1", "attempt manifest schema drift")
-    require(attempt.get("attempt_id") == ATTEMPT_ID, "attempt id drift")
-    require(attempt.get("frozen") is True, "attempt manifest is not frozen")
-    require(attempt.get("phase") == "PRE_PRIMARY_FROZEN", "attempt phase drift")
-    require(attempt.get("freeze_digest_sha256") == EXPECTED_FREEZE, "attempt freeze digest drift")
+    attempt = load_json(ATTEMPT_MANIFEST_PATH, "frozen ATTEMPT-002 manifest")
+    require(attempt.get("schema_version") == "000b2-public-attempt-002-manifest-v1", "ATTEMPT-002 schema drift")
+    require(attempt.get("attempt_id") == ATTEMPT_ID, "ATTEMPT-002 id drift")
+    require(attempt.get("frozen") is True and attempt.get("phase") == "PRE_PRIMARY_FROZEN", "ATTEMPT-002 freeze state drift")
+    require(attempt.get("freeze_digest_sha256") == EXPECTED_FREEZE, "ATTEMPT-002 freeze digest drift")
 
     candidate_set = attempt.get("candidate_set")
-    require(isinstance(candidate_set, dict), "attempt candidate set missing")
+    require(isinstance(candidate_set, dict), "ATTEMPT-002 candidate set missing")
     candidate_ids = candidate_set.get("candidate_ids")
     require(candidate_ids == EXPECTED_CANDIDATE_IDS, "frozen candidate set drift")
     require(candidate_ids[2] == CANDIDATE_ID, "candidate cell 3 drift")
     require(candidate_set.get("membership_change_after_freeze_allowed") is False, "candidate membership became mutable")
+    require(candidate_set.get("frozen_methodology_sha256") == EXPECTED_FROZEN_METHODOLOGY, "frozen methodology binding drift")
+    require(candidate_set.get("registry_sha256") == EXPECTED_REGISTRY, "candidate registry binding drift")
+    require(sha256_file(FROZEN_METHODOLOGY_PATH) == EXPECTED_FROZEN_METHODOLOGY, "frozen methodology bytes drift")
+    require(sha256_file(CANDIDATE_REGISTRY_PATH) == EXPECTED_REGISTRY, "candidate registry bytes drift")
 
     contract = attempt.get("decoding_contract")
-    require(isinstance(contract, dict), "attempt decoding contract missing")
+    require(isinstance(contract, dict), "ATTEMPT-002 decoding contract missing")
     require(contract.get("c0_repository_context") == "OFF", "repository context is not OFF")
     require(contract.get("c0_test_specific_context") == "OFF", "test-specific context is not OFF")
     require(contract.get("candidate_specific_audio_transform") == "OFF", "candidate-specific audio transform is not OFF")
     require(contract.get("identical_frozen_audio_required_across_candidates") is True, "identical frozen audio invariant drift")
     require(contract.get("raw_outputs_and_failures_must_be_preserved") is True, "raw-output preservation invariant drift")
-    require(contract.get("candidate_decoding_started") is False, "historical predecode manifest was rewritten")
-    require(contract.get("primary_decoding_started") is False, "historical predecode manifest was rewritten")
 
-    readiness = load_json(READINESS_PATH, "public readiness")
-    require(readiness.get("state") == "READY", "public B2 lane is not READY")
-    require(readiness.get("completed_through") == "B2E02", "B2E03 authority requires canonical completion through B2E02")
+    readiness = load_json(READINESS_PATH, "recovery readiness")
+    require(readiness.get("state") == "RECOVERY_READY", "recovery lane is not ready")
+    require(readiness.get("active_recovery_unit") == TASK, "B2R07 is not the active recovery unit")
+    require(readiness.get("completed_recovery_tasks") == ["B2R01", "B2R02", "B2R03", "B2R04", "B2R05", "B2R06"], "B2R07 predecessor ledger drift")
+    require(readiness.get("qualified_workflow_change_paths") == [], "B2R07 unexpectedly authorizes workflow drift")
     next_action = readiness.get("next_action")
-    require(isinstance(next_action, str) and next_action.startswith("Execute B2E03 only:"), "B2E03 is not the sole canonical next action")
-    require("whispercpp-compact" in next_action, "B2E03 candidate identity missing from canonical next action")
-    require("Do not begin B2E04" in next_action, "B2E04 successor boundary missing from canonical next action")
+    require(isinstance(next_action, str) and next_action.startswith("Qualify B2R07 only:"), "B2R07 is not the sole canonical next action")
+    require("whispercpp-compact" in next_action, "B2R07 candidate identity missing from canonical next action")
+    require("Keep B2R08" in next_action, "B2R08 successor boundary missing from canonical next action")
+    replacement = readiness.get("replacement_attempt")
+    require(isinstance(replacement, dict) and replacement.get("attempt_id") == ATTEMPT_ID, "replacement attempt identity drift")
+    require(replacement.get("frozen") is True and replacement.get("primary_decode_entry_open") is True, "ATTEMPT-002 primary entry is not open")
+    guards = readiness.get("claim_guards")
+    require(isinstance(guards, dict), "recovery claim guards missing")
+    require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "developer-speech claim guard drift")
+    require(guards.get("comparative_result_available") is False, "comparative result opened before scoring")
+    require(guards.get("production_stt_selected") is False, "production STT selected during recovery")
+    require(guards.get("product_code_authorized") is False, "product code authorized during recovery")
 
     tasks = TASKS_PATH.read_text(encoding="utf-8")
     current = CURRENT_PATH.read_text(encoding="utf-8")
-    require("current bounded execution unit `B2E03`" in current, "CURRENT does not own B2E03 frontier")
-    require("B2E03 (`whispercpp-compact`) is the sole current bounded execution unit" in current, "CURRENT B2E03 sole-unit authority missing")
-    require("- [x] `B2E01` Decode the frozen P0 public-human subset with candidate cell 1 under C0." in tasks, "B2E01 predecessor task drift")
-    require("- [x] `B2E02` Decode the identical frozen P0 subset with candidate cell 2 under C0." in tasks, "B2E02 predecessor task drift")
-    require("- [ ] `B2E03` Decode the identical frozen P0 subset with candidate cell 3 under C0." in tasks, "B2E03 task state drift")
-    require("- [ ] `B2E04` Decode the identical frozen P0 subset with candidate cell 4 under C0." in tasks, "B2E04 successor task drift")
+    canonical_current = CANONICAL_CURRENT_PATH.read_text(encoding="utf-8")
+    require("- [x] `B2R06`" in tasks and "- [ ] `B2R07`" in tasks and "- [ ] `B2R08`" in tasks, "B2R06/B2R07/B2R08 task boundary drift")
+    require("active recovery unit `B2R07`" in current, "CURRENT does not own B2R07 frontier")
+    require("**Active recovery unit:** `B2R07`" in canonical_current, "canonical CURRENT_STATE does not own B2R07 frontier")
 
     preprocessing = load_json(PREPROCESSING_CAPTURE_PATH, "B2P06 preprocessing capture")
     require(sha256_file(PREPROCESSING_CAPTURE_PATH) == EXPECTED_PREPROCESSING, "preprocessing capture bytes drift")
-    require(preprocessing.get("schema_version") == "000b2-public-preprocessing-capture-v1", "preprocessing capture schema drift")
     execution = preprocessing.get("execution")
     require(isinstance(execution, dict), "preprocessing execution block missing")
     records = execution.get("records")
     require(isinstance(records, list) and len(records) == EXPECTED_UTTERANCES, "preprocessing record count drift")
     require(execution.get("all_source_hashes_reverified") is True, "source hashes were not reverified in B2P06")
     require(execution.get("all_outputs_verified_pcm_s16le_mono_16000hz") is True, "frozen preprocessing format invariant missing")
-    return readiness, attempt, preprocessing
 
+    rebinding = load_json(REBINDING_PATH, "B2R03 preexecution rebinding")
+    require(sha256_file(REBINDING_PATH) == EXPECTED_REBINDING, "B2R03 rebinding bytes drift")
+    require(rebinding.get("task") == "B2R03", "B2R03 rebinding task drift")
+    require(rebinding.get("attempt", {}).get("attempt_id") == ATTEMPT_ID, "B2R03 attempt binding drift")
+    preserved = rebinding.get("preserved_identity_guards")
+    require(isinstance(preserved, dict), "B2R03 preserved identity guards missing")
+    require(preserved.get("subset_manifest_sha256") == "5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb", "subset identity drift")
+    require(preserved.get("candidate_registry_sha256") == EXPECTED_REGISTRY, "candidate identity drift")
+    require(preserved.get("c0_repository_context") == "OFF" and preserved.get("c0_test_specific_context") == "OFF", "B2R03 C0 context drift")
+    environment = rebinding.get("execution_environment_rebinding")
+    require(isinstance(environment, dict), "B2R03 environment rebinding missing")
+    require(environment.get("bound_attempt_id") == ATTEMPT_ID, "B2R03 environment attempt binding drift")
+    require(environment.get("performance_mode") == "DIAGNOSTIC", "B2R03 timing semantics drift")
+    require(environment.get("comparative_performance_authorized") is False, "comparative timing unexpectedly authorized")
+    return readiness, attempt, preprocessing
 
 def build_preprocessing_index(preprocessing: dict[str, Any]) -> dict[str, dict[str, Any]]:
     records = preprocessing["execution"]["records"]
@@ -218,7 +248,7 @@ def runtime_provenance() -> dict[str, Any]:
         "python": platform.python_version(),
         "machine": platform.machine(),
         "system": platform.system(),
-        "preprocessing_container_image": os.environ.get("B2E03_CONTAINER_IMAGE", ""),
+        "preprocessing_container_image": os.environ.get("B2R07_CONTAINER_IMAGE", ""),
         "timing_semantics": "DIAGNOSTIC_ONLY",
         "comparative_performance_authorized": False,
     }
@@ -302,8 +332,8 @@ def execute(
     build_identity = validate_build_identity(build_identity_path, adapter)
 
     work_dir.mkdir(parents=True, exist_ok=True)
-    input_list = work_dir / "b2e03-inputs.tsv"
-    adapter_output = work_dir / "b2e03-adapter-output.jsonl"
+    input_list = work_dir / "b2r07-inputs.tsv"
+    adapter_output = work_dir / "b2r07-adapter-output.jsonl"
     lines: list[str] = []
     for uid in sorted(indexed):
         source = indexed[uid]
@@ -368,7 +398,7 @@ def execute(
     evidence: dict[str, Any] = {
         "schema_version": SCHEMA,
         "task": TASK,
-        "state": "C0_PRIMARY_DECODE_CAPTURED",
+        "state": "ATTEMPT_002_C0_PRIMARY_DECODE_CAPTURED",
         "attempt_id": ATTEMPT_ID,
         "candidate": {
             "cell_index": 3,
@@ -385,7 +415,7 @@ def execute(
         },
         "authority": {
             "canonical_authority_base": EXPECTED_AUTHORITY_BASE,
-            "attempt_manifest_path": "research/000b2-public/attempt-manifest.json",
+            "attempt_manifest_path": "research/000b2-public/attempt-002-manifest.json",
             "attempt_manifest_sha256": sha256_file(ATTEMPT_MANIFEST_PATH),
             "attempt_freeze_digest_sha256": attempt["freeze_digest_sha256"],
             "preprocessing_capture_path": "research/000b2-public/preprocessing-capture.json",
@@ -443,13 +473,12 @@ def execute(
             "records": records,
         },
         "claim_guards": {
-            "candidate_decoding_started": True,
-            "primary_decoding_started": True,
-            "completed_through": "B2E03_EXECUTION_ONLY",
-            "b2e04_authorized": False,
             "human_developer_speech_accuracy_evidence": "ABSENT",
+            "comparative_result_available": False,
+            "comparative_performance_authorized": False,
             "production_stt_selected": False,
             "product_code_authorized": False,
+            "b2r08_authorized": False,
         },
     }
     evidence["evidence_payload_sha256"] = sha256_bytes(canonical_json_bytes(evidence))
@@ -479,16 +508,16 @@ def main() -> int:
         )
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(json.dumps(evidence, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print("B2E03_EXECUTION=CAPTURED")
-        print(f"B2E03_SOURCE_REVISION={evidence['run']['repository_revision']}")
-        print(f"B2E03_INPUTS={evidence['execution']['input_count']}")
-        print(f"B2E03_DECODED={evidence['execution']['decoded_count']}")
-        print(f"B2E03_FAILURES={evidence['execution']['failure_count']}")
-        print("B2E04_AUTHORIZED=NO")
+        print("B2R07_EXECUTION=CAPTURED")
+        print(f"B2R07_SOURCE_REVISION={evidence['run']['repository_revision']}")
+        print(f"B2R07_INPUTS={evidence['execution']['input_count']}")
+        print(f"B2R07_DECODED={evidence['execution']['decoded_count']}")
+        print(f"B2R07_FAILURES={evidence['execution']['failure_count']}")
+        print("B2R08_AUTHORIZED=NO")
         print("HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT")
         return 0
     except (DecodeError, OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as error:
-        print(f"B2E03_EXECUTION=FAIL: {error}", file=sys.stderr)
+        print(f"B2R07_EXECUTION=FAIL: {error}", file=sys.stderr)
         return 1
 
 
