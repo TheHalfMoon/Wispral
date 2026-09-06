@@ -1,0 +1,143 @@
+name: Internal B2R06 Evidence Seal
+
+on:
+  push:
+    branches:
+      - research/000b2-b2r06-execution
+    paths:
+      - '.github/workflows/internal-b2r06-seal.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  seal-b2r06:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      TASK_BRANCH: research/000b2-b2r06-moonshine-balanced
+      EXPECTED_TASK_HEAD: ec25eadab9818a54707b604deb936f10d16206f7
+      STAGED_SOURCE: 18b427043113c96f24bcef54bb23b9e7ce691093
+      ARTIFACT_ID: '9992059464'
+      ARTIFACT_ZIP_SIZE: '28658'
+      ARTIFACT_ZIP_SHA256: 8d4961084e5c33339cb0317e0387e8856d7d138abad18e204c2adea3715174cb
+      EVIDENCE_SIZE: '152146'
+      EVIDENCE_SHA256: 055a93c9a9f15193ffcf8edd7618648f9849f077c8b4c1b49edb9f91d023b722
+      PAYLOAD_SHA256: 2b069cf7dbc4eb8ec50c641c2d05e78054cace513d794ebd2f84eefe784f3b38
+      PROVENANCE_SHA256: 3e4257a781fa273a0125dd45e7fce188a2227c5006b3b1304cde3b49a249e8de
+      DECODER_BLOB: 72555a02e21f3d2790e86ecdf128cee0b19b659e
+    steps:
+      - name: Checkout exact sealing revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Seal exact B2R06 evidence onto clean task branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git fetch --force --no-tags origin "$TASK_BRANCH:refs/remotes/origin/$TASK_BRANCH"
+          test "$(git rev-parse refs/remotes/origin/$TASK_BRANCH)" = "$EXPECTED_TASK_HEAD"
+          git rev-parse --verify "$STAGED_SOURCE^{commit}"
+          test "$(git rev-parse "$STAGED_SOURCE:research/000b2-public/decode_b2r06.py")" = "$DECODER_BLOB"
+          test "$(git rev-parse "$EXPECTED_TASK_HEAD:research/000b2-public/decode_b2r06.py")" = "$DECODER_BLOB"
+
+          WORK="$RUNNER_TEMP/b2r06-seal"
+          rm -rf "$WORK"
+          mkdir -p "$WORK"
+          curl --fail --location --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" \
+            -o "$WORK/b2r06.zip"
+          test "$(stat -c %s "$WORK/b2r06.zip")" = "$ARTIFACT_ZIP_SIZE"
+          test "$(sha256sum "$WORK/b2r06.zip" | awk '{print $1}')" = "$ARTIFACT_ZIP_SHA256"
+          unzip -q "$WORK/b2r06.zip" -d "$WORK/unpacked"
+          test "$(find "$WORK/unpacked" -maxdepth 1 -type f -printf '%f\n')" = 'b2r06-moonshine-balanced.json'
+          RAW="$WORK/unpacked/b2r06-moonshine-balanced.json"
+          test "$(stat -c %s "$RAW")" = "$EVIDENCE_SIZE"
+          test "$(sha256sum "$RAW" | awk '{print $1}')" = "$EVIDENCE_SHA256"
+
+          RAW="$RAW" PAYLOAD_SHA256="$PAYLOAD_SHA256" python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          path = Path(os.environ['RAW'])
+          value = json.loads(path.read_text(encoding='utf-8'))
+          unsigned = dict(value)
+          observed = unsigned.pop('evidence_payload_sha256')
+          payload = (json.dumps(unsigned, ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n').encode()
+          assert observed == os.environ['PAYLOAD_SHA256'] == hashlib.sha256(payload).hexdigest()
+          assert value['task'] == 'B2R06'
+          assert value['attempt_id'] == '000B2-PUBLIC-ATTEMPT-002'
+          assert value['candidate']['cell_index'] == 2
+          assert value['candidate']['candidate_id'] == 'moonshine-balanced'
+          assert value['candidate']['model_arch'] == 5
+          assert value['candidate']['tier'] == 'BALANCED'
+          assert value['run']['github_run_id'] == 34041046129
+          assert value['run']['repository_revision'] == 'fd933886fcaa7a00338de8a96b7b2913124816f1'
+          execution = value['execution']
+          assert (execution['input_count'], execution['decoded_count'], execution['failure_count']) == (240, 209, 31)
+          failures = [r for r in execution['records'] if r['status'] == 'FAILED']
+          assert len(failures) == 31
+          assert all(r['failure'] == {'type': 'C0HarnessError', 'message': 'Moonshine C0 input exceeds the frozen 12-second primary utterance bound'} for r in failures)
+          assert value['claim_guards']['b2r07_authorized'] is False
+          assert value['claim_guards']['comparative_result_available'] is False
+          assert execution['reference_transcripts_loaded_by_decoder'] is False
+          assert execution['accuracy_scoring_performed'] is False
+          print('B2R06_ARTIFACT_SEMANTICS=PASS')
+          PY
+
+          git switch --detach "$EXPECTED_TASK_HEAD"
+          mkdir -p research/000b2-public
+          cp "$RAW" research/000b2-public/b2r06-moonshine-balanced.json
+          git show "$STAGED_SOURCE:research/000b2-public/b2r06-provenance.json" > research/000b2-public/b2r06-provenance.json
+          git show "$STAGED_SOURCE:research/000b2-public/verify_b2r06.py" > research/000b2-public/verify_b2r06.py
+          test "$(sha256sum research/000b2-public/b2r06-provenance.json | awk '{print $1}')" = "$PROVENANCE_SHA256"
+
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('research/000b2-public/verify_attempt_manifest.py')
+          text = p.read_text(encoding='utf-8')
+          assert 'B2R06_VERIFIER' not in text
+          text = text.replace(
+              '"""Composite attempt verifier for historical B2P08 and recovery B2R04/B2R05."""',
+              '"""Composite attempt verifier for historical B2P08 and recovery B2R04/B2R05/B2R06."""',
+              1,
+          )
+          text = text.replace(
+              'B2R05_VERIFIER = PUBLIC / "verify_b2r05.py"\n',
+              'B2R05_VERIFIER = PUBLIC / "verify_b2r05.py"\nB2R06_VERIFIER = PUBLIC / "verify_b2r06.py"\n',
+              1,
+          )
+          text = text.replace(
+              '    run_verifier(B2R05_VERIFIER, "wispral_b2r05_execution_evidence")\n    print("B2P08_B2R04_AND_B2R05_ATTEMPT_VERIFIER=PASS")',
+              '    run_verifier(B2R05_VERIFIER, "wispral_b2r05_execution_evidence")\n    run_verifier(B2R06_VERIFIER, "wispral_b2r06_execution_evidence")\n    print("B2P08_B2R04_B2R05_AND_B2R06_ATTEMPT_VERIFIER=PASS")',
+              1,
+          )
+          assert text.count('B2R06_VERIFIER') == 2
+          p.write_text(text, encoding='utf-8')
+          PY
+
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r06.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_manifest.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/000b2-public/b2r06-moonshine-balanced.json \
+                  research/000b2-public/b2r06-provenance.json \
+                  research/000b2-public/verify_b2r06.py \
+                  research/000b2-public/verify_attempt_manifest.py
+          test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' \
+            research/000b2-public/b2r06-moonshine-balanced.json \
+            research/000b2-public/b2r06-provenance.json \
+            research/000b2-public/verify_attempt_manifest.py \
+            research/000b2-public/verify_b2r06.py | sort)"
+          git commit -m 'research(000b2): preserve B2R06 primary evidence'
+          git push origin "HEAD:refs/heads/$TASK_BRANCH"
+          echo "B2R06_SEAL_HEAD=$(git rev-parse HEAD)"
+          echo 'B2R06_SEAL=PASS'
