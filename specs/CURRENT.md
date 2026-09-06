@@ -1,6 +1,6 @@
 # Wispral Specification Frontier
 
-**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 recovery active; B2R01 through B2R05 canonical and post-merge verified; active recovery unit `B2R06`; ATTEMPT-001 B2E03 and all later primary decoding closed
+**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 recovery active; B2R01 through B2R06 canonical and post-merge verified; active recovery unit `B2R07`; ATTEMPT-001 B2E03 and all later primary decoding closed
 
 **Canonical public-corpus methodology merge:** `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` from PR #28, merged from exact head `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` against exact base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`. Live chronology did not prove the required independent semantic review before that merge; the resulting qualification debt was repaired forward-only by PR #32 at canonical merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, and machine readiness was reconciled by PR #33 at canonical merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`.
 
@@ -271,7 +271,7 @@ The public-corpus amendment and canonical chronology remediation do not weaken t
 
 ## Historical B2R01 recovery reconciliation — superseded predecessor record
 
-The following B2R01 block is retained only as transition chronology. It is **not current execution authority**. The latest B2R04 reconciliation block below supersedes its former successor/action state.
+The following B2R01 block is retained only as transition chronology. It is **not current execution authority**. The latest B2R06 reconciliation block below supersedes its former successor/action state.
 
 B2R01 invalidation is canonical at merge `715efc4855fb52187ed250b11f0c28bb2c2c0660` and exact-merge-head recovery workflow run `33979925715` succeeded. The historical ATTEMPT-001 `readiness.json` remains byte-preserved evidence only; `recovery-readiness.json` overrides it for every new execution decision.
 
@@ -300,9 +300,9 @@ B2E04 and all later candidate cells remain unauthorized
 
 Live canonical GitHub/repository truth overrides this file. After every merged research/refinement unit, re-read current authority before starting dependent work.
 
-## Canonical B2R05 recovery reconciliation — latest authority
+## Canonical B2R05 recovery reconciliation — predecessor authority
 
-This section is the sole current recovery-action authority in this document. B2R05 is canonically implemented at real task merge `f0ec8b70497769332e1ddc6053e4d32f993b5efc` from exact qualified head `b1a3f5866fed1eb4df590d134322eb82904cec78` against first parent `9c777ae4f4aaf8387cf54bfa4e8afe80e053ff69`. Exact task-merge push run `34035710870` of workflow `000B2 Public Corpus Attempt Recovery` (`workflow_id=350986920`, path `.github/workflows/000b2-public-attempt-recovery.yml`) completed successfully on that exact merge. The canonical B2R05 evidence remains bound to capture run `34031165041`, job `101480807527`, artifact `9989016229`, 240 frozen inputs, 209 decoded outputs, and 31 preserved frozen-C0 pre-inference >12-second rejections. No reference transcripts were loaded and no accuracy scoring or comparative ranking was performed. Historical ATTEMPT-001 bytes and the immutable recovery proof mechanism remain unchanged.
+This section records predecessor authority superseded by the canonical B2R06 reconciliation below. B2R05 is canonically implemented at real task merge `f0ec8b70497769332e1ddc6053e4d32f993b5efc` from exact qualified head `b1a3f5866fed1eb4df590d134322eb82904cec78` against first parent `9c777ae4f4aaf8387cf54bfa4e8afe80e053ff69`. Exact task-merge push run `34035710870` of workflow `000B2 Public Corpus Attempt Recovery` (`workflow_id=350986920`, path `.github/workflows/000b2-public-attempt-recovery.yml`) completed successfully on that exact merge. The canonical B2R05 evidence remains bound to capture run `34031165041`, job `101480807527`, artifact `9989016229`, 240 frozen inputs, 209 decoded outputs, and 31 preserved frozen-C0 pre-inference >12-second rejections. No reference transcripts were loaded and no accuracy scoring or comparative ranking was performed. Historical ATTEMPT-001 bytes and the immutable recovery proof mechanism remain unchanged.
 
 **Canonical recovery predecessor:** `B2R05`
 **Canonical B2R05 recovery merge:** `f0ec8b70497769332e1ddc6053e4d32f993b5efc`
@@ -311,6 +311,19 @@ This section is the sole current recovery-action authority in this document. B2R
 
 ATTEMPT-002 remains canonically frozen with freeze digest `600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8`, and `primary_decode_entry_open=true` only because B2R06 is the active primary-decode recovery unit. B2R06 alone is authorized after this reconciliation becomes canonical: execute candidate cell 2 (`moonshine-balanced`) against the identical frozen P0 public-human audio using the corrected Moonshine streaming C0 contract. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and all claim guards. B2R07 and every later candidate cell remain unauthorized until B2R06 is separately qualified, merged, post-merge verified, and reconciled.
 
+## Canonical B2R06 recovery reconciliation — latest authority
+
+This section is the sole current recovery-action authority in this document. PR #69 merged the separately qualified B2R06 implementation and sealed evidence as real task merge `2460eae15260423b3a06d50d9119ae2459ff41c7` from exact final head `d8cfb5d5d4c5ef13483991ae2a1a6d2c5ae04a7d` against first parent `04056b795a54e38d9d075e4de7aff15df1be2b3b`. The final five-file task diff preserved all four reconciliation-authority files, the immutable recovery proof workflow/verifier mechanism, all permanent workflows, the frozen scoring/normalization contract, and ATTEMPT-001 historical bytes. Fresh independent exact-range review on review-only PR #70 reported no actionable substantive findings on the exact task head. Exact task-merge push run `34043039708` of `000B2 Public Corpus Attempt Recovery` (`workflow_id=350986920`, path `.github/workflows/000b2-public-attempt-recovery.yml`) completed successfully with `head_sha=2460eae15260423b3a06d50d9119ae2459ff41c7`.
+
+The canonical B2R06 primary capture remains GitHub Actions run `34041046129`, job `101507742625`, artifact `9992059464`, with artifact ZIP SHA-256 `8d4961084e5c33339cb0317e0387e8856d7d138abad18e204c2adea3715174cb`, exact evidence file SHA-256 `055a93c9a9f15193ffcf8edd7618648f9849f077c8b4c1b49edb9f91d023b722`, and canonical payload digest `2b069cf7dbc4eb8ec50c641c2d05e78054cace513d794ebd2f84eefe784f3b38`. It records 240 frozen inputs, 209 decoded outputs, and 31 preserved `C0HarnessError` pre-inference rejections enforcing the frozen 12-second primary utterance bound. The failures were preserved without retry or C0 change. Reference transcripts were not loaded; accuracy scoring and comparative ranking were not performed; timing remains diagnostic only.
+
+**Canonical recovery predecessor:** `B2R06`
+**Canonical B2R06 recovery merge:** `2460eae15260423b3a06d50d9119ae2459ff41c7`
+**Canonical B2R06 post-merge recovery run:** `34043039708`
+**Active recovery unit:** `B2R07`
+
+ATTEMPT-001 remains historical and ineligible for comparative scoring. ATTEMPT-002 remains canonically frozen with freeze digest `600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8`. `primary_decode_entry_open=true` only for the active recovery unit B2R07. B2R07 alone is authorized after this reconciliation becomes canonical: execute candidate cell 3 (`whispercpp-compact`) against the identical frozen P0 public-human audio using the unchanged frozen C0 contract, while preserving raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and all claim guards. B2R08 and every later ATTEMPT-002 candidate cell remain unauthorized until B2R07 is separately qualified, merged, post-merge verified, and reconciled.
+
 ## Next canonical action
 
-Qualify `B2R06` only: execute candidate cell 2 (`moonshine-balanced`) under `000B2-PUBLIC-ATTEMPT-002` using the canonically frozen corrected streaming C0 contract and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R07 and every later candidate cell closed until B2R06 is separately qualified, merged, post-merge verified, and reconciled.
+Qualify `B2R07` only: execute candidate cell 3 (`whispercpp-compact`) under `000B2-PUBLIC-ATTEMPT-002` using the unchanged frozen C0 contract and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R08 and every later candidate cell closed until B2R07 is canonically merged, post-merge verified, and reconciled. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.

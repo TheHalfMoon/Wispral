@@ -65,6 +65,12 @@
       "canonical_task_merge": "f0ec8b70497769332e1ddc6053e4d32f993b5efc",
       "post_merge_recovery_run_id": 34035710870,
       "successor_task": "B2R06"
+    },
+    {
+      "completed_task": "B2R06",
+      "canonical_task_merge": "2460eae15260423b3a06d50d9119ae2459ff41c7",
+      "post_merge_recovery_run_id": 34043039708,
+      "successor_task": "B2R07"
     }
   ],
   "completed_recovery_tasks": [
@@ -72,11 +78,12 @@
     "B2R02",
     "B2R03",
     "B2R04",
-    "B2R05"
+    "B2R05",
+    "B2R06"
   ],
-  "active_recovery_unit": "B2R06",
+  "active_recovery_unit": "B2R07",
   "qualified_workflow_change_paths": [],
-  "next_action": "Qualify B2R06 only: execute candidate cell 2 (moonshine-balanced) under 000B2-PUBLIC-ATTEMPT-002 using the canonically frozen corrected streaming C0 contract and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R07 and every later candidate cell closed until B2R06 is canonically merged, post-merge verified, and reconciled.",
+  "next_action": "Qualify B2R07 only: execute candidate cell 3 (whispercpp-compact) under 000B2-PUBLIC-ATTEMPT-002 using the unchanged frozen C0 contract and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R08 and every later candidate cell closed until B2R07 is canonically merged, post-merge verified, and reconciled.",
   "claim_guards": {
     "human_developer_speech_accuracy_evidence": "ABSENT",
     "comparative_result_available": false,
