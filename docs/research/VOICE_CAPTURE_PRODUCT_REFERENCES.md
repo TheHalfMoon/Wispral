@@ -2,7 +2,16 @@
 
 **Status:** product / architecture / donor-qualification reference only  
 **Source class:** external public repositories; no executable authority  
-**Accessed:** 2026-09-06
+**Accessed:** 2026-09-06  
+**Companions:** `SOURCE_ADOPTION_STRATEGY.md`, `SOURCE_DONOR_REGISTRY.md`, `source-donor-registry.json`
+
+## Permission posture
+
+The Founder reports separate permission to use the source code of all previously discussed source projects for Wispral.
+
+That statement allows the project to treat otherwise useful implementation as a donor candidate instead of automatically limiting it to architecture study. Repository provenance remains mandatory: whenever an import relies on permission beyond the upstream public license, the exact permission/rights basis must be recorded in the responsible import evidence before canonical adoption.
+
+This is especially important because Wispral has not yet selected its own repository license. The project must remain able to explain how every copied implementation may be redistributed under the eventual canonical license.
 
 ## Source snapshots
 
@@ -13,16 +22,17 @@
 - Application license: MIT
 - Public positioning observed at this revision: cross-platform desktop dictation, meeting transcription, local/cloud STT routing, local diarization, notes, API, and MCP.
 
-**Donor classification:** `CODE_DONOR_CANDIDATE`, subject to exact per-file dependency/provenance review before adaptation. MIT licensing makes direct reuse legally simpler than copyleft sources, but does not waive review of bundled dependencies, model terms, native helpers, or platform-specific code.
+**Donor classification:** `CODE_DONOR_CANDIDATE`, subject to exact per-file dependency/provenance review before adaptation. MIT licensing makes direct reuse comparatively straightforward, but does not waive review of bundled dependencies, model terms, native helpers, or platform-specific code.
 
 ### VoiceStudio
 
 - Repository: `debpalash/VoiceStudio`
 - Reviewed revision: `53ff367c1fdde695f17673707cd46e2b27d41546`
-- Application license: `AGPL-3.0-only`
-- License notice states that the Tauri shell, React frontend, FastAPI backend, build/packaging scripts, and related application code are covered by AGPL-3.0-only; a separate commercial license is offered for proprietary embedding. Downloaded model weights retain upstream terms.
+- Public application license: `AGPL-3.0-only`
+- Public license notice states that the Tauri shell, React frontend, FastAPI backend, build/packaging scripts, and related application code are covered by AGPL-3.0-only; downloaded model weights retain upstream terms.
+- Founder statement: separate permission is reported to exist for Wispral source use.
 
-**Donor classification:** `REFERENCE_ONLY_BY_DEFAULT`. Do not copy or adapt VoiceStudio application code into Wispral unless a later canonical license decision explicitly accepts the resulting obligations or a compatible commercial license is obtained. Architecture and product patterns may be studied without copying implementation expression.
+**Donor classification:** `PERMISSION_REPORTED_DONOR_CANDIDATE`. Architecture and product patterns may be used immediately as research input. Direct code adaptation becomes eligible when the responsible task records the exact separate permission/rights basis relied upon, required attribution/notices, source revision/paths, and any model/dependency terms separately.
 
 ## Why these references matter to Wispral
 
@@ -54,7 +64,7 @@ OpenWhispr's meeting recording path separates microphone and system-audio stream
 
 OpenWhispr isolates render-bleed/echo analysis and microphone gating into testable helpers rather than embedding the policy inside IPC plumbing. Its echo detector correlates recent system-audio history against microphone chunks and preserves distinct clean, awaiting-reference, bleed, and double-talk behavior.
 
-**Wispral lesson:** any future AEC/duplex work under H10 should separate measurement, classification, and action policy. This is especially relevant to Wispral's trust requirement: suppressing or mutating speech input must be inspectable and evidence-driven.
+**Wispral lesson:** any future AEC/duplex work under H10 should separate measurement, classification, and action policy. Suppressing or mutating speech input must be inspectable and evidence-driven.
 
 ### Meeting/session recording state machine
 
@@ -74,13 +84,19 @@ OpenWhispr exposes microphone, system-audio, accessibility, and screen-recording
 
 VoiceStudio uses a Rust Tauri shell around a web UI and Python backend. Its dictation flow routes global shortcut state through Rust commands/events rather than relying only on renderer state.
 
-**Wispral lesson:** this is architecturally adjacent to Wispral's H1 Rust-runtime direction. The useful pattern is a small native control boundary around capture/shortcut state; the implementation itself remains AGPL-reference-only.
+**Wispral lesson:** this is architecturally adjacent to Wispral's H1 Rust-runtime direction. The preferred transplant is the native control mechanism or an independently testable equivalent, not VoiceStudio's complete application architecture.
 
 ### Dictation delivery readiness and race handling
 
 VoiceStudio's dictation path includes explicit capture registration/readiness/acknowledgement commands and tests for setup races, stranded widgets, and shortcut delivery timing.
 
 **Wispral lesson:** PTT capture must not lose a press because the UI/runtime listener is not ready. H1 should eventually qualify an explicit event-delivery contract with replay/ack semantics or an equivalent deterministic mechanism.
+
+### Capability-style host-path authorization
+
+VoiceStudio's Rust/Tauri layer uses one-shot host-path authorization tokens, validates path kinds, protects authorization files, and keeps path capability decisions separate from renderer input.
+
+**Wispral lesson:** future native file/tool access should use explicit capability-style boundaries rather than treating renderer-provided paths as authority. Any direct transplant remains subject to exact permission/provenance qualification.
 
 ### Engine acceptance by user job
 
@@ -110,27 +126,29 @@ VoiceStudio exposes desktop, local REST/SSE/WebSocket, OpenAI-compatible audio, 
 
 | Pattern | Primary source | Wispral horizon | Current disposition |
 | --- | --- | --- | --- |
-| Cross-platform shortcut abstraction | OpenWhispr | H1, H9, H12 | `RESEARCH_CANDIDATE` |
-| Hidden tray + launch-at-login repair | OpenWhispr | H12 | `RESEARCH_CANDIDATE` |
-| Source-separated mic/system audio | OpenWhispr | H10, H15 | `DEFERRED_RESEARCH`; no current capture authority |
-| Echo/bleed detector + mic gate seams | OpenWhispr | H10 | `DEFERRED_RESEARCH` |
-| Long-lived capture session lifecycle | OpenWhispr | H9, H10 | `RESEARCH_CANDIDATE` |
-| Permission-state modeling | OpenWhispr | H0E, H1 | `RESEARCH_CANDIDATE` |
-| Native Rust shortcut/capture boundary | VoiceStudio | H1, H12 | `REFERENCE_ONLY` pending license decision |
-| Capture readiness/ack race handling | VoiceStudio | H1 | `REFERENCE_ONLY`; pattern worth reproducing independently |
+| Cross-platform shortcut abstraction | OpenWhispr | H1, H9, H12 | `DONOR_CANDIDATE` |
+| Hidden tray + launch-at-login repair | OpenWhispr | H12 | `DONOR_CANDIDATE` |
+| Source-separated mic/system audio | OpenWhispr | H10, H15 | `DEFERRED_DONOR_CANDIDATE`; no current capture authority |
+| Echo/bleed detector + mic gate seams | OpenWhispr | H10 | `DEFERRED_DONOR_CANDIDATE` |
+| Long-lived capture session lifecycle | OpenWhispr | H9, H10 | `DONOR_CANDIDATE` |
+| Permission-state modeling | OpenWhispr | H0E, H1 | `DONOR_CANDIDATE` |
+| Native Rust shortcut/capture boundary | VoiceStudio | H1, H12 | `PERMISSION_REPORTED_DONOR_CANDIDATE` |
+| Capture readiness/ack race handling | VoiceStudio | H1 | `PERMISSION_REPORTED_DONOR_CANDIDATE` |
+| Capability-style host-path authorization | VoiceStudio | H7, H12 | `PERMISSION_REPORTED_DONOR_CANDIDATE` |
 | Job-based engine acceptance | VoiceStudio | H11 | `GOVERNANCE_REFERENCE` |
-| Engine subprocess isolation | VoiceStudio | H11 | `ARCHITECTURE_REFERENCE` |
-| Self-check and scrubbed diagnostics | VoiceStudio | H12 | `PRODUCT_REFERENCE` |
+| Engine subprocess isolation | VoiceStudio | H11 | `ARCHITECTURE/DONOR_CANDIDATE` |
+| Self-check and scrubbed diagnostics | VoiceStudio | H12 | `PERMISSION_REPORTED_DONOR_CANDIDATE` |
 | REST/WebSocket/MCP convergence | VoiceStudio | H11 | `DEFERRED_RESEARCH` |
 
-## Explicit legal and provenance rules
+## Legal and provenance rules
 
-1. Do not copy VoiceStudio application code into Wispral under the current repository state.
-2. Treat VoiceStudio model and tokenizer assets as separately licensed; never infer permission from the application license.
-3. OpenWhispr code may be considered only after exact per-file dependency/provenance review and preservation of required MIT notices.
-4. Do not import external workflows, dependency lockfiles, native binaries, model weights, or generated artifacts merely because source code is permissively licensed.
-5. External benchmark claims remain experiment-design inputs, not Wispral qualification evidence.
-6. Any adopted donor code must be tied to an authorized Wispral task and independently tested against Wispral's own acceptance criteria.
+1. Founder-reported source-use permission expands donor eligibility; it does not remove the need to record the rights basis relied upon for each incompatible/copyright-sensitive import.
+2. Treat model/tokenizer/data/binary assets as separately licensed unless exact permission evidence includes them.
+3. For OpenWhispr, preserve required MIT notices for substantial copied portions and still inspect dependency/native-helper terms.
+4. For VoiceStudio, record exact separate permission terms before copying AGPL-covered implementation into a Wispral tree whose canonical license may differ.
+5. Do not import external workflows, dependency lockfiles, native binaries, model weights, telemetry, cloud services, or generated artifacts merely because source code is eligible for use.
+6. External benchmark claims remain experiment-design inputs, not Wispral qualification evidence.
+7. Any adopted donor code must be tied to an authorized Wispral task and independently tested against Wispral's own acceptance criteria.
 
 ## Explicit non-goals created by this reference
 
@@ -144,11 +162,10 @@ This research reference does not authorize:
 - a hosted note/memory platform;
 - cloud transcription as a requirement;
 - a plugin marketplace;
-- direct VoiceStudio code reuse under the current license posture;
 - any change to the active `000B2` recovery frontier, candidate set, C0 methodology, scorer, or claim guards.
 
 ## Relationship to the active frontier
 
 The active public-corpus recovery sequence remains authoritative. This note is intentionally non-executable and must not alter B2R07/B2R08+ authorization, ATTEMPT-002 identities, or benchmark comparability.
 
-If these references are later used to shape implementation, the responsible specification must re-verify the source revision, license, dependencies, platform behavior, and exact adopted files at that time.
+If these references are later used to shape implementation, the responsible specification must re-verify the source revision, rights basis, dependencies, platform behavior, and exact adopted files at that time.
