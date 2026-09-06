@@ -21,8 +21,11 @@ jobs:
     timeout-minutes: 120
     env:
       B2R05_REVISION: ${{ github.sha }}
+      B2P06_TOOLCHAIN_CONTAINER_IMAGE: python:3.12.11-bookworm@sha256:13c9584604a99ca134c4f41800f74ffc64ee6ac8cf555cf1e704a6087fc84f12
+      B2P06_TOOLCHAIN_CONTAINER_PLATFORM: linux/amd64
       FFMPEG_TAG: n9.0.1
       FFMPEG_REV: bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa
+      FFMPEG_ROOT: /evidence/toolchain
     steps:
       - name: Checkout exact B2R05 execution revision
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -31,7 +34,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Set up bound Python runtime
+      - name: Set up bound candidate runtime Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12.14'
@@ -48,60 +51,100 @@ jobs:
             research/000b2-public/verify_b2r04_attempt_freeze.py
           PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r04_attempt_freeze.py
 
-      - name: Fetch exact FFmpeg release
+      - name: Pull exact immutable B2P06 preprocessing toolchain
         run: |
           set -euo pipefail
-          ROOT="$RUNNER_TEMP/b2r05-toolchain"
-          SRC="$ROOT/FFmpeg"
-          rm -rf "$ROOT"
-          mkdir -p "$ROOT"
-          git init "$SRC"
-          git -C "$SRC" remote add origin https://github.com/FFmpeg/FFmpeg.git
-          git -C "$SRC" fetch --depth=1 origin "refs/tags/$FFMPEG_TAG:refs/tags/$FFMPEG_TAG"
-          test "$(git -C "$SRC" rev-list -n1 "$FFMPEG_TAG")" = "$FFMPEG_REV"
-          git -C "$SRC" checkout --detach "$FFMPEG_REV"
-          git -C "$SRC" diff --quiet HEAD --
+          rm -rf "$RUNNER_TEMP/b2r05"
+          mkdir -p "$RUNNER_TEMP/b2r05/home" "$RUNNER_TEMP/b2r05/work"
+          docker pull --platform "$B2P06_TOOLCHAIN_CONTAINER_PLATFORM" "$B2P06_TOOLCHAIN_CONTAINER_IMAGE"
+          test "$(docker image inspect "$B2P06_TOOLCHAIN_CONTAINER_IMAGE" --format '{{.Os}}')" = "linux"
+          test "$(docker image inspect "$B2P06_TOOLCHAIN_CONTAINER_IMAGE" --format '{{.Architecture}}')" = "amd64"
 
-      - name: Build bounded FFmpeg 9.0.1 preprocessing tool
+      - name: Fetch exact FFmpeg release inside immutable container
         run: |
           set -euo pipefail
-          ROOT="$RUNNER_TEMP/b2r05-toolchain"
-          SRC="$ROOT/FFmpeg"
-          PREFIX="$ROOT/install"
-          cd "$SRC"
-          ./configure \
-            --prefix="$PREFIX" \
-            --disable-everything \
-            --disable-doc \
-            --disable-debug \
-            --disable-ffplay \
-            --disable-ffprobe \
-            --disable-network \
-            --disable-autodetect \
-            --disable-x86asm \
-            --enable-protocol=file \
-            --enable-demuxer=flac,wav \
-            --enable-muxer=wav \
-            --enable-decoder=flac,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le \
-            --enable-encoder=pcm_s16le \
-            --enable-parser=flac \
-            --enable-filter=aresample,aformat \
-            --enable-swresample
-          make -j2 ffmpeg
-          make install
-          "$PREFIX/bin/ffmpeg" -version | head -n 1
+          docker run --rm --platform "$B2P06_TOOLCHAIN_CONTAINER_PLATFORM" \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/evidence/home \
+            -e FFMPEG_ROOT \
+            -e FFMPEG_TAG \
+            -e FFMPEG_REV \
+            -v "$GITHUB_WORKSPACE:/workspace:ro" \
+            -v "$RUNNER_TEMP/b2r05:/evidence" \
+            -w /workspace \
+            "$B2P06_TOOLCHAIN_CONTAINER_IMAGE" \
+            bash -lc '
+              set -euo pipefail
+              rm -rf "$FFMPEG_ROOT"
+              mkdir -p "$FFMPEG_ROOT"
+              SRC="$FFMPEG_ROOT/FFmpeg"
+              git init "$SRC"
+              git -C "$SRC" remote add origin https://github.com/FFmpeg/FFmpeg.git
+              git -C "$SRC" fetch --depth=1 origin "refs/tags/$FFMPEG_TAG:refs/tags/$FFMPEG_TAG"
+              test "$(git -C "$SRC" rev-list -n1 "$FFMPEG_TAG")" = "$FFMPEG_REV"
+              git -C "$SRC" checkout --detach "$FFMPEG_REV"
+              test "$(git -C "$SRC" rev-parse HEAD)" = "$FFMPEG_REV"
+              test "$(git -C "$SRC" describe --tags --always)" = "$FFMPEG_TAG"
+              git -C "$SRC" diff --quiet HEAD --
+            '
 
-      - name: Reproduce exact frozen P0 preprocessing bytes
+      - name: Build bounded exact FFmpeg with network disabled
         run: |
           set -euo pipefail
-          rm -rf "$RUNNER_TEMP/b2r05-work"
-          mkdir -p "$RUNNER_TEMP/b2r05-work"
-          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/preprocess_subset.py \
-            --ffmpeg "$RUNNER_TEMP/b2r05-toolchain/install/bin/ffmpeg" \
-            --work-dir "$RUNNER_TEMP/b2r05-work" \
-            --output "$RUNNER_TEMP/b2r05-preprocessing-capture.json"
-          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py \
-            --compare-committed "$RUNNER_TEMP/b2r05-preprocessing-capture.json"
+          docker run --rm --platform "$B2P06_TOOLCHAIN_CONTAINER_PLATFORM" --network none \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/evidence/home \
+            -e FFMPEG_ROOT \
+            -v "$RUNNER_TEMP/b2r05:/evidence" \
+            "$B2P06_TOOLCHAIN_CONTAINER_IMAGE" \
+            bash -lc '
+              set -euo pipefail
+              SRC="$FFMPEG_ROOT/FFmpeg"
+              PREFIX="$FFMPEG_ROOT/install"
+              cd "$SRC"
+              ./configure \
+                --prefix="$PREFIX" \
+                --disable-everything \
+                --disable-doc \
+                --disable-debug \
+                --disable-ffplay \
+                --disable-ffprobe \
+                --disable-network \
+                --disable-autodetect \
+                --disable-x86asm \
+                --enable-protocol=file \
+                --enable-demuxer=flac,wav \
+                --enable-muxer=wav \
+                --enable-decoder=flac,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le \
+                --enable-encoder=pcm_s16le \
+                --enable-parser=flac \
+                --enable-filter=aresample,aformat \
+                --enable-swresample
+              make -j2 ffmpeg
+              make install
+              "$PREFIX/bin/ffmpeg" -version | head -n 1
+            '
+
+      - name: Reproduce byte-identical frozen P0 preprocessing inside immutable container
+        run: |
+          set -euo pipefail
+          docker run --rm --platform "$B2P06_TOOLCHAIN_CONTAINER_PLATFORM" \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/evidence/home \
+            -e FFMPEG_ROOT \
+            -v "$GITHUB_WORKSPACE:/workspace:ro" \
+            -v "$RUNNER_TEMP/b2r05:/evidence" \
+            -w /workspace \
+            "$B2P06_TOOLCHAIN_CONTAINER_IMAGE" \
+            bash -lc '
+              set -euo pipefail
+              PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/preprocess_subset.py \
+                --ffmpeg "$FFMPEG_ROOT/install/bin/ffmpeg" \
+                --work-dir /evidence/work \
+                --output /evidence/preprocessing-capture.json
+              PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py \
+                --compare-committed /evidence/preprocessing-capture.json
+            '
 
       - name: Install Moonshine release dependencies
         run: |
@@ -114,11 +157,13 @@ jobs:
           PY
 
       - name: Execute B2R05 moonshine-compact streaming C0 decode
+        env:
+          GITHUB_REF: refs/heads/research/000b2-b2r05-execution
         run: |
           set -euo pipefail
           PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2r05.py \
-            --work-dir "$RUNNER_TEMP/b2r05-runtime" \
-            --preprocessed-root "$RUNNER_TEMP/b2r05-work/preprocessed" \
+            --work-dir "$RUNNER_TEMP/b2r05/runtime" \
+            --preprocessed-root "$RUNNER_TEMP/b2r05/work/preprocessed" \
             --output "$RUNNER_TEMP/b2r05-moonshine-compact.json"
 
       - name: Verify bounded B2R05 capture semantics
@@ -191,10 +236,6 @@ jobs:
       - name: Remove transient corpus, runtime, model cache, and toolchain
         if: always()
         run: |
-          rm -rf \
-            "$RUNNER_TEMP/b2r05-work" \
-            "$RUNNER_TEMP/b2r05-runtime" \
-            "$RUNNER_TEMP/b2r05-toolchain" \
-            "$RUNNER_TEMP/b2r05-preprocessing-capture.json"
+          rm -rf "$RUNNER_TEMP/b2r05"
           test ! -e research/000b2-public/raw
           test ! -e research/000b2-public/preprocessed
