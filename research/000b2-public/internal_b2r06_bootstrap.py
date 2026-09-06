@@ -17,6 +17,7 @@ SOURCE = ROOT / "research/000b2-public/decode_b2r05.py"
 TARGET = ROOT / "research/000b2-public/decode_b2r06.py"
 BOOTSTRAP = ROOT / "research/000b2-public/internal_b2r06_bootstrap.py"
 WORKFLOW = ROOT / ".github/workflows/internal-b2r06-bootstrap.yml"
+TEMP_PATHS = {str(BOOTSTRAP.relative_to(ROOT)), str(WORKFLOW.relative_to(ROOT))}
 
 
 def run(*args: str, cwd: Path = ROOT, capture: bool = False) -> str:
@@ -91,7 +92,9 @@ def main() -> int:
     os.chdir(ROOT)
     run("git", "fetch", "--force", "--no-tags", "origin", "main:refs/remotes/origin/main")
     require(run("git", "rev-parse", "refs/remotes/origin/main", capture=True) == BASE, "canonical main moved")
-    require(run("git", "rev-parse", "HEAD^", capture=True) == BASE, "bootstrap is not based directly on canonical main")
+    require(run("git", "merge-base", "HEAD", BASE, capture=True) == BASE, "bootstrap does not descend from canonical main")
+    bootstrap_scope = set(run("git", "diff", "--name-only", f"{BASE}...HEAD", capture=True).splitlines())
+    require(bootstrap_scope == TEMP_PATHS, f"unexpected bootstrap scope: {sorted(bootstrap_scope)!r}")
 
     generated = generate()
     digest = hashlib.sha256(generated.encode("utf-8")).hexdigest()
