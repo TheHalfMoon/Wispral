@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/internal-b2r07-capture.yml'
       - 'research/000b2-public/decode_b2r07.py'
+      - 'research/000b2-public/run_b2r07_timeout_repair.py'
       - 'research/000b2-public/whispercpp-adapter/CMakeLists.txt'
       - 'research/000b2-public/whispercpp-adapter/adapter.cpp'
 
@@ -20,11 +21,11 @@ concurrency:
 jobs:
   capture-b2r07:
     runs-on: ubuntu-24.04
-    timeout-minutes: 120
+    timeout-minutes: 240
     env:
       B2R07_REVISION: ${{ github.sha }}
       CANONICAL_BASE: 16104eacf2d571276452d173ddb54c089faccd0e
-      TASK_HEAD: b47468377804e6db4e57b32cc2af05fcc3288ca5
+      TASK_HEAD: aa25471247685d08bb296cdbba29b995099937ce
       B2R07_CONTAINER_IMAGE: python:3.12.11-bookworm@sha256:13c9584604a99ca134c4f41800f74ffc64ee6ac8cf555cf1e704a6087fc84f12
       FFMPEG_TAG: n9.0.1
       FFMPEG_REV: bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa
@@ -36,6 +37,7 @@ jobs:
       MODEL_BYTES: '147964211'
       MODEL_SHA256: a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002
       DECODER_BLOB: 09f89a77c2339177b45ef09758f2387e44c650af
+      TIMEOUT_REPAIR_BLOB: 4af80f636b1587dea8ebf3b165a08cf15a9ad7ee
       ADAPTER_CMAKE_BLOB: e975e7d4afd0f580881b17a7e9c2856634ec61e7
       ADAPTER_SOURCE_BLOB: e7405cd343532b7d9dff8b667bfc7591f50631d9
 
@@ -54,9 +56,12 @@ jobs:
           test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
           test "$(git ls-remote origin refs/heads/research/000b2-b2r07-whispercpp-compact | cut -f1)" = "$TASK_HEAD"
           test "$(git hash-object research/000b2-public/decode_b2r07.py)" = "$DECODER_BLOB"
+          test "$(git hash-object research/000b2-public/run_b2r07_timeout_repair.py)" = "$TIMEOUT_REPAIR_BLOB"
           test "$(git hash-object research/000b2-public/whispercpp-adapter/CMakeLists.txt)" = "$ADAPTER_CMAKE_BLOB"
           test "$(git hash-object research/000b2-public/whispercpp-adapter/adapter.cpp)" = "$ADAPTER_SOURCE_BLOB"
-          PYTHONDONTWRITEBYTECODE=1 python -m py_compile research/000b2-public/decode_b2r07.py
+          PYTHONDONTWRITEBYTECODE=1 python -m py_compile \
+            research/000b2-public/decode_b2r07.py \
+            research/000b2-public/run_b2r07_timeout_repair.py
           rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
           PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
           import importlib.util
@@ -272,10 +277,10 @@ jobs:
           test "$(stat -c %s "$MODELS/$MODEL_NAME")" = "$MODEL_BYTES"
           printf '%s  %s\n' "$MODEL_SHA256" "$MODELS/$MODEL_NAME" | sha256sum --check -
 
-      - name: Execute B2R07 whispercpp-compact C0 primary decode
+      - name: Execute B2R07 whispercpp-compact C0 primary decode with timeout-only repair
         run: |
           set -euo pipefail
-          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2r07.py \
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/run_b2r07_timeout_repair.py \
             --work-dir "$RUNNER_TEMP/b2r07/adapter-work" \
             --preprocessed-root "$RUNNER_TEMP/b2r07/work/preprocessed" \
             --model "$RUNNER_TEMP/b2r07/models/$MODEL_NAME" \
@@ -316,6 +321,29 @@ jobs:
           assert data['run']['github_job'] == 'capture-b2r07'
           assert data['run']['timing_semantics'] == 'DIAGNOSTIC_ONLY'
           assert data['run']['comparative_performance_authorized'] is False
+
+          orchestration = data['execution_orchestration']
+          assert orchestration == {
+              'policy': 'FORWARD_ONLY_WALL_CLOCK_BUDGET_REPAIR',
+              'repair_basis': 'FIRST_B2R07_PRIMARY_EXECUTION_TIMED_OUT_WITHOUT_TRANSCRIPT_OR_EVIDENCE_ARTIFACT',
+              'failed_primary_run_id': 34053187435,
+              'failed_primary_job_id': 101540334687,
+              'failed_primary_artifact_id': 9996564565,
+              'failed_primary_artifact_zip_sha256': 'a31432029720f93567d5da616e92b068ca0661ddff6ab0db3dd8b97edbf183b2',
+              'failed_primary_artifact_contents': ['whisper-build/wispral-build-identity.json'],
+              'failed_primary_build_identity_sha256': '4888182a73a921fa574a2a4f1cf6862779687c0918d0b724622a01a69e30ff82',
+              'failed_primary_transcript_artifact_present': False,
+              'failed_primary_evidence_json_present': False,
+              'result_inspection_before_repair': False,
+              'adapter_process_partitioning_changed': False,
+              'adapter_invocation_count_changed': False,
+              'candidate_order_changed': False,
+              'frozen_input_order_changed': False,
+              'c0_controls_changed': False,
+              'original_adapter_timeout_seconds': 5400,
+              'repaired_adapter_timeout_seconds': 10800,
+              'timeout_semantics': 'EXECUTION_WALL_CLOCK_GUARD_ONLY_NOT_A_C0_OR_SCORING_PARAMETER',
+          }
 
           controls = data['c0_controls']
           expected = {
