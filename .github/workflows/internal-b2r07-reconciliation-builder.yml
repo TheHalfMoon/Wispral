@@ -1,0 +1,296 @@
+name: Internal B2R07 Reconciliation Builder
+
+on:
+  push:
+    branches:
+      - ci/000b2-b2r07-reconciliation-builder
+    paths:
+      - '.github/workflows/internal-b2r07-reconciliation-builder.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: b2r07-reconciliation-builder
+  cancel-in-progress: false
+
+jobs:
+  build-reconciliation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CANONICAL_BASE: 5ea5a513db5ec9c13739510061ca82faa84a0018
+      QUALIFIED_TASK_HEAD: 704a0998e15562e4b22467b7a99d23de85737e1f
+      POST_MERGE_RECOVERY_RUN_ID: '34065234517'
+      POST_MERGE_RECOVERY_JOB_ID: '101572717810'
+      RECOVERY_WORKFLOW_ID: '350986920'
+      RECONCILIATION_BRANCH: docs/000b2-b2r07-reconciliation
+
+    steps:
+      - name: Checkout exact builder revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Reverify canonical task merge and post-merge Recovery proof
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          parents="$(git rev-list --parents -n 1 "$CANONICAL_BASE")"
+          test "$parents" = "$CANONICAL_BASE 16104eacf2d571276452d173ddb54c089faccd0e $QUALIFIED_TASK_HEAD"
+          curl --fail --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$POST_MERGE_RECOVERY_RUN_ID" \
+            > "$RUNNER_TEMP/recovery-run.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          run = json.loads((Path(os.environ['RUNNER_TEMP']) / 'recovery-run.json').read_text())
+          assert run['id'] == int(os.environ['POST_MERGE_RECOVERY_RUN_ID'])
+          assert run['workflow_id'] == int(os.environ['RECOVERY_WORKFLOW_ID'])
+          assert run['event'] == 'push'
+          assert run['head_branch'] == 'main'
+          assert run['head_sha'] == os.environ['CANONICAL_BASE']
+          assert run['status'] == 'completed'
+          assert run['conclusion'] == 'success'
+          assert run['path'] == '.github/workflows/000b2-public-attempt-recovery.yml'
+          print('B2R07_POST_MERGE_RECOVERY_PROOF=PASS')
+          PY
+
+      - name: Construct exact four-file B2R07 reconciliation candidate
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git reset --hard "$CANONICAL_BASE"
+          git switch -c "$RECONCILIATION_BRANCH"
+          python - <<'PY'
+          from __future__ import annotations
+          import json
+          from pathlib import Path
+
+          TASK_MERGE = '5ea5a513db5ec9c13739510061ca82faa84a0018'
+          TASK_HEAD = '704a0998e15562e4b22467b7a99d23de85737e1f'
+          RECOVERY_RUN = 34065234517
+          RECOVERY_JOB = 101572717810
+          WORKFLOW_ID = 350986920
+
+          def replace_once(text: str, old: str, new: str, label: str) -> str:
+              count = text.count(old)
+              assert count == 1, f'{label}: expected one match, found {count}'
+              return text.replace(old, new, 1)
+
+          # Machine-readable authority.
+          readiness_path = Path('research/000b2-public/recovery-readiness.json')
+          readiness = json.loads(readiness_path.read_text(encoding='utf-8'))
+          assert readiness['state'] == 'RECOVERY_READY'
+          assert readiness['active_recovery_unit'] == 'B2R07'
+          assert readiness['completed_recovery_tasks'] == ['B2R01','B2R02','B2R03','B2R04','B2R05','B2R06']
+          assert readiness['transition_proofs'][-1] == {
+              'completed_task': 'B2R06',
+              'canonical_task_merge': '2460eae15260423b3a06d50d9119ae2459ff41c7',
+              'post_merge_recovery_run_id': 34043039708,
+              'successor_task': 'B2R07',
+          }
+          assert readiness['qualified_workflow_change_paths'] == []
+          assert readiness['claim_guards'] == {
+              'human_developer_speech_accuracy_evidence': 'ABSENT',
+              'comparative_result_available': False,
+              'production_stt_selected': False,
+              'product_code_authorized': False,
+          }
+          readiness['transition_proofs'].append({
+              'completed_task': 'B2R07',
+              'canonical_task_merge': TASK_MERGE,
+              'post_merge_recovery_run_id': RECOVERY_RUN,
+              'successor_task': 'B2R08',
+          })
+          readiness['completed_recovery_tasks'].append('B2R07')
+          readiness['active_recovery_unit'] = 'B2R08'
+          readiness['next_action'] = (
+              'Qualify B2R08 only: execute candidate cell 4 (whispercpp-balanced) under '
+              '000B2-PUBLIC-ATTEMPT-002 using the unchanged frozen C0 contract and identical frozen public audio. '
+              'Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, '
+              'and claim guards. Keep B2R09 and every later candidate cell closed until B2R08 is canonically merged, '
+              'post-merge verified, and reconciled.'
+          )
+          readiness_path.write_text(json.dumps(readiness, indent=2) + '\n', encoding='utf-8')
+
+          # Task ledger.
+          tasks_path = Path('specs/000B2-public-corpus-bakeoff/tasks.md')
+          tasks = tasks_path.read_text(encoding='utf-8')
+          tasks = replace_once(
+              tasks,
+              '- [ ] `B2R07` Execute candidate cell 3 (`whispercpp-compact`) under ATTEMPT-002 and unchanged frozen C0.',
+              '- [x] `B2R07` Execute candidate cell 3 (`whispercpp-compact`) under ATTEMPT-002 and unchanged frozen C0.',
+              'tasks B2R07 completion',
+          )
+          assert '- [ ] `B2R08` Execute candidate cell 4 (`whispercpp-balanced`) under ATTEMPT-002 and unchanged frozen C0.' in tasks
+          tasks_path.write_text(tasks, encoding='utf-8')
+
+          # Executable specification frontier.
+          current_path = Path('specs/CURRENT.md')
+          current = current_path.read_text(encoding='utf-8')
+          current = replace_once(
+              current,
+              '**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 recovery active; B2R01 through B2R06 canonical and post-merge verified; active recovery unit `B2R07`; ATTEMPT-001 B2E03 and all later primary decoding closed',
+              '**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 recovery active; B2R01 through B2R07 canonical and post-merge verified; active recovery unit `B2R08`; ATTEMPT-001 B2E03 and all later primary decoding closed',
+              'CURRENT status',
+          )
+          current = replace_once(
+              current,
+              'B2R06 is canonical and post-merge verified at task merge `2460eae15260423b3a06d50d9119ae2459ff41c7` with exact recovery run `34043039708`; this reconciliation makes B2R07 the sole current bounded recovery unit. ATTEMPT-002 is canonically frozen and primary decode entry is open only for B2R07; B2R08 and every later cell remain closed.',
+              f'B2R07 is canonical and post-merge verified at task merge `{TASK_MERGE}` with exact recovery run `{RECOVERY_RUN}`; this reconciliation makes B2R08 the sole current bounded recovery unit. ATTEMPT-002 is canonically frozen and primary decode entry is open only for B2R08; B2R09 and every later cell remain closed.',
+              'CURRENT active execution summary',
+          )
+          current = replace_once(
+              current,
+              'B2R06 is canonical and post-merge verified at task merge `2460eae15260423b3a06d50d9119ae2459ff41c7` with exact recovery run `34043039708`, and this reconciliation advances current recovery authority to B2R07 only with ATTEMPT-002 frozen.',
+              f'B2R07 is canonical and post-merge verified at task merge `{TASK_MERGE}` with exact recovery run `{RECOVERY_RUN}`, and this reconciliation advances current recovery authority to B2R08 only with ATTEMPT-002 frozen.',
+              'CURRENT P0 authority summary',
+          )
+          current = current.replace('latest B2R06 recovery markers below', 'latest B2R07 recovery markers below')
+          current = current.replace('latest B2R06 reconciliation block below', 'latest B2R07 reconciliation block below')
+          current = replace_once(
+              current,
+              '## Canonical B2R06 recovery reconciliation — latest authority',
+              '## Canonical B2R06 recovery reconciliation — predecessor authority',
+              'CURRENT B2R06 header',
+          )
+          current = replace_once(
+              current,
+              'This section is the sole current recovery-action authority in this document.',
+              'This section records predecessor authority superseded by the canonical B2R07 reconciliation below.',
+              'CURRENT B2R06 authority sentence',
+          )
+          new_current_block = f'''## Canonical B2R07 recovery reconciliation — latest authority
+
+This section is the sole current recovery-action authority in this document. PR #74 merged the separately qualified B2R07 implementation and sealed evidence as real task merge `{TASK_MERGE}` from exact final head `{TASK_HEAD}` against first parent `16104eacf2d571276452d173ddb54c089faccd0e`. The final eight-file task diff preserved all four reconciliation-authority files and contained no workflow file. Fresh independent exact-range CodeRabbit review on review-only PR #75 reported no actionable substantive correctness, security, evidence-integrity, or governance findings on the exact task head. Exact task-merge push run `{RECOVERY_RUN}` of `000B2 Public Corpus Attempt Recovery` (`workflow_id={WORKFLOW_ID}`, path `.github/workflows/000b2-public-attempt-recovery.yml`, job `{RECOVERY_JOB}`) completed successfully with `head_sha={TASK_MERGE}`.
+
+The canonical B2R07 primary capture remains GitHub Actions run `34058440043`, job `101554521526`, artifact `9998344092`, with artifact ZIP SHA-256 `5991299b3349e8f53c199d1843a8304f63162443bc20faf1ebe871965890bfe3`, exact evidence file SHA-256 `80b9a21377bfd5a52f19b6f54cb1c8b933cb095c8daa3bb94081841f935dd73a`, and canonical payload digest `53a4b3597483e04ec140b7ccbe3bd4352c291fcd470480159a995a6b9ca5b5fd`. It records 240 frozen inputs, 240 decoded outputs, and zero failures. The first primary run `34053187435` timed out only at the 5400-second execution wall-clock guard and exposed no transcript or evidence JSON; the forward-only repair widened only that wall-clock allowance to 10800 seconds before any result inspection, without changing C0 controls, candidate/input order, adapter invocation count, process partitioning, model identity, or scoring semantics. Reference transcripts were not loaded; accuracy scoring and comparative ranking were not performed; timing remains diagnostic only.
+
+**Canonical recovery predecessor:** `B2R07`
+**Canonical B2R07 recovery merge:** `{TASK_MERGE}`
+**Canonical B2R07 post-merge recovery run:** `{RECOVERY_RUN}`
+**Active recovery unit:** `B2R08`
+
+ATTEMPT-001 remains historical and ineligible for comparative scoring. ATTEMPT-002 remains canonically frozen with freeze digest `600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8`. `primary_decode_entry_open=true` only for the active recovery unit B2R08. B2R08 alone is authorized after this reconciliation becomes canonical: execute candidate cell 4 (`whispercpp-balanced`) against the identical frozen P0 public-human audio using the unchanged frozen C0 contract, while preserving raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and all claim guards. B2R09 and every later ATTEMPT-002 candidate cell remain unauthorized until B2R08 is separately qualified, merged, post-merge verified, and reconciled.
+
+'''
+          marker = '## Next canonical action\n\n'
+          assert current.count(marker) == 1
+          current = current.replace(marker, new_current_block + marker, 1)
+          current = replace_once(
+              current,
+              'Qualify `B2R07` only: execute candidate cell 3 (`whispercpp-compact`) under `000B2-PUBLIC-ATTEMPT-002` using the unchanged frozen C0 contract and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R08 and every later candidate cell closed until B2R07 is canonically merged, post-merge verified, and reconciled. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.',
+              'Qualify `B2R08` only: execute candidate cell 4 (`whispercpp-balanced`) under `000B2-PUBLIC-ATTEMPT-002` using the unchanged frozen C0 contract and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R09 and every later candidate cell closed until B2R08 is canonically merged, post-merge verified, and reconciled. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.',
+              'CURRENT next action',
+          )
+          current_path.write_text(current, encoding='utf-8')
+
+          # Canonical current-state proof.
+          state_path = Path('docs/canonical/CURRENT_STATE.md')
+          state = state_path.read_text(encoding='utf-8')
+          state = replace_once(
+              state,
+              'B2R06 is canonical and post-merge verified at task merge `2460eae15260423b3a06d50d9119ae2459ff41c7` with recovery run `34043039708`; ATTEMPT-002 is frozen; active recovery unit is `B2R07`; only B2R07 primary decode is open;',
+              f'B2R07 is canonical and post-merge verified at task merge `{TASK_MERGE}` with recovery run `{RECOVERY_RUN}`; ATTEMPT-002 is frozen; active recovery unit is `B2R08`; only B2R08 primary decode is open;',
+              'CURRENT_STATE chronology line',
+          )
+          state = replace_once(
+              state,
+              'B2R05 and B2R06 are canonical and post-merge verified, with B2R06 task merge `2460eae15260423b3a06d50d9119ae2459ff41c7` and recovery run `34043039708`; B2R07 is the sole current recovery unit and sole open primary-decode entry;',
+              f'B2R05 through B2R07 are canonical and post-merge verified, with B2R07 task merge `{TASK_MERGE}` and recovery run `{RECOVERY_RUN}`; B2R08 is the sole current recovery unit and sole open primary-decode entry;',
+              'CURRENT_STATE recovery summary',
+          )
+          state = state.replace('Current authority is the B2R06 reconciliation block below.', 'Current authority is the B2R07 reconciliation block below.')
+          state = replace_once(
+              state,
+              '## Canonical B2R06 recovery reconciliation — latest authority',
+              '## Canonical B2R06 recovery reconciliation — predecessor authority',
+              'CURRENT_STATE B2R06 header',
+          )
+          state = replace_once(
+              state,
+              'This section is the sole current recovery-marker authority in this document.',
+              'This section records predecessor authority superseded by the canonical B2R07 reconciliation below.',
+              'CURRENT_STATE B2R06 authority sentence',
+          )
+          new_state_block = f'''## Canonical B2R07 recovery reconciliation — latest authority
+
+This section is the sole current recovery-marker authority in this document. PR #74 merged the separately qualified B2R07 implementation and sealed evidence as real task merge `{TASK_MERGE}` from exact final head `{TASK_HEAD}` against first parent `16104eacf2d571276452d173ddb54c089faccd0e`. The final eight-file task diff preserved all four reconciliation-authority files and contained no workflow file. Fresh independent exact-range CodeRabbit review on review-only PR #75 reported no actionable substantive correctness, security, evidence-integrity, or governance findings on the exact task head. Exact task-merge push run `{RECOVERY_RUN}` of `000B2 Public Corpus Attempt Recovery` (`workflow_id={WORKFLOW_ID}`, path `.github/workflows/000b2-public-attempt-recovery.yml`, job `{RECOVERY_JOB}`) completed successfully with `head_sha={TASK_MERGE}`.
+
+The canonical B2R07 primary capture remains GitHub Actions run `34058440043`, job `101554521526`, artifact `9998344092`, with artifact ZIP SHA-256 `5991299b3349e8f53c199d1843a8304f63162443bc20faf1ebe871965890bfe3`, exact evidence file SHA-256 `80b9a21377bfd5a52f19b6f54cb1c8b933cb095c8daa3bb94081841f935dd73a`, and canonical payload digest `53a4b3597483e04ec140b7ccbe3bd4352c291fcd470480159a995a6b9ca5b5fd`. It records 240 frozen inputs, 240 decoded outputs, and zero failures. The first primary run `34053187435` timed out only at the 5400-second execution wall-clock guard and exposed no transcript or evidence JSON; the forward-only repair widened only that wall-clock allowance to 10800 seconds before any result inspection, without changing C0 controls, candidate/input order, adapter invocation count, process partitioning, model identity, or scoring semantics. Reference transcripts were not loaded; accuracy scoring and comparative ranking were not performed; timing remains diagnostic only.
+
+**Canonical recovery predecessor:** `B2R07`
+**Canonical B2R07 recovery merge:** `{TASK_MERGE}`
+**Canonical B2R07 post-merge recovery run:** `{RECOVERY_RUN}`
+**Active recovery unit:** `B2R08`
+
+ATTEMPT-001 remains historical and ineligible for comparative scoring. ATTEMPT-002 remains canonically frozen with freeze digest `600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8`. `primary_decode_entry_open=true` only for the active recovery unit B2R08. B2R08 alone is authorized after this reconciliation becomes canonical: execute candidate cell 4 (`whispercpp-balanced`) against the identical frozen P0 public-human audio using the unchanged frozen C0 contract, while preserving raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and all claim guards. B2R09 and every later ATTEMPT-002 candidate cell remain unauthorized until B2R08 is separately qualified, merged, post-merge verified, and reconciled.
+
+'''
+          marker = '## Next canonical action\n\n'
+          assert state.count(marker) == 1
+          state = state.replace(marker, new_state_block + marker, 1)
+          state = replace_once(
+              state,
+              'Qualify `B2R07` only: execute candidate cell 3 (`whispercpp-compact`) under `000B2-PUBLIC-ATTEMPT-002` using the unchanged frozen C0 contract and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R08 and every later candidate cell closed until B2R07 is canonically merged, post-merge verified, and reconciled. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.',
+              'Qualify `B2R08` only: execute candidate cell 4 (`whispercpp-balanced`) under `000B2-PUBLIC-ATTEMPT-002` using the unchanged frozen C0 contract and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R09 and every later candidate cell closed until B2R08 is canonically merged, post-merge verified, and reconciled. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.',
+              'CURRENT_STATE next action',
+          )
+          state_path.write_text(state, encoding='utf-8')
+
+          # Final local semantic assertions.
+          assert readiness['active_recovery_unit'] == 'B2R08'
+          assert readiness['completed_recovery_tasks'][-1] == 'B2R07'
+          assert readiness['transition_proofs'][-1]['canonical_task_merge'] == TASK_MERGE
+          assert '- [x] `B2R07`' in tasks and '- [ ] `B2R08`' in tasks and '- [ ] `B2R09`' in tasks
+          for text in (current, state):
+              assert '**Active recovery unit:** `B2R08`' in text or 'active recovery unit is `B2R08`' in text or '**Active recovery unit:** `B2R08`' in text
+              assert 'Qualify `B2R08` only:' in text
+              assert 'Keep B2R09 and every later candidate cell closed' in text
+          print('B2R07_RECONCILIATION_CONSTRUCTION=PASS')
+          PY
+
+      - name: Verify reconciliation semantics and exact scope
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r07.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_manifest.py
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          expected="$(printf '%s\n' \
+            'docs/canonical/CURRENT_STATE.md' \
+            'research/000b2-public/recovery-readiness.json' \
+            'specs/000B2-public-corpus-bakeoff/tasks.md' \
+            'specs/CURRENT.md' | sort)"
+          observed="$(git diff --name-only "$CANONICAL_BASE" | sort)"
+          test "$observed" = "$expected"
+          test -z "$(git ls-files --others --exclude-standard)"
+          python -m json.tool research/000b2-public/recovery-readiness.json >/dev/null
+          grep -F '"active_recovery_unit": "B2R08"' research/000b2-public/recovery-readiness.json
+          grep -F -- '- [x] `B2R07`' specs/000B2-public-corpus-bakeoff/tasks.md
+          grep -F -- '- [ ] `B2R08`' specs/000B2-public-corpus-bakeoff/tasks.md
+          grep -F 'Qualify `B2R08` only:' specs/CURRENT.md
+          grep -F 'Qualify `B2R08` only:' docs/canonical/CURRENT_STATE.md
+          echo 'B2R07_RECONCILIATION_SCOPE=PASS'
+
+      - name: Commit and push clean reconciliation candidate
+        run: |
+          set -euo pipefail
+          git add \
+            docs/canonical/CURRENT_STATE.md \
+            research/000b2-public/recovery-readiness.json \
+            specs/000B2-public-corpus-bakeoff/tasks.md \
+            specs/CURRENT.md
+          test "$(git diff --cached --name-only | wc -l)" -eq 4
+          git commit -m 'docs(000b2): reconcile B2R07 and authorize B2R08'
+          git push origin "HEAD:$RECONCILIATION_BRANCH"
+          echo "B2R07_RECONCILIATION_HEAD=$(git rev-parse HEAD)"
