@@ -284,7 +284,7 @@ At that historical transition, ATTEMPT-001 became ineligible for comparative sco
 
 ### Historical ATTEMPT-001 post-B2E02 snapshot wording — non-authoritative
 
-The following strings are retained only as a literal description of the superseded ATTEMPT-001 post-B2E02 snapshot so historical evidence verifiers can continue proving what the old snapshot said. They MUST NOT be interpreted as current execution authority; `recovery-readiness.json` and the latest B2R04 recovery markers below supersede them for new execution:
+The following strings are retained only as a literal description of the superseded ATTEMPT-001 post-B2E02 snapshot so historical evidence verifiers can continue proving what the old snapshot said. They MUST NOT be interpreted as current execution authority; `recovery-readiness.json` and the latest B2R06 recovery markers below supersede them for new execution:
 
 ```text
 current bounded execution unit `B2E03`
