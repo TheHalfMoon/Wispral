@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Composite attempt-freeze verifier for historical B2P08 and recovery B2R04."""
+"""Composite attempt verifier for historical B2P08 and recovery B2R04/B2R05."""
 
 from __future__ import annotations
 
@@ -11,10 +11,11 @@ ROOT = Path(__file__).resolve().parents[2]
 PUBLIC = ROOT / "research" / "000b2-public"
 LEGACY_VERIFIER = PUBLIC / "verify_attempt_manifest_legacy.py"
 B2R04_VERIFIER = PUBLIC / "verify_b2r04_attempt_freeze.py"
+B2R05_VERIFIER = PUBLIC / "verify_b2r05.py"
 
 
 class CompositeVerificationError(RuntimeError):
-    """Raised when one required attempt-freeze verifier cannot be loaded."""
+    """Raised when one required attempt/recovery verifier cannot be loaded."""
 
 
 def load_module(path: Path, name: str) -> ModuleType:
@@ -41,7 +42,8 @@ def run_verifier(path: Path, name: str) -> None:
 def main() -> int:
     run_verifier(LEGACY_VERIFIER, "wispral_b2p08_attempt_freeze_legacy")
     run_verifier(B2R04_VERIFIER, "wispral_b2r04_attempt_freeze")
-    print("B2P08_AND_B2R04_ATTEMPT_FREEZE_VERIFIER=PASS")
+    run_verifier(B2R05_VERIFIER, "wispral_b2r05_execution_evidence")
+    print("B2P08_B2R04_AND_B2R05_ATTEMPT_VERIFIER=PASS")
     return 0
 
 
