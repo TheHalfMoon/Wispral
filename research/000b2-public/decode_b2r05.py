@@ -29,6 +29,7 @@ ATTEMPT_002 = PUBLIC / "attempt-002-manifest.json"
 PREPROCESSING = PUBLIC / "preprocessing-capture.json"
 REBINDING = PUBLIC / "b2r03-preexecution-rebinding.json"
 B2R02_VERIFIER = PUBLIC / "verify_b2r02_moonshine_streaming.py"
+B2R04_VERIFIER = PUBLIC / "verify_b2r04_attempt_freeze.py"
 
 SCHEMA = "000b2-public-b2r05-decode-v1"
 TASK = "B2R05"
@@ -36,7 +37,6 @@ ATTEMPT_ID = "000B2-PUBLIC-ATTEMPT-002"
 CANDIDATE_ID = "moonshine-compact"
 EXPECTED_AUTHORITY_BASE = "9c777ae4f4aaf8387cf54bfa4e8afe80e053ff69"
 EXPECTED_FREEZE_DIGEST = "600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8"
-EXPECTED_ATTEMPT_MANIFEST_SHA256 = "ba42ee58ff2b1c3f57c08c038b37326570f364c9a9ed0955f2493c32ab0ebc79"
 EXPECTED_PREPROCESSING_SHA256 = "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011"
 EXPECTED_REBINDING_SHA256 = "f9cda5168e6cafb6a1e9e6898f394ec3987b37af50c53c15cf63bc136c1f2df1"
 EXPECTED_SUBSET_SHA256 = "5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb"
@@ -90,6 +90,10 @@ def git_head() -> str:
 
 
 def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:
+    freeze_verifier = operational_smoke_entry.load_module("wispral_b2r05_b2r04_verifier", B2R04_VERIFIER)
+    freeze_verifier.verify_manifest()
+    require(freeze_verifier.verify_authority() == "CANONICAL_FROZEN", "B2R04 canonical freeze authority is not active")
+
     readiness = load_json(RECOVERY_READINESS, "recovery readiness")
     require(readiness.get("state") == "RECOVERY_READY", "recovery lane is not ready")
     require(readiness.get("active_recovery_unit") == TASK, "B2R05 is not the active recovery unit")
@@ -108,11 +112,9 @@ def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]
     require(guards.get("product_code_authorized") is False, "product code authorized during recovery")
 
     attempt = load_json(ATTEMPT_002, "ATTEMPT-002 manifest")
-    require(attempt.get("schema_version") == "000b2-public-attempt-002-manifest-v1", "ATTEMPT-002 schema drift")
     require(attempt.get("attempt_id") == ATTEMPT_ID, "ATTEMPT-002 id drift")
     require(attempt.get("frozen") is True and attempt.get("phase") == "PRE_PRIMARY_FROZEN", "ATTEMPT-002 freeze state drift")
     require(attempt.get("freeze_digest_sha256") == EXPECTED_FREEZE_DIGEST, "ATTEMPT-002 freeze digest drift")
-    require(sha256_file(ATTEMPT_002) == EXPECTED_ATTEMPT_MANIFEST_SHA256, "ATTEMPT-002 manifest bytes drift")
     candidate_set = attempt.get("candidate_set")
     require(isinstance(candidate_set, dict), "ATTEMPT-002 candidate set missing")
     require(candidate_set.get("candidate_ids") == [
@@ -133,7 +135,6 @@ def validate_authority() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]
     require(contract.get("raw_outputs_and_failures_must_be_preserved") is True, "raw-output preservation invariant drift")
     corrected = attempt.get("corrected_c0")
     require(isinstance(corrected, dict), "corrected C0 binding missing")
-    require(corrected.get("harness_path") == "research/000b2-public/moonshine_streaming_c0.py", "corrected C0 harness path drift")
     require(corrected.get("harness_sha256") == EXPECTED_C0_SHA256, "corrected C0 harness binding drift")
     require(sha256_file(PUBLIC / "moonshine_streaming_c0.py") == EXPECTED_C0_SHA256, "corrected C0 harness bytes drift")
     require(corrected.get("runtime_revision") == c0.EXPECTED_RUNTIME_REVISION, "Moonshine runtime revision drift")
