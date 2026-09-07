@@ -1,0 +1,174 @@
+name: Internal B2R08 Evidence Materialization
+
+on:
+  push:
+    branches:
+      - ci/000b2-b2r08-evidence-materialize
+    paths:
+      - '.github/workflows/internal-b2r08-evidence-materialize.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: b2r08-evidence-materialize
+  cancel-in-progress: false
+
+env:
+  CANONICAL_BASE: 4fc35e9d14f949b90dbee58ddf243a36859e02bd
+  TASK_BRANCH: research/000b2-b2r08-whispercpp-balanced
+  TASK_HEAD: 5280901f59d5cd530475bf1204d3416a69c9a6db
+  SEAL_RUN_ID: '34150046063'
+  SEAL_WORKFLOW_ID: '352504105'
+  SEAL_SOURCE_SHA: 70d9e71961510f2124c02ee4a05fb13b82399d03
+  SEAL_ARTIFACT_ID: '10029053259'
+  SEAL_ARTIFACT_ZIP_SHA256: 6345de28752f714c1a49ce81cbf4b89e86e8f4520ce2b0f0c573843f90c4090a
+  EVIDENCE_SHA256: 5b438a0d23c8ec19796df9b384234437a266ef862bd6ddd604772ed965932b41
+  EVIDENCE_PAYLOAD_SHA256: b688080a9b54106975fc3d423d210f6b449c47468cdc94135997285d9504314c
+
+jobs:
+  materialize-b2r08:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout builder source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Rebind exact authority and seal artifact
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$TASK_HEAD"
+          ROOT="$RUNNER_TEMP/b2r08-materialize"
+          rm -rf "$ROOT" && mkdir -p "$ROOT/seal"
+          curl --fail --location --retry 3 --retry-all-errors -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$SEAL_RUN_ID" -o "$ROOT/run.json"
+          curl --fail --location --retry 3 --retry-all-errors -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$SEAL_ARTIFACT_ID/zip" -o "$ROOT/seal.zip"
+          test "$(stat -c %s "$ROOT/seal.zip")" = 118286
+          printf '%s  %s\n' "$SEAL_ARTIFACT_ZIP_SHA256" "$ROOT/seal.zip" | sha256sum --check -
+          unzip -q "$ROOT/seal.zip" -d "$ROOT/seal"
+          export ROOT
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path(os.environ['ROOT']); run=json.loads((root/'run.json').read_text()); e=root/'seal/b2r08-whispercpp-balanced.json'
+          assert run['id']==int(os.environ['SEAL_RUN_ID']) and run['workflow_id']==int(os.environ['SEAL_WORKFLOW_ID'])
+          assert run['head_sha']==os.environ['SEAL_SOURCE_SHA'] and run['status']=='completed' and run['conclusion']=='success'
+          assert e.stat().st_size==397706 and hashlib.sha256(e.read_bytes()).hexdigest()==os.environ['EVIDENCE_SHA256']
+          data=json.loads(e.read_text()); assert data['evidence_payload_sha256']==os.environ['EVIDENCE_PAYLOAD_SHA256']
+          assert (data['execution']['input_count'],data['execution']['decoded_count'],data['execution']['failure_count'])==(240,240,0)
+          assert data['claim_guards']['b2r09_authorized'] is False
+          print('B2R08_SEAL_REBOUND=PASS')
+          PY
+
+      - name: Build exact task evidence commit
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-materialize"
+          git fetch origin "refs/heads/$TASK_BRANCH:refs/remotes/origin/$TASK_BRANCH"
+          test "$(git rev-parse refs/remotes/origin/$TASK_BRANCH)" = "$TASK_HEAD"
+          git switch -C b2r08-materialize "$TASK_HEAD"
+          cp "$ROOT/seal/b2r08-whispercpp-balanced.json" research/000b2-public/b2r08-whispercpp-balanced.json
+          export ROOT
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path(os.environ['ROOT']); repo=Path.cwd(); amap=json.loads((root/'seal/artifact-map.json').read_text())
+          p={
+            'schema_version':'000b2-public-b2r08-provenance-v1','task':'B2R08','attempt_id':'000B2-PUBLIC-ATTEMPT-002','candidate_id':'whispercpp-balanced',
+            'canonical_evidence_source':{'workflow_id':352504105,'run_id':34150046063,'job_id':101830233512,'artifact_id':10029053259,'artifact_name':'b2r08-sharded-seal-70d9e71961510f2124c02ee4a05fb13b82399d03','artifact_zip_sha256':'6345de28752f714c1a49ce81cbf4b89e86e8f4520ce2b0f0c573843f90c4090a','source_revision':'70d9e71961510f2124c02ee4a05fb13b82399d03','source_branch':'research/000b2-b2r08-sharded-seal-v1','conclusion':'success','evidence_raw_file_sha256':'5b438a0d23c8ec19796df9b384234437a266ef862bd6ddd604772ed965932b41','evidence_raw_file_size_bytes':397706,'evidence_payload_sha256':'b688080a9b54106975fc3d423d210f6b449c47468cdc94135997285d9504314c','seal_manifest_raw_sha256':'77eed53d72b16497df2a8b4191a9166449b74e05143cef0ae093c51c62f2e877','seal_manifest_payload_sha256':'95ac81b41481f27f8cc8bcff35929d72591697ea7dcd28531542d41dbd59edd4','selection_basis':'ALL_FOUR_REQUIRED_SHARDS_SEALED_AFTER_PREDECLARED_NON_PRIMARY_EQUIVALENCE_QUALIFICATION; NO_ALTERNATIVE_RESULT_SELECTION; NOT_RESULT_DRIVEN'},
+            'failed_primary_execution':{'workflow_id':351865230,'run_id':34067447713,'job_id':101578604948,'artifact_id':10005732797,'artifact_zip_sha256':'1a72b3553e7e7fd20c4c058a3d4d3d45fb88bff3d96a8563916c65a1da708a37','artifact_contents':['whisper-build/wispral-build-identity.json'],'transcript_artifact_present':False,'evidence_json_present':False,'candidate_result_available_before_repair':False,'candidate_result_inspection_before_repair':False,'selection_effect':'NONE','repair_policy':'FORWARD_ONLY_DETERMINISTIC_CONTIGUOUS_SHARDING_AFTER_HOSTED_RUNNER_CEILING'},
+            'non_primary_equivalence_qualification':{'workflow_id':352397816,'run_id':34137057908,'job_id':101790371251,'artifact_id':10024691621,'artifact_zip_sha256':'124ca565bb22604d39101541b4949c22c55dbc764c576dde766ada8b433a56e4','evidence_raw_sha256':'122e217b7efcfadea44540fcd20a181ad881351a89b6303e0a283fdc569d96a1','evidence_payload_sha256':'6d419e5a975c245132b2edca9f40c35bb0abd22c708896ba51b481e815409afd','material_class':'DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY','primary_corpus_accessed':False,'candidate_result_accessed':False,'semantic_rows_byte_identical':True,'mismatch_count':0},
+            'primary_sharded_execution':{'workflow_id':352414950,'run_id':34139091127,'source_revision':'4a6c776b2a666113420263b70a4fad06f752b99a','artifacts':amap,'shard_count':4,'shard_sizes':[60,60,60,60],'partitioning':'CONTIGUOUS_PARTITIONS_OF_SORTED_FROZEN_UTTERANCE_IDS','input_count':240,'decoded_count':240,'failure_count':0,'reference_transcripts_loaded_by_decoder':False,'accuracy_scoring_performed':False},
+            'result_accounting':{'input_count':240,'decoded_count':240,'failure_count':0,'reference_transcripts_loaded_by_decoder':False,'accuracy_scoring_performed':False,'comparative_ranking_present':False,'performance_claim_present':False,'result_driven_evidence_selection':False,'timing_semantics':'DIAGNOSTIC_ONLY'},
+            'claims':{'b2r09_authorized':False,'comparative_performance_authorized':False,'comparative_result_available':False,'human_developer_speech_accuracy_evidence':'ABSENT','product_code_authorized':False,'production_stt_selected':False}
+          }
+          path=repo/'research/000b2-public/b2r08-provenance.json'; path.write_text(json.dumps(p,ensure_ascii=False,indent=2,sort_keys=True)+'\n')
+          digest=hashlib.sha256(path.read_bytes()).hexdigest(); open(os.environ['GITHUB_ENV'],'a').write(f'PROVENANCE_SHA256={digest}\n'); print('B2R08_PROVENANCE_SHA256='+digest)
+          PY
+          cat > research/000b2-public/verify_b2r08.py <<'PY'
+          #!/usr/bin/env python3
+          """Verify sealed B2R08 ATTEMPT-002 whispercpp-balanced evidence."""
+          from __future__ import annotations
+          import hashlib,json,subprocess,sys
+          from pathlib import Path
+          ROOT=Path(__file__).resolve().parents[2]; PUBLIC=ROOT/'research'/'000b2-public'; sys.path.insert(0,str(PUBLIC))
+          import decode_b2r08 as decoder
+          E=PUBLIC/'b2r08-whispercpp-balanced.json'; P=PUBLIC/'b2r08-provenance.json'; PRE=PUBLIC/'preprocessing-capture.json'; READY=PUBLIC/'recovery-readiness.json'
+          TASKS=ROOT/'specs'/'000B2-public-corpus-bakeoff'/'tasks.md'; CURRENT=ROOT/'specs'/'CURRENT.md'; CC=ROOT/'docs'/'canonical'/'CURRENT_STATE.md'
+          E_SHA='5b438a0d23c8ec19796df9b384234437a266ef862bd6ddd604772ed965932b41'; PAYLOAD='b688080a9b54106975fc3d423d210f6b449c47468cdc94135997285d9504314c'; P_SHA='__PROV__'
+          CLAIMS={'b2r09_authorized':False,'comparative_performance_authorized':False,'comparative_result_available':False,'human_developer_speech_accuracy_evidence':'ABSENT','product_code_authorized':False,'production_stt_selected':False}
+          def req(x,m):
+              if not x: raise ValueError(m)
+          def load(path):
+              v=json.loads(path.read_text()); req(isinstance(v,dict),f'object expected: {path}'); return v
+          def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
+          def canon(v): return (json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(',',':'))+'\n').encode()
+          def git(*a): return subprocess.run(['git','-C',str(ROOT),*a],check=True,text=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE).stdout.strip()
+          def frontier():
+              r=load(READY); tasks=TASKS.read_text(); current=CURRENT.read_text(); cc=CC.read_text(); prefix=['B2R01','B2R02','B2R03','B2R04','B2R05','B2R06','B2R07']
+              req(r.get('state')=='RECOVERY_READY' and r.get('qualified_workflow_change_paths')==[],'recovery authority drift')
+              if r.get('completed_recovery_tasks')==prefix and r.get('active_recovery_unit')=='B2R08':
+                  req('- [ ] `B2R08`' in tasks and '- [ ] `B2R09`' in tasks,'ledger drift'); req('active recovery unit `B2R08`' in current and '**Active recovery unit:** `B2R08`' in cc,'frontier drift')
+              else:
+                  req('B2R08' in r.get('completed_recovery_tasks',[]) and '- [x] `B2R08`' in tasks and r.get('active_recovery_unit')!='B2R08','post-reconciliation drift')
+          def main():
+              frontier(); decoder.validate_authority(); req(sha(P)==P_SHA,'provenance bytes drift'); req(E.stat().st_size==397706 and sha(E)==E_SHA,'evidence bytes drift')
+              p=load(P); req(p.get('claims')==CLAIMS,'provenance claims drift'); src=p['canonical_evidence_source']; req((src['workflow_id'],src['run_id'],src['job_id'],src['artifact_id'])==(352504105,34150046063,101830233512,10029053259),'seal provenance drift'); req(src['selection_basis'].endswith('NOT_RESULT_DRIVEN'),'selection drift')
+              failed=p['failed_primary_execution']; req((failed['run_id'],failed['job_id'],failed['artifact_id'])==(34067447713,101578604948,10005732797) and not failed['transcript_artifact_present'] and not failed['evidence_json_present'] and not failed['candidate_result_inspection_before_repair'],'failed-primary drift')
+              q=p['non_primary_equivalence_qualification']; req((q['run_id'],q['job_id'],q['artifact_id'])==(34137057908,101790371251,10024691621) and not q['primary_corpus_accessed'] and not q['candidate_result_accessed'] and q['semantic_rows_byte_identical'] and q['mismatch_count']==0,'qualification drift')
+              primary=p['primary_sharded_execution']; req((primary['run_id'],primary['source_revision'])==(34139091127,'4a6c776b2a666113420263b70a4fad06f752b99a') and primary['shard_sizes']==[60,60,60,60] and (primary['input_count'],primary['decoded_count'],primary['failure_count'])==(240,240,0) and len(primary['artifacts'])==4,'primary provenance drift')
+              e=load(E); unsigned=dict(e); payload=unsigned.pop('evidence_payload_sha256'); req(payload==PAYLOAD and hashlib.sha256(canon(unsigned)).hexdigest()==PAYLOAD,'payload drift')
+              req((e['task'],e['attempt_id'],e['state'])==('B2R08','000B2-PUBLIC-ATTEMPT-002','ATTEMPT_002_C0_PRIMARY_DECODE_CAPTURED'),'evidence identity drift'); c=e['candidate']; req((c['cell_index'],c['candidate_id'],c['tier'],c['model'])==(4,'whispercpp-balanced','BALANCED','ggml-small.en.bin'),'candidate drift')
+              req(e['claim_guards']==CLAIMS,'evidence claims drift'); o=e['execution_orchestration']; req(o['policy']=='FORWARD_ONLY_DETERMINISTIC_CONTIGUOUS_SHARDING_AFTER_HOSTED_RUNNER_CEILING' and o['shard_sizes']==[60,60,60,60] and o['equivalence_qualification_run_id']==34137057908 and o['failed_primary_run_id']==34067447713,'orchestration drift')
+              for k in ('candidate_changed','model_changed','runtime_revision_changed','frozen_audio_membership_changed','frozen_audio_bytes_changed','frozen_input_order_changed_in_final_evidence','c0_controls_changed','scorer_changed','normalization_changed','candidate_result_inspection_before_repair'): req(o[k] is False,f'orchestration semantic drift: {k}')
+              req(e['run']['repository_revision']=='70d9e71961510f2124c02ee4a05fb13b82399d03' and e['run']['github_run_id']==34150046063 and e['run']['github_job']=='seal-b2r08','seal run drift')
+              req([x['shard_index'] for x in e['shard_runs']]==[0,1,2,3] and all(x['run']['repository_revision']=='4a6c776b2a666113420263b70a4fad06f752b99a' and x['run']['github_run_id']==34139091127 for x in e['shard_runs']),'shard run drift')
+              x=e['execution']; req((x['input_count'],x['decoded_count'],x['failure_count'])==(240,240,0) and not x['reference_transcripts_loaded_by_decoder'] and not x['accuracy_scoring_performed'] and not x['comparative_ranking_present'] and not x['performance_claim_present'],'execution drift')
+              prep=decoder.base.build_preprocessing_index(load(PRE)); records=x['records']; req([r['utterance_id'] for r in records]==sorted(prep),'record membership/order drift')
+              for r in records:
+                  uid=r['utterance_id']; s=prep[uid]; req(r['status']=='DECODED' and r['failure'] is None and r['canonical_preprocessed_file_sha256']==s['canonical_preprocessed_file_sha256'],'record binding drift'); req(r['raw_transcript']==decoder.base.reconstruct_stream_text(r['raw_lines']),'raw transcript drift')
+              for path,blob in {'research/000b2-public/decode_b2r08.py':'ac5a16469309f8ab3ad854b9df616f22f2903c33','research/000b2-public/b2r08-repair-plan.json':'ff79ed2e15ac95e58c0f2b66b84f9a879b17ebdd','research/000b2-public/run_b2r08_sharded_repair.py':'7f656bc352be4195b968d0e57f2d1725f033d0f1'}.items(): req(git('hash-object',path)==blob and git('rev-parse',f'70d9e71961510f2124c02ee4a05fb13b82399d03:{path}')==blob,f'blob drift: {path}')
+              print('B2R08_EVIDENCE=PASS'); print('B2R08_INPUTS=240'); print('B2R08_DECODED=240'); print('B2R08_FAILURES=0'); print('B2R09_AUTHORIZED=NO'); return 0
+          if __name__=='__main__': raise SystemExit(main())
+          PY
+          sed -i "s/__PROV__/$PROVENANCE_SHA256/" research/000b2-public/verify_b2r08.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('research/000b2-public/verify_attempt_manifest.py'); t=p.read_text()
+          t=t.replace('recovery B2R04/B2R05/B2R06/B2R07.','recovery B2R04/B2R05/B2R06/B2R07/B2R08.',1)
+          a='B2R07_VERIFIER = PUBLIC / "verify_b2r07.py"\n'; assert a in t; t=t.replace(a,a+'B2R08_VERIFIER = PUBLIC / "verify_b2r08.py"\n',1)
+          a='    run_verifier(B2R07_VERIFIER, "wispral_b2r07_execution_evidence")\n'; assert a in t; t=t.replace(a,a+'    run_verifier(B2R08_VERIFIER, "wispral_b2r08_execution_evidence")\n',1)
+          a='B2P08_B2R04_B2R05_B2R06_AND_B2R07_ATTEMPT_VERIFIER=PASS'; assert a in t; t=t.replace(a,'B2P08_B2R04_B2R05_B2R06_B2R07_AND_B2R08_ATTEMPT_VERIFIER=PASS',1)
+          p.write_text(t)
+          PY
+          python -m py_compile research/000b2-public/verify_b2r08.py research/000b2-public/verify_attempt_manifest.py
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          python research/000b2-public/verify_b2r08.py
+          python research/000b2-public/verify_attempt_manifest.py
+          mapfile -t changed < <(git diff --name-only "$TASK_HEAD" -- | sort)
+          printf '%s\n' research/000b2-public/b2r08-provenance.json research/000b2-public/b2r08-whispercpp-balanced.json research/000b2-public/verify_attempt_manifest.py research/000b2-public/verify_b2r08.py | sort > "$RUNNER_TEMP/expected"
+          printf '%s\n' "${changed[@]}" > "$RUNNER_TEMP/actual"
+          diff -u "$RUNNER_TEMP/expected" "$RUNNER_TEMP/actual"
+          git diff --quiet "$CANONICAL_BASE" -- docs/canonical/CURRENT_STATE.md research/000b2-public/recovery-readiness.json specs/000B2-public-corpus-bakeoff/tasks.md specs/CURRENT.md
+          mapfile -t total < <(git diff --name-only "$CANONICAL_BASE" -- | sort)
+          printf '%s\n' research/000b2-public/b2r08-provenance.json research/000b2-public/b2r08-repair-plan.json research/000b2-public/b2r08-whispercpp-balanced.json research/000b2-public/decode_b2r08.py research/000b2-public/run_b2r08_sharded_repair.py research/000b2-public/verify_attempt_manifest.py research/000b2-public/verify_b2r08.py | sort > "$RUNNER_TEMP/expected-total"
+          printf '%s\n' "${total[@]}" > "$RUNNER_TEMP/actual-total"
+          diff -u "$RUNNER_TEMP/expected-total" "$RUNNER_TEMP/actual-total"
+          git config user.name 'Abdulaziz M. Shehri'; git config user.email 'alshehriofficial@gmail.com'
+          git add research/000b2-public/b2r08-provenance.json research/000b2-public/b2r08-whispercpp-balanced.json research/000b2-public/verify_b2r08.py research/000b2-public/verify_attempt_manifest.py
+          git commit -m 'research(000b2): seal B2R08 whispercpp-balanced evidence'
+          NEW_HEAD="$(git rev-parse HEAD)"; test "$(git rev-parse HEAD^)" = "$TASK_HEAD"
+          git push origin "HEAD:refs/heads/$TASK_BRANCH"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$NEW_HEAD"
+          echo "B2R08_TASK_HEAD=$NEW_HEAD"; echo 'B2R09_AUTHORIZED=NO'
