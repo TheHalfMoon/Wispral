@@ -1,0 +1,522 @@
+name: Internal B2R08 Deterministic Sharded Primary
+
+on:
+  push:
+    branches:
+      - research/000b2-b2r08-sharded-primary-v1
+    paths:
+      - '.github/workflows/internal-b2r08-sharded-primary.yml'
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: b2r08-sharded-primary-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CANONICAL_BASE: 4fc35e9d14f949b90dbee58ddf243a36859e02bd
+  TASK_HEAD: 5280901f59d5cd530475bf1204d3416a69c9a6db
+  B2R08_CONTAINER_IMAGE: python:3.12.11-bookworm@sha256:13c9584604a99ca134c4f41800f74ffc64ee6ac8cf555cf1e704a6087fc84f12
+  FFMPEG_TAG: n9.0.1
+  FFMPEG_REV: bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa
+  FFMPEG_ROOT: /evidence/toolchain
+  WHISPER_REV: 371b5a7561823ab2bb32142d2751e35e7534727b
+  WHISPER_TREE: 3d7ce4f956997cfa325c7556533aba5604278463
+  MODEL_REV: 80da2d8bfee42b0e836fc3a9890373e5defc00a6
+  MODEL_NAME: ggml-small.en.bin
+  MODEL_BYTES: '487614201'
+  MODEL_SHA256: c6138d6d58ecc8322097e0f987c32f1be8bb0a18532a3f88f734d1bbf9c41e5d
+  DECODER_BLOB: ac5a16469309f8ab3ad854b9df616f22f2903c33
+  REPAIR_PLAN_BLOB: ff79ed2e15ac95e58c0f2b66b84f9a879b17ebdd
+  REPAIR_SCRIPT_BLOB: 7f656bc352be4195b968d0e57f2d1725f033d0f1
+  B2R07_HELPER_BLOB: 09f89a77c2339177b45ef09758f2387e44c650af
+  ADAPTER_CMAKE_BLOB: e975e7d4afd0f580881b17a7e9c2856634ec61e7
+  ADAPTER_SOURCE_BLOB: e7405cd343532b7d9dff8b667bfc7591f50631d9
+  QUALIFICATION_RUN_ID: '34137057908'
+  QUALIFICATION_SOURCE_SHA: 900482d4cce3c69c8ad0a36261e2a8d53f106142
+  QUALIFICATION_ARTIFACT_ID: '10024691621'
+  QUALIFICATION_ARTIFACT_ZIP_SHA256: 124ca565bb22604d39101541b4949c22c55dbc764c576dde766ada8b433a56e4
+  QUALIFICATION_EVIDENCE_RAW_SHA256: 122e217b7efcfadea44540fcd20a181ad881351a89b6303e0a283fdc569d96a1
+  QUALIFICATION_EVIDENCE_PAYLOAD_SHA256: 6d419e5a975c245132b2edca9f40c35bb0abd22c708896ba51b481e815409afd
+
+jobs:
+  verify-qualification:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact sharded-primary source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact authority, task source, and repair contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/research/000b2-b2r08-whispercpp-balanced | cut -f1)" = "$TASK_HEAD"
+          test "$(git hash-object research/000b2-public/decode_b2r08.py)" = "$DECODER_BLOB"
+          test "$(git hash-object research/000b2-public/b2r08-repair-plan.json)" = "$REPAIR_PLAN_BLOB"
+          test "$(git hash-object research/000b2-public/run_b2r08_sharded_repair.py)" = "$REPAIR_SCRIPT_BLOB"
+          test "$(git hash-object research/000b2-public/decode_b2r07.py)" = "$B2R07_HELPER_BLOB"
+          test "$(git hash-object research/000b2-public/whispercpp-adapter/CMakeLists.txt)" = "$ADAPTER_CMAKE_BLOB"
+          test "$(git hash-object research/000b2-public/whispercpp-adapter/adapter.cpp)" = "$ADAPTER_SOURCE_BLOB"
+          PYTHONDONTWRITEBYTECODE=1 python -m py_compile \
+            research/000b2-public/decode_b2r07.py \
+            research/000b2-public/decode_b2r08.py \
+            research/000b2-public/run_b2r08_sharded_repair.py
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import sys
+          from pathlib import Path
+          public = Path('research/000b2-public').resolve()
+          sys.path.insert(0, str(public))
+          import run_b2r08_sharded_repair as repair
+          repair.b2r08.validate_authority()
+          plan = repair.verify_repair_plan()
+          assert plan['authority']['canonical_base'] == '4fc35e9d14f949b90dbee58ddf243a36859e02bd'
+          assert plan['authority']['active_recovery_unit'] == 'B2R08'
+          assert plan['authority']['successor_authorized'] is False
+          assert plan['repair']['shard_count'] == 4
+          assert plan['repair']['expected_shard_sizes'] == [60, 60, 60, 60]
+          assert plan['repair']['candidate_changed'] is False
+          assert plan['repair']['model_changed'] is False
+          assert plan['repair']['c0_controls_changed'] is False
+          assert plan['repair']['scorer_changed'] is False
+          assert plan['repair']['normalization_changed'] is False
+          print('B2R08_SHARDED_PRE_EXTERNAL_AUTHORITY=PASS')
+          print('B2R09_AUTHORIZED=NO')
+          PY
+          test "$(git diff --name-only "$CANONICAL_BASE" "$TASK_HEAD" | sort)" = "$(printf '%s\n' \
+            research/000b2-public/b2r08-repair-plan.json \
+            research/000b2-public/decode_b2r08.py \
+            research/000b2-public/run_b2r08_sharded_repair.py | sort)"
+          git diff --quiet HEAD --
+
+      - name: Re-verify successful non-primary shard-equivalence artifact
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-qualification-proof"
+          rm -rf "$ROOT"
+          mkdir -p "$ROOT/extracted"
+          curl --fail --location --retry 3 --retry-all-errors \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$QUALIFICATION_ARTIFACT_ID/zip" \
+            -o "$ROOT/qualification.zip"
+          printf '%s  %s\n' "$QUALIFICATION_ARTIFACT_ZIP_SHA256" "$ROOT/qualification.zip" | sha256sum --check -
+          unzip -q "$ROOT/qualification.zip" -d "$ROOT/extracted"
+          export ROOT
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          root = Path(os.environ['ROOT']) / 'extracted'
+          files = sorted(str(path.relative_to(root)) for path in root.rglob('*') if path.is_file())
+          assert files == [
+              'b2r08-shard-equivalence.json',
+              'whisper-build/wispral-build-identity.json',
+          ], files
+          evidence_path = root / 'b2r08-shard-equivalence.json'
+          raw = evidence_path.read_bytes()
+          assert hashlib.sha256(raw).hexdigest() == os.environ['QUALIFICATION_EVIDENCE_RAW_SHA256']
+          evidence = json.loads(raw)
+          assert evidence['schema_version'] == '000b2-public-b2r08-shard-equivalence-v1'
+          assert evidence['task'] == 'B2R08'
+          assert evidence['attempt_id'] == '000B2-PUBLIC-ATTEMPT-002'
+          assert evidence['state'] == 'NON_PRIMARY_SHARD_EQUIVALENCE_QUALIFIED'
+          assert evidence['material_class'] == 'DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY'
+          assert evidence['primary_corpus_accessed'] is False
+          assert evidence['candidate_result_accessed'] is False
+          assert evidence['qualification']['fixture_count'] == 8
+          assert evidence['qualification']['shard_count'] == 4
+          assert evidence['qualification']['ignored_fields'] == ['decode_wall_seconds']
+          assert evidence['qualification']['semantic_rows_byte_identical'] is True
+          assert evidence['qualification']['mismatch_count'] == 0
+          assert evidence['qualification']['full_semantic_sha256'] == evidence['qualification']['sharded_semantic_sha256']
+          assert evidence['run']['repository_revision'] == os.environ['QUALIFICATION_SOURCE_SHA']
+          assert evidence['run']['github_run_id'] == int(os.environ['QUALIFICATION_RUN_ID'])
+          assert evidence['claim_guards']['b2r09_authorized'] is False
+          public = Path('research/000b2-public').resolve()
+          sys.path.insert(0, str(public))
+          import run_b2r08_sharded_repair as repair
+          unsigned = dict(evidence)
+          payload = unsigned.pop('evidence_payload_sha256')
+          assert payload == os.environ['QUALIFICATION_EVIDENCE_PAYLOAD_SHA256']
+          assert hashlib.sha256(repair.canonical(unsigned)).hexdigest() == payload
+          print('B2R08_NON_PRIMARY_SHARD_EQUIVALENCE=PASS')
+          print(f'B2R08_QUALIFICATION_RAW_SHA256={hashlib.sha256(raw).hexdigest()}')
+          print(f'B2R08_QUALIFICATION_PAYLOAD_SHA256={payload}')
+          print('B2R08_PRIMARY_CORPUS_ACCESSED=NO')
+          print('B2R09_AUTHORIZED=NO')
+          PY
+
+      - name: Remove qualification artifact bytes
+        if: always()
+        shell: bash
+        run: rm -rf "$RUNNER_TEMP/b2r08-qualification-proof"
+
+  primary-shard:
+    needs: verify-qualification
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    env:
+      SHARD_INDEX: ${{ matrix.shard }}
+    steps:
+      - name: Checkout exact sharded-primary source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact current B2R08 authority before primary material access
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/research/000b2-b2r08-whispercpp-balanced | cut -f1)" = "$TASK_HEAD"
+          test "$(git hash-object research/000b2-public/decode_b2r08.py)" = "$DECODER_BLOB"
+          test "$(git hash-object research/000b2-public/b2r08-repair-plan.json)" = "$REPAIR_PLAN_BLOB"
+          test "$(git hash-object research/000b2-public/run_b2r08_sharded_repair.py)" = "$REPAIR_SCRIPT_BLOB"
+          test "$(git hash-object research/000b2-public/decode_b2r07.py)" = "$B2R07_HELPER_BLOB"
+          test "$(git hash-object research/000b2-public/whispercpp-adapter/CMakeLists.txt)" = "$ADAPTER_CMAKE_BLOB"
+          test "$(git hash-object research/000b2-public/whispercpp-adapter/adapter.cpp)" = "$ADAPTER_SOURCE_BLOB"
+          PYTHONDONTWRITEBYTECODE=1 python -m py_compile \
+            research/000b2-public/decode_b2r07.py \
+            research/000b2-public/decode_b2r08.py \
+            research/000b2-public/run_b2r08_sharded_repair.py
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import sys
+          from pathlib import Path
+          public = Path('research/000b2-public').resolve()
+          sys.path.insert(0, str(public))
+          import run_b2r08_sharded_repair as repair
+          repair.b2r08.validate_authority()
+          plan = repair.verify_repair_plan()
+          assert plan['repair']['policy'] == 'FORWARD_ONLY_DETERMINISTIC_CONTIGUOUS_SHARDING_AFTER_HOSTED_RUNNER_CEILING'
+          assert plan['repair']['shard_count'] == 4
+          assert plan['repair']['expected_shard_sizes'] == [60, 60, 60, 60]
+          assert plan['required_pre_primary_qualification']['status'] == 'REQUIRED_BEFORE_REPAIRED_PRIMARY_EXECUTION'
+          assert plan['claim_guards']['b2r09_authorized'] is False
+          print('B2R08_PRIMARY_SHARD_PRE_EXTERNAL_AUTHORITY=PASS')
+          print('B2R09_AUTHORIZED=NO')
+          PY
+          git diff --quiet HEAD --
+
+      - name: Pull exact immutable preprocessing container
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-shard-$SHARD_INDEX"
+          rm -rf "$ROOT"
+          mkdir -p "$ROOT/home" "$ROOT/work"
+          docker pull --platform linux/amd64 "$B2R08_CONTAINER_IMAGE"
+          test "$(docker image inspect "$B2R08_CONTAINER_IMAGE" --format '{{.Os}}')" = "linux"
+          test "$(docker image inspect "$B2R08_CONTAINER_IMAGE" --format '{{.Architecture}}')" = "amd64"
+
+      - name: Fetch exact FFmpeg release
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-shard-$SHARD_INDEX"
+          docker run --rm --platform linux/amd64 \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/evidence/home \
+            -e FFMPEG_ROOT \
+            -e FFMPEG_TAG \
+            -e FFMPEG_REV \
+            -v "$ROOT:/evidence" \
+            "$B2R08_CONTAINER_IMAGE" \
+            bash -lc '
+              set -euo pipefail
+              rm -rf "$FFMPEG_ROOT"
+              mkdir -p "$FFMPEG_ROOT"
+              SRC="$FFMPEG_ROOT/FFmpeg"
+              git init "$SRC"
+              git -C "$SRC" remote add origin https://github.com/FFmpeg/FFmpeg.git
+              git -C "$SRC" fetch --depth=1 origin "refs/tags/$FFMPEG_TAG:refs/tags/$FFMPEG_TAG"
+              test "$(git -C "$SRC" rev-list -n1 "$FFMPEG_TAG")" = "$FFMPEG_REV"
+              git -C "$SRC" checkout --detach "$FFMPEG_REV"
+            '
+
+      - name: Build bounded FFmpeg 9.0.1 preprocessing tool
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-shard-$SHARD_INDEX"
+          docker run --rm --platform linux/amd64 --network none \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/evidence/home \
+            -e FFMPEG_ROOT \
+            -v "$ROOT:/evidence" \
+            "$B2R08_CONTAINER_IMAGE" \
+            bash -lc '
+              set -euo pipefail
+              SRC="$FFMPEG_ROOT/FFmpeg"
+              PREFIX="$FFMPEG_ROOT/install"
+              cd "$SRC"
+              ./configure \
+                --prefix="$PREFIX" \
+                --disable-everything \
+                --disable-doc \
+                --disable-debug \
+                --disable-ffplay \
+                --disable-ffprobe \
+                --disable-network \
+                --disable-autodetect \
+                --disable-x86asm \
+                --enable-protocol=file \
+                --enable-demuxer=flac,wav \
+                --enable-muxer=wav \
+                --enable-decoder=flac,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le \
+                --enable-encoder=pcm_s16le \
+                --enable-parser=flac \
+                --enable-filter=aresample,aformat \
+                --enable-swresample
+              make -j2 ffmpeg
+              make install
+              "$PREFIX/bin/ffmpeg" -version | head -n 1
+            '
+
+      - name: Reproduce exact frozen P0 preprocessing bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-shard-$SHARD_INDEX"
+          docker run --rm --platform linux/amd64 \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/evidence/home \
+            -e FFMPEG_ROOT \
+            -v "$GITHUB_WORKSPACE:/workspace:ro" \
+            -v "$ROOT:/evidence" \
+            -w /workspace \
+            "$B2R08_CONTAINER_IMAGE" \
+            bash -lc '
+              set -euo pipefail
+              PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/preprocess_subset.py \
+                --ffmpeg "$FFMPEG_ROOT/install/bin/ffmpeg" \
+                --work-dir /evidence/work \
+                --output /evidence/preprocessing-capture.json
+              PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py \
+                --compare-committed /evidence/preprocessing-capture.json
+            '
+
+      - name: Fetch exact whisper.cpp source
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-shard-$SHARD_INDEX"
+          SRC="$ROOT/whisper.cpp"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/ggml-org/whisper.cpp.git
+          git -C "$SRC" fetch --depth=1 origin "$WHISPER_REV"
+          git -C "$SRC" checkout --detach FETCH_HEAD
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$WHISPER_REV"
+          test "$(git -C "$SRC" rev-parse HEAD^{tree})" = "$WHISPER_TREE"
+          git -C "$SRC" diff --quiet HEAD --
+
+      - name: Build exact CPU-only Wispral stream adapter
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-shard-$SHARD_INDEX"
+          SRC="$ROOT/whisper.cpp"
+          BUILD="$ROOT/whisper-build"
+          ADAPTER_DIR="$GITHUB_WORKSPACE/research/000b2-public/whispercpp-adapter"
+          cmake -S "$ADAPTER_DIR" -B "$BUILD" \
+            -DWHISPER_SOURCE_DIR="$SRC" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DGGML_CUDA=OFF \
+            -DGGML_METAL=OFF \
+            -DWHISPER_BUILD_TESTS=OFF \
+            -DWHISPER_BUILD_EXAMPLES=OFF
+          changed="$(git -C "$SRC" diff --name-only HEAD --)"
+          if [ -n "$changed" ]; then
+            test "$changed" = "bindings/javascript/package.json"
+            git -C "$SRC" checkout -- bindings/javascript/package.json
+          fi
+          git -C "$SRC" diff --quiet HEAD --
+          cmake --build "$BUILD" --target wispral-whispercpp-c0 -j2
+          git -C "$SRC" diff --quiet HEAD --
+          "$BUILD/wispral-whispercpp-c0" --version
+          export SRC BUILD ADAPTER_DIR
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import pathlib
+          import re
+          import subprocess
+
+          src = pathlib.Path(os.environ['SRC']).resolve()
+          build = pathlib.Path(os.environ['BUILD']).resolve()
+          adapter_dir = pathlib.Path(os.environ['ADAPTER_DIR']).resolve()
+          binary = build / 'wispral-whispercpp-c0'
+          cache = build / 'CMakeCache.txt'
+
+          def sha(path: pathlib.Path) -> str:
+              h = hashlib.sha256()
+              with path.open('rb') as handle:
+                  for chunk in iter(lambda: handle.read(1024 * 1024), b''):
+                      h.update(chunk)
+              return h.hexdigest()
+
+          def sha_text(text: str) -> str:
+              return hashlib.sha256(text.encode('utf-8')).hexdigest()
+
+          cache_text = cache.read_text(encoding='utf-8', errors='strict')
+          match = re.search(r'^CMAKE_CXX_COMPILER:FILEPATH=(.+)$', cache_text, re.MULTILINE)
+          if match is None:
+              match = re.search(r'^CMAKE_CXX_COMPILER:STRING=(.+)$', cache_text, re.MULTILINE)
+          if match is None:
+              raise SystemExit('CMAKE_CXX_COMPILER missing from cache')
+          compiler = match.group(1).strip()
+          compiler_version = subprocess.run([compiler, '--version'], check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout
+          cmake_version = subprocess.run(['cmake', '--version'], check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout
+          source_revision = subprocess.run(['git', '-C', str(src), 'rev-parse', 'HEAD'], check=True, text=True, stdout=subprocess.PIPE).stdout.strip()
+          source_tree = subprocess.run(['git', '-C', str(src), 'rev-parse', 'HEAD^{tree}'], check=True, text=True, stdout=subprocess.PIPE).stdout.strip()
+          subprocess.run(['git', '-C', str(src), 'diff', '--quiet', 'HEAD', '--'], check=True)
+          identity = {
+              'schema_version': '000b2-whisper-build-identity-v2',
+              'source_revision': source_revision,
+              'source_tree': source_tree,
+              'build_type': 'Release',
+              'ggml_cuda': 'OFF',
+              'ggml_metal': 'OFF',
+              'whisper_build_tests': 'OFF',
+              'whisper_build_examples': 'OFF',
+              'target': 'wispral-whispercpp-c0',
+              'adapter_source_path': 'research/000b2-public/whispercpp-adapter/adapter.cpp',
+              'adapter_source_sha256': sha(adapter_dir / 'adapter.cpp'),
+              'adapter_cmake_path': 'research/000b2-public/whispercpp-adapter/CMakeLists.txt',
+              'adapter_cmake_sha256': sha(adapter_dir / 'CMakeLists.txt'),
+              'adapter_binary_sha256': sha(binary),
+              'cmake_cache_sha256': sha(cache),
+              'compiler_version_sha256': sha_text(compiler_version),
+              'cmake_version_sha256': sha_text(cmake_version),
+          }
+          (build / 'wispral-build-identity.json').write_text(json.dumps(identity, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print(f"WHISPER_BUILD_SOURCE={source_revision}")
+          print(f"WHISPER_BUILD_TREE={source_tree}")
+          print(f"WHISPER_ADAPTER_SHA256={identity['adapter_binary_sha256']}")
+          PY
+
+      - name: Download exact pinned whispercpp-balanced model
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-shard-$SHARD_INDEX"
+          MODELS="$ROOT/models"
+          mkdir -p "$MODELS"
+          BASE="https://huggingface.co/ggerganov/whisper.cpp/resolve/$MODEL_REV"
+          curl --fail --location --retry 3 --retry-all-errors "$BASE/$MODEL_NAME" -o "$MODELS/$MODEL_NAME"
+          test "$(stat -c %s "$MODELS/$MODEL_NAME")" = "$MODEL_BYTES"
+          printf '%s  %s\n' "$MODEL_SHA256" "$MODELS/$MODEL_NAME" | sha256sum --check -
+
+      - name: Execute B2R08 deterministic primary shard
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-shard-$SHARD_INDEX"
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/run_b2r08_sharded_repair.py shard \
+            --shard-index "$SHARD_INDEX" \
+            --work-dir "$ROOT/adapter-work" \
+            --preprocessed-root "$ROOT/work/preprocessed" \
+            --model "$ROOT/models/$MODEL_NAME" \
+            --adapter "$ROOT/whisper-build/wispral-whispercpp-c0" \
+            --build-identity "$ROOT/whisper-build/wispral-build-identity.json" \
+            --output "$ROOT/b2r08-primary-shard-$SHARD_INDEX.json"
+
+      - name: Verify bounded primary shard evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-shard-$SHARD_INDEX"
+          export ROOT
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          root = Path(os.environ['ROOT'])
+          shard_index = int(os.environ['SHARD_INDEX'])
+          path = root / f'b2r08-primary-shard-{shard_index}.json'
+          evidence = json.loads(path.read_text(encoding='utf-8'))
+          assert evidence['schema_version'] == '000b2-public-b2r08-primary-shard-v1'
+          assert evidence['task'] == 'B2R08'
+          assert evidence['attempt_id'] == '000B2-PUBLIC-ATTEMPT-002'
+          assert evidence['candidate_id'] == 'whispercpp-balanced'
+          assert evidence['shard_index'] == shard_index
+          assert evidence['shard_count'] == 4
+          assert evidence['expected_total_input_count'] == 240
+          assert evidence['expected_shard_size'] == 60
+          assert len(evidence['utterance_ids']) == 60
+          assert len(set(evidence['utterance_ids'])) == 60
+          execution = evidence['execution']
+          assert execution['input_count'] == 60
+          assert execution['decoded_count'] + execution['failure_count'] == 60
+          assert len(execution['records']) == 60
+          assert [row['utterance_id'] for row in execution['records']] == evidence['utterance_ids']
+          assert execution['reference_transcripts_loaded_by_decoder'] is False
+          assert execution['accuracy_scoring_performed'] is False
+          assert evidence['run']['repository_revision'] == os.environ['GITHUB_SHA']
+          assert evidence['run']['github_run_id'] == int(os.environ['GITHUB_RUN_ID'])
+          assert evidence['run']['github_run_attempt'] == int(os.environ['GITHUB_RUN_ATTEMPT'])
+          assert evidence['claim_guards']['b2r09_authorized'] is False
+          public = Path('research/000b2-public').resolve()
+          sys.path.insert(0, str(public))
+          import run_b2r08_sharded_repair as repair
+          unsigned = dict(evidence)
+          payload = unsigned.pop('evidence_payload_sha256')
+          assert hashlib.sha256(repair.canonical(unsigned)).hexdigest() == payload
+          print(f'B2R08_PRIMARY_SHARD_{shard_index}=PASS')
+          print(f'B2R08_PRIMARY_SHARD_{shard_index}_RAW_SIZE={path.stat().st_size}')
+          print(f'B2R08_PRIMARY_SHARD_{shard_index}_RAW_SHA256={hashlib.sha256(path.read_bytes()).hexdigest()}')
+          print(f'B2R08_PRIMARY_SHARD_{shard_index}_PAYLOAD_SHA256={payload}')
+          print(f'B2R08_PRIMARY_SHARD_{shard_index}_DECODED={execution["decoded_count"]}')
+          print(f'B2R08_PRIMARY_SHARD_{shard_index}_FAILURES={execution["failure_count"]}')
+          print('B2R09_AUTHORIZED=NO')
+          PY
+
+      - name: Upload bounded primary shard evidence and partial adapter output
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: b2r08-primary-shard-${{ matrix.shard }}-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/b2r08-shard-${{ matrix.shard }}/b2r08-primary-shard-${{ matrix.shard }}.json
+            ${{ runner.temp }}/b2r08-shard-${{ matrix.shard }}/whisper-build/wispral-build-identity.json
+            ${{ runner.temp }}/b2r08-shard-${{ matrix.shard }}/adapter-work/b2r08-primary-shard-${{ matrix.shard }}-adapter-output.jsonl
+            ${{ runner.temp }}/b2r08-shard-${{ matrix.shard }}/adapter-work/b2r08-primary-shard-${{ matrix.shard }}-inputs.tsv
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Remove transient model, source, preprocessing, and adapter work
+        if: always()
+        shell: bash
+        run: |
+          rm -rf "$RUNNER_TEMP/b2r08-shard-$SHARD_INDEX"
+          test ! -e research/000b2-public/raw
+          test ! -e research/000b2-public/preprocessed
+          test ! -e research/000b2-public/transcripts
