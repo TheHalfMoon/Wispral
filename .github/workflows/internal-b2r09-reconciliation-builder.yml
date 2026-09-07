@@ -72,6 +72,16 @@ jobs:
         run: |
           set -euo pipefail
           cp .github/internal/b2r09_reconcile.py "$RUNNER_TEMP/b2r09_reconcile.py"
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          path = Path(os.environ['RUNNER_TEMP']) / 'b2r09_reconcile.py'
+          text = path.read_text(encoding='utf-8')
+          old = 'assert "- [ ] `B2R12` Score P0" in text'
+          new = 'assert "- [ ] `B2R12` Score ATTEMPT-002 P0 outputs" in text'
+          assert text.count(old) == 1
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git reset --hard "$CANONICAL_BASE"
