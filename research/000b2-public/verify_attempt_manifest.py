@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Composite attempt verifier for historical B2P08 and recovery B2R04/B2R05/B2R06/B2R07/B2R08/B2R09."""
+"""Composite attempt verifier for historical B2P08 and recovery B2R04/B2R05/B2R06/B2R07/B2R08/B2R09/B2R10."""
 from __future__ import annotations
 import importlib.util
 from pathlib import Path
@@ -14,6 +14,7 @@ VERIFIERS = [
     (PUBLIC / "verify_b2r07.py", "wispral_b2r07_execution_evidence"),
     (PUBLIC / "verify_b2r08.py", "wispral_b2r08_execution_evidence"),
     (PUBLIC / "verify_b2r09.py", "wispral_b2r09_execution_evidence"),
+    (PUBLIC / "verify_b2r10.py", "wispral_b2r10_execution_evidence"),
 ]
 class CompositeVerificationError(RuntimeError): pass
 def load_module(path: Path, name: str) -> ModuleType:
@@ -27,5 +28,5 @@ def run_verifier(path: Path, name: str) -> None:
     if result not in (None, 0): raise CompositeVerificationError(f"verifier returned non-zero status {result}: {path.relative_to(ROOT)}")
 def main() -> int:
     for path, name in VERIFIERS: run_verifier(path, name)
-    print("B2P08_B2R04_B2R05_B2R06_B2R07_B2R08_AND_B2R09_ATTEMPT_VERIFIER=PASS"); return 0
+    print("B2P08_B2R04_B2R05_B2R06_B2R07_B2R08_B2R09_AND_B2R10_ATTEMPT_VERIFIER=PASS"); return 0
 if __name__ == "__main__": raise SystemExit(main())
