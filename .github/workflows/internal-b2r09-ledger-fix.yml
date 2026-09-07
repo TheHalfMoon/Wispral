@@ -1,0 +1,133 @@
+name: Internal B2R09 Ledger Fix
+
+on:
+  push:
+    branches:
+      - ci/000b2-b2r09-ledger-fix
+    paths:
+      - '.github/workflows/internal-b2r09-ledger-fix.yml'
+
+permissions:
+  contents: write
+
+env:
+  CANONICAL_BASE: 737e2fa0422e0d1aa0dd4d5bdc0473d51cec624c
+  TASK_BRANCH: research/000b2-b2r09-sherpa-onnx-compact
+  EXPECTED_TASK_HEAD: 8b321e7341e169a6d64b123b37f18358a46827a1
+
+jobs:
+  fix-ledger-verifier:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact task head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.EXPECTED_TASK_HEAD }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify immutable authority and task head
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_TASK_HEAD"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$EXPECTED_TASK_HEAD"
+          test "$(git diff --name-only "$CANONICAL_BASE" "$EXPECTED_TASK_HEAD" | sort)" = $'research/000b2-public/b2r09-provenance.json\nresearch/000b2-public/b2r09-sherpa-onnx-compact.json\nresearch/000b2-public/decode_b2r09.py\nresearch/000b2-public/verify_attempt_manifest.py\nresearch/000b2-public/verify_b2r09.py'
+          git diff --quiet HEAD --
+
+      - name: Apply fail-closed complete recovery ledger validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('research/000b2-public/verify_b2r09.py')
+          text = path.read_text(encoding='utf-8')
+
+          old_import = 'import json\nimport subprocess\n'
+          new_import = 'import json\nimport re\nimport subprocess\n'
+          assert old_import in text and new_import not in text
+          text = text.replace(old_import, new_import, 1)
+
+          marker = '\ndef verify_frontier() -> None:\n'
+          helper = '''\ndef verify_recovery_ledger(tasks: str, completed_through: int) -> None:\n    entries = re.findall(r"^- \\[([ x])\\] `(B2R\\d{2})`", tasks, re.MULTILINE)\n    expected = [\n        ("x" if index <= completed_through else " ", f"B2R{index:02d}")\n        for index in range(1, 13)\n    ]\n    require(entries == expected, "recovery task ledger drift")\n\n\ndef verify_frontier() -> None:\n'''
+          assert text.count(marker) == 1
+          text = text.replace(marker, helper, 1)
+
+          old_pre = '        require("- [x] `B2R08`" in tasks and "- [ ] `B2R09`" in tasks and "- [ ] `B2R10`" in tasks, "pre-reconciliation ledger drift")\n'
+          old_post = '        require("- [x] `B2R09`" in tasks and "- [ ] `B2R10`" in tasks and "- [ ] `B2R11`" in tasks, "post-reconciliation ledger drift")\n'
+          assert text.count(old_pre) == 1 and text.count(old_post) == 1
+          text = text.replace(old_pre, '        verify_recovery_ledger(tasks, 8)\n', 1)
+          text = text.replace(old_post, '        verify_recovery_ledger(tasks, 9)\n', 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Verify B2R09 and composite verifiers
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 research/000b2-public/verify_b2r09.py
+          python3 research/000b2-public/verify_attempt_manifest.py
+
+      - name: Prove recovery ledger mutation rejection
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import importlib.util
+          from pathlib import Path
+
+          path = Path('research/000b2-public/verify_b2r09.py')
+          spec = importlib.util.spec_from_file_location('verify_b2r09_mutation_test', path)
+          assert spec is not None and spec.loader is not None
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+
+          tasks = Path('specs/000B2-public-corpus-bakeoff/tasks.md').read_text(encoding='utf-8')
+          module.verify_recovery_ledger(tasks, 8)
+
+          mutations = {
+              'early_b2r09': tasks.replace('- [ ] `B2R09`', '- [x] `B2R09`', 1),
+              'early_b2r10': tasks.replace('- [ ] `B2R10`', '- [x] `B2R10`', 1),
+              'early_b2r11': tasks.replace('- [ ] `B2R11`', '- [x] `B2R11`', 1),
+              'early_b2r12': tasks.replace('- [ ] `B2R12`', '- [x] `B2R12`', 1),
+              'duplicate_b2r12': tasks + '\n- [ ] `B2R12` duplicate\n',
+          }
+          for name, mutated in mutations.items():
+              try:
+                  module.verify_recovery_ledger(mutated, 8)
+              except module.VerifyError:
+                  continue
+              raise AssertionError(f'mutation unexpectedly accepted: {name}')
+
+          post = tasks.replace('- [ ] `B2R09`', '- [x] `B2R09`', 1)
+          module.verify_recovery_ledger(post, 9)
+          for task_id in ('B2R10', 'B2R11', 'B2R12'):
+              mutated = post.replace(f'- [ ] `{task_id}`', f'- [x] `{task_id}`', 1)
+              try:
+                  module.verify_recovery_ledger(mutated, 9)
+              except module.VerifyError:
+                  continue
+              raise AssertionError(f'post-reconciliation mutation unexpectedly accepted: {task_id}')
+
+          print('B2R09_RECOVERY_LEDGER_MUTATION_TESTS=PASS')
+          PY
+
+      - name: Enforce exact verifier-only delta and publish fast-forward
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$EXPECTED_TASK_HEAD"
+          test "$(git diff --name-only)" = 'research/000b2-public/verify_b2r09.py'
+          git config user.name 'Abdulaziz M. Shehri'
+          git config user.email 'alshehriofficial@gmail.com'
+          git add research/000b2-public/verify_b2r09.py
+          git commit -m 'fix(000b2): validate complete B2R09 recovery ledger'
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_TASK_HEAD"
+          git push origin "HEAD:refs/heads/$TASK_BRANCH"
+          echo "B2R09_LEDGER_FIX_HEAD=$(git rev-parse HEAD)"
