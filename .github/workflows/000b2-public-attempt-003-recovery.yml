@@ -118,7 +118,9 @@ jobs:
               --sherpa-source "$RUNNER_TEMP/sherpa-onnx"
           fi
 
-      - name: Preserve fail-closed recovery boundary
+      - name: Preserve fail-closed recovery boundary and canonical transition proofs
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           test ! -e research/000b2-public/raw
@@ -126,6 +128,10 @@ jobs:
           test ! -e research/000b2-public/transcripts
           python - <<'PY'
           import json
+          import os
+          import re
+          import subprocess
+          import urllib.request
           from pathlib import Path
 
           state = json.loads(Path('research/000b2-public/recovery-attempt-003-readiness.json').read_text(encoding='utf-8'))
@@ -139,6 +145,67 @@ jobs:
           expected_active = task_order[len(completed)] if len(completed) < len(task_order) else None
           if active != expected_active:
               raise SystemExit(f'ATTEMPT-003 active successor drift: {active!r} != {expected_active!r}')
+
+          proofs = state.get('transition_proofs')
+          if not isinstance(proofs, list) or len(proofs) != len(completed):
+              raise SystemExit('ATTEMPT-003 transition proof cardinality must equal completed task count')
+          sha40 = re.compile(r'^[0-9a-f]{40}$')
+          for index, task in enumerate(completed):
+              proof = proofs[index]
+              if not isinstance(proof, dict):
+                  raise SystemExit(f'transition proof must be an object: {task}')
+              if set(proof) != {'completed_task', 'canonical_task_merge', 'post_merge_recovery_run_id', 'successor_task'}:
+                  raise SystemExit(f'transition proof key drift: {task}')
+              if proof.get('completed_task') != task:
+                  raise SystemExit(f'transition proof task-order drift: {task}')
+              merge = proof.get('canonical_task_merge')
+              if not isinstance(merge, str) or sha40.fullmatch(merge) is None:
+                  raise SystemExit(f'transition proof merge SHA malformed: {task}')
+              run_id = proof.get('post_merge_recovery_run_id')
+              if type(run_id) is not int or run_id <= 0:
+                  raise SystemExit(f'transition proof run id malformed: {task}')
+              successor = task_order[index + 1] if index + 1 < len(task_order) else None
+              if proof.get('successor_task') != successor:
+                  raise SystemExit(f'transition proof successor drift: {task}')
+
+              ancestry = subprocess.run(
+                  ['git', 'merge-base', '--is-ancestor', merge, 'HEAD'],
+                  stdout=subprocess.DEVNULL,
+                  stderr=subprocess.DEVNULL,
+                  check=False,
+              )
+              if ancestry.returncode != 0:
+                  raise SystemExit(f'transition proof merge is not in candidate ancestry: {task}')
+
+              repository = os.environ.get('GITHUB_REPOSITORY', '')
+              token = os.environ.get('GH_TOKEN', '')
+              if not repository or not token:
+                  raise SystemExit('GitHub transition-proof verification environment missing')
+              request = urllib.request.Request(
+                  f'https://api.github.com/repos/{repository}/actions/runs/{run_id}',
+                  headers={
+                      'Accept': 'application/vnd.github+json',
+                      'Authorization': f'Bearer {token}',
+                      'X-GitHub-Api-Version': '2022-11-28',
+                      'User-Agent': 'wispral-attempt-003-recovery-verifier',
+                  },
+              )
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      run = json.load(response)
+              except Exception as error:
+                  raise SystemExit(f'unable to verify transition proof run for {task}: {type(error).__name__}') from error
+              expected = {
+                  'name': '000B2 Public Corpus ATTEMPT-003 Recovery',
+                  'event': 'push',
+                  'head_branch': 'main',
+                  'head_sha': merge,
+                  'status': 'completed',
+                  'conclusion': 'success',
+              }
+              for key, value in expected.items():
+                  if run.get(key) != value:
+                      raise SystemExit(f'transition proof run mismatch for {task}: {key}')
 
           replacement = state.get('replacement_attempt', {})
           if active in {'B2R13', 'B2R14', 'B2R15', 'B2R16'} and replacement.get('primary_decode_entry_open') is not False:
@@ -159,6 +226,7 @@ jobs:
               raise SystemExit('product code unexpectedly authorized')
 
           print(f'ACTIVE_SUCCESSOR_RECOVERY_UNIT={active}')
+          print(f'VALIDATED_SUCCESSOR_TRANSITIONS={len(proofs)}')
           print('ATTEMPT_002_NEW_PRIMARY_DECODE_AUTHORIZED=NO')
           print('ATTEMPT_003_PRIMARY_DECODE_AUTHORIZED=' + ('YES' if replacement.get('primary_decode_entry_open') is True else 'NO'))
           print('COMPARATIVE_RESULT_AVAILABLE=' + ('YES' if guards.get('comparative_result_available') is True else 'NO'))
