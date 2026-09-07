@@ -87,7 +87,8 @@ jobs:
           TASK_HEAD=b7a4bb8828a4b861a399b1424bc07a4e549cf51f
           test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASE"
           test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$TASK_HEAD"
-          test "$(git diff --name-only "$BASE" | sort)" = $'research/000b2-public/b2r09-sherpa-onnx-compact.json\nresearch/000b2-public/decode_b2r09.py'
+          ACTUAL_SCOPE="$({ git diff --name-only "$BASE"; git ls-files --others --exclude-standard; } | sort -u)"
+          test "$ACTUAL_SCOPE" = $'research/000b2-public/b2r09-sherpa-onnx-compact.json\nresearch/000b2-public/decode_b2r09.py'
           git config user.name 'Abdulaziz M. Shehri'
           git config user.email 'alshehriofficial@gmail.com'
           git add research/000b2-public/b2r09-sherpa-onnx-compact.json
