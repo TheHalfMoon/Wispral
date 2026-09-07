@@ -1,0 +1,119 @@
+name: Internal B2R09 Evidence Materialization V3
+
+on:
+  push:
+    branches:
+      - ci/000b2-b2r09-evidence-materialize
+    paths:
+      - '.github/workflows/internal-b2r09-evidence-materialize-v3.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+env:
+  CANONICAL_BASE: 737e2fa0422e0d1aa0dd4d5bdc0473d51cec624c
+  TASK_BRANCH: research/000b2-b2r09-sherpa-onnx-compact
+  TASK_HEAD: b7a4bb8828a4b861a399b1424bc07a4e549cf51f
+  FAILED_SOURCE: f45e9884e3fbcdc84dd27393b8ffde7d12df65e5
+  SUCCESS_SOURCE: 47d1c53f6892dda437aa0f1d109f58f1cc5e101e
+  ARTIFACT_ID: '10031177463'
+  ARTIFACT_ZIP_SHA256: 79652728032760ae133845b7f1308623a984ee69c490991cf190d8a7301985ea
+  EVIDENCE_SHA256: d59fa9605e8b0cf6892cd5a7ece105c6abe0753ff8949e9206e35f42da9a003f
+  EVIDENCE_PAYLOAD_SHA256: 4a81f1be21e18aa462ee9ec9c32a1daeaa6fa86bcca6372b0634a9421c16c1ed
+
+jobs:
+  materialize:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout builder revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Preserve templates and verify immutable refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/b2r09-templates"
+          cp .github/internal/b2r09/b2r09-provenance.json "$RUNNER_TEMP/b2r09-templates/"
+          cp .github/internal/b2r09/verify_b2r09.py "$RUNNER_TEMP/b2r09-templates/"
+          cp .github/internal/b2r09/verify_attempt_manifest.py "$RUNNER_TEMP/b2r09-templates/"
+          PYTHONDONTWRITEBYTECODE=1 python -m py_compile "$RUNNER_TEMP/b2r09-templates/verify_b2r09.py" "$RUNNER_TEMP/b2r09-templates/verify_attempt_manifest.py"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$TASK_HEAD"
+          test "$(git ls-remote origin refs/heads/research/000b2-b2r09-execution | cut -f1)" = "$SUCCESS_SOURCE"
+          test "$(git rev-parse "$SUCCESS_SOURCE^")" = "$FAILED_SOURCE"
+          test "$(git diff --name-only "$FAILED_SOURCE" "$SUCCESS_SOURCE")" = ".github/workflows/internal-b2r09-capture.yml"
+          patch="$(git diff --unified=0 "$FAILED_SOURCE" "$SUCCESS_SOURCE" -- .github/workflows/internal-b2r09-capture.yml)"
+          grep -F -- "-          cache: 'pip'" <<<"$patch"
+          test "$(grep -c '^+[^+]' <<<"$patch" || true)" -eq 0
+          echo 'B2R09_PRE_PRIMARY_REPAIR_SCOPE=PASS'
+
+      - name: Download exact successful artifact bytes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r09-materialize"
+          rm -rf "$ROOT" && mkdir -p "$ROOT/evidence"
+          curl --fail --location --retry 3 --retry-all-errors -H "Authorization: Bearer $GH_TOKEN" -H 'X-GitHub-Api-Version: 2022-11-28' "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" -o "$ROOT/evidence.zip"
+          test "$(stat -c %s "$ROOT/evidence.zip")" = 19519
+          printf '%s  %s\n' "$ARTIFACT_ZIP_SHA256" "$ROOT/evidence.zip" | sha256sum --check -
+          export ROOT
+          python - <<'PY'
+          import hashlib,json,os,zipfile
+          from pathlib import Path
+          root=Path(os.environ['ROOT'])
+          with zipfile.ZipFile(root/'evidence.zip') as z:
+              assert z.namelist()==['b2r09-sherpa-onnx-compact.json']
+              raw=z.read('b2r09-sherpa-onnx-compact.json')
+          assert len(raw)==248426 and hashlib.sha256(raw).hexdigest()==os.environ['EVIDENCE_SHA256']
+          d=json.loads(raw); u=dict(d); payload=u.pop('evidence_payload_sha256'); canonical=(json.dumps(u,ensure_ascii=False,sort_keys=True,separators=(',',':'))+'\n').encode()
+          assert payload==os.environ['EVIDENCE_PAYLOAD_SHA256']==hashlib.sha256(canonical).hexdigest()
+          assert (d['execution']['input_count'],d['execution']['decoded_count'],d['execution']['failure_count'])==(240,240,0)
+          assert d['execution']['reference_transcripts_loaded_by_decoder'] is False and d['execution']['accuracy_scoring_performed'] is False and d['execution']['comparative_ranking_present'] is False
+          assert d['claim_guards']['b2r10_authorized'] is False and d['claim_guards']['production_stt_selected'] is False
+          (root/'evidence'/'b2r09-sherpa-onnx-compact.json').write_bytes(raw)
+          print('B2R09_OFFICIAL_ARTIFACT=PASS')
+          PY
+
+      - name: Assemble and verify exact B2R09 task range
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r09-materialize"
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*'
+          test "$(git rev-parse refs/remotes/origin/$TASK_BRANCH)" = "$TASK_HEAD"
+          git switch -C b2r09-materialize "$TASK_HEAD"
+          cp "$ROOT/evidence/b2r09-sherpa-onnx-compact.json" research/000b2-public/b2r09-sherpa-onnx-compact.json
+          cp "$RUNNER_TEMP/b2r09-templates/b2r09-provenance.json" research/000b2-public/b2r09-provenance.json
+          cp "$RUNNER_TEMP/b2r09-templates/verify_b2r09.py" research/000b2-public/verify_b2r09.py
+          cp "$RUNNER_TEMP/b2r09-templates/verify_attempt_manifest.py" research/000b2-public/verify_attempt_manifest.py
+          printf '%s  %s\n' "$EVIDENCE_SHA256" research/000b2-public/b2r09-sherpa-onnx-compact.json | sha256sum --check -
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r09.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_manifest.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_001_invalidation.py --static-only --canonical-main-ref refs/remotes/origin/main
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          expected="$(printf '%s\n' 'research/000b2-public/b2r09-provenance.json' 'research/000b2-public/b2r09-sherpa-onnx-compact.json' 'research/000b2-public/decode_b2r09.py' 'research/000b2-public/verify_attempt_manifest.py' 'research/000b2-public/verify_b2r09.py' | sort)"
+          observed="$({ git diff --name-only "$CANONICAL_BASE"; git ls-files --others --exclude-standard; } | sort -u)"
+          test "$observed" = "$expected"
+          echo 'B2R09_TASK_SCOPE=PASS'
+
+      - name: Commit and fast-forward task branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$TASK_HEAD"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/000b2-public/b2r09-provenance.json research/000b2-public/b2r09-sherpa-onnx-compact.json research/000b2-public/verify_b2r09.py research/000b2-public/verify_attempt_manifest.py
+          test "$(git diff --cached --name-only | wc -l)" -eq 4
+          git commit -m 'research(000b2): seal B2R09 sherpa evidence'
+          test "$(git rev-parse HEAD^)" = "$TASK_HEAD"
+          git push origin "HEAD:$TASK_BRANCH"
+          echo "B2R09_TASK_HEAD=$(git rev-parse HEAD)"
