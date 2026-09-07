@@ -1,0 +1,166 @@
+name: Internal B2R09 Task Evidence Materialization V2
+
+on:
+  push:
+    branches:
+      - ci/000b2-b2r09-task-materialize-v1
+    paths:
+      - '.github/workflows/internal-b2r09-task-materialize-v2.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+env:
+  CANONICAL_BASE: 737e2fa0422e0d1aa0dd4d5bdc0473d51cec624c
+  TASK_BRANCH: research/000b2-b2r09-sherpa-onnx-compact
+  EXPECTED_TASK_HEAD: b7a4bb8828a4b861a399b1424bc07a4e549cf51f
+  DECODER_BLOB: 27052cc7f3d57d2743ee06a7db8de730c833935e
+  EXECUTION_BRANCH: research/000b2-b2r09-execution
+  EXECUTION_SOURCE: 47d1c53f6892dda437aa0f1d109f58f1cc5e101e
+  FAILED_SOURCE: f45e9884e3fbcdc84dd27393b8ffde7d12df65e5
+  SUCCESS_RUN_ID: '34156167567'
+  SUCCESS_JOB_ID: '101848322734'
+  FAILED_RUN_ID: '34155967652'
+  FAILED_JOB_ID: '101847745228'
+  WORKFLOW_ID: '352553362'
+  ARTIFACT_ID: '10031177463'
+  ARTIFACT_NAME: b2r09-sherpa-onnx-compact-47d1c53f6892dda437aa0f1d109f58f1cc5e101e
+  ARTIFACT_ZIP_SHA256: 79652728032760ae133845b7f1308623a984ee69c490991cf190d8a7301985ea
+  EVIDENCE_SHA256: d59fa9605e8b0cf6892cd5a7ece105c6abe0753ff8949e9206e35f42da9a003f
+  EVIDENCE_SIZE: '248426'
+  PAYLOAD_SHA256: 4a81f1be21e18aa462ee9ec9c32a1daeaa6fa86bcca6372b0634a9421c16c1ed
+
+jobs:
+  materialize-b2r09:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact clean B2R09 task head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.EXPECTED_TASK_HEAD }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify immutable source and live authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_TASK_HEAD"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$EXPECTED_TASK_HEAD"
+          test "$(git ls-remote origin refs/heads/$EXECUTION_BRANCH | cut -f1)" = "$EXECUTION_SOURCE"
+          test "$(git hash-object research/000b2-public/decode_b2r09.py)" = "$DECODER_BLOB"
+          test "$(git diff --name-only "$CANONICAL_BASE" "$EXPECTED_TASK_HEAD")" = "research/000b2-public/decode_b2r09.py"
+          git diff --quiet HEAD --
+
+      - name: Verify exact GitHub run chronology
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r09-materialize"
+          rm -rf "$ROOT" && mkdir -p "$ROOT"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SUCCESS_RUN_ID" > "$ROOT/success-run.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SUCCESS_RUN_ID/jobs" > "$ROOT/success-jobs.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$FAILED_RUN_ID" > "$ROOT/failed-run.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$FAILED_RUN_ID/jobs" > "$ROOT/failed-jobs.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$FAILED_RUN_ID/artifacts" > "$ROOT/failed-artifacts.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID" > "$ROOT/artifact.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path(os.environ['RUNNER_TEMP'])/'b2r09-materialize'
+          load=lambda n: json.loads((root/n).read_text())
+          sr=load('success-run.json'); sj=load('success-jobs.json'); fr=load('failed-run.json'); fj=load('failed-jobs.json'); fa=load('failed-artifacts.json'); a=load('artifact.json')
+          assert sr['id']==int(os.environ['SUCCESS_RUN_ID']) and sr['conclusion']=='success' and sr['head_sha']==os.environ['EXECUTION_SOURCE'] and sr['workflow_id']==int(os.environ['WORKFLOW_ID'])
+          jobs=sj['jobs']; assert len(jobs)==1 and jobs[0]['id']==int(os.environ['SUCCESS_JOB_ID']) and jobs[0]['conclusion']=='success'
+          steps={s['name']:s['conclusion'] for s in jobs[0]['steps']}
+          for name in ['Verify exact B2R09 authority before external access','Set up exact Python runtime family','Install exact accepted sherpa runtime release','Reproduce and verify exact frozen P0 preprocessing bytes','Fetch exact pinned sherpa source identity','Download and verify exact sherpa-onnx-compact artifacts','Execute B2R09 sherpa-onnx-compact C0 primary decode','Verify B2R09 semantic and raw-data boundary','Upload bounded B2R09 evidence only','Remove transient primary/model/source/preprocessing material','Verify execution branch stayed clean']:
+              assert steps.get(name)=='success', (name, steps.get(name))
+          assert fr['id']==int(os.environ['FAILED_RUN_ID']) and fr['conclusion']=='failure' and fr['head_sha']==os.environ['FAILED_SOURCE'] and fr['workflow_id']==int(os.environ['WORKFLOW_ID'])
+          fjobs=fj['jobs']; assert len(fjobs)==1 and fjobs[0]['id']==int(os.environ['FAILED_JOB_ID']) and fjobs[0]['conclusion']=='failure'
+          fsteps={s['name']:s['conclusion'] for s in fjobs[0]['steps']}
+          assert fsteps['Verify exact B2R09 authority before external access']=='success'
+          assert fsteps['Set up exact Python runtime family']=='failure'
+          for name in ['Install exact accepted sherpa runtime release','Pull exact immutable preprocessing container','Fetch exact FFmpeg release','Build bounded FFmpeg 9.0.1 preprocessing tool','Reproduce and verify exact frozen P0 preprocessing bytes','Fetch exact pinned sherpa source identity','Download and verify exact sherpa-onnx-compact artifacts','Execute B2R09 sherpa-onnx-compact C0 primary decode','Verify B2R09 semantic and raw-data boundary']:
+              assert fsteps.get(name)=='skipped', (name, fsteps.get(name))
+          assert fa['total_count']==0 and fa['artifacts']==[]
+          assert a['id']==int(os.environ['ARTIFACT_ID']) and a['name']==os.environ['ARTIFACT_NAME'] and a['expired'] is False
+          assert a['digest']=='sha256:'+os.environ['ARTIFACT_ZIP_SHA256']
+          assert a['workflow_run']['id']==int(os.environ['SUCCESS_RUN_ID']) and a['workflow_run']['head_sha']==os.environ['EXECUTION_SOURCE']
+          print('B2R09_GITHUB_CHRONOLOGY=PASS')
+          PY
+
+      - name: Download and verify exact successful artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r09-materialize"
+          curl --fail --silent --show-error --location -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" -o "$ROOT/evidence.zip"
+          test "$(sha256sum "$ROOT/evidence.zip" | cut -d' ' -f1)" = "$ARTIFACT_ZIP_SHA256"
+          unzip -q "$ROOT/evidence.zip" -d "$ROOT/unzip"
+          test "$(find "$ROOT/unzip" -type f | wc -l)" -eq 1
+          test -f "$ROOT/unzip/b2r09-sherpa-onnx-compact.json"
+          test "$(stat -c%s "$ROOT/unzip/b2r09-sherpa-onnx-compact.json")" = "$EVIDENCE_SIZE"
+          test "$(sha256sum "$ROOT/unzip/b2r09-sherpa-onnx-compact.json" | cut -d' ' -f1)" = "$EVIDENCE_SHA256"
+
+      - name: Materialize evidence provenance and verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r09-materialize"
+          cp "$ROOT/unzip/b2r09-sherpa-onnx-compact.json" research/000b2-public/b2r09-sherpa-onnx-compact.json
+          python - <<'PY'
+          import base64, hashlib, json, os
+          from pathlib import Path
+          public=Path('research/000b2-public'); evidence_path=public/'b2r09-sherpa-onnx-compact.json'; evidence=json.loads(evidence_path.read_text())
+          canonical=lambda v:(json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(',',':'))+'\n').encode()
+          unsigned=dict(evidence); payload=unsigned.pop('evidence_payload_sha256')
+          assert payload==os.environ['PAYLOAD_SHA256'] and hashlib.sha256(canonical(unsigned)).hexdigest()==payload
+          assert hashlib.sha256(evidence_path.read_bytes()).hexdigest()==os.environ['EVIDENCE_SHA256'] and evidence_path.stat().st_size==int(os.environ['EVIDENCE_SIZE'])
+          assert (evidence['task'],evidence['attempt_id'],evidence['state'])==('B2R09','000B2-PUBLIC-ATTEMPT-002','ATTEMPT_002_C0_PRIMARY_DECODE_CAPTURED')
+          assert evidence['execution']['input_count']==240 and evidence['execution']['decoded_count']==240 and evidence['execution']['failure_count']==0
+          assert evidence['execution']['reference_transcripts_loaded_by_decoder'] is False and evidence['execution']['accuracy_scoring_performed'] is False and evidence['execution']['comparative_ranking_present'] is False and evidence['execution']['performance_claim_present'] is False
+          assert evidence['claim_guards']['b2r10_authorized'] is False
+          claims={'b2r10_authorized':False,'comparative_performance_authorized':False,'comparative_result_available':False,'human_developer_speech_accuracy_evidence':'ABSENT','product_code_authorized':False,'production_stt_selected':False}
+          provenance={
+            'schema_version':'000b2-public-b2r09-provenance-v1','task':'B2R09','attempt_id':'000B2-PUBLIC-ATTEMPT-002','candidate_id':'sherpa-onnx-compact',
+            'provenance_status':'RECORDED_FROM_EXACT_GITHUB_ACTIONS_SUCCESSFUL_PRIMARY_WITH_FAILED_PRE_PRIMARY_PYTHON_CACHE_SETUP_CHRONOLOGY',
+            'canonical_evidence_source':{'role':'CANONICAL_EVIDENCE_SOURCE','workflow_id':int(os.environ['WORKFLOW_ID']),'workflow_name':'Internal B2R09 ATTEMPT-002 Capture','run_id':int(os.environ['SUCCESS_RUN_ID']),'job_id':int(os.environ['SUCCESS_JOB_ID']),'run_attempt':1,'conclusion':'success','event':'push','source_branch':os.environ['EXECUTION_BRANCH'],'source_revision':os.environ['EXECUTION_SOURCE'],'artifact_id':int(os.environ['ARTIFACT_ID']),'artifact_name':os.environ['ARTIFACT_NAME'],'artifact_zip_sha256':os.environ['ARTIFACT_ZIP_SHA256'],'artifact_zip_size_bytes':19519,'evidence_path':'research/000b2-public/b2r09-sherpa-onnx-compact.json','evidence_raw_file_sha256':os.environ['EVIDENCE_SHA256'],'evidence_raw_file_size_bytes':int(os.environ['EVIDENCE_SIZE']),'evidence_payload_sha256':os.environ['PAYLOAD_SHA256'],'execution_decoder_blob_sha':os.environ['DECODER_BLOB'],'mergeable_decoder_blob_sha':os.environ['DECODER_BLOB'],'selection_basis':'FIRST_SUCCESSFUL_B2R09_PRIMARY_AFTER_PRE_PRIMARY_SETUP_PYTHON_CACHE_CONFIGURATION_FAILURE_WITH_ZERO_ARTIFACTS_AND_NO_RUNTIME_MODEL_PREPROCESSING_OR_PRIMARY_ACCESS; NOT_RESULT_DRIVEN'},
+            'related_pre_primary_runs':[{'role':'FAILED_PRE_PRIMARY_NONCANONICAL','workflow_id':int(os.environ['WORKFLOW_ID']),'workflow_name':'Internal B2R09 ATTEMPT-002 Capture','run_id':int(os.environ['FAILED_RUN_ID']),'job_id':int(os.environ['FAILED_JOB_ID']),'run_attempt':1,'conclusion':'failure','source_branch':os.environ['EXECUTION_BRANCH'],'source_revision':os.environ['FAILED_SOURCE'],'artifact_count':0,'failure_stage':'SETUP_PYTHON_CACHE_DEPENDENCY_FILE_DISCOVERY','failure_detail':'actions/setup-python cache=pip found no requirements.txt or pyproject.toml after CPython 3.11.16 setup','authority_validation_succeeded':True,'runtime_install_started':False,'preprocessing_container_pull_started':False,'preprocessing_started':False,'runtime_source_fetch_started':False,'model_download_started':False,'primary_decode_started':False,'candidate_result_accessed':False,'selection_effect':'NONE','repair':{'policy':'FORWARD_ONLY_REMOVE_SETUP_PYTHON_PIP_CACHE_CONFIGURATION','c0_controls_changed':False,'candidate_changed':False,'model_changed':False,'runtime_revision_changed':False,'frozen_audio_changed':False,'scorer_changed':False,'normalization_changed':False}}],
+            'result_accounting':{'input_count':240,'decoded_count':240,'failure_count':0,'all_frozen_input_hashes_reverified':True,'reference_transcripts_loaded_by_decoder':False,'accuracy_scoring_performed':False,'comparative_ranking_present':False,'performance_claim_present':False,'timing_semantics':'DIAGNOSTIC_ONLY','result_driven_evidence_selection':False},
+            'runtime_identity':evidence['run']['runtime_identity'],'claims':claims,
+          }
+          provenance['provenance_payload_sha256']=hashlib.sha256(canonical(provenance)).hexdigest(); provenance_path=public/'b2r09-provenance.json'; provenance_path.write_text(json.dumps(provenance,ensure_ascii=False,indent=2,sort_keys=True)+'\n'); prov_sha=hashlib.sha256(provenance_path.read_bytes()).hexdigest()
+          verifier_b64='IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoiIiJWZXJpZnkgc2VhbGVkIEIyUjA5IEFUVEVNUFQtMDAyIHNoZXJwYS1vbm54LWNvbXBhY3QgZXhlY3V0aW9uIGV2aWRlbmNlLiIiIgpmcm9tIF9fZnV0dXJlX18gaW1wb3J0IGFubm90YXRpb25zCmltcG9ydCBoYXNobGliLCBqc29uLCBzdWJwcm9jZXNzCmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aApmcm9tIHR5cGluZyBpbXBvcnQgQW55ClJPT1Q9UGF0aChfX2ZpbGVfXykucmVzb2x2ZSgpLnBhcmVudHNbMl0KUFVCTElDPVJPT1QvJ3Jlc2VhcmNoJy8nMDAwYjItcHVibGljJwpFVklERU5DRT1QVUJMSUMvJ2IycjA5LXNoZXJwYS1vbm54LWNvbXBhY3QuanNvbic7IFBST1ZFTkFOQ0U9UFVCTElDLydiMnIwOS1wcm92ZW5hbmNlLmpzb24nCkFUVEVNUFQ9UFVCTElDLydhdHRlbXB0LTAwMi1tYW5pZmVzdC5qc29uJzsgUFJFUFJPQ0VTU0lORz1QVUJMSUMvJ3ByZXByb2Nlc3NpbmctY2FwdHVyZS5qc29uJzsgUkVCSU5ESU5HPVBVQkxJQy8nYjJyMDMtcHJlZXhlY3V0aW9uLXJlYmluZGluZy5qc29uJzsgUkVBRElORVNTPVBVQkxJQy8ncmVjb3ZlcnktcmVhZGluZXNzLmpzb24nClRBU0tTPVJPT1QvJ3NwZWNzJy8nMDAwQjItcHVibGljLWNvcnB1cy1iYWtlb2ZmJy8ndGFza3MubWQnOyBDVVJSRU5UPVJPT1QvJ3NwZWNzJy8nQ1VSUkVOVC5tZCc7IENBTk9OSUNBTF9DVVJSRU5UPVJPT1QvJ2RvY3MnLydjYW5vbmljYWwnLydDVVJSRU5UX1NUQVRFLm1kJwpFVklERU5DRV9TSEEyNTY9J2Q1OWZhOTYwNWU4YjBjZjY4OTJjZDVhN2VjZTEwNWM2YWJlMDc1M2ZmODk0OWU5MjA2ZTM1ZjQyZGE5YTAwM2YnOyBFVklERU5DRV9TSVpFPTI0ODQyNjsgUEFZTE9BRF9TSEEyNTY9JzRhODFmMWJlMjFlMThhYTQ2MmVlOWVjOWMzMmExZGFlYWE2ZmE4NmJjY2E2MzcyYjA2MzRhOTQyMWMxNmMxZWQnOyBQUk9WRU5BTkNFX1NIQTI1Nj0nX19QUk9WX1NIQV9fJwpBVFRFTVBUX1NIQTI1Nj0nYTJkYzgyNDZlNDU2N2U2NzBiZWIzZjI2ZTMxNWJlOTNlMDAxZTRkOWE5MDM3YmU1N2ZmMTFmY2U1YTM0MDEzNCc7IFBSRVBST0NFU1NJTkdfU0hBMjU2PSdkOTBlNTIxNTA4MTE5MTEzNGQ4ZTcxNDc3ODE0MGJmZWVlODA4MGViNzdhZWRjM2ExNTliMmRmZWQ2ZTJkMDExJzsgUkVCSU5ESU5HX1NIQTI1Nj0nZjljZGE1MTY4ZTZjYWZiNmExZTllNjg5OGYzOTRlYzM5ODdiMzdhZjUwYzUzYzE1Y2Y2M2JjMTM2YzFmMmRmMScKREVDT0RFUl9CTE9CPScyNzA1MmNjN2YzZDU3ZDI3NDNlZTA2YTdkYjhkZTczMGM4MzM5MzVlJzsgRVhFQ1VUSU9OX1NPVVJDRT0nNDdkMWM1M2Y2ODkyZGRhNDM3YWEwZjFkMTA5ZjU4ZjFjYzVlMTAxZSc7IEZBSUxFRF9TT1VSQ0U9J2Y0NWU5ODg0ZTNmYmNkYzg0ZGQyNzM5M2I4ZmZkZTdkMTJkZjY1ZTUnClNVQ0NFU1NfUlVOX0lEPTM0MTU2MTY3NTY3OyBTVUNDRVNTX0pPQl9JRD0xMDE4NDgzMjI3MzQ7IEZBSUxFRF9SVU5fSUQ9MzQxNTU5Njc2NTI7IEZBSUxFRF9KT0JfSUQ9MTAxODQ3NzQ1MjI4OyBXT1JLRkxPV19JRD0zNTI1NTMzNjI7IEFSVElGQUNUX0lEPTEwMDMxMTc3NDYzCkFSVElGQUNUX1pJUF9TSEEyNTY9Jzc5NjUyNzI4MDMyNzYwYWUxMzM4NDViN2YxMzA4NjIzYTk4NGVlNjljNDkwOTkxY2YxOTBkOGE3MzAxOTg1ZWEnCkNMQUlNUz17J2IycjEwX2F1dGhvcml6ZWQnOiBGYWxzZSwgJ2NvbXBhcmF0aXZlX3BlcmZvcm1hbmNlX2F1dGhvcml6ZWQnOiBGYWxzZSwgJ2NvbXBhcmF0aXZlX3Jlc3VsdF9hdmFpbGFibGUnOiBGYWxzZSwgJ2h1bWFuX2RldmVsb3Blcl9zcGVlY2hfYWNjdXJhY3lfZXZpZGVuY2UnOiAnQUJTRU5UJywgJ3Byb2R1Y3RfY29kZV9hdXRob3JpemVkJzogRmFsc2UsICdwcm9kdWN0aW9uX3N0dF9zZWxlY3RlZCc6IEZhbHNlfQpDMD17J2NhbmRpZGF0ZV9zcGVjaWZpY19hdWRpb190cmFuc2Zvcm1fdXNlZCc6IEZhbHNlLCAnZGVjb2RpbmdfbWV0aG9kJzogJ2dyZWVkeV9zZWFyY2gnLCAnZmVhdHVyZV9kaW0nOiA4MCwgJ2ZlZWRfY2h1bmtfbXMnOiA1MDAsICdmZWVkX2NodW5rX3NhbXBsZXMnOiA4MDAwLCAnZmluYWxfemVyb19jaHVua19zYW1wbGVzJzogWzgwMDAsIDI1NjBdLCAnZmluYWxfemVyb19wYWRfc2FtcGxlcyc6IDEwNTYwLCAnaG90d29yZHMnOiBbXSwgJ2lkZW50aWNhbF9mcm96ZW5fYXVkaW9fcmVxdWlyZWRfYWNyb3NzX2NhbmRpZGF0ZXMnOiBUcnVlLCAnbGFuZ3VhZ2UnOiAnZW4nLCAnbGFuZ3VhZ2VfbW9kZWwnOiBOb25lLCAnbWF4X2FjdGl2ZV9wYXRocyc6IDQsICdwcm92aWRlcic6ICdjcHUnLCAncmVwb3NpdG9yeV9jb250ZXh0X3VzZWQnOiBGYWxzZSwgJ3NhbXBsZV9yYXRlX2h6JzogMTYwMDAsICd0ZXN0X3NwZWNpZmljX2NvbnRleHRfdXNlZCc6IEZhbHNlLCAndGhyZWFkcyc6IDR9CkFSVElGQUNUUz1beydwYXRoJzonZW5jb2Rlci1lcG9jaC05OS1hdmctMS1jaHVuay0xNi1sZWZ0LTEyOC5pbnQ4Lm9ubngnLCdzaGEyNTYnOic1NjNmZGU0MzZkMTZjZjc2MDdjZjQwOGNkNmIzMDkwOTgxOWQwMzE2MjY1MmVmMzg5YzI0NTBjZWQzZjQ1YWMxJywnc2l6ZV9ieXRlcyc6NzEwODMxNjN9LHsncGF0aCc6J2RlY29kZXItZXBvY2gtOTktYXZnLTEtY2h1bmstMTYtbGVmdC0xMjguaW50OC5vbm54Jywnc2hhMjU2JzonOThkYTI5OWY0NzFlMzhiYjRlMWE4ZGY1NzliOGNjOTEyMmQ2MDM5NTc2YTc3ZTM1N2IzYzYwZjE3ZGQ4M2IwMicsJ3NpemVfYnl0ZXMnOjEzMDcyMzZ9LHsncGF0aCc6J2pvaW5lci1lcG9jaC05OS1hdmctMS1jaHVuay0xNi1sZWZ0LTEyOC5pbnQ4Lm9ubngnLCdzaGEyNTYnOidkOTQ0MjA4ZDY2MGQ2N2M4ZDcyY2QyYWNhZWFjOTcxZmE1Y2ViOGM4MGU3NmMxOTY4MTQ4ODQ2ZmVkZDZlMjk3Jywnc2l6ZV9ieXRlcyc6MjU5MzM1fSx7J3BhdGgnOidicGUubW9kZWwnLCdzaGEyNTYnOidjNTM0MzNkZTA4M2M0YTZhZDEyZDAzNDU1MGVmMjJkZTY4Y2VjNjJjNGY1ODkzMmE3YjZiOGIyZjFlNzQzZmE1Jywnc2l6ZV9ieXRlcyc6MjQ0ODY1fSx7J3BhdGgnOid0b2tlbnMudHh0Jywnc2hhMjU2JzonNDllM2MyNjQ2NTk1ZmQ5MDcyMjhiM2M2Nzg3MDY5NjU4ZjY3YjE3Mzc3YzYwYWViODYxOWM0NTUxYjIzMTZmYicsJ3NpemVfYnl0ZXMnOjUwNDh9XQpjbGFzcyBWZXJpZnlFcnJvcihWYWx1ZUVycm9yKTogcGFzcwpkZWYgcmVxdWlyZShvazogYm9vbCwgbWVzc2FnZTogc3RyKS0+Tm9uZToKICAgIGlmIG5vdCBvazogcmFpc2UgVmVyaWZ5RXJyb3IobWVzc2FnZSkKZGVmIGxvYWQocGF0aDpQYXRoKS0+ZGljdFtzdHIsQW55XToKICAgIHY9anNvbi5sb2FkcyhwYXRoLnJlYWRfdGV4dChlbmNvZGluZz0ndXRmLTgnKSk7IHJlcXVpcmUoaXNpbnN0YW5jZSh2LGRpY3QpLGYnb2JqZWN0IGV4cGVjdGVkOiB7cGF0aH0nKTsgcmV0dXJuIHYKZGVmIHNoYTI1NihwYXRoOlBhdGgpLT5zdHI6IHJldHVybiBoYXNobGliLnNoYTI1NihwYXRoLnJlYWRfYnl0ZXMoKSkuaGV4ZGlnZXN0KCkKZGVmIGNhbm9uaWNhbCh2OkFueSktPmJ5dGVzOiByZXR1cm4gKGpzb24uZHVtcHModixlbnN1cmVfYXNjaWk9RmFsc2Usc29ydF9rZXlzPVRydWUsc2VwYXJhdG9ycz0oJywnLCc6JykpKydcbicpLmVuY29kZSgpCmRlZiBnaXQoKmFyZ3M6c3RyKS0+c3RyOiByZXR1cm4gc3VicHJvY2Vzcy5ydW4oWydnaXQnLCctQycsc3RyKFJPT1QpLCphcmdzXSxjaGVjaz1UcnVlLHRleHQ9VHJ1ZSxzdGRvdXQ9c3VicHJvY2Vzcy5QSVBFLHN0ZGVycj1zdWJwcm9jZXNzLlBJUEUpLnN0ZG91dC5zdHJpcCgpCmRlZiB2ZXJpZnlfZnJvbnRpZXIoKS0+Tm9uZToKICAgIHI9bG9hZChSRUFESU5FU1MpOyB0YXNrcz1UQVNLUy5yZWFkX3RleHQoKTsgY3VycmVudD1DVVJSRU5ULnJlYWRfdGV4dCgpOyBjYz1DQU5PTklDQUxfQ1VSUkVOVC5yZWFkX3RleHQoKTsgcHJlZml4PVtmJ0IyUntpOjAyZH0nIGZvciBpIGluIHJhbmdlKDEsOSldCiAgICByZXF1aXJlKHIuZ2V0KCdzdGF0ZScpPT0nUkVDT1ZFUllfUkVBRFknLCdyZWNvdmVyeSBsYW5lIG5vdCByZWFkeScpOyByZXF1aXJlKHIuZ2V0KCdxdWFsaWZpZWRfd29ya2Zsb3dfY2hhbmdlX3BhdGhzJyk9PVtdLCd3b3JrZmxvdyBkcmlmdCBhdXRob3JpemVkJyk7IHJlcXVpcmUoci5nZXQoJ2NsYWltX2d1YXJkcycse30pLmdldCgnY29tcGFyYXRpdmVfcmVzdWx0X2F2YWlsYWJsZScpIGlzIEZhbHNlLCdjb21wYXJhdGl2ZSByZXN1bHQgb3BlbicpCiAgICBjb21wbGV0ZWQ9ci5nZXQoJ2NvbXBsZXRlZF9yZWNvdmVyeV90YXNrcycpOyBhY3RpdmU9ci5nZXQoJ2FjdGl2ZV9yZWNvdmVyeV91bml0JykKICAgIGlmIGNvbXBsZXRlZD09cHJlZml4IGFuZCBhY3RpdmU9PSdCMlIwOSc6CiAgICAgICAgcmVxdWlyZSgnLSBbIF0gYEIyUjA5YCcgaW4gdGFza3MgYW5kICctIFsgXSBgQjJSMTBgJyBpbiB0YXNrcywncHJlLXJlY29uY2lsaWF0aW9uIGxlZGdlciBkcmlmdCcpOyByZXF1aXJlKCdhY3RpdmUgcmVjb3ZlcnkgdW5pdCBgQjJSMDlgJyBpbiBjdXJyZW50IGFuZCAnKipBY3RpdmUgcmVjb3ZlcnkgdW5pdDoqKiBgQjJSMDlgJyBpbiBjYywnQjJSMDkgZnJvbnRpZXIgZHJpZnQnKQogICAgZWxzZToKICAgICAgICByZXF1aXJlKGlzaW5zdGFuY2UoY29tcGxldGVkLGxpc3QpIGFuZCAnQjJSMDknIGluIGNvbXBsZXRlZCwnQjJSMDkgY29tcGxldGlvbiBsb3N0Jyk7IHJlcXVpcmUoJy0gW3hdIGBCMlIwOWAnIGluIHRhc2tzLCdCMlIwOSBsZWRnZXIgY29tcGxldGlvbiBsb3N0Jyk7IHJlcXVpcmUoYWN0aXZlIT0nQjJSMDknLCdCMlIwOSByZW1haW5lZCBhY3RpdmUgYWZ0ZXIgY29tcGxldGlvbicpCmRlZiB2ZXJpZnlfc3RhdGljKCktPk5vbmU6CiAgICByZXF1aXJlKHNoYTI1NihBVFRFTVBUKT09QVRURU1QVF9TSEEyNTYsJ0FUVEVNUFQtMDAyIGJ5dGVzIGRyaWZ0Jyk7IHJlcXVpcmUoc2hhMjU2KFBSRVBST0NFU1NJTkcpPT1QUkVQUk9DRVNTSU5HX1NIQTI1NiwncHJlcHJvY2Vzc2luZyBieXRlcyBkcmlmdCcpOyByZXF1aXJlKHNoYTI1NihSRUJJTkRJTkcpPT1SRUJJTkRJTkdfU0hBMjU2LCdyZWJpbmRpbmcgYnl0ZXMgZHJpZnQnKQogICAgcmVxdWlyZShnaXQoJ2hhc2gtb2JqZWN0JywncmVzZWFyY2gvMDAwYjItcHVibGljL2RlY29kZV9iMnIwOS5weScpPT1ERUNPREVSX0JMT0IsJ2RlY29kZXIgYmxvYiBkcmlmdCcpCiAgICBmb3IgcmV2IGluIChFWEVDVVRJT05fU09VUkNFLEZBSUxFRF9TT1VSQ0UpOiByZXF1aXJlKGdpdCgncmV2LXBhcnNlJyxmJ3tyZXZ9Xnt7Y29tbWl0fX0nKT09cmV2LGYnc291cmNlIG1pc3Npbmc6IHtyZXZ9JykKICAgIHJlcXVpcmUoZ2l0KCdyZXYtcGFyc2UnLGYne0VYRUNVVElPTl9TT1VSQ0V9OnJlc2VhcmNoLzAwMGIyLXB1YmxpYy9kZWNvZGVfYjJyMDkucHknKT09REVDT0RFUl9CTE9CLCdleGVjdXRpb24gZGVjb2RlciBibG9iIGRyaWZ0JykKZGVmIHZlcmlmeV9wcm92ZW5hbmNlKCktPk5vbmU6CiAgICByZXF1aXJlKHNoYTI1NihQUk9WRU5BTkNFKT09UFJPVkVOQU5DRV9TSEEyNTYsJ3Byb3ZlbmFuY2UgYnl0ZXMgZHJpZnQnKTsgcD1sb2FkKFBST1ZFTkFOQ0UpOyB1PWRpY3QocCk7IHBheWxvYWQ9dS5wb3AoJ3Byb3ZlbmFuY2VfcGF5bG9hZF9zaGEyNTYnLE5vbmUpOyByZXF1aXJlKGlzaW5zdGFuY2UocGF5bG9hZCxzdHIpIGFuZCBoYXNobGliLnNoYTI1NihjYW5vbmljYWwodSkpLmhleGRpZ2VzdCgpPT1wYXlsb2FkLCdwcm92ZW5hbmNlIHBheWxvYWQgZHJpZnQnKQogICAgcmVxdWlyZSgocC5nZXQoJ3Rhc2snKSxwLmdldCgnYXR0ZW1wdF9pZCcpLHAuZ2V0KCdjYW5kaWRhdGVfaWQnKSk9PSgnQjJSMDknLCcwMDBCMi1QVUJMSUMtQVRURU1QVC0wMDInLCdzaGVycGEtb25ueC1jb21wYWN0JyksJ3Byb3ZlbmFuY2UgaWRlbnRpdHkgZHJpZnQnKQogICAgc3JjPXAuZ2V0KCdjYW5vbmljYWxfZXZpZGVuY2Vfc291cmNlJyx7fSk7IHJlcXVpcmUoKHNyYy5nZXQoJ3dvcmtmbG93X2lkJyksc3JjLmdldCgncnVuX2lkJyksc3JjLmdldCgnam9iX2lkJyksc3JjLmdldCgnYXJ0aWZhY3RfaWQnKSk9PShXT1JLRkxPV19JRCxTVUNDRVNTX1JVTl9JRCxTVUNDRVNTX0pPQl9JRCxBUlRJRkFDVF9JRCksJ2Nhbm9uaWNhbCBzb3VyY2UgaWRlbnRpdHkgZHJpZnQnKQogICAgcmVxdWlyZShzcmMuZ2V0KCdzb3VyY2VfcmV2aXNpb24nKT09RVhFQ1VUSU9OX1NPVVJDRSBhbmQgc3JjLmdldCgnYXJ0aWZhY3RfemlwX3NoYTI1NicpPT1BUlRJRkFDVF9aSVBfU0hBMjU2IGFuZCBzcmMuZ2V0KCdldmlkZW5jZV9yYXdfZmlsZV9zaGEyNTYnKT09RVZJREVOQ0VfU0hBMjU2IGFuZCBzcmMuZ2V0KCdldmlkZW5jZV9wYXlsb2FkX3NoYTI1NicpPT1QQVlMT0FEX1NIQTI1NiBhbmQgc3JjLmdldCgnc2VsZWN0aW9uX2Jhc2lzJywnJykuZW5kc3dpdGgoJ05PVF9SRVNVTFRfRFJJVkVOJyksJ2Nhbm9uaWNhbCBzb3VyY2UgcHJvdmVuYW5jZSBkcmlmdCcpCiAgICBwcmU9cC5nZXQoJ3JlbGF0ZWRfcHJlX3ByaW1hcnlfcnVucycpOyByZXF1aXJlKGlzaW5zdGFuY2UocHJlLGxpc3QpIGFuZCBsZW4ocHJlKT09MSwncHJlLXByaW1hcnkgY2hyb25vbG9neSBkcmlmdCcpOyBmPXByZVswXQogICAgcmVxdWlyZSgoZi5nZXQoJ3J1bl9pZCcpLGYuZ2V0KCdqb2JfaWQnKSxmLmdldCgnc291cmNlX3JldmlzaW9uJykpPT0oRkFJTEVEX1JVTl9JRCxGQUlMRURfSk9CX0lELEZBSUxFRF9TT1VSQ0UpLCdmYWlsZWQgc2V0dXAgaWRlbnRpdHkgZHJpZnQnKTsgcmVxdWlyZShmLmdldCgnYXJ0aWZhY3RfY291bnQnKT09MCBhbmQgZi5nZXQoJ2F1dGhvcml0eV92YWxpZGF0aW9uX3N1Y2NlZWRlZCcpIGlzIFRydWUgYW5kIGYuZ2V0KCdydW50aW1lX2luc3RhbGxfc3RhcnRlZCcpIGlzIEZhbHNlIGFuZCBmLmdldCgncHJlcHJvY2Vzc2luZ19zdGFydGVkJykgaXMgRmFsc2UgYW5kIGYuZ2V0KCdydW50aW1lX3NvdXJjZV9mZXRjaF9zdGFydGVkJykgaXMgRmFsc2UgYW5kIGYuZ2V0KCdtb2RlbF9kb3dubG9hZF9zdGFydGVkJykgaXMgRmFsc2UgYW5kIGYuZ2V0KCdwcmltYXJ5X2RlY29kZV9zdGFydGVkJykgaXMgRmFsc2UgYW5kIGYuZ2V0KCdjYW5kaWRhdGVfcmVzdWx0X2FjY2Vzc2VkJykgaXMgRmFsc2UgYW5kIGYuZ2V0KCdzZWxlY3Rpb25fZWZmZWN0Jyk9PSdOT05FJywnZmFpbGVkIHNldHVwIGV4cG9zdXJlIGRyaWZ0JykKICAgIHJlcGFpcj1mLmdldCgncmVwYWlyJyx7fSk7IHJlcXVpcmUocmVwYWlyLmdldCgncG9saWN5Jyk9PSdGT1JXQVJEX09OTFlfUkVNT1ZFX1NFVFVQX1BZVEhPTl9QSVBfQ0FDSEVfQ09ORklHVVJBVElPTicsJ3JlcGFpciBwb2xpY3kgZHJpZnQnKTsgcmVxdWlyZShhbGwocmVwYWlyLmdldChrKSBpcyBGYWxzZSBmb3IgayBpbiBbJ2MwX2NvbnRyb2xzX2NoYW5nZWQnLCdjYW5kaWRhdGVfY2hhbmdlZCcsJ21vZGVsX2NoYW5nZWQnLCdydW50aW1lX3JldmlzaW9uX2NoYW5nZWQnLCdmcm96ZW5fYXVkaW9fY2hhbmdlZCcsJ3Njb3Jlcl9jaGFuZ2VkJywnbm9ybWFsaXphdGlvbl9jaGFuZ2VkJ10pLCdyZXBhaXIgc2VtYW50aWMgZHJpZnQnKQogICAgYT1wLmdldCgncmVzdWx0X2FjY291bnRpbmcnLHt9KTsgcmVxdWlyZSgoYS5nZXQoJ2lucHV0X2NvdW50JyksYS5nZXQoJ2RlY29kZWRfY291bnQnKSxhLmdldCgnZmFpbHVyZV9jb3VudCcpKT09KDI0MCwyNDAsMCkgYW5kIGEuZ2V0KCdyZXN1bHRfZHJpdmVuX2V2aWRlbmNlX3NlbGVjdGlvbicpIGlzIEZhbHNlLCdwcm92ZW5hbmNlIGFjY291bnRpbmcgZHJpZnQnKTsgcmVxdWlyZShwLmdldCgnY2xhaW1zJyk9PUNMQUlNUywncHJvdmVuYW5jZSBjbGFpbXMgZHJpZnQnKQpkZWYgdmVyaWZ5X2V2aWRlbmNlKCktPk5vbmU6CiAgICByZXF1aXJlKEVWSURFTkNFLnN0YXQoKS5zdF9zaXplPT1FVklERU5DRV9TSVpFIGFuZCBzaGEyNTYoRVZJREVOQ0UpPT1FVklERU5DRV9TSEEyNTYsJ2V2aWRlbmNlIGJ5dGVzIGRyaWZ0Jyk7IGU9bG9hZChFVklERU5DRSk7IHU9ZGljdChlKTsgcGF5bG9hZD11LnBvcCgnZXZpZGVuY2VfcGF5bG9hZF9zaGEyNTYnLE5vbmUpOyByZXF1aXJlKHBheWxvYWQ9PVBBWUxPQURfU0hBMjU2IGFuZCBoYXNobGliLnNoYTI1NihjYW5vbmljYWwodSkpLmhleGRpZ2VzdCgpPT1wYXlsb2FkLCdldmlkZW5jZSBwYXlsb2FkIGRyaWZ0JykKICAgIHJlcXVpcmUoKGUuZ2V0KCdzY2hlbWFfdmVyc2lvbicpLGUuZ2V0KCd0YXNrJyksZS5nZXQoJ2F0dGVtcHRfaWQnKSxlLmdldCgnc3RhdGUnKSk9PSgnMDAwYjItcHVibGljLWIycjA5LWRlY29kZS12MScsJ0IyUjA5JywnMDAwQjItUFVCTElDLUFUVEVNUFQtMDAyJywnQVRURU1QVF8wMDJfQzBfUFJJTUFSWV9ERUNPREVfQ0FQVFVSRUQnKSwnZXZpZGVuY2UgaWRlbnRpdHkgZHJpZnQnKQogICAgYz1lLmdldCgnY2FuZGlkYXRlJyx7fSk7IHJlcXVpcmUoKGMuZ2V0KCdjZWxsX2luZGV4JyksYy5nZXQoJ2NhbmRpZGF0ZV9pZCcpLGMuZ2V0KCdmYW1pbHknKSxjLmdldCgndGllcicpLGMuZ2V0KCdtb2RlbCcpKT09KDUsJ3NoZXJwYS1vbm54LWNvbXBhY3QnLCdzaGVycGEtb25ueCcsJ0NPTVBBQ1QnLCdJTlQ4IE9OTlgnKSwnY2FuZGlkYXRlIGRyaWZ0Jyk7IHJlcXVpcmUoYy5nZXQoJ3J1bnRpbWVfcmV2aXNpb24nKT09JzkxN2JlZDk1YzhlNWM3YzE4YWE0ZDY5ZmVhNDJlOWVmOGVmMGE2MGUnIGFuZCBjLmdldCgncnVudGltZV9kaXN0cmlidXRpb25fdmVyc2lvbicpPT0nMS4xMy43JyBhbmQgYy5nZXQoJ21vZGVsX29ubnhfcmV2aXNpb24nKT09JzYwMzdlYTA3ZTNhYmZlNTk5YWQwMGQ0MTg5NjhiY2Y5NjU2ZTc0NzInIGFuZCBjLmdldCgnbW9kZWxfYXV4X3JldmlzaW9uJyk9PSc2NzJmYmYxYjMwNTc5ZDY1ODUzMDExMzliYjM2M2Y0MmEwYWQ0YTI0JywncnVudGltZS9tb2RlbCBpZGVudGl0eSBkcmlmdCcpOyByZXF1aXJlKGMuZ2V0KCdhcnRpZmFjdHMnKT09QVJUSUZBQ1RTLCdhcnRpZmFjdCBpZGVudGl0eSBkcmlmdCcpCiAgICByZXF1aXJlKGUuZ2V0KCdjMF9jb250cm9scycpPT1DMCwnQzAgY29udHJvbHMgZHJpZnQnKTsgcnVuPWUuZ2V0KCdydW4nLHt9KTsgcmVxdWlyZShydW4uZ2V0KCdyZXBvc2l0b3J5X3JldmlzaW9uJyk9PUVYRUNVVElPTl9TT1VSQ0UgYW5kIHJ1bi5nZXQoJ2dpdGh1Yl9ydW5faWQnKT09U1VDQ0VTU19SVU5fSUQgYW5kIHJ1bi5nZXQoJ2dpdGh1Yl9ydW5fYXR0ZW1wdCcpPT0xIGFuZCBydW4uZ2V0KCdnaXRodWJfam9iJyk9PSdjYXB0dXJlLWIycjA5JyBhbmQgcnVuLmdldCgnZ2l0aHViX3JlcG9zaXRvcnknKT09J1RoZUhhbGZNb29uL1dpc3ByYWwnIGFuZCBydW4uZ2V0KCdnaXRodWJfcmVmJyk9PSdyZWZzL2hlYWRzL3Jlc2VhcmNoLzAwMGIyLWIycjA5LWV4ZWN1dGlvbicgYW5kIHJ1bi5nZXQoJ3RpbWluZ19zZW1hbnRpY3MnKT09J0RJQUdOT1NUSUNfT05MWScgYW5kIHJ1bi5nZXQoJ2NvbXBhcmF0aXZlX3BlcmZvcm1hbmNlX2F1dGhvcml6ZWQnKSBpcyBGYWxzZSwncnVuIGlkZW50aXR5IGRyaWZ0JykKICAgIHJpPXJ1bi5nZXQoJ3J1bnRpbWVfaWRlbnRpdHknLHt9KTsgcmVxdWlyZShyaS5nZXQoJ2Rpc3RyaWJ1dGlvbicpPT0nc2hlcnBhLW9ubngnIGFuZCByaS5nZXQoJ3ZlcnNpb24nKT09JzEuMTMuNycgYW5kIHJpLmdldCgnc291cmNlX3JldmlzaW9uJyk9PSc5MTdiZWQ5NWM4ZTVjN2MxOGFhNGQ2OWZlYTQyZTllZjhlZjBhNjBlJyBhbmQgcmkuZ2V0KCdzb3VyY2VfdHJlZScpPT0nZmQyYzRlOTdjOWY3NDk5YjZlZDkxYzdjMjg1NGI0MjExZjYxYmRjMCcsJ3J1bnRpbWUgcHJvdmVuYW5jZSBkcmlmdCcpCiAgICB4PWUuZ2V0KCdleGVjdXRpb24nLHt9KTsgcmVjb3Jkcz14LmdldCgncmVjb3JkcycpOyByZXF1aXJlKCh4LmdldCgnaW5wdXRfY291bnQnKSx4LmdldCgnZGVjb2RlZF9jb3VudCcpLHguZ2V0KCdmYWlsdXJlX2NvdW50JykpPT0oMjQwLDI0MCwwKSwnZXhlY3V0aW9uIGFjY291bnRpbmcgZHJpZnQnKTsgcmVxdWlyZSh4LmdldCgnYWxsX2Zyb3plbl9pbnB1dF9oYXNoZXNfcmV2ZXJpZmllZCcpIGlzIFRydWUgYW5kIHguZ2V0KCdyZWZlcmVuY2VfdHJhbnNjcmlwdHNfbG9hZGVkX2J5X2RlY29kZXInKSBpcyBGYWxzZSBhbmQgeC5nZXQoJ2FjY3VyYWN5X3Njb3JpbmdfcGVyZm9ybWVkJykgaXMgRmFsc2UgYW5kIHguZ2V0KCdjb21wYXJhdGl2ZV9yYW5raW5nX3ByZXNlbnQnKSBpcyBGYWxzZSBhbmQgeC5nZXQoJ3BlcmZvcm1hbmNlX2NsYWltX3ByZXNlbnQnKSBpcyBGYWxzZSwnZXhlY3V0aW9uIGd1YXJkIGRyaWZ0Jyk7IHJlcXVpcmUoaXNpbnN0YW5jZShyZWNvcmRzLGxpc3QpIGFuZCBsZW4ocmVjb3Jkcyk9PTI0MCBhbmQgbGVuKHtyLmdldCgndXR0ZXJhbmNlX2lkJykgZm9yIHIgaW4gcmVjb3Jkc30pPT0yNDAsJ3JlY29yZCBjb3ZlcmFnZSBkcmlmdCcpCiAgICBwcmVwPWxvYWQoUFJFUFJPQ0VTU0lORyk7IGV4cGVjdGVkPXByZXBbJ2V4ZWN1dGlvbiddWydyZWNvcmRzJ107IHJlcXVpcmUoW3IuZ2V0KCd1dHRlcmFuY2VfaWQnKSBmb3IgciBpbiByZWNvcmRzXT09W3IuZ2V0KCd1dHRlcmFuY2VfaWQnKSBmb3IgciBpbiBleHBlY3RlZF0sJ2Zyb3plbiBpbnB1dCBvcmRlciBkcmlmdCcpOyBieT17clsndXR0ZXJhbmNlX2lkJ106ciBmb3IgciBpbiBleHBlY3RlZH0KICAgIGZvciByIGluIHJlY29yZHM6CiAgICAgICAgdWlkPXIuZ2V0KCd1dHRlcmFuY2VfaWQnKTsgcmVxdWlyZShyLmdldCgnc3RhdHVzJyk9PSdERUNPREVEJyBhbmQgci5nZXQoJ2ZhaWx1cmUnKSBpcyBOb25lLGYnZGVjb2RlIHN0YXR1cyBkcmlmdDoge3VpZH0nKTsgcmVxdWlyZShyLmdldCgnY2Fub25pY2FsX3ByZXByb2Nlc3NlZF9maWxlX3NoYTI1NicpPT1ieVt1aWRdLmdldCgnY2Fub25pY2FsX3ByZXByb2Nlc3NlZF9maWxlX3NoYTI1NicpLGYnaW5wdXQgaGFzaCBkcmlmdDoge3VpZH0nKTsgcmVxdWlyZShpc2luc3RhbmNlKHIuZ2V0KCdyYXdfdHJhbnNjcmlwdCcpLHN0cikgYW5kIGlzaW5zdGFuY2Uoci5nZXQoJ3Jhd19zdHJlYW1fc25hcHNob3RzJyksbGlzdCkgYW5kIGFsbChpc2luc3RhbmNlKHMsc3RyKSBmb3IgcyBpbiByWydyYXdfc3RyZWFtX3NuYXBzaG90cyddKSxmJ3JhdyB0cmFuc2NyaXB0IHNoYXBlIGRyaWZ0OiB7dWlkfScpOyBmdD1yLmdldCgnZmVlZF90cmFjZScpOyByZXF1aXJlKGlzaW5zdGFuY2UoZnQsZGljdCkgYW5kIGZ0LmdldCgnc2FtcGxlX3JhdGVfaHonKT09MTYwMDAgYW5kIGZ0LmdldCgnemVyb19zdWZmaXhfY2h1bmtfc2FtcGxlcycpPT1bODAwMCwyNTYwXSBhbmQgZnQuZ2V0KCd6ZXJvX3N1ZmZpeF9zYW1wbGVzJyk9PTEwNTYwIGFuZCBmdC5nZXQoJ2lucHV0X2ZpbmlzaGVkJykgaXMgVHJ1ZSxmJ2ZlZWQgdHJhY2UgZHJpZnQ6IHt1aWR9Jyk7IGNodW5rcz1mdC5nZXQoJ3NwZWVjaF9jaHVua19zYW1wbGVzJyk7IHJlcXVpcmUoaXNpbnN0YW5jZShjaHVua3MsbGlzdCkgYW5kIGNodW5rcyBhbmQgYWxsKGlzaW5zdGFuY2UobixpbnQpIGFuZCAwPG48PTgwMDAgZm9yIG4gaW4gY2h1bmtzKSBhbmQgc3VtKGNodW5rcyk9PWZ0LmdldCgnc3BlZWNoX3NhbXBsZXMnKSxmJ3NwZWVjaCBkZWxpdmVyeSBkcmlmdDoge3VpZH0nKQogICAgcmVxdWlyZShlLmdldCgnY2xhaW1fZ3VhcmRzJyk9PUNMQUlNUywnY2xhaW0gZ3VhcmRzIGRyaWZ0JykKZGVmIG1haW4oKS0+aW50OgogICAgdmVyaWZ5X2Zyb250aWVyKCk7IHZlcmlmeV9zdGF0aWMoKTsgdmVyaWZ5X3Byb3ZlbmFuY2UoKTsgdmVyaWZ5X2V2aWRlbmNlKCk7IHByaW50KCdCMlIwOV9FWEVDVVRJT05fRVZJREVOQ0VfVkVSSUZJRVI9UEFTUycpOyByZXR1cm4gMAppZiBfX25hbWVfXz09J19fbWFpbl9fJzogcmFpc2UgU3lzdGVtRXhpdChtYWluKCkpCg=='
+          verifier=base64.b64decode(verifier_b64).decode().replace('__PROV_SHA__',prov_sha); (public/'verify_b2r09.py').write_text(verifier)
+          composite=public/'verify_attempt_manifest.py'; text=composite.read_text(); old='"""Composite attempt verifier for historical B2P08 and recovery B2R04/B2R05/B2R06/B2R07/B2R08."""'; new='"""Composite attempt verifier for historical B2P08 and recovery B2R04/B2R05/B2R06/B2R07/B2R08/B2R09."""'; assert old in text; text=text.replace(old,new,1)
+          anchor='    (PUBLIC / "verify_b2r08.py", "wispral_b2r08_execution_evidence"),\n]'; replacement='    (PUBLIC / "verify_b2r08.py", "wispral_b2r08_execution_evidence"),\n    (PUBLIC / "verify_b2r09.py", "wispral_b2r09_execution_evidence"),\n]'; assert anchor in text; text=text.replace(anchor,replacement,1); text=text.replace('B2P08_B2R04_B2R05_B2R06_B2R07_AND_B2R08_ATTEMPT_VERIFIER=PASS','B2P08_B2R04_B2R05_B2R06_B2R07_B2R08_AND_B2R09_ATTEMPT_VERIFIER=PASS',1); composite.write_text(text)
+          print('B2R09_PROVENANCE_SHA256='+prov_sha); print('B2R09_PROVENANCE_PAYLOAD_SHA256='+provenance['provenance_payload_sha256'])
+          PY
+          PYTHONDONTWRITEBYTECODE=1 python -m py_compile research/000b2-public/decode_b2r09.py research/000b2-public/verify_b2r09.py research/000b2-public/verify_attempt_manifest.py
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r09.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_manifest.py
+
+      - name: Enforce exact task scope and publish fast-forward only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, subprocess
+          expected={'research/000b2-public/decode_b2r09.py','research/000b2-public/b2r09-sherpa-onnx-compact.json','research/000b2-public/b2r09-provenance.json','research/000b2-public/verify_b2r09.py','research/000b2-public/verify_attempt_manifest.py'}
+          observed=set(subprocess.check_output(['git','diff','--name-only',os.environ['CANONICAL_BASE']],text=True).splitlines()); assert observed==expected,(sorted(observed),sorted(expected)); print('B2R09_TASK_SCOPE=PASS')
+          PY
+          git diff --check
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$EXPECTED_TASK_HEAD"
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/000b2-public/decode_b2r09.py research/000b2-public/b2r09-sherpa-onnx-compact.json research/000b2-public/b2r09-provenance.json research/000b2-public/verify_b2r09.py research/000b2-public/verify_attempt_manifest.py
+          git commit -m "research(000b2): seal B2R09 sherpa onnx compact evidence"
+          NEW_HEAD="$(git rev-parse HEAD)"; test "$(git rev-parse HEAD^)" = "$EXPECTED_TASK_HEAD"; git push origin "HEAD:refs/heads/$TASK_BRANCH"; echo "B2R09_TASK_HEAD=$NEW_HEAD"
