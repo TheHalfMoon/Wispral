@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -118,6 +119,15 @@ def git(*args: str) -> str:
     ).stdout.strip()
 
 
+def verify_recovery_ledger(tasks: str, completed_through: int) -> None:
+    entries = re.findall(r"^- \[([ x])\] `(B2R\d{2})`", tasks, re.MULTILINE)
+    expected = [
+        ("x" if index <= completed_through else " ", f"B2R{index:02d}")
+        for index in range(1, 13)
+    ]
+    require(entries == expected, "recovery task ledger drift")
+
+
 def verify_frontier() -> None:
     readiness = load(READINESS)
     tasks = TASKS.read_text(encoding="utf-8")
@@ -136,7 +146,7 @@ def verify_frontier() -> None:
     post_prefix = [f"B2R{i:02d}" for i in range(1, 10)]
     if completed == pre_prefix and active == "B2R09":
         require(replacement.get("primary_decode_entry_open") is True, "B2R09 primary entry closed before reconciliation")
-        require("- [x] `B2R08`" in tasks and "- [ ] `B2R09`" in tasks and "- [ ] `B2R10`" in tasks, "pre-reconciliation ledger drift")
+        verify_recovery_ledger(tasks, 8)
         require("**Active recovery unit:** `B2R09`" in current, "CURRENT does not own B2R09 frontier")
         require("**Active recovery unit:** `B2R09`" in canonical_current, "CURRENT_STATE does not own B2R09 frontier")
         next_action = str(readiness.get("next_action", ""))
@@ -145,7 +155,7 @@ def verify_frontier() -> None:
     else:
         require(completed == post_prefix and active == "B2R10", "unexpected post-B2R09 recovery frontier")
         require(replacement.get("primary_decode_entry_open") is True, "B2R10 primary entry closed after reconciliation")
-        require("- [x] `B2R09`" in tasks and "- [ ] `B2R10`" in tasks and "- [ ] `B2R11`" in tasks, "post-reconciliation ledger drift")
+        verify_recovery_ledger(tasks, 9)
         require("**Active recovery unit:** `B2R10`" in current, "CURRENT does not own B2R10 frontier")
         require("**Active recovery unit:** `B2R10`" in canonical_current, "CURRENT_STATE does not own B2R10 frontier")
         next_action = str(readiness.get("next_action", ""))
