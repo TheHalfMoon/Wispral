@@ -1,0 +1,142 @@
+name: Internal B2R09 Frontier Verifier Fix
+
+on:
+  push:
+    branches:
+      - ci/000b2-b2r09-frontier-fix
+    paths:
+      - '.github/workflows/internal-b2r09-frontier-fix.yml'
+
+permissions:
+  contents: write
+
+env:
+  CANONICAL_BASE: 737e2fa0422e0d1aa0dd4d5bdc0473d51cec624c
+  TASK_BRANCH: research/000b2-b2r09-sherpa-onnx-compact
+  REVIEW_BRANCH: review/000b2-b2r09-exact-a4bef81
+  EXPECTED_HEAD: a4bef8126e2579667d2f715b6c6039a6c4957a33
+
+jobs:
+  tighten-frontier:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact B2R09 task head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.EXPECTED_HEAD }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Guard live refs and exact task scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$EXPECTED_HEAD"
+          test "$(git ls-remote origin refs/heads/$REVIEW_BRANCH | cut -f1)" = "$EXPECTED_HEAD"
+          EXPECTED=$'research/000b2-public/b2r09-provenance.json\nresearch/000b2-public/b2r09-sherpa-onnx-compact.json\nresearch/000b2-public/decode_b2r09.py\nresearch/000b2-public/verify_attempt_manifest.py\nresearch/000b2-public/verify_b2r09.py'
+          test "$(git diff --name-only "$CANONICAL_BASE" "$EXPECTED_HEAD")" = "$EXPECTED"
+          git diff --quiet HEAD --
+
+      - name: Tighten recovery frontier validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('research/000b2-public/verify_b2r09.py')
+          text = path.read_text(encoding='utf-8')
+          old = '''    completed = readiness.get("completed_recovery_tasks")
+    active = readiness.get("active_recovery_unit")
+    prefix = [f"B2R{i:02d}" for i in range(1, 9)]
+    if completed == prefix and active == "B2R09":
+        require(replacement.get("primary_decode_entry_open") is True, "B2R09 primary entry closed before reconciliation")
+        require("- [x] `B2R08`" in tasks and "- [ ] `B2R09`" in tasks and "- [ ] `B2R10`" in tasks, "pre-reconciliation ledger drift")
+        require("**Active recovery unit:** `B2R09`" in current, "CURRENT does not own B2R09 frontier")
+        require("**Active recovery unit:** `B2R09`" in canonical_current, "CURRENT_STATE does not own B2R09 frontier")
+        next_action = str(readiness.get("next_action", ""))
+        require(next_action.startswith("Qualify B2R09 only:"), "B2R09 next action drift")
+        require("sherpa-onnx-compact" in next_action and "Keep B2R10" in next_action, "B2R09/B2R10 authority boundary drift")
+    else:
+        require(isinstance(completed, list) and "B2R09" in completed, "B2R09 completion lost")
+        require("- [x] `B2R09`" in tasks, "B2R09 task completion lost")
+        require(active != "B2R09", "B2R09 remained active after reconciliation")
+'''
+          new = '''    completed = readiness.get("completed_recovery_tasks")
+    active = readiness.get("active_recovery_unit")
+    recovery_order = [f"B2R{i:02d}" for i in range(1, 13)]
+    require(isinstance(completed, list), "recovery completion ledger must be a list")
+    require(completed == recovery_order[: len(completed)], "recovery completion ledger is not an exact dependency prefix")
+    require(8 <= len(completed) <= len(recovery_order), "recovery completion ledger cardinality drift")
+
+    proofs = readiness.get("transition_proofs")
+    require(isinstance(proofs, list) and len(proofs) == len(completed), "recovery transition proof cardinality drift")
+    for index, proof in enumerate(proofs):
+        require(isinstance(proof, dict), f"recovery transition proof is not an object: {index}")
+        require(proof.get("completed_task") == recovery_order[index], f"recovery transition proof task drift: {index}")
+        if index + 1 < len(recovery_order):
+            require(proof.get("successor_task") == recovery_order[index + 1], f"recovery transition successor drift: {index}")
+        merge = proof.get("canonical_task_merge")
+        recovery_run = proof.get("post_merge_recovery_run_id")
+        require(isinstance(merge, str) and len(merge) == 40 and all(ch in "0123456789abcdef" for ch in merge), f"recovery transition merge id drift: {index}")
+        require(isinstance(recovery_run, int) and recovery_run > 0, f"recovery transition run id drift: {index}")
+
+    for task in recovery_order:
+        marker = "- [x]" if task in completed else "- [ ]"
+        require(f"{marker} `{task}`" in tasks, f"task ledger marker drift: {task}")
+
+    if len(completed) == 8:
+        require(active == "B2R09", "B2R09 is not the sole pre-reconciliation active unit")
+        require(replacement.get("primary_decode_entry_open") is True, "B2R09 primary entry closed before reconciliation")
+        require("**Active recovery unit:** `B2R09`" in current, "CURRENT does not own B2R09 frontier")
+        require("**Active recovery unit:** `B2R09`" in canonical_current, "CURRENT_STATE does not own B2R09 frontier")
+        next_action = str(readiness.get("next_action", ""))
+        require(next_action.startswith("Qualify B2R09 only:"), "B2R09 next action drift")
+        require("sherpa-onnx-compact" in next_action and "Keep B2R10" in next_action, "B2R09/B2R10 authority boundary drift")
+    else:
+        require("B2R09" in completed, "B2R09 completion lost")
+        if len(completed) < len(recovery_order):
+            expected_active = recovery_order[len(completed)]
+            require(active == expected_active, "active recovery unit does not exactly follow the completed prefix")
+            require(replacement.get("primary_decode_entry_open") is True, "next recovery primary entry unexpectedly closed")
+            require(f"**Active recovery unit:** `{expected_active}`" in current, "CURRENT active recovery frontier drift")
+            require(f"**Active recovery unit:** `{expected_active}`" in canonical_current, "CURRENT_STATE active recovery frontier drift")
+        else:
+            require(active not in recovery_order, "completed recovery task remained active")
+
+        if len(completed) == 9:
+            require(active == "B2R10", "B2R10 is not the immediate post-B2R09 active successor")
+            next_action = str(readiness.get("next_action", ""))
+            require(next_action.startswith("Qualify B2R10 only:"), "B2R10 next action drift after B2R09 reconciliation")
+            require("sherpa-onnx-balanced" in next_action and "Keep B2R11" in next_action, "B2R10/B2R11 authority boundary drift")
+            require(readiness.get("claim_guards") == READINESS_CLAIMS, "post-B2R09 scoring/product claim guards opened early")
+'''
+          if old not in text:
+              raise SystemExit('expected verify_frontier block not found exactly')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+          git diff --check
+          PYTHONDONTWRITEBYTECODE=1 python -m py_compile research/000b2-public/verify_b2r09.py
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r09.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_manifest.py
+
+      - name: Commit verifier-only fix and fast-forward task and review refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$EXPECTED_HEAD"
+          test "$(git ls-remote origin refs/heads/$REVIEW_BRANCH | cut -f1)" = "$EXPECTED_HEAD"
+          test "$(git diff --name-only)" = "research/000b2-public/verify_b2r09.py"
+          git config user.name 'Abdulaziz M. Shehri'
+          git config user.email 'alshehriofficial@gmail.com'
+          git add research/000b2-public/verify_b2r09.py
+          git commit -m 'fix(000b2): enforce ordered B2R09 successor frontier'
+          NEW_HEAD="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_HEAD"
+          git push origin "HEAD:refs/heads/$TASK_BRANCH"
+          git push origin "HEAD:refs/heads/$REVIEW_BRANCH"
+          echo "B2R09_FIXED_HEAD=$NEW_HEAD"
