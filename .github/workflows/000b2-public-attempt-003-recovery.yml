@@ -51,6 +51,7 @@ jobs:
     timeout-minutes: 10
     env:
       EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+      AUTHORITY_BASE_REVISION: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
       DISCOVERY_MAIN: dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff
       SHERPA_REVISION: 917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e
     steps:
@@ -61,12 +62,16 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Verify exact revision and historical discovery commit
+      - name: Verify exact revision and authority base
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
           git rev-parse --verify "${DISCOVERY_MAIN}^{commit}"
+          if test -n "$AUTHORITY_BASE_REVISION"; then
+            git rev-parse --verify "${AUTHORITY_BASE_REVISION}^{commit}"
+          fi
           echo "EXACT_REVISION=$EXACT_REVISION"
+          echo "AUTHORITY_BASE_REVISION=$AUTHORITY_BASE_REVISION"
           echo "DISCOVERY_MAIN=$DISCOVERY_MAIN"
 
       - name: Verify current successor frontier without external source access
@@ -134,11 +139,13 @@ jobs:
           import urllib.request
           from pathlib import Path
 
-          state = json.loads(Path('research/000b2-public/recovery-attempt-003-readiness.json').read_text(encoding='utf-8'))
+          readiness_path = 'research/000b2-public/recovery-attempt-003-readiness.json'
+          state = json.loads(Path(readiness_path).read_text(encoding='utf-8'))
           task_order = state.get('task_order')
           completed = state.get('completed_recovery_tasks')
           active = state.get('active_recovery_unit')
-          if task_order != [f'B2R{i:02d}' for i in range(13, 25)]:
+          expected_order = [f'B2R{i:02d}' for i in range(13, 25)]
+          if task_order != expected_order:
               raise SystemExit('ATTEMPT-003 successor task order drift')
           if not isinstance(completed, list) or completed != task_order[:len(completed)]:
               raise SystemExit('ATTEMPT-003 completed tasks are not an exact ordered prefix')
@@ -146,27 +153,138 @@ jobs:
           if active != expected_active:
               raise SystemExit(f'ATTEMPT-003 active successor drift: {active!r} != {expected_active!r}')
 
+          expected_scope = [
+              'docs/canonical/CURRENT_STATE.md',
+              'research/000b2-public/recovery-attempt-003-readiness.json',
+              'specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md',
+              'specs/CURRENT.md',
+          ]
+          expected_policy = {
+              'canonical_main_ref_required_after_first_completion': True,
+              'one_recovery_task_per_reconciliation': True,
+              'canonical_task_merge_must_be_on_main': True,
+              'successful_post_merge_recovery_run_required': True,
+              'unique_task_merge_per_completion': True,
+              'unique_post_merge_recovery_run_per_completion': True,
+              'normal_merge_required': True,
+              'exact_qualified_head_parent_required': True,
+              'candidate_must_advance_at_most_one_task_from_authority_base': True,
+              'authority_documents_must_declare_successor': True,
+              'reconciliation_candidate_scope': expected_scope,
+          }
+          if state.get('transition_policy') != expected_policy:
+              raise SystemExit('ATTEMPT-003 transition policy drift')
+
           proofs = state.get('transition_proofs')
           if not isinstance(proofs, list) or len(proofs) != len(completed):
               raise SystemExit('ATTEMPT-003 transition proof cardinality must equal completed task count')
+
+          authority_base = os.environ.get('AUTHORITY_BASE_REVISION', '')
+          base_state = None
+          if authority_base:
+              read_base = subprocess.run(
+                  ['git', 'show', f'{authority_base}:{readiness_path}'],
+                  check=False,
+                  text=True,
+                  stdout=subprocess.PIPE,
+                  stderr=subprocess.DEVNULL,
+              )
+              if read_base.returncode == 0:
+                  try:
+                      base_state = json.loads(read_base.stdout)
+                  except json.JSONDecodeError as error:
+                      raise SystemExit('authority-base successor readiness is malformed JSON') from error
+              elif authority_base != os.environ.get('DISCOVERY_MAIN'):
+                  raise SystemExit('successor readiness missing from non-activation authority base')
+
+          if base_state is None:
+              if authority_base and authority_base != os.environ.get('DISCOVERY_MAIN'):
+                  raise SystemExit('only discovery main may lack successor readiness')
+              if completed != [] or active != 'B2R13' or proofs != []:
+                  raise SystemExit('B2R13 activation may not pre-complete successor recovery')
+          else:
+              base_completed = base_state.get('completed_recovery_tasks')
+              base_order = base_state.get('task_order')
+              base_active = base_state.get('active_recovery_unit')
+              base_proofs = base_state.get('transition_proofs')
+              if base_order != task_order:
+                  raise SystemExit('authority-base successor task order drift')
+              if not isinstance(base_completed, list) or base_completed != task_order[:len(base_completed)]:
+                  raise SystemExit('authority-base completed tasks are not an exact ordered prefix')
+              expected_base_active = task_order[len(base_completed)] if len(base_completed) < len(task_order) else None
+              if base_active != expected_base_active:
+                  raise SystemExit('authority-base active successor drift')
+              if not isinstance(base_proofs, list) or len(base_proofs) != len(base_completed):
+                  raise SystemExit('authority-base transition proof cardinality drift')
+              delta = len(completed) - len(base_completed)
+              if delta not in {0, 1}:
+                  raise SystemExit('candidate may advance at most one recovery task from authority base')
+              if delta == 0:
+                  if completed != base_completed or active != base_active or proofs != base_proofs:
+                      raise SystemExit('non-reconciliation candidate changed successor completion authority')
+              else:
+                  if completed[:-1] != base_completed or proofs[:-1] != base_proofs:
+                      raise SystemExit('reconciliation replaced prior completion/proof history')
+                  if completed[-1] != base_active:
+                      raise SystemExit('reconciliation did not complete the exact authority-base active task')
+                  if proofs[-1].get('canonical_task_merge') != authority_base:
+                      raise SystemExit('new transition proof must bind the exact reconciliation authority-base task merge')
+
           sha40 = re.compile(r'^[0-9a-f]{40}$')
+          seen_merges: set[str] = set()
+          seen_runs: set[int] = set()
+          previous_merge = None
           for index, task in enumerate(completed):
               proof = proofs[index]
               if not isinstance(proof, dict):
                   raise SystemExit(f'transition proof must be an object: {task}')
-              if set(proof) != {'completed_task', 'canonical_task_merge', 'post_merge_recovery_run_id', 'successor_task'}:
+              required_keys = {
+                  'completed_task',
+                  'canonical_task_base',
+                  'qualified_task_head',
+                  'canonical_task_merge',
+                  'post_merge_recovery_run_id',
+                  'successor_task',
+              }
+              if set(proof) != required_keys:
                   raise SystemExit(f'transition proof key drift: {task}')
               if proof.get('completed_task') != task:
                   raise SystemExit(f'transition proof task-order drift: {task}')
+
+              task_base = proof.get('canonical_task_base')
+              task_head = proof.get('qualified_task_head')
               merge = proof.get('canonical_task_merge')
-              if not isinstance(merge, str) or sha40.fullmatch(merge) is None:
-                  raise SystemExit(f'transition proof merge SHA malformed: {task}')
+              if not all(isinstance(value, str) and sha40.fullmatch(value) is not None for value in (task_base, task_head, merge)):
+                  raise SystemExit(f'transition proof SHA malformed: {task}')
+              if task_base == task_head or task_base == merge or task_head == merge:
+                  raise SystemExit(f'transition proof identities must be distinct: {task}')
+              if merge in seen_merges:
+                  raise SystemExit(f'canonical task merge reused across completions: {task}')
+              seen_merges.add(merge)
+
               run_id = proof.get('post_merge_recovery_run_id')
               if type(run_id) is not int or run_id <= 0:
                   raise SystemExit(f'transition proof run id malformed: {task}')
+              if run_id in seen_runs:
+                  raise SystemExit(f'post-merge recovery run reused across completions: {task}')
+              seen_runs.add(run_id)
+
               successor = task_order[index + 1] if index + 1 < len(task_order) else None
               if proof.get('successor_task') != successor:
                   raise SystemExit(f'transition proof successor drift: {task}')
+
+              parents = subprocess.run(
+                  ['git', 'show', '-s', '--format=%P', merge],
+                  check=False,
+                  text=True,
+                  stdout=subprocess.PIPE,
+                  stderr=subprocess.DEVNULL,
+              )
+              if parents.returncode != 0:
+                  raise SystemExit(f'canonical task merge is unavailable: {task}')
+              parent_shas = parents.stdout.strip().split()
+              if parent_shas != [task_base, task_head]:
+                  raise SystemExit(f'canonical task merge parents do not match exact base/head: {task}')
 
               ancestry = subprocess.run(
                   ['git', 'merge-base', '--is-ancestor', merge, 'HEAD'],
@@ -176,6 +294,39 @@ jobs:
               )
               if ancestry.returncode != 0:
                   raise SystemExit(f'transition proof merge is not in candidate ancestry: {task}')
+
+              if index == 0:
+                  if task_base != os.environ.get('DISCOVERY_MAIN'):
+                      raise SystemExit('B2R13 canonical task base must be exact discovery main')
+              else:
+                  base_read = subprocess.run(
+                      ['git', 'show', f'{task_base}:{readiness_path}'],
+                      check=False,
+                      text=True,
+                      stdout=subprocess.PIPE,
+                      stderr=subprocess.DEVNULL,
+                  )
+                  if base_read.returncode != 0:
+                      raise SystemExit(f'canonical task base lacks successor readiness: {task}')
+                  try:
+                      task_base_state = json.loads(base_read.stdout)
+                  except json.JSONDecodeError as error:
+                      raise SystemExit(f'canonical task base readiness malformed: {task}') from error
+                  if task_base_state.get('completed_recovery_tasks') != task_order[:index]:
+                      raise SystemExit(f'canonical task base completion prefix drift: {task}')
+                  if task_base_state.get('active_recovery_unit') != task:
+                      raise SystemExit(f'task was not the active unit on its canonical first parent: {task}')
+                  if previous_merge is None or previous_merge == task_base:
+                      raise SystemExit(f'missing separate prior reconciliation before task base: {task}')
+                  prior_ancestry = subprocess.run(
+                      ['git', 'merge-base', '--is-ancestor', previous_merge, task_base],
+                      stdout=subprocess.DEVNULL,
+                      stderr=subprocess.DEVNULL,
+                      check=False,
+                  )
+                  if prior_ancestry.returncode != 0:
+                      raise SystemExit(f'prior task merge is not ancestral to next task base: {task}')
+              previous_merge = merge
 
               repository = os.environ.get('GITHUB_REPOSITORY', '')
               token = os.environ.get('GH_TOKEN', '')
