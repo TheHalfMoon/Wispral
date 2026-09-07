@@ -1,0 +1,113 @@
+{
+  "attempt_id": "000B2-PUBLIC-ATTEMPT-002",
+  "candidate_id": "sherpa-onnx-compact",
+  "canonical_evidence_source": {
+    "artifact_id": 10031177463,
+    "artifact_name": "b2r09-sherpa-onnx-compact-47d1c53f6892dda437aa0f1d109f58f1cc5e101e",
+    "artifact_zip_sha256": "79652728032760ae133845b7f1308623a984ee69c490991cf190d8a7301985ea",
+    "artifact_zip_size_bytes": 19519,
+    "conclusion": "success",
+    "event": "push",
+    "evidence_path": "research/000b2-public/b2r09-sherpa-onnx-compact.json",
+    "evidence_payload_sha256": "4a81f1be21e18aa462ee9ec9c32a1daeaa6fa86bcca6372b0634a9421c16c1ed",
+    "evidence_raw_file_sha256": "d59fa9605e8b0cf6892cd5a7ece105c6abe0753ff8949e9206e35f42da9a003f",
+    "evidence_raw_file_size_bytes": 248426,
+    "execution_decoder_blob_sha": "27052cc7f3d57d2743ee06a7db8de730c833935e",
+    "job_id": 101848322734,
+    "mergeable_decoder_blob_sha": "27052cc7f3d57d2743ee06a7db8de730c833935e",
+    "role": "CANONICAL_EVIDENCE_SOURCE",
+    "run_attempt": 1,
+    "run_id": 34156167567,
+    "selection_basis": "FIRST_SUCCESSFUL_B2R09_PRIMARY_AFTER_PRE_PRIMARY_SETUP_PYTHON_CACHE_CONFIGURATION_FAILURE_WITH_ZERO_ARTIFACTS_AND_NO_RUNTIME_MODEL_PREPROCESSING_OR_PRIMARY_ACCESS; NOT_RESULT_DRIVEN",
+    "source_branch": "research/000b2-b2r09-execution",
+    "source_revision": "47d1c53f6892dda437aa0f1d109f58f1cc5e101e",
+    "workflow_id": 352553362,
+    "workflow_name": "Internal B2R09 ATTEMPT-002 Capture"
+  },
+  "claims": {
+    "b2r10_authorized": false,
+    "comparative_performance_authorized": false,
+    "comparative_result_available": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "product_code_authorized": false,
+    "production_stt_selected": false
+  },
+  "provenance_payload_sha256": "22c7e7ba9dc290ca8ae3f07da5331ef27cbe1bf9f80facd58c541e4ef774a16d",
+  "provenance_status": "RECORDED_FROM_EXACT_GITHUB_ACTIONS_SUCCESSFUL_PRIMARY_WITH_FAILED_PRE_PRIMARY_PYTHON_CACHE_SETUP_AND_BYTE_PRESERVING_TASK_MATERIALIZATION_CHRONOLOGY",
+  "related_pre_primary_runs": [
+    {
+      "artifact_count": 0,
+      "authority_validation_succeeded": true,
+      "candidate_result_accessed": false,
+      "conclusion": "failure",
+      "failure_detail": "actions/setup-python cache=pip found no requirements.txt or pyproject.toml after CPython 3.11.16 setup",
+      "failure_stage": "SETUP_PYTHON_CACHE_DEPENDENCY_FILE_DISCOVERY",
+      "job_id": 101847745228,
+      "model_download_started": false,
+      "preprocessing_container_pull_started": false,
+      "preprocessing_started": false,
+      "primary_decode_started": false,
+      "repair": {
+        "c0_controls_changed": false,
+        "candidate_changed": false,
+        "frozen_audio_changed": false,
+        "model_changed": false,
+        "normalization_changed": false,
+        "policy": "FORWARD_ONLY_REMOVE_SETUP_PYTHON_PIP_CACHE_CONFIGURATION",
+        "runtime_revision_changed": false,
+        "scorer_changed": false
+      },
+      "role": "FAILED_PRE_PRIMARY_NONCANONICAL",
+      "run_attempt": 1,
+      "run_id": 34155967652,
+      "runtime_install_started": false,
+      "runtime_source_fetch_started": false,
+      "selection_effect": "NONE",
+      "source_branch": "research/000b2-b2r09-execution",
+      "source_revision": "f45e9884e3fbcdc84dd27393b8ffde7d12df65e5",
+      "workflow_id": 352553362,
+      "workflow_name": "Internal B2R09 ATTEMPT-002 Capture"
+    }
+  ],
+  "result_accounting": {
+    "accuracy_scoring_performed": false,
+    "all_frozen_input_hashes_reverified": true,
+    "comparative_ranking_present": false,
+    "decoded_count": 240,
+    "failure_count": 0,
+    "input_count": 240,
+    "performance_claim_present": false,
+    "reference_transcripts_loaded_by_decoder": false,
+    "result_driven_evidence_selection": false,
+    "timing_semantics": "DIAGNOSTIC_ONLY"
+  },
+  "runtime_identity": {
+    "distribution": "sherpa-onnx",
+    "module_file": "__init__.py",
+    "module_file_sha256": "9f1d820f337a09099a77e321d6ccddd0ea76b24ebaf815fb9a315cbb0a08b1f3",
+    "source_revision": "917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e",
+    "source_tree": "fd2c4e97c9f7499b6ed91c7c2854b4211f61bdc0",
+    "version": "1.13.7"
+  },
+  "schema_version": "000b2-public-b2r09-provenance-v1",
+  "task": "B2R09",
+  "task_materialization": {
+    "candidate_result_accessed_for_integrity_validation": true,
+    "evidence_blob_sha": "ee57923e649bee4dc8910f473c8e55ec80eeb790",
+    "input_task_revision": "b7a4bb8828a4b861a399b1424bc07a4e549cf51f",
+    "job_id": 101852259514,
+    "output_task_revision": "52f5ca98c85402af47007983590c5dea4ec19b8f",
+    "result_access_effect": "NONE",
+    "role": "BYTE_PRESERVING_POST_PRIMARY_TASK_MATERIALIZATION",
+    "run_id": 34157501089,
+    "scope": [
+      "research/000b2-public/decode_b2r09.py",
+      "research/000b2-public/b2r09-sherpa-onnx-compact.json"
+    ],
+    "selection_effect": "NONE",
+    "source_branch": "ci/000b2-b2r09-task-materialize",
+    "source_revision": "8a1827018438b9ed50b9760bf38bf65c71da8976",
+    "workflow_id": 352563253,
+    "workflow_name": "Internal B2R09 Evidence Materialization"
+  }
+}
