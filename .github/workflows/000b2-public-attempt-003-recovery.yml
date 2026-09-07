@@ -3,36 +3,20 @@ name: 000B2 Public Corpus ATTEMPT-003 Recovery
 on:
   pull_request:
     paths:
-      - '.github/workflows/000b2-public-attempt-003-recovery.yml'
-      - '.github/workflows/000b2-public-attempt-recovery.yml'
+      - '.github/workflows/000b2-public-*.yml'
       - 'research/000b1/frozen-methodology.json'
-      - 'research/000b2-public/attempt-002-invalidation.json'
-      - 'research/000b2-public/recovery-attempt-003-readiness.json'
-      - 'research/000b2-public/verify_attempt_002_invalidation.py'
-      - 'research/000b2-public/verify_b2r13_activation.py'
-      - 'research/000b2-public/attempt-003-**'
-      - 'research/000b2-public/b2r1[3-9]-**'
-      - 'research/000b2-public/b2r2[0-4]-**'
-      - 'specs/000B2-public-corpus-bakeoff/recovery-v2.md'
-      - 'specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md'
+      - 'research/000b2-public/**'
+      - 'specs/000B2-public-corpus-bakeoff/**'
       - 'specs/CURRENT.md'
       - 'docs/canonical/CURRENT_STATE.md'
   push:
     branches:
       - main
     paths:
-      - '.github/workflows/000b2-public-attempt-003-recovery.yml'
-      - '.github/workflows/000b2-public-attempt-recovery.yml'
+      - '.github/workflows/000b2-public-*.yml'
       - 'research/000b1/frozen-methodology.json'
-      - 'research/000b2-public/attempt-002-invalidation.json'
-      - 'research/000b2-public/recovery-attempt-003-readiness.json'
-      - 'research/000b2-public/verify_attempt_002_invalidation.py'
-      - 'research/000b2-public/verify_b2r13_activation.py'
-      - 'research/000b2-public/attempt-003-**'
-      - 'research/000b2-public/b2r1[3-9]-**'
-      - 'research/000b2-public/b2r2[0-4]-**'
-      - 'specs/000B2-public-corpus-bakeoff/recovery-v2.md'
-      - 'specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md'
+      - 'research/000b2-public/**'
+      - 'specs/000B2-public-corpus-bakeoff/**'
       - 'specs/CURRENT.md'
       - 'docs/canonical/CURRENT_STATE.md'
   workflow_dispatch:
