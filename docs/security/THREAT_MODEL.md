@@ -7,7 +7,7 @@
 
 Voice convenience must not create an authority channel that is easier to trigger accidentally, remotely, or ambiguously than the underlying coding agent.
 
-Wispral should preserve user control when microphone input, speech recognition, repository context, agent output, permissions, plugins, or external providers behave unexpectedly.
+Wispral should preserve user control when microphone input, speech recognition, repository context, agent output, permissions, plugins, external providers, security scanners, or supply-chain components behave unexpectedly.
 
 ## 2. Protected assets
 
@@ -24,7 +24,10 @@ Potentially protected assets include:
 - developer design reasoning captured as `ASIDE` context;
 - agent session history;
 - policy configuration;
-- benchmark/private corpus data.
+- benchmark/private corpus data;
+- tool, skill, server, adapter, and provider identities;
+- security evidence, scanner findings, and provenance records;
+- dependency, model, ruleset, and release provenance.
 
 ## 3. Trust boundaries
 
@@ -40,9 +43,14 @@ Founding trust boundaries include:
 8. optional TTS/output -> physical acoustic environment;
 9. local process -> optional cloud provider;
 10. plugin/extension -> core runtime;
-11. persistent state -> local filesystem/keychain/config.
+11. persistent state -> local filesystem/keychain/config;
+12. repository bytes/filesystem metadata -> content identification and parser selection;
+13. extension/tool/server discovery -> capability admission and identity binding;
+14. security scanner/evaluator -> normalized security evidence;
+15. package/model/ruleset source -> locally admitted dependency or runtime artifact;
+16. mutable remote provider identity -> evidence and policy assumptions bound to that provider.
 
-Each boundary requires explicit data-flow and failure behavior before production qualification.
+Each boundary requires explicit data-flow and failure behavior before production qualification. A probabilistic classifier, LLM reviewer, scanner score, or absence of findings must not directly become authorization.
 
 ## 4. Threat classes
 
@@ -194,6 +202,124 @@ Required posture:
 - private evaluation audio must not be committed accidentally;
 - benchmark reproducibility must not override participant privacy.
 
+### T13 — Content-type confusion and parser mismatch
+
+A repository object can be named or extended like one file type while containing another, causing Wispral, an agent, or a parser to interpret different semantics.
+
+Examples:
+
+- executable or binary content named with a text/source extension;
+- an archive presented as an ordinary document;
+- a symlink followed when the user believed the link itself was being inspected;
+- a parser selected from extension alone despite conflicting content evidence.
+
+Required posture:
+
+- extension, content-type observation, executable bit, symlink state, size, and parser choice remain distinct provenance fields;
+- parser/execution selection must not trust filename extension alone;
+- ambiguous or low-confidence content identity must have a bounded safe fallback;
+- content-identity models or heuristics inform deterministic policy but do not authorize execution.
+
+### T14 — Encoding, bytecode, Unicode, or content smuggling
+
+Different decoders or tools may see materially different instructions in the same bytes.
+
+Examples:
+
+- malformed or ambiguous text encoding;
+- mojibake that changes visible security-relevant text;
+- hidden Unicode control characters;
+- bytecode/generated artifacts presented as source;
+- mixed binary/text or polyglot files;
+- oversized/compressed input used to bypass inspection or exhaust resources.
+
+Required posture:
+
+- preserve raw-byte digest separately from decoded text;
+- decoding is size-bounded and records the selected encoding/recovery path;
+- suspicious controls, decode ambiguity, bytecode, archive expansion, and parser differentials are explicit signals;
+- unsafe/unknown decoding fails to a non-executing path rather than silently coercing bytes into trusted text.
+
+### T15 — Tool/skill identity confusion, shadowing, poisoning, or rug pull
+
+Display names and stable-looking tool identifiers can conceal a changed implementation or conflicting capability.
+
+Examples:
+
+- a malicious tool uses a confusingly similar name;
+- a later extension shadows a previously trusted tool;
+- a tool description remains stable while implementation behavior changes;
+- a previously approved skill changes its code after gaining trust;
+- declared functionality omits hidden network, credential, or process behavior.
+
+Required posture:
+
+- bind admission and consequential approval to exact identity/capability evidence, not display name alone;
+- compare declared and observed capabilities where feasible;
+- material implementation, dependency, or capability drift invalidates affected prior approval;
+- ambiguity, shadowing, and identity collisions fail closed for high-risk actions.
+
+### T16 — Extension, dependency, model, or ruleset supply-chain substitution
+
+A trusted component may be replaced or altered between qualification and use.
+
+Required posture:
+
+- record the strongest available source revision, artifact digest, package/model version, dependency lock, license/NOTICE identity, and release/signer provenance;
+- mutable aliases are identified as such;
+- material source/artifact drift triggers re-qualification where evidence depended on the old identity;
+- native/FFI dependencies require their own security evidence rather than inheriting trust from Rust orchestration;
+- third-party scanner/rule/model updates do not silently change policy semantics.
+
+### T17 — Context over-sharing and cross-session leakage
+
+A context provider, extension, or agent may receive more repository/session/history data than its task requires.
+
+Required posture:
+
+- context budgets and source scopes are explicit;
+- historical/session context remains distinct from current-command authority;
+- sensitive repository or transcript material is not shared merely because a provider can accept larger context;
+- cross-session or cross-agent context transfer requires an explicit contract and visible provenance;
+- security findings should identify over-sharing without themselves receiving unrestricted context.
+
+### T18 — Provider/model endpoint substitution or material behavior drift
+
+A remote service can preserve the same public model/provider alias while changing the implementation, routing, filtering, or model behind it.
+
+Required posture:
+
+- bind evidence to the strongest observable provider/model identity available;
+- disclose when only a mutable service alias is known;
+- do not carry exact-model claims across unverified provider drift;
+- security/privacy fallback must not silently route to a materially different provider;
+- benchmark or qualification evidence is stale when its relevant remote identity can no longer be reproduced or bounded.
+
+### T19 — Security scanner false assurance or compromised evidence provider
+
+A security tool can be wrong, stale, unavailable, non-deterministic, compromised, or itself exposed to prompt injection.
+
+Required posture:
+
+- scanner output is `SecurityObservation`/`SecurityFinding` evidence, not direct authorization;
+- bind findings to scanner identity/version/configuration and raw-report digest where feasible;
+- preserve `NOT_RUN`, `UNAVAILABLE`, `INCONCLUSIVE`, `STALE`, and equivalent non-success states;
+- absence of findings is not automatically a security `PASS` unless the exact test contract defines that interpretation;
+- probabilistic/LLM-based reviewer text cannot override deterministic Wispral policy;
+- disagreement between evidence providers must remain visible rather than being silently majority-voted into authority.
+
+### T20 — Agent-generated security regression hidden by task success
+
+An independent coding agent can complete the requested functional task while introducing or preserving a vulnerability.
+
+Required posture:
+
+- repository-level security evaluation must be separable from functional task completion;
+- future security benchmarks should combine deterministic policy assertions with static and dynamic evidence where justified;
+- known vulnerable fixtures, negative controls, and losing results are preserved;
+- Wispral must not claim that successful control-plane dispatch implies secure generated code;
+- when security evidence is configured as an execution gate, its exact scope and failure semantics must be deterministic and observable.
+
 ## 5. Founding risk tiers
 
 The exact policy remains a later specification, but research should test at least these conceptual tiers:
@@ -235,8 +361,30 @@ At minimum, later qualification should include:
 - credential/logging review;
 - dependency/supply-chain review;
 - platform permission behavior review;
+- file-extension/content mismatch and low-confidence content-identity fixtures for repository ingestion;
+- symlink/path traversal and bounded archive/oversized-input behavior where those inputs are supported;
+- malformed encoding, Unicode-control, mojibake, bytecode, mixed binary/text, and parser-differential fixtures;
+- tool/skill/server name-confusion, shadowing, declared-capability mismatch, and post-approval identity-drift tests for any extension surface;
+- exact security-scanner/provider identity and unavailable/inconclusive/stale-result behavior;
+- scanner-disagreement tests that prove deterministic policy does not collapse uncertainty into approval;
+- repository-level security-regression fixtures for representative agent-driven changes;
+- provider/model mutable-alias drift disclosure where remote services participate in a security, benchmark, or privacy claim;
 - documented residual risks.
 
-## 8. Non-claim
+## 8. Source-informed planning note
+
+`docs/research/AI_SECURITY_SOURCE_SYNTHESIS.md` and `docs/research/AI_SECURITY_SOURCE_REGISTRY.json` record the current study of:
+
+- `Tencent/AI-Infra-Guard`;
+- `google/magika`;
+- `Tencent/AICGSecEval`;
+- `Tencent/secguide`;
+- `Tencent/TscanCode`.
+
+The useful source-derived patterns include MCP/Skill/agent threat taxonomies, local content identification, bounded text decoding, SARIF finding interchange, repository-level hybrid security evaluation, secure-coding rule design, and native-code static-analysis boundaries.
+
+Those sources do not establish Wispral security. They do not authorize a mandatory scanner service, generic plugin system, remote LLM security dependency, linked GPL component, or any change to the current executable specification frontier. Exact code adoption remains subject to path/blob/license/NOTICE provenance and the active specification that later selects it.
+
+## 9. Non-claim
 
 This document is a threat-model starting point. Wispral is not security-qualified, production-hardened, or safe for consequential autonomous operation merely because these threats are documented.

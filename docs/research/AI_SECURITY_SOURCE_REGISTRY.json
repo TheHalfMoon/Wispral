@@ -1,0 +1,128 @@
+{
+  "schema_version": "wispral-ai-security-source-registry-v1",
+  "recorded_at": "2026-09-08",
+  "canonical_planning_base": "d1447a3a3aa9cef1490747b0a8b288e16465e95b",
+  "authority": {
+    "founder_asserted_source_use_authorization": true,
+    "authorization_scope_statement": "Founder stated that Wispral may copy and adapt source code from the sources recorded here.",
+    "license_and_provenance_obligations_preserved": true,
+    "executable_frontier_changed": false
+  },
+  "sources": [
+    {
+      "repository": "Tencent/AI-Infra-Guard",
+      "default_branch": "main",
+      "pinned_revision": "e4e622af3ad2b8228ce82dd62b01415dd8ce2b9c",
+      "root_license": "Apache-2.0",
+      "component_license_review_required": true,
+      "observed_components": [
+        "mcp-scan",
+        "skill-scan",
+        "agent-scan"
+      ],
+      "primary_value": [
+        "MCP and Agent Skill security taxonomies",
+        "agent black-box red-team categories",
+        "deterministic pre-scan patterns",
+        "SARIF 2.1.0 finding interchange",
+        "declared-versus-implemented capability checks",
+        "charset and bytecode smuggling awareness"
+      ],
+      "disposition": "SELECTIVE_ADAPTATION_CANDIDATE",
+      "core_dependency_authorized": false,
+      "llm_scanner_as_policy_authority_authorized": false
+    },
+    {
+      "repository": "google/magika",
+      "default_branch": "main",
+      "pinned_revision": "26b6a9ba7e92f2b0a3745970a9190ec0dde9bf83",
+      "root_license": "Apache-2.0",
+      "component_license_review_required": true,
+      "primary_value": [
+        "local content-type identification",
+        "Rust implementation availability",
+        "confidence-aware classification",
+        "unknown/generic fallback",
+        "content identity independent of file extension",
+        "symlink-aware CLI behavior"
+      ],
+      "disposition": "OPTIONAL_RUST_BOUNDARY_CANDIDATE",
+      "core_dependency_authorized": false
+    },
+    {
+      "repository": "Tencent/AICGSecEval",
+      "default_branch": "master",
+      "pinned_revision": "94428ebf45141bf4ecd365a51d596dcd51caa690",
+      "root_license": "Apache-2.0",
+      "component_license_review_required": true,
+      "third_party_notice_review_required": true,
+      "primary_value": [
+        "repository-level security evaluation",
+        "agent-aware evaluation adapters",
+        "hybrid static and dynamic assessment",
+        "realistic project-context generation workflow",
+        "checkpointable long-running evaluation"
+      ],
+      "disposition": "METHODOLOGY_AND_FIXTURE_REFERENCE",
+      "runtime_dependency_authorized": false
+    },
+    {
+      "repository": "Tencent/secguide",
+      "default_branch": "main",
+      "pinned_revision": "bfda087142e3bb3f5840cbc6af82c1982d1d14e4",
+      "root_license": "CC-BY-SA-4.0",
+      "component_license_review_required": true,
+      "primary_value": [
+        "developer-readable secure coding rules",
+        "remediation-oriented rule wording",
+        "scanner-rule design reference for non-Rust surfaces"
+      ],
+      "disposition": "REFERENCE_FIRST",
+      "direct_core_copy_authorized_by_plan": false
+    },
+    {
+      "repository": "Tencent/TscanCode",
+      "default_branch": "master",
+      "pinned_revision": "3e3b6b66a7e39283d99add581fb9d54ee80c48f5",
+      "root_license": "GPL-3.0",
+      "component_license_review_required": true,
+      "third_party_notice_review_required": true,
+      "primary_value": [
+        "native C/C++ static-analysis reference",
+        "extensible checker architecture",
+        "machine-readable analyzer output",
+        "bounded review candidate for native speech and FFI surfaces"
+      ],
+      "disposition": "OUT_OF_PROCESS_REFERENCE_BY_DEFAULT",
+      "linked_core_dependency_authorized": false
+    }
+  ],
+  "selected_architectural_direction": {
+    "name": "Trust Boundary Pipeline",
+    "stages": [
+      "discover",
+      "identify",
+      "decode",
+      "provenance-bind",
+      "statically-inspect",
+      "optionally-evaluate",
+      "policy-classify",
+      "authorize",
+      "execute",
+      "observe",
+      "audit"
+    ],
+    "probabilistic_scanner_may_directly_authorize": false,
+    "scanner_result_is_evidence_not_authority": true
+  },
+  "roadmap_targets": [
+    "H0",
+    "H4",
+    "H7",
+    "H11",
+    "H12",
+    "H13",
+    "H14"
+  ],
+  "active_execution_scope_effect": "NONE"
+}

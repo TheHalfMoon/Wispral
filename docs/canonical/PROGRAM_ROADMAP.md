@@ -44,11 +44,32 @@ For every consequential action, the user must be able to determine:
 - what Wispral resolved;
 - what Wispral interpreted;
 - what the agent requested;
+- what object/tool/provider identity was involved where material;
+- what security evidence was considered where configured;
 - what policy authorized or denied.
+
+Security tools, classifiers, and model-generated reviews are evidence providers. They do not replace deterministic Wispral authorization.
 
 ### Interoperability north star
 
-The core interaction model must survive changes in agent vendor, model vendor, and speech backend.
+The core interaction model must survive changes in agent vendor, model vendor, speech backend, and optional security-evidence provider.
+
+## Cross-cutting trust-boundary direction
+
+Future context, extension, and security work should converge on one provenance-preserving trust pipeline rather than independent scanner-specific control paths:
+
+`discover -> identify -> decode -> provenance-bind -> statically-inspect -> optionally-evaluate -> policy-classify -> authorize -> execute -> observe -> audit`
+
+This is a directional architecture, not an implementation specification. Individual stages may be omitted when they are irrelevant to a bounded operation, but skipping a stage must not silently fabricate its evidence.
+
+Core rules:
+
+- content identity, scanner output, LLM review, and provider confidence are evidence rather than direct authority;
+- deterministic policy owns consequential authorization;
+- local-first core use must remain possible without a hosted security service;
+- tool/skill/server/provider identity must be capable of invalidating stale approval when material identity or capability changes;
+- exact code/dependency adoption requires provenance and license/NOTICE qualification;
+- security-provider failure must remain visible as failure/unavailability/inconclusive evidence rather than an implicit pass.
 
 ## Horizon model
 
@@ -69,10 +90,13 @@ Research surfaces include:
 - interruption instrumentation;
 - microphone/privacy threat model;
 - dependency/license/provenance review;
+- AI-agent/MCP/extension security source qualification sufficient to shape later trust-boundary research without prematurely importing a scanner platform;
+- file/content identity and safe repository-ingestion hypotheses where evidence shows they are prerequisites to later context work;
+- security-evidence interchange and repository-level security-benchmark hypotheses where they can be studied without opening product authority;
 - macOS/Linux/Windows feasibility boundaries;
 - brand/legal namespace risks sufficient for an open-source engineering decision.
 
-**Exit:** evidence selects the first bounded product Grain. No broad architecture is considered proven merely by completing H0.
+**Exit:** evidence selects the first bounded product Grain. No broad architecture, scanner, security taxonomy, or dependency is considered proven merely by completing H0.
 
 ### H1 — Minimal Rust voice runtime
 
@@ -122,11 +146,16 @@ Expected capability class:
 - visible confidence and ambiguity;
 - context budgets;
 - deterministic fallback when no safe binding exists;
+- safe repository-ingestion boundaries that can distinguish filesystem metadata, symlink state, content identity, decoded representation, and parser choice;
+- content-type mismatch, unknown/low-confidence file identity, malformed encoding, suspicious Unicode/control content, bytecode/generated artifacts, mixed text/binary content, and oversized/archive inputs handled through explicit bounded behavior where those classes are supported;
+- raw-byte/content provenance preserved separately from derived text used for interpretation;
 - source-scoped prior session/conversation retrieval with timestamps and provenance when separately qualified;
 - inspectable correction, deletion, recency, and retention boundaries for any persistent context;
 - an explicit rule that retrieved history may inform interpretation but does not silently authorize a current consequential action.
 
-**Entry:** WispralBench demonstrates a measurable baseline and a reproducible context-resolution hypothesis. Persistent conversation/session context requires separate evidence for utility, privacy, retention, correction, and authority safety before becoming an implementation requirement.
+A local content classifier such as a pinned Magika Rust path may be evaluated as an optional `ContentIdentityProvider`; no classifier score may directly authorize parsing, execution, or repository mutation.
+
+**Entry:** WispralBench demonstrates a measurable baseline and a reproducible context-resolution hypothesis. Persistent conversation/session context requires separate evidence for utility, privacy, retention, correction, and authority safety before becoming an implementation requirement. Safe-ingestion implementation requires separate evidence that the additional classifier/parser boundary improves security or correctness without compromising local-first portability.
 
 ### H5 — Command / Aside semantics
 
@@ -152,17 +181,36 @@ Expected capability class:
 
 ### H7 — Permission and trust plane
 
-**Purpose:** apply deterministic risk-aware authorization to structured agent requests and Wispral-originated actions.
+**Purpose:** apply deterministic risk-aware authorization to structured agent requests and Wispral-originated actions, while admitting repository objects, tools, extensions, and optional security evidence through explicit trust boundaries.
 
 Expected risk classes include read-only, reversible local writes, consequential repository/external writes, destructive/security-sensitive operations, and spending/publication actions.
 
-**Entry:** threat model and agent permission semantics are verified.
+Expected trust-plane capability class may include, when independently justified:
+
+- exact request identity and normalized action summaries;
+- exact tool/skill/server/provider identity where material;
+- declared capability and requested privilege manifests;
+- filesystem/network/process/credential scope modeling;
+- declared-versus-observed capability mismatch evidence;
+- name-confusion, tool-shadowing, tool-poisoning, and post-admission behavior-drift handling;
+- extension/dependency/model/ruleset provenance sufficient to detect material substitution;
+- security observations/findings from bounded evidence providers;
+- a scanner/evaluator normalization layer that keeps evidence distinct from `PolicyDecision`;
+- fail-closed behavior for stale identity, unknown capability, malformed evidence, or policy-engine failure;
+- explicit `NOT_RUN`, `UNAVAILABLE`, `INCONCLUSIVE`, and `STALE` states where applicable;
+- re-authorization when a previously approved identity or capability materially changes.
+
+SARIF 2.1.0 is a candidate external static-finding interchange because it can preserve rule identity, locations, severity, fingerprints, and remediation. Its use is not preselected until a bounded study proves it fits Wispral's evidence model.
+
+Optional LLM-driven MCP/Skill/agent scanners may contribute evidence after qualification, but they must not become mandatory core infrastructure or direct sources of authorization.
+
+**Entry:** threat model and agent permission semantics are verified, and any extension/security-evidence boundary selected for implementation has separate provenance, failure, local-first, portability, and policy-isolation evidence.
 
 ### H8 — Compatibility expansion
 
 **Purpose:** broaden support without weakening the portable core.
 
-Candidate integrations may include Codex, Claude Code, Gemini CLI, OpenCode, Goose, GitHub Copilot CLI, Cursor, Aider, and future ACP agents. Inclusion depends on current protocol/runtime evidence, licensing, and maintainability.
+Candidate integrations may include Codex, Claude Code, Gemini CLI, OpenCode, Goose, GitHub Copilot CLI, Cursor, Aider, and future ACP agents. Inclusion depends on current protocol/runtime evidence, licensing, maintainability, and any trust-plane capability/identity contract established by earlier horizons.
 
 **Entry:** two-agent portability contract is verified.
 
@@ -191,35 +239,63 @@ Candidate capability class:
 
 **Purpose:** make the control plane reusable beyond the first CLI surface.
 
-Potential extension boundaries include agents, speech engines, context providers, policy providers, TTS, and UI clients.
+Potential extension boundaries include agents, speech engines, context providers, policy providers, security-evidence providers, TTS, and UI clients.
 
 If repeated evidence eventually justifies a context-provider boundary, it should preserve one provenance/authority model across local providers and external interfaces. CLI, structured-protocol/MCP, and future API/SDK access should be evaluated as interoperable surfaces over the same semantics rather than as independent sources of authority.
 
-External conversation-context products are references or optional future integration candidates, not mandatory Wispral infrastructure. No hosted memory dependency, remote MCP server, or generic plugin system is authorized by this roadmap note.
+Any future extension admission model must be capable of carrying exact source/version/digest identity, declared capabilities, requested privilege scope, dependency/provenance information, security evidence, and material-change detection. A display name alone is not sufficient identity for consequential authorization.
 
-**Entry:** real repeated integrations justify extension points. No plugin system is authorized solely for architectural elegance.
+External conversation-context products and external scanner platforms are references or optional future integration candidates, not mandatory Wispral infrastructure. No hosted memory dependency, remote MCP server, remote scanner, or generic plugin system is authorized by this roadmap note.
+
+**Entry:** real repeated integrations justify extension points. No plugin system is authorized solely for architectural elegance, and no security provider is admitted solely because it emits a score or supports a popular protocol.
 
 ### H12 — Cross-platform hardening and distribution
 
-**Purpose:** make installation and updates boring on supported platforms.
+**Purpose:** make installation and updates boring on supported platforms while maintaining independently inspectable supply-chain evidence.
 
-Potential surfaces include Cargo, Homebrew, shell installer, signed binaries, package manager channels, completion scripts, diagnostics, and upgrade compatibility.
+Potential surfaces include Cargo, Homebrew, shell installer, signed binaries, package manager channels, completion scripts, diagnostics, upgrade compatibility, dependency lock verification, SBOM/provenance records where justified, release/signature verification where available, vulnerability/dependency review, and bounded native/FFI security scanning.
 
-**Entry:** platform support claims are backed by native CI and, where hardware is required, explicit qualification evidence.
+Native code does not inherit a security claim from the surrounding Rust runtime. Out-of-process analyzers may be evaluated for native dependencies when they provide useful evidence without contaminating the portable core's licensing or runtime boundary.
+
+**Entry:** platform support claims are backed by native CI and, where hardware is required, explicit qualification evidence. Supply-chain claims require exact artifact/source identities and reproducible or independently verifiable evidence appropriate to the claim.
 
 ### H13 — Public WispralBench
 
 **Purpose:** publish a reproducible benchmark suite useful to the wider voice-agent ecosystem.
 
-Benchmark families may include developer entity accuracy, turn detection, end-to-end latency, cancellation, context resolution, CPU/memory, offline behavior, and cross-platform variance.
+Benchmark families may include developer entity accuracy, turn detection, end-to-end latency, cancellation, context resolution, CPU/memory, offline behavior, cross-platform variance, and repository-level control-plane security.
 
-**Entry:** methodology has survived internal use without benchmark leakage or claim inflation.
+A future security family may borrow the repository-level and hybrid static/dynamic evaluation pattern demonstrated by security benchmarks such as AICGSecEval, but must adapt the measured responsibility to Wispral rather than pretending Wispral is the code-generating agent. Candidate security outcomes include:
+
+- preservation of security-relevant user intent and negation;
+- correct risk/approval behavior;
+- resilience to malicious repository or tool context;
+- exact-identity authorization behavior;
+- cancellation/recovery truthfulness;
+- optional static/dynamic security-evidence handling;
+- agent-vendor portability of the same policy contract;
+- functional task success reported separately from security-regression evidence.
+
+Known vulnerable fixtures, negative controls, failed runs, provider disagreement, and losing results must remain visible where material.
+
+**Entry:** methodology has survived internal use without benchmark leakage or claim inflation. Security benchmark entry additionally requires an explicit threat mapping, frozen fixtures, exact agent/provider/scanner identities, scoring semantics, and a plan for public-fixture training-data leakage risk.
 
 ### H14 — v1 trust and compatibility contract
 
 **Purpose:** establish a stable product surface with documented compatibility, migration, security, privacy, accessibility, and support boundaries.
 
-**Entry:** the project has enough real use and evidence to know what deserves stability.
+Before strong v1 trust claims, the stable contract should document, where applicable:
+
+- request and approval binding;
+- extension/tool/provider identity and change behavior;
+- repository content-ingestion boundaries;
+- security-evidence provider scope and failure states;
+- remote provider/model identity limitations;
+- supply-chain provenance and update behavior;
+- residual risks and unsupported threat classes;
+- privacy, accessibility, and recovery semantics.
+
+**Entry:** the project has enough real use and evidence to know what deserves stability, and all security claims are tied to reproducible evidence rather than architectural intent or scanner branding.
 
 ### H15 — Category expansion
 
@@ -232,6 +308,22 @@ Benchmark families may include developer entity accuracy, turn detection, end-to
 `docs/research/CIRCLEBACK_REFERENCE.md` records Circleback as a conversation-context / MCP / CLI / API product reference. The useful lesson is the pattern `capture -> structured context -> agent access -> downstream action`, especially the need to keep source provenance, capture visibility, retention/correction, and execution authority separate.
 
 This reference does not authorize a hosted meeting recorder, mandatory cloud memory, generic business automation, screen capture by default, MCP implementation, or any change to the active executable specification frontier.
+
+## External AI-security source planning note
+
+`docs/research/AI_SECURITY_SOURCE_SYNTHESIS.md` and `docs/research/AI_SECURITY_SOURCE_REGISTRY.json` record the current pinned study of:
+
+- `Tencent/AI-Infra-Guard`;
+- `google/magika`;
+- `Tencent/AICGSecEval`;
+- `Tencent/secguide`;
+- `Tencent/TscanCode`.
+
+The study selects architectural patterns rather than a wholesale donor platform. Useful directions include MCP/Skill/agent threat taxonomies, confidence-aware file content identity, bounded decoding/smuggling defenses, SARIF-based finding interchange, repository-level hybrid security evaluation, secure-coding rule design, and out-of-process native-code scanning.
+
+Founder-asserted source-use authorization is recorded in the source synthesis/registry. It does not erase exact source-path/blob/license/NOTICE provenance requirements or make every donor dependency appropriate for the Rust/local-first core.
+
+This planning note does not authorize product code, a scanner service, a generic plugin system, an MCP server, any current benchmark execution, or any change to `specs/CURRENT.md`. Future source-code adaptation requires a separately authorized Grain with exact donor provenance and acceptance evidence.
 
 ## Adoption ambition
 
@@ -260,10 +352,13 @@ The following are explicitly not justified by the founding thesis and require se
 - a generic project-management suite;
 - a social network;
 - mobile clients before the terminal control plane is proven;
-- enterprise dashboards before core user value is established.
+- enterprise dashboards before core user value is established;
+- a mandatory hosted security scanner;
+- an LLM-based security verdict as direct execution authority;
+- a generic plugin marketplace before an extension trust/admission contract is justified.
 
 ## Refinement rule
 
 Only `specs/CURRENT.md` may authorize the next executable specification. H1 through H15 stay coarse until fresh evidence and completed dependencies make detailed refinement useful.
 
-A roadmap horizon is not a task list.
+A roadmap horizon is not a task list. The security research grains listed in `docs/research/AI_SECURITY_SOURCE_SYNTHESIS.md` are candidate future refinements, not authorized execution units.
