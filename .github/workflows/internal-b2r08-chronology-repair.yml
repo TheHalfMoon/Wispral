@@ -1,0 +1,121 @@
+name: Internal B2R08 Chronology Repair
+
+on:
+  push:
+    branches:
+      - ci/000b2-b2r08-chronology-fix
+
+permissions:
+  contents: write
+
+jobs:
+  repair-b2r08-chronology:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact B2R08 task head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 45607f556d8bf557b75e2381852c4af1542b0848
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify exact live authority and heads
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "4fc35e9d14f949b90dbee58ddf243a36859e02bd"
+          test "$(git ls-remote origin refs/heads/research/000b2-b2r08-whispercpp-balanced | cut -f1)" = "45607f556d8bf557b75e2381852c4af1542b0848"
+          test "$(git ls-remote origin refs/heads/review/000b2-b2r08-exact-45607f5 | cut -f1)" = "45607f556d8bf557b75e2381852c4af1542b0848"
+          test "$(git hash-object research/000b2-public/b2r08-provenance.json)" = "ac3d3ed71b22c5071e724e3a8b3efeaf4c10f6a9"
+          test "$(git hash-object research/000b2-public/verify_b2r08.py)" = "dcad1bb6b4cc6fb1e1e1d0352a44e71db559360f"
+
+      - name: Apply fail-closed chronology repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from __future__ import annotations
+          import hashlib
+          import json
+          from pathlib import Path
+
+          provenance_path = Path("research/000b2-public/b2r08-provenance.json")
+          verifier_path = Path("research/000b2-public/verify_b2r08.py")
+
+          provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
+          assert "failed_qualification_attempt" not in provenance
+          provenance["failed_qualification_attempt"] = {
+              "artifact_count": 0,
+              "candidate_result_accessed": False,
+              "conclusion": "failure",
+              "external_access_reached": False,
+              "failure_detail": "KeyError: 'failed_primary'",
+              "failure_stage": "EXACT_AUTHORITY_AND_REPAIR_SOURCE_VALIDATION",
+              "job_id": 101789871560,
+              "model_download_started": False,
+              "primary_corpus_accessed": False,
+              "qualification_execution_started": False,
+              "role": "FAILED_PRE_PRIMARY_REPAIR_QUALIFICATION_NONCANONICAL",
+              "run_id": 34136897131,
+              "runtime_source_fetch_started": False,
+              "selection_effect": "NONE",
+              "source_branch": "research/000b2-b2r08-repair-qualification-v2",
+              "source_revision": "9e708b604fe124af1ace4863cbe25abbe73709fc",
+              "workflow_id": 352397816,
+          }
+          provenance["provenance_status"] = "RECORDED_FROM_EXACT_GITHUB_ACTIONS_FAILED_PRIMARY_FAILED_PRE_PRIMARY_QUALIFICATION_SUCCESSFUL_QUALIFICATION_SHARDED_PRIMARY_AND_SEAL_EVIDENCE_WITH_NON_RESULT_DRIVEN_FORWARD_ONLY_REPAIR_CHRONOLOGY"
+          provenance.pop("provenance_payload_sha256", None)
+          canonical = (json.dumps(provenance, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n").encode()
+          provenance["provenance_payload_sha256"] = hashlib.sha256(canonical).hexdigest()
+          provenance_bytes = (json.dumps(provenance, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode()
+          provenance_path.write_bytes(provenance_bytes)
+          provenance_sha256 = hashlib.sha256(provenance_bytes).hexdigest()
+
+          verifier = verifier_path.read_text(encoding="utf-8")
+          verifier = verifier.replace(
+              'PROVENANCE_SHA256 = "9cac7769794dafcade8c5413d6971625cba3f90edd8939e68bf19bae544326b6"',
+              f'PROVENANCE_SHA256 = "{provenance_sha256}"',
+          )
+          verifier = verifier.replace(
+              'QUALIFICATION_RUN_ID = 34137057908\nSEAL_SOURCE',
+              'QUALIFICATION_RUN_ID = 34137057908\nFAILED_QUALIFICATION_SOURCE = "9e708b604fe124af1ace4863cbe25abbe73709fc"\nFAILED_QUALIFICATION_RUN_ID = 34136897131\nFAILED_QUALIFICATION_JOB_ID = 101789871560\nSEAL_SOURCE',
+          )
+          verifier = verifier.replace(
+              'for revision in (PRIMARY_SOURCE, QUALIFICATION_SOURCE, SEAL_SOURCE): require(git("rev-parse", f"{revision}^{{commit}}") == revision, f"source missing: {revision}")',
+              'for revision in (PRIMARY_SOURCE, QUALIFICATION_SOURCE, FAILED_QUALIFICATION_SOURCE, SEAL_SOURCE): require(git("rev-parse", f"{revision}^{{commit}}") == revision, f"source missing: {revision}")',
+          )
+          anchor = '''    require(failed.get("artifact_contents") == ["whisper-build/wispral-build-identity.json"] and failed.get("transcript_artifact_present") is False and failed.get("evidence_json_present") is False and failed.get("candidate_result_inspection_before_repair") is False and failed.get("selection_effect") == "NONE", "failed primary exposure drift")\n'''
+          addition = '''    failed_qualification = p.get("failed_qualification_attempt", {})\n    require((failed_qualification.get("workflow_id"), failed_qualification.get("run_id"), failed_qualification.get("job_id"), failed_qualification.get("artifact_count")) == (352397816, FAILED_QUALIFICATION_RUN_ID, FAILED_QUALIFICATION_JOB_ID, 0), "failed qualification identity drift")\n    require(failed_qualification.get("source_revision") == FAILED_QUALIFICATION_SOURCE and failed_qualification.get("source_branch") == "research/000b2-b2r08-repair-qualification-v2" and failed_qualification.get("conclusion") == "failure", "failed qualification source drift")\n    require(failed_qualification.get("failure_stage") == "EXACT_AUTHORITY_AND_REPAIR_SOURCE_VALIDATION" and failed_qualification.get("failure_detail") == "KeyError: 'failed_primary'", "failed qualification stage drift")\n    for key in ("candidate_result_accessed","external_access_reached","model_download_started","primary_corpus_accessed","qualification_execution_started","runtime_source_fetch_started"):\n        require(failed_qualification.get(key) is False, f"failed qualification exposure drift: {key}")\n    require(failed_qualification.get("selection_effect") == "NONE" and failed_qualification.get("role") == "FAILED_PRE_PRIMARY_REPAIR_QUALIFICATION_NONCANONICAL", "failed qualification selection drift")\n'''
+          assert anchor in verifier
+          verifier = verifier.replace(anchor, anchor + addition, 1)
+          verifier_path.write_text(verifier, encoding="utf-8")
+
+          compile(verifier, str(verifier_path), "exec")
+          print(f"B2R08_PROVENANCE_PAYLOAD_SHA256={provenance['provenance_payload_sha256']}")
+          print(f"B2R08_PROVENANCE_RAW_SHA256={provenance_sha256}")
+          PY
+
+      - name: Verify repaired task evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r08.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_manifest.py
+          git diff --check
+          test "$(git diff --name-only HEAD | sort)" = "$(printf '%s\n' research/000b2-public/b2r08-provenance.json research/000b2-public/verify_b2r08.py | sort)"
+
+      - name: Commit and fast-forward exact task and review refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "4fc35e9d14f949b90dbee58ddf243a36859e02bd"
+          test "$(git ls-remote origin refs/heads/research/000b2-b2r08-whispercpp-balanced | cut -f1)" = "45607f556d8bf557b75e2381852c4af1542b0848"
+          test "$(git ls-remote origin refs/heads/review/000b2-b2r08-exact-45607f5 | cut -f1)" = "45607f556d8bf557b75e2381852c4af1542b0848"
+          git config user.name "TheHalfMoon"
+          git config user.email "actions@users.noreply.github.com"
+          git add research/000b2-public/b2r08-provenance.json research/000b2-public/verify_b2r08.py
+          git commit -m "research(000b2): complete B2R08 qualification chronology"
+          new_head="$(git rev-parse HEAD)"
+          git push origin HEAD:refs/heads/research/000b2-b2r08-whispercpp-balanced
+          git push origin HEAD:refs/heads/review/000b2-b2r08-exact-45607f5
+          echo "B2R08_REPAIRED_HEAD=$new_head"
