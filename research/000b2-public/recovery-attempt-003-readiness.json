@@ -38,6 +38,21 @@
     "B2R23",
     "B2R24"
   ],
+  "transition_policy": {
+    "canonical_main_ref_required_after_first_completion": true,
+    "one_recovery_task_per_reconciliation": true,
+    "canonical_task_merge_must_be_on_main": true,
+    "successful_post_merge_recovery_run_required": true,
+    "unique_task_merge_per_completion": true,
+    "unique_post_merge_recovery_run_per_completion": true,
+    "authority_documents_must_declare_successor": true,
+    "reconciliation_candidate_scope": [
+      "docs/canonical/CURRENT_STATE.md",
+      "research/000b2-public/recovery-attempt-003-readiness.json",
+      "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md",
+      "specs/CURRENT.md"
+    ]
+  },
   "completed_recovery_tasks": [],
   "active_recovery_unit": "B2R13",
   "transition_proofs": [],
