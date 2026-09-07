@@ -69,13 +69,25 @@ jobs:
           echo "EXACT_REVISION=$EXACT_REVISION"
           echo "DISCOVERY_MAIN=$DISCOVERY_MAIN"
 
-      - name: Verify B2R13 activation without external source access
+      - name: Verify current successor frontier without external source access
         run: |
           set -euo pipefail
           python -m py_compile \
             research/000b2-public/verify_attempt_002_invalidation.py \
             research/000b2-public/verify_b2r13_activation.py
-          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r13_activation.py --static-only
+          ACTIVE_UNIT="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          state = json.loads(Path('research/000b2-public/recovery-attempt-003-readiness.json').read_text(encoding='utf-8'))
+          print(state.get('active_recovery_unit') or '')
+          PY
+          )"
+          if test "$ACTIVE_UNIT" = "B2R13"; then
+            PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r13_activation.py --static-only
+          else
+            PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py --static-only
+          fi
+          echo "ACTIVE_SUCCESSOR_RECOVERY_UNIT=$ACTIVE_UNIT"
 
       - name: Fetch exact pinned sherpa-onnx source
         run: |
@@ -88,11 +100,23 @@ jobs:
           test "$(git -C "$SRC" rev-parse HEAD)" = "$SHERPA_REVISION"
           git -C "$SRC" diff --quiet HEAD --
 
-      - name: Verify B2R13 material drift against exact pinned sherpa-onnx API
+      - name: Verify material drift against exact pinned sherpa-onnx API
         run: |
           set -euo pipefail
-          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r13_activation.py \
-            --sherpa-source "$RUNNER_TEMP/sherpa-onnx"
+          ACTIVE_UNIT="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          state = json.loads(Path('research/000b2-public/recovery-attempt-003-readiness.json').read_text(encoding='utf-8'))
+          print(state.get('active_recovery_unit') or '')
+          PY
+          )"
+          if test "$ACTIVE_UNIT" = "B2R13"; then
+            PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r13_activation.py \
+              --sherpa-source "$RUNNER_TEMP/sherpa-onnx"
+          else
+            PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py \
+              --sherpa-source "$RUNNER_TEMP/sherpa-onnx"
+          fi
 
       - name: Preserve fail-closed recovery boundary
         run: |
@@ -105,17 +129,39 @@ jobs:
           from pathlib import Path
 
           state = json.loads(Path('research/000b2-public/recovery-attempt-003-readiness.json').read_text(encoding='utf-8'))
-          if state.get('active_recovery_unit') != 'B2R13':
-              raise SystemExit('B2R13 is not the sole activation unit')
-          replacement = state['replacement_attempt']
-          if replacement.get('primary_decode_entry_open') is not False:
-              raise SystemExit('ATTEMPT-003 primary decode unexpectedly open during B2R13 activation')
-          if replacement.get('frozen') is not False:
-              raise SystemExit('ATTEMPT-003 unexpectedly frozen during B2R13 activation')
-          print('ACTIVE_SUCCESSOR_RECOVERY_UNIT=B2R13')
+          task_order = state.get('task_order')
+          completed = state.get('completed_recovery_tasks')
+          active = state.get('active_recovery_unit')
+          if task_order != [f'B2R{i:02d}' for i in range(13, 25)]:
+              raise SystemExit('ATTEMPT-003 successor task order drift')
+          if not isinstance(completed, list) or completed != task_order[:len(completed)]:
+              raise SystemExit('ATTEMPT-003 completed tasks are not an exact ordered prefix')
+          expected_active = task_order[len(completed)] if len(completed) < len(task_order) else None
+          if active != expected_active:
+              raise SystemExit(f'ATTEMPT-003 active successor drift: {active!r} != {expected_active!r}')
+
+          replacement = state.get('replacement_attempt', {})
+          if active in {'B2R13', 'B2R14', 'B2R15', 'B2R16'} and replacement.get('primary_decode_entry_open') is not False:
+              raise SystemExit(f'ATTEMPT-003 primary decode unexpectedly open during {active}')
+          if active in {'B2R13', 'B2R14', 'B2R15'} and replacement.get('frozen') is not False:
+              raise SystemExit(f'ATTEMPT-003 frozen before B2R16: {active}')
+          if active == 'B2R13' and completed:
+              raise SystemExit('B2R13 activation candidate must not pre-complete successor tasks')
+
+          guards = state.get('claim_guards', {})
+          if guards.get('human_developer_speech_accuracy_evidence') != 'ABSENT':
+              raise SystemExit('human developer-speech evidence guard drift')
+          if active is not None and guards.get('comparative_result_available') is not False:
+              raise SystemExit('comparative result became available before successor recovery completion')
+          if guards.get('production_stt_selected') is not False:
+              raise SystemExit('production STT unexpectedly selected')
+          if guards.get('product_code_authorized') is not False:
+              raise SystemExit('product code unexpectedly authorized')
+
+          print(f'ACTIVE_SUCCESSOR_RECOVERY_UNIT={active}')
           print('ATTEMPT_002_NEW_PRIMARY_DECODE_AUTHORIZED=NO')
-          print('ATTEMPT_003_PRIMARY_DECODE_AUTHORIZED=NO')
-          print('COMPARATIVE_RESULT_AVAILABLE=NO')
+          print('ATTEMPT_003_PRIMARY_DECODE_AUTHORIZED=' + ('YES' if replacement.get('primary_decode_entry_open') is True else 'NO'))
+          print('COMPARATIVE_RESULT_AVAILABLE=' + ('YES' if guards.get('comparative_result_available') is True else 'NO'))
           print('PRODUCTION_STT_SELECTED=NO')
           print('PRODUCT_CODE_AUTHORIZED=NO')
           PY
