@@ -1,0 +1,105 @@
+name: Internal B2R10 Evidence Materialization
+
+on:
+  push:
+    branches:
+      - ci/000b2-b2r10-task-materialize
+    paths:
+      - .github/workflows/internal-b2r10-task-materialize.yml
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  materialize:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact clean B2R10 task source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 59408cd54edc3ae0ae7d92342e9aa92a8bcecc26
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify refs and download exact evidence artifact
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          BASE=d1447a3a3aa9cef1490747b0a8b288e16465e95b
+          TASK_BRANCH=research/000b2-b2r10-sherpa-onnx-balanced
+          TASK_HEAD=59408cd54edc3ae0ae7d92342e9aa92a8bcecc26
+          EXEC_BRANCH=research/000b2-b2r10-execution
+          EXEC_HEAD=1952ce8ef29fc3b7d2ea3c019d058623f15a8920
+          ARTIFACT_ID=10033013012
+          ZIP="$RUNNER_TEMP/b2r10.zip"
+          test "$(git rev-parse HEAD)" = "$TASK_HEAD"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASE"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$TASK_HEAD"
+          test "$(git ls-remote origin refs/heads/$EXEC_BRANCH | cut -f1)" = "$EXEC_HEAD"
+          test "$(git hash-object research/000b2-public/decode_b2r10.py)" = ee8b2b7e1bb1a6eeeb76bcfeda31098f25855a1c
+          test "$(git diff --name-only "$BASE" "$TASK_HEAD")" = research/000b2-public/decode_b2r10.py
+          curl -fsSL -L \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" \
+            -o "$ZIP"
+          test "$(stat -c%s "$ZIP")" = 19585
+          test "$(sha256sum "$ZIP" | cut -d' ' -f1)" = 718c32dab605eebbc9973a361d6bb0caf8626ad3a38a1e606cf31ca944b37c82
+          export ZIP
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          import zipfile
+          from pathlib import Path
+          with zipfile.ZipFile(os.environ['ZIP']) as z:
+              assert z.namelist() == ['b2r10-sherpa-onnx-balanced.json']
+              raw = z.read('b2r10-sherpa-onnx-balanced.json')
+          assert len(raw) == 248415
+          assert hashlib.sha256(raw).hexdigest() == '5f372636498121d10d22d79f0125730d156504bd3e17972bd3f92f34b96ccecf'
+          value = json.loads(raw)
+          unsigned = dict(value)
+          payload = unsigned.pop('evidence_payload_sha256')
+          canonical = (json.dumps(unsigned, ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n').encode()
+          assert payload == '7339e041e92527e5ddf1ec529653b292ccc44e391db54ee349ee2ab34d00cdfb'
+          assert hashlib.sha256(canonical).hexdigest() == payload
+          assert value['task'] == 'B2R10'
+          assert value['candidate']['candidate_id'] == 'sherpa-onnx-balanced'
+          assert value['candidate']['cell_index'] == 6
+          assert value['candidate']['tier'] == 'BALANCED'
+          assert value['candidate']['model'] == 'FP32 ONNX'
+          assert value['run']['repository_revision'] == '1952ce8ef29fc3b7d2ea3c019d058623f15a8920'
+          x = value['execution']
+          assert (x['input_count'], x['decoded_count'], x['failure_count']) == (240, 240, 0)
+          assert len(x['records']) == 240
+          assert x['reference_transcripts_loaded_by_decoder'] is False
+          assert x['accuracy_scoring_performed'] is False
+          assert x['comparative_ranking_present'] is False
+          assert value['claim_guards']['b2r11_authorized'] is False
+          assert value['claim_guards']['b2r12_authorized'] is False
+          Path('research/000b2-public/b2r10-sherpa-onnx-balanced.json').write_bytes(raw)
+          print('B2R10_ARTIFACT_BYTES=PASS')
+          PY
+
+      - name: Fast-forward task branch with exact evidence bytes only
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=d1447a3a3aa9cef1490747b0a8b288e16465e95b
+          TASK_BRANCH=research/000b2-b2r10-sherpa-onnx-balanced
+          TASK_HEAD=59408cd54edc3ae0ae7d92342e9aa92a8bcecc26
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASE"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$TASK_HEAD"
+          ACTUAL_SCOPE="$({ git diff --name-only "$BASE"; git ls-files --others --exclude-standard; } | sort -u)"
+          test "$ACTUAL_SCOPE" = $'research/000b2-public/b2r10-sherpa-onnx-balanced.json\nresearch/000b2-public/decode_b2r10.py'
+          git config user.name 'Abdulaziz M. Shehri'
+          git config user.email 'alshehriofficial@gmail.com'
+          git add research/000b2-public/b2r10-sherpa-onnx-balanced.json
+          git commit -m 'research(000b2): materialize exact B2R10 evidence bytes'
+          test "$(git rev-parse HEAD^)" = "$TASK_HEAD"
+          git push origin HEAD:refs/heads/$TASK_BRANCH
+          echo "B2R10_EVIDENCE_HEAD=$(git rev-parse HEAD)"
