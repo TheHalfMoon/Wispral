@@ -1,0 +1,291 @@
+name: Internal B2R09 ATTEMPT-002 Capture
+
+on:
+  push:
+    branches:
+      - research/000b2-b2r09-execution
+    paths:
+      - '.github/workflows/internal-b2r09-capture.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: b2r09-primary-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CANONICAL_BASE: 737e2fa0422e0d1aa0dd4d5bdc0473d51cec624c
+  TASK_HEAD: b7a4bb8828a4b861a399b1424bc07a4e549cf51f
+  DECODER_BLOB: 27052cc7f3d57d2743ee06a7db8de730c833935e
+  PREPROCESS_CONTAINER: python:3.12.11-bookworm@sha256:13c9584604a99ca134c4f41800f74ffc64ee6ac8cf555cf1e704a6087fc84f12
+  FFMPEG_TAG: n9.0.1
+  FFMPEG_REV: bf1b838f2ab88b4f8fd83443325c782ea0e0f7fa
+  FFMPEG_ROOT: /evidence/toolchain
+  SHERPA_REV: 917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e
+  SHERPA_VERSION: '1.13.7'
+  ONNX_REV: 6037ea07e3abfe599ad00d418968bcf9656e7472
+  AUX_REV: 672fbf1b30579d6585301139bb363f42a0ad4a24
+
+jobs:
+  capture-b2r09:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    steps:
+      - name: Checkout exact B2R09 execution source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact B2R09 authority before external access
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/research/000b2-b2r09-sherpa-onnx-compact | cut -f1)" = "$TASK_HEAD"
+          test "$(git hash-object research/000b2-public/decode_b2r09.py)" = "$DECODER_BLOB"
+          PYTHONDONTWRITEBYTECODE=1 python -m py_compile research/000b2-public/decode_b2r09.py
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import sys
+          from pathlib import Path
+          public = Path('research/000b2-public').resolve()
+          sys.path.insert(0, str(public))
+          import decode_b2r09 as b2r09
+          b2r09.validate_authority()
+          smoke = b2r09.verify_operational_qualification()
+          assert smoke['candidate_id'] == 'sherpa-onnx-compact'
+          assert smoke['status'] == 'SMOKE_PASS'
+          assert smoke['runtime_revision'] == '917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e'
+          assert smoke['primary_test_decoding_performed'] is False
+          assert smoke['accuracy_scoring_performed'] is False
+          print('B2R09_PRE_EXTERNAL_AUTHORITY=PASS')
+          print('B2R10_AUTHORIZED=NO')
+          PY
+          test "$(git diff --name-only "$CANONICAL_BASE" "$TASK_HEAD")" = "research/000b2-public/decode_b2r09.py"
+          git diff --quiet HEAD --
+
+      - name: Set up exact Python runtime family
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install exact accepted sherpa runtime release
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-input "sherpa-onnx==$SHERPA_VERSION" numpy
+          python - <<'PY'
+          import importlib.metadata
+          assert importlib.metadata.version('sherpa-onnx') == '1.13.7'
+          import sherpa_onnx
+          print(f"SHERPA_RUNTIME_VERSION={importlib.metadata.version('sherpa-onnx')}")
+          print(f"SHERPA_MODULE={sherpa_onnx.__file__}")
+          PY
+
+      - name: Pull exact immutable preprocessing container
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r09"
+          rm -rf "$ROOT"
+          mkdir -p "$ROOT/home" "$ROOT/work" "$ROOT/models"
+          docker pull --platform linux/amd64 "$PREPROCESS_CONTAINER"
+          test "$(docker image inspect "$PREPROCESS_CONTAINER" --format '{{.Os}}')" = linux
+          test "$(docker image inspect "$PREPROCESS_CONTAINER" --format '{{.Architecture}}')" = amd64
+
+      - name: Fetch exact FFmpeg release
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r09"
+          docker run --rm --platform linux/amd64 \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/evidence/home -e FFMPEG_ROOT -e FFMPEG_TAG -e FFMPEG_REV \
+            -v "$ROOT:/evidence" "$PREPROCESS_CONTAINER" bash -lc '
+              set -euo pipefail
+              rm -rf "$FFMPEG_ROOT"
+              mkdir -p "$FFMPEG_ROOT"
+              SRC="$FFMPEG_ROOT/FFmpeg"
+              git init "$SRC"
+              git -C "$SRC" remote add origin https://github.com/FFmpeg/FFmpeg.git
+              git -C "$SRC" fetch --depth=1 origin "refs/tags/$FFMPEG_TAG:refs/tags/$FFMPEG_TAG"
+              test "$(git -C "$SRC" rev-list -n1 "$FFMPEG_TAG")" = "$FFMPEG_REV"
+              git -C "$SRC" checkout --detach "$FFMPEG_REV"
+              git -C "$SRC" diff --quiet HEAD --
+            '
+
+      - name: Build bounded FFmpeg 9.0.1 preprocessing tool
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r09"
+          docker run --rm --platform linux/amd64 --network none \
+            --user "$(id -u):$(id -g)" -e HOME=/evidence/home -e FFMPEG_ROOT \
+            -v "$ROOT:/evidence" "$PREPROCESS_CONTAINER" bash -lc '
+              set -euo pipefail
+              SRC="$FFMPEG_ROOT/FFmpeg"
+              PREFIX="$FFMPEG_ROOT/install"
+              cd "$SRC"
+              ./configure \
+                --prefix="$PREFIX" --disable-everything --disable-doc --disable-debug \
+                --disable-ffplay --disable-ffprobe --disable-network --disable-autodetect \
+                --disable-x86asm --enable-protocol=file --enable-demuxer=flac,wav \
+                --enable-muxer=wav --enable-decoder=flac,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le \
+                --enable-encoder=pcm_s16le --enable-parser=flac --enable-filter=aresample,aformat \
+                --enable-swresample
+              make -j2 ffmpeg
+              make install
+              "$PREFIX/bin/ffmpeg" -version | head -n 1
+            '
+
+      - name: Reproduce and verify exact frozen P0 preprocessing bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r09"
+          docker run --rm --platform linux/amd64 \
+            --user "$(id -u):$(id -g)" -e HOME=/evidence/home -e FFMPEG_ROOT \
+            -v "$GITHUB_WORKSPACE:/workspace:ro" -v "$ROOT:/evidence" -w /workspace \
+            "$PREPROCESS_CONTAINER" bash -lc '
+              set -euo pipefail
+              PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/preprocess_subset.py \
+                --ffmpeg "$FFMPEG_ROOT/install/bin/ffmpeg" \
+                --work-dir /evidence/work \
+                --output /evidence/preprocessing-capture.json
+              PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py \
+                --compare-committed /evidence/preprocessing-capture.json
+            '
+
+      - name: Fetch exact pinned sherpa source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r09"
+          SRC="$ROOT/sherpa-onnx"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/k2-fsa/sherpa-onnx.git
+          git -C "$SRC" fetch --depth=1 origin "$SHERPA_REV"
+          git -C "$SRC" checkout --detach FETCH_HEAD
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$SHERPA_REV"
+          git -C "$SRC" diff --quiet HEAD --
+          echo "SHERPA_SOURCE_TREE=$(git -C "$SRC" rev-parse HEAD^{tree})"
+
+      - name: Download and verify exact sherpa-onnx-compact artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r09"
+          MODELS="$ROOT/models"
+          BASE="https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-en-2023-06-26/resolve"
+          fetch() {
+            local rev="$1"; local name="$2"
+            curl --fail --location --retry 3 --retry-all-errors "$BASE/$rev/$name" -o "$MODELS/$name"
+          }
+          fetch "$ONNX_REV" encoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx
+          fetch "$ONNX_REV" decoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx
+          fetch "$ONNX_REV" joiner-epoch-99-avg-1-chunk-16-left-128.int8.onnx
+          fetch "$AUX_REV" bpe.model
+          fetch "$ONNX_REV" tokens.txt
+          export MODELS
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import sys, os
+          from pathlib import Path
+          entry = Path('research/000b2-entry').resolve()
+          sys.path.insert(0, str(entry))
+          import operational_smoke
+          family, config = operational_smoke.candidate_record('sherpa-onnx-compact')
+          assert family['runtime']['revision'] == '917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e'
+          rows = operational_smoke.verify_artifacts('sherpa-onnx-compact', config, Path(os.environ['MODELS']))
+          expected = {
+              'encoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx': (71083163, '563fde436d16cf7607cf408cd6b30909819d03162652ef389c2450ced3f45ac1'),
+              'decoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx': (1307236, '98da299f471e38bb4e1a8df579b8cc9122d6039576a77e357b3c60f17dd83b02'),
+              'joiner-epoch-99-avg-1-chunk-16-left-128.int8.onnx': (259335, 'd944208d660d67c8d72cd2acaeac971fa5ceb8c80e76c1968148846fedd6e297'),
+              'bpe.model': (244865, 'c53433de083c4a6ad12d034550ef22de68cec62c4f58932a7b6b8b2f1e743fa5'),
+              'tokens.txt': (5048, '49e3c2646595fd907228b3c6787069658f67b17377c60aeb8619c4551b2316fb'),
+          }
+          assert {r['path']: (r['size_bytes'], r['sha256']) for r in rows} == expected
+          print('B2R09_MODEL_ARTIFACTS=PASS')
+          PY
+
+      - name: Execute B2R09 sherpa-onnx-compact C0 primary decode
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r09"
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2r09.py \
+            --model-root "$ROOT/models" \
+            --preprocessed-root "$ROOT/work/preprocessed" \
+            --runtime-source "$ROOT/sherpa-onnx" \
+            --output "$ROOT/b2r09-sherpa-onnx-compact.json"
+
+      - name: Verify B2R09 semantic and raw-data boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r09"
+          export ROOT
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import hashlib, json, os, sys
+          from pathlib import Path
+          path = Path(os.environ['ROOT']) / 'b2r09-sherpa-onnx-compact.json'
+          evidence = json.loads(path.read_text(encoding='utf-8'))
+          assert evidence['schema_version'] == '000b2-public-b2r09-decode-v1'
+          assert evidence['task'] == 'B2R09'
+          assert evidence['attempt_id'] == '000B2-PUBLIC-ATTEMPT-002'
+          assert evidence['candidate']['cell_index'] == 5
+          assert evidence['candidate']['candidate_id'] == 'sherpa-onnx-compact'
+          assert evidence['candidate']['tier'] == 'COMPACT'
+          assert evidence['candidate']['runtime_revision'] == '917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e'
+          assert evidence['candidate']['runtime_distribution_version'] == '1.13.7'
+          assert evidence['run']['repository_revision'] == os.environ['GITHUB_SHA']
+          assert evidence['run']['github_run_id'] == int(os.environ['GITHUB_RUN_ID'])
+          assert evidence['execution']['input_count'] == 240
+          assert evidence['execution']['decoded_count'] + evidence['execution']['failure_count'] == 240
+          assert len(evidence['execution']['records']) == 240
+          assert len({r['utterance_id'] for r in evidence['execution']['records']}) == 240
+          assert evidence['execution']['reference_transcripts_loaded_by_decoder'] is False
+          assert evidence['execution']['accuracy_scoring_performed'] is False
+          assert evidence['execution']['comparative_ranking_present'] is False
+          assert evidence['execution']['performance_claim_present'] is False
+          assert evidence['claim_guards']['b2r10_authorized'] is False
+          public = Path('research/000b2-public').resolve()
+          sys.path.insert(0, str(public))
+          import decode_b2r09
+          unsigned = dict(evidence)
+          payload = unsigned.pop('evidence_payload_sha256')
+          assert hashlib.sha256(decode_b2r09.canonical_json_bytes(unsigned)).hexdigest() == payload
+          assert not Path('research/000b2-public/raw').exists()
+          print('B2R09_SEMANTIC_GATE=PASS')
+          print(f"B2R09_RAW_SIZE={path.stat().st_size}")
+          print(f"B2R09_RAW_SHA256={hashlib.sha256(path.read_bytes()).hexdigest()}")
+          print(f"B2R09_PAYLOAD_SHA256={payload}")
+          print(f"B2R09_DECODED={evidence['execution']['decoded_count']}")
+          print(f"B2R09_FAILURES={evidence['execution']['failure_count']}")
+          print('B2R10_AUTHORIZED=NO')
+          PY
+
+      - name: Upload bounded B2R09 evidence only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: b2r09-sherpa-onnx-compact-${{ github.sha }}
+          path: ${{ runner.temp }}/b2r09/b2r09-sherpa-onnx-compact.json
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Remove transient primary/model/source/preprocessing material
+        if: always()
+        shell: bash
+        run: |
+          rm -rf "$RUNNER_TEMP/b2r09"
+          test ! -e research/000b2-public/raw
+
+      - name: Verify execution branch stayed clean
+        if: always()
+        shell: bash
+        run: git diff --quiet HEAD --
