@@ -1,0 +1,54 @@
+name: Internal B2R08 Materialization Scope Repair
+
+on:
+  push:
+    branches:
+      - ci/000b2-b2r08-task-materialize
+    paths:
+      - '.github/workflows/internal-b2r08-materialization-scope-repair.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair-scope-guard:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact repair source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Patch only the untracked-file scope guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = 'ci/000b2-b2r08-task-materialize'
+          target='.github/workflows/internal-b2r08-task-materialize.yml'
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('.github/workflows/internal-b2r08-task-materialize.yml')
+          text = p.read_text(encoding='utf-8')
+          old = '''          mapfile -t paths < <(git diff --name-only "$CANONICAL_BASE" -- | sort)\n'''
+          new = '''          git add --intent-to-add \\
+            research/000b2-public/b2r08-whispercpp-balanced.json \\
+            research/000b2-public/b2r08-shard-equivalence.json \\
+            research/000b2-public/b2r08-provenance.json \\
+            research/000b2-public/verify_b2r08.py\n          mapfile -t paths < <(git diff --name-only "$CANONICAL_BASE" -- | sort)\n'''
+          if text.count(old) != 1:
+              raise SystemExit('expected exactly one scope guard insertion point')
+          p.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+          git diff --check -- "$target"
+          git diff --name-only | grep -Fx "$target"
+          test "$(git diff --name-only | wc -l)" -eq 1
+          git config user.name 'Abdulaziz M. Shehri'
+          git config user.email 'alshehriofficial@gmail.com'
+          git add "$target"
+          git commit -m 'ci(000b2): include B2R08 untracked evidence in scope guard'
+          git push origin HEAD:refs/heads/ci/000b2-b2r08-task-materialize
+          echo "B2R08_SCOPE_REPAIR_HEAD=$(git rev-parse HEAD)"
+          echo 'B2R08_SCOPE_REPAIR=PASS'
