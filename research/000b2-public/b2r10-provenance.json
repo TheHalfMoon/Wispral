@@ -1,0 +1,80 @@
+{
+  "attempt_id": "000B2-PUBLIC-ATTEMPT-002",
+  "candidate_id": "sherpa-onnx-balanced",
+  "canonical_evidence_source": {
+    "artifact_id": 10033013012,
+    "artifact_name": "b2r10-sherpa-onnx-balanced-1952ce8ef29fc3b7d2ea3c019d058623f15a8920",
+    "artifact_zip_sha256": "718c32dab605eebbc9973a361d6bb0caf8626ad3a38a1e606cf31ca944b37c82",
+    "artifact_zip_size_bytes": 19585,
+    "conclusion": "success",
+    "event": "push",
+    "evidence_path": "research/000b2-public/b2r10-sherpa-onnx-balanced.json",
+    "evidence_payload_sha256": "7339e041e92527e5ddf1ec529653b292ccc44e391db54ee349ee2ab34d00cdfb",
+    "evidence_raw_file_sha256": "5f372636498121d10d22d79f0125730d156504bd3e17972bd3f92f34b96ccecf",
+    "evidence_raw_file_size_bytes": 248415,
+    "execution_decoder_blob_sha": "ee8b2b7e1bb1a6eeeb76bcfeda31098f25855a1c",
+    "job_id": 101864461547,
+    "mergeable_decoder_blob_sha": "ee8b2b7e1bb1a6eeeb76bcfeda31098f25855a1c",
+    "role": "CANONICAL_EVIDENCE_SOURCE",
+    "run_attempt": 1,
+    "run_id": 34161621255,
+    "selection_basis": "FIRST_B2R10_PRIMARY_EXECUTION_THAT_PASSED_CURRENT_B2R10_AUTHORITY_FROZEN_INPUT_DECODE_SEMANTICS_AND_ARTIFACT_GATES; NOT_RESULT_DRIVEN",
+    "source_branch": "research/000b2-b2r10-execution",
+    "source_revision": "1952ce8ef29fc3b7d2ea3c019d058623f15a8920",
+    "workflow_id": 352600251,
+    "workflow_name": "Internal B2R10 ATTEMPT-002 Capture"
+  },
+  "claims": {
+    "b2r11_authorized": false,
+    "b2r12_authorized": false,
+    "comparative_performance_authorized": false,
+    "comparative_result_available": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "product_code_authorized": false,
+    "production_stt_selected": false
+  },
+  "provenance_status": "RECORDED_FROM_EXACT_FIRST_B2R10_PRIMARY_GITHUB_ACTIONS_SUCCESS_WITH_BYTE_PRESERVING_POST_PRIMARY_TASK_MATERIALIZATION",
+  "related_pre_primary_runs": [],
+  "result_accounting": {
+    "accuracy_scoring_performed": false,
+    "all_frozen_input_hashes_reverified": true,
+    "comparative_ranking_present": false,
+    "decoded_count": 240,
+    "failure_count": 0,
+    "input_count": 240,
+    "performance_claim_present": false,
+    "reference_transcripts_loaded_by_decoder": false,
+    "result_driven_evidence_selection": false,
+    "timing_semantics": "DIAGNOSTIC_ONLY"
+  },
+  "runtime_identity": {
+    "distribution": "sherpa-onnx",
+    "module_file": "__init__.py",
+    "module_file_sha256": "9f1d820f337a09099a77e321d6ccddd0ea76b24ebaf815fb9a315cbb0a08b1f3",
+    "source_revision": "917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e",
+    "source_tree": "fd2c4e97c9f7499b6ed91c7c2854b4211f61bdc0",
+    "version": "1.13.7"
+  },
+  "schema_version": "000b2-public-b2r10-provenance-v1",
+  "task": "B2R10",
+  "task_materialization": {
+    "candidate_result_accessed_for_integrity_validation": true,
+    "evidence_blob_sha": "cfa16eec7ce35e322adb3d000c210d1a564e6128",
+    "input_task_revision": "59408cd54edc3ae0ae7d92342e9aa92a8bcecc26",
+    "job_id": 101868220299,
+    "output_task_revision": "77946f348e033a4e244c357b5599ffb76c0da836",
+    "result_access_effect": "NONE",
+    "role": "BYTE_PRESERVING_POST_PRIMARY_TASK_MATERIALIZATION",
+    "run_id": 34162912980,
+    "scope": [
+      "research/000b2-public/decode_b2r10.py",
+      "research/000b2-public/b2r10-sherpa-onnx-balanced.json"
+    ],
+    "selection_effect": "NONE",
+    "source_branch": "ci/000b2-b2r10-task-materialize",
+    "source_revision": "913279bc419af19a3a547ef487b040c3939c1c8e",
+    "workflow_id": 352610808,
+    "workflow_name": "Internal B2R10 Evidence Materialization"
+  },
+  "provenance_payload_sha256": "285a0477d2a9dd4001132f82ff2e5136820adfe18abf71f7586e3fe98261bfc7"
+}
