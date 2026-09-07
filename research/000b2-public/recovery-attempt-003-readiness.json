@@ -45,6 +45,9 @@
     "successful_post_merge_recovery_run_required": true,
     "unique_task_merge_per_completion": true,
     "unique_post_merge_recovery_run_per_completion": true,
+    "normal_merge_required": true,
+    "exact_qualified_head_parent_required": true,
+    "candidate_must_advance_at_most_one_task_from_authority_base": true,
     "authority_documents_must_declare_successor": true,
     "reconciliation_candidate_scope": [
       "docs/canonical/CURRENT_STATE.md",
