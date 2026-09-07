@@ -1,0 +1,99 @@
+name: Internal B2R09 Reconciliation Builder
+
+on:
+  push:
+    branches:
+      - ci/000b2-b2r09-reconciliation-builder
+    paths:
+      - '.github/workflows/internal-b2r09-reconciliation-builder.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  build-reconciliation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CANONICAL_BASE: fc357350270d5cb34fc1305dba4a9de41a5234c3
+      TASK_FIRST_PARENT: 737e2fa0422e0d1aa0dd4d5bdc0473d51cec624c
+      QUALIFIED_TASK_HEAD: ff990ccc63a120c62758802c305bcc10b33ed0fe
+      RECOVERY_RUN_ID: '34160146607'
+      RECOVERY_JOB_ID: '101860017509'
+      RECOVERY_WORKFLOW_ID: '350986920'
+      RECONCILIATION_BRANCH: docs/000b2-b2r09-reconciliation
+    steps:
+      - name: Checkout builder revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify exact canonical task merge and recovery proof
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git rev-list --parents -n 1 "$CANONICAL_BASE")" = "$CANONICAL_BASE $TASK_FIRST_PARENT $QUALIFIED_TASK_HEAD"
+          python3 - <<'PY'
+          import json, os, subprocess
+          run_id = os.environ['RECOVERY_RUN_ID']
+          run = json.loads(subprocess.run(
+              ['gh','api',f"repos/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{run_id}"],
+              check=True,text=True,stdout=subprocess.PIPE,
+          ).stdout)
+          expected = {
+              'workflow_id': int(os.environ['RECOVERY_WORKFLOW_ID']),
+              'path': '.github/workflows/000b2-public-attempt-recovery.yml',
+              'name': '000B2 Public Corpus Attempt Recovery',
+              'event': 'push',
+              'status': 'completed',
+              'conclusion': 'success',
+              'head_branch': 'main',
+              'head_sha': os.environ['CANONICAL_BASE'],
+          }
+          for key, value in expected.items():
+              assert run.get(key) == value, (key, run.get(key), value)
+          jobs = json.loads(subprocess.run(
+              ['gh','api',f"repos/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{run_id}/jobs"],
+              check=True,text=True,stdout=subprocess.PIPE,
+          ).stdout)['jobs']
+          assert len(jobs) == 1
+          assert jobs[0]['id'] == int(os.environ['RECOVERY_JOB_ID'])
+          assert jobs[0]['conclusion'] == 'success'
+          print('B2R09_POST_MERGE_RECOVERY_PROOF=PASS')
+          PY
+
+      - name: Build and verify reconciliation candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp .github/internal/b2r09_reconcile.py "$RUNNER_TEMP/b2r09_reconcile.py"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git reset --hard "$CANONICAL_BASE"
+          git switch -c "$RECONCILIATION_BRANCH"
+          python3 "$RUNNER_TEMP/b2r09_reconcile.py"
+          PYTHONDONTWRITEBYTECODE=1 python3 research/000b2-public/verify_b2r09.py
+          PYTHONDONTWRITEBYTECODE=1 python3 research/000b2-public/verify_attempt_manifest.py
+          PYTHONDONTWRITEBYTECODE=1 python3 research/000b2-public/verify_attempt_001_invalidation.py --static-only --canonical-main-ref refs/remotes/origin/main
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          expected="$(printf '%s\n' 'docs/canonical/CURRENT_STATE.md' 'research/000b2-public/recovery-readiness.json' 'specs/000B2-public-corpus-bakeoff/tasks.md' 'specs/CURRENT.md' | sort)"
+          observed="$(git diff --name-only "$CANONICAL_BASE" | sort)"
+          test "$observed" = "$expected"
+          test -z "$(git ls-files --others --exclude-standard)"
+          echo 'B2R09_RECONCILIATION_SCOPE=PASS'
+
+      - name: Push reconciliation candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          git add docs/canonical/CURRENT_STATE.md research/000b2-public/recovery-readiness.json specs/000B2-public-corpus-bakeoff/tasks.md specs/CURRENT.md
+          test "$(git diff --cached --name-only | wc -l)" -eq 4
+          git commit -m 'docs(000b2): reconcile B2R09 and authorize B2R10'
+          git push origin "HEAD:$RECONCILIATION_BRANCH"
+          echo "B2R09_RECONCILIATION_HEAD=$(git rev-parse HEAD)"
