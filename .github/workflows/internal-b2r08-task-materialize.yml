@@ -625,6 +625,11 @@ jobs:
             research/000b2-public/recovery-readiness.json \
             specs/000B2-public-corpus-bakeoff/tasks.md \
             specs/CURRENT.md
+          git add --intent-to-add \
+            research/000b2-public/b2r08-whispercpp-balanced.json \
+            research/000b2-public/b2r08-shard-equivalence.json \
+            research/000b2-public/b2r08-provenance.json \
+            research/000b2-public/verify_b2r08.py
           mapfile -t paths < <(git diff --name-only "$CANONICAL_BASE" -- | sort)
           expected=(
             research/000b2-public/b2r08-provenance.json
