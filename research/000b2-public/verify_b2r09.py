@@ -132,8 +132,9 @@ def verify_frontier() -> None:
 
     completed = readiness.get("completed_recovery_tasks")
     active = readiness.get("active_recovery_unit")
-    prefix = [f"B2R{i:02d}" for i in range(1, 9)]
-    if completed == prefix and active == "B2R09":
+    pre_prefix = [f"B2R{i:02d}" for i in range(1, 9)]
+    post_prefix = [f"B2R{i:02d}" for i in range(1, 10)]
+    if completed == pre_prefix and active == "B2R09":
         require(replacement.get("primary_decode_entry_open") is True, "B2R09 primary entry closed before reconciliation")
         require("- [x] `B2R08`" in tasks and "- [ ] `B2R09`" in tasks and "- [ ] `B2R10`" in tasks, "pre-reconciliation ledger drift")
         require("**Active recovery unit:** `B2R09`" in current, "CURRENT does not own B2R09 frontier")
@@ -142,9 +143,14 @@ def verify_frontier() -> None:
         require(next_action.startswith("Qualify B2R09 only:"), "B2R09 next action drift")
         require("sherpa-onnx-compact" in next_action and "Keep B2R10" in next_action, "B2R09/B2R10 authority boundary drift")
     else:
-        require(isinstance(completed, list) and "B2R09" in completed, "B2R09 completion lost")
-        require("- [x] `B2R09`" in tasks, "B2R09 ledger completion lost")
-        require(active != "B2R09", "B2R09 remained active after completion")
+        require(completed == post_prefix and active == "B2R10", "unexpected post-B2R09 recovery frontier")
+        require(replacement.get("primary_decode_entry_open") is True, "B2R10 primary entry closed after reconciliation")
+        require("- [x] `B2R09`" in tasks and "- [ ] `B2R10`" in tasks and "- [ ] `B2R11`" in tasks, "post-reconciliation ledger drift")
+        require("**Active recovery unit:** `B2R10`" in current, "CURRENT does not own B2R10 frontier")
+        require("**Active recovery unit:** `B2R10`" in canonical_current, "CURRENT_STATE does not own B2R10 frontier")
+        next_action = str(readiness.get("next_action", ""))
+        require(next_action.startswith("Qualify B2R10 only:"), "B2R10 next action drift")
+        require("sherpa-onnx-balanced" in next_action and "Keep B2R11" in next_action, "B2R10/B2R11 authority boundary drift")
 
 
 def verify_static() -> None:
