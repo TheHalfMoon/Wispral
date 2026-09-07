@@ -1,0 +1,115 @@
+name: 000B2 Public Corpus ATTEMPT-003 Recovery
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/000b2-public-attempt-003-recovery.yml'
+      - '.github/workflows/000b2-public-attempt-recovery.yml'
+      - 'research/000b1/frozen-methodology.json'
+      - 'research/000b2-public/attempt-002-invalidation.json'
+      - 'research/000b2-public/recovery-attempt-003-readiness.json'
+      - 'research/000b2-public/verify_attempt_002_invalidation.py'
+      - 'research/000b2-public/attempt-003-**'
+      - 'research/000b2-public/b2r1[3-9]-**'
+      - 'research/000b2-public/b2r2[0-4]-**'
+      - 'specs/000B2-public-corpus-bakeoff/recovery-v2.md'
+      - 'specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md'
+      - 'specs/CURRENT.md'
+      - 'docs/canonical/CURRENT_STATE.md'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/000b2-public-attempt-003-recovery.yml'
+      - '.github/workflows/000b2-public-attempt-recovery.yml'
+      - 'research/000b1/frozen-methodology.json'
+      - 'research/000b2-public/attempt-002-invalidation.json'
+      - 'research/000b2-public/recovery-attempt-003-readiness.json'
+      - 'research/000b2-public/verify_attempt_002_invalidation.py'
+      - 'research/000b2-public/attempt-003-**'
+      - 'research/000b2-public/b2r1[3-9]-**'
+      - 'research/000b2-public/b2r2[0-4]-**'
+      - 'specs/000B2-public-corpus-bakeoff/recovery-v2.md'
+      - 'specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md'
+      - 'specs/CURRENT.md'
+      - 'docs/canonical/CURRENT_STATE.md'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: 000b2-attempt-003-recovery-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-successor-recovery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+      DISCOVERY_MAIN: dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff
+      SHERPA_REVISION: 917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.EXACT_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact revision and historical discovery commit
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+          git rev-parse --verify "${DISCOVERY_MAIN}^{commit}"
+          echo "EXACT_REVISION=$EXACT_REVISION"
+          echo "DISCOVERY_MAIN=$DISCOVERY_MAIN"
+
+      - name: Verify successor recovery structure without external source access
+        run: |
+          set -euo pipefail
+          python -m py_compile research/000b2-public/verify_attempt_002_invalidation.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py --static-only
+
+      - name: Fetch exact pinned sherpa-onnx source
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/sherpa-onnx"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/k2-fsa/sherpa-onnx.git
+          git -C "$SRC" fetch --depth=1 origin "$SHERPA_REVISION"
+          git -C "$SRC" checkout --detach FETCH_HEAD
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$SHERPA_REVISION"
+          git -C "$SRC" diff --quiet HEAD --
+
+      - name: Verify material drift against exact pinned sherpa-onnx API
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py \
+            --sherpa-source "$RUNNER_TEMP/sherpa-onnx"
+
+      - name: Preserve fail-closed recovery boundary
+        run: |
+          set -euo pipefail
+          test ! -e research/000b2-public/raw
+          test ! -e research/000b2-public/preprocessed
+          test ! -e research/000b2-public/transcripts
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          state = json.loads(Path('research/000b2-public/recovery-attempt-003-readiness.json').read_text(encoding='utf-8'))
+          active = state['active_recovery_unit']
+          replacement = state['replacement_attempt']
+          if active in {'B2R13', 'B2R14', 'B2R15', 'B2R16'} and replacement.get('primary_decode_entry_open') is not False:
+              raise SystemExit(f'primary decode unexpectedly open during {active}')
+          if active == 'B2R13' and replacement.get('frozen') is not False:
+              raise SystemExit('ATTEMPT-003 unexpectedly frozen during B2R13 activation')
+          print(f'ACTIVE_SUCCESSOR_RECOVERY_UNIT={active}')
+          print('ATTEMPT_002_NEW_PRIMARY_DECODE_AUTHORIZED=NO')
+          print('COMPARATIVE_RESULT_AVAILABLE=NO')
+          print('PRODUCTION_STT_SELECTED=NO')
+          print('PRODUCT_CODE_AUTHORIZED=NO')
+          PY
