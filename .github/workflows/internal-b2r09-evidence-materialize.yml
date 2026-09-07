@@ -65,7 +65,7 @@ jobs:
           test "$(git diff --name-only "$FAILED_SOURCE" "$SUCCESS_SOURCE")" = ".github/workflows/internal-b2r09-capture.yml"
           git diff --unified=0 "$FAILED_SOURCE" "$SUCCESS_SOURCE" -- .github/workflows/internal-b2r09-capture.yml > "$RUNNER_TEMP/b2r09-repair.diff"
           grep -F -- "-          cache: 'pip'" "$RUNNER_TEMP/b2r09-repair.diff"
-          test "$(grep -c '^+' "$RUNNER_TEMP/b2r09-repair.diff" || true)" -eq 0
+          test "$(grep -c '^+[^+]' "$RUNNER_TEMP/b2r09-repair.diff" || true)" -eq 0
           ROOT="$RUNNER_TEMP/b2r09-materialize"
           rm -rf "$ROOT" && mkdir -p "$ROOT/evidence"
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$FAILED_RUN_ID" > "$ROOT/failed-run.json"
