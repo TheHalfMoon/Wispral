@@ -1,0 +1,493 @@
+name: Internal B2R08 Sharded Evidence Seal
+
+on:
+  push:
+    branches:
+      - research/000b2-b2r08-sharded-seal-v1
+    paths:
+      - '.github/workflows/internal-b2r08-sharded-seal.yml'
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: b2r08-sharded-seal-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CANONICAL_BASE: 4fc35e9d14f949b90dbee58ddf243a36859e02bd
+  TASK_HEAD: 5280901f59d5cd530475bf1204d3416a69c9a6db
+  DECODER_BLOB: ac5a16469309f8ab3ad854b9df616f22f2903c33
+  REPAIR_PLAN_BLOB: ff79ed2e15ac95e58c0f2b66b84f9a879b17ebdd
+  REPAIR_SCRIPT_BLOB: 7f656bc352be4195b968d0e57f2d1725f033d0f1
+  B2R07_HELPER_BLOB: 09f89a77c2339177b45ef09758f2387e44c650af
+  ADAPTER_CMAKE_BLOB: e975e7d4afd0f580881b17a7e9c2856634ec61e7
+  ADAPTER_SOURCE_BLOB: e7405cd343532b7d9dff8b667bfc7591f50631d9
+  PRIMARY_RUN_ID: '34139091127'
+  PRIMARY_WORKFLOW_ID: '352414950'
+  PRIMARY_SOURCE_SHA: 4a6c776b2a666113420263b70a4fad06f752b99a
+  QUALIFICATION_RUN_ID: '34137057908'
+  QUALIFICATION_SOURCE_SHA: 900482d4cce3c69c8ad0a36261e2a8d53f106142
+  QUALIFICATION_ARTIFACT_ID: '10024691621'
+  QUALIFICATION_ARTIFACT_ZIP_SHA256: 124ca565bb22604d39101541b4949c22c55dbc764c576dde766ada8b433a56e4
+  QUALIFICATION_EVIDENCE_RAW_SHA256: 122e217b7efcfadea44540fcd20a181ad881351a89b6303e0a283fdc569d96a1
+  QUALIFICATION_EVIDENCE_PAYLOAD_SHA256: 6d419e5a975c245132b2edca9f40c35bb0abd22c708896ba51b481e815409afd
+
+jobs:
+  seal-b2r08:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact B2R08 seal source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact current B2R08 authority and source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/research/000b2-b2r08-whispercpp-balanced | cut -f1)" = "$TASK_HEAD"
+          test "$(git hash-object research/000b2-public/decode_b2r08.py)" = "$DECODER_BLOB"
+          test "$(git hash-object research/000b2-public/b2r08-repair-plan.json)" = "$REPAIR_PLAN_BLOB"
+          test "$(git hash-object research/000b2-public/run_b2r08_sharded_repair.py)" = "$REPAIR_SCRIPT_BLOB"
+          test "$(git hash-object research/000b2-public/decode_b2r07.py)" = "$B2R07_HELPER_BLOB"
+          test "$(git hash-object research/000b2-public/whispercpp-adapter/CMakeLists.txt)" = "$ADAPTER_CMAKE_BLOB"
+          test "$(git hash-object research/000b2-public/whispercpp-adapter/adapter.cpp)" = "$ADAPTER_SOURCE_BLOB"
+          PYTHONDONTWRITEBYTECODE=1 python -m py_compile \
+            research/000b2-public/decode_b2r07.py \
+            research/000b2-public/decode_b2r08.py \
+            research/000b2-public/run_b2r08_sharded_repair.py
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import sys
+          from pathlib import Path
+          public = Path('research/000b2-public').resolve()
+          sys.path.insert(0, str(public))
+          import run_b2r08_sharded_repair as repair
+          repair.b2r08.validate_authority()
+          plan = repair.verify_repair_plan()
+          assert plan['authority']['active_recovery_unit'] == 'B2R08'
+          assert plan['authority']['successor_authorized'] is False
+          assert plan['repair']['policy'] == 'FORWARD_ONLY_DETERMINISTIC_CONTIGUOUS_SHARDING_AFTER_HOSTED_RUNNER_CEILING'
+          assert plan['claim_guards']['b2r09_authorized'] is False
+          print('B2R08_SEAL_AUTHORITY=PASS')
+          print('B2R09_AUTHORIZED=NO')
+          PY
+          git diff --quiet HEAD --
+
+      - name: Require exact successful sharded primary run and enumerate artifacts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-seal"
+          rm -rf "$ROOT"
+          mkdir -p "$ROOT"
+          curl --fail --location --retry 3 --retry-all-errors \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$PRIMARY_RUN_ID" \
+            -o "$ROOT/primary-run.json"
+          curl --fail --location --retry 3 --retry-all-errors \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$PRIMARY_RUN_ID/artifacts?per_page=100" \
+            -o "$ROOT/primary-artifacts.json"
+          export ROOT
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ['ROOT'])
+          run = json.loads((root / 'primary-run.json').read_text(encoding='utf-8'))
+          assert run['id'] == int(os.environ['PRIMARY_RUN_ID'])
+          assert run['workflow_id'] == int(os.environ['PRIMARY_WORKFLOW_ID'])
+          assert run['head_sha'] == os.environ['PRIMARY_SOURCE_SHA']
+          assert run['head_branch'] == 'research/000b2-b2r08-sharded-primary-v1'
+          assert run['event'] == 'push'
+          assert run['status'] == 'completed'
+          assert run['conclusion'] == 'success'
+          assert run['path'] == '.github/workflows/internal-b2r08-sharded-primary.yml'
+
+          payload = json.loads((root / 'primary-artifacts.json').read_text(encoding='utf-8'))
+          artifacts = payload.get('artifacts', [])
+          expected_names = [f"b2r08-primary-shard-{i}-{os.environ['PRIMARY_SOURCE_SHA']}" for i in range(4)]
+          selected = {artifact['name']: artifact for artifact in artifacts if artifact['name'] in expected_names}
+          assert set(selected) == set(expected_names), (expected_names, sorted(selected))
+          assert len(selected) == 4
+          rows = []
+          for index, name in enumerate(expected_names):
+              artifact = selected[name]
+              assert artifact['expired'] is False
+              digest = artifact.get('digest')
+              assert isinstance(digest, str) and digest.startswith('sha256:') and len(digest) == 71
+              rows.append({
+                  'shard_index': index,
+                  'id': artifact['id'],
+                  'name': name,
+                  'size_in_bytes': artifact['size_in_bytes'],
+                  'digest': digest,
+              })
+          (root / 'artifact-map.json').write_text(json.dumps(rows, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          with (root / 'artifact-map.tsv').open('w', encoding='utf-8') as handle:
+              for row in rows:
+                  handle.write(f"{row['shard_index']}\t{row['id']}\t{row['name']}\t{row['digest'].split(':', 1)[1]}\t{row['size_in_bytes']}\n")
+          print('B2R08_PRIMARY_RUN_TERMINAL_SUCCESS=YES')
+          print('B2R08_PRIMARY_ARTIFACT_COUNT=4')
+          print('B2R09_AUTHORIZED=NO')
+          PY
+
+      - name: Download and verify all four primary shard artifacts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-seal"
+          while IFS=$'\t' read -r shard_index artifact_id artifact_name artifact_sha artifact_size; do
+            ZIP="$ROOT/shard-$shard_index.zip"
+            OUT="$ROOT/shard-$shard_index"
+            mkdir -p "$OUT"
+            curl --fail --location --retry 3 --retry-all-errors \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$artifact_id/zip" \
+              -o "$ZIP"
+            test "$(stat -c %s "$ZIP")" = "$artifact_size"
+            printf '%s  %s\n' "$artifact_sha" "$ZIP" | sha256sum --check -
+            unzip -q "$ZIP" -d "$OUT"
+          done < "$ROOT/artifact-map.tsv"
+          export ROOT
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          root = Path(os.environ['ROOT'])
+          public = Path('research/000b2-public').resolve()
+          sys.path.insert(0, str(public))
+          import run_b2r08_sharded_repair as repair
+
+          for index in range(4):
+              out = root / f'shard-{index}'
+              files = sorted(str(path.relative_to(out)) for path in out.rglob('*') if path.is_file())
+              expected = sorted([
+                  f'b2r08-primary-shard-{index}.json',
+                  f'adapter-work/b2r08-primary-shard-{index}-adapter-output.jsonl',
+                  f'adapter-work/b2r08-primary-shard-{index}-inputs.tsv',
+                  'whisper-build/wispral-build-identity.json',
+              ])
+              assert files == expected, (index, files)
+              evidence_path = out / f'b2r08-primary-shard-{index}.json'
+              evidence = json.loads(evidence_path.read_text(encoding='utf-8'))
+              assert evidence['schema_version'] == '000b2-public-b2r08-primary-shard-v1'
+              assert evidence['task'] == 'B2R08'
+              assert evidence['attempt_id'] == '000B2-PUBLIC-ATTEMPT-002'
+              assert evidence['candidate_id'] == 'whispercpp-balanced'
+              assert evidence['shard_index'] == index
+              assert evidence['shard_count'] == 4
+              assert evidence['expected_total_input_count'] == 240
+              assert evidence['expected_shard_size'] == 60
+              assert len(evidence['utterance_ids']) == 60
+              assert len(set(evidence['utterance_ids'])) == 60
+              assert evidence['run']['repository_revision'] == os.environ['PRIMARY_SOURCE_SHA']
+              assert evidence['run']['github_run_id'] == int(os.environ['PRIMARY_RUN_ID'])
+              assert evidence['run']['github_job'] == 'primary-shard'
+              execution = evidence['execution']
+              assert execution['input_count'] == 60
+              assert execution['decoded_count'] + execution['failure_count'] == 60
+              assert len(execution['records']) == 60
+              assert [row['utterance_id'] for row in execution['records']] == evidence['utterance_ids']
+              assert execution['reference_transcripts_loaded_by_decoder'] is False
+              assert execution['accuracy_scoring_performed'] is False
+              assert evidence['claim_guards']['b2r09_authorized'] is False
+              unsigned = dict(evidence)
+              payload = unsigned.pop('evidence_payload_sha256')
+              assert hashlib.sha256(repair.canonical(unsigned)).hexdigest() == payload
+              adapter_lines = (out / f'adapter-work/b2r08-primary-shard-{index}-adapter-output.jsonl').read_text(encoding='utf-8').splitlines()
+              assert len(adapter_lines) == 60
+              adapter_uids = [json.loads(line)['utterance_id'] for line in adapter_lines]
+              assert adapter_uids == evidence['utterance_ids']
+              input_lines = (out / f'adapter-work/b2r08-primary-shard-{index}-inputs.tsv').read_text(encoding='utf-8').splitlines()
+              assert len(input_lines) == 60
+              assert [line.split('\t', 1)[0] for line in input_lines] == evidence['utterance_ids']
+              build_raw = json.loads((out / 'whisper-build/wispral-build-identity.json').read_text(encoding='utf-8'))
+              assert build_raw == evidence['build_identity']
+              print(f'B2R08_PRIMARY_SHARD_{index}_ARTIFACT=PASS')
+              print(f'B2R08_PRIMARY_SHARD_{index}_RAW_SHA256={hashlib.sha256(evidence_path.read_bytes()).hexdigest()}')
+              print(f'B2R08_PRIMARY_SHARD_{index}_PAYLOAD_SHA256={payload}')
+          print('B2R08_ALL_PRIMARY_SHARDS_ARTIFACT_BOUNDARY=PASS')
+          print('B2R09_AUTHORIZED=NO')
+          PY
+
+      - name: Re-download exact non-primary equivalence evidence
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-seal"
+          mkdir -p "$ROOT/qualification"
+          curl --fail --location --retry 3 --retry-all-errors \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$QUALIFICATION_ARTIFACT_ID/zip" \
+            -o "$ROOT/qualification.zip"
+          printf '%s  %s\n' "$QUALIFICATION_ARTIFACT_ZIP_SHA256" "$ROOT/qualification.zip" | sha256sum --check -
+          unzip -q "$ROOT/qualification.zip" -d "$ROOT/qualification"
+          printf '%s  %s\n' "$QUALIFICATION_EVIDENCE_RAW_SHA256" "$ROOT/qualification/b2r08-shard-equivalence.json" | sha256sum --check -
+          export ROOT
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import sys
+          from pathlib import Path
+          root = Path(os.environ['ROOT'])
+          path = root / 'qualification/b2r08-shard-equivalence.json'
+          evidence = json.loads(path.read_text(encoding='utf-8'))
+          assert evidence['primary_corpus_accessed'] is False
+          assert evidence['candidate_result_accessed'] is False
+          assert evidence['qualification']['semantic_rows_byte_identical'] is True
+          assert evidence['qualification']['mismatch_count'] == 0
+          assert evidence['qualification']['full_semantic_sha256'] == evidence['qualification']['sharded_semantic_sha256']
+          assert evidence['run']['repository_revision'] == os.environ['QUALIFICATION_SOURCE_SHA']
+          assert evidence['run']['github_run_id'] == int(os.environ['QUALIFICATION_RUN_ID'])
+          public = Path('research/000b2-public').resolve()
+          sys.path.insert(0, str(public))
+          import run_b2r08_sharded_repair as repair
+          unsigned = dict(evidence)
+          payload = unsigned.pop('evidence_payload_sha256')
+          assert payload == os.environ['QUALIFICATION_EVIDENCE_PAYLOAD_SHA256']
+          assert hashlib.sha256(repair.canonical(unsigned)).hexdigest() == payload
+          print('B2R08_EQUIVALENCE_REBOUND=PASS')
+          PY
+
+      - name: Merge the four deterministic shards into final B2R08 evidence
+        shell: bash
+        env:
+          B2R08_EQUIVALENCE_RUN_ID: ${{ env.QUALIFICATION_RUN_ID }}
+          B2R08_EQUIVALENCE_EVIDENCE_SHA256: ${{ env.QUALIFICATION_EVIDENCE_RAW_SHA256 }}
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-seal"
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/run_b2r08_sharded_repair.py merge \
+            --shard-evidence "$ROOT/shard-0/b2r08-primary-shard-0.json" \
+            --shard-evidence "$ROOT/shard-1/b2r08-primary-shard-1.json" \
+            --shard-evidence "$ROOT/shard-2/b2r08-primary-shard-2.json" \
+            --shard-evidence "$ROOT/shard-3/b2r08-primary-shard-3.json" \
+            --output "$ROOT/b2r08-whispercpp-balanced.json"
+
+      - name: Verify merged B2R08 semantic and evidence boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-seal"
+          export ROOT
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          root = Path(os.environ['ROOT'])
+          path = root / 'b2r08-whispercpp-balanced.json'
+          evidence = json.loads(path.read_text(encoding='utf-8'))
+          assert evidence['schema_version'] == '000b2-public-b2r08-decode-v2'
+          assert evidence['task'] == 'B2R08'
+          assert evidence['state'] == 'ATTEMPT_002_C0_PRIMARY_DECODE_CAPTURED'
+          assert evidence['attempt_id'] == '000B2-PUBLIC-ATTEMPT-002'
+          assert evidence['candidate']['cell_index'] == 4
+          assert evidence['candidate']['candidate_id'] == 'whispercpp-balanced'
+          assert evidence['candidate']['family'] == 'whisper.cpp'
+          assert evidence['candidate']['tier'] == 'BALANCED'
+          assert evidence['candidate']['runtime_revision'] == '371b5a7561823ab2bb32142d2751e35e7534727b'
+          assert evidence['candidate']['runtime_source_tree'] == '3d7ce4f956997cfa325c7556533aba5604278463'
+          assert evidence['candidate']['model'] == 'ggml-small.en.bin'
+          assert evidence['authority']['canonical_authority_base'] == os.environ['CANONICAL_BASE']
+          c0 = evidence['c0_controls']
+          assert c0['language'] == 'en'
+          assert c0['threads'] == 4
+          assert c0['step_ms'] == 500
+          assert c0['length_ms'] == 5000
+          assert c0['keep_ms'] == 200
+          assert c0['max_tokens'] == 0
+          assert c0['audio_ctx'] == 0
+          assert c0['beam_size'] == -1
+          assert c0['sampling'] == 'GREEDY'
+          assert c0['temperature_fallback'] == 'OFF'
+          assert c0['translate'] is False
+          assert c0['keep_context'] is False
+          assert c0['initial_prompt'] is None
+          assert c0['prompt_carryover'] is False
+          assert c0['vad'] is False
+          assert c0['timestamps'] is False
+          assert c0['single_segment'] is True
+          assert c0['use_gpu'] is False
+          assert c0['flash_attention'] is False
+          assert c0['repository_context_used'] is False
+          assert c0['test_specific_context_used'] is False
+          assert c0['candidate_specific_audio_transform_used'] is False
+          assert c0['identical_frozen_audio_required_across_candidates'] is True
+          orchestration = evidence['execution_orchestration']
+          assert orchestration['policy'] == 'FORWARD_ONLY_DETERMINISTIC_CONTIGUOUS_SHARDING_AFTER_HOSTED_RUNNER_CEILING'
+          assert orchestration['shard_count'] == 4
+          assert orchestration['shard_sizes'] == [60, 60, 60, 60]
+          assert orchestration['partitioning'] == 'CONTIGUOUS_PARTITIONS_OF_SORTED_FROZEN_UTTERANCE_IDS'
+          assert orchestration['final_record_order'] == 'ORIGINAL_SORTED_FROZEN_UTTERANCE_ID_ORDER'
+          assert orchestration['per_shard_adapter_processes'] == 1
+          assert orchestration['per_shard_adapter_timeout_seconds'] == 18000
+          assert orchestration['failed_primary_run_id'] == 34067447713
+          assert orchestration['failed_primary_job_id'] == 101578604948
+          assert orchestration['failed_primary_artifact_id'] == 10005732797
+          assert orchestration['failed_primary_artifact_zip_sha256'] == '1a72b3553e7e7fd20c4c058a3d4d3d45fb88bff3d96a8563916c65a1da708a37'
+          assert orchestration['failed_primary_transcript_artifact_present'] is False
+          assert orchestration['failed_primary_evidence_json_present'] is False
+          assert orchestration['candidate_result_inspection_before_repair'] is False
+          assert orchestration['equivalence_qualification_run_id'] == int(os.environ['QUALIFICATION_RUN_ID'])
+          assert orchestration['equivalence_qualification_evidence_sha256'] == os.environ['QUALIFICATION_EVIDENCE_RAW_SHA256']
+          for key in ('candidate_changed', 'model_changed', 'runtime_revision_changed', 'frozen_audio_membership_changed',
+                      'frozen_audio_bytes_changed', 'frozen_input_order_changed_in_final_evidence', 'c0_controls_changed',
+                      'scorer_changed', 'normalization_changed'):
+              assert orchestration[key] is False, key
+          execution = evidence['execution']
+          assert execution['input_count'] == 240
+          assert execution['decoded_count'] + execution['failure_count'] == 240
+          assert len(execution['records']) == 240
+          uids = [row['utterance_id'] for row in execution['records']]
+          assert uids == sorted(uids)
+          assert len(set(uids)) == 240
+          assert execution['all_frozen_input_hashes_reverified'] is True
+          assert execution['all_speech_samples_delivered_for_decoded_records'] is True
+          assert execution['all_zero_suffix_samples_delivered_for_decoded_records'] is True
+          assert execution['reference_transcripts_loaded_by_decoder'] is False
+          assert execution['accuracy_scoring_performed'] is False
+          assert execution['comparative_ranking_present'] is False
+          assert execution['performance_claim_present'] is False
+          guards = evidence['claim_guards']
+          assert guards['human_developer_speech_accuracy_evidence'] == 'ABSENT'
+          assert guards['comparative_result_available'] is False
+          assert guards['comparative_performance_authorized'] is False
+          assert guards['production_stt_selected'] is False
+          assert guards['product_code_authorized'] is False
+          assert guards['b2r09_authorized'] is False
+          assert evidence['run']['repository_revision'] == os.environ['GITHUB_SHA']
+          assert evidence['run']['github_run_id'] == int(os.environ['GITHUB_RUN_ID'])
+          assert evidence['run']['github_run_attempt'] == int(os.environ['GITHUB_RUN_ATTEMPT'])
+          assert evidence['run']['github_job'] == 'seal-b2r08'
+          public = Path('research/000b2-public').resolve()
+          sys.path.insert(0, str(public))
+          import run_b2r08_sharded_repair as repair
+          unsigned = dict(evidence)
+          payload = unsigned.pop('evidence_payload_sha256')
+          assert hashlib.sha256(repair.canonical(unsigned)).hexdigest() == payload
+          print('B2R08_MERGED_EVIDENCE=PASS')
+          print(f'B2R08_MERGED_RAW_SIZE={path.stat().st_size}')
+          print(f'B2R08_MERGED_RAW_SHA256={hashlib.sha256(path.read_bytes()).hexdigest()}')
+          print(f'B2R08_MERGED_PAYLOAD_SHA256={payload}')
+          print(f'B2R08_MERGED_DECODED={execution["decoded_count"]}')
+          print(f'B2R08_MERGED_FAILURES={execution["failure_count"]}')
+          print('B2R09_AUTHORIZED=NO')
+          PY
+
+      - name: Build bounded B2R08 seal manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/b2r08-seal"
+          export ROOT
+          PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ['ROOT'])
+          evidence_path = root / 'b2r08-whispercpp-balanced.json'
+          evidence = json.loads(evidence_path.read_text(encoding='utf-8'))
+          artifact_map = json.loads((root / 'artifact-map.json').read_text(encoding='utf-8'))
+          manifest = {
+              'schema_version': '000b2-public-b2r08-sharded-seal-v1',
+              'task': 'B2R08',
+              'attempt_id': '000B2-PUBLIC-ATTEMPT-002',
+              'state': 'BOUNDED_SHARDED_PRIMARY_EVIDENCE_SEALED',
+              'authority': {
+                  'canonical_base': os.environ['CANONICAL_BASE'],
+                  'task_head': os.environ['TASK_HEAD'],
+                  'successor_authorized': False,
+              },
+              'primary_run': {
+                  'run_id': int(os.environ['PRIMARY_RUN_ID']),
+                  'workflow_id': int(os.environ['PRIMARY_WORKFLOW_ID']),
+                  'source_revision': os.environ['PRIMARY_SOURCE_SHA'],
+                  'conclusion': 'success',
+                  'artifacts': artifact_map,
+              },
+              'equivalence_qualification': {
+                  'run_id': int(os.environ['QUALIFICATION_RUN_ID']),
+                  'source_revision': os.environ['QUALIFICATION_SOURCE_SHA'],
+                  'artifact_id': int(os.environ['QUALIFICATION_ARTIFACT_ID']),
+                  'artifact_zip_sha256': os.environ['QUALIFICATION_ARTIFACT_ZIP_SHA256'],
+                  'evidence_raw_sha256': os.environ['QUALIFICATION_EVIDENCE_RAW_SHA256'],
+                  'evidence_payload_sha256': os.environ['QUALIFICATION_EVIDENCE_PAYLOAD_SHA256'],
+                  'primary_corpus_accessed': False,
+              },
+              'merged_evidence': {
+                  'path': 'b2r08-whispercpp-balanced.json',
+                  'raw_size_bytes': evidence_path.stat().st_size,
+                  'raw_sha256': hashlib.sha256(evidence_path.read_bytes()).hexdigest(),
+                  'payload_sha256': evidence['evidence_payload_sha256'],
+                  'input_count': evidence['execution']['input_count'],
+                  'decoded_count': evidence['execution']['decoded_count'],
+                  'failure_count': evidence['execution']['failure_count'],
+              },
+              'claim_guards': {
+                  'reference_transcripts_loaded_by_seal': False,
+                  'accuracy_scoring_performed': False,
+                  'comparative_result_available': False,
+                  'b2r09_authorized': False,
+              },
+          }
+          unsigned = json.dumps(manifest, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode() + b'\n'
+          manifest['manifest_payload_sha256'] = hashlib.sha256(unsigned).hexdigest()
+          (root / 'b2r08-sharded-seal-manifest.json').write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print('B2R08_SHARDED_SEAL_MANIFEST=PASS')
+          print(f"B2R08_SHARDED_SEAL_MANIFEST_RAW_SHA256={hashlib.sha256((root / 'b2r08-sharded-seal-manifest.json').read_bytes()).hexdigest()}")
+          print('B2R09_AUTHORIZED=NO')
+          PY
+
+      - name: Upload bounded B2R08 merged evidence seal
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: b2r08-sharded-seal-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/b2r08-seal/b2r08-whispercpp-balanced.json
+            ${{ runner.temp }}/b2r08-seal/b2r08-sharded-seal-manifest.json
+            ${{ runner.temp }}/b2r08-seal/artifact-map.json
+            ${{ runner.temp }}/b2r08-seal/qualification/b2r08-shard-equivalence.json
+            ${{ runner.temp }}/b2r08-seal/shard-0/b2r08-primary-shard-0.json
+            ${{ runner.temp }}/b2r08-seal/shard-1/b2r08-primary-shard-1.json
+            ${{ runner.temp }}/b2r08-seal/shard-2/b2r08-primary-shard-2.json
+            ${{ runner.temp }}/b2r08-seal/shard-3/b2r08-primary-shard-3.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Remove transient seal inputs
+        if: always()
+        shell: bash
+        run: rm -rf "$RUNNER_TEMP/b2r08-seal"
