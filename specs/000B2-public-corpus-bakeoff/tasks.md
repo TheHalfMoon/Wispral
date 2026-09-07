@@ -27,7 +27,7 @@ ATTEMPT-001 evidence is historical and ineligible for comparative scoring once B
 - [x] `B2R06` Execute candidate cell 2 (`moonshine-balanced`) under ATTEMPT-002 and unchanged frozen C0.
 - [x] `B2R07` Execute candidate cell 3 (`whispercpp-compact`) under ATTEMPT-002 and unchanged frozen C0.
 - [x] `B2R08` Execute candidate cell 4 (`whispercpp-balanced`) under ATTEMPT-002 and unchanged frozen C0.
-- [ ] `B2R09` Execute candidate cell 5 (`sherpa-onnx-compact`) under ATTEMPT-002 and unchanged frozen C0.
+- [x] `B2R09` Execute candidate cell 5 (`sherpa-onnx-compact`) under ATTEMPT-002 and unchanged frozen C0.
 - [ ] `B2R10` Execute candidate cell 6 (`sherpa-onnx-balanced`) under ATTEMPT-002 and unchanged frozen C0.
 - [ ] `B2R11` Preserve ATTEMPT-002 raw transcripts, failures, runtime observations, and exact run identities for every cell.
 - [ ] `B2R12` Score ATTEMPT-002 P0 outputs using the already-frozen normalization/scoring contract without result-driven changes.
