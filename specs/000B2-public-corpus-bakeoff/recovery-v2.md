@@ -101,6 +101,8 @@ Each successor task must satisfy all of the following before the next task becom
 - the successor recovery workflow succeeds on the exact canonical task merge;
 - a separate canonical reconciliation records the task merge, successful post-merge recovery run, completed task, and sole successor.
 
+Each reconciliation may advance exactly one recovery task relative to its canonical authority base. Existing transition proofs are append-only. Every completed-task proof must use a unique canonical task merge and a unique successful post-merge recovery run. The proof must bind the canonical task base, the exact qualified task head, the normal merge commit whose first and second parents are those exact SHAs, the successful `main` push recovery run for that merge SHA, the completed task, and its sole successor. Reusing a merge/run proof, bulk-advancing multiple tasks, replacing an earlier proof, or accepting a squash/rebase commit as a task merge is prohibited.
+
 Stale CI or review evidence never transfers to a changed head.
 
 ## B2R13 activation exception
