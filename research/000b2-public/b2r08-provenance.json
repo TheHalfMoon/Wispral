@@ -1,0 +1,183 @@
+{
+  "attempt_id": "000B2-PUBLIC-ATTEMPT-002",
+  "candidate_id": "whispercpp-balanced",
+  "canonical_evidence_source": {
+    "artifact_id": 10029053259,
+    "artifact_name": "b2r08-sharded-seal-70d9e71961510f2124c02ee4a05fb13b82399d03",
+    "artifact_zip_sha256": "6345de28752f714c1a49ce81cbf4b89e86e8f4520ce2b0f0c573843f90c4090a",
+    "artifact_zip_size_bytes": 118286,
+    "conclusion": "success",
+    "event": "push",
+    "evidence_path": "research/000b2-public/b2r08-whispercpp-balanced.json",
+    "evidence_payload_sha256": "b688080a9b54106975fc3d423d210f6b449c47468cdc94135997285d9504314c",
+    "evidence_raw_file_sha256": "5b438a0d23c8ec19796df9b384234437a266ef862bd6ddd604772ed965932b41",
+    "evidence_raw_file_size_bytes": 397706,
+    "job_id": 101830233512,
+    "role": "CANONICAL_EVIDENCE_SOURCE",
+    "run_id": 34150046063,
+    "selection_basis": "FIRST_SUCCESSFUL_PREDECLARED_FOUR_SHARD_PRIMARY_AFTER_THE_ORIGINAL_FULL_LIST_PRIMARY_HIT_THE_GITHUB_HOSTED_RUNNER_EXECUTION_CEILING_WITHOUT_TRANSCRIPT_OR_EVIDENCE_JSON; SHARD_EQUIVALENCE_WAS_QUALIFIED_ON_SYNTHETIC_NON_PRIMARY_FIXTURES_BEFORE_REPAIRED_PRIMARY_RESULTS; NOT_RESULT_DRIVEN",
+    "source_branch": "research/000b2-b2r08-sharded-seal-v1",
+    "source_revision": "70d9e71961510f2124c02ee4a05fb13b82399d03",
+    "workflow_id": 352504105
+  },
+  "claims": {
+    "b2r09_authorized": false,
+    "comparative_performance_authorized": false,
+    "comparative_result_available": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "product_code_authorized": false,
+    "production_stt_selected": false
+  },
+  "equivalence_qualification": {
+    "artifact_id": 10024691621,
+    "artifact_name": "b2r08-shard-equivalence-900482d4cce3c69c8ad0a36261e2a8d53f106142",
+    "artifact_zip_sha256": "124ca565bb22604d39101541b4949c22c55dbc764c576dde766ada8b433a56e4",
+    "candidate_result_accessed": false,
+    "evidence_path": "research/000b2-public/b2r08-shard-equivalence.json",
+    "evidence_payload_sha256": "6d419e5a975c245132b2edca9f40c35bb0abd22c708896ba51b481e815409afd",
+    "evidence_raw_file_sha256": "122e217b7efcfadea44540fcd20a181ad881351a89b6303e0a283fdc569d96a1",
+    "evidence_raw_file_size_bytes": 5146,
+    "fixture_count": 8,
+    "job_id": 101790371251,
+    "mismatch_count": 0,
+    "primary_corpus_accessed": false,
+    "role": "NON_PRIMARY_REPAIR_QUALIFICATION",
+    "run_id": 34137057908,
+    "semantic_rows_byte_identical": true,
+    "source_branch": "research/000b2-b2r08-repair-qualification-v2",
+    "source_revision": "900482d4cce3c69c8ad0a36261e2a8d53f106142",
+    "workflow_id": 352397816
+  },
+  "forward_only_repair": {
+    "accuracy_scoring_during_decode": false,
+    "c0_controls_changed": false,
+    "candidate_changed": false,
+    "final_record_order": "ORIGINAL_SORTED_FROZEN_UTTERANCE_ID_ORDER",
+    "frozen_audio_bytes_changed": false,
+    "frozen_audio_membership_changed": false,
+    "frozen_input_order_changed_in_final_evidence": false,
+    "model_changed": false,
+    "normalization_changed": false,
+    "partitioning": "CONTIGUOUS_PARTITIONS_OF_SORTED_FROZEN_UTTERANCE_IDS",
+    "per_shard_adapter_processes": 1,
+    "per_shard_adapter_timeout_seconds": 18000,
+    "policy": "FORWARD_ONLY_DETERMINISTIC_CONTIGUOUS_SHARDING_AFTER_HOSTED_RUNNER_CEILING",
+    "reference_transcript_access_during_decode": false,
+    "runtime_revision_changed": false,
+    "scorer_changed": false,
+    "shard_count": 4,
+    "shard_sizes": [
+      60,
+      60,
+      60,
+      60
+    ]
+  },
+  "original_failed_primary": {
+    "artifact_contents": [
+      "whisper-build/wispral-build-identity.json"
+    ],
+    "artifact_id": 10005732797,
+    "artifact_name": "b2r08-whispercpp-balanced-7c81a469b10af3d83f42a047b933d3b0c14a3891",
+    "artifact_zip_sha256": "1a72b3553e7e7fd20c4c058a3d4d3d45fb88bff3d96a8563916c65a1da708a37",
+    "artifact_zip_size_bytes": 753,
+    "candidate_result_inspection_before_repair": false,
+    "conclusion": "cancelled",
+    "evidence_json_present": false,
+    "failure_stage": "GITHUB_HOSTED_RUNNER_EXECUTION_CEILING",
+    "job_id": 101578604948,
+    "primary_decode_started": true,
+    "role": "FAILED_PRIMARY_NONCANONICAL",
+    "run_id": 34067447713,
+    "selection_effect": "NONE",
+    "source_branch": "research/000b2-b2r08-execution",
+    "source_revision": "7c81a469b10af3d83f42a047b933d3b0c14a3891",
+    "transcript_artifact_present": false,
+    "workflow_id": 351865230
+  },
+  "provenance_payload_sha256": "749bf5b72fb61377b3f110868f45b62704295f3ffaa370c651f2edbe2caff90a",
+  "provenance_status": "RECORDED_FROM_EXACT_GITHUB_ACTIONS_FAILED_PRIMARY_QUALIFICATION_SHARDED_PRIMARY_AND_SEAL_EVIDENCE_WITH_NON_RESULT_DRIVEN_FORWARD_ONLY_REPAIR_CHRONOLOGY",
+  "result_accounting": {
+    "accuracy_scoring_performed": false,
+    "all_frozen_input_hashes_reverified": true,
+    "all_speech_samples_delivered_for_decoded_records": true,
+    "all_zero_suffix_samples_delivered_for_decoded_records": true,
+    "comparative_ranking_present": false,
+    "decoded_count": 240,
+    "failure_count": 0,
+    "input_count": 240,
+    "performance_claim_present": false,
+    "reference_transcripts_loaded_by_decoder": false,
+    "result_driven_evidence_selection": false,
+    "timing_semantics": "DIAGNOSTIC_ONLY"
+  },
+  "schema_version": "000b2-public-b2r08-provenance-v1",
+  "seal": {
+    "artifact_id": 10029053259,
+    "artifact_zip_sha256": "6345de28752f714c1a49ce81cbf4b89e86e8f4520ce2b0f0c573843f90c4090a",
+    "execution_source": "70d9e71961510f2124c02ee4a05fb13b82399d03",
+    "job_id": 101830233512,
+    "manifest_payload_sha256": "95ac81b41481f27f8cc8bcff35929d72591697ea7dcd28531542d41dbd59edd4",
+    "manifest_raw_sha256": "77eed53d72b16497df2a8b4191a9166449b74e05143cef0ae093c51c62f2e877",
+    "prepared_staging_commit": "5d549bb46c7e232f06d975a91aae2a22b2ec7ee1",
+    "run_id": 34150046063,
+    "trigger_commit_change": "FILE_MODE_ONLY_100644_TO_100755",
+    "workflow_content_blob_sha": "c89986f9f9bb1d1b5b5386985469a67819931a4c",
+    "workflow_content_unchanged_by_trigger_commit": true
+  },
+  "sharded_primary": {
+    "conclusion": "success",
+    "decoded_count": 240,
+    "failure_count": 0,
+    "input_count": 240,
+    "preflight_job_id": 101796754393,
+    "run_id": 34139091127,
+    "shards": [
+      {
+        "digest": "sha256:4eefe1df94a03e9e49a1f9386a1a3bc8942fa33d7a4be806b5f4135cc334b916",
+        "id": 10028072115,
+        "job_id": 101796800482,
+        "name": "b2r08-primary-shard-0-4a6c776b2a666113420263b70a4fad06f752b99a",
+        "shard_index": 0,
+        "size_in_bytes": 26947
+      },
+      {
+        "digest": "sha256:9a48c0d160f68b560097fe60c64ebc2777098a590ee74b2349406c712ca8a398",
+        "id": 10028151064,
+        "job_id": 101796800522,
+        "name": "b2r08-primary-shard-1-4a6c776b2a666113420263b70a4fad06f752b99a",
+        "shard_index": 1,
+        "size_in_bytes": 22581
+      },
+      {
+        "digest": "sha256:e7a1a00236725c8992f1fbbdf13b6a27ca467e379e9c4e6aa2842ec113a90a52",
+        "id": 10027694151,
+        "job_id": 101796800502,
+        "name": "b2r08-primary-shard-2-4a6c776b2a666113420263b70a4fad06f752b99a",
+        "shard_index": 2,
+        "size_in_bytes": 24863
+      },
+      {
+        "digest": "sha256:30ecac3ef98e077a1b25264168e2d558d908097375dba77fce1170b7af2b2465",
+        "id": 10028582691,
+        "job_id": 101796800450,
+        "name": "b2r08-primary-shard-3-4a6c776b2a666113420263b70a4fad06f752b99a",
+        "shard_index": 3,
+        "size_in_bytes": 30513
+      }
+    ],
+    "source_branch": "research/000b2-b2r08-sharded-primary-v1",
+    "source_revision": "4a6c776b2a666113420263b70a4fad06f752b99a",
+    "workflow_id": 352414950
+  },
+  "task": "B2R08",
+  "task_materialization": {
+    "job_name": "materialize-b2r08",
+    "result_access_effect": "NONE",
+    "role": "BYTE_PRESERVING_POST_SEAL_TASK_MATERIALIZATION",
+    "run_id": 34151047380,
+    "source_branch": "ci/000b2-b2r08-task-materialize",
+    "source_revision": "bc6c3488ef510d912700cf39d344136600d40c11",
+    "workflow_name": "Internal B2R08 Task Evidence Materialization"
+  }
+}

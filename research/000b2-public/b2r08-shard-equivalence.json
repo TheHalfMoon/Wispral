@@ -1,0 +1,129 @@
+{
+  "attempt_id": "000B2-PUBLIC-ATTEMPT-002",
+  "candidate": {
+    "adapter_build_identity": {
+      "adapter_binary_sha256": "e63e38c74d4123dc19dcccbba659daaa6ac9b7df73e0eb30c27674dad6c48e80",
+      "adapter_cmake_path": "research/000b2-public/whispercpp-adapter/CMakeLists.txt",
+      "adapter_cmake_sha256": "61e4292ac51c06dbb5805ee13c7d09e673276ec5435d0bda8224472e6eab570b",
+      "adapter_source_path": "research/000b2-public/whispercpp-adapter/adapter.cpp",
+      "adapter_source_sha256": "ac481f71af8657f15213651304284c199f8598a901fa34997c79d603e5ad0470",
+      "build_type": "Release",
+      "cmake_cache_sha256": "55c016e8d6b3dab136d0969f4aeabcc44967f30fdafa727abaa6611c104548d3",
+      "cmake_version_sha256": "f6e81c2559f3ce00c5fdad01d7b226c301f5d6b07ee04f65db6dbfdc1cc5970b",
+      "compiler_version_sha256": "88b7c4b67564a146863224148116065fee418539f0a408f3636a68f3bde51805",
+      "ggml_cuda": "OFF",
+      "ggml_metal": "OFF",
+      "schema_version": "000b2-whisper-build-identity-v2",
+      "source_revision": "371b5a7561823ab2bb32142d2751e35e7534727b",
+      "source_tree": "3d7ce4f956997cfa325c7556533aba5604278463",
+      "target": "wispral-whispercpp-c0",
+      "whisper_build_examples": "OFF",
+      "whisper_build_tests": "OFF"
+    },
+    "artifacts": [
+      {
+        "path": "ggml-small.en.bin",
+        "sha256": "c6138d6d58ecc8322097e0f987c32f1be8bb0a18532a3f88f734d1bbf9c41e5d",
+        "size_bytes": 487614201
+      }
+    ],
+    "candidate_id": "whispercpp-balanced",
+    "model": "ggml-small.en.bin",
+    "model_source_revision": "80da2d8bfee42b0e836fc3a9890373e5defc00a6",
+    "runtime_revision": "371b5a7561823ab2bb32142d2751e35e7534727b",
+    "runtime_source_tree": "3d7ce4f956997cfa325c7556533aba5604278463"
+  },
+  "candidate_result_accessed": false,
+  "claim_guards": {
+    "b2r09_authorized": false,
+    "comparative_performance_authorized": false,
+    "comparative_result_available": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "product_code_authorized": false,
+    "production_stt_selected": false
+  },
+  "evidence_payload_sha256": "6d419e5a975c245132b2edca9f40c35bb0abd22c708896ba51b481e815409afd",
+  "material_class": "DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY",
+  "primary_corpus_accessed": false,
+  "qualification": {
+    "fixture_count": 8,
+    "fixture_manifest": [
+      {
+        "frame_count": 9000,
+        "utterance_id": "fixture-00",
+        "wav_sha256": "2135581f2d152bdccb7c5d92f4fbc28d41abaf4961401b2752de035e3f3af088",
+        "wav_size_bytes": 18044
+      },
+      {
+        "frame_count": 11000,
+        "utterance_id": "fixture-01",
+        "wav_sha256": "181a82c96456a2c9177374307bcd748a541dbb27cc1c925024909b01d0e5e46f",
+        "wav_size_bytes": 22044
+      },
+      {
+        "frame_count": 13000,
+        "utterance_id": "fixture-02",
+        "wav_sha256": "f8922f0f8d35557040a1db1d764f054fcc76ec4030341ea7e9937db2acd0784d",
+        "wav_size_bytes": 26044
+      },
+      {
+        "frame_count": 15000,
+        "utterance_id": "fixture-03",
+        "wav_sha256": "f47aa5f83269c7c754ad577b6d82614edd8efa75671cecc608c5333e75113421",
+        "wav_size_bytes": 30044
+      },
+      {
+        "frame_count": 17000,
+        "utterance_id": "fixture-04",
+        "wav_sha256": "824f3e558d4f77217a6ef9aa7461360ba3e4cf6330f18b8d8fb571f0baa690f9",
+        "wav_size_bytes": 34044
+      },
+      {
+        "frame_count": 19000,
+        "utterance_id": "fixture-05",
+        "wav_sha256": "ac8d5a9996e4beb6b37420f4cfad4604d379b1a7a3855316a9ba224b620eda56",
+        "wav_size_bytes": 38044
+      },
+      {
+        "frame_count": 21000,
+        "utterance_id": "fixture-06",
+        "wav_sha256": "dbe2f8345e19ef4d31dc924ca35b44e87cd65293c8da8c94d1e68663cc956e45",
+        "wav_size_bytes": 42044
+      },
+      {
+        "frame_count": 23000,
+        "utterance_id": "fixture-07",
+        "wav_sha256": "d122088769f6adc4ffb811316871815a2b2f3426f4d2699252d46593719cf900",
+        "wav_size_bytes": 46044
+      }
+    ],
+    "full_semantic_sha256": "8c5ede3832916e63446f0ee18389deb4aee242b4f93f0d8d922a833e45c6644b",
+    "ignored_fields": [
+      "decode_wall_seconds"
+    ],
+    "mismatch_count": 0,
+    "partitioning": "CONTIGUOUS_PARTITIONS_OF_SORTED_FIXTURE_IDS",
+    "semantic_rows_byte_identical": true,
+    "shard_count": 4,
+    "sharded_semantic_sha256": "8c5ede3832916e63446f0ee18389deb4aee242b4f93f0d8d922a833e45c6644b"
+  },
+  "repair_plan_sha256": "ebc613c196e70d41a0f2b9d0bac5732300b5044dd8c3567a824f168335d7d7e7",
+  "run": {
+    "comparative_performance_authorized": false,
+    "github_job": "qualify-b2r08-sharding",
+    "github_repository": "TheHalfMoon/Wispral",
+    "github_run_attempt": 1,
+    "github_run_id": 34137057908,
+    "machine": "x86_64",
+    "python": "3.12.3",
+    "repository_revision": "900482d4cce3c69c8ad0a36261e2a8d53f106142",
+    "runner_arch": "X64",
+    "runner_environment": "github-hosted",
+    "runner_os": "Linux",
+    "system": "Linux",
+    "timing_semantics": "DIAGNOSTIC_ONLY"
+  },
+  "schema_version": "000b2-public-b2r08-shard-equivalence-v1",
+  "state": "NON_PRIMARY_SHARD_EQUIVALENCE_QUALIFIED",
+  "task": "B2R08"
+}
