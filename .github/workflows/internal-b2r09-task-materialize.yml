@@ -1,0 +1,471 @@
+name: Internal B2R09 Task Evidence Materialization
+
+on:
+  push:
+    branches:
+      - ci/000b2-b2r09-task-materialize
+    paths:
+      - '.github/workflows/internal-b2r09-task-materialize.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: b2r09-task-materialize
+  cancel-in-progress: false
+
+env:
+  CANONICAL_BASE: 737e2fa0422e0d1aa0dd4d5bdc0473d51cec624c
+  TASK_BRANCH: research/000b2-b2r09-sherpa-onnx-compact
+  TASK_HEAD: b7a4bb8828a4b861a399b1424bc07a4e549cf51f
+  EXEC_BRANCH: research/000b2-b2r09-execution
+  EXEC_HEAD: 47d1c53f6892dda437aa0f1d109f58f1cc5e101e
+  DECODER_BLOB: 27052cc7f3d57d2743ee06a7db8de730c833935e
+  SUCCESS_RUN: '34156167567'
+  SUCCESS_JOB: '101848322734'
+  WORKFLOW_ID: '352553362'
+  ARTIFACT_ID: '10031177463'
+  ARTIFACT_NAME: b2r09-sherpa-onnx-compact-47d1c53f6892dda437aa0f1d109f58f1cc5e101e
+  ARTIFACT_ZIP_SHA256: 79652728032760ae133845b7f1308623a984ee69c490991cf190d8a7301985ea
+  ARTIFACT_ZIP_SIZE: '19519'
+  EVIDENCE_SIZE: '248426'
+  EVIDENCE_SHA256: d59fa9605e8b0cf6892cd5a7ece105c6abe0753ff8949e9206e35f42da9a003f
+  EVIDENCE_PAYLOAD_SHA256: 4a81f1be21e18aa462ee9ec9c32a1daeaa6fa86bcca6372b0634a9421c16c1ed
+  FAILED_RUN: '34155967652'
+  FAILED_JOB: '101847745228'
+
+jobs:
+  materialize-b2r09:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact clean task head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.TASK_HEAD }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify live refs and exact execution chronology
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$TASK_HEAD"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$TASK_HEAD"
+          test "$(git ls-remote origin refs/heads/$EXEC_BRANCH | cut -f1)" = "$EXEC_HEAD"
+          test "$(git hash-object research/000b2-public/decode_b2r09.py)" = "$DECODER_BLOB"
+          test "$(git diff --name-only "$CANONICAL_BASE" "$TASK_HEAD")" = "research/000b2-public/decode_b2r09.py"
+
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${SUCCESS_RUN}" > "$RUNNER_TEMP/success-run.json"
+          jq -e --arg h "$EXEC_HEAD" --argjson w "$WORKFLOW_ID" \
+            '.status == "completed" and .conclusion == "success" and .head_sha == $h and .workflow_id == $w and .event == "push"' \
+            "$RUNNER_TEMP/success-run.json" >/dev/null
+
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${SUCCESS_RUN}/jobs" > "$RUNNER_TEMP/success-jobs.json"
+          jq -e --argjson id "$SUCCESS_JOB" \
+            '[.jobs[] | select(.id == $id and .name == "capture-b2r09" and .status == "completed" and .conclusion == "success")] | length == 1' \
+            "$RUNNER_TEMP/success-jobs.json" >/dev/null
+          for step in \
+            'Verify exact B2R09 authority before external access' \
+            'Reproduce and verify exact frozen P0 preprocessing bytes' \
+            'Fetch exact pinned sherpa source identity' \
+            'Download and verify exact sherpa-onnx-compact artifacts' \
+            'Execute B2R09 sherpa-onnx-compact C0 primary decode' \
+            'Verify B2R09 semantic and raw-data boundary' \
+            'Upload bounded B2R09 evidence only' \
+            'Remove transient primary/model/source/preprocessing material' \
+            'Verify execution branch stayed clean'; do
+            jq -e --argjson id "$SUCCESS_JOB" --arg step "$step" \
+              '.jobs[] | select(.id == $id) | .steps[] | select(.name == $step) | .conclusion == "success"' \
+              "$RUNNER_TEMP/success-jobs.json" >/dev/null
+          done
+
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${SUCCESS_RUN}/artifacts" > "$RUNNER_TEMP/success-artifacts.json"
+          jq -e --argjson id "$ARTIFACT_ID" --arg name "$ARTIFACT_NAME" --arg digest "sha256:$ARTIFACT_ZIP_SHA256" \
+            '.total_count == 1 and (.artifacts | length) == 1 and .artifacts[0].id == $id and .artifacts[0].name == $name and .artifacts[0].digest == $digest and .artifacts[0].expired == false' \
+            "$RUNNER_TEMP/success-artifacts.json" >/dev/null
+
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${FAILED_RUN}" > "$RUNNER_TEMP/failed-run.json"
+          jq -e '.status == "completed" and .conclusion == "failure"' "$RUNNER_TEMP/failed-run.json" >/dev/null
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${FAILED_RUN}/jobs" > "$RUNNER_TEMP/failed-jobs.json"
+          jq -e --argjson id "$FAILED_JOB" \
+            '.jobs[] | select(.id == $id) | (.steps[] | select(.name == "Verify exact B2R09 authority before external access") | .conclusion == "success") and (.steps[] | select(.name == "Set up exact Python runtime family") | .conclusion == "failure") and (.steps[] | select(.name == "Execute B2R09 sherpa-onnx-compact C0 primary decode") | .conclusion == "skipped")' \
+            "$RUNNER_TEMP/failed-jobs.json" >/dev/null
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${FAILED_RUN}/artifacts" > "$RUNNER_TEMP/failed-artifacts.json"
+          jq -e '.total_count == 0 and (.artifacts | length) == 0' "$RUNNER_TEMP/failed-artifacts.json" >/dev/null
+          echo B2R09_LIVE_CHRONOLOGY=PASS
+
+      - name: Download and independently verify exact B2R09 artifact bytes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ZIP="$RUNNER_TEMP/b2r09.zip"
+          curl -fsSL -L -H "Authorization: Bearer $GH_TOKEN" -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" -o "$ZIP"
+          test "$(stat -c%s "$ZIP")" = "$ARTIFACT_ZIP_SIZE"
+          test "$(sha256sum "$ZIP" | cut -d' ' -f1)" = "$ARTIFACT_ZIP_SHA256"
+          export ZIP
+          python3 - <<'PY'
+          import hashlib, json, os, zipfile
+          from pathlib import Path
+          zpath = Path(os.environ['ZIP'])
+          with zipfile.ZipFile(zpath) as z:
+              names = z.namelist()
+              assert names == ['b2r09-sherpa-onnx-compact.json'], names
+              raw = z.read(names[0])
+          assert len(raw) == int(os.environ['EVIDENCE_SIZE'])
+          assert hashlib.sha256(raw).hexdigest() == os.environ['EVIDENCE_SHA256']
+          evidence = json.loads(raw)
+          unsigned = dict(evidence)
+          payload = unsigned.pop('evidence_payload_sha256')
+          canonical = (json.dumps(unsigned, ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n').encode()
+          assert payload == os.environ['EVIDENCE_PAYLOAD_SHA256']
+          assert hashlib.sha256(canonical).hexdigest() == payload
+          assert evidence['task'] == 'B2R09'
+          assert evidence['attempt_id'] == '000B2-PUBLIC-ATTEMPT-002'
+          assert evidence['candidate']['candidate_id'] == 'sherpa-onnx-compact'
+          assert evidence['run']['repository_revision'] == os.environ['EXEC_HEAD']
+          assert evidence['run']['github_run_id'] == int(os.environ['SUCCESS_RUN'])
+          x = evidence['execution']
+          assert (x['input_count'], x['decoded_count'], x['failure_count']) == (240, 240, 0)
+          assert len(x['records']) == 240
+          assert len({r['utterance_id'] for r in x['records']}) == 240
+          assert all(r['status'] == 'DECODED' and r['failure'] is None for r in x['records'])
+          assert x['reference_transcripts_loaded_by_decoder'] is False
+          assert x['accuracy_scoring_performed'] is False
+          assert x['comparative_ranking_present'] is False
+          assert evidence['claim_guards']['b2r10_authorized'] is False
+          Path(os.environ['RUNNER_TEMP'], 'b2r09-sherpa-onnx-compact.json').write_bytes(raw)
+          print('B2R09_ARTIFACT_BYTES=PASS')
+          PY
+
+      - name: Materialize evidence provenance and verifiers on clean task tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp "$RUNNER_TEMP/b2r09-sherpa-onnx-compact.json" research/000b2-public/b2r09-sherpa-onnx-compact.json
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+
+          root = Path('.')
+          public = root / 'research/000b2-public'
+          evidence_path = public / 'b2r09-sherpa-onnx-compact.json'
+          evidence = json.loads(evidence_path.read_text(encoding='utf-8'))
+          evidence_raw = evidence_path.read_bytes()
+
+          provenance = {
+              'schema_version': '000b2-public-b2r09-provenance-v1',
+              'task': 'B2R09',
+              'attempt_id': '000B2-PUBLIC-ATTEMPT-002',
+              'candidate_id': 'sherpa-onnx-compact',
+              'canonical_evidence_source': {
+                  'role': 'CANONICAL_EVIDENCE_SOURCE',
+                  'workflow_id': 352553362,
+                  'workflow_name': 'Internal B2R09 ATTEMPT-002 Capture',
+                  'run_id': 34156167567,
+                  'run_attempt': 1,
+                  'job_id': 101848322734,
+                  'job_name': 'capture-b2r09',
+                  'event': 'push',
+                  'source_branch': 'research/000b2-b2r09-execution',
+                  'source_revision': '47d1c53f6892dda437aa0f1d109f58f1cc5e101e',
+                  'execution_decoder_blob_sha': '27052cc7f3d57d2743ee06a7db8de730c833935e',
+                  'mergeable_decoder_blob_sha': '27052cc7f3d57d2743ee06a7db8de730c833935e',
+                  'artifact_id': 10031177463,
+                  'artifact_name': 'b2r09-sherpa-onnx-compact-47d1c53f6892dda437aa0f1d109f58f1cc5e101e',
+                  'artifact_zip_sha256': '79652728032760ae133845b7f1308623a984ee69c490991cf190d8a7301985ea',
+                  'artifact_zip_size_bytes': 19519,
+                  'evidence_path': 'research/000b2-public/b2r09-sherpa-onnx-compact.json',
+                  'evidence_raw_file_sha256': hashlib.sha256(evidence_raw).hexdigest(),
+                  'evidence_raw_file_size_bytes': len(evidence_raw),
+                  'evidence_payload_sha256': evidence['evidence_payload_sha256'],
+                  'conclusion': 'success',
+                  'selection_basis': 'FIRST_SUCCESSFUL_B2R09_PRIMARY_AFTER_A_PRE_PRIMARY_SETUP_PYTHON_PIP_CACHE_CONFIGURATION_FAILURE_WITH_ZERO_ARTIFACTS_AND_NO_PRIMARY_DECODE; THE_FORWARD_ONLY_REPAIR_REMOVED_ONLY_SETUP_PYTHON_PIP_CACHE_CONFIGURATION_AND_DID_NOT_CHANGE_DECODER_CANDIDATE_MODEL_RUNTIME_AUDIO_C0_SCORER_OR_NORMALIZATION_IDENTITIES; NOT_RESULT_DRIVEN',
+              },
+              'related_pre_primary_runs': [
+                  {
+                      'role': 'FAILED_PRE_PRIMARY_NONCANONICAL',
+                      'workflow_id': 352553362,
+                      'workflow_name': 'Internal B2R09 ATTEMPT-002 Capture',
+                      'run_id': 34155967652,
+                      'run_attempt': 1,
+                      'job_id': 101847745228,
+                      'source_branch': 'research/000b2-b2r09-execution',
+                      'source_revision': 'f45e9884e3fbcdc84dd27393b8ffde7d12df65e5',
+                      'conclusion': 'failure',
+                      'failure_stage': 'PYTHON_SETUP_PIP_CACHE_CONFIGURATION',
+                      'failure_detail': 'No file matched **/requirements.txt or **/pyproject.toml for setup-python pip cache dependency discovery',
+                      'exact_authority_verification_passed': True,
+                      'candidate_runtime_install_started': False,
+                      'preprocessing_started': False,
+                      'runtime_source_fetch_started': False,
+                      'model_download_started': False,
+                      'primary_decode_started': False,
+                      'candidate_result_accessed': False,
+                      'artifact_count': 0,
+                      'selection_effect': 'NONE',
+                  }
+              ],
+              'forward_only_repair': {
+                  'policy': 'FORWARD_ONLY_PRE_PRIMARY_SETUP_REPAIR',
+                  'repair_commit': '47d1c53f6892dda437aa0f1d109f58f1cc5e101e',
+                  'repaired_source_parent': 'f45e9884e3fbcdc84dd27393b8ffde7d12df65e5',
+                  'changed_path': '.github/workflows/internal-b2r09-capture.yml',
+                  'change': "REMOVE_SETUP_PYTHON_CACHE_PIP_OPTION_ONLY",
+                  'changed_lines': 1,
+                  'decoder_changed': False,
+                  'candidate_changed': False,
+                  'model_changed': False,
+                  'runtime_revision_changed': False,
+                  'frozen_audio_bytes_changed': False,
+                  'frozen_audio_membership_changed': False,
+                  'c0_controls_changed': False,
+                  'scorer_changed': False,
+                  'normalization_changed': False,
+                  'result_inspection_before_repair': False,
+              },
+              'result_accounting': {
+                  'input_count': 240,
+                  'decoded_count': 240,
+                  'failure_count': 0,
+                  'all_frozen_input_hashes_reverified': True,
+                  'reference_transcripts_loaded_by_decoder': False,
+                  'accuracy_scoring_performed': False,
+                  'comparative_ranking_present': False,
+                  'performance_claim_present': False,
+                  'timing_semantics': 'DIAGNOSTIC_ONLY',
+                  'result_driven_evidence_selection': False,
+              },
+              'claims': {
+                  'b2r10_authorized': False,
+                  'comparative_performance_authorized': False,
+                  'comparative_result_available': False,
+                  'human_developer_speech_accuracy_evidence': 'ABSENT',
+                  'product_code_authorized': False,
+                  'production_stt_selected': False,
+              },
+              'provenance_status': 'RECORDED_FROM_EXACT_GITHUB_ACTIONS_PRE_PRIMARY_FAILURE_FORWARD_ONLY_SETUP_REPAIR_AND_SUCCESSFUL_PRIMARY_EVIDENCE_WITH_NON_RESULT_DRIVEN_CHRONOLOGY',
+          }
+          canonical = (json.dumps(provenance, ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n').encode()
+          provenance['provenance_payload_sha256'] = hashlib.sha256(canonical).hexdigest()
+          provenance_path = public / 'b2r09-provenance.json'
+          provenance_path.write_text(json.dumps(provenance, ensure_ascii=False, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          provenance_sha = hashlib.sha256(provenance_path.read_bytes()).hexdigest()
+
+          verifier = r'''#!/usr/bin/env python3
+"""Verify sealed B2R09 ATTEMPT-002 sherpa-onnx-compact execution evidence."""
+from __future__ import annotations
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[2]
+PUBLIC = ROOT / "research" / "000b2-public"
+EVIDENCE = PUBLIC / "b2r09-sherpa-onnx-compact.json"
+PROVENANCE = PUBLIC / "b2r09-provenance.json"
+ATTEMPT = PUBLIC / "attempt-002-manifest.json"
+PREPROCESSING = PUBLIC / "preprocessing-capture.json"
+REBINDING = PUBLIC / "b2r03-preexecution-rebinding.json"
+READINESS = PUBLIC / "recovery-readiness.json"
+TASKS = ROOT / "specs" / "000B2-public-corpus-bakeoff" / "tasks.md"
+CURRENT = ROOT / "specs" / "CURRENT.md"
+CANONICAL_CURRENT = ROOT / "docs" / "canonical" / "CURRENT_STATE.md"
+DECODER = PUBLIC / "decode_b2r09.py"
+
+TASK_SOURCE = "b7a4bb8828a4b861a399b1424bc07a4e549cf51f"
+EXECUTION_SOURCE = "47d1c53f6892dda437aa0f1d109f58f1cc5e101e"
+DECODER_BLOB = "27052cc7f3d57d2743ee06a7db8de730c833935e"
+RUN_ID = 34156167567
+JOB_ID = 101848322734
+WORKFLOW_ID = 352553362
+ARTIFACT_ID = 10031177463
+ARTIFACT_ZIP_SHA256 = "79652728032760ae133845b7f1308623a984ee69c490991cf190d8a7301985ea"
+EVIDENCE_SIZE = 248426
+EVIDENCE_SHA256 = "d59fa9605e8b0cf6892cd5a7ece105c6abe0753ff8949e9206e35f42da9a003f"
+PAYLOAD_SHA256 = "4a81f1be21e18aa462ee9ec9c32a1daeaa6fa86bcca6372b0634a9421c16c1ed"
+PROVENANCE_SHA256 = "__PROVENANCE_SHA256__"
+ATTEMPT_SHA256 = "a2dc8246e4567e670beb3f26e315be93e001e4d9a9037be57ff11fce5a340134"
+PREPROCESSING_SHA256 = "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011"
+REBINDING_SHA256 = "f9cda5168e6cafb6a1e9e6898f394ec3987b37af50c53c15cf63bc136c1f2df1"
+RUNTIME_REVISION = "917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e"
+RUNTIME_TREE = "fd2c4e97c9f7499b6ed91c7c2854b4211f61bdc0"
+MODEL_ONNX_REVISION = "6037ea07e3abfe599ad00d418968bcf9656e7472"
+MODEL_AUX_REVISION = "672fbf1b30579d6585301139bb363f42a0ad4a24"
+ARTIFACTS = [
+    {"path":"encoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx","sha256":"563fde436d16cf7607cf408cd6b30909819d03162652ef389c2450ced3f45ac1","size_bytes":71083163},
+    {"path":"decoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx","sha256":"98da299f471e38bb4e1a8df579b8cc9122d6039576a77e357b3c60f17dd83b02","size_bytes":1307236},
+    {"path":"joiner-epoch-99-avg-1-chunk-16-left-128.int8.onnx","sha256":"d944208d660d67c8d72cd2acaeac971fa5ceb8c80e76c1968148846fedd6e297","size_bytes":259335},
+    {"path":"bpe.model","sha256":"c53433de083c4a6ad12d034550ef22de68cec62c4f58932a7b6b8b2f1e743fa5","size_bytes":244865},
+    {"path":"tokens.txt","sha256":"49e3c2646595fd907228b3c6787069658f67b17377c60aeb8619c4551b2316fb","size_bytes":5048},
+]
+CLAIMS = {
+    "b2r10_authorized": False,
+    "comparative_performance_authorized": False,
+    "comparative_result_available": False,
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "product_code_authorized": False,
+    "production_stt_selected": False,
+}
+
+class VerifyError(ValueError): pass
+def require(ok: bool, message: str) -> None:
+    if not ok: raise VerifyError(message)
+def load(path: Path) -> dict[str, Any]:
+    value = json.loads(path.read_text(encoding="utf-8")); require(isinstance(value, dict), f"object expected: {path}"); return value
+def sha256(path: Path) -> str: return hashlib.sha256(path.read_bytes()).hexdigest()
+def canonical(value: Any) -> bytes: return (json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n").encode()
+def git(*args: str) -> str:
+    return subprocess.run(["git", "-C", str(ROOT), *args], check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.strip()
+
+def verify_frontier() -> None:
+    readiness = load(READINESS); tasks = TASKS.read_text(encoding="utf-8"); current = CURRENT.read_text(encoding="utf-8"); canonical_current = CANONICAL_CURRENT.read_text(encoding="utf-8")
+    require(readiness.get("state") == "RECOVERY_READY", "recovery lane not ready")
+    require(readiness.get("qualified_workflow_change_paths") == [], "workflow drift authorized")
+    guards = readiness.get("claim_guards", {})
+    require(guards == {"human_developer_speech_accuracy_evidence":"ABSENT","comparative_result_available":False,"production_stt_selected":False,"product_code_authorized":False}, "readiness claim guards drift")
+    prefix = [f"B2R{i:02d}" for i in range(1, 9)]
+    completed = readiness.get("completed_recovery_tasks"); active = readiness.get("active_recovery_unit")
+    if completed == prefix and active == "B2R09":
+        require("- [x] `B2R08`" in tasks and "- [ ] `B2R09`" in tasks and "- [ ] `B2R10`" in tasks, "pre-reconciliation ledger drift")
+        require("active recovery unit `B2R09`" in current and "`B2R09`" in canonical_current, "B2R09 frontier drift")
+        require(str(readiness.get("next_action", "")).startswith("Qualify B2R09 only:"), "B2R09 next action drift")
+    else:
+        require(isinstance(completed, list) and "B2R09" in completed, "B2R09 completion lost")
+        require("- [x] `B2R09`" in tasks, "B2R09 ledger completion lost")
+        require(active != "B2R09", "B2R09 remained active after completion")
+
+def verify_static() -> None:
+    require(sha256(ATTEMPT) == ATTEMPT_SHA256, "ATTEMPT-002 bytes drift")
+    require(sha256(PREPROCESSING) == PREPROCESSING_SHA256, "preprocessing bytes drift")
+    require(sha256(REBINDING) == REBINDING_SHA256, "rebinding bytes drift")
+    require(git("hash-object", str(DECODER.relative_to(ROOT))) == DECODER_BLOB, "mergeable decoder blob drift")
+    require(git("rev-parse", f"{TASK_SOURCE}:research/000b2-public/decode_b2r09.py") == DECODER_BLOB, "task-source decoder blob drift")
+    require(git("rev-parse", f"{EXECUTION_SOURCE}:research/000b2-public/decode_b2r09.py") == DECODER_BLOB, "execution-source decoder blob drift")
+
+def verify_evidence() -> None:
+    require(EVIDENCE.stat().st_size == EVIDENCE_SIZE and sha256(EVIDENCE) == EVIDENCE_SHA256, "evidence bytes drift")
+    e = load(EVIDENCE); unsigned = dict(e); payload = unsigned.pop("evidence_payload_sha256", None)
+    require(payload == PAYLOAD_SHA256 and hashlib.sha256(canonical(unsigned)).hexdigest() == PAYLOAD_SHA256, "evidence payload drift")
+    require((e.get("schema_version"), e.get("task"), e.get("attempt_id"), e.get("state")) == ("000b2-public-b2r09-decode-v1","B2R09","000B2-PUBLIC-ATTEMPT-002","ATTEMPT_002_C0_PRIMARY_DECODE_CAPTURED"), "evidence identity drift")
+    c = e.get("candidate", {})
+    require((c.get("cell_index"), c.get("candidate_id"), c.get("tier"), c.get("model")) == (5,"sherpa-onnx-compact","COMPACT","INT8 ONNX"), "candidate identity drift")
+    require(c.get("runtime_revision") == RUNTIME_REVISION and c.get("runtime_distribution_version") == "1.13.7" and c.get("model_onnx_revision") == MODEL_ONNX_REVISION and c.get("model_aux_revision") == MODEL_AUX_REVISION, "runtime/model revision drift")
+    require(c.get("artifacts") == ARTIFACTS, "candidate artifact identity drift")
+    run = e.get("run", {}); runtime = run.get("runtime_identity", {})
+    require(run.get("repository_revision") == EXECUTION_SOURCE and run.get("github_repository") == "TheHalfMoon/Wispral" and run.get("github_run_id") == RUN_ID and run.get("github_run_attempt") == 1 and run.get("github_job") == "capture-b2r09", "run identity drift")
+    require(run.get("timing_semantics") == "DIAGNOSTIC_ONLY" and run.get("comparative_performance_authorized") is False, "timing semantics drift")
+    require(runtime.get("distribution") == "sherpa-onnx" and runtime.get("version") == "1.13.7" and runtime.get("source_revision") == RUNTIME_REVISION and runtime.get("source_tree") == RUNTIME_TREE, "runtime identity drift")
+    controls = e.get("c0_controls", {})
+    require(controls == {"language":"en","threads":4,"provider":"cpu","sample_rate_hz":16000,"feature_dim":80,"decoding_method":"greedy_search","max_active_paths":4,"feed_chunk_ms":500,"feed_chunk_samples":8000,"final_zero_pad_samples":10560,"final_zero_chunk_samples":[8000,2560],"hotwords":[],"language_model":None,"repository_context_used":False,"test_specific_context_used":False,"candidate_specific_audio_transform_used":False,"identical_frozen_audio_required_across_candidates":True}, "C0 controls drift")
+    x = e.get("execution", {}); records = x.get("records")
+    require((x.get("input_count"), x.get("decoded_count"), x.get("failure_count")) == (240,240,0), "execution accounting drift")
+    require(x.get("all_frozen_input_hashes_reverified") is True and x.get("reference_transcripts_loaded_by_decoder") is False and x.get("accuracy_scoring_performed") is False and x.get("comparative_ranking_present") is False and x.get("performance_claim_present") is False, "execution guard drift")
+    require(isinstance(records, list) and len(records) == 240 and len({r.get("utterance_id") for r in records}) == 240, "record coverage drift")
+    preprocessing = load(PREPROCESSING).get("execution", {}).get("records", []); pindex = {r["utterance_id"]: r for r in preprocessing}; porder = [r["utterance_id"] for r in preprocessing]
+    require([r.get("utterance_id") for r in records] == porder, "frozen input order drift")
+    for r in records:
+        uid = r.get("utterance_id"); require(uid in pindex, f"unknown record: {uid}")
+        require(r.get("source_partition") == pindex[uid].get("source_partition") and r.get("canonical_preprocessed_file_sha256") == pindex[uid].get("canonical_preprocessed_file_sha256"), f"input identity drift: {uid}")
+        require(r.get("status") == "DECODED" and r.get("failure") is None and isinstance(r.get("raw_transcript"), str), f"decode failure drift: {uid}")
+        snapshots = r.get("raw_stream_snapshots"); require(isinstance(snapshots, list) and all(isinstance(v, str) for v in snapshots), f"snapshot drift: {uid}")
+        trace = r.get("feed_trace"); require(isinstance(trace, dict), f"feed trace missing: {uid}")
+        require(trace.get("sample_rate_hz") == 16000 and trace.get("zero_suffix_chunk_samples") == [8000,2560] and trace.get("zero_suffix_samples") == 10560 and trace.get("input_finished") is True, f"feed trace controls drift: {uid}")
+        chunks = trace.get("speech_chunk_samples"); require(isinstance(chunks, list) and sum(chunks) == trace.get("speech_samples") and all(isinstance(v, int) and 0 < v <= 8000 for v in chunks), f"speech feed trace drift: {uid}")
+    require(e.get("claim_guards") == CLAIMS, "evidence claims drift")
+    require(not (PUBLIC / "raw").exists(), "unexpected raw directory materialized")
+
+def verify_provenance() -> None:
+    require(sha256(PROVENANCE) == PROVENANCE_SHA256, "provenance bytes drift")
+    p = load(PROVENANCE); unsigned = dict(p); payload = unsigned.pop("provenance_payload_sha256", None)
+    require(isinstance(payload, str) and hashlib.sha256(canonical(unsigned)).hexdigest() == payload, "provenance payload drift")
+    require((p.get("task"), p.get("attempt_id"), p.get("candidate_id")) == ("B2R09","000B2-PUBLIC-ATTEMPT-002","sherpa-onnx-compact"), "provenance identity drift")
+    src = p.get("canonical_evidence_source", {})
+    require((src.get("workflow_id"), src.get("run_id"), src.get("job_id"), src.get("artifact_id")) == (WORKFLOW_ID,RUN_ID,JOB_ID,ARTIFACT_ID), "canonical source identity drift")
+    require(src.get("source_revision") == EXECUTION_SOURCE and src.get("conclusion") == "success" and src.get("execution_decoder_blob_sha") == DECODER_BLOB and src.get("mergeable_decoder_blob_sha") == DECODER_BLOB, "canonical source revision drift")
+    require(src.get("artifact_zip_sha256") == ARTIFACT_ZIP_SHA256 and src.get("evidence_raw_file_sha256") == EVIDENCE_SHA256 and src.get("evidence_raw_file_size_bytes") == EVIDENCE_SIZE and src.get("evidence_payload_sha256") == PAYLOAD_SHA256, "canonical evidence provenance drift")
+    require(str(src.get("selection_basis", "")).endswith("NOT_RESULT_DRIVEN"), "selection basis drift")
+    pre = p.get("related_pre_primary_runs"); require(isinstance(pre, list) and len(pre) == 1, "pre-primary chronology drift")
+    f = pre[0]
+    require((f.get("run_id"), f.get("job_id"), f.get("source_revision"), f.get("conclusion")) == (34155967652,101847745228,"f45e9884e3fbcdc84dd27393b8ffde7d12df65e5","failure"), "failed pre-primary identity drift")
+    require(f.get("failure_stage") == "PYTHON_SETUP_PIP_CACHE_CONFIGURATION" and f.get("exact_authority_verification_passed") is True and f.get("primary_decode_started") is False and f.get("candidate_result_accessed") is False and f.get("artifact_count") == 0 and f.get("selection_effect") == "NONE", "failed pre-primary exposure drift")
+    repair = p.get("forward_only_repair", {})
+    require(repair.get("policy") == "FORWARD_ONLY_PRE_PRIMARY_SETUP_REPAIR" and repair.get("repair_commit") == EXECUTION_SOURCE and repair.get("changed_path") == ".github/workflows/internal-b2r09-capture.yml" and repair.get("change") == "REMOVE_SETUP_PYTHON_CACHE_PIP_OPTION_ONLY" and repair.get("changed_lines") == 1 and repair.get("result_inspection_before_repair") is False, "forward-only repair drift")
+    for key in ("decoder_changed","candidate_changed","model_changed","runtime_revision_changed","frozen_audio_bytes_changed","frozen_audio_membership_changed","c0_controls_changed","scorer_changed","normalization_changed"):
+        require(repair.get(key) is False, f"repair scope drift: {key}")
+    require(p.get("result_accounting") == {"input_count":240,"decoded_count":240,"failure_count":0,"all_frozen_input_hashes_reverified":True,"reference_transcripts_loaded_by_decoder":False,"accuracy_scoring_performed":False,"comparative_ranking_present":False,"performance_claim_present":False,"timing_semantics":"DIAGNOSTIC_ONLY","result_driven_evidence_selection":False}, "provenance accounting drift")
+    require(p.get("claims") == CLAIMS, "provenance claims drift")
+
+def main() -> int:
+    verify_frontier(); verify_static(); verify_evidence(); verify_provenance(); print("B2R09_EVIDENCE=PASS"); return 0
+if __name__ == "__main__": raise SystemExit(main())
+'''.replace('__PROVENANCE_SHA256__', provenance_sha)
+          verifier_path = public / 'verify_b2r09.py'
+          verifier_path.write_text(verifier, encoding='utf-8')
+
+          composite_path = public / 'verify_attempt_manifest.py'
+          composite = composite_path.read_text(encoding='utf-8')
+          composite = composite.replace('B2R04/B2R05/B2R06/B2R07/B2R08.', 'B2R04/B2R05/B2R06/B2R07/B2R08/B2R09.')
+          needle = '    (PUBLIC / "verify_b2r08.py", "wispral_b2r08_execution_evidence"),\n]'
+          replacement = '    (PUBLIC / "verify_b2r08.py", "wispral_b2r08_execution_evidence"),\n    (PUBLIC / "verify_b2r09.py", "wispral_b2r09_execution_evidence"),\n]'
+          assert needle in composite
+          composite = composite.replace(needle, replacement)
+          composite = composite.replace('B2P08_B2R04_B2R05_B2R06_B2R07_AND_B2R08_ATTEMPT_VERIFIER=PASS', 'B2P08_B2R04_B2R05_B2R06_B2R07_B2R08_AND_B2R09_ATTEMPT_VERIFIER=PASS')
+          composite_path.write_text(composite, encoding='utf-8')
+          print('B2R09_TASK_MATERIALIZATION=READY')
+          print(f'B2R09_PROVENANCE_SHA256={provenance_sha}')
+          PY
+
+      - name: Run B2R09 and composite verification before publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile research/000b2-public/decode_b2r09.py research/000b2-public/verify_b2r09.py research/000b2-public/verify_attempt_manifest.py
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          PYTHONDONTWRITEBYTECODE=1 python3 research/000b2-public/verify_b2r09.py
+          PYTHONDONTWRITEBYTECODE=1 python3 research/000b2-public/verify_attempt_manifest.py
+          rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
+          mapfile -t changed < <(git diff --name-only "$CANONICAL_BASE" | sort)
+          expected=(
+            research/000b2-public/b2r09-provenance.json
+            research/000b2-public/b2r09-sherpa-onnx-compact.json
+            research/000b2-public/decode_b2r09.py
+            research/000b2-public/verify_attempt_manifest.py
+            research/000b2-public/verify_b2r09.py
+          )
+          test "${#changed[@]}" -eq "${#expected[@]}"
+          for i in "${!expected[@]}"; do test "${changed[$i]}" = "${expected[$i]}"; done
+          test -z "$(git diff --name-only "$CANONICAL_BASE" | grep '^\.github/' || true)"
+          echo B2R09_EXACT_FIVE_FILE_SCOPE=PASS
+
+      - name: Commit and fast-forward clean B2R09 task branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/$TASK_BRANCH | cut -f1)" = "$TASK_HEAD"
+          git config user.name 'Abdulaziz M. Shehri'
+          git config user.email 'alshehriofficial@gmail.com'
+          git add research/000b2-public/b2r09-provenance.json \
+                  research/000b2-public/b2r09-sherpa-onnx-compact.json \
+                  research/000b2-public/decode_b2r09.py \
+                  research/000b2-public/verify_b2r09.py \
+                  research/000b2-public/verify_attempt_manifest.py
+          git commit -m 'research(000b2): seal B2R09 sherpa onnx compact evidence'
+          test "$(git rev-parse HEAD^)" = "$TASK_HEAD"
+          git push origin HEAD:refs/heads/$TASK_BRANCH
+          echo "B2R09_TASK_HEAD=$(git rev-parse HEAD)"
