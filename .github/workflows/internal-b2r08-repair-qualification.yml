@@ -54,15 +54,17 @@ jobs:
             research/000b2-public/run_b2r08_sharded_repair.py
           rm -rf research/000b2-public/__pycache__ research/000b2-entry/__pycache__
           PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
-          import json
+          import sys
           from pathlib import Path
-          plan = json.loads(Path('research/000b2-public/b2r08-repair-plan.json').read_text())
-          assert plan['state'] == 'PREDECLARED_FORWARD_ONLY_ORCHESTRATION_REPAIR'
-          assert plan['prepared_after_candidate_result_exposure'] is False
+          public = Path('research/000b2-public').resolve()
+          sys.path.insert(0, str(public))
+          import run_b2r08_sharded_repair as repair
+          repair.b2r08.validate_authority()
+          plan = repair.verify_repair_plan()
           assert plan['authority']['canonical_base'] == '4fc35e9d14f949b90dbee58ddf243a36859e02bd'
           assert plan['authority']['active_recovery_unit'] == 'B2R08'
           assert plan['authority']['successor_authorized'] is False
-          failed = plan['failed_primary']
+          failed = plan['failed_primary_execution']
           assert failed['run_id'] == 34067447713
           assert failed['job_id'] == 101578604948
           assert failed['artifact_id'] == 10005732797
@@ -70,17 +72,7 @@ jobs:
           assert failed['transcript_artifact_present'] is False
           assert failed['evidence_json_present'] is False
           assert failed['candidate_result_available_before_repair'] is False
-          assert failed['candidate_result_inspected_before_repair'] is False
-          repair = plan['repair']
-          assert repair['policy'] == 'FORWARD_ONLY_DETERMINISTIC_CONTIGUOUS_SHARDING_AFTER_HOSTED_RUNNER_CEILING'
-          assert repair['shard_count'] == 4
-          assert repair['expected_shard_sizes'] == [60, 60, 60, 60]
-          qualification = plan['required_pre_primary_qualification']
-          assert qualification['status'] == 'REQUIRED_BEFORE_REPAIRED_PRIMARY_EXECUTION'
-          assert qualification['material_class'] == 'DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY'
-          assert qualification['primary_corpus_access'] is False
-          assert qualification['candidate_result_access'] is False
-          assert qualification['fail_closed'] is True
+          assert failed['candidate_result_inspection_before_repair'] is False
           print('B2R08_REPAIR_PLAN_PRE_EXTERNAL=PASS')
           print('B2R08_PRIMARY_CORPUS_ACCESSED=NO')
           print('B2R09_AUTHORIZED=NO')
@@ -206,7 +198,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ROOT="$RUNNER_TEMP/b2r08-qualification"
           PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
           import hashlib, json, os, sys
           from pathlib import Path
@@ -223,7 +214,7 @@ jobs:
           assert evidence['material_class'] == 'DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY'
           assert evidence['primary_corpus_accessed'] is False
           assert evidence['candidate_result_accessed'] is False
-          assert evidence['repair_plan_sha256'] == '89a2ca78d5ebc78383453249c4c2032ef05826c5f0e4c35a7158eb4b04e7b676'
+          assert evidence['repair_plan_sha256'] == hashlib.sha256(repair.REPAIR_PLAN_PATH.read_bytes()).hexdigest()
           candidate = evidence['candidate']
           assert candidate['candidate_id'] == 'whispercpp-balanced'
           assert candidate['runtime_revision'] == os.environ['WHISPER_REV']
