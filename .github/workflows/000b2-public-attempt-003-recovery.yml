@@ -9,6 +9,7 @@ on:
       - 'research/000b2-public/attempt-002-invalidation.json'
       - 'research/000b2-public/recovery-attempt-003-readiness.json'
       - 'research/000b2-public/verify_attempt_002_invalidation.py'
+      - 'research/000b2-public/verify_b2r13_activation.py'
       - 'research/000b2-public/attempt-003-**'
       - 'research/000b2-public/b2r1[3-9]-**'
       - 'research/000b2-public/b2r2[0-4]-**'
@@ -26,6 +27,7 @@ on:
       - 'research/000b2-public/attempt-002-invalidation.json'
       - 'research/000b2-public/recovery-attempt-003-readiness.json'
       - 'research/000b2-public/verify_attempt_002_invalidation.py'
+      - 'research/000b2-public/verify_b2r13_activation.py'
       - 'research/000b2-public/attempt-003-**'
       - 'research/000b2-public/b2r1[3-9]-**'
       - 'research/000b2-public/b2r2[0-4]-**'
@@ -67,11 +69,13 @@ jobs:
           echo "EXACT_REVISION=$EXACT_REVISION"
           echo "DISCOVERY_MAIN=$DISCOVERY_MAIN"
 
-      - name: Verify successor recovery structure without external source access
+      - name: Verify B2R13 activation without external source access
         run: |
           set -euo pipefail
-          python -m py_compile research/000b2-public/verify_attempt_002_invalidation.py
-          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py --static-only
+          python -m py_compile \
+            research/000b2-public/verify_attempt_002_invalidation.py \
+            research/000b2-public/verify_b2r13_activation.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r13_activation.py --static-only
 
       - name: Fetch exact pinned sherpa-onnx source
         run: |
@@ -84,10 +88,10 @@ jobs:
           test "$(git -C "$SRC" rev-parse HEAD)" = "$SHERPA_REVISION"
           git -C "$SRC" diff --quiet HEAD --
 
-      - name: Verify material drift against exact pinned sherpa-onnx API
+      - name: Verify B2R13 material drift against exact pinned sherpa-onnx API
         run: |
           set -euo pipefail
-          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py \
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r13_activation.py \
             --sherpa-source "$RUNNER_TEMP/sherpa-onnx"
 
       - name: Preserve fail-closed recovery boundary
@@ -101,14 +105,16 @@ jobs:
           from pathlib import Path
 
           state = json.loads(Path('research/000b2-public/recovery-attempt-003-readiness.json').read_text(encoding='utf-8'))
-          active = state['active_recovery_unit']
+          if state.get('active_recovery_unit') != 'B2R13':
+              raise SystemExit('B2R13 is not the sole activation unit')
           replacement = state['replacement_attempt']
-          if active in {'B2R13', 'B2R14', 'B2R15', 'B2R16'} and replacement.get('primary_decode_entry_open') is not False:
-              raise SystemExit(f'primary decode unexpectedly open during {active}')
-          if active == 'B2R13' and replacement.get('frozen') is not False:
+          if replacement.get('primary_decode_entry_open') is not False:
+              raise SystemExit('ATTEMPT-003 primary decode unexpectedly open during B2R13 activation')
+          if replacement.get('frozen') is not False:
               raise SystemExit('ATTEMPT-003 unexpectedly frozen during B2R13 activation')
-          print(f'ACTIVE_SUCCESSOR_RECOVERY_UNIT={active}')
+          print('ACTIVE_SUCCESSOR_RECOVERY_UNIT=B2R13')
           print('ATTEMPT_002_NEW_PRIMARY_DECODE_AUTHORIZED=NO')
+          print('ATTEMPT_003_PRIMARY_DECODE_AUTHORIZED=NO')
           print('COMPARATIVE_RESULT_AVAILABLE=NO')
           print('PRODUCTION_STT_SELECTED=NO')
           print('PRODUCT_CODE_AUTHORIZED=NO')
