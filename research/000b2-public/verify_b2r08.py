@@ -23,7 +23,7 @@ PAYLOAD_SHA256 = "b688080a9b54106975fc3d423d210f6b449c47468cdc94135997285d950431
 QUALIFICATION_SHA256 = "122e217b7efcfadea44540fcd20a181ad881351a89b6303e0a283fdc569d96a1"
 QUALIFICATION_SIZE = 5146
 QUALIFICATION_PAYLOAD_SHA256 = "6d419e5a975c245132b2edca9f40c35bb0abd22c708896ba51b481e815409afd"
-PROVENANCE_SHA256 = "9cac7769794dafcade8c5413d6971625cba3f90edd8939e68bf19bae544326b6"
+PROVENANCE_SHA256 = "25e210d9a32c058842f5c690a78648e32a4940bc2f34c949f8eaff2175f773f6"
 ATTEMPT_SHA256 = "a2dc8246e4567e670beb3f26e315be93e001e4d9a9037be57ff11fce5a340134"
 PREPROCESSING_SHA256 = "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011"
 REBINDING_SHA256 = "f9cda5168e6cafb6a1e9e6898f394ec3987b37af50c53c15cf63bc136c1f2df1"
@@ -31,6 +31,9 @@ PRIMARY_SOURCE = "4a6c776b2a666113420263b70a4fad06f752b99a"
 PRIMARY_RUN_ID = 34139091127
 QUALIFICATION_SOURCE = "900482d4cce3c69c8ad0a36261e2a8d53f106142"
 QUALIFICATION_RUN_ID = 34137057908
+FAILED_QUALIFICATION_SOURCE = "9e708b604fe124af1ace4863cbe25abbe73709fc"
+FAILED_QUALIFICATION_RUN_ID = 34136897131
+FAILED_QUALIFICATION_JOB_ID = 101789871560
 SEAL_SOURCE = "70d9e71961510f2124c02ee4a05fb13b82399d03"
 SEAL_RUN_ID = 34150046063
 CLAIMS = {
@@ -79,7 +82,7 @@ def verify_static() -> None:
     require(sha256(ATTEMPT) == ATTEMPT_SHA256, "ATTEMPT-002 bytes drift")
     require(sha256(PREPROCESSING) == PREPROCESSING_SHA256, "preprocessing bytes drift")
     require(sha256(REBINDING) == REBINDING_SHA256, "rebinding bytes drift")
-    for revision in (PRIMARY_SOURCE, QUALIFICATION_SOURCE, SEAL_SOURCE): require(git("rev-parse", f"{revision}^{{commit}}") == revision, f"source missing: {revision}")
+    for revision in (PRIMARY_SOURCE, QUALIFICATION_SOURCE, FAILED_QUALIFICATION_SOURCE, SEAL_SOURCE): require(git("rev-parse", f"{revision}^{{commit}}") == revision, f"source missing: {revision}")
     for path, blob in BLOBS.items(): require(git("hash-object", path) == blob, f"mergeable blob drift: {path}")
 
 def verify_qualification() -> None:
@@ -108,6 +111,10 @@ def verify_provenance() -> None:
     failed = p.get("original_failed_primary", {})
     require((failed.get("run_id"), failed.get("job_id"), failed.get("artifact_id")) == (34067447713, 101578604948, 10005732797), "failed primary identity drift")
     require(failed.get("artifact_contents") == ["whisper-build/wispral-build-identity.json"] and failed.get("transcript_artifact_present") is False and failed.get("evidence_json_present") is False and failed.get("candidate_result_inspection_before_repair") is False and failed.get("selection_effect") == "NONE", "failed primary exposure drift")
+    failed_q = p.get("failed_qualification_attempt", {})
+    require((failed_q.get("workflow_id"), failed_q.get("run_id"), failed_q.get("job_id"), failed_q.get("source_revision")) == (352397816, FAILED_QUALIFICATION_RUN_ID, FAILED_QUALIFICATION_JOB_ID, FAILED_QUALIFICATION_SOURCE), "failed qualification identity drift")
+    require(failed_q.get("source_branch") == "research/000b2-b2r08-repair-qualification-v2" and failed_q.get("conclusion") == "failure" and failed_q.get("failure_stage") == "EXACT_AUTHORITY_AND_REPAIR_SOURCE_VALIDATION" and failed_q.get("failure_detail") == "KeyError: 'failed_primary'", "failed qualification failure chronology drift")
+    require(failed_q.get("artifact_count") == 0 and failed_q.get("external_access_reached") is False and failed_q.get("runtime_source_fetch_started") is False and failed_q.get("model_download_started") is False and failed_q.get("qualification_execution_started") is False and failed_q.get("primary_corpus_accessed") is False and failed_q.get("candidate_result_accessed") is False and failed_q.get("selection_effect") == "NONE", "failed qualification exposure drift")
     repair = p.get("forward_only_repair", {})
     require(repair.get("policy") == "FORWARD_ONLY_DETERMINISTIC_CONTIGUOUS_SHARDING_AFTER_HOSTED_RUNNER_CEILING" and repair.get("shard_sizes") == [60,60,60,60] and repair.get("per_shard_adapter_timeout_seconds") == 18000, "repair policy drift")
     for key in ("candidate_changed","model_changed","runtime_revision_changed","frozen_audio_membership_changed","frozen_audio_bytes_changed","frozen_input_order_changed_in_final_evidence","c0_controls_changed","scorer_changed","normalization_changed","reference_transcript_access_during_decode","accuracy_scoring_during_decode"):

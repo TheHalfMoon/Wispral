@@ -48,6 +48,25 @@
     "source_revision": "900482d4cce3c69c8ad0a36261e2a8d53f106142",
     "workflow_id": 352397816
   },
+  "failed_qualification_attempt": {
+    "artifact_count": 0,
+    "candidate_result_accessed": false,
+    "conclusion": "failure",
+    "external_access_reached": false,
+    "failure_detail": "KeyError: 'failed_primary'",
+    "failure_stage": "EXACT_AUTHORITY_AND_REPAIR_SOURCE_VALIDATION",
+    "job_id": 101789871560,
+    "model_download_started": false,
+    "primary_corpus_accessed": false,
+    "qualification_execution_started": false,
+    "role": "FAILED_PRE_PRIMARY_REPAIR_QUALIFICATION_NONCANONICAL",
+    "run_id": 34136897131,
+    "runtime_source_fetch_started": false,
+    "selection_effect": "NONE",
+    "source_branch": "research/000b2-b2r08-repair-qualification-v2",
+    "source_revision": "9e708b604fe124af1ace4863cbe25abbe73709fc",
+    "workflow_id": 352397816
+  },
   "forward_only_repair": {
     "accuracy_scoring_during_decode": false,
     "c0_controls_changed": false,
@@ -95,8 +114,8 @@
     "transcript_artifact_present": false,
     "workflow_id": 351865230
   },
-  "provenance_payload_sha256": "749bf5b72fb61377b3f110868f45b62704295f3ffaa370c651f2edbe2caff90a",
-  "provenance_status": "RECORDED_FROM_EXACT_GITHUB_ACTIONS_FAILED_PRIMARY_QUALIFICATION_SHARDED_PRIMARY_AND_SEAL_EVIDENCE_WITH_NON_RESULT_DRIVEN_FORWARD_ONLY_REPAIR_CHRONOLOGY",
+  "provenance_payload_sha256": "9d3063907f2f7003979daceadf4db0520d3478843b1f4dfa641b5692f75c7f2e",
+  "provenance_status": "RECORDED_FROM_EXACT_GITHUB_ACTIONS_FAILED_PRIMARY_FAILED_PRE_PRIMARY_QUALIFICATION_SUCCESSFUL_QUALIFICATION_SHARDED_PRIMARY_AND_SEAL_EVIDENCE_WITH_NON_RESULT_DRIVEN_FORWARD_ONLY_REPAIR_CHRONOLOGY",
   "result_accounting": {
     "accuracy_scoring_performed": false,
     "all_frozen_input_hashes_reverified": true,
