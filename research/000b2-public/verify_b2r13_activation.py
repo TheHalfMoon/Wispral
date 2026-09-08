@@ -32,6 +32,7 @@ def verify_activation_frontier() -> None:
     require(readiness.get("schema_version") == "000b2-public-attempt-003-recovery-readiness-v1", "successor readiness schema drift")
     require(readiness.get("state") == "RECOVERY_READY", "successor recovery must be RECOVERY_READY")
     require(readiness.get("task_order") == TASK_ORDER, "successor recovery task order drift")
+    require(readiness.get("task_content_policies") == proof.expected_task_content_policies(), "successor task content policy drift")
     require(readiness.get("completed_recovery_tasks") == [], "B2R13 activation candidate must not pre-complete recovery tasks")
     require(readiness.get("active_recovery_unit") == "B2R13", "B2R13 must be the sole active successor unit")
     require(readiness.get("transition_proofs") == [], "B2R13 activation candidate must not fabricate transition proofs")
