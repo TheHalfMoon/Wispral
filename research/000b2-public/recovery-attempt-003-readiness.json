@@ -38,6 +38,93 @@
     "B2R23",
     "B2R24"
   ],
+  "task_candidate_scopes": {
+    "B2R13": [
+      ".github/workflows/000b2-public-attempt-003-recovery.yml",
+      ".github/workflows/000b2-public-attempt-recovery.yml",
+      "research/000b2-public/attempt-002-invalidation.json",
+      "research/000b2-public/recovery-attempt-003-readiness.json",
+      "research/000b2-public/verify_attempt_002_invalidation.py",
+      "research/000b2-public/verify_b2r13_activation.py",
+      "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md",
+      "specs/000B2-public-corpus-bakeoff/recovery-v2.md",
+      "specs/CURRENT.md"
+    ],
+    "B2R14": [
+      ".github/workflows/000b2-public-b2r14-harness.yml",
+      "research/000b2-public/b2r14-sherpa-result-harness.py",
+      "research/000b2-public/b2r14-harness-qualification.json",
+      "research/000b2-public/verify_b2r14.py"
+    ],
+    "B2R15": [
+      ".github/workflows/000b2-public-b2r15-rebinding.yml",
+      "research/000b2-public/b2r15-preprocessing-rebinding.json",
+      "research/000b2-public/b2r15-environment-rebinding.json",
+      "research/000b2-public/b2r15-provenance.json",
+      "research/000b2-public/verify_b2r15.py"
+    ],
+    "B2R16": [
+      ".github/workflows/000b2-public-b2r16-freeze.yml",
+      "research/000b2-public/b2r16-attempt-003-manifest.json",
+      "research/000b2-public/b2r16-preexecution-state.json",
+      "research/000b2-public/verify_b2r16.py"
+    ],
+    "B2R17": [
+      ".github/workflows/000b2-public-b2r17-moonshine-compact.yml",
+      "research/000b2-public/decode_b2r17.py",
+      "research/000b2-public/b2r17-moonshine-compact.json",
+      "research/000b2-public/b2r17-provenance.json",
+      "research/000b2-public/verify_b2r17.py"
+    ],
+    "B2R18": [
+      ".github/workflows/000b2-public-b2r18-moonshine-balanced.yml",
+      "research/000b2-public/decode_b2r18.py",
+      "research/000b2-public/b2r18-moonshine-balanced.json",
+      "research/000b2-public/b2r18-provenance.json",
+      "research/000b2-public/verify_b2r18.py"
+    ],
+    "B2R19": [
+      ".github/workflows/000b2-public-b2r19-whispercpp-compact.yml",
+      "research/000b2-public/decode_b2r19.py",
+      "research/000b2-public/b2r19-whispercpp-compact.json",
+      "research/000b2-public/b2r19-provenance.json",
+      "research/000b2-public/verify_b2r19.py"
+    ],
+    "B2R20": [
+      ".github/workflows/000b2-public-b2r20-whispercpp-balanced.yml",
+      "research/000b2-public/decode_b2r20.py",
+      "research/000b2-public/b2r20-whispercpp-balanced.json",
+      "research/000b2-public/b2r20-provenance.json",
+      "research/000b2-public/verify_b2r20.py"
+    ],
+    "B2R21": [
+      ".github/workflows/000b2-public-b2r21-sherpa-onnx-compact.yml",
+      "research/000b2-public/decode_b2r21.py",
+      "research/000b2-public/b2r21-sherpa-onnx-compact.json",
+      "research/000b2-public/b2r21-provenance.json",
+      "research/000b2-public/verify_b2r21.py"
+    ],
+    "B2R22": [
+      ".github/workflows/000b2-public-b2r22-sherpa-onnx-balanced.yml",
+      "research/000b2-public/decode_b2r22.py",
+      "research/000b2-public/b2r22-sherpa-onnx-balanced.json",
+      "research/000b2-public/b2r22-provenance.json",
+      "research/000b2-public/verify_b2r22.py"
+    ],
+    "B2R23": [
+      ".github/workflows/000b2-public-b2r23-evidence-set.yml",
+      "research/000b2-public/b2r23-evidence-set.json",
+      "research/000b2-public/b2r23-provenance.json",
+      "research/000b2-public/verify_b2r23.py"
+    ],
+    "B2R24": [
+      ".github/workflows/000b2-public-b2r24-scoring.yml",
+      "research/000b2-public/score_b2r24.py",
+      "research/000b2-public/b2r24-scores.json",
+      "research/000b2-public/b2r24-provenance.json",
+      "research/000b2-public/verify_b2r24.py"
+    ]
+  },
   "transition_policy": {
     "canonical_main_ref_required_after_first_completion": true,
     "one_recovery_task_per_reconciliation": true,
