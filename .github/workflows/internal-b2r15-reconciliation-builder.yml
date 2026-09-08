@@ -116,7 +116,7 @@ jobs:
             research/000b2-public/recovery-attempt-003-readiness.json \
             specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md \
             specs/CURRENT.md | sort)
-          actual=$(git diff --name-only "$CANONICAL_BASE" HEAD -- | sort)
+          actual=$(git diff --name-only "$CANONICAL_BASE" -- | sort)
           test "$actual" = "$expected"
           git diff --check
           python - <<'PY'
