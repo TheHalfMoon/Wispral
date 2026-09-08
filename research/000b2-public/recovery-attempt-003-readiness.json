@@ -3,10 +3,41 @@
   "lane": "PUBLIC_CORPUS",
   "state": "RECOVERY_READY",
   "authority_precedence": "OVERRIDES_RECOVERY_READINESS_FOR_NEW_EXECUTION_AFTER_ATTEMPT_002_INVALIDATION",
-  "historical_recovery_snapshot": {"path":"research/000b2-public/recovery-readiness.json","completed_through":"B2R09","active_unit_at_invalidation":"B2R10","role":"HISTORICAL_ATTEMPT_002_PRE_INVALIDATION_SNAPSHOT","active_execution_authority":false},
-  "invalidated_attempt": {"attempt_id":"000B2-PUBLIC-ATTEMPT-002","invalidation_path":"research/000b2-public/attempt-002-invalidation.json","freeze_digest_sha256":"600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8","comparative_scoring_eligible":false,"candidate_superiority_claim_eligible":false,"new_primary_decode_authorized":false},
-  "replacement_attempt": {"attempt_id":"000B2-PUBLIC-ATTEMPT-003","required":true,"frozen":false,"primary_decode_entry_open":false},
-  "task_order": ["B2R13","B2R14","B2R15","B2R16","B2R17","B2R18","B2R19","B2R20","B2R21","B2R22","B2R23","B2R24"],
+  "historical_recovery_snapshot": {
+    "path": "research/000b2-public/recovery-readiness.json",
+    "completed_through": "B2R09",
+    "active_unit_at_invalidation": "B2R10",
+    "role": "HISTORICAL_ATTEMPT_002_PRE_INVALIDATION_SNAPSHOT",
+    "active_execution_authority": false
+  },
+  "invalidated_attempt": {
+    "attempt_id": "000B2-PUBLIC-ATTEMPT-002",
+    "invalidation_path": "research/000b2-public/attempt-002-invalidation.json",
+    "freeze_digest_sha256": "600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8",
+    "comparative_scoring_eligible": false,
+    "candidate_superiority_claim_eligible": false,
+    "new_primary_decode_authorized": false
+  },
+  "replacement_attempt": {
+    "attempt_id": "000B2-PUBLIC-ATTEMPT-003",
+    "required": true,
+    "frozen": false,
+    "primary_decode_entry_open": false
+  },
+  "task_order": [
+    "B2R13",
+    "B2R14",
+    "B2R15",
+    "B2R16",
+    "B2R17",
+    "B2R18",
+    "B2R19",
+    "B2R20",
+    "B2R21",
+    "B2R22",
+    "B2R23",
+    "B2R24"
+  ],
   "activation_installation_scope": [
     ".github/workflows/000b2-public-attempt-003-recovery.yml",
     ".github/workflows/000b2-public-attempt-003-trusted-pr.yml",
@@ -28,32 +59,196 @@
     "specs/CURRENT.md"
   ],
   "task_candidate_scopes": {
-    "B2R13": ["research/000b2-public/attempt-002-invalidation.json","research/000b2-public/recovery-attempt-003-readiness.json","specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md","specs/000B2-public-corpus-bakeoff/recovery-v2.md"],
-    "B2R14": [".github/workflows/000b2-public-b2r14-harness.yml","research/000b2-public/b2r14-sherpa-result-harness.py","research/000b2-public/b2r14-harness-qualification.json","research/000b2-public/verify_b2r14.py"],
-    "B2R15": [".github/workflows/000b2-public-b2r15-rebinding.yml","research/000b2-public/b2r15-preprocessing-rebinding.json","research/000b2-public/b2r15-environment-rebinding.json","research/000b2-public/b2r15-provenance.json","research/000b2-public/verify_b2r15.py"],
-    "B2R16": [".github/workflows/000b2-public-b2r16-freeze.yml","research/000b2-public/b2r16-attempt-003-manifest.json","research/000b2-public/b2r16-preexecution-state.json","research/000b2-public/verify_b2r16.py"],
-    "B2R17": [".github/workflows/000b2-public-b2r17-moonshine-compact.yml","research/000b2-public/decode_b2r17.py","research/000b2-public/b2r17-moonshine-compact.json","research/000b2-public/b2r17-provenance.json","research/000b2-public/verify_b2r17.py"],
-    "B2R18": [".github/workflows/000b2-public-b2r18-moonshine-balanced.yml","research/000b2-public/decode_b2r18.py","research/000b2-public/b2r18-moonshine-balanced.json","research/000b2-public/b2r18-provenance.json","research/000b2-public/verify_b2r18.py"],
-    "B2R19": [".github/workflows/000b2-public-b2r19-whispercpp-compact.yml","research/000b2-public/decode_b2r19.py","research/000b2-public/b2r19-whispercpp-compact.json","research/000b2-public/b2r19-provenance.json","research/000b2-public/verify_b2r19.py"],
-    "B2R20": [".github/workflows/000b2-public-b2r20-whispercpp-balanced.yml","research/000b2-public/decode_b2r20.py","research/000b2-public/b2r20-whispercpp-balanced.json","research/000b2-public/b2r20-provenance.json","research/000b2-public/verify_b2r20.py"],
-    "B2R21": [".github/workflows/000b2-public-b2r21-sherpa-onnx-compact.yml","research/000b2-public/decode_b2r21.py","research/000b2-public/b2r21-sherpa-onnx-compact.json","research/000b2-public/b2r21-provenance.json","research/000b2-public/verify_b2r21.py"],
-    "B2R22": [".github/workflows/000b2-public-b2r22-sherpa-onnx-balanced.yml","research/000b2-public/decode_b2r22.py","research/000b2-public/b2r22-sherpa-onnx-balanced.json","research/000b2-public/b2r22-provenance.json","research/000b2-public/verify_b2r22.py"],
-    "B2R23": [".github/workflows/000b2-public-b2r23-evidence-set.yml","research/000b2-public/b2r23-evidence-set.json","research/000b2-public/b2r23-provenance.json","research/000b2-public/verify_b2r23.py"],
-    "B2R24": [".github/workflows/000b2-public-b2r24-scoring.yml","research/000b2-public/score_b2r24.py","research/000b2-public/b2r24-scores.json","research/000b2-public/b2r24-provenance.json","research/000b2-public/verify_b2r24.py"]
+    "B2R13": [
+      "research/000b2-public/attempt-002-invalidation.json",
+      "research/000b2-public/recovery-attempt-003-readiness.json",
+      "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md",
+      "specs/000B2-public-corpus-bakeoff/recovery-v2.md"
+    ],
+    "B2R14": [
+      ".github/workflows/000b2-public-b2r14-harness.yml",
+      "research/000b2-public/b2r14-sherpa-result-harness.py",
+      "research/000b2-public/b2r14-harness-qualification.json",
+      "research/000b2-public/verify_b2r14.py"
+    ],
+    "B2R15": [
+      ".github/workflows/000b2-public-b2r15-rebinding.yml",
+      "research/000b2-public/b2r15-preprocessing-rebinding.json",
+      "research/000b2-public/b2r15-environment-rebinding.json",
+      "research/000b2-public/b2r15-provenance.json",
+      "research/000b2-public/verify_b2r15.py"
+    ],
+    "B2R16": [
+      ".github/workflows/000b2-public-b2r16-freeze.yml",
+      "research/000b2-public/b2r16-attempt-003-manifest.json",
+      "research/000b2-public/b2r16-preexecution-state.json",
+      "research/000b2-public/verify_b2r16.py"
+    ],
+    "B2R17": [
+      ".github/workflows/000b2-public-b2r17-moonshine-compact.yml",
+      "research/000b2-public/decode_b2r17.py",
+      "research/000b2-public/b2r17-moonshine-compact.json",
+      "research/000b2-public/b2r17-provenance.json",
+      "research/000b2-public/verify_b2r17.py"
+    ],
+    "B2R18": [
+      ".github/workflows/000b2-public-b2r18-moonshine-balanced.yml",
+      "research/000b2-public/decode_b2r18.py",
+      "research/000b2-public/b2r18-moonshine-balanced.json",
+      "research/000b2-public/b2r18-provenance.json",
+      "research/000b2-public/verify_b2r18.py"
+    ],
+    "B2R19": [
+      ".github/workflows/000b2-public-b2r19-whispercpp-compact.yml",
+      "research/000b2-public/decode_b2r19.py",
+      "research/000b2-public/b2r19-whispercpp-compact.json",
+      "research/000b2-public/b2r19-provenance.json",
+      "research/000b2-public/verify_b2r19.py"
+    ],
+    "B2R20": [
+      ".github/workflows/000b2-public-b2r20-whispercpp-balanced.yml",
+      "research/000b2-public/decode_b2r20.py",
+      "research/000b2-public/b2r20-whispercpp-balanced.json",
+      "research/000b2-public/b2r20-provenance.json",
+      "research/000b2-public/verify_b2r20.py"
+    ],
+    "B2R21": [
+      ".github/workflows/000b2-public-b2r21-sherpa-onnx-compact.yml",
+      "research/000b2-public/decode_b2r21.py",
+      "research/000b2-public/b2r21-sherpa-onnx-compact.json",
+      "research/000b2-public/b2r21-provenance.json",
+      "research/000b2-public/verify_b2r21.py"
+    ],
+    "B2R22": [
+      ".github/workflows/000b2-public-b2r22-sherpa-onnx-balanced.yml",
+      "research/000b2-public/decode_b2r22.py",
+      "research/000b2-public/b2r22-sherpa-onnx-balanced.json",
+      "research/000b2-public/b2r22-provenance.json",
+      "research/000b2-public/verify_b2r22.py"
+    ],
+    "B2R23": [
+      ".github/workflows/000b2-public-b2r23-evidence-set.yml",
+      "research/000b2-public/b2r23-evidence-set.json",
+      "research/000b2-public/b2r23-provenance.json",
+      "research/000b2-public/verify_b2r23.py"
+    ],
+    "B2R24": [
+      ".github/workflows/000b2-public-b2r24-scoring.yml",
+      "research/000b2-public/score_b2r24.py",
+      "research/000b2-public/b2r24-scores.json",
+      "research/000b2-public/b2r24-provenance.json",
+      "research/000b2-public/verify_b2r24.py"
+    ]
   },
   "task_content_policies": {
-    "B2R13": {"required_verifier":"research/000b2-public/verify_b2r13_activation.py","primary_decode_allowed":false,"scoring_allowed":false,"comparative_publish_allowed":false,"production_selection_allowed":false,"product_code_allowed":false,"foreign_successor_task_references_allowed":false},
-    "B2R14": {"required_verifier":"research/000b2-public/verify_b2r14.py","primary_decode_allowed":false,"scoring_allowed":false,"comparative_publish_allowed":false,"production_selection_allowed":false,"product_code_allowed":false,"foreign_successor_task_references_allowed":false},
-    "B2R15": {"required_verifier":"research/000b2-public/verify_b2r15.py","primary_decode_allowed":false,"scoring_allowed":false,"comparative_publish_allowed":false,"production_selection_allowed":false,"product_code_allowed":false,"foreign_successor_task_references_allowed":false},
-    "B2R16": {"required_verifier":"research/000b2-public/verify_b2r16.py","primary_decode_allowed":false,"scoring_allowed":false,"comparative_publish_allowed":false,"production_selection_allowed":false,"product_code_allowed":false,"foreign_successor_task_references_allowed":false},
-    "B2R17": {"required_verifier":"research/000b2-public/verify_b2r17.py","primary_decode_allowed":true,"scoring_allowed":false,"comparative_publish_allowed":false,"production_selection_allowed":false,"product_code_allowed":false,"foreign_successor_task_references_allowed":false},
-    "B2R18": {"required_verifier":"research/000b2-public/verify_b2r18.py","primary_decode_allowed":true,"scoring_allowed":false,"comparative_publish_allowed":false,"production_selection_allowed":false,"product_code_allowed":false,"foreign_successor_task_references_allowed":false},
-    "B2R19": {"required_verifier":"research/000b2-public/verify_b2r19.py","primary_decode_allowed":true,"scoring_allowed":false,"comparative_publish_allowed":false,"production_selection_allowed":false,"product_code_allowed":false,"foreign_successor_task_references_allowed":false},
-    "B2R20": {"required_verifier":"research/000b2-public/verify_b2r20.py","primary_decode_allowed":true,"scoring_allowed":false,"comparative_publish_allowed":false,"production_selection_allowed":false,"product_code_allowed":false,"foreign_successor_task_references_allowed":false},
-    "B2R21": {"required_verifier":"research/000b2-public/verify_b2r21.py","primary_decode_allowed":true,"scoring_allowed":false,"comparative_publish_allowed":false,"production_selection_allowed":false,"product_code_allowed":false,"foreign_successor_task_references_allowed":false},
-    "B2R22": {"required_verifier":"research/000b2-public/verify_b2r22.py","primary_decode_allowed":true,"scoring_allowed":false,"comparative_publish_allowed":false,"production_selection_allowed":false,"product_code_allowed":false,"foreign_successor_task_references_allowed":false},
-    "B2R23": {"required_verifier":"research/000b2-public/verify_b2r23.py","primary_decode_allowed":false,"scoring_allowed":false,"comparative_publish_allowed":false,"production_selection_allowed":false,"product_code_allowed":false,"foreign_successor_task_references_allowed":false},
-    "B2R24": {"required_verifier":"research/000b2-public/verify_b2r24.py","primary_decode_allowed":false,"scoring_allowed":true,"comparative_publish_allowed":false,"production_selection_allowed":false,"product_code_allowed":false,"foreign_successor_task_references_allowed":false}
+    "B2R13": {
+      "required_verifier": "research/000b2-public/verify_b2r13_activation.py",
+      "primary_decode_allowed": false,
+      "scoring_allowed": false,
+      "comparative_publish_allowed": false,
+      "production_selection_allowed": false,
+      "product_code_allowed": false,
+      "foreign_successor_task_references_allowed": false
+    },
+    "B2R14": {
+      "required_verifier": "research/000b2-public/verify_b2r14.py",
+      "primary_decode_allowed": false,
+      "scoring_allowed": false,
+      "comparative_publish_allowed": false,
+      "production_selection_allowed": false,
+      "product_code_allowed": false,
+      "foreign_successor_task_references_allowed": false
+    },
+    "B2R15": {
+      "required_verifier": "research/000b2-public/verify_b2r15.py",
+      "primary_decode_allowed": false,
+      "scoring_allowed": false,
+      "comparative_publish_allowed": false,
+      "production_selection_allowed": false,
+      "product_code_allowed": false,
+      "foreign_successor_task_references_allowed": false
+    },
+    "B2R16": {
+      "required_verifier": "research/000b2-public/verify_b2r16.py",
+      "primary_decode_allowed": false,
+      "scoring_allowed": false,
+      "comparative_publish_allowed": false,
+      "production_selection_allowed": false,
+      "product_code_allowed": false,
+      "foreign_successor_task_references_allowed": false
+    },
+    "B2R17": {
+      "required_verifier": "research/000b2-public/verify_b2r17.py",
+      "primary_decode_allowed": true,
+      "scoring_allowed": false,
+      "comparative_publish_allowed": false,
+      "production_selection_allowed": false,
+      "product_code_allowed": false,
+      "foreign_successor_task_references_allowed": false
+    },
+    "B2R18": {
+      "required_verifier": "research/000b2-public/verify_b2r18.py",
+      "primary_decode_allowed": true,
+      "scoring_allowed": false,
+      "comparative_publish_allowed": false,
+      "production_selection_allowed": false,
+      "product_code_allowed": false,
+      "foreign_successor_task_references_allowed": false
+    },
+    "B2R19": {
+      "required_verifier": "research/000b2-public/verify_b2r19.py",
+      "primary_decode_allowed": true,
+      "scoring_allowed": false,
+      "comparative_publish_allowed": false,
+      "production_selection_allowed": false,
+      "product_code_allowed": false,
+      "foreign_successor_task_references_allowed": false
+    },
+    "B2R20": {
+      "required_verifier": "research/000b2-public/verify_b2r20.py",
+      "primary_decode_allowed": true,
+      "scoring_allowed": false,
+      "comparative_publish_allowed": false,
+      "production_selection_allowed": false,
+      "product_code_allowed": false,
+      "foreign_successor_task_references_allowed": false
+    },
+    "B2R21": {
+      "required_verifier": "research/000b2-public/verify_b2r21.py",
+      "primary_decode_allowed": true,
+      "scoring_allowed": false,
+      "comparative_publish_allowed": false,
+      "production_selection_allowed": false,
+      "product_code_allowed": false,
+      "foreign_successor_task_references_allowed": false
+    },
+    "B2R22": {
+      "required_verifier": "research/000b2-public/verify_b2r22.py",
+      "primary_decode_allowed": true,
+      "scoring_allowed": false,
+      "comparative_publish_allowed": false,
+      "production_selection_allowed": false,
+      "product_code_allowed": false,
+      "foreign_successor_task_references_allowed": false
+    },
+    "B2R23": {
+      "required_verifier": "research/000b2-public/verify_b2r23.py",
+      "primary_decode_allowed": false,
+      "scoring_allowed": false,
+      "comparative_publish_allowed": false,
+      "production_selection_allowed": false,
+      "product_code_allowed": false,
+      "foreign_successor_task_references_allowed": false
+    },
+    "B2R24": {
+      "required_verifier": "research/000b2-public/verify_b2r24.py",
+      "primary_decode_allowed": false,
+      "scoring_allowed": true,
+      "comparative_publish_allowed": false,
+      "production_selection_allowed": false,
+      "product_code_allowed": false,
+      "foreign_successor_task_references_allowed": false
+    }
   },
   "transition_policy": {
     "canonical_main_ref_required_after_first_completion": true,
@@ -85,8 +280,11 @@
       "specs/CURRENT.md"
     ]
   },
-  "completed_recovery_tasks": ["B2R13"],
-  "active_recovery_unit": "B2R14",
+  "completed_recovery_tasks": [
+    "B2R13",
+    "B2R14"
+  ],
+  "active_recovery_unit": "B2R15",
   "transition_proofs": [
     {
       "completed_task": "B2R13",
@@ -95,9 +293,33 @@
       "canonical_task_merge": "60108c02df8397eda854d31c51eb37ee2e3fbe45",
       "post_merge_recovery_run_id": 34231594716,
       "successor_task": "B2R14"
+    },
+    {
+      "completed_task": "B2R14",
+      "canonical_task_base": "2f4212228f24e40fbd03cfc59ab4774df94c0cc3",
+      "qualified_task_head": "c60751c43a2523879814d691011d5dd6d3d1e119",
+      "canonical_task_merge": "e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca",
+      "post_merge_recovery_run_id": 34246855454,
+      "successor_task": "B2R15"
     }
   ],
-  "claim_guards": {"human_developer_speech_accuracy_evidence":"ABSENT","comparative_result_available":false,"production_stt_selected":false,"product_code_authorized":false},
-  "next_action": "Qualify B2R14 only: implement and verify the corrected sherpa-onnx result-extraction harness against the frozen deterministic synthetic non-primary fixture and exact pinned upstream source. Preserve plain-string results exactly, fail closed on object/string API confusion, do not access primary corpus material, and keep all ATTEMPT-003 primary decoding closed until B2R16 is canonically reconciled.",
-  "b2r14_non_primary_fixture_contract": {"material_class":"DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY","fixture_id":"b2r14-sherpa-result-string-contract-v1","sample_rate_hz":16000,"channel_count":1,"sample_format":"PCM_S16LE","frame_count":16000,"pcm_sha256":"0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39","primary_corpus_access":false,"frozen_p0_access":false,"attempt_003_primary_evidence_access":false}
+  "claim_guards": {
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "comparative_result_available": false,
+    "production_stt_selected": false,
+    "product_code_authorized": false
+  },
+  "next_action": "Qualify B2R15 only: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence while preserving the frozen subset, candidate, scorer, normalization, and C0 identities. Do not perform any primary decode; ATTEMPT-003 remains unfrozen and primary decoding remains closed until B2R16 is separately qualified, merged, post-merge verified, and canonically reconciled.",
+  "b2r14_non_primary_fixture_contract": {
+    "material_class": "DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY",
+    "fixture_id": "b2r14-sherpa-result-string-contract-v1",
+    "sample_rate_hz": 16000,
+    "channel_count": 1,
+    "sample_format": "PCM_S16LE",
+    "frame_count": 16000,
+    "pcm_sha256": "0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39",
+    "primary_corpus_access": false,
+    "frozen_p0_access": false,
+    "attempt_003_primary_evidence_access": false
+  }
 }

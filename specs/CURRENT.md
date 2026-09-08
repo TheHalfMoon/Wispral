@@ -1,6 +1,6 @@
 # Wispral Specification Frontier
 
-**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 ATTEMPT-003 recovery active; B2R13 canonical and post-merge verified; active successor recovery unit `B2R14`; ATTEMPT-002 invalidated; ATTEMPT-003 primary decoding closed
+**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 ATTEMPT-003 recovery active; B2R14 corrective requalification canonical and post-merge verified; active successor recovery unit `B2R15`; ATTEMPT-002 invalidated; ATTEMPT-003 primary decoding closed
 
 **Canonical public-corpus methodology merge:** `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` from PR #28, merged from exact head `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` against exact base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`. Live chronology did not prove the required independent semantic review before that merge; the resulting qualification debt was repaired forward-only by PR #32 at canonical merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, and machine readiness was reconciled by PR #33 at canonical merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`.
 
@@ -393,3 +393,19 @@ B2R13 is canonical and post-merge verified. Its transition proof binds the exact
 The sole next bounded action is to qualify B2R14: implement and verify the corrected sherpa-onnx result-extraction harness against the frozen deterministic synthetic non-primary fixture and exact pinned upstream source. Preserve the plain Python string result exactly and fail closed on object/string API confusion. Do not access primary corpus material or ATTEMPT-003 primary evidence. B2R15 and every later ATTEMPT-003 unit remain unauthorized until B2R14 is independently qualified, merged, post-merge verified, and reconciled.
 
 Comparative scoring/ranking, synthesis, candidate-superiority claims, production STT selection, and product-code authority remain closed. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.
+
+## Canonical ATTEMPT-003 B2R14 corrective recovery reconciliation
+
+B2R14 is canonically complete only through the corrective requalification path. Historical merge `2f4212228f24e40fbd03cfc59ab4774df94c0cc3` remains preserved Git history but is not the completion proof because it closed before its required fresh independent substantive exact-range review completed. Corrective PR #97 repaired the review-identified workflow/ref and completion-evidence defects forward-only, received fresh independent substantive review of exact range `2f4212228f24e40fbd03cfc59ab4774df94c0cc3` through `c60751c43a2523879814d691011d5dd6d3d1e119` with no actionable substantive findings, and merged normally as `e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca`. The merge parents are exactly `2f4212228f24e40fbd03cfc59ab4774df94c0cc3` then `c60751c43a2523879814d691011d5dd6d3d1e119`. Exact `main` push run `34246855454` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`, path `.github/workflows/000b2-public-attempt-003-recovery.yml`) completed successfully on that exact corrective merge SHA.
+
+**Canonical successor recovery predecessor:** `B2R14`
+**Canonical B2R14 task base:** `2f4212228f24e40fbd03cfc59ab4774df94c0cc3`
+**Canonical B2R14 qualified head:** `c60751c43a2523879814d691011d5dd6d3d1e119`
+**Canonical B2R14 corrective recovery merge:** `e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca`
+**Canonical B2R14 post-merge recovery run:** `34246855454`
+**Active successor recovery unit:** `B2R15`
+**ATTEMPT-003 required:** `true`
+**ATTEMPT-003 frozen:** `false`
+**ATTEMPT-003 primary decode entry open:** `false`
+
+The sole next bounded action is B2R15: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence while preserving the frozen subset, candidate, scorer, normalization, and C0 identities. No primary decode is authorized. B2R16 and every later successor remain closed until B2R15 is separately qualified, merged, post-merge verified, and reconciled. Comparative scoring/ranking, production STT selection, and product-code authority remain closed; `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT` remains preserved.
