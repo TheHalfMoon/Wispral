@@ -1,0 +1,176 @@
+name: Internal B2R15 Reconciliation Builder V4
+
+on:
+  push:
+    branches:
+      - internal/b2r15-reconciliation-builder
+    paths:
+      - '.github/workflows/internal-b2r15-reconciliation-builder-v4.yml'
+
+permissions:
+  contents: write
+
+env:
+  CANONICAL_BASE: 3d31b18823b8275c99e1478b132a64f36fad05c0
+  TARGET_BRANCH: recovery/b2r15-reconcile-to-b2r16
+  TARGET_EXPECTED_HEAD: 63a8a81d31840b7baefa4c7e6e968c232a78272a
+  TASK_BASE: ae349f7ef28e8ffd08ee8f54d1727ef80684a31a
+  QUALIFIED_HEAD: 1410cb81b59de07bdecee6b78e41fdc825f4a55d
+  TASK_MERGE: 3d31b18823b8275c99e1478b132a64f36fad05c0
+  RECOVERY_RUN: '34274935240'
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout builder source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify exact live proof and immutable target
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin "refs/heads/$TARGET_BRANCH" | cut -f1)" = "$TARGET_EXPECTED_HEAD"
+          test "$(git show -s --format='%P' "$TASK_MERGE")" = "$TASK_BASE $QUALIFIED_HEAD"
+          python - <<'PY'
+          import json, urllib.request
+          req=urllib.request.Request('https://api.github.com/repos/TheHalfMoon/Wispral/actions/runs/34274935240',headers={'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'})
+          run=json.load(urllib.request.urlopen(req))
+          assert run['workflow_id']==352653404
+          assert run['path']=='.github/workflows/000b2-public-attempt-003-recovery.yml'
+          assert run['event']=='push' and run['head_branch']=='main'
+          assert run['head_sha']=='3d31b18823b8275c99e1478b132a64f36fad05c0'
+          assert run['status']=='completed' and run['conclusion']=='success'
+          print('B2R15_CANONICAL_PROOF=PASS')
+          PY
+
+      - name: Checkout exact reconciliation target
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin "refs/heads/$TARGET_BRANCH:refs/remotes/origin/$TARGET_BRANCH"
+          git switch --detach "$TARGET_EXPECTED_HEAD"
+          test "$(git rev-parse HEAD)" = "$TARGET_EXPECTED_HEAD"
+
+      - name: Apply canonical B2R15 reconciliation text
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          task_base='ae349f7ef28e8ffd08ee8f54d1727ef80684a31a'
+          head='1410cb81b59de07bdecee6b78e41fdc825f4a55d'
+          merge='3d31b18823b8275c99e1478b132a64f36fad05c0'
+          run='34274935240'
+          review='5591353978'
+
+          p=Path('specs/CURRENT.md')
+          s=p.read_text(encoding='utf-8')
+          old='**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 ATTEMPT-003 recovery active; corrective B2R14 canonical and post-merge verified; active successor recovery unit `B2R15`; ATTEMPT-002 invalidated; ATTEMPT-003 primary decoding closed'
+          new='**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 ATTEMPT-003 recovery active; B2R15 canonical and post-merge verified; active successor recovery unit `B2R16`; ATTEMPT-002 invalidated; ATTEMPT-003 primary decoding closed'
+          assert s.count(old)==1
+          s=s.replace(old,new,1)
+          marker='## Canonical ATTEMPT-003 B2R15 preexecution-evidence reconciliation'
+          assert marker not in s
+          s=s.rstrip()+f'''\n\n{marker}\n\nB2R15 is canonically complete at guarded normal merge `{merge}` with first parent `{task_base}` and exact independently reviewed qualified head `{head}` as second parent. Fresh independent exact-range CodeRabbit review comment `{review}` reported no actionable substantive findings before merge. Exact `main` push run `{run}` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`, path `.github/workflows/000b2-public-attempt-003-recovery.yml`) completed successfully on that exact merge SHA. The B2R15 task cryptographically rebound ATTEMPT-003 preprocessing and execution-environment evidence to the exact frozen candidate, subset, scorer, normalization, C0, B2R14 harness, source-document, and source-blob identities without primary decoding or scoring.\n\n**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`\n**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`\n**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`\n**Canonical successor recovery predecessor:** `B2R15`\n**Canonical B2R15 task base:** `{task_base}`\n**Canonical B2R15 qualified head:** `{head}`\n**Canonical B2R15 task merge:** `{merge}`\n**Canonical B2R15 post-merge recovery run:** `{run}`\n**Active successor recovery unit:** `B2R16`\n**ATTEMPT-003 required:** `true`\n**ATTEMPT-003 frozen:** `false`\n**ATTEMPT-003 primary decode entry open:** `false`\n\nB2R16 alone is the next bounded action: freeze `000B2-PUBLIC-ATTEMPT-003` with exact candidate, subset, preprocessing, environment, scorer, normalization, and B2R14-qualified harness identities before any new primary decode. No primary decode or scoring is authorized by this reconciliation. B2R17 and every later successor remain unauthorized. Comparative publication/ranking, production selection, and product-code authority remain closed; `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, `production_stt_selected=false`, and `product_code_authorized=false` remain preserved.\n'''
+          p.write_text(s+'\n',encoding='utf-8')
+
+          p=Path('docs/canonical/CURRENT_STATE.md')
+          s=p.read_text(encoding='utf-8')
+          old='; active successor recovery unit is `B2R15`; ATTEMPT-003 remains unfrozen and primary decoding is closed'
+          new=f'; B2R15 is canonical at guarded normal merge `{merge}` from exact independently reviewed qualified head `{head}` and post-merge ATTEMPT-003 Recovery run `{run}` succeeded; active successor recovery unit is `B2R16`; ATTEMPT-003 remains unfrozen and primary decoding is closed'
+          assert s.count(old)==1
+          s=s.replace(old,new,1)
+          marker='## Canonical ATTEMPT-003 B2R15 preexecution-evidence reconciliation'
+          assert marker not in s
+          block=f'''{marker}\n\nB2R15 is canonically complete after PR #102 merged the exact independently reviewed five-file preexecution-evidence range as guarded normal merge `{merge}` with first parent `{task_base}` and exact qualified head `{head}` as second parent. Fresh independent exact-range CodeRabbit review comment `{review}` reported no actionable substantive findings before merge. Exact `main` push run `{run}` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`, path `.github/workflows/000b2-public-attempt-003-recovery.yml`) completed successfully on that exact merge SHA. The completed task cryptographically rebound ATTEMPT-003 preprocessing and execution-environment evidence to the exact frozen candidate, subset, scorer, normalization, C0, B2R14 harness, source-document, and source-blob identities without primary decoding or scoring.\n\n**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`\n**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`\n**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`\n**Canonical successor recovery predecessor:** `B2R15`\n**Canonical B2R15 task base:** `{task_base}`\n**Canonical B2R15 qualified head:** `{head}`\n**Canonical B2R15 task merge:** `{merge}`\n**Canonical B2R15 post-merge recovery run:** `{run}`\n**Active successor recovery unit:** `B2R16`\n**ATTEMPT-003 required:** `true`\n**ATTEMPT-003 frozen:** `false`\n**ATTEMPT-003 primary decode entry open:** `false`\n\nB2R16 alone is the next bounded unit: freeze `000B2-PUBLIC-ATTEMPT-003` with exact candidate, subset, preprocessing, environment, scorer, normalization, and B2R14-qualified harness identities before any new primary decode. No primary decode or scoring is authorized by this reconciliation. B2R17 and every later successor remain unauthorized. Comparative publication/ranking, production selection, and product-code authority remain closed; `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, `production_stt_selected=false`, and `product_code_authorized=false` remain preserved.\n\n'''
+          anchor='## Current product thesis'
+          assert s.count(anchor)==1
+          p.write_text(s.replace(anchor,block+anchor,1),encoding='utf-8')
+          print('B2R15_AUTHORITY_TEXT=APPLIED')
+          PY
+          git diff --check
+
+      - name: Create local reconciliation candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Abdulaziz M. Shehri'
+          git config user.email 'alshehriofficial@gmail.com'
+          git add docs/canonical/CURRENT_STATE.md specs/CURRENT.md
+          git commit -m 'docs(b2): complete B2R15 reconciliation authority'
+          test "$(git rev-parse HEAD^)" = "$TARGET_EXPECTED_HEAD"
+          echo "LOCAL_RECONCILIATION_HEAD=$(git rev-parse HEAD)"
+
+      - name: Verify exact committed four-file scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected=$(printf '%s\n' docs/canonical/CURRENT_STATE.md research/000b2-public/recovery-attempt-003-readiness.json specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md specs/CURRENT.md | sort)
+          actual=$(git diff --name-only "$CANONICAL_BASE" HEAD -- | sort)
+          printf 'EXPECTED_SCOPE=%s\n' "$expected"
+          printf 'ACTUAL_SCOPE=%s\n' "$actual"
+          test "$actual" = "$expected"
+
+      - name: Verify reconciliation machine state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          r=json.loads(Path('research/000b2-public/recovery-attempt-003-readiness.json').read_text(encoding='utf-8'))
+          assert r['completed_recovery_tasks']==['B2R13','B2R14','B2R15']
+          assert r['active_recovery_unit']=='B2R16'
+          assert r['replacement_attempt']['frozen'] is False
+          assert r['replacement_attempt']['primary_decode_entry_open'] is False
+          assert r['transition_proofs'][-1]=={
+            'completed_task':'B2R15',
+            'canonical_task_base':'ae349f7ef28e8ffd08ee8f54d1727ef80684a31a',
+            'qualified_task_head':'1410cb81b59de07bdecee6b78e41fdc825f4a55d',
+            'canonical_task_merge':'3d31b18823b8275c99e1478b132a64f36fad05c0',
+            'post_merge_recovery_run_id':34274935240,
+            'successor_task':'B2R16',
+          }
+          for name in ('specs/CURRENT.md','docs/canonical/CURRENT_STATE.md'):
+            t=Path(name).read_text(encoding='utf-8')
+            assert '**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`' in t
+            assert '**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`' in t
+            assert '**Active successor recovery unit:** `B2R16`' in t
+            assert '**ATTEMPT-003 frozen:** `false`' in t
+            assert '**ATTEMPT-003 primary decode entry open:** `false`' in t
+            assert '`3d31b18823b8275c99e1478b132a64f36fad05c0`' in t
+            assert '`34274935240`' in t
+          print('B2R15_RECONCILIATION_STATE=PASS')
+          PY
+
+      - name: Run canonical successor verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py --static-only
+
+      - name: Fast-forward exact target only after validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin "refs/heads/$TARGET_BRANCH" | cut -f1)" = "$TARGET_EXPECTED_HEAD"
+          git push origin "HEAD:refs/heads/$TARGET_BRANCH"
+
+      - name: Verify published reconciliation candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          head=$(git ls-remote origin "refs/heads/$TARGET_BRANCH" | cut -f1)
+          test "$head" = "$(git rev-parse HEAD)"
+          expected=$(printf '%s\n' docs/canonical/CURRENT_STATE.md research/000b2-public/recovery-attempt-003-readiness.json specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md specs/CURRENT.md | sort)
+          test "$(git diff --name-only "$CANONICAL_BASE" "$head" -- | sort)" = "$expected"
+          echo "B2R15_RECONCILIATION_HEAD=$head"
