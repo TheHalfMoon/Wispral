@@ -48,7 +48,7 @@ jobs:
           rm -rf research/000b2-public/__pycache__
           grep -q 'B2R14_TRUSTED_CANDIDATE_HARNESS_SHAPE=PASS' .github/workflows/000b2-public-attempt-003-recovery.yml
           grep -q 'Candidate-supplied verifier code is intentionally never executed here.' research/000b2-public/verify_attempt_002_invalidation.py
-          AUTHORITY_BASE_REVISION=dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff python research/000b2-public/verify_attempt_002_invalidation.py
+          python research/000b2-public/verify_attempt_002_invalidation.py
           python research/000b2-public/verify_b2r13_activation.py
           test "$(git diff --name-only "$EXPECTED_TARGET_HEAD" -- | sort)" = "$(printf '%s\n' .github/workflows/000b2-public-attempt-003-recovery.yml research/000b2-public/verify_attempt_002_invalidation.py specs/000B2-public-corpus-bakeoff/recovery-v2.md | sort)"
 
