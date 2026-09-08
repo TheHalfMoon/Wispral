@@ -227,6 +227,25 @@ jobs:
           if state.get('task_candidate_scopes') != expected_task_scopes:
               raise SystemExit('ATTEMPT-003 exact task candidate scope map drift')
 
+          expected_content_policies = {}
+          for task in expected_order:
+              verifier = (
+                  'research/000b2-public/verify_b2r13_activation.py'
+                  if task == 'B2R13'
+                  else f'research/000b2-public/verify_{task.lower()}.py'
+              )
+              expected_content_policies[task] = {
+                  'required_verifier': verifier,
+                  'primary_decode_allowed': task in {'B2R17', 'B2R18', 'B2R19', 'B2R20', 'B2R21', 'B2R22'},
+                  'scoring_allowed': task == 'B2R24',
+                  'comparative_publish_allowed': False,
+                  'production_selection_allowed': False,
+                  'product_code_allowed': False,
+                  'foreign_successor_task_references_allowed': False,
+              }
+          if state.get('task_content_policies') != expected_content_policies:
+              raise SystemExit('ATTEMPT-003 task content policy drift')
+
           expected_scope = [
               'docs/canonical/CURRENT_STATE.md',
               'research/000b2-public/recovery-attempt-003-readiness.json',
@@ -297,6 +316,8 @@ jobs:
           else:
               if base_state.get('task_candidate_scopes') != expected_task_scopes:
                   raise SystemExit('authority-base exact task candidate scope map drift')
+              if base_state.get('task_content_policies') != expected_content_policies:
+                  raise SystemExit('authority-base task content policy drift')
               base_completed = base_state.get('completed_recovery_tasks')
               base_order = base_state.get('task_order')
               base_active = base_state.get('active_recovery_unit')
@@ -474,12 +495,14 @@ jobs:
                       raise SystemExit(f'transition proof run mismatch for {task}: {key}')
 
           replacement = state.get('replacement_attempt', {})
-          if active in {'B2R13', 'B2R14', 'B2R15', 'B2R16'} and replacement.get('primary_decode_entry_open') is not False:
-              raise SystemExit(f'ATTEMPT-003 primary decode unexpectedly open during {active}')
+          if (active in {'B2R13', 'B2R14', 'B2R15', 'B2R16', 'B2R23', 'B2R24'} or active is None) and replacement.get('primary_decode_entry_open') is not False:
+              raise SystemExit(f'ATTEMPT-003 primary decode unexpectedly open during non-decode/terminal phase {active}')
+          if active in {'B2R17', 'B2R18', 'B2R19', 'B2R20', 'B2R21', 'B2R22'} and replacement.get('primary_decode_entry_open') is not True:
+              raise SystemExit(f'ATTEMPT-003 primary decode unexpectedly closed during authorized decode phase {active}')
           if active in {'B2R13', 'B2R14', 'B2R15'} and replacement.get('frozen') is not False:
               raise SystemExit(f'ATTEMPT-003 frozen before B2R16: {active}')
-          if active in {'B2R17', 'B2R18', 'B2R19', 'B2R20', 'B2R21', 'B2R22', 'B2R23', 'B2R24'} and replacement.get('frozen') is not True:
-              raise SystemExit(f'ATTEMPT-003 must be frozen before or during {active}')
+          if (active in {'B2R17', 'B2R18', 'B2R19', 'B2R20', 'B2R21', 'B2R22', 'B2R23', 'B2R24'} or active is None) and replacement.get('frozen') is not True:
+              raise SystemExit(f'ATTEMPT-003 must be frozen before, during, and after primary decode: {active}')
           if replacement.get('primary_decode_entry_open') is True and replacement.get('frozen') is not True:
               raise SystemExit('ATTEMPT-003 primary decode cannot open before attempt freeze')
           if active == 'B2R13' and completed:
@@ -490,6 +513,8 @@ jobs:
               raise SystemExit('human developer-speech evidence guard drift')
           if active is not None and guards.get('comparative_result_available') is not False:
               raise SystemExit('comparative result became available before successor recovery completion')
+          if active is None and type(guards.get('comparative_result_available')) is not bool:
+              raise SystemExit('terminal comparative result availability must be boolean')
           if guards.get('production_stt_selected') is not False:
               raise SystemExit('production STT unexpectedly selected')
           if guards.get('product_code_authorized') is not False:
