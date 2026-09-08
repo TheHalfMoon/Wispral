@@ -33,7 +33,7 @@ jobs:
           set -euo pipefail
           git fetch origin main
           test "$(git rev-parse origin/main)" = "$EXPECTED_MAIN"
-          test "$(git rev-parse HEAD^)" = "$EXPECTED_MAIN"
+          git merge-base --is-ancestor "$EXPECTED_MAIN" HEAD
 
           python - <<'PY'
           import json
@@ -51,7 +51,6 @@ jobs:
                   raise SystemExit(f"{label}: expected exactly one match, found {count}")
               return text.replace(old, new, 1)
 
-          # Machine authority: append exactly one transition and advance exactly one unit.
           readiness_path = Path("research/000b2-public/recovery-attempt-003-readiness.json")
           readiness = readiness_path.read_text(encoding="utf-8")
           readiness = replace_once(
@@ -67,21 +66,21 @@ jobs:
               "readiness next action",
           )
           doc = json.loads(readiness)
-          assert doc["completed_recovery_tasks"] == ["B2R13"]
-          assert doc["active_recovery_unit"] == "B2R14"
-          assert doc["replacement_attempt"]["frozen"] is False
-          assert doc["replacement_attempt"]["primary_decode_entry_open"] is False
-          assert doc["transition_proofs"] == [{
+          expected_proof = {
               "completed_task": "B2R13",
               "canonical_task_base": task_base,
               "qualified_task_head": qualified_head,
               "canonical_task_merge": task_merge,
               "post_merge_recovery_run_id": recovery_run,
               "successor_task": "B2R14",
-          }]
+          }
+          assert doc["completed_recovery_tasks"] == ["B2R13"]
+          assert doc["active_recovery_unit"] == "B2R14"
+          assert doc["replacement_attempt"]["frozen"] is False
+          assert doc["replacement_attempt"]["primary_decode_entry_open"] is False
+          assert doc["transition_proofs"] == [expected_proof]
           readiness_path.write_text(readiness, encoding="utf-8")
 
-          # Successor task ledger: mark only B2R13 complete.
           tasks_path = Path("specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md")
           tasks = tasks_path.read_text(encoding="utf-8")
           tasks = replace_once(
@@ -92,7 +91,6 @@ jobs:
           )
           tasks_path.write_text(tasks, encoding="utf-8")
 
-          # Executable frontier: preserve historical ATTEMPT-002 chronology and advance only the latest successor section.
           current_path = Path("specs/CURRENT.md")
           current = current_path.read_text(encoding="utf-8")
           current = replace_once(
@@ -101,37 +99,40 @@ jobs:
               '**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 ATTEMPT-003 recovery active; B2R13 canonical and post-merge verified; active successor recovery unit `B2R14`; ATTEMPT-002 invalidated; ATTEMPT-003 primary decoding closed',
               "CURRENT status",
           )
-          old_block = '''**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`
-**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`
-**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`
-**Active successor recovery unit:** `B2R13`
-**ATTEMPT-003 required:** `true`
-**ATTEMPT-003 frozen:** `false`
-**ATTEMPT-003 primary decode entry open:** `false`
-
-B2R13 is an invalidation/authority-recovery unit only. It MUST NOT perform a primary decode, score ATTEMPT-002, rewrite canonical B2R05-B2R09 execution bytes, promote closed PR #89/#90 evidence, or mark B2R10-B2R12 complete. `research/000b2-public/recovery-readiness.json` and the B2R10 marker above remain immutable historical ATTEMPT-002 snapshots and do not authorize new execution after this successor authority is canonical.
-
-The sole next bounded action is to qualify B2R13: prove ATTEMPT-002 material invalidation against exact canonical B2R09 bytes and the exact pinned sherpa-onnx upstream API, preserve all historical ATTEMPT-002 evidence, keep ATTEMPT-003 unfrozen, and keep every primary decode closed. B2R14 and every later ATTEMPT-003 unit remain unauthorized until B2R13 is independently qualified, merged, post-merge verified, and reconciled.'''
-          new_block = f'''**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`
-**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`
-**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`
-**Canonical successor recovery predecessor:** `B2R13`
-**Canonical B2R13 task base:** `{task_base}`
-**Canonical B2R13 qualified head:** `{qualified_head}`
-**Canonical B2R13 recovery merge:** `{task_merge}`
-**Canonical B2R13 post-merge recovery run:** `{recovery_run}`
-**Active successor recovery unit:** `B2R14`
-**ATTEMPT-003 required:** `true`
-**ATTEMPT-003 frozen:** `false`
-**ATTEMPT-003 primary decode entry open:** `false`
-
-B2R13 is canonical and post-merge verified. Its transition proof binds the exact canonical task base, exact independently reviewed qualified head, real two-parent normal merge, and successful `main` push run of `000B2 Public Corpus ATTEMPT-003 Recovery`. Historical ATTEMPT-002 bytes and the superseded B2R10-B2R12 frontier remain immutable and non-authoritative for new execution.
-
-The sole next bounded action is to qualify B2R14: implement and verify the corrected sherpa-onnx result-extraction harness against the frozen deterministic synthetic non-primary fixture and exact pinned upstream source. Preserve the plain Python string result exactly and fail closed on object/string API confusion. Do not access primary corpus material or ATTEMPT-003 primary evidence. B2R15 and every later ATTEMPT-003 unit remain unauthorized until B2R14 is independently qualified, merged, post-merge verified, and reconciled.'''
-          current = replace_once(current, old_block, new_block, "CURRENT successor block")
+          old_lines = [
+              '**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`',
+              '**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`',
+              '**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`',
+              '**Active successor recovery unit:** `B2R13`',
+              '**ATTEMPT-003 required:** `true`',
+              '**ATTEMPT-003 frozen:** `false`',
+              '**ATTEMPT-003 primary decode entry open:** `false`',
+              '',
+              'B2R13 is an invalidation/authority-recovery unit only. It MUST NOT perform a primary decode, score ATTEMPT-002, rewrite canonical B2R05-B2R09 execution bytes, promote closed PR #89/#90 evidence, or mark B2R10-B2R12 complete. `research/000b2-public/recovery-readiness.json` and the B2R10 marker above remain immutable historical ATTEMPT-002 snapshots and do not authorize new execution after this successor authority is canonical.',
+              '',
+              'The sole next bounded action is to qualify B2R13: prove ATTEMPT-002 material invalidation against exact canonical B2R09 bytes and the exact pinned sherpa-onnx upstream API, preserve all historical ATTEMPT-002 evidence, keep ATTEMPT-003 unfrozen, and keep every primary decode closed. B2R14 and every later ATTEMPT-003 unit remain unauthorized until B2R13 is independently qualified, merged, post-merge verified, and reconciled.',
+          ]
+          new_lines = [
+              '**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`',
+              '**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`',
+              '**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`',
+              '**Canonical successor recovery predecessor:** `B2R13`',
+              f'**Canonical B2R13 task base:** `{task_base}`',
+              f'**Canonical B2R13 qualified head:** `{qualified_head}`',
+              f'**Canonical B2R13 recovery merge:** `{task_merge}`',
+              f'**Canonical B2R13 post-merge recovery run:** `{recovery_run}`',
+              '**Active successor recovery unit:** `B2R14`',
+              '**ATTEMPT-003 required:** `true`',
+              '**ATTEMPT-003 frozen:** `false`',
+              '**ATTEMPT-003 primary decode entry open:** `false`',
+              '',
+              'B2R13 is canonical and post-merge verified. Its transition proof binds the exact canonical task base, exact independently reviewed qualified head, real two-parent normal merge, and successful `main` push run of `000B2 Public Corpus ATTEMPT-003 Recovery`. Historical ATTEMPT-002 bytes and the superseded B2R10-B2R12 frontier remain immutable and non-authoritative for new execution.',
+              '',
+              'The sole next bounded action is to qualify B2R14: implement and verify the corrected sherpa-onnx result-extraction harness against the frozen deterministic synthetic non-primary fixture and exact pinned upstream source. Preserve the plain Python string result exactly and fail closed on object/string API confusion. Do not access primary corpus material or ATTEMPT-003 primary evidence. B2R15 and every later ATTEMPT-003 unit remain unauthorized until B2R14 is independently qualified, merged, post-merge verified, and reconciled.',
+          ]
+          current = replace_once(current, "\n".join(old_lines), "\n".join(new_lines), "CURRENT successor block")
           current_path.write_text(current, encoding="utf-8")
 
-          # Durable canonical chronology: add the successor proof without rewriting historical sections.
           state_path = Path("docs/canonical/CURRENT_STATE.md")
           state = state_path.read_text(encoding="utf-8")
           old_tail = 'B2R09 is canonical and post-merge verified at task merge `fc357350270d5cb34fc1305dba4a9de41a5234c3` with recovery run `34160146607`; ATTEMPT-002 is frozen; active recovery unit is `B2R10`; only B2R10 primary decode is open; ATTEMPT-001 B2E03 and all later primary decoding are closed'
@@ -140,27 +141,28 @@ The sole next bounded action is to qualify B2R14: implement and verify the corre
           anchor = "\n## Current product thesis\n"
           if state.count(anchor) != 1:
               raise SystemExit(f"CURRENT_STATE product-thesis anchor count={state.count(anchor)}")
-          section = f'''
-## Canonical ATTEMPT-003 B2R13 recovery reconciliation
-
-B2R13 is canonically complete after PR #92 merged the exact independently reviewed activation range as real normal merge `{task_merge}` with first parent `{task_base}` and exact qualified head `{qualified_head}` as second parent. Exact `main` push run `{recovery_run}` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`, path `.github/workflows/000b2-public-attempt-003-recovery.yml`) completed successfully on that exact merge SHA. This reconciliation advances exactly one successor task and does not execute B2R14.
-
-**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`
-**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`
-**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`
-**Canonical successor recovery predecessor:** `B2R13`
-**Canonical B2R13 task base:** `{task_base}`
-**Canonical B2R13 qualified head:** `{qualified_head}`
-**Canonical B2R13 recovery merge:** `{task_merge}`
-**Canonical B2R13 post-merge recovery run:** `{recovery_run}`
-**Active successor recovery unit:** `B2R14`
-**ATTEMPT-003 required:** `true`
-**ATTEMPT-003 frozen:** `false`
-**ATTEMPT-003 primary decode entry open:** `false`
-
-B2R14 alone is the next bounded unit: qualify the corrected sherpa-onnx result-extraction harness against the canonical deterministic synthetic non-primary fixture and exact pinned upstream source. Primary corpus access, ATTEMPT-003 primary evidence access, scoring, ranking, synthesis, production STT selection, and product-code authority remain closed. B2R15 and every later successor unit require their own exact-head qualification, independent review, guarded normal merge, post-merge recovery proof, and separate reconciliation.
-'''
-          state = state.replace(anchor, section + anchor, 1)
+          section_lines = [
+              '',
+              '## Canonical ATTEMPT-003 B2R13 recovery reconciliation',
+              '',
+              f'B2R13 is canonically complete after PR #92 merged the exact independently reviewed activation range as real normal merge `{task_merge}` with first parent `{task_base}` and exact qualified head `{qualified_head}` as second parent. Exact `main` push run `{recovery_run}` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`, path `.github/workflows/000b2-public-attempt-003-recovery.yml`) completed successfully on that exact merge SHA. This reconciliation advances exactly one successor task and does not execute B2R14.',
+              '',
+              '**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`',
+              '**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`',
+              '**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`',
+              '**Canonical successor recovery predecessor:** `B2R13`',
+              f'**Canonical B2R13 task base:** `{task_base}`',
+              f'**Canonical B2R13 qualified head:** `{qualified_head}`',
+              f'**Canonical B2R13 recovery merge:** `{task_merge}`',
+              f'**Canonical B2R13 post-merge recovery run:** `{recovery_run}`',
+              '**Active successor recovery unit:** `B2R14`',
+              '**ATTEMPT-003 required:** `true`',
+              '**ATTEMPT-003 frozen:** `false`',
+              '**ATTEMPT-003 primary decode entry open:** `false`',
+              '',
+              'B2R14 alone is the next bounded unit: qualify the corrected sherpa-onnx result-extraction harness against the canonical deterministic synthetic non-primary fixture and exact pinned upstream source. Primary corpus access, ATTEMPT-003 primary evidence access, scoring, ranking, synthesis, production STT selection, and product-code authority remain closed. B2R15 and every later successor unit require their own exact-head qualification, independent review, guarded normal merge, post-merge recovery proof, and separate reconciliation.',
+          ]
+          state = state.replace(anchor, "\n".join(section_lines) + anchor, 1)
           state_path.write_text(state, encoding="utf-8")
           PY
 
@@ -169,17 +171,13 @@ B2R14 alone is the next bounded unit: qualify the corrected sherpa-onnx result-e
 
           git rm .github/workflows/tmp-b2r13-reconcile-builder.yml
           mapfile -t changed < <(git diff --name-only "$EXPECTED_MAIN" -- | sort)
-          expected=(
-            docs/canonical/CURRENT_STATE.md
-            research/000b2-public/recovery-attempt-003-readiness.json
-            specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md
-            specs/CURRENT.md
-          )
-          mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
-          test "${#changed[@]}" -eq "${#expected_sorted[@]}"
-          for i in "${!expected_sorted[@]}"; do
-            test "${changed[$i]}" = "${expected_sorted[$i]}"
-          done
+          mapfile -t expected < <(printf '%s\n' \
+            docs/canonical/CURRENT_STATE.md \
+            research/000b2-public/recovery-attempt-003-readiness.json \
+            specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md \
+            specs/CURRENT.md | sort)
+          test "${#changed[@]}" -eq "${#expected[@]}"
+          for i in "${!expected[@]}"; do test "${changed[$i]}" = "${expected[$i]}"; done
 
           git config user.name "wispral-reconciliation-builder"
           git config user.email "actions@users.noreply.github.com"
