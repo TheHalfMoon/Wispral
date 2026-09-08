@@ -8,7 +8,147 @@
 
 **Canonical B2P02 archive-byte merge:** `1ba4e42561cc53f574d5d35689e2ae499a398b5c` from PR #35, merged by guarded squash from exact qualified head `06bbd50676edcf87fc3e85b73bc6b7f17d3161ff` against exact base `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`. All seven applicable exact-head workflows succeeded and fresh independent CodeRabbit review covered all 11 changed files with no actionable findings. Post-merge archive materialization run `33751302416`, job `100635230794`, checked out the canonical merge, passed exact workflow-structure verification before archive access, re-fetched both official OpenSLR archives, reproduced both recorded byte counts, official MD5 values, and SHA-256 identities, emitted `B2P02_REDIRECT_POLICY=PASS` and `B2P02_MATERIALIZATION=PASS`, and uploaded artifact `9891735545` with ZIP digest `sha256:b0187d8b664a212a100d6d1515773891315d5af9e137178507c3b079d9edca6b`. The required canonical reread therefore authorized B2P03 as the sole next bounded unit.
 
-**Canonical B2P03 deterministic-subset merge:** `83eca872148f329033c299f6671d275edf2d7b58` from PR #37, merged by guarded expected-head squash from exact qualified head `e642500c7ba6c5935a94da42cf638c01f9366913` against exact base `2f9517bf34342f7e02697024c32ed2a16f61cf29`. Exact-head `000B2 Public Corpus Subset Selection` run `33774852016` and `000B2 Public Corpus Methodology` run `33774852021` succeeded. Fresh independent CodeRabbit semantic review covered the complete four-file exact base/head diff and reported no actionable semantic findings after forward-only repair of valid correctness and source-integrity findings. Post-merge subset-selection run `33775647508`, job `100716549752`, and methodology run `33775647539`, job `100716550502`, succeeded on the exact merge, together with four trusted push lanes for six of six successful push workflows. The canonical reread therefore satisfied the B2P04 entry condition while preserving every pre-decode guard.
+**Canonical B2P03 deterministic-subset merge:** `83eca872148f329033c299f6671d275edf2d7b58` from PR #37, merged by guarded expected-head squash from exact qualified head `e642500c7ba6c5935a94da42cf638c01f9366913` against exact base `2f9517bf34342f7e02697024c32ed2a16f61cf29`. Exact-head `000B2 Public Corpus Subset Selection` run `33774852016` and `000B2 Public Corpus Methodology` run `33774852021` succeeded. Fresh independent CodeRabbit semantic review covered the complete four-file exact base/head diff and reported no actionable semantic findings after forward-only repair of valid correctness and source-integrity findings. Post-merge subset-selection run `33775647508`, job `100716549752`, and methodology run `33775647539`, job `100716550502`, succeeded on the exact canonical merge; all six applicable push workflows on that SHA succeeded. No subset manifest was frozen and no candidate or primary decoding began. The required canonical reread therefore authorized B2P04 as the sole next bounded unit.
+
+**Canonical B2P04 subset-manifest freeze merge:** `4c4e758f22b54fa62256e57bfbd344adc817df8e` from PR #39, merged by guarded expected-head squash from exact qualified head `0d83d277cc2544f63613e674d60bae07ad24dc26` against exact base `c1a576db2adf67cb4b830c280e6cba80b0ae3b43`. Exact-head methodology run `33793696076` and subset-freeze run `33793696006`, job `100776173700`, succeeded; the latter reproduced the committed manifest byte-for-byte from exact official archive identities under pinned Python `3.12`. Fresh independent CodeRabbit semantic audit comment `5530776500` covered the complete five-file exact base/head diff and reported no actionable findings after forward-only hardening. The frozen manifest byte SHA-256 is `5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb` and freeze digest `f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242`. Post-merge subset-freeze run `33794854765`, job `100779961908`, reproduced the canonical freeze and uploaded artifact `9908811632` with ZIP digest `sha256:bad9a31cea1a3a51b6ecbf9053f4941b1ae8a5d88cb97b747703166fe9444578`; methodology run `33794854595`, job `100779960182`, and the four trusted push lanes also succeeded. No candidate revalidation or decoding began. The required canonical reread therefore authorized B2P05 as the sole next bounded unit.
+
+**Canonical B2P05 candidate-revalidation merge:** `49538990fb4cf8223e9321261925206ed7ff5cee` from PR #41, merged by guarded expected-head squash from exact qualified head `c62a7fa2998cd5292da78a66deb4a6d2044691b3` against exact base `6135cd67c1b31e0be0b82ba202b6a6770d34b68d`. Final exact-head `000B2 Public Corpus Candidate Revalidation` run `33802435769` and `000B2 Public Corpus Methodology` run `33802435851` succeeded after forward-only repairs for synthetic-merge-ref checkout, tautological authority comparison, and the `execution_environment` schema key. Fresh independent CodeRabbit semantic review covered the complete final three-file exact base/head diff and reported no actionable findings. Post-merge candidate-revalidation run `33803832655` succeeded on the canonical SHA: static job `100809416957` passed exact canonical-base/head trust-boundary and closed-later-gate checks, live job `100809480949` reproduced all 18 pending artifact identities from canonical trusted authority and revalidated runtime plus pre-pinned model identities. Post-merge methodology run `33803832693`, job `100809418067`, and trusted materialization/participant-materials/participant-policy/human-authority runs `33803832706`, `33803832711`, `33803832717`, and `33803832657` also succeeded. Candidate decoding, B2P06 preprocessing capture, B2P07 environment capture, B2P08 attempt freeze, production selection, and product code remained closed. The required canonical reread therefore authorizes B2P06 as the sole next bounded unit.
+**Canonical B2P07 execution-environment merge:** `4bd5306fa1d274d7b822b73e26172dd9c7058319` from PR #45, merged by guarded expected-head merge commit from exact qualified head `422ea2d7f0945437ea271412b2f2e33c85256f2e` against exact base `a45e69f3f03094c947104438ac1f0b2aa124b295`. Exact-head environment run `33863710225` and methodology run `33863710318` succeeded. Fresh independent CodeRabbit semantic review covered the complete final four-file diff and reported no actionable findings after forward-only provenance repairs. The merge preserved raw-capture and provenance-seal ancestry. Canonical post-merge environment run `33864082394`, job `100994833527`, and methodology run `33864082358`, job `100994833254`, succeeded on the exact merge; candidate revalidation run `33864082439` and trusted materialization/participant-materials/participant-policy/human-authority runs `33864082418`, `33864082356`, `33864082410`, and `33864082452` also succeeded. Raw capture commit `aa4711c083b652dfdb7a5d29a39a222125000131` / blob `d84e3e55d45a937a09e5898727b60c635144ac5c` and provenance-seal commit `b8268cb4316a0d05c898bbf5b8bb3f7fe82d4937` / blob `caf814bcb5e42fd769e6df1d9a54c1164535f86c` remain verified. GitHub-hosted timing remains `DIAGNOSTIC`; comparative performance is not authorized. B2P08 remained unfrozen and candidate/primary decoding remained unstarted.
+
+**Canonical B2P08 pre-decode attempt-freeze merge:** `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d` from exact qualified head `a5ee2ccb48a301b623f775970c23434d3a50ccba`. PR #47 froze `000B2-PUBLIC-ATTEMPT-001` before any candidate or primary decode, with exact B2P04 subset, B2P05 candidate registry, B2P06 preprocessing, B2P07 execution-environment, scorer/config, and public P0 WER adapter identities bound. The frozen manifest digest is `af4d5009e293daef5d8f629ca91af653f5f591448cd94d4555473a51e2d1da86`. Fresh exact-head runs `33872999455` (attempt freeze) and `33872999311` (public methodology) succeeded after forward-only repair of all substantive review findings, and the fresh independent exact-head semantic review reported no actionable findings. The guarded expected-head squash merge produced the canonical commit above. Post-merge exact-SHA push verification completed 7/7 successfully: attempt-freeze run `33873343952`, public-methodology run `33873344061`, candidate-revalidation run `33873344096`, trusted-materialization run `33873344252`, trusted-participant-materials run `33873344071`, trusted-participant-policy run `33873344118`, and trusted-human-authority run `33873344044`. `candidate_decoding_started=false`, `primary_decoding_started=false`, `comparative_performance_authorized=false`, `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, `production_stt_selected=false`, and `product_code_authorized=false` remained preserved.
+
+**Canonical B2E01 moonshine-compact execution merge:** `bb3acfae1f39669d74118a564e57a131731484d3` from PR #50, merged by guarded expected-head merge commit from exact qualified head `9a2b4dd2d79c445d31a09a6c435af6cbe43e6808` against exact base `6607b1b1a13daebe1c267f82e3295be9b3bdea32`. The merge preserved capture/seal/provenance ancestry. Fresh exact-head B2E01 Evidence and Methodology qualification succeeded before merge, fresh independent CodeRabbit exact-range challenge comment `5551111214` reported no actionable substantive findings, and all seven exact-merge-head push workflows succeeded after merge: Methodology run `33960299269`, B2E01 Evidence run `33960299255`, Candidate Revalidation run `33960299308`, Trusted Materialization run `33960299258`, Trusted Participant Materials run `33960299257`, Trusted Participant Policy run `33960299252`, and Trusted Human Authority run `33960299250`. Canonical B2E01 Evidence run `33960299255`, job `101290913708`, checked out exact merge `bb3acfae1f39669d74118a564e57a131731484d3`, passed both fail-closed malformed freeze-digest regressions, reproduced `B2E01_EVIDENCE=PASS`, 240/240 decoded with 0 failures, duplicate semantic equivalence PASS, and raw-data boundary PASS. B2E02 was still unauthorized during that post-merge verification.
+
+**Canonical B2E02 moonshine-balanced execution merge:** `91588babc1f738c4284f53d40b4cd96dc13bfd50` from PR #53, merged by guarded expected-head merge commit from exact qualified head `1c4db3f5f857f7a813f4fbb8bc4593c5c5f066c1` against exact base `116dbd1734e01ec1280d6b530f0cb1dec867feb1`. The merge preserved execution/evidence ancestry. Fresh exact-head B2E02 Evidence and Methodology qualification succeeded before merge; all actionable review findings were resolved; and the fresh independent CodeRabbit exact-range review reported no actionable substantive findings. The canonical evidence source remained non-result-driven despite a later preserved duplicate capture whose frozen input/status identities matched while 10 raw transcripts differed. All seven exact-merge-head push workflows succeeded after merge: B2E02 Evidence run `33964134856`, Methodology run `33964134899`, Candidate Revalidation run `33964134921`, Trusted Materialization run `33964134877`, Trusted Participant Materials run `33964134889`, Trusted Participant Policy run `33964134896`, and Trusted Human Authority run `33964134937`. B2E03 remained unauthorized during that post-merge verification.
+
+This file owns the executable specification frontier. Historical proof and merge chronology live in `docs/canonical/CURRENT_STATE.md` and immutable Git history.
+
+## Active parent specification
+
+`000-founding-research`
+
+State: `REFINING`
+
+Purpose: replace founding technical assumptions with reproducible evidence sufficient to select the first bounded product implementation Grain or explicitly conclude that no implementation is justified yet.
+
+## Verified ACP child
+
+`000A-acp-qualification`
+
+State: `VERIFIED`
+
+Disposition:
+
+- ACP recommendation: `PARTIAL`;
+- confidence: `MODERATE`;
+- authenticated prompt/stream/cancellation/permission behavior and representative ACP v2 runtime behavior remain incompletely verified;
+- no broad named-agent support claim is authorized.
+
+## Active speech research parent
+
+`000B-stt-entity-bakeoff`
+
+State: `REFINING`
+
+The parent separates:
+
+- C0 raw local STT with repository/test-specific decoder context disabled;
+- C1 engine-agnostic deterministic repository resolution on frozen C0 transcripts;
+- C2 backend-native context/bias as separate within-backend evidence.
+
+## Historical B1 preregistration
+
+`000B1-benchmark-candidate-qualification`
+
+State: `VERIFIED`
+
+Canonical 000B refinement/base merge: `6b5696a6becc360948282712cc9339df9cb3a67c`
+
+Canonical evidence merge: `8df69835349f85d5ae6af9d6a62ef3af24f65f43` from PR #7.
+
+B1 remains immutable historical evidence. It froze the candidate/configuration envelope, six candidate cells, model/runtime provenance expectations, scorer/manifest contracts, FFmpeg `9.0.1` preprocessing requirement, and a private 20-speaker / 720-utterance human developer-speech design.
+
+No primary human developer-speech decoding occurred under that design. No comparative ranking or production STT dependency was selected.
+
+## Historical private B2 entry-preparation lane
+
+The repository contains canonical preparation for the old private collection path under `research/000b2-entry/`, including participant policy/materials, authority structure, artifact materialization, scorer preparation, preprocessing capture tooling, and environment capture tooling.
+
+That lane remains historically truthful:
+
+- `authority_status=NOT_AUTHORIZED`;
+- `participant_count=0`;
+- no private human corpus was accepted;
+- no primary developer-speech decoding occurred;
+- no comparative ranking occurred.
+
+Those records MUST NOT be rewritten to pretend consent or corpus evidence existed.
+
+## Historical blocked successor — preserved and superseded as the active route
+
+`000B2-unbiased-stt-bakeoff`
+
+State: `BLOCKED_EXTERNAL`
+
+This exact historical lane remains blocked. Its private participant/media authority gate is intentionally preserved, and the old entry-preparation validators continue to fail closed against it.
+
+The public-corpus successor below is canonical and executable in ordered bounded units because the qualification-chronology remediation is now canonical and the machine readiness reconciliation is canonical. Nothing in those changes converts this historical lane to `READY`, authorizes its primary human decode, or fabricates its missing participant/media evidence.
+
+## Active execution successor
+
+The intended active B2 execution route is:
+
+`000B2-public-corpus-bakeoff`
+
+State: `READY`
+
+The bounded methodology amendment became canonical at merge `cfb883311c1acb45cb8422ab6b2c02443dc1b62c`, the public-frontier reconciliation became canonical at merge `94e3b50009b5054db6ccd9bb3276facd1399399c`, the qualification-chronology remediation became canonical at merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, the machine readiness reconciliation became canonical at merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`, B2P01 provenance became canonical at merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`, B2P02 archive-byte verification became canonical at merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c`, B2P03 deterministic subset selection became canonical at merge `83eca872148f329033c299f6671d275edf2d7b58`, B2P04 subset-manifest freeze became canonical at merge `4c4e758f22b54fa62256e57bfbd344adc817df8e`, B2P05 candidate revalidation became canonical at merge `49538990fb4cf8223e9321261925206ed7ff5cee`, B2P06 preprocessing capture became canonical at merge `3dceadd984ff307ce55745bf5f289890a2fac261`, B2P07 execution-environment capture became canonical at merge `4bd5306fa1d274d7b822b73e26172dd9c7058319`, and B2P08 pre-decode attempt freeze became canonical at merge `dd65e23d29e7f83b9a94aba9c018928c7f9cc41d`. `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`. B2P01 through B2P08, B2E01, and B2E02 are complete. The final pre-decode attempt manifest remains historically frozen with `primary_decoding_started=false`. B2E01 is canonical at merge `bb3acfae1f39669d74118a564e57a131731484d3`. ATTEMPT-001 is now historical and ineligible for comparative scoring because B2R01 is canonical at merge `715efc4855fb52187ed250b11f0c28bb2c2c0660`; B2E03 and every later ATTEMPT-001 primary decode are closed. `research/000b2-public/recovery-readiness.json` is the active machine-readable execution authority. B2R09 is canonical and post-merge verified at task merge `fc357350270d5cb34fc1305dba4a9de41a5234c3` with exact recovery run `34160146607`; this reconciliation makes B2R10 the sole current bounded recovery unit. ATTEMPT-002 is canonically frozen and primary decode entry is open only for B2R10; B2R11 and every later recovery/scoring/synthesis/product unit remain closed.
+
+Rationale:
+
+- the private 20-speaker path is externally dependent and no primary attempt began;
+- the parent 000B acceptance conditions already permit closure when human developer-speech evidence is absent, provided the absence is explicit enough to prevent false ranking;
+- the founding product decision needs a reproducible shortlist/viability signal, not unnecessary new private data collection;
+- public human speech can provide bounded ordinary-recognition evidence while synthetic developer-term material remains diagnostic only.
+
+This is a prospective methodology successor that is canonical as repository bytes, not a retroactive rewrite of B1 or a transition of the historical `000B2-unbiased-stt-bakeoff` lane.
+
+## Qualification chronology remediation
+
+Live GitHub chronology overrides earlier merge-message and current-view claims.
+
+For PR #28:
+
+- exact candidate head `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` had all six applicable exact-head workflows successful;
+- owner-authored COMMENT reviews at `2026-09-02T18:56:33Z` and `2026-09-02T18:57:04Z` explicitly recorded that independent review remained pending and self-review did not satisfy the gate;
+- PR #28 merged at `2026-09-02T19:02:21Z`;
+- the persistent CodeRabbit comment that now records exact-head review of all 12 paths was updated at `2026-09-02T19:06:58Z`, after merge;
+- no independently authored submitted PR review exists before merge;
+- therefore `PR28_PREMERGE_INDEPENDENT_REVIEW=NOT_PROVEN`;
+- the later exact-head CodeRabbit review reported no actionable comments and is retained only as post-merge semantic defect-screening evidence, not retroactive pre-merge qualification.
+
+For PR #29:
+
+- exact candidate head `1a736b62490f48bb02285f841bb833b985b8483d` had all six applicable exact-head workflows successful and zero unresolved review threads;
+- the CodeRabbit exact-head response before merge said `No actionable findings` but also explicitly `Action not completed — Review rate limited`;
+- rate-limited/status output is not review evidence under `AGENTS.md` and the active gate contract;
+- PR #29 has no independently authored submitted PR review;
+- PR #29 nevertheless merged at canonical commit `94e3b50009b5054db6ccd9bb3276facd1399399c`;
+- therefore `PR29_PREMERGE_INDEPENDENT_REVIEW=NOT_SATISFIED` and the merge-message assertion that a fresh independent review completed is inaccurate metadata rather than evidence.
+
+The first push verification on `94e3b50009b5054db6ccd9bb3276facd1399399c` had three trusted-gate failures caused only by stale open PR #30. PR #30 was closed without merge, and the failed jobs for `000B2 Trusted Participant Policy` run `33674332834`, `000B2 Trusted Participant Materials` run `33674332663`, and `000B2 Trusted Human Authority Structure` run `33674332691` were rerun on the unchanged canonical SHA and completed successfully. The other three post-merge workflow lanes were already successful. Stale readiness successor PR #31 was also closed without merge before it could promote the machine readiness state.
+
+No `B2P01` provenance work, public archive materialization, fetched-byte SHA-256 capture, subset freeze, candidate decoding, comparative ranking, or product selection began before the remediation was canonical.
+
+The forward-only remediation was independently qualified and canonically merged by PR #32 as `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, from exact qualified head `596b5e4d6654c4d562de51d8a047c8196ce52c7d` against exact base `94e3b50009b5054db6ccd9bb3276facd1399399c`. Its applicable exact-head workflow lanes completed successfully, fresh independent CodeRabbit substantive review reported no actionable findings, no actionable review threads remained, guarded expected-head merge completed, and post-merge verification succeeded. Therefore `QUALIFICATION_CHRONOLOGY_GATE=SATISFIED`.
+
+PR #33 then reconciled the machine-readable public readiness state and canonically merged as `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7` from exact qualified head `990f7260475822839f1fe748f70460643de9b8ad` against exact base `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`. Exact-head `000B2 Public Corpus Methodology` run `33677613666` succeeded, a prior review finding was repaired forward-only, and fresh independent review of the repaired head completed clean. Canonical `research/000b2-public/readiness.json` became `READY` and made `B2P01` the sole next action until B2P01 itself became canonical.
+
+PR #34 then executed and canonically qualified B2P01 source/checksum provenance. It merged by guarded expected-head squash as `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129` from exact qualified head `dbc499dc3e24c247b95260631558eec825672fbf` against exact base `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`. The exact candidate had all six applicable workflows successful and a fresh independent CodeRabbit review with no actionable findings after a prior canonical-authority defect was repaired. All six push workflows on the canonical merge then completed successfully. No archive bytes were fetched by B2P01. The required canonical reread therefore satisfied the B2P02 entry condition.
+
+PR #35 then executed and canonically qualified B2P02 archive materialization. It merged by guarded expected-head squash as `1ba4e42561cc53f574d5d35689e2ae499a398b5c` from exact qualified head `06bbd50676edcf87fc3e85b73bc6b7f17d3161ff` against exact base `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`. The final 11-file candidate had all seven applicable exact-head workflows successful and a fresh independent CodeRabbit substantive review with no actionable findings after forward-only redirect and workflow-structure hardening. Post-merge materialization run `33751302416`, job `100635230794`, revalidated the canonical merge SHA and reproduced both archive byte counts, official MD5 values, and SHA-256 identities. The required canonical reread therefore satisfied the B2P03 entry condition.
+
+PR #37 then executed and canonically qualified B2P03 deterministic source-only subset selection. It merged by guarded expected-head squash as `83eca872148f329033c299f6671d275edf2d7b58` from exact qualified head `e642500c7ba6c5935a94da42cf638c01f9366913` against exact base `2f9517bf34342f7e02697024c32ed2a16f61cf29`. The final four-file candidate had exact-head subset-selection run `33774852016` and methodology run `33774852021` successful. Fresh independent CodeRabbit semantic review inspected all four changed files across the complete exact range and reported no actionable findings. The canonical merge is GitHub-signature verified with parent equal to the qualified base. Post-merge subset-selection run `33775647508`, job `100716549752`, and methodology run `33775647539`, job `100716550502`, succeeded on the exact merge, together with four trusted push lanes for six of six successful push workflows. The canonical reread therefore satisfied the B2P04 entry condition while preserving every pre-decode guard.
 
 PR #39 then executed and canonically qualified B2P04 deterministic public-human source-membership freeze. It merged by guarded expected-head squash as `4c4e758f22b54fa62256e57bfbd344adc817df8e` from exact qualified head `0d83d277cc2544f63613e674d60bae07ad24dc26` against exact base `c1a576db2adf67cb4b830c280e6cba80b0ae3b43`. The final five-file candidate had exact-head methodology run `33793696076` and subset-freeze run `33793696006`, job `100776173700`, successful. Fresh independent CodeRabbit semantic audit comment `5530776500` reviewed the complete exact five-file range and reported no actionable findings after valid negative-size, root-metadata allowlist, and runtime-reproducibility findings were repaired forward-only. Post-merge subset-freeze run `33794854765`, job `100779961908`, methodology run `33794854595`, job `100779960182`, and the four trusted push lanes all succeeded on the exact canonical merge. The canonical freeze contains 24 speakers / 240 utterances, manifest byte SHA-256 `5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb`, and freeze digest `f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242`. No candidate revalidation, candidate decoding, primary decoding, or B2P06 preprocessing capture began. The canonical reread therefore satisfied the B2P05 entry condition while preserving every pre-decode guard.
 
@@ -210,9 +350,9 @@ The canonical B2R08 sealed primary evidence remains GitHub Actions seal run `341
 
 ATTEMPT-001 remains historical and ineligible for comparative scoring. ATTEMPT-002 remains canonically frozen with freeze digest `600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8`. `primary_decode_entry_open=true` only for the active recovery unit B2R09. B2R09 alone is authorized after this reconciliation becomes canonical: execute candidate cell 5 (`sherpa-onnx-compact`) against the identical frozen P0 public-human audio using the unchanged frozen C0 contract, while preserving raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and all claim guards. B2R10 and every later ATTEMPT-002 candidate cell remain unauthorized until B2R09 is separately qualified, merged, post-merge verified, and reconciled.
 
-## Historical canonical B2R09 recovery reconciliation — superseded ATTEMPT-002 authority
+## Canonical B2R09 recovery reconciliation — latest authority
 
-This entire B2R09/B2R10 subsection, including the literal `**Active recovery unit:** `B2R10`` marker and the historical next-action wording below, is retained only as superseded ATTEMPT-002 chronology and immutable verifier input. It is non-authoritative for every new execution decision. The later `ATTEMPT-003 successor recovery activation` section is the sole current execution authority and authorizes exactly B2R15 with ATTEMPT-003 unfrozen and primary decoding/scoring closed. PR #82 merged the separately qualified B2R09 implementation and sealed evidence as real task merge `fc357350270d5cb34fc1305dba4a9de41a5234c3` from exact final head `ff990ccc63a120c62758802c305bcc10b33ed0fe` against first parent `737e2fa0422e0d1aa0dd4d5bdc0473d51cec624c`. The final five-file task diff contains only B2R09 research evidence/decoder/verifier files and no workflow or canonical-authority file. Fresh independent exact-range CodeRabbit review on review-only PR #85 reported no actionable substantive findings on the exact final task head after prior review-only PRs #83 and #84 identified two fail-closed frontier/ledger verifier gaps that were repaired forward-only. Exact task-merge push run `34160146607` of `000B2 Public Corpus Attempt Recovery` (`workflow_id=350986920`, path `.github/workflows/000b2-public-attempt-recovery.yml`, job `101860017509`) completed successfully with `head_sha=fc357350270d5cb34fc1305dba4a9de41a5234c3`.
+This section is the sole current recovery-action authority in this document. PR #82 merged the separately qualified B2R09 implementation and sealed evidence as real task merge `fc357350270d5cb34fc1305dba4a9de41a5234c3` from exact final head `ff990ccc63a120c62758802c305bcc10b33ed0fe` against first parent `737e2fa0422e0d1aa0dd4d5bdc0473d51cec624c`. The final five-file task diff contains only B2R09 research evidence/decoder/verifier files and no workflow or canonical-authority file. Fresh independent exact-range CodeRabbit review on review-only PR #85 reported no actionable substantive findings on the exact final task head after prior review-only PRs #83 and #84 identified two fail-closed frontier/ledger verifier gaps that were repaired forward-only. Exact task-merge push run `34160146607` of `000B2 Public Corpus Attempt Recovery` (`workflow_id=350986920`, path `.github/workflows/000b2-public-attempt-recovery.yml`, job `101860017509`) completed successfully with `head_sha=fc357350270d5cb34fc1305dba4a9de41a5234c3`.
 
 The canonical B2R09 primary capture remains GitHub Actions run `34156167567`, job `101848322734`, artifact `10031177463`, with artifact ZIP SHA-256 `79652728032760ae133845b7f1308623a984ee69c490991cf190d8a7301985ea`, exact evidence file SHA-256 `d59fa9605e8b0cf6892cd5a7ece105c6abe0753ff8949e9206e35f42da9a003f`, and canonical payload digest `4a81f1be21e18aa462ee9ec9c32a1daeaa6fa86bcca6372b0634a9421c16c1ed`. It records 240 frozen inputs, 240 decoded outputs, and zero failures. Failed pre-primary run `34155967652`, job `101847745228`, passed exact authority and then failed during setup-python pip-cache dependency-file discovery before runtime installation, preprocessing, runtime-source fetch, model download, primary decode, result access, or evidence upload, and produced zero artifacts. Forward-only source `47d1c53f6892dda437aa0f1d109f58f1cc5e101e` removed only the setup-python pip cache configuration. Successful primary selection therefore remained non-result-driven. Byte-preserving materialization run `34157501089`, job `101852259514`, independently reproduced the artifact/evidence identities before committing the exact evidence bytes. Reference transcripts were not loaded; accuracy scoring and comparative ranking were not performed; timing remains diagnostic only.
 
@@ -225,9 +365,7 @@ The final B2R09 verifier also fails closed on the complete ordered B2R01-B2R12 r
 
 ATTEMPT-001 remains historical and ineligible for comparative scoring. ATTEMPT-002 remains canonically frozen with freeze digest `600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8`. `primary_decode_entry_open=true` only for active recovery unit B2R10. B2R10 alone is authorized after this reconciliation becomes canonical: execute candidate cell 6 (`sherpa-onnx-balanced`) against the identical frozen P0 public-human audio using the unchanged frozen C0 contract, while preserving raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and all claim guards. B2R11, B2R12, comparative scoring/ranking, synthesis, production STT selection, and product-code authority remain closed until their separately governed predecessor conditions are satisfied.
 
-## Historical ATTEMPT-002 next-action snapshot — non-authoritative
-
-The following preserved next-action sentence describes only the superseded ATTEMPT-002 B2R10 frontier. It grants no present execution authority.
+## Next canonical action
 
 Qualify `B2R10` only: execute candidate cell 6 (`sherpa-onnx-balanced`) under `000B2-PUBLIC-ATTEMPT-002` using the unchanged frozen C0 contract and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R11 and every later recovery, scoring, synthesis, and product unit closed until B2R10 is canonically merged, post-merge verified, and reconciled. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.
 

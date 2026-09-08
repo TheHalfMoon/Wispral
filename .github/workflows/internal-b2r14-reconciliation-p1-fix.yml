@@ -1,4 +1,5 @@
 name: Internal B2R14 Reconciliation P1 Fix
+# Retriggered after forward-only restoration of the exact pre-repair specification blob.
 
 on:
   push:
