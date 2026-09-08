@@ -85,8 +85,8 @@
       "specs/CURRENT.md"
     ]
   },
-  "completed_recovery_tasks": ["B2R13"],
-  "active_recovery_unit": "B2R14",
+  "completed_recovery_tasks": ["B2R13","B2R14"],
+  "active_recovery_unit": "B2R15",
   "transition_proofs": [
     {
       "completed_task": "B2R13",
@@ -95,9 +95,17 @@
       "canonical_task_merge": "60108c02df8397eda854d31c51eb37ee2e3fbe45",
       "post_merge_recovery_run_id": 34231594716,
       "successor_task": "B2R14"
+    },
+    {
+      "completed_task": "B2R14",
+      "canonical_task_base": "2f4212228f24e40fbd03cfc59ab4774df94c0cc3",
+      "qualified_task_head": "c60751c43a2523879814d691011d5dd6d3d1e119",
+      "canonical_task_merge": "e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca",
+      "post_merge_recovery_run_id": 34246855454,
+      "successor_task": "B2R15"
     }
   ],
   "claim_guards": {"human_developer_speech_accuracy_evidence":"ABSENT","comparative_result_available":false,"production_stt_selected":false,"product_code_authorized":false},
-  "next_action": "Qualify B2R14 only: implement and verify the corrected sherpa-onnx result-extraction harness against the frozen deterministic synthetic non-primary fixture and exact pinned upstream source. Preserve plain-string results exactly, fail closed on object/string API confusion, do not access primary corpus material, and keep all ATTEMPT-003 primary decoding closed until B2R16 is canonically reconciled.",
+  "next_action": "Qualify B2R15 only: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or B2R14-qualified harness identities. Do not perform a primary decode or scoring; keep ATTEMPT-003 unfrozen and primary decoding closed until B2R16 is separately qualified, merged, post-merge verified, and reconciled.",
   "b2r14_non_primary_fixture_contract": {"material_class":"DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY","fixture_id":"b2r14-sherpa-result-string-contract-v1","sample_rate_hz":16000,"channel_count":1,"sample_format":"PCM_S16LE","frame_count":16000,"pcm_sha256":"0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39","primary_corpus_access":false,"frozen_p0_access":false,"attempt_003_primary_evidence_access":false}
 }
