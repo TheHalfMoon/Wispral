@@ -1,10 +1,12 @@
 {
-  "schema_version": "000b2-public-b2r14-harness-qualification-v1",
+  "schema_version": "000b2-public-b2r14-harness-qualification-v2",
   "task": "B2R14",
   "lane": "PUBLIC_CORPUS",
-  "status": "CANDIDATE_PENDING_EXACT_HEAD_QUALIFICATION",
+  "status": "CORRECTIVE_REQUALIFICATION_PENDING_INDEPENDENT_REVIEW",
   "predecessor_reconciliation_merge": "7004199d33c0c60595086636b95537d8fbee3f84",
   "harness_path": "research/000b2-public/b2r14-sherpa-result-harness.py",
+  "pre_requalification_harness_git_blob_sha1": "aec083c9a02b501121d510c0ac598df096251362",
+  "harness_semantics_changed": false,
   "entry_point": "extract_result(recognizer, stream)",
   "result_contract": {
     "required_return_type": "str",
@@ -33,12 +35,26 @@
     "frozen_p0_access": false,
     "attempt_003_primary_evidence_access": false
   },
+  "governance_recovery": {
+    "premature_merge_detected": true,
+    "premature_merge_sha": "2f4212228f24e40fbd03cfc59ab4774df94c0cc3",
+    "premature_merge_task_base": "7004199d33c0c60595086636b95537d8fbee3f84",
+    "premature_merge_task_head": "1687057a56399e5892dee540704b949b868ed94d",
+    "failed_independent_review_provider": "CodeRabbit",
+    "failed_independent_review_run_id": "c647c8b6-cd21-4085-b851-523a474d65ce",
+    "failure_reason": "PR_CLOSED_BEFORE_REVIEW_COMPLETION",
+    "premature_merge_eligible_as_canonical_task_completion": false,
+    "corrective_requalification_required": true,
+    "canonical_successor_advance_allowed": false,
+    "result_selection_effect": "NONE"
+  },
   "qualification_evidence": {
     "candidate_supplied_verifier": "REVIEW_ONLY_NOT_TRUSTED_AUTHORITY",
     "canonical_base_common_verifier": "REQUIRED",
     "trusted_pull_request_target_gate": "REQUIRED",
-    "fresh_independent_exact_range_review": "REQUIRED",
-    "post_merge_recovery_proof": "REQUIRED"
+    "fresh_independent_exact_range_review": "REQUIRED_ON_CORRECTIVE_HEAD",
+    "guarded_normal_merge": "REQUIRED_ON_CORRECTIVE_HEAD",
+    "post_merge_recovery_proof": "REQUIRED_ON_CORRECTIVE_MERGE"
   },
   "claim_guards": {
     "comparative_result_available": false,

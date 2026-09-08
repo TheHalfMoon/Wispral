@@ -22,6 +22,11 @@ SHERPA_REVISION = "917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e"
 SHERPA_PATH = "sherpa-onnx/python/sherpa_onnx/online_recognizer.py"
 SHERPA_BLOB = "18b49aaf40dc6e43606c63c9633762e8f573876b"
 FIXTURE_DIGEST = "0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39"
+PRE_REQUALIFICATION_HARNESS_BLOB = "aec083c9a02b501121d510c0ac598df096251362"
+PREMATURE_MERGE = "2f4212228f24e40fbd03cfc59ab4774df94c0cc3"
+PREMATURE_TASK_BASE = "7004199d33c0c60595086636b95537d8fbee3f84"
+PREMATURE_TASK_HEAD = "1687057a56399e5892dee540704b949b868ed94d"
+FAILED_REVIEW_RUN = "c647c8b6-cd21-4085-b851-523a474d65ce"
 
 
 def require(condition: bool, message: str) -> None:
@@ -43,7 +48,30 @@ def git_output(repo: Path, *args: str) -> str:
 
 def load_qualification() -> dict[str, Any]:
     document = json.loads(QUALIFICATION_PATH.read_text(encoding="utf-8"))
+    require(document.get("schema_version") == "000b2-public-b2r14-harness-qualification-v2", "qualification schema drift")
     require(document.get("task") == TASK, "qualification task binding drift")
+    require(document.get("lane") == "PUBLIC_CORPUS", "qualification lane drift")
+    require(document.get("status") == "CORRECTIVE_REQUALIFICATION_PENDING_INDEPENDENT_REVIEW", "requalification status drift")
+    require(document.get("predecessor_reconciliation_merge") == PREMATURE_TASK_BASE, "predecessor reconciliation drift")
+    require(document.get("harness_path") == "research/000b2-public/b2r14-sherpa-result-harness.py", "harness path drift")
+    require(document.get("pre_requalification_harness_git_blob_sha1") == PRE_REQUALIFICATION_HARNESS_BLOB, "pre-requalification harness identity drift")
+    require(document.get("harness_semantics_changed") is False, "corrective requalification changed harness semantics")
+    require(document.get("entry_point") == "extract_result(recognizer, stream)", "entry-point declaration drift")
+    require(document.get("result_contract") == {
+        "required_return_type": "str",
+        "preservation": "EXACT",
+        "object_style_text_extraction_allowed": False,
+        "dynamic_result_coercion_allowed": False,
+    }, "result contract drift")
+    require(document.get("pinned_runtime") == {
+        "distribution": "sherpa-onnx",
+        "version": "1.13.7",
+        "revision": SHERPA_REVISION,
+        "source_path": SHERPA_PATH,
+        "source_git_blob_sha1": SHERPA_BLOB,
+        "contract": "OnlineRecognizer.get_result(self, s: OnlineStream) -> str",
+        "return_semantics": "return self.recognizer.get_result(s).text.strip()",
+    }, "pinned runtime contract drift")
     fixture = document.get("non_primary_fixture")
     require(isinstance(fixture, dict), "non-primary fixture contract missing")
     require(fixture.get("material_class") == "DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY", "material class drift")
@@ -56,6 +84,33 @@ def load_qualification() -> dict[str, Any]:
     require(fixture.get("primary_corpus_access") is False, "non-primary boundary drift")
     require(fixture.get("frozen_p0_access") is False, "frozen subset boundary drift")
     require(fixture.get("attempt_003_primary_evidence_access") is False, "attempt evidence boundary drift")
+    require(document.get("governance_recovery") == {
+        "premature_merge_detected": True,
+        "premature_merge_sha": PREMATURE_MERGE,
+        "premature_merge_task_base": PREMATURE_TASK_BASE,
+        "premature_merge_task_head": PREMATURE_TASK_HEAD,
+        "failed_independent_review_provider": "CodeRabbit",
+        "failed_independent_review_run_id": FAILED_REVIEW_RUN,
+        "failure_reason": "PR_CLOSED_BEFORE_REVIEW_COMPLETION",
+        "premature_merge_eligible_as_canonical_task_completion": False,
+        "corrective_requalification_required": True,
+        "canonical_successor_advance_allowed": False,
+        "result_selection_effect": "NONE",
+    }, "governance recovery chronology drift")
+    require(document.get("qualification_evidence") == {
+        "candidate_supplied_verifier": "REVIEW_ONLY_NOT_TRUSTED_AUTHORITY",
+        "canonical_base_common_verifier": "REQUIRED",
+        "trusted_pull_request_target_gate": "REQUIRED",
+        "fresh_independent_exact_range_review": "REQUIRED_ON_CORRECTIVE_HEAD",
+        "guarded_normal_merge": "REQUIRED_ON_CORRECTIVE_HEAD",
+        "post_merge_recovery_proof": "REQUIRED_ON_CORRECTIVE_MERGE",
+    }, "qualification gate declaration drift")
+    require(document.get("claim_guards") == {
+        "comparative_result_available": False,
+        "production_stt_selected": False,
+        "product_code_authorized": False,
+        "human_developer_speech_accuracy_evidence": "ABSENT",
+    }, "claim guards drift")
     return document
 
 
@@ -160,6 +215,8 @@ def main() -> int:
         print("B2R14_PINNED_SOURCE_CONTRACT=PASS")
     else:
         print("B2R14_PINNED_SOURCE_CONTRACT=NOT_RUN")
+    print("B2R14_CORRECTIVE_REQUALIFICATION_PREMERGE_CONTRACT=PASS")
+    print("B2R14_CORRECTIVE_REQUALIFICATION_STATUS=PENDING_INDEPENDENT_REVIEW")
     print("B2R14_STATIC_CONTRACT=PASS")
     return 0
 
