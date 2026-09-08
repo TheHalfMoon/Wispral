@@ -17,12 +17,22 @@ jobs:
       HARNESS: research/000b2-public/b2r14-sherpa-result-harness.py
       QUALIFICATION: research/000b2-public/b2r14-harness-qualification.json
       ENTRY_POINT: extract_result
+      EXACT_REVISION: ${{ github.sha }}
 
     steps:
       - name: Checkout exact requested B2R14 revision
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
           persist-credentials: false
+
+      - name: Verify exact requested B2R14 revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$EXACT_REVISION"
+          test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
 
       - name: Fetch exact pinned sherpa-onnx source
         shell: bash
