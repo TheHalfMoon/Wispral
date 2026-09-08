@@ -120,6 +120,15 @@ def git_output(*args: str) -> str:
 def git_blob(path: Path) -> str:
     return git_output("rev-parse", f"HEAD:{path.relative_to(ROOT).as_posix()}")
 
+def verify_exact_task_range() -> None:
+    git_output("cat-file", "-e", f"{AUTHORITY_BASE}^{{commit}}")
+    git_output("merge-base", "--is-ancestor", AUTHORITY_BASE, "HEAD")
+    changed = git_output(
+        "diff", "--name-only", "--diff-filter=ACDMRTUXB", AUTHORITY_BASE, "HEAD", "--"
+    )
+    changed_paths = sorted(path for path in changed.splitlines() if path)
+    require(changed_paths == sorted(EXPECTED_SCOPE), "B2R16 actual candidate range scope drift")
+
 def canonical_freeze_digest(document: dict[str, Any]) -> str:
     payload = dict(document)
     recorded = payload.pop("freeze_digest_sha256", None)
@@ -263,6 +272,8 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--require-git", action="store_true")
     args = parser.parse_args()
+    if args.require_git:
+        verify_exact_task_range()
     verify_authority()
     verify_source_identities(args.require_git)
     verify_preexecution_state(args.require_git)
