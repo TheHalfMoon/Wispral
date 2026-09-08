@@ -1,0 +1,44 @@
+name: 000B2 Public Corpus B2R14 Harness Qualification
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify-b2r14-harness:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      TASK: B2R14
+      SHERPA_REVISION: 917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e
+      FIXTURE_SHA256: 0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39
+      HARNESS: research/000b2-public/b2r14-sherpa-result-harness.py
+      ENTRY_POINT: extract_result
+
+    steps:
+      - name: Checkout exact requested B2R14 revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Fetch exact pinned sherpa-onnx source
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/sherpa-onnx"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/k2-fsa/sherpa-onnx.git
+          git -C "$SRC" fetch --depth=1 origin "$SHERPA_REVISION"
+          git -C "$SRC" checkout --detach FETCH_HEAD
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$SHERPA_REVISION"
+
+      - name: Verify B2R14 fixed harness and pinned source contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "$HARNESS"
+          grep -F "$ENTRY_POINT" "$HARNESS" >/dev/null
+          grep -F "$FIXTURE_SHA256" "$HARNESS" >/dev/null
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r14.py --sherpa-source "$RUNNER_TEMP/sherpa-onnx"
