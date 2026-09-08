@@ -344,8 +344,6 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
     if active == "B2R13":
         verify_b2r13_candidate_content(readiness)
         return
-    if active == "B2R14":
-        verify_b2r14_non_primary_candidate(readiness)
     authority_base = os.environ.get("AUTHORITY_BASE_REVISION", "")
     if not authority_base:
         return
@@ -369,6 +367,8 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
     delta = len(completed) - len(base_completed)
     if delta != 0:
         return
+    if active == "B2R14":
+        verify_b2r14_non_primary_candidate(readiness)
 
     changed_output = run_git("diff", "--name-only", "--diff-filter=ACMRTUXB", authority_base, "HEAD", "--")
     changed_paths = [path for path in changed_output.splitlines() if path]
