@@ -85,8 +85,8 @@
       "specs/CURRENT.md"
     ]
   },
-  "completed_recovery_tasks": ["B2R13","B2R14"],
-  "active_recovery_unit": "B2R15",
+  "completed_recovery_tasks": ["B2R13","B2R14","B2R15"],
+  "active_recovery_unit": "B2R16",
   "transition_proofs": [
     {
       "completed_task": "B2R13",
@@ -103,9 +103,17 @@
       "canonical_task_merge": "e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca",
       "post_merge_recovery_run_id": 34246855454,
       "successor_task": "B2R15"
+    },
+    {
+      "completed_task": "B2R15",
+      "canonical_task_base": "ae349f7ef28e8ffd08ee8f54d1727ef80684a31a",
+      "qualified_task_head": "1410cb81b59de07bdecee6b78e41fdc825f4a55d",
+      "canonical_task_merge": "3d31b18823b8275c99e1478b132a64f36fad05c0",
+      "post_merge_recovery_run_id": 34274935240,
+      "successor_task": "B2R16"
     }
   ],
   "claim_guards": {"human_developer_speech_accuracy_evidence":"ABSENT","comparative_result_available":false,"production_stt_selected":false,"product_code_authorized":false},
-  "next_action": "Qualify B2R15 only: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or B2R14-qualified harness identities. Do not perform a primary decode or scoring; keep ATTEMPT-003 unfrozen and primary decoding closed until B2R16 is separately qualified, merged, post-merge verified, and reconciled.",
+  "next_action": "Qualify B2R16 only: freeze 000B2-PUBLIC-ATTEMPT-003 with exact candidate, subset, preprocessing, execution-environment, scorer, normalization, and B2R14-qualified harness identities before any new primary decode. Do not perform primary decoding or scoring in B2R16; keep B2R17 and every later successor unit closed until B2R16 is separately qualified, merged, post-merge verified, and reconciled.",
   "b2r14_non_primary_fixture_contract": {"material_class":"DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY","fixture_id":"b2r14-sherpa-result-string-contract-v1","sample_rate_hz":16000,"channel_count":1,"sample_format":"PCM_S16LE","frame_count":16000,"pcm_sha256":"0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39","primary_corpus_access":false,"frozen_p0_access":false,"attempt_003_primary_evidence_access":false}
 }
