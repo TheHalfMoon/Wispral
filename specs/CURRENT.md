@@ -1,6 +1,6 @@
 # Wispral Specification Frontier
 
-**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 ATTEMPT-003 recovery active; B2R13 canonical and post-merge verified; active successor recovery unit `B2R14`; ATTEMPT-002 invalidated; ATTEMPT-003 primary decoding closed
+**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 ATTEMPT-003 recovery active; B2R14 canonical and post-merge verified; active successor recovery unit `B2R15`; ATTEMPT-002 invalidated; ATTEMPT-003 primary decoding closed
 
 **Canonical public-corpus methodology merge:** `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` from PR #28, merged from exact head `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` against exact base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`. Live chronology did not prove the required independent semantic review before that merge; the resulting qualification debt was repaired forward-only by PR #32 at canonical merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, and machine readiness was reconciled by PR #33 at canonical merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`.
 
@@ -383,7 +383,7 @@ Live verification against pinned `sherpa-onnx==1.13.7` source revision `917bed95
 **Canonical B2R13 qualified head:** `43f9d5bcb4465bd6467a7a5880f274fe4600134e`
 **Canonical B2R13 recovery merge:** `60108c02df8397eda854d31c51eb37ee2e3fbe45`
 **Canonical B2R13 post-merge recovery run:** `34231594716`
-**Active successor recovery unit:** `B2R14`
+**Active successor recovery unit:** `B2R15`
 **ATTEMPT-003 required:** `true`
 **ATTEMPT-003 frozen:** `false`
 **ATTEMPT-003 primary decode entry open:** `false`
@@ -391,5 +391,23 @@ Live verification against pinned `sherpa-onnx==1.13.7` source revision `917bed95
 B2R13 is canonical and post-merge verified. Its transition proof binds the exact canonical task base, exact independently reviewed qualified head, real two-parent normal merge, and successful `main` push run of `000B2 Public Corpus ATTEMPT-003 Recovery`. Historical ATTEMPT-002 bytes and the superseded B2R10-B2R12 frontier remain immutable and non-authoritative for new execution.
 
 The sole next bounded action is to qualify B2R14: implement and verify the corrected sherpa-onnx result-extraction harness against the frozen deterministic synthetic non-primary fixture and exact pinned upstream source. Preserve the plain Python string result exactly and fail closed on object/string API confusion. Do not access primary corpus material or ATTEMPT-003 primary evidence. B2R15 and every later ATTEMPT-003 unit remain unauthorized until B2R14 is independently qualified, merged, post-merge verified, and reconciled.
+
+## Canonical ATTEMPT-003 B2R14 harness reconciliation
+
+B2R14 is canonical and post-merge verified. PR #95 merged the exact four-file harness qualification candidate as normal merge `2f4212228f24e40fbd03cfc59ab4774df94c0cc3` with first parent `7004199d33c0c60595086636b95537d8fbee3f84` and exact independently reviewed qualified head `1687057a56399e5892dee540704b949b868ed94d` as second parent. Exact `main` push run `34243679015` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`) succeeded on the task merge.
+
+The B2R14 qualification preserves the exact deterministic synthetic non-primary fixture and pinned sherpa-onnx source contract. It does not access primary corpus material, freeze ATTEMPT-003, score any candidate, create comparative evidence, select production STT, or authorize product code.
+
+**Canonical successor recovery predecessor:** `B2R14`
+**Canonical B2R14 task base:** `7004199d33c0c60595086636b95537d8fbee3f84`
+**Canonical B2R14 qualified head:** `1687057a56399e5892dee540704b949b868ed94d`
+**Canonical B2R14 task merge:** `2f4212228f24e40fbd03cfc59ab4774df94c0cc3`
+**Canonical B2R14 post-merge recovery run:** `34243679015`
+**Active successor recovery unit:** `B2R15`
+**ATTEMPT-003 required:** `true`
+**ATTEMPT-003 frozen:** `false`
+**ATTEMPT-003 primary decode entry open:** `false`
+
+The sole next bounded action is B2R15: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary decode or scoring is authorized. B2R16 and every later ATTEMPT-003 unit remain closed until their predecessor is canonically reconciled.
 
 Comparative scoring/ranking, synthesis, candidate-superiority claims, production STT selection, and product-code authority remain closed. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.
