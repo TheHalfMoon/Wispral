@@ -378,7 +378,7 @@ Live verification against pinned `sherpa-onnx==1.13.7` source revision `917bed95
 **ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`
 **Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`
 **Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`
-**Active successor recovery unit:** `B2R13`
+**Active successor recovery unit:** `B2R14`
 **ATTEMPT-003 required:** `true`
 **ATTEMPT-003 frozen:** `false`
 **ATTEMPT-003 primary decode entry open:** `false`
@@ -388,3 +388,7 @@ B2R13 is an invalidation/authority-recovery unit only. It MUST NOT perform a pri
 The sole next bounded action is to qualify B2R13: prove ATTEMPT-002 material invalidation against exact canonical B2R09 bytes and the exact pinned sherpa-onnx upstream API, preserve all historical ATTEMPT-002 evidence, keep ATTEMPT-003 unfrozen, and keep every primary decode closed. B2R14 and every later ATTEMPT-003 unit remain unauthorized until B2R13 is independently qualified, merged, post-merge verified, and reconciled.
 
 Comparative scoring/ranking, synthesis, candidate-superiority claims, production STT selection, and product-code authority remain closed. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.
+
+## Canonical ATTEMPT-003 B2R13 reconciliation
+
+B2R13 activation merged canonically as `60108c02df8397eda854d31c51eb37ee2e3fbe45` from exact independently qualified head `43f9d5bcb4465bd6467a7a5880f274fe4600134e` against exact authority base `dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff`. Exact post-merge `000B2 Public Corpus ATTEMPT-003 Recovery` push run `34231594716` completed successfully on that merge. The separate successor reconciliation records B2R13 complete and makes B2R14 the sole active recovery unit. ATTEMPT-003 remains unfrozen and primary decode remains closed. B2R15 and every later successor remain closed until separately authorized. Comparative publication, production STT selection, and product code remain unauthorized.

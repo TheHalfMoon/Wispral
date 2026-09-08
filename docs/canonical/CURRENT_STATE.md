@@ -435,3 +435,18 @@ The canonical B2R06 primary capture remains GitHub Actions run `34041046129`, jo
 **Active recovery unit:** `B2R07`
 
 ATTEMPT-001 remains historical and ineligible for comparative scoring. ATTEMPT-002 remains canonically frozen with freeze digest `600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8`. `primary_decode_entry_open=true` only for the active recovery unit B2R07. B2R07 alone is authorized after this reconciliation becomes canonical: execute candidate cell 3 (`whispercpp-compact`) against the identical frozen P0 public-human audio using the unchanged frozen C0 contract, while preserving raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and all claim guards. B2R08 and every later ATTEMPT-002 candidate cell remain unauthorized until B2R07 is separately qualified, merged, post-merge verified, and reconciled.
+
+
+## Canonical ATTEMPT-003 recovery authority after B2R13
+
+PR #92 canonically activated ATTEMPT-003 recovery at merge `60108c02df8397eda854d31c51eb37ee2e3fbe45`, preserving ATTEMPT-002 historical bytes and invalidating ATTEMPT-002 for comparative scoring because the canonical B2R09 sherpa-onnx result extraction did not match pinned upstream `sherpa-onnx==1.13.7` source revision `917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e`. The activation merge parents are exact authority base `dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff` and exact qualified head `43f9d5bcb4465bd6467a7a5880f274fe4600134e`. Exact post-merge `000B2 Public Corpus ATTEMPT-003 Recovery` push run `34231594716` completed successfully on the canonical activation merge.
+
+**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`
+**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`
+**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`
+**Active successor recovery unit:** `B2R14`
+**ATTEMPT-003 required:** `true`
+**ATTEMPT-003 frozen:** `false`
+**ATTEMPT-003 primary decode entry open:** `false`
+
+B2R13 is complete only through its separately qualified reconciliation binding canonical activation merge `60108c02df8397eda854d31c51eb37ee2e3fbe45` and successful post-merge recovery run `34231594716`. B2R14 alone is authorized next, and only for deterministic synthetic non-primary sherpa-onnx result-extraction harness qualification. Primary corpus access, frozen P0 access, ATTEMPT-003 primary evidence access, primary decode, scoring, comparative publication, production STT selection, and product code remain closed. `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, `production_stt_selected=false`, and `product_code_authorized=false` remain preserved.
