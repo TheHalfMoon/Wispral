@@ -1,0 +1,178 @@
+name: Internal B2R14 Reconciliation Builder
+
+on:
+  push:
+    branches:
+      - automation/b2r14-reconciliation-builder
+    paths:
+      - '.github/workflows/internal-b2r14-reconciliation-builder.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: b2r14-reconciliation-builder
+  cancel-in-progress: false
+
+env:
+  CANONICAL_TASK_MERGE: 2f4212228f24e40fbd03cfc59ab4774df94c0cc3
+  TASK_BASE: 7004199d33c0c60595086636b95537d8fbee3f84
+  QUALIFIED_TASK_HEAD: 1687057a56399e5892dee540704b949b868ed94d
+  POST_MERGE_RECOVERY_RUN: '34243679015'
+  TARGET_BRANCH: recovery/b2r14-reconcile-to-b2r15
+
+jobs:
+  build-reconciliation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact canonical task merge
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.CANONICAL_TASK_MERGE }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Reverify live canonical base and unique target
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$CANONICAL_TASK_MERGE"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_TASK_MERGE"
+          if git ls-remote --exit-code origin "refs/heads/$TARGET_BRANCH" >/dev/null 2>&1; then
+            echo "target reconciliation branch already exists" >&2
+            exit 1
+          fi
+
+      - name: Materialize exact four-file B2R14 reconciliation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          task_merge = "2f4212228f24e40fbd03cfc59ab4774df94c0cc3"
+          task_base = "7004199d33c0c60595086636b95537d8fbee3f84"
+          task_head = "1687057a56399e5892dee540704b949b868ed94d"
+          recovery_run = 34243679015
+
+          current_state = Path("docs/canonical/CURRENT_STATE.md")
+          state = current_state.read_text(encoding="utf-8")
+          old_tail = "B2R13 is canonical at merge `60108c02df8397eda854d31c51eb37ee2e3fbe45` from exact qualified head `43f9d5bcb4465bd6467a7a5880f274fe4600134e` and post-merge ATTEMPT-003 Recovery run `34231594716` succeeded; active successor recovery unit is `B2R14`; ATTEMPT-003 remains unfrozen and primary decoding is closed"
+          new_tail = old_tail.replace("; active successor recovery unit is `B2R14`;", f"; B2R14 is canonical at merge `{task_merge}` from exact qualified head `{task_head}` and post-merge ATTEMPT-003 Recovery run `{recovery_run}` succeeded; active successor recovery unit is `B2R15`;")
+          assert state.count(old_tail) == 1
+          state = state.replace(old_tail, new_tail, 1)
+          marker = "## Current product thesis"
+          assert state.count(marker) == 1
+          proof = f'''## Canonical ATTEMPT-003 B2R14 harness reconciliation
+
+B2R14 is canonically complete after PR #95 merged the exact independently reviewed four-file harness qualification range as real normal merge `{task_merge}` with first parent `{task_base}` and exact qualified head `{task_head}` as second parent. Exact `main` push run `{recovery_run}` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`, path `.github/workflows/000b2-public-attempt-003-recovery.yml`) completed successfully on that exact merge SHA. This reconciliation advances exactly one successor task and does not execute B2R15.
+
+**Canonical successor recovery predecessor:** `B2R14`
+**Canonical B2R14 task base:** `{task_base}`
+**Canonical B2R14 qualified head:** `{task_head}`
+**Canonical B2R14 task merge:** `{task_merge}`
+**Canonical B2R14 post-merge recovery run:** `{recovery_run}`
+**Active successor recovery unit:** `B2R15`
+**ATTEMPT-003 required:** `true`
+**ATTEMPT-003 frozen:** `false`
+**ATTEMPT-003 primary decode entry open:** `false`
+
+B2R15 alone is the next bounded unit: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary corpus decode or scoring is authorized. B2R16 and every later successor unit require their own exact-head qualification, canonical-base trusted PR gate, independent review, guarded normal merge, post-merge recovery proof, and separate reconciliation.
+
+'''
+          state = state.replace(marker, proof + marker, 1)
+          current_state.write_text(state, encoding="utf-8")
+
+          readiness_path = Path("research/000b2-public/recovery-attempt-003-readiness.json")
+          readiness = readiness_path.read_text(encoding="utf-8")
+          assert readiness.count('"completed_recovery_tasks": ["B2R13"]') == 1
+          readiness = readiness.replace('"completed_recovery_tasks": ["B2R13"]', '"completed_recovery_tasks": ["B2R13","B2R14"]', 1)
+          assert readiness.count('"active_recovery_unit": "B2R14"') == 1
+          readiness = readiness.replace('"active_recovery_unit": "B2R14"', '"active_recovery_unit": "B2R15"', 1)
+          proof_anchor = '''      "successor_task": "B2R14"\n    }\n  ],'''
+          assert readiness.count(proof_anchor) == 1
+          proof_extension = f'''      "successor_task": "B2R14"\n    }},\n    {{\n      "completed_task": "B2R14",\n      "canonical_task_base": "{task_base}",\n      "qualified_task_head": "{task_head}",\n      "canonical_task_merge": "{task_merge}",\n      "post_merge_recovery_run_id": {recovery_run},\n      "successor_task": "B2R15"\n    }}\n  ],'''
+          readiness = readiness.replace(proof_anchor, proof_extension, 1)
+          old_next = "Qualify B2R14 only: implement and verify the corrected sherpa-onnx result-extraction harness against the frozen deterministic synthetic non-primary fixture and exact pinned upstream source. Preserve plain-string results exactly, fail closed on object/string API confusion, do not access primary corpus material, and keep all ATTEMPT-003 primary decoding closed until B2R16 is canonically reconciled."
+          new_next = "Qualify B2R15 only: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or B2R14-qualified harness identities. Do not perform a primary decode or scoring; keep ATTEMPT-003 unfrozen and primary decoding closed until B2R16 is separately qualified, merged, post-merge verified, and reconciled."
+          assert readiness.count(old_next) == 1
+          readiness = readiness.replace(old_next, new_next, 1)
+          json.loads(readiness)
+          readiness_path.write_text(readiness, encoding="utf-8")
+
+          tasks_path = Path("specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md")
+          tasks = tasks_path.read_text(encoding="utf-8")
+          old_task = "- [ ] `B2R14` — Qualify a corrected sherpa-onnx result-extraction harness against non-primary material only, including fail-closed string/object API regression coverage. No primary decode."
+          new_task = old_task.replace("- [ ]", "- [x]", 1)
+          assert tasks.count(old_task) == 1
+          tasks_path.write_text(tasks.replace(old_task, new_task, 1), encoding="utf-8")
+
+          current_path = Path("specs/CURRENT.md")
+          current = current_path.read_text(encoding="utf-8")
+          old_status = "**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 ATTEMPT-003 recovery active; B2R13 canonical and post-merge verified; active successor recovery unit `B2R14`; ATTEMPT-002 invalidated; ATTEMPT-003 primary decoding closed"
+          new_status = "**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 ATTEMPT-003 recovery active; B2R14 canonical and post-merge verified; active successor recovery unit `B2R15`; ATTEMPT-002 invalidated; ATTEMPT-003 primary decoding closed"
+          assert current.count(old_status) == 1
+          current = current.replace(old_status, new_status, 1)
+          assert current.count("**Active successor recovery unit:** `B2R14`") == 1
+          current = current.replace("**Active successor recovery unit:** `B2R14`", "**Active successor recovery unit:** `B2R15`", 1)
+          insert_anchor = "Comparative scoring/ranking, synthesis, candidate-superiority claims, production STT selection, and product-code authority remain closed. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`."
+          assert current.count(insert_anchor) == 1
+          current_proof = f'''## Canonical ATTEMPT-003 B2R14 harness reconciliation
+
+B2R14 is canonical and post-merge verified. PR #95 merged the exact four-file harness qualification candidate as normal merge `{task_merge}` with first parent `{task_base}` and exact independently reviewed qualified head `{task_head}` as second parent. Exact `main` push run `{recovery_run}` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`) succeeded on the task merge.
+
+The B2R14 qualification preserves the exact deterministic synthetic non-primary fixture and pinned sherpa-onnx source contract. It does not access primary corpus material, freeze ATTEMPT-003, score any candidate, create comparative evidence, select production STT, or authorize product code.
+
+**Canonical successor recovery predecessor:** `B2R14`
+**Canonical B2R14 task base:** `{task_base}`
+**Canonical B2R14 qualified head:** `{task_head}`
+**Canonical B2R14 task merge:** `{task_merge}`
+**Canonical B2R14 post-merge recovery run:** `{recovery_run}`
+**Active successor recovery unit:** `B2R15`
+**ATTEMPT-003 required:** `true`
+**ATTEMPT-003 frozen:** `false`
+**ATTEMPT-003 primary decode entry open:** `false`
+
+The sole next bounded action is B2R15: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary decode or scoring is authorized. B2R16 and every later ATTEMPT-003 unit remain closed until their predecessor is canonically reconciled.
+
+'''
+          current = current.replace(insert_anchor, current_proof + insert_anchor, 1)
+          current_path.write_text(current, encoding="utf-8")
+          PY
+
+          python -m json.tool research/000b2-public/recovery-attempt-003-readiness.json >/dev/null
+          git diff --check
+          test "$(git diff --name-only | sort)" = "$(printf '%s\n' \
+            docs/canonical/CURRENT_STATE.md \
+            research/000b2-public/recovery-attempt-003-readiness.json \
+            specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md \
+            specs/CURRENT.md | sort)"
+          grep -F '"completed_recovery_tasks": ["B2R13","B2R14"]' research/000b2-public/recovery-attempt-003-readiness.json >/dev/null
+          grep -F '"active_recovery_unit": "B2R15"' research/000b2-public/recovery-attempt-003-readiness.json >/dev/null
+          grep -F -- '- [x] `B2R14`' specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md >/dev/null
+          grep -F 'active successor recovery unit `B2R15`' specs/CURRENT.md >/dev/null
+          grep -F '**Active successor recovery unit:** `B2R15`' docs/canonical/CURRENT_STATE.md >/dev/null
+
+      - name: Commit and publish exact reconciliation candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Abdulaziz M. Shehri"
+          git config user.email "alshehriofficial@gmail.com"
+          git switch -c "$TARGET_BRANCH"
+          git add \
+            docs/canonical/CURRENT_STATE.md \
+            research/000b2-public/recovery-attempt-003-readiness.json \
+            specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md \
+            specs/CURRENT.md
+          git commit -m "docs(b2): reconcile B2R14 and authorize B2R15"
+          test "$(git rev-parse HEAD^)" = "$CANONICAL_TASK_MERGE"
+          test "$(git diff --name-only "$CANONICAL_TASK_MERGE" HEAD | sort)" = "$(printf '%s\n' \
+            docs/canonical/CURRENT_STATE.md \
+            research/000b2-public/recovery-attempt-003-readiness.json \
+            specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md \
+            specs/CURRENT.md | sort)"
+          git push origin "HEAD:refs/heads/$TARGET_BRANCH"
+          echo "RECONCILIATION_HEAD=$(git rev-parse HEAD)"
