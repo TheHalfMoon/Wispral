@@ -290,10 +290,20 @@ def verify_successor_frontier() -> None:
     checked = [task for task, is_checked in ledger if is_checked]
     require(checked == completed, "successor task ledger and machine completion state disagree")
 
+    proofs = readiness.get("transition_proofs")
+    require(isinstance(proofs, list), "successor transition_proofs must be a list")
+    require(len(proofs) == len(completed), "successor transition proof cardinality must match completed tasks")
+
     guards = readiness.get("claim_guards")
     require(isinstance(guards, dict), "successor claim_guards must be an object")
     require(guards.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human developer-speech evidence guard drift")
-    require(guards.get("comparative_result_available") is False, "comparative results must remain unavailable in B2R13 activation")
+    comparative_result = guards.get("comparative_result_available")
+    if active is not None:
+        require(comparative_result is False, f"comparative results must remain unavailable during {active}")
+    else:
+        require(completed == TASK_ORDER, "terminal comparative-result state requires all successor tasks complete")
+        require(len(proofs) == len(TASK_ORDER), "terminal comparative-result state requires one proof per successor task")
+        require(type(comparative_result) is bool, "terminal comparative_result_available must be boolean")
     require(guards.get("production_stt_selected") is False, "production STT must remain unselected")
     require(guards.get("product_code_authorized") is False, "product code must remain unauthorized")
 
@@ -361,11 +371,12 @@ def main() -> None:
 
     readiness = load_object(ROOT / "research/000b2-public/recovery-attempt-003-readiness.json", "ATTEMPT-003 recovery readiness")
     replacement = readiness.get("replacement_attempt", {})
+    guards = readiness.get("claim_guards", {})
     print("ATTEMPT_002_INVALIDATION=PASS")
     print("ATTEMPT_002_HISTORICAL_BYTES=PASS")
     print(f"ACTIVE_SUCCESSOR_RECOVERY_UNIT={readiness.get('active_recovery_unit')}")
     print("ATTEMPT_003_PRIMARY_DECODE_AUTHORIZED=" + ("YES" if replacement.get("primary_decode_entry_open") is True else "NO"))
-    print("COMPARATIVE_RESULT_AVAILABLE=NO")
+    print("COMPARATIVE_RESULT_AVAILABLE=" + ("YES" if guards.get("comparative_result_available") is True else "NO"))
     print("PRODUCTION_STT_SELECTED=NO")
     print("PRODUCT_CODE_AUTHORIZED=NO")
     print("HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT")
