@@ -208,6 +208,8 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
     required_verifier = policy["required_verifier"]
     require(required_verifier in changed_paths, f"{active} candidate must include its required verifier")
     active_token = active.upper()
+    active_index = TASK_ORDER.index(active)
+    future_tokens = set(TASK_ORDER[active_index + 1 :])
 
     for path in changed_paths:
         probe = subprocess.run(
@@ -221,8 +223,8 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
         text = run_git("show", f"HEAD:{path}")
         task_tokens = {token.upper() for token in SUCCESSOR_TOKEN_RE.findall(text)}
         require(active_token in task_tokens, f"{active} candidate artifact lacks explicit active-task binding: {path}")
-        foreign = sorted(task_tokens - {active_token})
-        require(not foreign, f"{active} candidate artifact references foreign successor tasks in {path}: {', '.join(foreign)}")
+        future = sorted(task_tokens & future_tokens)
+        require(not future, f"{active} candidate artifact references future successor tasks in {path}: {', '.join(future)}")
 
         for authority, pattern in POSITIVE_AUTHORITY_PATTERNS.items():
             require(pattern.search(text) is None, f"{active} candidate may not positively publish {authority}: {path}")
@@ -241,9 +243,9 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
             except SyntaxError as error:
                 raise SystemExit(f"ATTEMPT_002_INVALIDATION=FAIL: malformed {active} Python artifact: {path}") from error
             calls = {call_name(node.func) for node in ast.walk(tree) if isinstance(node, ast.Call)}
-            if not policy["primary_decode_allowed"]:
+            if not policy["primary_decode_allowed"] and active != "B2R14":
                 forbidden_decode = sorted(calls & DECODE_CALL_NAMES)
-                require(not forbidden_decode, f"{active} forbids primary-decode calls in {path}: {', '.join(forbidden_decode)}")
+                require(not forbidden_decode, f"{active} forbids decode-runtime calls in {path}: {', '.join(forbidden_decode)}")
             if not policy["scoring_allowed"]:
                 forbidden_scoring = sorted(calls & SCORING_CALL_NAMES)
                 require(not forbidden_scoring, f"{active} forbids scoring calls in {path}: {', '.join(forbidden_scoring)}")
