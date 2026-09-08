@@ -397,7 +397,7 @@ def verify_historical_bytes() -> None:
 def verify_attempt_manifest() -> None:
     path = ROOT / ATTEMPT_MANIFEST_PATH
     require(git_blob("HEAD", ATTEMPT_MANIFEST_PATH) == ATTEMPT_MANIFEST_BLOB, "ATTEMPT-002 manifest blob drift")
-    require(sha256_file(path) == ATTEMPT_MANIFEST_SHA256, "preprocessing bytes drift")
+    require(sha256_file(path) == ATTEMPT_MANIFEST_SHA256, "ATTEMPT-002 manifest SHA-256 drift")
     manifest = load_object(path, "attempt-002 manifest")
     require(manifest.get("attempt_id") == ATTEMPT_ID, "ATTEMPT-002 id drift")
     require(manifest.get("frozen") is True, "ATTEMPT-002 must remain frozen historical evidence")
