@@ -1,0 +1,62 @@
+name: 000B2 Public Corpus B2R15 Rebinding
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/000b2-public-b2r15-rebinding.yml'
+      - 'research/000b2-public/b2r15-preprocessing-rebinding.json'
+      - 'research/000b2-public/b2r15-environment-rebinding.json'
+      - 'research/000b2-public/b2r15-provenance.json'
+      - 'research/000b2-public/verify_b2r15.py'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-b2r15:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact B2R15 scope and canonical source bindings
+        shell: bash
+        env:
+          AUTHORITY_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          test "$AUTHORITY_BASE" = "ae349f7ef28e8ffd08ee8f54d1727ef80684a31a"
+          test "$(git merge-base "$AUTHORITY_BASE" HEAD)" = "$AUTHORITY_BASE"
+          test "$(git diff --name-only "$AUTHORITY_BASE" HEAD | sort)" = "$(printf '%s\n' \
+            .github/workflows/000b2-public-b2r15-rebinding.yml \
+            research/000b2-public/b2r15-environment-rebinding.json \
+            research/000b2-public/b2r15-preprocessing-rebinding.json \
+            research/000b2-public/b2r15-provenance.json \
+            research/000b2-public/verify_b2r15.py | sort)"
+          test "$(git hash-object research/000b2-public/preprocessing-capture.json)" = "89cbb28b7961042a1793c694692fe822c9414370"
+          test "$(git hash-object research/000b2-public/execution-environment.json)" = "caf814bcb5e42fd769e6df1d9a54c1164535f86c"
+          test "$(git hash-object research/000b2-public/b2r03-preexecution-rebinding.json)" = "49ba712b6a71ae69313c06b724833de1a95099b4"
+          test "$(git hash-object research/000b2-public/b2r14-sherpa-result-harness.py)" = "7f0d76bf2490a254d515409d39585f6c9296cfa9"
+          test "$(git hash-object research/000b2-public/b2r14-harness-qualification.json)" = "b9c5b807c0a98e990991213f517b7e43854c17c5"
+          test "$(git hash-object research/000b2-public/verify_b2r14.py)" = "c5536ae06597652552108d08be50b7b647f4ac8f"
+          printf '%s  %s\n' \
+            d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011 \
+            research/000b2-public/preprocessing-capture.json | sha256sum --check -
+          printf '%s  %s\n' \
+            2b8b521c28c771293648cbf86c7c1b20e820bacfc065074d7cfe2555745387ed \
+            research/000b2-public/execution-environment.json | sha256sum --check -
+
+      - name: Verify B2R15 rebinding evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -m py_compile research/000b2-public/verify_b2r15.py
+          rm -rf research/000b2-public/__pycache__
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r15.py
+          git diff --quiet HEAD --
