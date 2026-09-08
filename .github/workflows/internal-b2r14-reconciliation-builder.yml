@@ -64,26 +64,28 @@ jobs:
           state = state.replace(old_tail, new_tail, 1)
           marker = "## Current product thesis"
           assert state.count(marker) == 1
-          proof = f"""## Canonical ATTEMPT-003 B2R14 corrective harness reconciliation
-
-Historical PR #95 merged the original B2R14 candidate as normal merge `{premature_merge}` with first parent `{premature_base}` and task head `{premature_head}`. The required fresh independent substantive exact-range review did not complete before that merge; CodeRabbit run `{failed_review}` ended because the PR closed first. Therefore PR #95 and post-merge recovery run `{premature_run}` remain visible historical chronology but are ineligible as B2R14 task-completion authority.
-
-PR #97 repaired the chronology forward-only without rewriting historical bytes. It requalified the exact B2R14 four-file scope on corrective base `{corrective_base}` and exact qualified head `{corrective_head}`. All applicable exact-head CI and the canonical-base trusted `pull_request_target` gate succeeded, fresh independent substantive exact-range review completed with no actionable findings, and zero review threads remained. Guarded normal merge produced `{corrective_merge}` with first parent `{corrective_base}` and exact qualified head `{corrective_head}` as second parent. Exact `main` push run `{corrective_run}` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`, path `.github/workflows/000b2-public-attempt-003-recovery.yml`) completed successfully on that exact corrective merge SHA.
-
-**Canonical successor recovery predecessor:** `B2R14`
-**Canonical B2R14 corrective task base:** `{corrective_base}`
-**Canonical B2R14 corrective qualified head:** `{corrective_head}`
-**Canonical B2R14 corrective task merge:** `{corrective_merge}`
-**Canonical B2R14 corrective post-merge recovery run:** `{corrective_run}`
-**Historical premature B2R14 merge eligible as completion:** `false`
-**Active successor recovery unit:** `B2R15`
-**ATTEMPT-003 required:** `true`
-**ATTEMPT-003 frozen:** `false`
-**ATTEMPT-003 primary decode entry open:** `false`
-
-B2R15 alone is the next bounded unit: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary corpus decode or scoring is authorized. B2R16 and every later successor unit require their own exact-head qualification, canonical-base trusted PR gate, independent review, guarded normal merge, post-merge recovery proof, and separate reconciliation.
-
-"""
+          proof = "\n".join([
+              "## Canonical ATTEMPT-003 B2R14 corrective harness reconciliation",
+              "",
+              f"Historical PR #95 merged the original B2R14 candidate as normal merge `{premature_merge}` with first parent `{premature_base}` and task head `{premature_head}`. The required fresh independent substantive exact-range review did not complete before that merge; CodeRabbit run `{failed_review}` ended because the PR closed first. Therefore PR #95 and post-merge recovery run `{premature_run}` remain visible historical chronology but are ineligible as B2R14 task-completion authority.",
+              "",
+              f"PR #97 repaired the chronology forward-only without rewriting historical bytes. It requalified the exact B2R14 four-file scope on corrective base `{corrective_base}` and exact qualified head `{corrective_head}`. All applicable exact-head CI and the canonical-base trusted `pull_request_target` gate succeeded, fresh independent substantive exact-range review completed with no actionable findings, and zero review threads remained. Guarded normal merge produced `{corrective_merge}` with first parent `{corrective_base}` and exact qualified head `{corrective_head}` as second parent. Exact `main` push run `{corrective_run}` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`, path `.github/workflows/000b2-public-attempt-003-recovery.yml`) completed successfully on that exact corrective merge SHA.",
+              "",
+              "**Canonical successor recovery predecessor:** `B2R14`",
+              f"**Canonical B2R14 corrective task base:** `{corrective_base}`",
+              f"**Canonical B2R14 corrective qualified head:** `{corrective_head}`",
+              f"**Canonical B2R14 corrective task merge:** `{corrective_merge}`",
+              f"**Canonical B2R14 corrective post-merge recovery run:** `{corrective_run}`",
+              "**Historical premature B2R14 merge eligible as completion:** `false`",
+              "**Active successor recovery unit:** `B2R15`",
+              "**ATTEMPT-003 required:** `true`",
+              "**ATTEMPT-003 frozen:** `false`",
+              "**ATTEMPT-003 primary decode entry open:** `false`",
+              "",
+              "B2R15 alone is the next bounded unit: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary corpus decode or scoring is authorized. B2R16 and every later successor unit require their own exact-head qualification, canonical-base trusted PR gate, independent review, guarded normal merge, post-merge recovery proof, and separate reconciliation.",
+              "",
+              "",
+          ])
           state = state.replace(marker, proof + marker, 1)
           state_path.write_text(state, encoding="utf-8")
 
@@ -101,26 +103,28 @@ B2R15 alone is the next bounded unit: capture or cryptographically rebind ATTEMP
           current = current.replace(stale_action, replacement, 1)
           anchor = "Comparative scoring/ranking, synthesis, candidate-superiority claims, production STT selection, and product-code authority remain closed. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`."
           assert current.count(anchor) == 1
-          proof2 = f"""## Canonical ATTEMPT-003 B2R14 corrective harness reconciliation
-
-Historical PR #95 normal merge `{premature_merge}` is preserved but ineligible as B2R14 completion because its required fresh independent substantive review did not complete before merge. Its task base/head were `{premature_base}` / `{premature_head}`, and post-merge recovery run `{premature_run}` does not retroactively satisfy the missing review chronology.
-
-Corrective PR #97 requalified the unchanged B2R14 harness semantics on base `{corrective_base}` and exact qualified head `{corrective_head}`. The exact-head CI set, canonical-base trusted `pull_request_target` gate, fresh independent substantive exact-range review, thread reconciliation, and live mergeability gates all completed before guarded normal merge `{corrective_merge}`. Exact `main` push run `{corrective_run}` of `000B2 Public Corpus ATTEMPT-003 Recovery` succeeded on that merge SHA. The correction had `result_selection_effect=NONE`, used only deterministic synthetic non-primary material, and did not access the primary corpus.
-
-**Canonical successor recovery predecessor:** `B2R14`
-**Canonical B2R14 corrective task base:** `{corrective_base}`
-**Canonical B2R14 corrective qualified head:** `{corrective_head}`
-**Canonical B2R14 corrective task merge:** `{corrective_merge}`
-**Canonical B2R14 corrective post-merge recovery run:** `{corrective_run}`
-**Historical premature B2R14 merge eligible as completion:** `false`
-**Active successor recovery unit:** `B2R15`
-**ATTEMPT-003 required:** `true`
-**ATTEMPT-003 frozen:** `false`
-**ATTEMPT-003 primary decode entry open:** `false`
-
-The sole next bounded action is B2R15: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary decode or scoring is authorized. B2R16 and every later ATTEMPT-003 unit remain closed until their predecessor is canonically reconciled.
-
-"""
+          proof2 = "\n".join([
+              "## Canonical ATTEMPT-003 B2R14 corrective harness reconciliation",
+              "",
+              f"Historical PR #95 normal merge `{premature_merge}` is preserved but ineligible as B2R14 completion because its required fresh independent substantive review did not complete before merge. Its task base/head were `{premature_base}` / `{premature_head}`, and post-merge recovery run `{premature_run}` does not retroactively satisfy the missing review chronology.",
+              "",
+              f"Corrective PR #97 requalified the unchanged B2R14 harness semantics on base `{corrective_base}` and exact qualified head `{corrective_head}`. The exact-head CI set, canonical-base trusted `pull_request_target` gate, fresh independent substantive exact-range review, thread reconciliation, and live mergeability gates all completed before guarded normal merge `{corrective_merge}`. Exact `main` push run `{corrective_run}` of `000B2 Public Corpus ATTEMPT-003 Recovery` succeeded on that merge SHA. The correction had `result_selection_effect=NONE`, used only deterministic synthetic non-primary material, and did not access the primary corpus.",
+              "",
+              "**Canonical successor recovery predecessor:** `B2R14`",
+              f"**Canonical B2R14 corrective task base:** `{corrective_base}`",
+              f"**Canonical B2R14 corrective qualified head:** `{corrective_head}`",
+              f"**Canonical B2R14 corrective task merge:** `{corrective_merge}`",
+              f"**Canonical B2R14 corrective post-merge recovery run:** `{corrective_run}`",
+              "**Historical premature B2R14 merge eligible as completion:** `false`",
+              "**Active successor recovery unit:** `B2R15`",
+              "**ATTEMPT-003 required:** `true`",
+              "**ATTEMPT-003 frozen:** `false`",
+              "**ATTEMPT-003 primary decode entry open:** `false`",
+              "",
+              "The sole next bounded action is B2R15: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary decode or scoring is authorized. B2R16 and every later ATTEMPT-003 unit remain closed until their predecessor is canonically reconciled.",
+              "",
+              "",
+          ])
           current = current.replace(anchor, proof2 + anchor, 1)
           current_path.write_text(current, encoding="utf-8")
           PY
