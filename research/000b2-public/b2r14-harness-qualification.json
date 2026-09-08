@@ -5,7 +5,8 @@
   "status": "CORRECTIVE_REQUALIFICATION_PENDING_INDEPENDENT_REVIEW",
   "predecessor_reconciliation_merge": "7004199d33c0c60595086636b95537d8fbee3f84",
   "harness_path": "research/000b2-public/b2r14-sherpa-result-harness.py",
-  "preserved_harness_git_blob_sha1": "aec083c9a02b501121d510c0ac598df096251362",
+  "pre_requalification_harness_git_blob_sha1": "aec083c9a02b501121d510c0ac598df096251362",
+  "harness_semantics_changed": false,
   "entry_point": "extract_result(recognizer, stream)",
   "result_contract": {
     "required_return_type": "str",
@@ -44,7 +45,8 @@
     "failure_reason": "PR_CLOSED_BEFORE_REVIEW_COMPLETION",
     "premature_merge_eligible_as_canonical_task_completion": false,
     "corrective_requalification_required": true,
-    "canonical_successor_advance_allowed": false
+    "canonical_successor_advance_allowed": false,
+    "result_selection_effect": "NONE"
   },
   "qualification_evidence": {
     "candidate_supplied_verifier": "REVIEW_ONLY_NOT_TRUSTED_AUTHORITY",
