@@ -1,31 +1,42 @@
 name: 000B2 Public Corpus B2R16 Freeze
+
 on:
   pull_request:
     paths:
-      - '.github/workflows/000b2-public-b2r16-freeze.yml'
-      - 'research/000b2-public/b2r16-attempt-003-manifest.json'
-      - 'research/000b2-public/b2r16-preexecution-state.json'
-      - 'research/000b2-public/verify_b2r16.py'
+      - ".github/workflows/000b2-public-b2r16-freeze.yml"
+      - "research/000b2-public/b2r16-attempt-003-manifest.json"
+      - "research/000b2-public/b2r16-preexecution-state.json"
+      - "research/000b2-public/verify_b2r16.py"
+  workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
   verify-b2r16-freeze:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      TASK: B2R16
+      EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout exact B2R16 revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          fetch-depth: 0
-      - name: Verify exact B2R16 scope
+          ref: ${{ env.EXACT_REVISION }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Verify exact B2R16 revision
         shell: bash
         run: |
           set -euo pipefail
-          git fetch --no-tags origin "${{ github.event.pull_request.base.sha }}"
-          actual="$(git diff --name-only "${{ github.event.pull_request.base.sha }}" HEAD | sort)"
-          expected="$(printf '%s\n' \
-            '.github/workflows/000b2-public-b2r16-freeze.yml' \
-            'research/000b2-public/b2r16-attempt-003-manifest.json' \
-            'research/000b2-public/b2r16-preexecution-state.json' \
-            'research/000b2-public/verify_b2r16.py' | sort)"
-          test "$actual" = "$expected"
+          test -n "$EXACT_REVISION"
+          test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+
       - name: Verify B2R16 ATTEMPT-003 pre-primary freeze
-        run: python3 research/000b2-public/verify_b2r16.py
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r16.py --require-git
