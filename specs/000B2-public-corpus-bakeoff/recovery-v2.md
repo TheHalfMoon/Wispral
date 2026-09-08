@@ -105,6 +105,18 @@ Each reconciliation may advance exactly one recovery task relative to its canoni
 
 Stale CI or review evidence never transfers to a changed head.
 
+## Trusted successor PR gate
+
+B2R13 is the one-time installation boundary for the successor controls. Because the canonical first parent of the B2R13 activation candidate does not yet contain the successor workflows, B2R13 may be qualified by its exact-head candidate-defined `pull_request` recovery workflow only as the explicit activation exception, together with exact-head CI and fresh independent semantic review.
+
+After the B2R13 task merge becomes canonical, that exception is permanently closed. Every B2R14 through B2R24 task candidate and every successor reconciliation PR MUST additionally pass `.github/workflows/000b2-public-attempt-003-trusted-pr.yml` on `pull_request_target`. GitHub loads that workflow definition from the exact canonical PR base, not from candidate bytes. The trusted gate uses read-only `actions: read` and `contents: read` permissions, checks out the exact candidate head with `persist-credentials: false`, and treats the checkout only as untrusted data under test.
+
+The trusted gate MUST compare the candidate's task order, installation scope, trusted-control paths, task scopes, task-content policies, transition policy, and B2R14 fixture contract against the exact authority-base readiness state before using any candidate-supplied policy value. It MUST reject any change to the immutable execution-control paths recorded in `transition_policy`, classify reconciliation versus task-candidate state from authority-base-to-head completion delta before applying path scope, and prove the common verifier blob at the candidate head is byte-identical to the exact authority-base verifier blob before execution.
+
+A candidate-defined workflow or candidate-modified common verifier can never satisfy this trusted gate on its own. `candidate_common_control_execution_authorized=false` is permanent after activation. The ordinary `pull_request` recovery workflow remains useful as an exact-head functional qualification surface, but it is not sufficient successor merge authority by itself. For B2R14 and later, merge eligibility requires the canonical-base trusted PR gate plus every other applicable exact-head CI and review gate.
+
+The trusted gate does not execute task-supplied verifier code. It executes only the common verifier whose Git blob is proven identical to the authority-base blob; candidate task verifiers remain reviewable static evidence. B2R14's deliberately bounded fixed-function harness exercise remains permitted only under the common verifier's exact AST and synthetic-fixture restrictions.
+
 ## Active-task content boundary
 
 Path scope alone is not execution authority. The exact `task_candidate_scopes` and `task_content_policies` maps in the successor readiness state are frozen governance contracts established by B2R13 and MUST remain byte-semantically equivalent in every later authority state.
@@ -128,13 +140,15 @@ The same trusted control separately exercises the exact pinned sherpa API agains
 
 The canonical B2R14 qualification fixture is frozen before B2R14 begins: `DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY`, fixture id `b2r14-sherpa-result-string-contract-v1`, mono PCM S16LE at 16 kHz, 16000 frames, with exact PCM SHA-256 `0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39`. The common successor verifier—not the B2R14-supplied verifier—must bind this contract and reject frozen P0, ATTEMPT-003 primary evidence, transcript, or successor decode artifact access from the B2R14 harness/workflow.
 
-The common successor verifier enforces these rules from the exact authority-base-to-head diff. A task-specific verifier cannot replace or weaken the common content policy. A reconciliation cannot modify either task-scope or task-content policy because the common workflow and static verifier compare both maps against the canonical expected policy and the authority-base copy.
+The common successor verifier enforces these rules from the exact authority-base-to-head diff. A task-specific verifier cannot replace or weaken the common content policy. A reconciliation cannot modify either task-scope or task-content policy because the trusted PR gate and common verifier compare those contracts against canonical authority before accepting the candidate.
 
 Primary-decode entry authority is `false` for B2R13 through B2R16, `true` only for B2R17 through B2R22, and `false` again for B2R23, B2R24, and terminal recovery state. ATTEMPT-003 must remain frozen from B2R17 onward, including B2R23, B2R24, and terminal state.
 
 ## B2R13 activation exception
 
-B2R13 is the recovery-activation/invalidation unit required to remove execution authority from the already-invalid B2R10 frontier. Its task candidate may establish this successor specification, successor machine state, pinned invalidation evidence, and the successor proof workflow while leaving `B2R13` incomplete and `primary_decode_entry_open=false`.
+B2R13 is the recovery-activation/invalidation unit required to remove execution authority from the already-invalid B2R10 frontier. Its task candidate may establish this successor specification, successor machine state, pinned invalidation evidence, successor proof workflow, and the canonical-base trusted PR gate while leaving `B2R13` incomplete and `primary_decode_entry_open=false`.
+
+The B2R13 candidate-defined recovery workflow is accepted only for this installation unit because its exact canonical base predates the successor controls. Fresh independent semantic review must therefore cover the complete final installation range, including the trusted PR gate design. After merge, no B2R14-or-later PR may rely on candidate-defined common enforcement as merge authority.
 
 After that task candidate is independently qualified and merged, the exact canonical post-merge successor-recovery run is required before a separate reconciliation may mark B2R13 complete and authorize B2R14.
 
@@ -167,6 +181,8 @@ No B2R13 or later successor task may merge without:
 - mergeability and base/head reconciliation against live GitHub truth;
 - guarded exact-head merge;
 - post-merge exact-SHA verification.
+
+For B2R14 and every later task or reconciliation, exact-head applicable CI necessarily includes a successful `000B2 Public Corpus ATTEMPT-003 Trusted PR Gate` run generated from the exact canonical base by `pull_request_target`. A candidate-controlled recovery run can supplement but cannot substitute for that proof.
 
 If no independent reviewer is available, the PR remains blocked. Rate-limit, billing, status-only, or self-review output is not independent review evidence.
 
