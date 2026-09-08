@@ -71,6 +71,7 @@ SCORING_CALL_NAMES = {
     "word_error_rate",
 }
 
+B2R14_HARNESS_ENTRYPOINT = "extract_result"
 B2R14_NON_PRIMARY_FIXTURE_CONTRACT = {
     "material_class": "DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY",
     "fixture_id": "b2r14-sherpa-result-string-contract-v1",
@@ -254,42 +255,85 @@ def verify_b2r14_non_primary_candidate(readiness: dict[str, Any]) -> None:
                 B2R14_NON_PRIMARY_FIXTURE_CONTRACT["pcm_sha256"],
             ):
                 require(value in strings, f"B2R14 harness must bind exact non-primary fixture value: {value}")
-            calls = {call_name(node.func) for node in ast.walk(tree) if isinstance(node, ast.Call)}
-            require("get_result" in calls, "B2R14 harness must exercise the pinned sherpa get_result API")
-            get_result_calls = [
-                node for node in ast.walk(tree)
-                if isinstance(node, ast.Call) and call_name(node.func) == "get_result"
-            ]
-            require(len(get_result_calls) == 1, "B2R14 harness must contain exactly one get_result call")
-            result_call = get_result_calls[0]
+
+            functions = [node for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
+            require(len(functions) == 1, "B2R14 harness must expose exactly one top-level function")
+            entrypoint = functions[0]
+            require(isinstance(entrypoint, ast.FunctionDef) and entrypoint.name == B2R14_HARNESS_ENTRYPOINT,
+                    f"B2R14 harness must expose fixed entry point {B2R14_HARNESS_ENTRYPOINT}")
+            args = entrypoint.args
             require(
-                isinstance(result_call.func, ast.Attribute)
+                [arg.arg for arg in args.posonlyargs + args.args] == ["recognizer", "stream"]
+                and args.vararg is None
+                and args.kwarg is None
+                and not args.kwonlyargs
+                and not args.defaults
+                and not args.kw_defaults,
+                "B2R14 fixed entry point must have exact interface extract_result(recognizer, stream)",
+            )
+            require(len(entrypoint.body) == 1 and isinstance(entrypoint.body[0], ast.Return),
+                    "B2R14 fixed entry point body must be exactly one return statement")
+            result_return = entrypoint.body[0]
+            require(result_return.value is not None, "B2R14 fixed entry point must return a result")
+            result_call = result_return.value
+            require(
+                isinstance(result_call, ast.Call)
+                and isinstance(result_call.func, ast.Attribute)
                 and isinstance(result_call.func.value, ast.Name)
                 and result_call.func.value.id == "recognizer"
+                and result_call.func.attr == "get_result"
                 and len(result_call.args) == 1
                 and isinstance(result_call.args[0], ast.Name)
                 and result_call.args[0].id == "stream"
                 and not result_call.keywords,
-                "B2R14 harness must call recognizer.get_result(stream) exactly",
+                "B2R14 fixed entry point must exactly return recognizer.get_result(stream)",
             )
-            direct_returns = [
+            get_result_calls = [
                 node for node in ast.walk(tree)
-                if isinstance(node, ast.Return)
-                and node.value is not None
-                and ast.dump(node.value, include_attributes=False) == ast.dump(result_call, include_attributes=False)
+                if isinstance(node, ast.Call) and call_name(node.func) == "get_result"
             ]
-            require(len(direct_returns) == 1, "B2R14 harness must directly return recognizer.get_result(stream)")
+            require(len(get_result_calls) == 1 and get_result_calls[0] is result_call,
+                    "B2R14 harness must contain only the fixed entry point get_result call")
+            calls = {call_name(node.func) for node in ast.walk(tree) if isinstance(node, ast.Call)}
             require(
                 not any(isinstance(node, ast.Attribute) and node.attr == "text" for node in ast.walk(tree)),
                 "B2R14 harness may not reintroduce object-style .text extraction",
             )
             require("getattr" not in calls, "B2R14 harness may not hide object/string confusion behind getattr")
+
+            trusted_module = ast.Module(body=[entrypoint], type_ignores=[])
+            namespace: dict[str, Any] = {}
+            exec(compile(trusted_module, harness_path, "exec"), {"__builtins__": {}}, namespace)
+            extractor = namespace.get(B2R14_HARNESS_ENTRYPOINT)
+            require(callable(extractor), "B2R14 trusted entry point did not compile")
+
+            trusted_stream = object()
+            sentinel = "trusted-b2r14-plain-string"
+
+            class TrustedRecognizer:
+                def __init__(self) -> None:
+                    self.calls = 0
+                    self.stream: object | None = None
+
+                def get_result(self, stream: object) -> str:
+                    self.calls += 1
+                    self.stream = stream
+                    return sentinel
+
+            trusted_recognizer = TrustedRecognizer()
+            observed = extractor(trusted_recognizer, trusted_stream)
+            require(observed == sentinel, "B2R14 fixed entry point did not preserve the trusted plain string")
+            require(trusted_recognizer.calls == 1, "B2R14 fixed entry point must call get_result exactly once")
+            require(trusted_recognizer.stream is trusted_stream,
+                    "B2R14 fixed entry point must pass the exact trusted stream through unchanged")
         elif path == qualification_path:
             document = json.loads(payload)
             require(document.get("non_primary_fixture") == B2R14_NON_PRIMARY_FIXTURE_CONTRACT,
                     "B2R14 qualification must bind exact canonical non-primary fixture contract")
         elif path == workflow_path:
             require("b2r14-sherpa-result-harness.py" in lowered, "B2R14 workflow must invoke canonical harness")
+            require(B2R14_HARNESS_ENTRYPOINT in payload,
+                    "B2R14 workflow must name the fixed trusted harness entry point")
             require(B2R14_NON_PRIMARY_FIXTURE_CONTRACT["pcm_sha256"] in payload,
                     "B2R14 workflow must bind exact canonical fixture digest")
 
