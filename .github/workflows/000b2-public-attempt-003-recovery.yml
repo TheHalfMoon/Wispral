@@ -311,10 +311,8 @@ jobs:
                   recognizer = object.__new__(pinned.OnlineRecognizer)
                   recognizer.recognizer = TrustedNativeRecognizer()
                   result = pinned.OnlineRecognizer.get_result(recognizer, TrustedStream(fixture_bytes))
-                  if not isinstance(result, str) or result != "trusted-synthetic-result":
-                      raise SystemExit("TRUSTED_BOUNDARY=FAIL: pinned OnlineRecognizer.get_result is not plain-string preserving")
-                  if getattr(result, "text", "") != "":
-                      raise SystemExit("TRUSTED_BOUNDARY=FAIL: object/string confusion regression not rejected")
+                  if type(result) is not str or result != "trusted-synthetic-result":
+                      raise SystemExit("TRUSTED_BOUNDARY=FAIL: pinned OnlineRecognizer.get_result is not an exact plain string")
 
               print("B2R14_TRUSTED_PINNED_RESULT_CONTRACT=PASS")
 
