@@ -1,0 +1,100 @@
+name: Internal B2R13 Reconciliation Builder v2
+
+on:
+  push:
+    branches:
+      - ci/b2r13-reconciliation-builder-v2
+    paths:
+      - '.github/workflows/internal-b2r13-reconciliation-builder-v2.yml'
+
+permissions:
+  contents: write
+
+env:
+  CANONICAL_BASE: 60108c02df8397eda854d31c51eb37ee2e3fbe45
+  EXPECTED_TARGET_HEAD: 9c58993f2718165beede4b690e721012809dce5c
+  TARGET_BRANCH: recovery/b2r13-reconciliation
+
+jobs:
+  build-reconciliation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact target branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify live base and exact target head
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_TARGET_HEAD"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin refs/heads/$TARGET_BRANCH | cut -f1)" = "$EXPECTED_TARGET_HEAD"
+          test "$(git diff --name-only "$CANONICAL_BASE" HEAD -- | sort)" = "$(printf '%s\n' \
+            research/000b2-public/recovery-attempt-003-readiness.json \
+            specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md | sort)"
+
+      - name: Reconcile canonical text authority to B2R14
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          current = Path('specs/CURRENT.md')
+          text = current.read_text(encoding='utf-8')
+          old = '**Active successor recovery unit:** `B2R13`'
+          new = '**Active successor recovery unit:** `B2R14`'
+          if text.count(old) != 1:
+              raise SystemExit(f'specs/CURRENT.md expected exactly one B2R13 successor marker, got {text.count(old)}')
+          text = text.replace(old, new, 1)
+          note = '''\n\n## Canonical ATTEMPT-003 B2R13 reconciliation\n\nB2R13 activation merged canonically as `60108c02df8397eda854d31c51eb37ee2e3fbe45` from exact independently qualified head `43f9d5bcb4465bd6467a7a5880f274fe4600134e` against exact authority base `dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff`. Exact post-merge `000B2 Public Corpus ATTEMPT-003 Recovery` push run `34231594716` completed successfully on that merge. The separate successor reconciliation records B2R13 complete and makes B2R14 the sole active recovery unit. ATTEMPT-003 remains unfrozen and primary decode remains closed. B2R15 and every later successor remain closed until separately authorized. Comparative publication, production STT selection, and product code remain unauthorized.\n'''
+          if '## Canonical ATTEMPT-003 B2R13 reconciliation' not in text:
+              text += note
+          current.write_text(text, encoding='utf-8')
+
+          state = Path('docs/canonical/CURRENT_STATE.md')
+          state_text = state.read_text(encoding='utf-8')
+          markers = (
+              '**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`',
+              '**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`',
+              '**Active successor recovery unit:** `B2R14`',
+              '**ATTEMPT-003 primary decode entry open:** `false`',
+          )
+          if any(marker in state_text for marker in markers):
+              raise SystemExit('CURRENT_STATE.md already contains partial successor reconciliation markers; refuse ambiguous append')
+          section = '''\n\n## Canonical ATTEMPT-003 recovery authority after B2R13\n\nPR #92 canonically activated ATTEMPT-003 recovery at merge `60108c02df8397eda854d31c51eb37ee2e3fbe45`, preserving ATTEMPT-002 historical bytes and invalidating ATTEMPT-002 for comparative scoring because the canonical B2R09 sherpa-onnx result extraction did not match pinned upstream `sherpa-onnx==1.13.7` source revision `917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e`. The activation merge parents are exact authority base `dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff` and exact qualified head `43f9d5bcb4465bd6467a7a5880f274fe4600134e`. Exact post-merge `000B2 Public Corpus ATTEMPT-003 Recovery` push run `34231594716` completed successfully on the canonical activation merge.\n\n**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`\n**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`\n**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`\n**Active successor recovery unit:** `B2R14`\n**ATTEMPT-003 required:** `true`\n**ATTEMPT-003 frozen:** `false`\n**ATTEMPT-003 primary decode entry open:** `false`\n\nB2R13 is complete only through its separately qualified reconciliation binding canonical activation merge `60108c02df8397eda854d31c51eb37ee2e3fbe45` and successful post-merge recovery run `34231594716`. B2R14 alone is authorized next, and only for deterministic synthetic non-primary sherpa-onnx result-extraction harness qualification. Primary corpus access, frozen P0 access, ATTEMPT-003 primary evidence access, primary decode, scoring, comparative publication, production STT selection, and product code remain closed. `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, `production_stt_selected=false`, and `product_code_authorized=false` remain preserved.\n'''
+          state.write_text(state_text + section, encoding='utf-8')
+          PY
+
+      - name: Verify exact four-file reconciliation scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git diff --name-only "$CANONICAL_BASE" -- | sort)" = "$(printf '%s\n' \
+            docs/canonical/CURRENT_STATE.md \
+            research/000b2-public/recovery-attempt-003-readiness.json \
+            specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md \
+            specs/CURRENT.md | sort)"
+          python -m py_compile research/000b2-public/verify_attempt_002_invalidation.py research/000b2-public/verify_b2r13_activation.py
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py --static-only
+
+      - name: Commit and push reconciliation authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Abdulaziz M. Shehri'
+          git config user.email 'alshehriofficial@gmail.com'
+          git add docs/canonical/CURRENT_STATE.md specs/CURRENT.md
+          git diff --cached --quiet && { echo 'No builder changes to commit'; exit 1; }
+          git commit -m 'docs(000b2): reconcile B2R13 canonical authority'
+          test "$(git diff --name-only "$CANONICAL_BASE" HEAD -- | sort)" = "$(printf '%s\n' \
+            docs/canonical/CURRENT_STATE.md \
+            research/000b2-public/recovery-attempt-003-readiness.json \
+            specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md \
+            specs/CURRENT.md | sort)"
+          git push origin "HEAD:$TARGET_BRANCH"
