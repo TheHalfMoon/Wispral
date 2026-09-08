@@ -85,10 +85,19 @@
       "specs/CURRENT.md"
     ]
   },
-  "completed_recovery_tasks": [],
-  "active_recovery_unit": "B2R13",
-  "transition_proofs": [],
+  "completed_recovery_tasks": ["B2R13"],
+  "active_recovery_unit": "B2R14",
+  "transition_proofs": [
+    {
+      "completed_task": "B2R13",
+      "canonical_task_base": "dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff",
+      "qualified_task_head": "43f9d5bcb4465bd6467a7a5880f274fe4600134e",
+      "canonical_task_merge": "60108c02df8397eda854d31c51eb37ee2e3fbe45",
+      "post_merge_recovery_run_id": 34231594716,
+      "successor_task": "B2R14"
+    }
+  ],
   "claim_guards": {"human_developer_speech_accuracy_evidence":"ABSENT","comparative_result_available":false,"production_stt_selected":false,"product_code_authorized":false},
-  "next_action": "Qualify B2R13 only: prove and canonically bind ATTEMPT-002 material invalidation against the exact pinned sherpa-onnx source while preserving historical ATTEMPT-002 bytes. Install the one-time successor trusted-base PR gate; after B2R13 becomes canonical, every B2R14+ task or reconciliation PR must be qualified by the canonical-base pull_request_target gate before merge. Do not begin B2R14 or any primary decode; B2R10 through B2R12 under ATTEMPT-002, comparative scoring, ranking, synthesis, production STT selection, and product code remain closed.",
+  "next_action": "Qualify B2R14 only: prove a corrected sherpa-onnx result-extraction harness against the canonical deterministic synthetic non-primary fixture and exact pinned sherpa-onnx source. Do not access the primary corpus, frozen P0 audio, ATTEMPT-003 primary evidence, or future decode artifacts. ATTEMPT-003 remains unfrozen and primary decode entry remains closed. B2R15+ remain closed until B2R14 reconciliation is canonical and post-merge verified.",
   "b2r14_non_primary_fixture_contract": {"material_class":"DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY","fixture_id":"b2r14-sherpa-result-string-contract-v1","sample_rate_hz":16000,"channel_count":1,"sample_format":"PCM_S16LE","frame_count":16000,"pcm_sha256":"0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39","primary_corpus_access":false,"frozen_p0_access":false,"attempt_003_primary_evidence_access":false}
 }
