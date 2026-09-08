@@ -1,0 +1,43 @@
+name: 000B2 Public Corpus B2R15 Rebinding
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/000b2-public-b2r15-rebinding.yml"
+      - "research/000b2-public/b2r15-preprocessing-rebinding.json"
+      - "research/000b2-public/b2r15-environment-rebinding.json"
+      - "research/000b2-public/b2r15-provenance.json"
+      - "research/000b2-public/verify_b2r15.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-b2r15-rebinding:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      TASK: B2R15
+      EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+
+    steps:
+      - name: Checkout exact B2R15 revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.EXACT_REVISION }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Verify exact B2R15 revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$EXACT_REVISION"
+          test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+
+      - name: Verify B2R15 cryptographic evidence rebinding
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r15.py --require-git
