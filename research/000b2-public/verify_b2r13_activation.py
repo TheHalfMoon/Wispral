@@ -33,6 +33,7 @@ def verify_activation_frontier() -> None:
     require(readiness.get("state") == "RECOVERY_READY", "successor recovery must be RECOVERY_READY")
     require(readiness.get("task_order") == TASK_ORDER, "successor recovery task order drift")
     require(readiness.get("task_content_policies") == proof.expected_task_content_policies(), "successor task content policy drift")
+    require(readiness.get("b2r14_non_primary_fixture_contract") == proof.B2R14_NON_PRIMARY_FIXTURE_CONTRACT, "B2R14 canonical non-primary fixture contract drift")
     require(readiness.get("completed_recovery_tasks") == [], "B2R13 activation candidate must not pre-complete recovery tasks")
     require(readiness.get("active_recovery_unit") == "B2R13", "B2R13 must be the sole active successor unit")
     require(readiness.get("transition_proofs") == [], "B2R13 activation candidate must not fabricate transition proofs")
@@ -96,6 +97,7 @@ def main() -> None:
     proof.verify_b2r09_binding()
     proof.verify_invalidation_record()
     verify_activation_frontier()
+    proof.verify_b2r13_candidate_content(load(READINESS))
 
     if args.sherpa_source is not None:
         proof.verify_sherpa_source(args.sherpa_source.resolve())

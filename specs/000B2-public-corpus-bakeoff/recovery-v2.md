@@ -124,6 +124,8 @@ In the v1 machine policy, `foreign_successor_task_references_allowed=false` is i
 
 B2R14's runtime-call exception is not primary-decode authority. Its task-specific verifier and workflow must prove that qualification material is non-primary, that no frozen P0 primary material is accessed, that the exact pinned sherpa API is exercised, and that object/string API confusion fails closed. A B2R14 task candidate that cannot prove those boundaries is ineligible even though runtime API calls are syntactically present.
 
+The canonical B2R14 qualification fixture is frozen before B2R14 begins: `DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY`, fixture id `b2r14-sherpa-result-string-contract-v1`, mono PCM S16LE at 16 kHz, 16000 frames, with exact PCM SHA-256 `0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39`. The common successor verifier—not the B2R14-supplied verifier—must bind this contract and reject frozen P0, ATTEMPT-003 primary evidence, transcript, or successor decode artifact access from the B2R14 harness/workflow.
+
 The common successor verifier enforces these rules from the exact authority-base-to-head diff. A task-specific verifier cannot replace or weaken the common content policy. A reconciliation cannot modify either task-scope or task-content policy because the common workflow and static verifier compare both maps against the canonical expected policy and the authority-base copy.
 
 Primary-decode entry authority is `false` for B2R13 through B2R16, `true` only for B2R17 through B2R22, and `false` again for B2R23, B2R24, and terminal recovery state. ATTEMPT-003 must remain frozen from B2R17 onward, including B2R23, B2R24, and terminal state.
