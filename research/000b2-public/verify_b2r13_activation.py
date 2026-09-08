@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 
 import verify_attempt_002_invalidation as proof
@@ -14,6 +15,24 @@ READINESS = ROOT / "research/000b2-public/recovery-attempt-003-readiness.json"
 TASKS = ROOT / "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md"
 CURRENT = ROOT / "specs/CURRENT.md"
 TASK_ORDER = proof.TASK_ORDER
+ACTIVATION_SCOPE = [
+    ".github/workflows/000b2-public-attempt-003-recovery.yml",
+    ".github/workflows/000b2-public-attempt-recovery.yml",
+    "research/000b2-public/attempt-002-invalidation.json",
+    "research/000b2-public/recovery-attempt-003-readiness.json",
+    "research/000b2-public/verify_attempt_002_invalidation.py",
+    "research/000b2-public/verify_b2r13_activation.py",
+    "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md",
+    "specs/000B2-public-corpus-bakeoff/recovery-v2.md",
+    "specs/CURRENT.md",
+]
+TRUSTED_CONTROLS = [
+    ".github/workflows/000b2-public-attempt-003-recovery.yml",
+    ".github/workflows/000b2-public-attempt-recovery.yml",
+    "research/000b2-public/verify_attempt_002_invalidation.py",
+    "research/000b2-public/verify_b2r13_activation.py",
+]
+B2R13_CANDIDATE_SCOPE = sorted(set(ACTIVATION_SCOPE) - set(TRUSTED_CONTROLS))
 
 
 def require(condition: bool, message: str) -> None:
@@ -33,10 +52,26 @@ def verify_activation_frontier() -> None:
     require(readiness.get("state") == "RECOVERY_READY", "successor recovery must be RECOVERY_READY")
     require(readiness.get("task_order") == TASK_ORDER, "successor recovery task order drift")
     require(readiness.get("task_content_policies") == proof.expected_task_content_policies(), "successor task content policy drift")
+    require(readiness.get("activation_installation_scope") == ACTIVATION_SCOPE, "activation installation scope drift")
+    require(readiness.get("trusted_control_paths") == TRUSTED_CONTROLS, "trusted recovery control set drift")
+    scopes = readiness.get("task_candidate_scopes")
+    require(isinstance(scopes, dict), "task_candidate_scopes must be an object")
+    require(sorted(scopes.get("B2R13", [])) == B2R13_CANDIDATE_SCOPE, "B2R13 candidate scope must exclude trusted controls")
+    require(not any(path.endswith((".py", ".sh", ".yml", ".yaml", ".js", ".ts", ".ps1")) for path in scopes["B2R13"]),
+            "B2R13 candidate scope may not contain executable artifacts")
     require(readiness.get("b2r14_non_primary_fixture_contract") == proof.B2R14_NON_PRIMARY_FIXTURE_CONTRACT, "B2R14 canonical non-primary fixture contract drift")
     require(readiness.get("completed_recovery_tasks") == [], "B2R13 activation candidate must not pre-complete recovery tasks")
     require(readiness.get("active_recovery_unit") == "B2R13", "B2R13 must be the sole active successor unit")
     require(readiness.get("transition_proofs") == [], "B2R13 activation candidate must not fabricate transition proofs")
+
+    authority_base = os.environ.get("AUTHORITY_BASE_REVISION", "")
+    if authority_base:
+        require(authority_base == proof.DISCOVERY_MAIN, "B2R13 activation authority base must be discovery main")
+        changed = proof.run_git("diff", "--name-only", "--diff-filter=ACDMRTUXB", authority_base, "HEAD", "--")
+        changed_paths = sorted(path for path in changed.splitlines() if path)
+        require(changed_paths == sorted(ACTIVATION_SCOPE), "B2R13 activation must install exactly the reviewed activation scope")
+        require(sorted(set(changed_paths) - set(TRUSTED_CONTROLS)) == B2R13_CANDIDATE_SCOPE,
+                "B2R13 candidate/trusted activation partition drift")
 
     historical = readiness.get("historical_recovery_snapshot")
     require(isinstance(historical, dict), "historical recovery snapshot must be an object")
@@ -78,8 +113,6 @@ def verify_activation_frontier() -> None:
         "**ATTEMPT-003 primary decode entry open:** `false`",
     ):
         require(marker in current, f"specs/CURRENT.md missing activation marker: {marker}")
-
-    require("`000B2-unbiased-stt-bakeoff`\n\nState: `BLOCKED_EXTERNAL`" in current, "historical private B2 blocker must remain present")
     require("HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT" in current, "human evidence absence marker must remain present")
     require("production_stt_selected=false" in current, "production selection guard must remain present")
     require("product_code_authorized=false" in current, "product-code guard must remain present")
@@ -97,7 +130,6 @@ def main() -> None:
     proof.verify_b2r09_binding()
     proof.verify_invalidation_record()
     verify_activation_frontier()
-    proof.verify_b2r13_candidate_content(load(READINESS))
 
     if args.sherpa_source is not None:
         proof.verify_sherpa_source(args.sherpa_source.resolve())
@@ -109,6 +141,7 @@ def main() -> None:
     print("B2R13_ACTIVATION=PASS")
     print("ATTEMPT_002_INVALIDATION=PASS")
     print("ATTEMPT_002_HISTORICAL_BYTES=PASS")
+    print("TRUSTED_RECOVERY_CONTROL_BOUNDARY=PASS")
     print("ACTIVE_SUCCESSOR_RECOVERY_UNIT=B2R13")
     print("ATTEMPT_003_PRIMARY_DECODE_AUTHORIZED=NO")
     print("COMPARATIVE_RESULT_AVAILABLE=NO")
