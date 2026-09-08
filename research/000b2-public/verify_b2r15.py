@@ -36,6 +36,137 @@ PRESERVED = {
     "core_config_sha256": "4d97d6b9e563bbbaf6cf455597f4c56e44c459a41c25d85f2f069c5fcbeec8e3",
     "public_wer_adapter_sha256": "581a0e4b0bb91d55a252b92871dbb1246b5fbc4466a5d94bceb35862744fc023",
 }
+EXPECTED_PREPROCESSING = {
+    "schema_version": "000b2-public-b2r15-preprocessing-rebinding-v1",
+    "task": TASK,
+    "lane": "PUBLIC_CORPUS",
+    "state": "ATTEMPT_003_PREPROCESSING_CRYPTOGRAPHICALLY_REBOUND",
+    "attempt_id": "000B2-PUBLIC-ATTEMPT-003",
+    "canonical_authority_base": AUTHORITY_BASE,
+    "reuse_mode": "CRYPTOGRAPHIC_PROVENANCE_REBIND",
+    "source_attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+    "source_evidence_path": "research/000b2-public/preprocessing-capture.json",
+    "source_evidence_sha256": SOURCE_BINDINGS["research/000b2-public/preprocessing-capture.json"][1],
+    "source_evidence_git_blob_sha1": SOURCE_BINDINGS["research/000b2-public/preprocessing-capture.json"][0],
+    "historical_rebinding_path": "research/000b2-public/b2r03-preexecution-rebinding.json",
+    "historical_rebinding_git_blob_sha1": SOURCE_BINDINGS["research/000b2-public/b2r03-preexecution-rebinding.json"][0],
+    "preprocessed_file_count": 240,
+    "all_source_hashes_reverified_by_source_evidence": True,
+    "all_outputs_verified_pcm_s16le_mono_16000hz_by_source_evidence": True,
+    "source_chronology_reused": False,
+    "source_audio_bytes_changed": False,
+    "preprocessed_audio_bytes_changed": False,
+    "subset_membership_changed": False,
+    "no_result_driven_input_change": True,
+    "preserved_identity_guards": {
+        **PRESERVED,
+        "c0_repository_context": "OFF",
+        "c0_test_specific_context": "OFF",
+        "candidate_specific_audio_transform": "OFF",
+    },
+    "claim_guards": {
+        "attempt_003_frozen": False,
+        "primary_decode_entry_open": False,
+        "primary_decoding_started": False,
+        "scoring_allowed": False,
+        "comparative_result_available": False,
+        "production_stt_selected": False,
+        "product_code_authorized": False,
+        "human_developer_speech_accuracy_evidence": "ABSENT",
+    },
+}
+EXPECTED_ENVIRONMENT = {
+    "schema_version": "000b2-public-b2r15-environment-rebinding-v1",
+    "task": TASK,
+    "lane": "PUBLIC_CORPUS",
+    "state": "ATTEMPT_003_ENVIRONMENT_CRYPTOGRAPHICALLY_REBOUND",
+    "attempt_id": "000B2-PUBLIC-ATTEMPT-003",
+    "canonical_authority_base": AUTHORITY_BASE,
+    "reuse_mode": "CRYPTOGRAPHIC_PROVENANCE_REBIND",
+    "source_attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+    "source_evidence_path": "research/000b2-public/execution-environment.json",
+    "source_evidence_sha256": SOURCE_BINDINGS["research/000b2-public/execution-environment.json"][1],
+    "source_evidence_git_blob_sha1": SOURCE_BINDINGS["research/000b2-public/execution-environment.json"][0],
+    "historical_rebinding_path": "research/000b2-public/b2r03-preexecution-rebinding.json",
+    "historical_rebinding_git_blob_sha1": SOURCE_BINDINGS["research/000b2-public/b2r03-preexecution-rebinding.json"][0],
+    "environment_id": "x86_64:AMD EPYC 9V74 80-Core Processor:3e80c2c63bf88d13",
+    "hardware_fingerprint_sha256": "3e80c2c63bf88d13a10c358feaa250672a5250fb9cbc90e59bdb397912cac5cd",
+    "performance_mode": "DIAGNOSTIC",
+    "comparative_performance_authorized": False,
+    "source_chronology_reused": False,
+    "fresh_hardware_claim_created": False,
+    "future_candidate_runtime_observations_must_be_preserved_separately": True,
+    "b2r14_harness_binding": {
+        "harness_path": "research/000b2-public/b2r14-sherpa-result-harness.py",
+        "harness_git_blob_sha1": SOURCE_BINDINGS["research/000b2-public/b2r14-sherpa-result-harness.py"][0],
+        "qualification_path": "research/000b2-public/b2r14-harness-qualification.json",
+        "qualification_git_blob_sha1": SOURCE_BINDINGS["research/000b2-public/b2r14-harness-qualification.json"][0],
+        "verifier_path": "research/000b2-public/verify_b2r14.py",
+        "verifier_git_blob_sha1": SOURCE_BINDINGS["research/000b2-public/verify_b2r14.py"][0],
+        "corrective_task_merge": "e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca",
+        "corrective_post_merge_recovery_run_id": 34246855454,
+        "reconciliation_merge": AUTHORITY_BASE,
+        "reconciliation_post_merge_recovery_run_id": 34269999940,
+    },
+    "claim_guards": EXPECTED_PREPROCESSING["claim_guards"],
+}
+EXPECTED_PROVENANCE = {
+    "schema_version": "000b2-public-b2r15-provenance-v1",
+    "task": TASK,
+    "lane": "PUBLIC_CORPUS",
+    "attempt_id": "000B2-PUBLIC-ATTEMPT-003",
+    "canonical_authority_base": AUTHORITY_BASE,
+    "predecessor": {
+        "task": "B2R14",
+        "corrective_task_base": "2f4212228f24e40fbd03cfc59ab4774df94c0cc3",
+        "qualified_corrective_head": "c60751c43a2523879814d691011d5dd6d3d1e119",
+        "corrective_task_merge": "e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca",
+        "corrective_post_merge_recovery_run_id": 34246855454,
+        "reconciliation_head": "4313ceb3ace7d5f2f793cea5b7baa1a00abd2cdb",
+        "reconciliation_merge": AUTHORITY_BASE,
+        "reconciliation_post_merge_recovery_run_id": 34269999940,
+    },
+    "rebinding_policy": {
+        "mode": "CRYPTOGRAPHIC_PROVENANCE_REBIND",
+        "new_primary_material_access": False,
+        "primary_decode_performed": False,
+        "scoring_performed": False,
+        "fresh_hardware_claim_created": False,
+        "candidate_changed": False,
+        "subset_changed": False,
+        "scorer_changed": False,
+        "normalization_changed": False,
+        "c0_changed": False,
+        "b2r14_harness_changed": False,
+    },
+    "source_evidence": {
+        "preprocessing_path": "research/000b2-public/preprocessing-capture.json",
+        "preprocessing_sha256": SOURCE_BINDINGS["research/000b2-public/preprocessing-capture.json"][1],
+        "preprocessing_git_blob_sha1": SOURCE_BINDINGS["research/000b2-public/preprocessing-capture.json"][0],
+        "environment_path": "research/000b2-public/execution-environment.json",
+        "environment_sha256": SOURCE_BINDINGS["research/000b2-public/execution-environment.json"][1],
+        "environment_git_blob_sha1": SOURCE_BINDINGS["research/000b2-public/execution-environment.json"][0],
+        "historical_rebinding_path": "research/000b2-public/b2r03-preexecution-rebinding.json",
+        "historical_rebinding_git_blob_sha1": SOURCE_BINDINGS["research/000b2-public/b2r03-preexecution-rebinding.json"][0],
+    },
+    "preserved_identity_guards": {
+        **PRESERVED,
+        "b2r14_harness_git_blob_sha1": SOURCE_BINDINGS["research/000b2-public/b2r14-sherpa-result-harness.py"][0],
+        "b2r14_qualification_git_blob_sha1": SOURCE_BINDINGS["research/000b2-public/b2r14-harness-qualification.json"][0],
+        "c0_repository_context": "OFF",
+        "c0_test_specific_context": "OFF",
+        "candidate_specific_audio_transform": "OFF",
+    },
+    "claim_guards": {
+        "human_developer_speech_accuracy_evidence": "ABSENT",
+        "comparative_result_available": False,
+        "production_stt_selected": False,
+        "product_code_authorized": False,
+        "attempt_003_frozen": False,
+        "primary_decode_entry_open": False,
+    },
+}
+
 
 class VerifyError(ValueError):
     pass
@@ -87,43 +218,17 @@ def verify_frontier() -> None:
 
 def verify_preprocessing() -> None:
     p = load(PREPROCESSING)
-    require((p.get("task"), p.get("attempt_id"), p.get("canonical_authority_base")) == (TASK, "000B2-PUBLIC-ATTEMPT-003", AUTHORITY_BASE), "preprocessing identity drift")
-    require(p.get("reuse_mode") == "CRYPTOGRAPHIC_PROVENANCE_REBIND", "preprocessing mode drift")
-    require(p.get("source_evidence_sha256") == SOURCE_BINDINGS["research/000b2-public/preprocessing-capture.json"][1], "preprocessing digest binding drift")
-    require(p.get("source_evidence_git_blob_sha1") == SOURCE_BINDINGS["research/000b2-public/preprocessing-capture.json"][0], "preprocessing blob binding drift")
-    require(p.get("preprocessed_file_count") == 240, "preprocessing count drift")
-    for key in ("source_chronology_reused", "source_audio_bytes_changed", "preprocessed_audio_bytes_changed", "subset_membership_changed"):
-        require(p.get(key) is False, f"preprocessing guard drift: {key}")
-    require(p.get("no_result_driven_input_change") is True, "result-driven input change")
-    guards = p.get("preserved_identity_guards", {})
-    for key, value in PRESERVED.items():
-        require(guards.get(key) == value, f"preserved preprocessing identity drift: {key}")
+    require(p == EXPECTED_PREPROCESSING, "preprocessing rebinding record drift")
 
 
 def verify_environment() -> None:
     e = load(ENVIRONMENT)
-    require((e.get("task"), e.get("attempt_id"), e.get("canonical_authority_base")) == (TASK, "000B2-PUBLIC-ATTEMPT-003", AUTHORITY_BASE), "environment identity drift")
-    require(e.get("reuse_mode") == "CRYPTOGRAPHIC_PROVENANCE_REBIND", "environment mode drift")
-    require(e.get("source_evidence_sha256") == SOURCE_BINDINGS["research/000b2-public/execution-environment.json"][1], "environment digest binding drift")
-    require(e.get("source_evidence_git_blob_sha1") == SOURCE_BINDINGS["research/000b2-public/execution-environment.json"][0], "environment blob binding drift")
-    require(e.get("performance_mode") == "DIAGNOSTIC" and e.get("comparative_performance_authorized") is False, "environment performance claim drift")
-    require(e.get("source_chronology_reused") is False and e.get("fresh_hardware_claim_created") is False, "environment chronology/claim drift")
-    harness = e.get("b2r14_harness_binding", {})
-    require(harness.get("harness_git_blob_sha1") == SOURCE_BINDINGS["research/000b2-public/b2r14-sherpa-result-harness.py"][0], "harness blob drift")
-    require(harness.get("qualification_git_blob_sha1") == SOURCE_BINDINGS["research/000b2-public/b2r14-harness-qualification.json"][0], "qualification blob drift")
-    require(harness.get("reconciliation_merge") == AUTHORITY_BASE and harness.get("reconciliation_post_merge_recovery_run_id") == 34269999940, "B2R14 canonical proof drift")
+    require(e == EXPECTED_ENVIRONMENT, "environment rebinding record drift")
 
 
 def verify_provenance() -> None:
     p = load(PROVENANCE)
-    require((p.get("task"), p.get("attempt_id"), p.get("canonical_authority_base")) == (TASK, "000B2-PUBLIC-ATTEMPT-003", AUTHORITY_BASE), "provenance identity drift")
-    policy = p.get("rebinding_policy", {})
-    for key in ("new_primary_material_access", "primary_decode_performed", "scoring_performed", "fresh_hardware_claim_created", "candidate_changed", "subset_changed", "scorer_changed", "normalization_changed", "c0_changed", "b2r14_harness_changed"):
-        require(policy.get(key) is False, f"rebinding policy drift: {key}")
-    claims = p.get("claim_guards", {})
-    require(claims.get("human_developer_speech_accuracy_evidence") == "ABSENT", "human evidence claim drift")
-    require(claims.get("comparative_result_available") is False and claims.get("production_stt_selected") is False and claims.get("product_code_authorized") is False, "claim guard opened")
-    require(claims.get("attempt_003_frozen") is False and claims.get("primary_decode_entry_open") is False, "attempt authority opened")
+    require(p == EXPECTED_PROVENANCE, "provenance rebinding record drift")
 
 
 def main() -> int:
