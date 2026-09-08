@@ -17,6 +17,7 @@ CURRENT = ROOT / "specs/CURRENT.md"
 TASK_ORDER = proof.TASK_ORDER
 ACTIVATION_SCOPE = [
     ".github/workflows/000b2-public-attempt-003-recovery.yml",
+    ".github/workflows/000b2-public-attempt-003-trusted-pr.yml",
     ".github/workflows/000b2-public-attempt-recovery.yml",
     "research/000b2-public/attempt-002-invalidation.json",
     "research/000b2-public/recovery-attempt-003-readiness.json",
@@ -28,11 +29,26 @@ ACTIVATION_SCOPE = [
 ]
 TRUSTED_CONTROLS = [
     ".github/workflows/000b2-public-attempt-003-recovery.yml",
+    ".github/workflows/000b2-public-attempt-003-trusted-pr.yml",
     ".github/workflows/000b2-public-attempt-recovery.yml",
     "research/000b2-public/verify_attempt_002_invalidation.py",
     "research/000b2-public/verify_b2r13_activation.py",
     "specs/CURRENT.md",
 ]
+IMMUTABLE_EXECUTION_CONTROLS = [
+    ".github/workflows/000b2-public-attempt-003-recovery.yml",
+    ".github/workflows/000b2-public-attempt-003-trusted-pr.yml",
+    ".github/workflows/000b2-public-attempt-recovery.yml",
+    "research/000b2-public/verify_attempt_002_invalidation.py",
+    "research/000b2-public/verify_b2r13_activation.py",
+]
+TRUSTED_GATE_POLICY = {
+    "successor_pr_gate_event_after_activation": "pull_request_target",
+    "successor_pr_gate_definition_source": "EXACT_AUTHORITY_BASE",
+    "successor_pr_gate_workflow": ".github/workflows/000b2-public-attempt-003-trusted-pr.yml",
+    "activation_candidate_control_exception_task": "B2R13",
+    "candidate_common_control_execution_authorized": False,
+}
 B2R13_CANDIDATE_SCOPE = sorted(set(ACTIVATION_SCOPE) - set(TRUSTED_CONTROLS))
 
 
@@ -55,6 +71,25 @@ def verify_activation_frontier() -> None:
     require(readiness.get("task_content_policies") == proof.expected_task_content_policies(), "successor task content policy drift")
     require(readiness.get("activation_installation_scope") == ACTIVATION_SCOPE, "activation installation scope drift")
     require(readiness.get("trusted_control_paths") == TRUSTED_CONTROLS, "trusted recovery control set drift")
+
+    transition_policy = readiness.get("transition_policy")
+    require(isinstance(transition_policy, dict), "transition policy must be an object")
+    for key, value in TRUSTED_GATE_POLICY.items():
+        require(transition_policy.get(key) == value, f"trusted successor PR gate policy drift: {key}")
+    require(
+        transition_policy.get("immutable_execution_control_paths") == IMMUTABLE_EXECUTION_CONTROLS,
+        "immutable execution-control path set drift",
+    )
+    require(
+        transition_policy.get("reconciliation_candidate_scope") == [
+            "docs/canonical/CURRENT_STATE.md",
+            "research/000b2-public/recovery-attempt-003-readiness.json",
+            "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md",
+            "specs/CURRENT.md",
+        ],
+        "reconciliation candidate scope drift",
+    )
+
     scopes = readiness.get("task_candidate_scopes")
     require(isinstance(scopes, dict), "task_candidate_scopes must be an object")
     require(sorted(scopes.get("B2R13", [])) == B2R13_CANDIDATE_SCOPE, "B2R13 candidate scope must exclude trusted controls")
@@ -143,6 +178,7 @@ def main() -> None:
     print("ATTEMPT_002_INVALIDATION=PASS")
     print("ATTEMPT_002_HISTORICAL_BYTES=PASS")
     print("TRUSTED_RECOVERY_CONTROL_BOUNDARY=PASS")
+    print("TRUSTED_SUCCESSOR_PR_GATE_POLICY=PASS")
     print("ACTIVE_SUCCESSOR_RECOVERY_UNIT=B2R13")
     print("ATTEMPT_003_PRIMARY_DECODE_AUTHORIZED=NO")
     print("COMPARATIVE_RESULT_AVAILABLE=NO")
