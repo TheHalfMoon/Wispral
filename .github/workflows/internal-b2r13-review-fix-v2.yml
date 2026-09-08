@@ -24,10 +24,12 @@ jobs:
         run: |
           set -euo pipefail
           python tools/internal_b2r13_review_remediate.py
+          python tools/internal_b2r13_activation_patch.py
           rm -f \
             .github/workflows/internal-b2r13-review-fix.yml \
             .github/workflows/internal-b2r13-review-fix-v2.yml \
-            tools/internal_b2r13_review_remediate.py
+            tools/internal_b2r13_review_remediate.py \
+            tools/internal_b2r13_activation_patch.py
           git config user.name 'TheHalfMoon'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
@@ -37,7 +39,7 @@ jobs:
             research/000b2-public/verify_b2r13_activation.py
           AUTHORITY_BASE_REVISION=dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff \
             PYTHONDONTWRITEBYTECODE=1 \
-            python research/000b2-public/verify_attempt_002_invalidation.py --static-only
+            python research/000b2-public/verify_b2r13_activation.py --static-only
           test "$(git diff --name-only dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff HEAD -- | sort)" = "$(printf '%s\n' \
             .github/workflows/000b2-public-attempt-003-recovery.yml \
             .github/workflows/000b2-public-attempt-recovery.yml \
