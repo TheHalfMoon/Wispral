@@ -220,20 +220,20 @@ jobs:
                       if not isinstance(active, str) or active not in task_order:
                           raise SystemExit('no active successor task may accept candidate material')
                       active_token = active.lower()
-                      common_workflow = '.github/workflows/000b2-public-attempt-003-recovery.yml'
+                      task_tokens = {task.lower() for task in task_order}
                       disallowed = []
                       for path in sorted(changed_paths):
                           name = Path(path).name.lower()
-                          if path == common_workflow:
+                          matched_tokens = {token for token in task_tokens if token in name}
+                          active_named = matched_tokens == {active_token}
+                          if path.startswith('.github/workflows/') and active_named:
                               continue
-                          if path.startswith('.github/workflows/') and active_token in name:
-                              continue
-                          if path.startswith('research/000b2-public/') and active_token in name:
+                          if path.startswith('research/000b2-public/') and active_named:
                               continue
                           disallowed.append(path)
                       if disallowed:
                           raise SystemExit(
-                              f'{active} candidate changed paths outside active-task scope: '
+                              f'{active} candidate changed paths outside exact active-task scope: '
                               + ', '.join(disallowed)
                           )
               else:
