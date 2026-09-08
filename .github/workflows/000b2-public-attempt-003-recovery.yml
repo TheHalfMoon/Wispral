@@ -203,9 +203,39 @@ jobs:
               delta = len(completed) - len(base_completed)
               if delta not in {0, 1}:
                   raise SystemExit('candidate may advance at most one recovery task from authority base')
+              changed = subprocess.run(
+                  ['git', 'diff', '--name-only', '--diff-filter=ACDMRTUXB', authority_base, 'HEAD', '--'],
+                  check=False,
+                  text=True,
+                  stdout=subprocess.PIPE,
+                  stderr=subprocess.PIPE,
+              )
+              if changed.returncode != 0:
+                  raise SystemExit('unable to compute candidate path scope')
+              changed_paths = {line for line in changed.stdout.splitlines() if line}
               if delta == 0:
                   if completed != base_completed or active != base_active or proofs != base_proofs:
                       raise SystemExit('non-reconciliation candidate changed successor completion authority')
+                  if changed_paths:
+                      if not isinstance(active, str) or active not in task_order:
+                          raise SystemExit('no active successor task may accept candidate material')
+                      active_token = active.lower()
+                      common_workflow = '.github/workflows/000b2-public-attempt-003-recovery.yml'
+                      disallowed = []
+                      for path in sorted(changed_paths):
+                          name = Path(path).name.lower()
+                          if path == common_workflow:
+                              continue
+                          if path.startswith('.github/workflows/') and active_token in name:
+                              continue
+                          if path.startswith('research/000b2-public/') and active_token in name:
+                              continue
+                          disallowed.append(path)
+                      if disallowed:
+                          raise SystemExit(
+                              f'{active} candidate changed paths outside active-task scope: '
+                              + ', '.join(disallowed)
+                          )
               else:
                   if completed[:-1] != base_completed or proofs[:-1] != base_proofs:
                       raise SystemExit('reconciliation replaced prior completion/proof history')
@@ -213,16 +243,6 @@ jobs:
                       raise SystemExit('reconciliation did not complete the exact authority-base active task')
                   if proofs[-1].get('canonical_task_merge') != authority_base:
                       raise SystemExit('new transition proof must bind the exact reconciliation authority-base task merge')
-                  changed = subprocess.run(
-                      ['git', 'diff', '--name-only', '--diff-filter=ACDMRTUXB', authority_base, 'HEAD', '--'],
-                      check=False,
-                      text=True,
-                      stdout=subprocess.PIPE,
-                      stderr=subprocess.PIPE,
-                  )
-                  if changed.returncode != 0:
-                      raise SystemExit('unable to compute reconciliation candidate scope')
-                  changed_paths = {line for line in changed.stdout.splitlines() if line}
                   allowed_scope = set(expected_scope)
                   if not changed_paths:
                       raise SystemExit('reconciliation candidate must change canonical authority files')
