@@ -112,7 +112,7 @@ Path scope alone is not execution authority. The exact `task_candidate_scopes` a
 For B2R14 through B2R24, every non-reconciliation task candidate MUST:
 
 - change only paths in the exact active-task allowlist;
-- include the task's exact required verifier and pass it with `--static-only`;
+- include the task's exact required verifier as a reviewable evidence artifact; the common trusted control MUST NOT execute candidate-supplied verifier code and instead validates the candidate diff itself;
 - bind every changed artifact explicitly to the exact active B2R task;
 - contain no reference to a future successor B2R task; references to already-canonical predecessor tasks are allowed only when they bind required evidence or qualified predecessor artifacts for the active task;
 - bind each changed JSON evidence object with top-level `task` equal to the exact active task;
@@ -122,7 +122,7 @@ For B2R14 through B2R24, every non-reconciliation task candidate MUST:
 
 In the v1 machine policy, `foreign_successor_task_references_allowed=false` is interpreted fail-closed as prohibiting future or otherwise unqualified successor-task material; it does not prohibit an exact canonical predecessor evidence binding that the active task contract requires. The common verifier computes the future-task set from `task_order` and rejects those references directly.
 
-B2R14's runtime-call exception is not primary-decode authority. Its task-specific verifier and workflow must prove that qualification material is non-primary, that no frozen P0 primary material is accessed, that the exact pinned sherpa API is exercised, and that object/string API confusion fails closed. A B2R14 task candidate that cannot prove those boundaries is ineligible even though runtime API calls are syntactically present.
+B2R14's runtime-call exception is not primary-decode authority. The trusted common recovery control—not candidate-supplied verifier execution—must prove that qualification material is non-primary, that no frozen P0 primary material is accessed, and that the candidate harness contains exactly one direct `return recognizer.get_result(stream)` with no `.text` or `getattr` result coercion. The same trusted control separately exercises the exact pinned sherpa API against the frozen synthetic fixture to prove the runtime returns a plain string. A B2R14 task candidate that cannot satisfy both the candidate-harness structural contract and the pinned-runtime contract is ineligible.
 
 The canonical B2R14 qualification fixture is frozen before B2R14 begins: `DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY`, fixture id `b2r14-sherpa-result-string-contract-v1`, mono PCM S16LE at 16 kHz, 16000 frames, with exact PCM SHA-256 `0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39`. The common successor verifier—not the B2R14-supplied verifier—must bind this contract and reject frozen P0, ATTEMPT-003 primary evidence, transcript, or successor decode artifact access from the B2R14 harness/workflow.
 

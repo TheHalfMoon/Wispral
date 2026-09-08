@@ -256,6 +256,34 @@ def verify_b2r14_non_primary_candidate(readiness: dict[str, Any]) -> None:
                 require(value in strings, f"B2R14 harness must bind exact non-primary fixture value: {value}")
             calls = {call_name(node.func) for node in ast.walk(tree) if isinstance(node, ast.Call)}
             require("get_result" in calls, "B2R14 harness must exercise the pinned sherpa get_result API")
+            get_result_calls = [
+                node for node in ast.walk(tree)
+                if isinstance(node, ast.Call) and call_name(node.func) == "get_result"
+            ]
+            require(len(get_result_calls) == 1, "B2R14 harness must contain exactly one get_result call")
+            result_call = get_result_calls[0]
+            require(
+                isinstance(result_call.func, ast.Attribute)
+                and isinstance(result_call.func.value, ast.Name)
+                and result_call.func.value.id == "recognizer"
+                and len(result_call.args) == 1
+                and isinstance(result_call.args[0], ast.Name)
+                and result_call.args[0].id == "stream"
+                and not result_call.keywords,
+                "B2R14 harness must call recognizer.get_result(stream) exactly",
+            )
+            direct_returns = [
+                node for node in ast.walk(tree)
+                if isinstance(node, ast.Return)
+                and node.value is not None
+                and ast.dump(node.value, include_attributes=False) == ast.dump(result_call, include_attributes=False)
+            ]
+            require(len(direct_returns) == 1, "B2R14 harness must directly return recognizer.get_result(stream)")
+            require(
+                not any(isinstance(node, ast.Attribute) and node.attr == "text" for node in ast.walk(tree)),
+                "B2R14 harness may not reintroduce object-style .text extraction",
+            )
+            require("getattr" not in calls, "B2R14 harness may not hide object/string confusion behind getattr")
         elif path == qualification_path:
             document = json.loads(payload)
             require(document.get("non_primary_fixture") == B2R14_NON_PRIMARY_FIXTURE_CONTRACT,
@@ -359,15 +387,14 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
 
     verifier = ROOT / required_verifier
     require(verifier.is_file(), f"{active} required verifier is missing")
-    verification = subprocess.run(
-        [sys.executable, str(verifier), "--static-only"],
-        cwd=ROOT,
-        check=False,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-    )
-    require(verification.returncode == 0, f"{active} task-specific verifier failed: {verification.stdout.strip()}")
+    try:
+        verifier_tree = ast.parse(verifier.read_text(encoding="utf-8"), filename=required_verifier)
+    except SyntaxError as error:
+        raise SystemExit(f"ATTEMPT_002_INVALIDATION=FAIL: malformed {active} required verifier") from error
+    require(any(isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) for node in ast.walk(verifier_tree)),
+            f"{active} required verifier must contain reviewable static checks")
+    # Candidate-supplied verifier code is intentionally never executed here. The common
+    # successor control owns execution authority and validates the candidate diff itself.
 
 
 def verify_historical_bytes() -> None:
