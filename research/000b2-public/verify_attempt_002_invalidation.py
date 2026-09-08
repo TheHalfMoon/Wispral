@@ -4,10 +4,13 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import json
+import os
 import re
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -43,6 +46,30 @@ CANDIDATES = [
     "sherpa-onnx-compact",
     "sherpa-onnx-balanced",
 ]
+SUCCESSOR_TOKEN_RE = re.compile(r"\bB2R(?:1[3-9]|2[0-4])\b", re.IGNORECASE)
+POSITIVE_AUTHORITY_PATTERNS = {
+    "comparative_result_available": re.compile(r"comparative_result_available[\"']?\s*[:=]\s*(?:true|True|YES|yes)"),
+    "production_stt_selected": re.compile(r"production_stt_selected[\"']?\s*[:=]\s*(?:true|True|YES|yes)"),
+    "product_code_authorized": re.compile(r"product_code_authorized[\"']?\s*[:=]\s*(?:true|True|YES|yes)"),
+    "primary_decode_entry_open": re.compile(r"primary_decode_entry_open[\"']?\s*[:=]\s*(?:true|True|YES|yes)"),
+}
+DECODE_CALL_NAMES = {
+    "accept_waveform",
+    "create_stream",
+    "decode",
+    "decode_stream",
+    "get_result",
+    "input_finished",
+    "transcribe",
+}
+SCORING_CALL_NAMES = {
+    "compute_wer",
+    "score",
+    "score_transcript",
+    "score_transcripts",
+    "wer",
+    "word_error_rate",
+}
 
 # Exact ATTEMPT-002 bytes that were canonical when the defect was discovered.
 # These paths are immutable historical evidence/proof material after invalidation.
@@ -107,6 +134,131 @@ def sha256_file(path: Path) -> str:
 
 def git_blob(ref: str, path: str, cwd: Path = ROOT) -> str:
     return run_git("rev-parse", f"{ref}:{path}", cwd=cwd)
+
+
+def expected_task_content_policies() -> dict[str, dict[str, Any]]:
+    policies: dict[str, dict[str, Any]] = {}
+    for task in TASK_ORDER:
+        verifier = (
+            "research/000b2-public/verify_b2r13_activation.py"
+            if task == "B2R13"
+            else f"research/000b2-public/verify_{task.lower()}.py"
+        )
+        policies[task] = {
+            "required_verifier": verifier,
+            "primary_decode_allowed": task in {"B2R17", "B2R18", "B2R19", "B2R20", "B2R21", "B2R22"},
+            "scoring_allowed": task == "B2R24",
+            "comparative_publish_allowed": False,
+            "production_selection_allowed": False,
+            "product_code_allowed": False,
+            "foreign_successor_task_references_allowed": False,
+        }
+    return policies
+
+
+def call_name(node: ast.AST) -> str:
+    if isinstance(node, ast.Name):
+        return node.id.lower()
+    if isinstance(node, ast.Attribute):
+        return node.attr.lower()
+    return ""
+
+
+def verify_active_task_candidate_content(readiness: dict[str, Any], active: str | None, completed: list[str]) -> None:
+    if active is None or active == "B2R13":
+        return
+    authority_base = os.environ.get("AUTHORITY_BASE_REVISION", "")
+    if not authority_base:
+        return
+    base_read = subprocess.run(
+        ["git", "show", f"{authority_base}:research/000b2-public/recovery-attempt-003-readiness.json"],
+        cwd=ROOT,
+        check=False,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+    )
+    if base_read.returncode != 0:
+        return
+    try:
+        base_state = json.loads(base_read.stdout)
+    except json.JSONDecodeError as error:
+        raise SystemExit("ATTEMPT_002_INVALIDATION=FAIL: authority-base successor readiness malformed") from error
+    base_completed = base_state.get("completed_recovery_tasks")
+    if not isinstance(base_completed, list):
+        return
+    delta = len(completed) - len(base_completed)
+    if delta != 0:
+        return
+
+    changed_output = run_git("diff", "--name-only", "--diff-filter=ACMRTUXB", authority_base, "HEAD", "--")
+    changed_paths = [path for path in changed_output.splitlines() if path]
+    if not changed_paths:
+        return
+
+    policies = expected_task_content_policies()
+    policy = policies[active]
+    scopes = readiness.get("task_candidate_scopes")
+    require(isinstance(scopes, dict), "task_candidate_scopes must be an object")
+    allowed_paths = scopes.get(active)
+    require(isinstance(allowed_paths, list), f"missing exact candidate scope for {active}")
+    outside_scope = sorted(set(changed_paths) - set(allowed_paths))
+    require(not outside_scope, f"{active} candidate content outside exact path scope: {', '.join(outside_scope)}")
+
+    required_verifier = policy["required_verifier"]
+    require(required_verifier in changed_paths, f"{active} candidate must include its required verifier")
+    active_token = active.upper()
+
+    for path in changed_paths:
+        probe = subprocess.run(
+            ["git", "cat-file", "-e", f"HEAD:{path}"],
+            cwd=ROOT,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        require(probe.returncode == 0, f"{active} candidate may not delete scoped artifact: {path}")
+        text = run_git("show", f"HEAD:{path}")
+        task_tokens = {token.upper() for token in SUCCESSOR_TOKEN_RE.findall(text)}
+        require(active_token in task_tokens, f"{active} candidate artifact lacks explicit active-task binding: {path}")
+        foreign = sorted(task_tokens - {active_token})
+        require(not foreign, f"{active} candidate artifact references foreign successor tasks in {path}: {', '.join(foreign)}")
+
+        for authority, pattern in POSITIVE_AUTHORITY_PATTERNS.items():
+            require(pattern.search(text) is None, f"{active} candidate may not positively publish {authority}: {path}")
+
+        if path.endswith(".json"):
+            try:
+                document = json.loads(text)
+            except json.JSONDecodeError as error:
+                raise SystemExit(f"ATTEMPT_002_INVALIDATION=FAIL: malformed {active} JSON artifact: {path}") from error
+            require(isinstance(document, dict), f"{active} JSON artifact root must be an object: {path}")
+            require(document.get("task") == active, f"{active} JSON artifact must bind task exactly: {path}")
+
+        if path.endswith(".py"):
+            try:
+                tree = ast.parse(text, filename=path)
+            except SyntaxError as error:
+                raise SystemExit(f"ATTEMPT_002_INVALIDATION=FAIL: malformed {active} Python artifact: {path}") from error
+            calls = {call_name(node.func) for node in ast.walk(tree) if isinstance(node, ast.Call)}
+            if not policy["primary_decode_allowed"]:
+                forbidden_decode = sorted(calls & DECODE_CALL_NAMES)
+                require(not forbidden_decode, f"{active} forbids primary-decode calls in {path}: {', '.join(forbidden_decode)}")
+            if not policy["scoring_allowed"]:
+                forbidden_scoring = sorted(calls & SCORING_CALL_NAMES)
+                require(not forbidden_scoring, f"{active} forbids scoring calls in {path}: {', '.join(forbidden_scoring)}")
+
+    verifier = ROOT / required_verifier
+    require(verifier.is_file(), f"{active} required verifier is missing")
+    verification = subprocess.run(
+        [sys.executable, str(verifier), "--static-only"],
+        cwd=ROOT,
+        check=False,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    require(verification.returncode == 0, f"{active} task-specific verifier failed: {verification.stdout.strip()}")
 
 
 def verify_historical_bytes() -> None:
@@ -257,6 +409,7 @@ def verify_successor_frontier() -> None:
     require(readiness.get("schema_version") == "000b2-public-attempt-003-recovery-readiness-v1", "successor readiness schema drift")
     require(readiness.get("state") == "RECOVERY_READY", "successor recovery must remain RECOVERY_READY")
     require(readiness.get("task_order") == TASK_ORDER, "successor recovery task order drift")
+    require(readiness.get("task_content_policies") == expected_task_content_policies(), "successor task content policy drift")
 
     historical = readiness.get("historical_recovery_snapshot")
     require(isinstance(historical, dict), "historical recovery snapshot must be an object")
@@ -307,18 +460,20 @@ def verify_successor_frontier() -> None:
     require(guards.get("production_stt_selected") is False, "production STT must remain unselected")
     require(guards.get("product_code_authorized") is False, "product code must remain unauthorized")
 
-    if active in {"B2R13", "B2R14", "B2R15", "B2R16"}:
-        require(replacement.get("primary_decode_entry_open") is False, f"primary decode must remain closed during {active}")
+    if active in {"B2R13", "B2R14", "B2R15", "B2R16", "B2R23", "B2R24"} or active is None:
+        require(replacement.get("primary_decode_entry_open") is False, f"primary decode must be closed during terminal/non-decode phase {active}")
     elif active in {"B2R17", "B2R18", "B2R19", "B2R20", "B2R21", "B2R22"}:
         require(replacement.get("primary_decode_entry_open") is True, f"primary decode must be open during {active}")
-    if active in {"B2R17", "B2R18", "B2R19", "B2R20", "B2R21", "B2R22", "B2R23", "B2R24"}:
-        require(replacement.get("frozen") is True, f"ATTEMPT-003 must be frozen before or during {active}")
+    if active in {"B2R17", "B2R18", "B2R19", "B2R20", "B2R21", "B2R22", "B2R23", "B2R24"} or active is None:
+        require(replacement.get("frozen") is True, f"ATTEMPT-003 must remain frozen during {active}")
     if replacement.get("primary_decode_entry_open") is True:
         require(replacement.get("frozen") is True, "ATTEMPT-003 primary decode cannot open before attempt freeze")
     if active == "B2R13":
         require(replacement.get("frozen") is False, "ATTEMPT-003 must not be frozen during B2R13 activation")
         require(completed == [], "B2R13 activation candidate must not pre-complete recovery work")
         require(readiness.get("transition_proofs") == [], "B2R13 activation candidate must not fabricate transition proofs")
+
+    verify_active_task_candidate_content(readiness, active, completed)
 
     current = (ROOT / "specs/CURRENT.md").read_text(encoding="utf-8")
     current_state = (ROOT / "docs/canonical/CURRENT_STATE.md").read_text(encoding="utf-8")
@@ -330,7 +485,7 @@ def verify_successor_frontier() -> None:
     for marker in required_markers:
         require(marker in current, f"specs/CURRENT.md missing successor marker: {marker}")
         require(marker in current_state, f"CURRENT_STATE.md missing successor marker: {marker}")
-    if active in {"B2R13", "B2R14", "B2R15", "B2R16"}:
+    if active in {"B2R13", "B2R14", "B2R15", "B2R16", "B2R23", "B2R24"} or active is None:
         decode_marker = "**ATTEMPT-003 primary decode entry open:** `false`"
         require(decode_marker in current, f"CURRENT must close ATTEMPT-003 primary decode during {active}")
         require(decode_marker in current_state, f"CURRENT_STATE must close ATTEMPT-003 primary decode during {active}")
