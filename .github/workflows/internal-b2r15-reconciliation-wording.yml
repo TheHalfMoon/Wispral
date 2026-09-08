@@ -1,0 +1,88 @@
+name: Internal B2R15 Reconciliation Wording
+
+on:
+  push:
+    branches:
+      - internal/b2r15-reconciliation-builder
+    paths:
+      - '.github/workflows/internal-b2r15-reconciliation-wording.yml'
+
+permissions:
+  contents: write
+
+env:
+  CANONICAL_BASE: 3d31b18823b8275c99e1478b132a64f36fad05c0
+  TARGET_BRANCH: recovery/b2r15-reconcile-to-b2r16
+  TARGET_EXPECTED_HEAD: bfed253b47c76113d3a4fb50c2da73a12d8af091
+
+jobs:
+  clarify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout builder source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify immutable live refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin "refs/heads/$TARGET_BRANCH" | cut -f1)" = "$TARGET_EXPECTED_HEAD"
+          git fetch origin "refs/heads/$TARGET_BRANCH:refs/remotes/origin/$TARGET_BRANCH"
+          git switch --detach "$TARGET_EXPECTED_HEAD"
+
+      - name: Clarify superseded B2R14 action wording
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          p=Path('docs/canonical/CURRENT_STATE.md')
+          s=p.read_text(encoding='utf-8')
+          old='B2R15 alone is the next bounded unit: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary corpus decode or scoring is authorized. B2R16 and every later successor unit require their own exact-head qualification, canonical-base trusted PR gate, independent review, guarded normal merge, post-merge recovery proof, and separate reconciliation.'
+          new='At the B2R14 corrective reconciliation frontier, B2R15 alone was the next bounded unit: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary corpus decode or scoring was authorized. That B2R14-era instruction is historical and is superseded by the B2R15 reconciliation below; it grants no present execution authority.'
+          assert s.count(old)==1
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+
+          p=Path('specs/CURRENT.md')
+          s=p.read_text(encoding='utf-8')
+          old='The sole next bounded action is B2R15: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary decode or scoring is authorized. B2R16 and every later ATTEMPT-003 unit remain closed until their predecessor is canonically reconciled.'
+          new='At the B2R14 corrective reconciliation frontier, the sole next bounded action was B2R15: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary decode or scoring was authorized. That B2R14-era instruction is historical and is superseded by the B2R15 reconciliation below; it grants no present execution authority.'
+          assert s.count(old)==1
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+          git diff --check
+
+      - name: Commit local clarification candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Abdulaziz M. Shehri'
+          git config user.email 'alshehriofficial@gmail.com'
+          git add docs/canonical/CURRENT_STATE.md specs/CURRENT.md
+          git commit -m 'docs(b2): clarify superseded B2R14 action wording'
+          test "$(git rev-parse HEAD^)" = "$TARGET_EXPECTED_HEAD"
+
+      - name: Verify final canonical candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected=$(printf '%s\n' docs/canonical/CURRENT_STATE.md research/000b2-public/recovery-attempt-003-readiness.json specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md specs/CURRENT.md | sort)
+          test "$(git diff --name-only "$CANONICAL_BASE" HEAD -- | sort)" = "$expected"
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py --static-only
+
+      - name: Fast-forward target
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin "refs/heads/$TARGET_BRANCH" | cut -f1)" = "$TARGET_EXPECTED_HEAD"
+          git push origin "HEAD:refs/heads/$TARGET_BRANCH"
+          test "$(git ls-remote origin "refs/heads/$TARGET_BRANCH" | cut -f1)" = "$(git rev-parse HEAD)"
+          echo "B2R15_RECONCILIATION_FINAL_HEAD=$(git rev-parse HEAD)"
