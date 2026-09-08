@@ -1,0 +1,163 @@
+name: Internal B2R15 Review Fix V2
+
+on:
+  push:
+    branches:
+      - internal/b2r15-reconciliation-builder
+    paths:
+      - '.github/workflows/internal-b2r15-review-fix-v2.yml'
+
+permissions:
+  contents: write
+
+env:
+  CANONICAL_BASE: 3d31b18823b8275c99e1478b132a64f36fad05c0
+  TARGET_BRANCH: recovery/b2r15-reconcile-to-b2r16
+  TARGET_EXPECTED_HEAD: 9f22813af150cab11786fa8ff9dbf0c550c4f839
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout builder source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify immutable live refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin "refs/heads/$TARGET_BRANCH" | cut -f1)" = "$TARGET_EXPECTED_HEAD"
+          git fetch origin "refs/heads/$TARGET_BRANCH:refs/remotes/origin/$TARGET_BRANCH"
+          git switch --detach "$TARGET_EXPECTED_HEAD"
+
+      - name: Supersede stale B2R15 current-authority wording
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_exact(path: str, old: str, new: str, expected: int = 1) -> None:
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              count = text.count(old)
+              if count != expected:
+                  raise SystemExit(f'{path}: expected {expected} occurrences, found {count}: {old!r}')
+              p.write_text(text.replace(old, new), encoding='utf-8')
+
+          specs = 'specs/CURRENT.md'
+          replace_exact(specs,
+              'Current execution authority is ATTEMPT-003 B2R15 only; ATTEMPT-003 remains unfrozen, primary decoding and scoring remain closed, and B2R16+ remain unauthorized.',
+              'At that historical pre-B2R15-reconciliation frontier, execution authority was ATTEMPT-003 B2R15 only; ATTEMPT-003 was unfrozen, primary decoding and scoring were closed, and B2R16+ were unauthorized. That frontier is superseded by the canonical B2R15 reconciliation below; current execution authority is ATTEMPT-003 B2R16 only, with ATTEMPT-003 still unfrozen and primary decoding/scoring still closed.')
+          replace_exact(specs,
+              'current authority is ATTEMPT-003 B2R15 only, with ATTEMPT-003 unfrozen, primary decoding/scoring closed, and B2R16+ unauthorized.',
+              'that B2R15 authority applied only at the historical pre-reconciliation frontier, with ATTEMPT-003 unfrozen and primary decoding/scoring closed. That frontier is superseded; current authority is ATTEMPT-003 B2R16 only, with ATTEMPT-003 still unfrozen and primary decoding/scoring still closed.')
+          replace_exact(specs,
+              'whose current execution authority is B2R15 only.',
+              'whose B2R15 execution frontier is historical and superseded; current execution authority is B2R16 only.')
+          replace_exact(specs,
+              'Current authority is ATTEMPT-003 B2R15 only; ATTEMPT-003 remains unfrozen, primary decoding and scoring remain closed, and B2R16+ remain unauthorized.',
+              'At that historical frontier, authority was ATTEMPT-003 B2R15 only, with ATTEMPT-003 unfrozen and primary decoding/scoring closed. That frontier is superseded; current authority is ATTEMPT-003 B2R16 only, with ATTEMPT-003 still unfrozen and primary decoding/scoring still closed.')
+          replace_exact(specs,
+              '**Active successor recovery unit:** `B2R15`',
+              '**Historical successor recovery unit at this reconciliation:** `B2R15`', expected=2)
+          replace_exact(specs,
+              'The current executable frontier is B2R15 as recorded below; this historical B2R13-to-B2R14 action wording grants no present execution authority.',
+              'At that superseded B2R13/B2R14 chronology, the executable frontier advanced to B2R15; that B2R15 frontier is historical and grants no present execution authority. Current executable authority is B2R16 only as recorded in the canonical B2R15 reconciliation below.')
+
+          docs = 'docs/canonical/CURRENT_STATE.md'
+          replace_exact(docs,
+              'Current recovery authority is ATTEMPT-003 B2R15 only; ATTEMPT-003 remains unfrozen, primary decoding and scoring remain closed, and B2R16+ remain unauthorized.',
+              'At that historical pre-B2R15-reconciliation frontier, recovery authority was ATTEMPT-003 B2R15 only; ATTEMPT-003 was unfrozen, primary decoding and scoring were closed, and B2R16+ were unauthorized. That frontier is superseded; current recovery authority is ATTEMPT-003 B2R16 only, with ATTEMPT-003 still unfrozen and primary decoding/scoring still closed.')
+          replace_exact(docs,
+              'current execution authority is the ATTEMPT-003 B2R14 corrective reconciliation below, which authorizes B2R15 only with ATTEMPT-003 unfrozen, primary decoding/scoring closed, and B2R16+ unauthorized.',
+              'the later ATTEMPT-003 B2R14 corrective reconciliation below historically authorized B2R15 only with ATTEMPT-003 unfrozen and primary decoding/scoring closed. That B2R15 frontier is superseded by the canonical B2R15 reconciliation; current execution authority is B2R16 only.')
+          replace_exact(docs,
+              '**Active successor recovery unit:** `B2R15`',
+              '**Historical successor recovery unit at the B2R14 corrective reconciliation:** `B2R15`')
+          replace_exact(docs,
+              'current recovery authority remains ATTEMPT-003 B2R15 only.',
+              'the referenced B2R15 recovery frontier is historical and superseded; current recovery authority is ATTEMPT-003 B2R16 only.')
+          replace_exact(docs,
+              'Current execution authority is ATTEMPT-003 B2R15 only; ATTEMPT-003 remains unfrozen, primary decoding and scoring remain closed, and B2R16+ remain unauthorized.',
+              'At that historical frontier, execution authority was ATTEMPT-003 B2R15 only, with ATTEMPT-003 unfrozen and primary decoding/scoring closed. That frontier is superseded; current execution authority is ATTEMPT-003 B2R16 only, with ATTEMPT-003 still unfrozen and primary decoding/scoring still closed.')
+          replace_exact(docs,
+              'Current execution authority is exactly B2R15 under ATTEMPT-003, with primary decoding and scoring closed and B2R16+ unauthorized.',
+              'At that historical frontier, execution authority was exactly B2R15 under ATTEMPT-003, with primary decoding and scoring closed and B2R16+ unauthorized. That frontier is superseded; current execution authority is B2R16 only under ATTEMPT-003, with primary decoding and scoring still closed.')
+
+          stale = (
+              'Current execution authority is ATTEMPT-003 B2R15 only',
+              'current execution authority remains ATTEMPT-003 B2R15 only',
+              'Current recovery authority is ATTEMPT-003 B2R15 only',
+              'current recovery authority remains ATTEMPT-003 B2R15 only',
+              'Current authority is ATTEMPT-003 B2R15 only',
+              'current authority is ATTEMPT-003 B2R15 only',
+              'current execution authority is B2R15 only',
+              'current executable frontier is B2R15',
+              '**Active successor recovery unit:** `B2R15`',
+          )
+          for path in (specs, docs):
+              text = Path(path).read_text(encoding='utf-8')
+              hits = [needle for needle in stale if needle in text]
+              if hits:
+                  raise SystemExit(f'{path}: stale authority wording remains: {hits}')
+              if '**Active successor recovery unit:** `B2R16`' not in text:
+                  raise SystemExit(f'{path}: canonical B2R16 active-successor marker missing')
+          PY
+          git diff --check
+
+      - name: Commit local review-fix candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Abdulaziz M. Shehri'
+          git config user.email 'alshehriofficial@gmail.com'
+          git add docs/canonical/CURRENT_STATE.md specs/CURRENT.md
+          git commit -m 'docs(b2): supersede stale B2R15 authority wording'
+          test "$(git rev-parse HEAD^)" = "$TARGET_EXPECTED_HEAD"
+
+      - name: Verify exact final canonical candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected=$(printf '%s\n' docs/canonical/CURRENT_STATE.md research/000b2-public/recovery-attempt-003-readiness.json specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md specs/CURRENT.md | sort)
+          actual=$(git diff --name-only "$CANONICAL_BASE" HEAD -- | sort)
+          test "$actual" = "$expected"
+          git diff --check "$CANONICAL_BASE" HEAD
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py --static-only
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path('research/000b2-public/recovery-attempt-003-readiness.json').read_text(encoding='utf-8'))
+          replacement = p['replacement_attempt']
+          guards = p['claim_guards']
+          assert p['active_recovery_unit'] == 'B2R16'
+          assert replacement['attempt_id'] == '000B2-PUBLIC-ATTEMPT-003'
+          assert replacement['frozen'] is False
+          assert replacement['primary_decode_entry_open'] is False
+          assert guards['human_developer_speech_accuracy_evidence'] == 'ABSENT'
+          assert guards['comparative_result_available'] is False
+          assert guards['production_stt_selected'] is False
+          assert guards['product_code_authorized'] is False
+          completed = p['completed_recovery_tasks']
+          assert completed == ['B2R13', 'B2R14', 'B2R15']
+          assert p['transition_proofs'][-1]['completed_task'] == 'B2R15'
+          assert p['transition_proofs'][-1]['successor_task'] == 'B2R16'
+          PY
+
+      - name: Fast-forward target after final live-ref guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CANONICAL_BASE"
+          test "$(git ls-remote origin "refs/heads/$TARGET_BRANCH" | cut -f1)" = "$TARGET_EXPECTED_HEAD"
+          git push origin "HEAD:refs/heads/$TARGET_BRANCH"
+          final=$(git rev-parse HEAD)
+          test "$(git ls-remote origin "refs/heads/$TARGET_BRANCH" | cut -f1)" = "$final"
+          echo "B2R15_REVIEW_FIX_FINAL_HEAD=$final"
