@@ -299,6 +299,8 @@ def verify_successor_frontier() -> None:
 
     if active in {"B2R13", "B2R14", "B2R15", "B2R16"}:
         require(replacement.get("primary_decode_entry_open") is False, f"primary decode must remain closed during {active}")
+    elif active in {"B2R17", "B2R18", "B2R19", "B2R20", "B2R21", "B2R22"}:
+        require(replacement.get("primary_decode_entry_open") is True, f"primary decode must be open during {active}")
     if active == "B2R13":
         require(replacement.get("frozen") is False, "ATTEMPT-003 must not be frozen during B2R13 activation")
         require(completed == [], "B2R13 activation candidate must not pre-complete recovery work")
@@ -314,8 +316,14 @@ def verify_successor_frontier() -> None:
     for marker in required_markers:
         require(marker in current, f"specs/CURRENT.md missing successor marker: {marker}")
         require(marker in current_state, f"CURRENT_STATE.md missing successor marker: {marker}")
-    require("**ATTEMPT-003 primary decode entry open:** `false`" in current, "CURRENT must close ATTEMPT-003 primary decode during activation")
-    require("**ATTEMPT-003 primary decode entry open:** `false`" in current_state, "CURRENT_STATE must close ATTEMPT-003 primary decode during activation")
+    if active in {"B2R13", "B2R14", "B2R15", "B2R16"}:
+        decode_marker = "**ATTEMPT-003 primary decode entry open:** `false`"
+        require(decode_marker in current, f"CURRENT must close ATTEMPT-003 primary decode during {active}")
+        require(decode_marker in current_state, f"CURRENT_STATE must close ATTEMPT-003 primary decode during {active}")
+    elif active in {"B2R17", "B2R18", "B2R19", "B2R20", "B2R21", "B2R22"}:
+        decode_marker = "**ATTEMPT-003 primary decode entry open:** `true`"
+        require(decode_marker in current, f"CURRENT must open ATTEMPT-003 primary decode during {active}")
+        require(decode_marker in current_state, f"CURRENT_STATE must open ATTEMPT-003 primary decode during {active}")
 
 
 def verify_sherpa_source(source_root: Path) -> None:
@@ -348,10 +356,11 @@ def main() -> None:
         print("SHERPA_PINNED_API=NOT_RUN_STATIC_ONLY")
 
     readiness = load_object(ROOT / "research/000b2-public/recovery-attempt-003-readiness.json", "ATTEMPT-003 recovery readiness")
+    replacement = readiness.get("replacement_attempt", {})
     print("ATTEMPT_002_INVALIDATION=PASS")
     print("ATTEMPT_002_HISTORICAL_BYTES=PASS")
     print(f"ACTIVE_SUCCESSOR_RECOVERY_UNIT={readiness.get('active_recovery_unit')}")
-    print("ATTEMPT_003_PRIMARY_DECODE_AUTHORIZED=NO")
+    print("ATTEMPT_003_PRIMARY_DECODE_AUTHORIZED=" + ("YES" if replacement.get("primary_decode_entry_open") is True else "NO"))
     print("COMPARATIVE_RESULT_AVAILABLE=NO")
     print("PRODUCTION_STT_SELECTED=NO")
     print("PRODUCT_CODE_AUTHORIZED=NO")
