@@ -1,0 +1,79 @@
+{
+  "schema_version": "000b2-public-b2r15-provenance-v1",
+  "task": "B2R15",
+  "lane": "PUBLIC_CORPUS",
+  "state": "ATTEMPT_003_PREEXECUTION_EVIDENCE_REBOUND",
+  "authority": {
+    "canonical_authority_base": "ae349f7ef28e8ffd08ee8f54d1727ef80684a31a",
+    "active_attempt_id": "000B2-PUBLIC-ATTEMPT-003",
+    "predecessor_task": "B2R14",
+    "predecessor_canonical_task_merge": "e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca",
+    "predecessor_post_merge_recovery_run_id": 34246855454,
+    "predecessor_reconciliation_merge": "ae349f7ef28e8ffd08ee8f54d1727ef80684a31a"
+  },
+  "rebinding_artifacts": {
+    "preprocessing": {
+      "path": "research/000b2-public/b2r15-preprocessing-rebinding.json",
+      "sha256": "c44bbbf6d20aaec671d48c083eb76cfb6889a3c50486bd9da94c25b2b8f8039f",
+      "git_blob_sha1": "697d3a19d8b48805e445157c07a333866e03c4cc"
+    },
+    "execution_environment": {
+      "path": "research/000b2-public/b2r15-environment-rebinding.json",
+      "sha256": "0a6b32abae50da0d3d16f850a8e59edde0cb24f9489ce726054d6cf06e03532c",
+      "git_blob_sha1": "628965b646c763ccd031370187730c359c6aaf83"
+    }
+  },
+  "historical_sources": {
+    "preprocessing": {
+      "path": "research/000b2-public/preprocessing-capture.json",
+      "sha256": "d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011",
+      "git_blob_sha1": "89cbb28b7961042a1793c694692fe822c9414370",
+      "source_attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+      "canonical_capture_merge": "3dceadd984ff307ce55745bf5f289890a2fac261",
+      "post_merge_validation_run_id": 33814736588
+    },
+    "execution_environment": {
+      "path": "research/000b2-public/execution-environment.json",
+      "sha256": "2b8b521c28c771293648cbf86c7c1b20e820bacfc065074d7cfe2555745387ed",
+      "git_blob_sha1": "caf814bcb5e42fd769e6df1d9a54c1164535f86c",
+      "source_attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+      "canonical_capture_merge": "4bd5306fa1d274d7b822b73e26172dd9c7058319",
+      "post_merge_validation_run_id": 33864082394,
+      "performance_mode": "DIAGNOSTIC",
+      "comparative_performance_authorized": false
+    }
+  },
+  "preserved_b2r14_harness_identity": {
+    "harness_path": "research/000b2-public/b2r14-sherpa-result-harness.py",
+    "harness_git_blob_sha1": "7f0d76bf2490a254d515409d39585f6c9296cfa9",
+    "harness_sha256": "388b1480de6caed4adaad5d88cf3d275a5a4b1d35bd99e00f466581958886e39",
+    "qualification_path": "research/000b2-public/b2r14-harness-qualification.json",
+    "qualification_git_blob_sha1": "b9c5b807c0a98e990991213f517b7e43854c17c5",
+    "runtime_distribution": "sherpa-onnx",
+    "runtime_version": "1.13.7",
+    "runtime_revision": "917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e",
+    "runtime_source_path": "sherpa-onnx/python/sherpa_onnx/online_recognizer.py",
+    "runtime_source_git_blob_sha1": "18b49aaf40dc6e43606c63c9633762e8f573876b"
+  },
+  "evidence_semantics": {
+    "mode": "CRYPTOGRAPHIC_PROVENANCE_REBIND",
+    "fresh_preprocessing_capture_performed": false,
+    "fresh_environment_capture_performed": false,
+    "historical_capture_chronology_reused_as_fresh": false,
+    "fresh_hardware_claim_created": false,
+    "fresh_runtime_capture_claim_created": false,
+    "candidate_run_runtime_observations_must_be_preserved_separately": true,
+    "no_result_driven_input_change": true
+  },
+  "claim_guards": {
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "comparative_result_available": false,
+    "comparative_performance_authorized": false,
+    "production_stt_selected": false,
+    "product_code_authorized": false,
+    "attempt_003_frozen": false,
+    "attempt_003_primary_decode_authorized": false,
+    "primary_decode_performed": false,
+    "scoring_performed": false
+  }
+}

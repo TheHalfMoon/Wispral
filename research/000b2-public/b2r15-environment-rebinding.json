@@ -1,0 +1,42 @@
+{
+  "schema_version": "000b2-public-b2r15-environment-rebinding-v1",
+  "task": "B2R15",
+  "lane": "PUBLIC_CORPUS",
+  "state": "ATTEMPT_003_EXECUTION_ENVIRONMENT_EVIDENCE_BOUND",
+  "attempt": {
+    "source_attempt_id": "000B2-PUBLIC-ATTEMPT-001",
+    "bound_attempt_id": "000B2-PUBLIC-ATTEMPT-003",
+    "reuse_mode": "CRYPTOGRAPHIC_PROVENANCE_REBIND",
+    "fresh_capture_performed": false,
+    "source_chronology_reused": false,
+    "fresh_chronology_claim_created": false,
+    "fresh_hardware_claim_created": false,
+    "fresh_runtime_capture_claim_created": false,
+    "frozen": false,
+    "candidate_decoding_started": false,
+    "primary_decoding_started": false
+  },
+  "source_evidence": {
+    "path": "research/000b2-public/execution-environment.json",
+    "sha256": "2b8b521c28c771293648cbf86c7c1b20e820bacfc065074d7cfe2555745387ed",
+    "git_blob_sha1": "caf814bcb5e42fd769e6df1d9a54c1164535f86c",
+    "canonical_capture_merge": "4bd5306fa1d274d7b822b73e26172dd9c7058319",
+    "post_merge_validation_run_id": 33864082394,
+    "capture_kind": "GITHUB_HOSTED_DIAGNOSTIC",
+    "environment_id": "x86_64:AMD EPYC 9V74 80-Core Processor:3e80c2c63bf88d13",
+    "hardware_fingerprint_sha256": "3e80c2c63bf88d13a10c358feaa250672a5250fb9cbc90e59bdb397912cac5cd",
+    "performance_mode": "DIAGNOSTIC",
+    "comparative_performance_authorized": false,
+    "candidate_run_runtime_observations_must_be_preserved_separately": true
+  },
+  "claim_guards": {
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "comparative_result_available": false,
+    "comparative_performance_authorized": false,
+    "production_stt_selected": false,
+    "product_code_authorized": false,
+    "attempt_003_frozen": false,
+    "attempt_003_primary_decode_authorized": false,
+    "scoring_performed": false
+  }
+}
