@@ -1,0 +1,87 @@
+{
+  "schema_version": "000b2-public-attempt-invalidation-v2",
+  "task": "B2R13",
+  "lane": "PUBLIC_CORPUS",
+  "attempt_id": "000B2-PUBLIC-ATTEMPT-002",
+  "status": "INVALIDATED_MATERIAL_EXECUTION_DRIFT",
+  "discovered_against_canonical_main": "dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff",
+  "frozen_contract": {
+    "attempt_manifest_path": "research/000b2-public/attempt-002-manifest.json",
+    "attempt_manifest_git_blob_sha1": "5928f3cc64b783d14d853d57132cbf43b7c98d30",
+    "attempt_manifest_sha256": "a2dc8246e4567e670beb3f26e315be93e001e4d9a9037be57ff11fce5a340134",
+    "attempt_freeze_digest_sha256": "600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8",
+    "frozen_methodology_sha256": "fc177308926941e683f311a340b9e398f2c44ffa32963b3abc20aa359dbb09df",
+    "candidate_count": 6,
+    "candidate_membership_change_authorized": false,
+    "subset_membership_change_authorized": false,
+    "scorer_or_normalization_change_authorized": false
+  },
+  "material_drift": [
+    {
+      "id": "SHERPA_ONNX_RESULT_EXTRACTION_TYPE_MISMATCH",
+      "severity": "MATERIAL",
+      "affected_candidate_family": "sherpa-onnx",
+      "canonical_affected_task": "B2R09",
+      "canonical_decoder_path": "research/000b2-public/decode_b2r09.py",
+      "canonical_decoder_git_blob_sha1": "27052cc7f3d57d2743ee06a7db8de730c833935e",
+      "canonical_decoder_expression": "str(getattr(recognizer.get_result(stream), \"text\", \"\") or \"\")",
+      "pinned_runtime_distribution": "sherpa-onnx",
+      "pinned_runtime_distribution_version": "1.13.7",
+      "pinned_runtime_revision": "917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e",
+      "pinned_upstream_path": "sherpa-onnx/python/sherpa_onnx/online_recognizer.py",
+      "pinned_upstream_git_blob_sha1": "18b49aaf40dc6e43606c63c9633762e8f573876b",
+      "pinned_upstream_contract": "OnlineRecognizer.get_result(self, s: OnlineStream) -> str",
+      "pinned_upstream_return": "return self.recognizer.get_result(s).text.strip()",
+      "failure_mode": "The canonical decoder asks the plain string returned by get_result() for a .text attribute and therefore falls back to the empty-string default instead of preserving recognized text.",
+      "contract_conflict": "ATTEMPT-002 requires raw candidate outputs to be preserved faithfully under the frozen C0 contract. The canonical sherpa-onnx extraction path does not preserve the runtime result and therefore materially changes execution semantics.",
+      "upstream_proof_required": true
+    }
+  ],
+  "affected_canonical_execution": [
+    {
+      "task": "B2R09",
+      "candidate_id": "sherpa-onnx-compact",
+      "canonical_task_merge": "fc357350270d5cb34fc1305dba4a9de41a5234c3",
+      "canonical_post_merge_recovery_run_id": 34160146607,
+      "decoder_path": "research/000b2-public/decode_b2r09.py",
+      "decoder_git_blob_sha1": "27052cc7f3d57d2743ee06a7db8de730c833935e",
+      "evidence_path": "research/000b2-public/b2r09-sherpa-onnx-compact.json",
+      "evidence_git_blob_sha1": "ee57923e649bee4dc8910f473c8e55ec80eeb790",
+      "evidence_raw_file_sha256": "d59fa9605e8b0cf6892cd5a7ece105c6abe0753ff8949e9206e35f42da9a003f",
+      "evidence_payload_sha256": "4a81f1be21e18aa462ee9ec9c32a1daeaa6fa86bcca6372b0634a9421c16c1ed",
+      "provenance_path": "research/000b2-public/b2r09-provenance.json",
+      "provenance_git_blob_sha1": "11e04cf248a24b5224fd153aece630e0622b7770"
+    }
+  ],
+  "noncanonical_b2r10_disposition": {
+    "merge_candidate_pr": 89,
+    "review_only_pr": 90,
+    "exact_head": "0d9921afc565892b851ba8bf764ede514bf13d16",
+    "merged": false,
+    "closed_after_defect_confirmation": true,
+    "eligible_as_canonical_attempt_evidence": false,
+    "eligible_for_scoring": false
+  },
+  "disposition": {
+    "historical_attempt_preserved": true,
+    "historical_attempt_002_execution_bytes_must_remain_unchanged": true,
+    "attempt_002_eligible_for_comparative_scoring": false,
+    "attempt_002_eligible_for_candidate_superiority_claims": false,
+    "attempt_002_new_primary_decode_authorized": false,
+    "b2r10_b2r11_b2r12_attempt_002_execution_authorized": false,
+    "attempt_003_required": true,
+    "candidate_membership_change_authorized": false,
+    "subset_membership_change_authorized": false,
+    "scorer_or_normalization_change_authorized": false,
+    "production_stt_selected": false,
+    "product_code_authorized": false,
+    "human_developer_speech_accuracy_evidence": "ABSENT"
+  },
+  "recovery_order": [
+    "Canonically qualify B2R13 ATTEMPT-002 invalidation while every new primary decode remains closed.",
+    "Qualify a corrected sherpa-onnx result-extraction harness against non-primary material and the exact pinned runtime source.",
+    "Capture or cryptographically rebind attempt-bound preprocessing and execution-environment evidence for ATTEMPT-003 without changing frozen subset membership, candidate membership, scorer, normalization, or C0 semantics.",
+    "Freeze 000B2-PUBLIC-ATTEMPT-003 before any new primary candidate decode.",
+    "Re-execute all six candidate cells from cell 1 under ATTEMPT-003 before preserving the complete raw-output set and scoring."
+  ]
+}

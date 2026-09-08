@@ -1,0 +1,203 @@
+name: 000B2 Public Corpus ATTEMPT-003 Trusted PR Gate
+
+on:
+  pull_request_target:
+    paths:
+      - '.github/workflows/000b2-public-*.yml'
+      - 'research/000b1/frozen-methodology.json'
+      - 'research/000b2-public/**'
+      - 'specs/000B2-public-corpus-bakeoff/**'
+      - 'specs/CURRENT.md'
+      - 'docs/canonical/CURRENT_STATE.md'
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: 000b2-attempt-003-trusted-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  verify-successor-pr-from-canonical-base:
+    if: github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      EXACT_REVISION: ${{ github.event.pull_request.head.sha }}
+      AUTHORITY_BASE_REVISION: ${{ github.event.pull_request.base.sha }}
+      DISCOVERY_MAIN: dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff
+      SHERPA_REVISION: 917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e
+
+    steps:
+      - name: Checkout untrusted candidate data only
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.EXACT_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify trusted-base event and immutable control boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_EVENT_NAME" = "pull_request_target"
+          test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+          git rev-parse --verify "${AUTHORITY_BASE_REVISION}^{commit}"
+          test "$AUTHORITY_BASE_REVISION" != "$DISCOVERY_MAIN"
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          root = Path.cwd()
+          base = os.environ["AUTHORITY_BASE_REVISION"]
+          head = os.environ["EXACT_REVISION"]
+          readiness_path = "research/000b2-public/recovery-attempt-003-readiness.json"
+
+          def git(*args: str) -> str:
+              result = subprocess.run(
+                  ["git", *args],
+                  cwd=root,
+                  check=False,
+                  text=True,
+                  stdout=subprocess.PIPE,
+                  stderr=subprocess.PIPE,
+              )
+              if result.returncode != 0:
+                  raise SystemExit(f"TRUSTED_PR_GATE=FAIL: git {' '.join(args)}: {result.stderr.strip()}")
+              return result.stdout.strip()
+
+          try:
+              candidate = json.loads((root / readiness_path).read_text(encoding="utf-8"))
+              authority = json.loads(git("show", f"{base}:{readiness_path}"))
+          except (OSError, json.JSONDecodeError) as error:
+              raise SystemExit("TRUSTED_PR_GATE=FAIL: successor readiness unavailable or malformed") from error
+
+          if candidate.get("schema_version") != "000b2-public-attempt-003-recovery-readiness-v1":
+              raise SystemExit("TRUSTED_PR_GATE=FAIL: candidate readiness schema drift")
+          if authority.get("schema_version") != candidate.get("schema_version"):
+              raise SystemExit("TRUSTED_PR_GATE=FAIL: authority-base readiness schema mismatch")
+
+          immutable_policy_keys = (
+              "task_order",
+              "activation_installation_scope",
+              "trusted_control_paths",
+              "task_candidate_scopes",
+              "task_content_policies",
+              "transition_policy",
+              "b2r14_non_primary_fixture_contract",
+          )
+          for key in immutable_policy_keys:
+              if candidate.get(key) != authority.get(key):
+                  raise SystemExit(f"TRUSTED_PR_GATE=FAIL: candidate changed canonical policy field {key}")
+
+          policy = authority.get("transition_policy")
+          if not isinstance(policy, dict):
+              raise SystemExit("TRUSTED_PR_GATE=FAIL: transition policy missing")
+          expected_gate = {
+              "successor_pr_gate_event_after_activation": "pull_request_target",
+              "successor_pr_gate_definition_source": "EXACT_AUTHORITY_BASE",
+              "successor_pr_gate_workflow": ".github/workflows/000b2-public-attempt-003-trusted-pr.yml",
+              "activation_candidate_control_exception_task": "B2R13",
+              "candidate_common_control_execution_authorized": False,
+          }
+          for key, value in expected_gate.items():
+              if policy.get(key) != value:
+                  raise SystemExit(f"TRUSTED_PR_GATE=FAIL: trusted PR gate policy drift: {key}")
+
+          immutable_controls = policy.get("immutable_execution_control_paths")
+          if not isinstance(immutable_controls, list) or not immutable_controls:
+              raise SystemExit("TRUSTED_PR_GATE=FAIL: immutable execution-control path set missing")
+          for path in immutable_controls:
+              if not isinstance(path, str) or not path:
+                  raise SystemExit("TRUSTED_PR_GATE=FAIL: malformed immutable execution-control path")
+              base_blob = git("rev-parse", f"{base}:{path}")
+              head_blob = git("rev-parse", f"{head}:{path}")
+              if head_blob != base_blob:
+                  raise SystemExit(f"TRUSTED_PR_GATE=FAIL: immutable execution control changed: {path}")
+
+          order = authority.get("task_order")
+          scopes = authority.get("task_candidate_scopes")
+          reconciliation_scope = policy.get("reconciliation_candidate_scope")
+          if not isinstance(order, list) or not isinstance(scopes, dict) or not isinstance(reconciliation_scope, list):
+              raise SystemExit("TRUSTED_PR_GATE=FAIL: task/reconciliation scope policy malformed")
+
+          base_completed = authority.get("completed_recovery_tasks")
+          completed = candidate.get("completed_recovery_tasks")
+          base_proofs = authority.get("transition_proofs")
+          proofs = candidate.get("transition_proofs")
+          if not all(isinstance(value, list) for value in (base_completed, completed, base_proofs, proofs)):
+              raise SystemExit("TRUSTED_PR_GATE=FAIL: recovery completion/proof state malformed")
+          if completed[:len(base_completed)] != base_completed:
+              raise SystemExit("TRUSTED_PR_GATE=FAIL: candidate rewrites completed recovery prefix")
+          if proofs[:len(base_proofs)] != base_proofs:
+              raise SystemExit("TRUSTED_PR_GATE=FAIL: candidate rewrites prior transition proofs")
+
+          delta = len(completed) - len(base_completed)
+          if delta not in {0, 1}:
+              raise SystemExit("TRUSTED_PR_GATE=FAIL: candidate advances more than one recovery task")
+
+          changed = {
+              line for line in git("diff", "--name-only", "--diff-filter=ACDMRTUXB", base, head, "--").splitlines()
+              if line
+          }
+          if not changed:
+              raise SystemExit("TRUSTED_PR_GATE=FAIL: empty successor candidate")
+
+          if delta == 1:
+              if not changed <= set(reconciliation_scope):
+                  raise SystemExit("TRUSTED_PR_GATE=FAIL: reconciliation changed non-authority paths")
+          else:
+              active = authority.get("active_recovery_unit")
+              if candidate.get("active_recovery_unit") != active:
+                  raise SystemExit("TRUSTED_PR_GATE=FAIL: non-reconciliation candidate changed active task")
+              allowed = scopes.get(active)
+              if not isinstance(allowed, list) or not changed <= set(allowed):
+                  raise SystemExit(f"TRUSTED_PR_GATE=FAIL: {active} candidate path scope violation")
+              if proofs != base_proofs:
+                  raise SystemExit("TRUSTED_PR_GATE=FAIL: task candidate changed transition proofs")
+
+          common_verifier = "research/000b2-public/verify_attempt_002_invalidation.py"
+          if git("rev-parse", f"{base}:{common_verifier}") != git("rev-parse", f"{head}:{common_verifier}"):
+              raise SystemExit("TRUSTED_PR_GATE=FAIL: common verifier is not exact authority-base bytes")
+
+          print("TRUSTED_PR_GATE_EVENT=pull_request_target")
+          print(f"TRUSTED_PR_GATE_AUTHORITY_BASE={base}")
+          print(f"TRUSTED_PR_GATE_CANDIDATE_HEAD={head}")
+          print(f"TRUSTED_PR_GATE_DELTA={delta}")
+          print("TRUSTED_PR_GATE_CONTROL_BYTES=PASS")
+          PY
+
+      - name: Verify candidate with exact authority-base common verifier bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse "${AUTHORITY_BASE_REVISION}:research/000b2-public/verify_attempt_002_invalidation.py")" = \
+               "$(git rev-parse "${EXACT_REVISION}:research/000b2-public/verify_attempt_002_invalidation.py")"
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py --static-only
+
+      - name: Fetch exact pinned sherpa-onnx source
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/sherpa-onnx"
+          rm -rf "$SRC"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/k2-fsa/sherpa-onnx.git
+          git -C "$SRC" fetch --depth=1 origin "$SHERPA_REVISION"
+          git -C "$SRC" checkout --detach FETCH_HEAD
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$SHERPA_REVISION"
+          test "$(git -C "$SRC" rev-parse HEAD:sherpa-onnx/python/sherpa_onnx/online_recognizer.py)" = "18b49aaf40dc6e43606c63c9633762e8f573876b"
+          git -C "$SRC" diff --quiet HEAD --
+
+      - name: Verify pinned runtime contract with trusted common verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse "${AUTHORITY_BASE_REVISION}:research/000b2-public/verify_attempt_002_invalidation.py")" = \
+               "$(git rev-parse "${EXACT_REVISION}:research/000b2-public/verify_attempt_002_invalidation.py")"
+          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py \
+            --sherpa-source "$RUNNER_TEMP/sherpa-onnx"
+          echo "TRUSTED_PR_GATE=PASS"

@@ -368,3 +368,23 @@ ATTEMPT-001 remains historical and ineligible for comparative scoring. ATTEMPT-0
 ## Next canonical action
 
 Qualify `B2R10` only: execute candidate cell 6 (`sherpa-onnx-balanced`) under `000B2-PUBLIC-ATTEMPT-002` using the unchanged frozen C0 contract and identical frozen public audio. Preserve raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Keep B2R11 and every later recovery, scoring, synthesis, and product unit closed until B2R10 is canonically merged, post-merge verified, and reconciled. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.
+
+## ATTEMPT-003 successor recovery activation — latest authority
+
+This section supersedes the B2R09/B2R10 action wording above for every new execution decision once these exact bytes are canonical on `main`. Earlier B2R09/B2R10 wording remains preserved as historical chronology and verifier evidence only.
+
+Live verification against pinned `sherpa-onnx==1.13.7` source revision `917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e` confirmed that `OnlineRecognizer.get_result(stream)` returns a plain Python `str`, while canonical B2R09 decoder blob `27052cc7f3d57d2743ee06a7db8de730c833935e` extracts `getattr(recognizer.get_result(stream), "text", "")`. That extraction cannot preserve the pinned runtime result and therefore materially invalidates ATTEMPT-002 under the existing post-freeze material-drift rule.
+
+**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`
+**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`
+**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`
+**Active successor recovery unit:** `B2R13`
+**ATTEMPT-003 required:** `true`
+**ATTEMPT-003 frozen:** `false`
+**ATTEMPT-003 primary decode entry open:** `false`
+
+B2R13 is an invalidation/authority-recovery unit only. It MUST NOT perform a primary decode, score ATTEMPT-002, rewrite canonical B2R05-B2R09 execution bytes, promote closed PR #89/#90 evidence, or mark B2R10-B2R12 complete. `research/000b2-public/recovery-readiness.json` and the B2R10 marker above remain immutable historical ATTEMPT-002 snapshots and do not authorize new execution after this successor authority is canonical.
+
+The sole next bounded action is to qualify B2R13: prove ATTEMPT-002 material invalidation against exact canonical B2R09 bytes and the exact pinned sherpa-onnx upstream API, preserve all historical ATTEMPT-002 evidence, keep ATTEMPT-003 unfrozen, and keep every primary decode closed. B2R14 and every later ATTEMPT-003 unit remain unauthorized until B2R13 is independently qualified, merged, post-merge verified, and reconciled.
+
+Comparative scoring/ranking, synthesis, candidate-superiority claims, production STT selection, and product-code authority remain closed. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.
