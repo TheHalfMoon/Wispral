@@ -236,7 +236,7 @@ def verify_b2r14_non_primary_candidate(readiness: dict[str, Any]) -> None:
     changed_paths = [path for path in changed.splitlines() if path]
     harness_path = "research/000b2-public/b2r14-sherpa-result-harness.py"
     qualification_path = "research/000b2-public/b2r14-harness-qualification.json"
-    workflow_path = ".github/workflows/000b2-public-b2r14-sherpa-result-harness.yml"
+    workflow_path = ".github/workflows/000b2-public-b2r14-harness.yml"
     require(harness_path in changed_paths and qualification_path in changed_paths and workflow_path in changed_paths,
             "B2R14 candidate must include canonical harness, qualification, and workflow artifacts")
     for path in changed_paths:
@@ -397,7 +397,7 @@ def verify_historical_bytes() -> None:
 def verify_attempt_manifest() -> None:
     path = ROOT / ATTEMPT_MANIFEST_PATH
     require(git_blob("HEAD", ATTEMPT_MANIFEST_PATH) == ATTEMPT_MANIFEST_BLOB, "ATTEMPT-002 manifest blob drift")
-    require(sha256_file(path) == ATTEMPT_MANIFEST_SHA256, "ATTEMPT-002 manifest SHA-256 drift")
+    require(sha256_file(path) == ATTEMPT_MANIFEST_SHA256, "preprocessing bytes drift")
     manifest = load_object(path, "attempt-002 manifest")
     require(manifest.get("attempt_id") == ATTEMPT_ID, "ATTEMPT-002 id drift")
     require(manifest.get("frozen") is True, "ATTEMPT-002 must remain frozen historical evidence")
