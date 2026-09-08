@@ -461,6 +461,8 @@ jobs:
                   raise SystemExit(f'unable to verify transition proof run for {task}: {type(error).__name__}') from error
               expected = {
                   'name': '000B2 Public Corpus ATTEMPT-003 Recovery',
+                  'workflow_id': 352653404,
+                  'path': '.github/workflows/000b2-public-attempt-003-recovery.yml',
                   'event': 'push',
                   'head_branch': 'main',
                   'head_sha': merge,
@@ -476,6 +478,10 @@ jobs:
               raise SystemExit(f'ATTEMPT-003 primary decode unexpectedly open during {active}')
           if active in {'B2R13', 'B2R14', 'B2R15'} and replacement.get('frozen') is not False:
               raise SystemExit(f'ATTEMPT-003 frozen before B2R16: {active}')
+          if active in {'B2R17', 'B2R18', 'B2R19', 'B2R20', 'B2R21', 'B2R22', 'B2R23', 'B2R24'} and replacement.get('frozen') is not True:
+              raise SystemExit(f'ATTEMPT-003 must be frozen before or during {active}')
+          if replacement.get('primary_decode_entry_open') is True and replacement.get('frozen') is not True:
+              raise SystemExit('ATTEMPT-003 primary decode cannot open before attempt freeze')
           if active == 'B2R13' and completed:
               raise SystemExit('B2R13 activation candidate must not pre-complete successor tasks')
 
