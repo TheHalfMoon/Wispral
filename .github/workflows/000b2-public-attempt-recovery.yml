@@ -83,7 +83,24 @@ jobs:
               raise SystemExit('legacy ATTEMPT-002 completion prefix drift')
 
           successor = json.loads(Path('research/000b2-public/recovery-attempt-003-readiness.json').read_text(encoding='utf-8'))
-          historical = successor.get('historical_recovery_snapshot', {})
+          if not isinstance(successor, dict):
+              raise SystemExit('successor readiness root must be an object')
+          if successor.get('schema_version') != '000b2-public-attempt-003-recovery-readiness-v1':
+              raise SystemExit('successor readiness schema drift')
+          if successor.get('lane') != 'PUBLIC_CORPUS':
+              raise SystemExit('successor readiness lane drift')
+          invalidated = successor.get('invalidated_attempt')
+          if not isinstance(invalidated, dict) or invalidated.get('attempt_id') != '000B2-PUBLIC-ATTEMPT-002':
+              raise SystemExit('successor readiness invalidated attempt identity drift')
+          historical = successor.get('historical_recovery_snapshot')
+          if not isinstance(historical, dict):
+              raise SystemExit('successor historical recovery snapshot must be an object')
+          if historical.get('path') != 'research/000b2-public/recovery-readiness.json':
+              raise SystemExit('successor historical recovery snapshot path drift')
+          if historical.get('completed_through') != 'B2R09':
+              raise SystemExit('successor historical recovery completion drift')
+          if historical.get('active_unit_at_invalidation') != 'B2R10':
+              raise SystemExit('successor historical recovery active-unit drift')
           if historical.get('active_execution_authority') is not False:
               raise SystemExit('successor state must explicitly retire legacy ATTEMPT-002 execution authority')
           print('LEGACY_ATTEMPT_002_RECOVERY_HISTORY=PASS')
