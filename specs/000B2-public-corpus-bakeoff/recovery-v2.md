@@ -113,11 +113,16 @@ For B2R14 through B2R24, every non-reconciliation task candidate MUST:
 
 - change only paths in the exact active-task allowlist;
 - include the task's exact required verifier and pass it with `--static-only`;
-- bind every changed artifact explicitly to the exact active B2R task and contain no reference to a different successor B2R task;
+- bind every changed artifact explicitly to the exact active B2R task;
+- contain no reference to a future successor B2R task; references to already-canonical predecessor tasks are allowed only when they bind required evidence or qualified predecessor artifacts for the active task;
 - bind each changed JSON evidence object with top-level `task` equal to the exact active task;
 - contain no positive comparative-publication, production-selection, product-code, or primary-decode-authority declaration;
-- contain no primary-decode calls unless the active task is B2R17 through B2R22;
+- contain no decode-runtime calls unless the active task is B2R17 through B2R22, except that B2R14 may exercise the pinned sherpa runtime API solely against explicitly non-primary qualification material while primary-decode entry authority remains `false`;
 - contain no scoring calls unless the active task is B2R24.
+
+In the v1 machine policy, `foreign_successor_task_references_allowed=false` is interpreted fail-closed as prohibiting future or otherwise unqualified successor-task material; it does not prohibit an exact canonical predecessor evidence binding that the active task contract requires. The common verifier computes the future-task set from `task_order` and rejects those references directly.
+
+B2R14's runtime-call exception is not primary-decode authority. Its task-specific verifier and workflow must prove that qualification material is non-primary, that no frozen P0 primary material is accessed, that the exact pinned sherpa API is exercised, and that object/string API confusion fails closed. A B2R14 task candidate that cannot prove those boundaries is ineligible even though runtime API calls are syntactically present.
 
 The common successor verifier enforces these rules from the exact authority-base-to-head diff. A task-specific verifier cannot replace or weaken the common content policy. A reconciliation cannot modify either task-scope or task-content policy because the common workflow and static verifier compare both maps against the canonical expected policy and the authority-base copy.
 
