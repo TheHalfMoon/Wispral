@@ -14,14 +14,6 @@ concurrency:
   group: b2r14-corrective-reconciliation-builder
   cancel-in-progress: false
 
-env:
-  TARGET_BRANCH: recovery/b2r14-corrective-reconcile-to-b2r15
-  EXPECTED_TARGET_HEAD: 31b2bb1f03dc54eba2ffefdc5247745d53c7d3a4
-  CORRECTIVE_BASE: 2f4212228f24e40fbd03cfc59ab4774df94c0cc3
-  CORRECTIVE_HEAD: c60751c43a2523879814d691011d5dd6d3d1e119
-  CORRECTIVE_MERGE: e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca
-  CORRECTIVE_RECOVERY_RUN: '34246855454'
-
 jobs:
   build-reconciliation:
     runs-on: ubuntu-24.04
@@ -30,7 +22,7 @@ jobs:
       - name: Checkout exact reconciliation head
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: ${{ env.EXPECTED_TARGET_HEAD }}
+          ref: 31b2bb1f03dc54eba2ffefdc5247745d53c7d3a4
           fetch-depth: 0
           persist-credentials: true
 
@@ -38,10 +30,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$EXPECTED_TARGET_HEAD"
-          test "$(git ls-remote origin refs/heads/$TARGET_BRANCH | cut -f1)" = "$EXPECTED_TARGET_HEAD"
-          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CORRECTIVE_MERGE"
-          test "$(git merge-base --is-ancestor "$CORRECTIVE_MERGE" "$EXPECTED_TARGET_HEAD"; echo $?)" = "0"
+          test "$(git rev-parse HEAD)" = "31b2bb1f03dc54eba2ffefdc5247745d53c7d3a4"
+          test "$(git ls-remote origin refs/heads/recovery/b2r14-corrective-reconcile-to-b2r15 | cut -f1)" = "31b2bb1f03dc54eba2ffefdc5247745d53c7d3a4"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca"
+          git merge-base --is-ancestor e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca HEAD
 
       - name: Bind corrective B2R14 current-view authority
         shell: bash
@@ -149,6 +141,6 @@ The sole next bounded action is B2R15: capture or cryptographically rebind ATTEM
           git switch -c work
           git add docs/canonical/CURRENT_STATE.md specs/CURRENT.md
           git commit -m "docs(b2): bind corrective B2R14 current view"
-          test "$(git rev-parse HEAD^)" = "$EXPECTED_TARGET_HEAD"
-          git push origin "HEAD:refs/heads/$TARGET_BRANCH"
+          test "$(git rev-parse HEAD^)" = "31b2bb1f03dc54eba2ffefdc5247745d53c7d3a4"
+          git push origin "HEAD:refs/heads/recovery/b2r14-corrective-reconcile-to-b2r15"
           echo "CORRECTIVE_RECONCILIATION_HEAD=$(git rev-parse HEAD)"
