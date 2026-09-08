@@ -31,6 +31,7 @@ TRUSTED_CONTROLS = [
     ".github/workflows/000b2-public-attempt-recovery.yml",
     "research/000b2-public/verify_attempt_002_invalidation.py",
     "research/000b2-public/verify_b2r13_activation.py",
+    "specs/CURRENT.md",
 ]
 B2R13_CANDIDATE_SCOPE = sorted(set(ACTIVATION_SCOPE) - set(TRUSTED_CONTROLS))
 
