@@ -58,6 +58,20 @@ jobs:
           echo "AUTHORITY_BASE_REVISION=$AUTHORITY_BASE_REVISION"
           echo "DISCOVERY_MAIN=$DISCOVERY_MAIN"
 
+      - name: Fetch exact pinned sherpa-onnx source before candidate boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/sherpa-onnx"
+          rm -rf "$SRC"
+          git init "$SRC"
+          git -C "$SRC" remote add origin https://github.com/k2-fsa/sherpa-onnx.git
+          git -C "$SRC" fetch --depth=1 origin "$SHERPA_REVISION"
+          git -C "$SRC" checkout --detach FETCH_HEAD
+          test "$(git -C "$SRC" rev-parse HEAD)" = "$SHERPA_REVISION"
+          test "$(git -C "$SRC" rev-parse HEAD:sherpa-onnx/python/sherpa_onnx/online_recognizer.py)" = "18b49aaf40dc6e43606c63c9633762e8f573876b"
+          git -C "$SRC" diff --quiet HEAD --
+
       - name: Trusted pre-candidate execution boundary
         shell: bash
         run: |
@@ -65,12 +79,14 @@ jobs:
           python - <<'PY'
           import ast
           import hashlib
+          import importlib.util
           import json
           import os
           import re
           import subprocess
           import sys
           import tempfile
+          import types
           from pathlib import Path
 
           root = Path.cwd()
@@ -198,7 +214,8 @@ jobs:
                   "research/000b2-public/transcripts", "attempt-003-manifest.json",
                   "b2r17-", "b2r18-", "b2r19-", "b2r20-", "b2r21-", "b2r22-",
               )
-              joined = (harness_text + "\n" + workflow_text + "\n" + qualification.read_text(encoding="utf-8")).lower()
+              qualification_text = qualification.read_text(encoding="utf-8")
+              joined = (harness_text + "\n" + workflow_text + "\n" + qualification_text).lower()
               if any(marker in joined for marker in forbidden_primary):
                   raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 references primary/future decode material")
 
@@ -208,42 +225,80 @@ jobs:
               expected_digest = "0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39"
               if contract.get("pcm_sha256") != expected_digest or contract.get("frame_count") != 16000:
                   raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 frozen fixture contract drift")
+              qualification_doc = json.loads(qualification_text)
+              if qualification_doc.get("non_primary_fixture") != contract:
+                  raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 qualification fixture contract drift")
+
+              source_root = Path(os.environ["RUNNER_TEMP"]) / "sherpa-onnx"
+              source_path = source_root / "sherpa-onnx/python/sherpa_onnx/online_recognizer.py"
+              if subprocess.run(
+                  ["git", "-C", str(source_root), "rev-parse", "HEAD"],
+                  check=True, text=True, stdout=subprocess.PIPE,
+              ).stdout.strip() != os.environ["SHERPA_REVISION"]:
+                  raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 pinned source revision drift")
+              source_blob = subprocess.run(
+                  ["git", "-C", str(source_root), "rev-parse", "HEAD:sherpa-onnx/python/sherpa_onnx/online_recognizer.py"],
+                  check=True, text=True, stdout=subprocess.PIPE,
+              ).stdout.strip()
+              if source_blob != "18b49aaf40dc6e43606c63c9633762e8f573876b":
+                  raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 pinned recognizer blob drift")
+
+              source_text = source_path.read_text(encoding="utf-8")
+              source_tree = ast.parse(source_text, filename=str(source_path))
+              imported_native_names = set()
+              for node in source_tree.body:
+                  if isinstance(node, ast.ImportFrom) and node.module == "sherpa_onnx.lib._sherpa_onnx":
+                      imported_native_names.update(alias.name for alias in node.names)
+              if not imported_native_names:
+                  raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 pinned recognizer native imports missing")
+
+              native_module = types.ModuleType("sherpa_onnx.lib._sherpa_onnx")
+              for name in imported_native_names:
+                  setattr(native_module, name, type(name, (), {}))
+              package = types.ModuleType("sherpa_onnx")
+              package.__path__ = []
+              lib_package = types.ModuleType("sherpa_onnx.lib")
+              lib_package.__path__ = []
+              sys.modules["sherpa_onnx"] = package
+              sys.modules["sherpa_onnx.lib"] = lib_package
+              sys.modules["sherpa_onnx.lib._sherpa_onnx"] = native_module
+              spec = importlib.util.spec_from_file_location("wispral_pinned_online_recognizer", source_path)
+              if spec is None or spec.loader is None:
+                  raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 pinned recognizer loader unavailable")
+              pinned = importlib.util.module_from_spec(spec)
+              spec.loader.exec_module(pinned)
 
               with tempfile.TemporaryDirectory() as tmp:
                   tmpdir = Path(tmp)
                   fixture = tmpdir / "trusted-zero-s16le.pcm"
-                  output = tmpdir / "trusted-result.json"
                   fixture.write_bytes(b"\x00" * (16000 * 2))
-                  digest = hashlib.sha256(fixture.read_bytes()).hexdigest()
-                  if digest != expected_digest:
-                      raise SystemExit("TRUSTED_BOUNDARY=FAIL: generated B2R14 fixture digest mismatch")
-                  proc = subprocess.run(
-                      [
-                          sys.executable, str(harness),
-                          "--trusted-fixture", str(fixture),
-                          "--trusted-output", str(output),
-                      ],
-                      check=False, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                      env={"PATH": os.environ.get("PATH", ""), "PYTHONDONTWRITEBYTECODE": "1"},
-                  )
-                  if proc.returncode != 0:
-                      raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 fixed harness invocation failed: " + proc.stdout[-2000:])
-                  if not output.is_file():
-                      raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 harness did not write trusted output")
-                  result = json.loads(output.read_text(encoding="utf-8"))
-                  expected_result = {
-                      "task": "B2R14",
-                      "material_class": "DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY",
-                      "fixture_sha256": expected_digest,
-                      "fixture_size_bytes": 32000,
-                      "plain_string_preserved": True,
-                      "object_string_confusion_rejected": True,
-                      "primary_corpus_access": False,
-                      "frozen_p0_access": False,
-                      "attempt_003_primary_evidence_access": False,
-                  }
-                  if result != expected_result:
-                      raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 trusted harness result mismatch")
+                  fixture_bytes = fixture.read_bytes()
+                  digest = hashlib.sha256(fixture_bytes).hexdigest()
+                  if len(fixture_bytes) != 32000 or digest != expected_digest:
+                      raise SystemExit("TRUSTED_BOUNDARY=FAIL: generated B2R14 fixture identity mismatch")
+
+                  class TrustedStream:
+                      def __init__(self, payload):
+                          self.fixture_bytes = payload
+
+                  class TrustedNativeResult:
+                      text = "trusted-synthetic-result"
+
+                  class TrustedNativeRecognizer:
+                      def get_result(self, stream):
+                          if hashlib.sha256(stream.fixture_bytes).hexdigest() != expected_digest:
+                              raise RuntimeError("trusted fixture bytes not delivered to pinned recognizer contract")
+                          return TrustedNativeResult()
+
+                  recognizer = object.__new__(pinned.OnlineRecognizer)
+                  recognizer.recognizer = TrustedNativeRecognizer()
+                  result = pinned.OnlineRecognizer.get_result(recognizer, TrustedStream(fixture_bytes))
+                  if not isinstance(result, str) or result != "trusted-synthetic-result":
+                      raise SystemExit("TRUSTED_BOUNDARY=FAIL: pinned OnlineRecognizer.get_result is not plain-string preserving")
+                  if getattr(result, "text", "") != "":
+                      raise SystemExit("TRUSTED_BOUNDARY=FAIL: object/string confusion regression not rejected")
+
+              print("B2R14_TRUSTED_PINNED_RESULT_CONTRACT=PASS")
 
           print("TRUSTED_PRE_CANDIDATE_BOUNDARY=PASS")
           PY
@@ -268,19 +323,6 @@ jobs:
             PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py --static-only
           fi
           echo "ACTIVE_SUCCESSOR_RECOVERY_UNIT=$ACTIVE_UNIT"
-
-      - name: Fetch exact pinned sherpa-onnx source
-        shell: bash
-        run: |
-          set -euo pipefail
-          SRC="$RUNNER_TEMP/sherpa-onnx"
-          rm -rf "$SRC"
-          git init "$SRC"
-          git -C "$SRC" remote add origin https://github.com/k2-fsa/sherpa-onnx.git
-          git -C "$SRC" fetch --depth=1 origin "$SHERPA_REVISION"
-          git -C "$SRC" checkout --detach FETCH_HEAD
-          test "$(git -C "$SRC" rev-parse HEAD)" = "$SHERPA_REVISION"
-          git -C "$SRC" diff --quiet HEAD --
 
       - name: Verify material drift against exact pinned sherpa-onnx API
         shell: bash
@@ -356,6 +398,37 @@ jobs:
           if guards.get("production_stt_selected") is not False or guards.get("product_code_authorized") is not False:
               raise SystemExit("production/product authority drift")
 
+          authority_base = os.environ["AUTHORITY_BASE_REVISION"]
+          discovery = os.environ["DISCOVERY_MAIN"]
+          base_state = None
+          base_completed = []
+          base_proofs = []
+          if authority_base != discovery:
+              base_read = subprocess.run(
+                  ["git", "show", f"{authority_base}:research/000b2-public/recovery-attempt-003-readiness.json"],
+                  check=False, text=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+              )
+              if base_read.returncode != 0:
+                  raise SystemExit("authority base lacks successor readiness")
+              base_state = json.loads(base_read.stdout)
+              base_completed = base_state.get("completed_recovery_tasks")
+              base_proofs = base_state.get("transition_proofs")
+              if not isinstance(base_completed, list) or not isinstance(base_proofs, list):
+                  raise SystemExit("authority-base successor proof state malformed")
+              delta = len(completed) - len(base_completed)
+              if delta not in {0, 1}:
+                  raise SystemExit("candidate must advance at most one recovery task")
+              if completed[:len(base_completed)] != base_completed:
+                  raise SystemExit("candidate rewrites completed recovery prefix")
+              if proofs[:len(base_proofs)] != base_proofs:
+                  raise SystemExit("candidate rewrites prior transition proofs")
+              if delta == 0 and proofs != base_proofs:
+                  raise SystemExit("non-reconciliation candidate changes transition proofs")
+              if delta == 1 and proofs[len(base_proofs)].get("canonical_task_merge") != authority_base:
+                  raise SystemExit("new transition proof is not bound to exact authority-base task merge")
+          elif completed or proofs:
+              raise SystemExit("activation candidate may not pre-complete successor work")
+
           sha40 = re.compile(r"^[0-9a-f]{40}$")
           seen_merges = set()
           seen_runs = set()
@@ -402,6 +475,28 @@ jobs:
                   check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
               ).returncode != 0:
                   raise SystemExit(f"transition merge not in candidate ancestry: {task}")
+
+              if index == 0:
+                  if base != discovery:
+                      raise SystemExit("B2R13 task base must equal discovery main")
+              else:
+                  previous_merge = proofs[index - 1]["canonical_task_merge"]
+                  if subprocess.run(
+                      ["git", "merge-base", "--is-ancestor", previous_merge, base],
+                      check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                  ).returncode != 0:
+                      raise SystemExit(f"prior task merge not ancestral to task base: {task}")
+                  base_snapshot = subprocess.run(
+                      ["git", "show", f"{base}:research/000b2-public/recovery-attempt-003-readiness.json"],
+                      check=False, text=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                  )
+                  if base_snapshot.returncode != 0:
+                      raise SystemExit(f"task base lacks successor readiness snapshot: {task}")
+                  snapshot = json.loads(base_snapshot.stdout)
+                  if snapshot.get("completed_recovery_tasks") != order[:index]:
+                      raise SystemExit(f"task base completed-prefix mismatch: {task}")
+                  if snapshot.get("active_recovery_unit") != task:
+                      raise SystemExit(f"task base active-unit mismatch: {task}")
 
               request = urllib.request.Request(
                   f"https://api.github.com/repos/{repository}/actions/runs/{run_id}",
