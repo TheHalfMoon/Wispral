@@ -365,15 +365,25 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
     if not isinstance(base_completed, list):
         return
     delta = len(completed) - len(base_completed)
+    changed_output = run_git("diff", "--name-only", "--diff-filter=ACMRTUXB", authority_base, "HEAD", "--")
+    changed_paths = sorted(path for path in changed_output.splitlines() if path)
+
+    if delta == 1:
+        transition_policy = base_state.get("transition_policy")
+        require(isinstance(transition_policy, dict), "authority-base transition policy must be an object")
+        reconciliation_scope = transition_policy.get("reconciliation_candidate_scope")
+        require(isinstance(reconciliation_scope, list), "authority-base reconciliation candidate scope must be a list")
+        require(
+            changed_paths == sorted(reconciliation_scope),
+            "reconciliation candidate must match the exact canonical reconciliation path set",
+        )
+        return
     if delta != 0:
         return
     if active == "B2R14":
         verify_b2r14_non_primary_candidate(readiness)
 
-    changed_output = run_git("diff", "--name-only", "--diff-filter=ACMRTUXB", authority_base, "HEAD", "--")
-    changed_paths = [path for path in changed_output.splitlines() if path]
-    if not changed_paths:
-        return
+    require(changed_paths, f"{active} candidate must not be empty")
 
     policies = expected_task_content_policies()
     policy = policies[active]
@@ -381,8 +391,10 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
     require(isinstance(scopes, dict), "task_candidate_scopes must be an object")
     allowed_paths = scopes.get(active)
     require(isinstance(allowed_paths, list), f"missing exact candidate scope for {active}")
-    outside_scope = sorted(set(changed_paths) - set(allowed_paths))
-    require(not outside_scope, f"{active} candidate content outside exact path scope: {', '.join(outside_scope)}")
+    require(
+        changed_paths == sorted(allowed_paths),
+        f"{active} candidate must match the exact canonical task path set",
+    )
 
     required_verifier = policy["required_verifier"]
     require(required_verifier in changed_paths, f"{active} candidate must include its required verifier")
