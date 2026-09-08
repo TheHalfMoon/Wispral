@@ -1,6 +1,6 @@
 # Wispral Specification Frontier
 
-**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 ATTEMPT-003 recovery active; corrective B2R14 canonical and post-merge verified; active successor recovery unit `B2R15`; ATTEMPT-002 invalidated; ATTEMPT-003 primary decoding closed
+**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 ATTEMPT-003 recovery active; B2R15 canonical and post-merge verified; active successor recovery unit `B2R16`; ATTEMPT-002 invalidated; ATTEMPT-003 primary decoding closed
 
 **Canonical public-corpus methodology merge:** `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` from PR #28, merged from exact head `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` against exact base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`. Live chronology did not prove the required independent semantic review before that merge; the resulting qualification debt was repaired forward-only by PR #32 at canonical merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, and machine readiness was reconciled by PR #33 at canonical merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`.
 
@@ -414,3 +414,22 @@ Corrective PR #97 requalified the unchanged B2R14 harness semantics on base `2f4
 The sole next bounded action is B2R15: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary decode or scoring is authorized. B2R16 and every later ATTEMPT-003 unit remain closed until their predecessor is canonically reconciled.
 
 Comparative scoring/ranking, synthesis, candidate-superiority claims, production STT selection, and product-code authority remain closed. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.
+
+## Canonical ATTEMPT-003 B2R15 preexecution-evidence reconciliation
+
+B2R15 is canonically complete at guarded normal merge `3d31b18823b8275c99e1478b132a64f36fad05c0` with first parent `ae349f7ef28e8ffd08ee8f54d1727ef80684a31a` and exact independently reviewed qualified head `1410cb81b59de07bdecee6b78e41fdc825f4a55d` as second parent. Fresh independent exact-range CodeRabbit review comment `5591353978` reported no actionable substantive findings before merge. Exact `main` push run `34274935240` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`, path `.github/workflows/000b2-public-attempt-003-recovery.yml`) completed successfully on that exact merge SHA. The B2R15 task cryptographically rebound ATTEMPT-003 preprocessing and execution-environment evidence to the exact frozen candidate, subset, scorer, normalization, C0, B2R14 harness, source-document, and source-blob identities without primary decoding or scoring.
+
+**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`
+**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`
+**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`
+**Canonical successor recovery predecessor:** `B2R15`
+**Canonical B2R15 task base:** `ae349f7ef28e8ffd08ee8f54d1727ef80684a31a`
+**Canonical B2R15 qualified head:** `1410cb81b59de07bdecee6b78e41fdc825f4a55d`
+**Canonical B2R15 task merge:** `3d31b18823b8275c99e1478b132a64f36fad05c0`
+**Canonical B2R15 post-merge recovery run:** `34274935240`
+**Active successor recovery unit:** `B2R16`
+**ATTEMPT-003 required:** `true`
+**ATTEMPT-003 frozen:** `false`
+**ATTEMPT-003 primary decode entry open:** `false`
+
+B2R16 alone is the next bounded action: freeze `000B2-PUBLIC-ATTEMPT-003` with exact candidate, subset, preprocessing, environment, scorer, normalization, and B2R14-qualified harness identities before any new primary decode. No primary decode or scoring is authorized by this reconciliation. B2R17 and every later successor remain unauthorized. Comparative publication/ranking, production selection, and product-code authority remain closed; `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, `production_stt_selected=false`, and `product_code_authorized=false` remain preserved.
