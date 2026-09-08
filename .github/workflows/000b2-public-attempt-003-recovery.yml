@@ -137,6 +137,96 @@ jobs:
           if active != expected_active:
               raise SystemExit(f'ATTEMPT-003 active successor drift: {active!r} != {expected_active!r}')
 
+          expected_task_scopes = {
+              'B2R13': [
+                  '.github/workflows/000b2-public-attempt-003-recovery.yml',
+                  '.github/workflows/000b2-public-attempt-recovery.yml',
+                  'research/000b2-public/attempt-002-invalidation.json',
+                  'research/000b2-public/recovery-attempt-003-readiness.json',
+                  'research/000b2-public/verify_attempt_002_invalidation.py',
+                  'research/000b2-public/verify_b2r13_activation.py',
+                  'specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md',
+                  'specs/000B2-public-corpus-bakeoff/recovery-v2.md',
+                  'specs/CURRENT.md',
+              ],
+              'B2R14': [
+                  '.github/workflows/000b2-public-b2r14-harness.yml',
+                  'research/000b2-public/b2r14-sherpa-result-harness.py',
+                  'research/000b2-public/b2r14-harness-qualification.json',
+                  'research/000b2-public/verify_b2r14.py',
+              ],
+              'B2R15': [
+                  '.github/workflows/000b2-public-b2r15-rebinding.yml',
+                  'research/000b2-public/b2r15-preprocessing-rebinding.json',
+                  'research/000b2-public/b2r15-environment-rebinding.json',
+                  'research/000b2-public/b2r15-provenance.json',
+                  'research/000b2-public/verify_b2r15.py',
+              ],
+              'B2R16': [
+                  '.github/workflows/000b2-public-b2r16-freeze.yml',
+                  'research/000b2-public/b2r16-attempt-003-manifest.json',
+                  'research/000b2-public/b2r16-preexecution-state.json',
+                  'research/000b2-public/verify_b2r16.py',
+              ],
+              'B2R17': [
+                  '.github/workflows/000b2-public-b2r17-moonshine-compact.yml',
+                  'research/000b2-public/decode_b2r17.py',
+                  'research/000b2-public/b2r17-moonshine-compact.json',
+                  'research/000b2-public/b2r17-provenance.json',
+                  'research/000b2-public/verify_b2r17.py',
+              ],
+              'B2R18': [
+                  '.github/workflows/000b2-public-b2r18-moonshine-balanced.yml',
+                  'research/000b2-public/decode_b2r18.py',
+                  'research/000b2-public/b2r18-moonshine-balanced.json',
+                  'research/000b2-public/b2r18-provenance.json',
+                  'research/000b2-public/verify_b2r18.py',
+              ],
+              'B2R19': [
+                  '.github/workflows/000b2-public-b2r19-whispercpp-compact.yml',
+                  'research/000b2-public/decode_b2r19.py',
+                  'research/000b2-public/b2r19-whispercpp-compact.json',
+                  'research/000b2-public/b2r19-provenance.json',
+                  'research/000b2-public/verify_b2r19.py',
+              ],
+              'B2R20': [
+                  '.github/workflows/000b2-public-b2r20-whispercpp-balanced.yml',
+                  'research/000b2-public/decode_b2r20.py',
+                  'research/000b2-public/b2r20-whispercpp-balanced.json',
+                  'research/000b2-public/b2r20-provenance.json',
+                  'research/000b2-public/verify_b2r20.py',
+              ],
+              'B2R21': [
+                  '.github/workflows/000b2-public-b2r21-sherpa-onnx-compact.yml',
+                  'research/000b2-public/decode_b2r21.py',
+                  'research/000b2-public/b2r21-sherpa-onnx-compact.json',
+                  'research/000b2-public/b2r21-provenance.json',
+                  'research/000b2-public/verify_b2r21.py',
+              ],
+              'B2R22': [
+                  '.github/workflows/000b2-public-b2r22-sherpa-onnx-balanced.yml',
+                  'research/000b2-public/decode_b2r22.py',
+                  'research/000b2-public/b2r22-sherpa-onnx-balanced.json',
+                  'research/000b2-public/b2r22-provenance.json',
+                  'research/000b2-public/verify_b2r22.py',
+              ],
+              'B2R23': [
+                  '.github/workflows/000b2-public-b2r23-evidence-set.yml',
+                  'research/000b2-public/b2r23-evidence-set.json',
+                  'research/000b2-public/b2r23-provenance.json',
+                  'research/000b2-public/verify_b2r23.py',
+              ],
+              'B2R24': [
+                  '.github/workflows/000b2-public-b2r24-scoring.yml',
+                  'research/000b2-public/score_b2r24.py',
+                  'research/000b2-public/b2r24-scores.json',
+                  'research/000b2-public/b2r24-provenance.json',
+                  'research/000b2-public/verify_b2r24.py',
+              ],
+          }
+          if state.get('task_candidate_scopes') != expected_task_scopes:
+              raise SystemExit('ATTEMPT-003 exact task candidate scope map drift')
+
           expected_scope = [
               'docs/canonical/CURRENT_STATE.md',
               'research/000b2-public/recovery-attempt-003-readiness.json',
@@ -164,6 +254,17 @@ jobs:
               raise SystemExit('ATTEMPT-003 transition proof cardinality must equal completed task count')
 
           authority_base = os.environ.get('AUTHORITY_BASE_REVISION', '')
+          changed = subprocess.run(
+              ['git', 'diff', '--name-only', '--diff-filter=ACDMRTUXB', authority_base, 'HEAD', '--'],
+              check=False,
+              text=True,
+              stdout=subprocess.PIPE,
+              stderr=subprocess.PIPE,
+          ) if authority_base else None
+          if changed is not None and changed.returncode != 0:
+              raise SystemExit('unable to compute candidate path scope')
+          changed_paths = {line for line in changed.stdout.splitlines() if line} if changed is not None else set()
+
           base_state = None
           if authority_base:
               read_base = subprocess.run(
@@ -186,7 +287,16 @@ jobs:
                   raise SystemExit('only discovery main may lack successor readiness')
               if completed != [] or active != 'B2R13' or proofs != []:
                   raise SystemExit('B2R13 activation may not pre-complete successor recovery')
+              if authority_base == os.environ.get('DISCOVERY_MAIN'):
+                  expected_activation_paths = set(expected_task_scopes['B2R13'])
+                  if changed_paths != expected_activation_paths:
+                      raise SystemExit(
+                          'B2R13 activation path scope mismatch: '
+                          + ', '.join(sorted(changed_paths ^ expected_activation_paths))
+                      )
           else:
+              if base_state.get('task_candidate_scopes') != expected_task_scopes:
+                  raise SystemExit('authority-base exact task candidate scope map drift')
               base_completed = base_state.get('completed_recovery_tasks')
               base_order = base_state.get('task_order')
               base_active = base_state.get('active_recovery_unit')
@@ -203,38 +313,18 @@ jobs:
               delta = len(completed) - len(base_completed)
               if delta not in {0, 1}:
                   raise SystemExit('candidate may advance at most one recovery task from authority base')
-              changed = subprocess.run(
-                  ['git', 'diff', '--name-only', '--diff-filter=ACDMRTUXB', authority_base, 'HEAD', '--'],
-                  check=False,
-                  text=True,
-                  stdout=subprocess.PIPE,
-                  stderr=subprocess.PIPE,
-              )
-              if changed.returncode != 0:
-                  raise SystemExit('unable to compute candidate path scope')
-              changed_paths = {line for line in changed.stdout.splitlines() if line}
               if delta == 0:
                   if completed != base_completed or active != base_active or proofs != base_proofs:
                       raise SystemExit('non-reconciliation candidate changed successor completion authority')
                   if changed_paths:
                       if not isinstance(active, str) or active not in task_order:
                           raise SystemExit('no active successor task may accept candidate material')
-                      active_token = active.lower()
-                      task_tokens = {task.lower() for task in task_order}
-                      disallowed = []
-                      for path in sorted(changed_paths):
-                          name = Path(path).name.lower()
-                          matched_tokens = {token for token in task_tokens if token in name}
-                          active_named = matched_tokens == {active_token}
-                          if path.startswith('.github/workflows/') and active_named:
-                              continue
-                          if path.startswith('research/000b2-public/') and active_named:
-                              continue
-                          disallowed.append(path)
-                      if disallowed:
+                      allowed_task_paths = set(expected_task_scopes[active])
+                      outside_scope = sorted(changed_paths - allowed_task_paths)
+                      if outside_scope:
                           raise SystemExit(
-                              f'{active} candidate changed paths outside exact active-task scope: '
-                              + ', '.join(disallowed)
+                              f'{active} candidate changed paths outside exact machine-bound task scope: '
+                              + ', '.join(outside_scope)
                           )
               else:
                   if completed[:-1] != base_completed or proofs[:-1] != base_proofs:
