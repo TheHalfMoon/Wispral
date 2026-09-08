@@ -125,6 +125,20 @@
       "research/000b2-public/verify_b2r24.py"
     ]
   },
+  "task_content_policies": {
+    "B2R13": {"required_verifier": "research/000b2-public/verify_b2r13_activation.py", "primary_decode_allowed": false, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R14": {"required_verifier": "research/000b2-public/verify_b2r14.py", "primary_decode_allowed": false, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R15": {"required_verifier": "research/000b2-public/verify_b2r15.py", "primary_decode_allowed": false, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R16": {"required_verifier": "research/000b2-public/verify_b2r16.py", "primary_decode_allowed": false, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R17": {"required_verifier": "research/000b2-public/verify_b2r17.py", "primary_decode_allowed": true, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R18": {"required_verifier": "research/000b2-public/verify_b2r18.py", "primary_decode_allowed": true, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R19": {"required_verifier": "research/000b2-public/verify_b2r19.py", "primary_decode_allowed": true, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R20": {"required_verifier": "research/000b2-public/verify_b2r20.py", "primary_decode_allowed": true, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R21": {"required_verifier": "research/000b2-public/verify_b2r21.py", "primary_decode_allowed": true, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R22": {"required_verifier": "research/000b2-public/verify_b2r22.py", "primary_decode_allowed": true, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R23": {"required_verifier": "research/000b2-public/verify_b2r23.py", "primary_decode_allowed": false, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R24": {"required_verifier": "research/000b2-public/verify_b2r24.py", "primary_decode_allowed": false, "scoring_allowed": true, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false}
+  },
   "transition_policy": {
     "canonical_main_ref_required_after_first_completion": true,
     "one_recovery_task_per_reconciliation": true,
