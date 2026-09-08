@@ -1,0 +1,72 @@
+name: Internal B2R14 Current Authority Fix
+
+on:
+  push:
+    branches:
+      - recovery/b2r14-corrective-reconcile-to-b2r15
+    paths:
+      - '.github/workflows/internal-b2r14-current-authority-fix.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: b2r14-current-authority-fix-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  apply-bounded-fix:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact staged head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Verify authority and demote remaining ATTEMPT-002 current wording
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = "cd15c844dc143903423279950c44b9af1c82be3c"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca"
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('specs/CURRENT.md')
+          text = path.read_text(encoding='utf-8')
+
+          old1 = "`research/000b2-public/recovery-readiness.json` is the active machine-readable execution authority. B2R09 is canonical and post-merge verified at task merge `fc357350270d5cb34fc1305dba4a9de41a5234c3` with exact recovery run `34160146607`; this reconciliation makes B2R10 the sole current bounded recovery unit. ATTEMPT-002 is canonically frozen and primary decode entry is open only for B2R10; B2R11 and every later recovery/scoring/synthesis/product unit remain closed."
+          new1 = "`research/000b2-public/recovery-readiness.json` was the machine-readable authority at this historical ATTEMPT-002 frontier. B2R09 is canonical historical ATTEMPT-002 evidence at task merge `fc357350270d5cb34fc1305dba4a9de41a5234c3` with exact recovery run `34160146607`; that superseded reconciliation made B2R10 the sole bounded recovery unit only for ATTEMPT-002. ATTEMPT-002 was frozen and its primary decode entry was open only for B2R10 at that historical frontier. ATTEMPT-002 is now invalidated for material execution drift and grants no present execution authority. Current execution authority is ATTEMPT-003 B2R15 only; ATTEMPT-003 remains unfrozen, primary decoding and scoring remain closed, and B2R16+ remain unauthorized."
+
+          old2 = "B2P02 is canonical and post-merge verified. B2P03 deterministic subset-selection logic is canonical and post-merge verified at merge `83eca872148f329033c299f6671d275edf2d7b58`. B2P04 deterministic source-membership freeze is canonical and post-merge verified at merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` with manifest byte SHA-256 `5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb` and freeze digest `f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242`. B2P05 candidate identity revalidation is canonical and post-merge verified at merge `49538990fb4cf8223e9321261925206ed7ff5cee`. B2P06 attempt-bound preprocessing capture is canonical and post-merge verified at merge `3dceadd984ff307ce55745bf5f289890a2fac261` with evidence SHA-256 `d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011`. B2P07 attempt-bound execution-environment capture is canonical and post-merge verified at merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` with preserved raw/seal ancestry and `DIAGNOSTIC` performance semantics. B2P08 is canonical and post-merge verified. B2E01 and B2E02 remain canonical historical ATTEMPT-001 executions. B2R01 invalidated ATTEMPT-001 for material execution drift, so B2E03 and every later ATTEMPT-001 primary decode are closed; B2R09 is canonical and post-merge verified at task merge `fc357350270d5cb34fc1305dba4a9de41a5234c3` with exact recovery run `34160146607`, and this reconciliation advances current recovery authority to B2R10 only with ATTEMPT-002 frozen."
+          new2 = "B2P02 is canonical and post-merge verified. B2P03 deterministic subset-selection logic is canonical and post-merge verified at merge `83eca872148f329033c299f6671d275edf2d7b58`. B2P04 deterministic source-membership freeze is canonical and post-merge verified at merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` with manifest byte SHA-256 `5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb` and freeze digest `f75a1084e8414e56a47b00350d5a7c1295445e2c52b03a0f591c40c041c9f242`. B2P05 candidate identity revalidation is canonical and post-merge verified at merge `49538990fb4cf8223e9321261925206ed7ff5cee`. B2P06 attempt-bound preprocessing capture is canonical and post-merge verified at merge `3dceadd984ff307ce55745bf5f289890a2fac261` with evidence SHA-256 `d90e5215081191134d8e714778140bfeee8080eb77aedc3a159b2dfed6e2d011`. B2P07 attempt-bound execution-environment capture is canonical and post-merge verified at merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` with preserved raw/seal ancestry and `DIAGNOSTIC` performance semantics. B2P08 is canonical and post-merge verified. B2E01 and B2E02 remain canonical historical ATTEMPT-001 executions. B2R01 invalidated ATTEMPT-001 for material execution drift, so B2E03 and every later ATTEMPT-001 primary decode are closed; B2R09 is canonical historical ATTEMPT-002 evidence at task merge `fc357350270d5cb34fc1305dba4a9de41a5234c3` with exact recovery run `34160146607`. Its reconciliation advanced recovery authority to B2R10 only at the now-superseded frozen ATTEMPT-002 frontier. ATTEMPT-002 is now invalidated for material execution drift and grants no present authority; current authority is ATTEMPT-003 B2R15 only, with ATTEMPT-003 unfrozen, primary decoding/scoring closed, and B2R16+ unauthorized."
+
+          for old, new in ((old1, new1), (old2, new2)):
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'expected exactly one target occurrence, found {count}')
+              text = text.replace(old, new, 1)
+
+          marker = "`000B2-unbiased-stt-bakeoff`\n\nState: `BLOCKED_EXTERNAL`"
+          if marker not in text:
+              raise SystemExit('trusted historical blocked marker missing')
+          if text.count('Current execution authority is ATTEMPT-003 B2R15 only') < 1:
+              raise SystemExit('B2R15 current authority marker missing')
+          path.write_text(text, encoding='utf-8')
+          PY
+          git diff --check
+          test "$(git diff --name-only)" = "specs/CURRENT.md"
+
+      - name: Commit bounded fix and remove temporary workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'TheHalfMoon'
+          git config user.email 'alshehriofficial@gmail.com'
+          git rm .github/workflows/internal-b2r14-current-authority-fix.yml
+          git add specs/CURRENT.md
+          git diff --cached --check
+          git commit -m 'docs(b2): demote residual B2R10 authority'
+          git push origin HEAD:recovery/b2r14-corrective-reconcile-to-b2r15
