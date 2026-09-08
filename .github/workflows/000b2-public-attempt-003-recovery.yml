@@ -95,10 +95,14 @@ jobs:
           readiness_path = root / "research/000b2-public/recovery-attempt-003-readiness.json"
           state = json.loads(readiness_path.read_text(encoding="utf-8"))
           active = state.get("active_recovery_unit")
+          completed = state.get("completed_recovery_tasks")
           scopes = state.get("task_candidate_scopes")
           activation_scope = state.get("activation_installation_scope")
           trusted = state.get("trusted_control_paths")
+          is_reconciliation = False
 
+          if not isinstance(completed, list):
+              raise SystemExit("TRUSTED_BOUNDARY=FAIL: completed recovery state malformed")
           if not isinstance(scopes, dict):
               raise SystemExit("TRUSTED_BOUNDARY=FAIL: task_candidate_scopes malformed")
           if not isinstance(activation_scope, list) or not isinstance(trusted, list):
@@ -132,16 +136,30 @@ jobs:
                   raise SystemExit("TRUSTED_BOUNDARY=FAIL: trusted control path set drift")
               if state.get("activation_installation_scope") != base_state.get("activation_installation_scope"):
                   raise SystemExit("TRUSTED_BOUNDARY=FAIL: activation installation scope drift")
-              if active and changed:
+
+              base_completed = base_state.get("completed_recovery_tasks")
+              if not isinstance(base_completed, list):
+                  raise SystemExit("TRUSTED_BOUNDARY=FAIL: authority-base completion state malformed")
+              delta = len(completed) - len(base_completed)
+              if delta not in {0, 1}:
+                  raise SystemExit("TRUSTED_BOUNDARY=FAIL: candidate must advance at most one recovery task")
+              if completed[:len(base_completed)] != base_completed:
+                  raise SystemExit("TRUSTED_BOUNDARY=FAIL: candidate rewrites completed recovery prefix")
+              is_reconciliation = delta == 1
+
+              four_authority = {
+                  "docs/canonical/CURRENT_STATE.md",
+                  "research/000b2-public/recovery-attempt-003-readiness.json",
+                  "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md",
+                  "specs/CURRENT.md",
+              }
+              if is_reconciliation:
+                  if not changed or not changed <= four_authority:
+                      raise SystemExit("TRUSTED_BOUNDARY=FAIL: reconciliation may change only canonical authority files")
+              elif active and changed:
                   allowed = set(scopes.get(active, []))
-                  four_authority = {
-                      "docs/canonical/CURRENT_STATE.md",
-                      "research/000b2-public/recovery-attempt-003-readiness.json",
-                      "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md",
-                      "specs/CURRENT.md",
-                  }
-                  if not (changed <= allowed or changed <= four_authority):
-                      raise SystemExit(f"TRUSTED_BOUNDARY=FAIL: {active} path scope violation")
+                  if not changed <= allowed:
+                      raise SystemExit(f"TRUSTED_BOUNDARY=FAIL: {active} task-candidate path scope violation")
 
           if active == "B2R13":
               candidate_paths = set(scopes["B2R13"])
@@ -166,7 +184,7 @@ jobs:
                   if any(marker in lowered for marker in forbidden):
                       raise SystemExit(f"TRUSTED_BOUNDARY=FAIL: positive authority in B2R13 candidate path: {path}")
 
-          if active == "B2R14" and base != discovery:
+          if active == "B2R14" and base != discovery and not is_reconciliation:
               expected_paths = set(scopes["B2R14"])
               if changed and not changed <= expected_paths:
                   raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 candidate path scope drift")
