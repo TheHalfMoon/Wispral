@@ -1,0 +1,35 @@
+{
+  "schema_version": "000b2-public-b2r16-preexecution-state-v1",
+  "task": "B2R16",
+  "lane": "PUBLIC_CORPUS",
+  "attempt_id": "000B2-PUBLIC-ATTEMPT-003",
+  "phase": "PRE_PRIMARY_FROZEN",
+  "canonical_authority_base": "8132b25479643dc955eb4d022400a9e9b36b4261",
+  "predecessor": {
+    "completed_task": "B2R15",
+    "task_merge": "3d31b18823b8275c99e1478b132a64f36fad05c0",
+    "reconciliation_merge": "8132b25479643dc955eb4d022400a9e9b36b4261",
+    "post_reconciliation_recovery_run_id": 34280960523
+  },
+  "freeze_state": {
+    "frozen": true,
+    "candidate_decoding_started": false,
+    "primary_decoding_started": false,
+    "scoring_started": false,
+    "primary_decode_entry_open": false,
+    "next_candidate_task": "B2R17",
+    "next_candidate_authorized": false
+  },
+  "material_access": {
+    "primary_corpus_accessed_by_b2r16": false,
+    "attempt_003_primary_evidence_accessed": false,
+    "reference_transcripts_accessed": false,
+    "comparative_results_accessed": false
+  },
+  "claim_guards": {
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "comparative_result_available": false,
+    "production_stt_selected": false,
+    "product_code_authorized": false
+  }
+}
