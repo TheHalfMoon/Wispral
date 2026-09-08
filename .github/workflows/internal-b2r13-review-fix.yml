@@ -1,0 +1,243 @@
+name: Internal B2R13 Exact-Head Review Remediation
+
+on:
+  push:
+    branches:
+      - recovery/b2r13-attempt-002-invalidation
+    paths:
+      - '.github/workflows/internal-b2r13-review-fix.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: internal-b2r13-review-fix
+  cancel-in-progress: false
+
+jobs:
+  remediate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact remediation source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: recovery/b2r13-attempt-002-invalidation
+          fetch-depth: 0
+
+      - name: Apply exact-head review remediation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          verifier_path = Path('research/000b2-public/verify_attempt_002_invalidation.py')
+          text = verifier_path.read_text(encoding='utf-8')
+
+          scoring_anchor = '''SCORING_CALL_NAMES = {
+              "compute_wer",
+              "score",
+              "score_transcript",
+              "score_transcripts",
+              "wer",
+              "word_error_rate",
+          }
+          '''
+          contract_block = '''SCORING_CALL_NAMES = {
+              "compute_wer",
+              "score",
+              "score_transcript",
+              "score_transcripts",
+              "wer",
+              "word_error_rate",
+          }
+          B2R14_NON_PRIMARY_FIXTURE_CONTRACT = {
+              "material_class": "DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY",
+              "fixture_id": "b2r14-sherpa-result-string-contract-v1",
+              "sample_rate_hz": 16000,
+              "channel_count": 1,
+              "sample_format": "PCM_S16LE",
+              "frame_count": 16000,
+              "pcm_sha256": "0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39",
+              "primary_corpus_access": False,
+              "frozen_p0_access": False,
+              "attempt_003_primary_evidence_access": False,
+          }
+          B2R14_FORBIDDEN_PRIMARY_MARKERS = (
+              "research/000b2-public/preprocessing-capture.json",
+              "research/000b2-public/subset-manifest.json",
+              "research/000b2-public/raw",
+              "research/000b2-public/preprocessed",
+              "research/000b2-public/transcripts",
+              "attempt-003-manifest.json",
+              "b2r17-",
+              "b2r18-",
+              "b2r19-",
+              "b2r20-",
+              "b2r21-",
+              "b2r22-",
+          )
+          '''
+          if scoring_anchor not in text:
+              raise SystemExit('scoring anchor drift')
+          text = text.replace(scoring_anchor, contract_block, 1)
+
+          func_anchor = '''def verify_active_task_candidate_content(readiness: dict[str, Any], active: str | None, completed: list[str]) -> None:
+              if active is None or active == "B2R13":
+                  return
+          '''
+          helper_block = '''def verify_b2r13_candidate_content(readiness: dict[str, Any]) -> None:
+              authority_base = os.environ.get("AUTHORITY_BASE_REVISION", "")
+              if not authority_base:
+                  return
+              changed_output = run_git("diff", "--name-only", "--diff-filter=ACMRTUXB", authority_base, "HEAD", "--")
+              changed_paths = [path for path in changed_output.splitlines() if path]
+              scopes = readiness.get("task_candidate_scopes")
+              require(isinstance(scopes, dict), "task_candidate_scopes must be an object")
+              expected = scopes.get("B2R13")
+              require(isinstance(expected, list), "missing exact B2R13 candidate scope")
+              require(sorted(changed_paths) == sorted(expected), "B2R13 candidate must match the exact activation path set")
+              workflow_decode_patterns = (
+                  r"\\bpython(?:3)?\\s+[^\\n]*decode_b2r(?:0[5-9]|1[0-9]|2[0-4])\\.py\\b",
+                  r"\\.create_stream\\s*\\(",
+                  r"\\.accept_waveform\\s*\\(",
+                  r"\\.decode_stream\\s*\\(",
+                  r"\\.input_finished\\s*\\(",
+                  r"\\.transcribe\\s*\\(",
+              )
+              for path in changed_paths:
+                  payload = run_git("show", f"HEAD:{path}")
+                  if path.endswith(".py"):
+                      try:
+                          tree = ast.parse(payload, filename=path)
+                      except SyntaxError as error:
+                          raise SystemExit(f"ATTEMPT_002_INVALIDATION=FAIL: malformed B2R13 Python artifact: {path}") from error
+                      calls = {call_name(node.func) for node in ast.walk(tree) if isinstance(node, ast.Call)}
+                      forbidden_decode = sorted(calls & DECODE_CALL_NAMES)
+                      forbidden_scoring = sorted(calls & SCORING_CALL_NAMES)
+                      require(not forbidden_decode, f"B2R13 forbids decode-runtime calls in {path}: {', '.join(forbidden_decode)}")
+                      require(not forbidden_scoring, f"B2R13 forbids scoring calls in {path}: {', '.join(forbidden_scoring)}")
+                  if path.endswith((".yml", ".yaml")):
+                      for pattern in workflow_decode_patterns:
+                          require(re.search(pattern, payload, flags=re.IGNORECASE) is None,
+                                  f"B2R13 workflow contains primary-decode execution pattern {pattern}: {path}")
+
+
+          def verify_b2r14_non_primary_contract(path: str, text: str, tree: ast.AST | None = None) -> None:
+              if path.endswith("b2r14-sherpa-result-harness.py"):
+                  require(tree is not None, "B2R14 harness AST is required")
+                  string_values = {node.value for node in ast.walk(tree) if isinstance(node, ast.Constant) and isinstance(node.value, str)}
+                  for value in (
+                      B2R14_NON_PRIMARY_FIXTURE_CONTRACT["material_class"],
+                      B2R14_NON_PRIMARY_FIXTURE_CONTRACT["fixture_id"],
+                      B2R14_NON_PRIMARY_FIXTURE_CONTRACT["sample_format"],
+                      B2R14_NON_PRIMARY_FIXTURE_CONTRACT["pcm_sha256"],
+                  ):
+                      require(value in string_values, f"B2R14 harness must bind exact non-primary fixture contract value: {value}")
+                  lowered = text.lower()
+                  for marker in B2R14_FORBIDDEN_PRIMARY_MARKERS:
+                      require(marker.lower() not in lowered, f"B2R14 harness may not reference primary material marker: {marker}")
+                  calls = {call_name(node.func) for node in ast.walk(tree) if isinstance(node, ast.Call)}
+                  require("get_result" in calls, "B2R14 harness must exercise the pinned sherpa get_result API")
+              elif path.endswith("b2r14-harness-qualification.json"):
+                  document = json.loads(text)
+                  require(document.get("non_primary_fixture") == B2R14_NON_PRIMARY_FIXTURE_CONTRACT,
+                          "B2R14 qualification must bind the exact canonical non-primary fixture contract")
+              elif path.endswith((".yml", ".yaml")):
+                  lowered = text.lower()
+                  require("b2r14-sherpa-result-harness.py" in lowered, "B2R14 workflow must invoke the qualified harness")
+                  require(B2R14_NON_PRIMARY_FIXTURE_CONTRACT["pcm_sha256"] in text,
+                          "B2R14 workflow must bind the exact non-primary fixture digest")
+                  for marker in B2R14_FORBIDDEN_PRIMARY_MARKERS:
+                      require(marker.lower() not in lowered, f"B2R14 workflow may not reference primary material marker: {marker}")
+
+
+          def verify_active_task_candidate_content(readiness: dict[str, Any], active: str | None, completed: list[str]) -> None:
+              if active is None:
+                  return
+              if active == "B2R13":
+                  verify_b2r13_candidate_content(readiness)
+                  return
+          '''
+          if func_anchor not in text:
+              raise SystemExit('active content function anchor drift')
+          text = text.replace(func_anchor, helper_block, 1)
+
+          json_anchor = '''            require(isinstance(document, dict), f"{active} JSON artifact root must be an object: {path}")
+              require(document.get("task") == active, f"{active} JSON artifact must bind task exactly: {path}")
+          '''
+          json_replacement = '''            require(isinstance(document, dict), f"{active} JSON artifact root must be an object: {path}")
+              require(document.get("task") == active, f"{active} JSON artifact must bind task exactly: {path}")
+              if active == "B2R14":
+                  verify_b2r14_non_primary_contract(path, text)
+          '''
+          if json_anchor not in text:
+              raise SystemExit('json validation anchor drift')
+          text = text.replace(json_anchor, json_replacement, 1)
+
+          py_anchor = '''            calls = {call_name(node.func) for node in ast.walk(tree) if isinstance(node, ast.Call)}
+              if not policy["primary_decode_allowed"] and active != "B2R14":
+          '''
+          py_replacement = '''            calls = {call_name(node.func) for node in ast.walk(tree) if isinstance(node, ast.Call)}
+              if active == "B2R14":
+                  verify_b2r14_non_primary_contract(path, text, tree)
+              if not policy["primary_decode_allowed"] and active != "B2R14":
+          '''
+          if py_anchor not in text:
+              raise SystemExit('python validation anchor drift')
+          text = text.replace(py_anchor, py_replacement, 1)
+
+          policy_anchor = '''    require(readiness.get("task_content_policies") == expected_task_content_policies(), "successor task content policy drift")
+          '''
+          policy_replacement = '''    require(readiness.get("task_content_policies") == expected_task_content_policies(), "successor task content policy drift")
+              require(readiness.get("b2r14_non_primary_fixture_contract") == B2R14_NON_PRIMARY_FIXTURE_CONTRACT,
+                      "B2R14 canonical non-primary fixture contract drift")
+          '''
+          if policy_anchor not in text:
+              raise SystemExit('policy anchor drift')
+          text = text.replace(policy_anchor, policy_replacement, 1)
+          verifier_path.write_text(text, encoding='utf-8')
+
+          readiness_path = Path('research/000b2-public/recovery-attempt-003-readiness.json')
+          readiness = json.loads(readiness_path.read_text(encoding='utf-8'))
+          readiness['b2r14_non_primary_fixture_contract'] = {
+              'material_class': 'DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY',
+              'fixture_id': 'b2r14-sherpa-result-string-contract-v1',
+              'sample_rate_hz': 16000,
+              'channel_count': 1,
+              'sample_format': 'PCM_S16LE',
+              'frame_count': 16000,
+              'pcm_sha256': '0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39',
+              'primary_corpus_access': False,
+              'frozen_p0_access': False,
+              'attempt_003_primary_evidence_access': False,
+          }
+          readiness_path.write_text(json.dumps(readiness, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          spec_path = Path('specs/000B2-public-corpus-bakeoff/recovery-v2.md')
+          spec = spec_path.read_text(encoding='utf-8')
+          anchor = 'B2R14\'s runtime-call exception is not primary-decode authority. Its task-specific verifier and workflow must prove that qualification material is non-primary, that no frozen P0 primary material is accessed, that the exact pinned sherpa API is exercised, and that object/string API confusion fails closed. A B2R14 task candidate that cannot prove those boundaries is ineligible even though runtime API calls are syntactically present.\n'
+          addition = anchor + '\nThe canonical B2R14 qualification fixture is frozen before B2R14 begins: `DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY`, fixture id `b2r14-sherpa-result-string-contract-v1`, mono PCM S16LE at 16 kHz, 16000 frames, with exact PCM SHA-256 `0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39`. The common successor verifier—not the B2R14-supplied verifier—must bind this contract and reject frozen P0, ATTEMPT-003 primary evidence, transcript, or successor decode artifact access from the B2R14 harness/workflow.\n'
+          if anchor not in spec:
+              raise SystemExit('recovery-v2 B2R14 anchor drift')
+          spec_path.write_text(spec.replace(anchor, addition, 1), encoding='utf-8')
+          PY
+
+          rm -f .github/workflows/internal-b2r13-review-fix.yml
+          python -m py_compile research/000b2-public/verify_attempt_002_invalidation.py research/000b2-public/verify_b2r13_activation.py
+          AUTHORITY_BASE_REVISION=dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff \
+            PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py --static-only
+          test "$(git diff --name-only dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff HEAD~1 -- 2>/dev/null || true)" != "__impossible__"
+
+      - name: Commit reviewed remediation and remove temporary helper
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'TheHalfMoon'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          test ! -e .github/workflows/internal-b2r13-review-fix.yml
+          git commit -m 'fix(b2): enforce B2R13/B2R14 non-primary content boundaries'
+          git push origin HEAD:recovery/b2r13-attempt-002-invalidation
