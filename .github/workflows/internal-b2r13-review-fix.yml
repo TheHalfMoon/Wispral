@@ -1,0 +1,207 @@
+name: Internal B2R13 Review Fix Helper
+
+on:
+  push:
+    branches:
+      - automation/b2r13-review-fix-edec6fe
+    paths:
+      - '.github/workflows/internal-b2r13-review-fix.yml'
+
+permissions:
+  contents: write
+
+env:
+  EXPECTED_TARGET_HEAD: edec6fe34657c69c9150266d3c09eb7d1b8298f9
+  TARGET_BRANCH: recovery/b2r13-attempt-002-invalidation
+
+jobs:
+  apply-review-fixes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact target branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify immutable target frontier
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_TARGET_HEAD"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff"
+          test "$(git diff --name-only dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff HEAD | wc -l)" -eq 9
+
+      - name: Apply minimal trusted-boundary review fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          verifier = Path('research/000b2-public/verify_attempt_002_invalidation.py')
+          text = verifier.read_text(encoding='utf-8')
+
+          old = '''            calls = {call_name(node.func) for node in ast.walk(tree) if isinstance(node, ast.Call)}
+            require("get_result" in calls, "B2R14 harness must exercise the pinned sherpa get_result API")
+'''
+          new = '''            calls = {call_name(node.func) for node in ast.walk(tree) if isinstance(node, ast.Call)}
+            require("get_result" in calls, "B2R14 harness must exercise the pinned sherpa get_result API")
+            get_result_calls = [
+                node for node in ast.walk(tree)
+                if isinstance(node, ast.Call) and call_name(node.func) == "get_result"
+            ]
+            require(len(get_result_calls) == 1, "B2R14 harness must contain exactly one get_result call")
+            result_call = get_result_calls[0]
+            require(
+                isinstance(result_call.func, ast.Attribute)
+                and isinstance(result_call.func.value, ast.Name)
+                and result_call.func.value.id == "recognizer"
+                and len(result_call.args) == 1
+                and isinstance(result_call.args[0], ast.Name)
+                and result_call.args[0].id == "stream"
+                and not result_call.keywords,
+                "B2R14 harness must call recognizer.get_result(stream) exactly",
+            )
+            direct_returns = [
+                node for node in ast.walk(tree)
+                if isinstance(node, ast.Return)
+                and node.value is not None
+                and ast.dump(node.value, include_attributes=False) == ast.dump(result_call, include_attributes=False)
+            ]
+            require(len(direct_returns) == 1, "B2R14 harness must directly return recognizer.get_result(stream)")
+            require(
+                not any(isinstance(node, ast.Attribute) and node.attr == "text" for node in ast.walk(tree)),
+                "B2R14 harness may not reintroduce object-style .text extraction",
+            )
+            require("getattr" not in calls, "B2R14 harness may not hide object/string confusion behind getattr")
+'''
+          if text.count(old) != 1:
+              raise SystemExit('unexpected B2R14 verifier anchor count')
+          text = text.replace(old, new, 1)
+
+          old = '''    verifier = ROOT / required_verifier
+    require(verifier.is_file(), f"{active} required verifier is missing")
+    verification = subprocess.run(
+        [sys.executable, str(verifier), "--static-only"],
+        cwd=ROOT,
+        check=False,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    require(verification.returncode == 0, f"{active} task-specific verifier failed: {verification.stdout.strip()}")
+'''
+          new = '''    verifier = ROOT / required_verifier
+    require(verifier.is_file(), f"{active} required verifier is missing")
+    try:
+        verifier_tree = ast.parse(verifier.read_text(encoding="utf-8"), filename=required_verifier)
+    except SyntaxError as error:
+        raise SystemExit(f"ATTEMPT_002_INVALIDATION=FAIL: malformed {active} required verifier") from error
+    require(any(isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) for node in ast.walk(verifier_tree)),
+            f"{active} required verifier must contain reviewable static checks")
+    # Candidate-supplied verifier code is intentionally never executed here. The common
+    # successor control owns execution authority and validates the candidate diff itself.
+'''
+          if text.count(old) != 1:
+              raise SystemExit('unexpected candidate-verifier execution anchor count')
+          text = text.replace(old, new, 1)
+          verifier.write_text(text, encoding='utf-8')
+
+          workflow = Path('.github/workflows/000b2-public-attempt-003-recovery.yml')
+          text = workflow.read_text(encoding='utf-8')
+          anchor = '''              forbidden_primary = (
+'''
+          insertion = '''              get_result_calls = [
+                  node for node in ast.walk(tree)
+                  if isinstance(node, ast.Call)
+                  and isinstance(node.func, ast.Attribute)
+                  and node.func.attr == "get_result"
+              ]
+              if len(get_result_calls) != 1:
+                  raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 harness must contain exactly one get_result call")
+              result_call = get_result_calls[0]
+              if not (
+                  isinstance(result_call.func.value, ast.Name)
+                  and result_call.func.value.id == "recognizer"
+                  and len(result_call.args) == 1
+                  and isinstance(result_call.args[0], ast.Name)
+                  and result_call.args[0].id == "stream"
+                  and not result_call.keywords
+              ):
+                  raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 harness must call recognizer.get_result(stream) exactly")
+              direct_returns = [
+                  node for node in ast.walk(tree)
+                  if isinstance(node, ast.Return)
+                  and node.value is not None
+                  and ast.dump(node.value, include_attributes=False) == ast.dump(result_call, include_attributes=False)
+              ]
+              if len(direct_returns) != 1:
+                  raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 harness must directly return recognizer.get_result(stream)")
+              if any(isinstance(node, ast.Attribute) and node.attr == "text" for node in ast.walk(tree)):
+                  raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 harness may not use object-style .text extraction")
+              if any(
+                  isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "getattr"
+                  for node in ast.walk(tree)
+              ):
+                  raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 harness may not use getattr result coercion")
+              print("B2R14_TRUSTED_CANDIDATE_HARNESS_SHAPE=PASS")
+
+              forbidden_primary = (
+'''
+          if text.count(anchor) != 1:
+              raise SystemExit('unexpected trusted B2R14 workflow anchor count')
+          text = text.replace(anchor, insertion, 1)
+          workflow.write_text(text, encoding='utf-8')
+
+          spec = Path('specs/000B2-public-corpus-bakeoff/recovery-v2.md')
+          text = spec.read_text(encoding='utf-8')
+          old = '- include the task\'s exact required verifier and pass it with `--static-only`;'
+          new = '- include the task\'s exact required verifier as a reviewable evidence artifact; the common trusted control MUST NOT execute candidate-supplied verifier code and instead validates the candidate diff itself;'
+          if text.count(old) != 1:
+              raise SystemExit('unexpected verifier-policy prose anchor count')
+          text = text.replace(old, new, 1)
+          old = '''B2R14's runtime-call exception is not primary-decode authority. Its task-specific verifier and workflow must prove that qualification material is non-primary, that no frozen P0 primary material is accessed, that the exact pinned sherpa API is exercised, and that object/string API confusion fails closed. A B2R14 task candidate that cannot prove those boundaries is ineligible even though runtime API calls are syntactically present.
+'''
+          new = '''B2R14's runtime-call exception is not primary-decode authority. The trusted common recovery control—not candidate-supplied verifier execution—must prove that qualification material is non-primary, that no frozen P0 primary material is accessed, and that the candidate harness contains exactly one direct `return recognizer.get_result(stream)` with no `.text` or `getattr` result coercion. The same trusted control separately exercises the exact pinned sherpa API against the frozen synthetic fixture to prove the runtime returns a plain string. A B2R14 task candidate that cannot satisfy both the candidate-harness structural contract and the pinned-runtime contract is ineligible.
+'''
+          if text.count(old) != 1:
+              raise SystemExit('unexpected B2R14 prose anchor count')
+          text = text.replace(old, new, 1)
+          spec.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Validate repaired exact range
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/000b2-public/verify_attempt_002_invalidation.py research/000b2-public/verify_b2r13_activation.py
+          rm -rf research/000b2-public/__pycache__
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+          ast.parse(Path('research/000b2-public/verify_attempt_002_invalidation.py').read_text(encoding='utf-8'))
+          text = Path('.github/workflows/000b2-public-attempt-003-recovery.yml').read_text(encoding='utf-8')
+          assert 'B2R14_TRUSTED_CANDIDATE_HARNESS_SHAPE=PASS' in text
+          assert 'Candidate-supplied verifier code is intentionally never executed here.' in Path('research/000b2-public/verify_attempt_002_invalidation.py').read_text(encoding='utf-8')
+          PY
+          AUTHORITY_BASE_REVISION=dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff python research/000b2-public/verify_attempt_002_invalidation.py
+          python research/000b2-public/verify_b2r13_activation.py
+          test "$(git diff --name-only "$EXPECTED_TARGET_HEAD" -- | sort)" = "$(printf '%s\n' \
+            .github/workflows/000b2-public-attempt-003-recovery.yml \
+            research/000b2-public/verify_attempt_002_invalidation.py \
+            specs/000B2-public-corpus-bakeoff/recovery-v2.md | sort)"
+          test "$(git diff --name-only dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff HEAD -- | wc -l)" -eq 9
+
+      - name: Commit and push exact repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Abdulaziz M. Shehri"
+          git config user.email "alshehriofficial@gmail.com"
+          git add .github/workflows/000b2-public-attempt-003-recovery.yml research/000b2-public/verify_attempt_002_invalidation.py specs/000B2-public-corpus-bakeoff/recovery-v2.md
+          git diff --cached --check
+          git commit -m "fix(000b2): harden ATTEMPT-003 trusted candidate boundary"
+          git push origin "HEAD:$TARGET_BRANCH"
