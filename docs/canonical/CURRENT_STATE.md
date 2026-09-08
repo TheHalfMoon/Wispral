@@ -357,7 +357,7 @@ PR #97 repaired the chronology forward-only without rewriting historical bytes. 
 **ATTEMPT-003 frozen:** `false`
 **ATTEMPT-003 primary decode entry open:** `false`
 
-B2R15 alone is the next bounded unit: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary corpus decode or scoring is authorized. B2R16 and every later successor unit require their own exact-head qualification, canonical-base trusted PR gate, independent review, guarded normal merge, post-merge recovery proof, and separate reconciliation.
+At the B2R14 corrective reconciliation frontier, B2R15 alone was the next bounded unit: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary corpus decode or scoring was authorized. That B2R14-era instruction is historical and is superseded by the B2R15 reconciliation below; it grants no present execution authority.
 
 ## Canonical ATTEMPT-003 B2R15 preexecution-evidence reconciliation
 

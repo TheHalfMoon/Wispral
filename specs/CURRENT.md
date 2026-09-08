@@ -411,7 +411,7 @@ Corrective PR #97 requalified the unchanged B2R14 harness semantics on base `2f4
 **ATTEMPT-003 frozen:** `false`
 **ATTEMPT-003 primary decode entry open:** `false`
 
-The sole next bounded action is B2R15: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary decode or scoring is authorized. B2R16 and every later ATTEMPT-003 unit remain closed until their predecessor is canonically reconciled.
+At the B2R14 corrective reconciliation frontier, the sole next bounded action was B2R15: capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate, subset, scorer, normalization, C0, or the B2R14-qualified harness identities. No primary decode or scoring was authorized. That B2R14-era instruction is historical and is superseded by the B2R15 reconciliation below; it grants no present execution authority.
 
 Comparative scoring/ranking, synthesis, candidate-superiority claims, production STT selection, and product-code authority remain closed. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.
 
