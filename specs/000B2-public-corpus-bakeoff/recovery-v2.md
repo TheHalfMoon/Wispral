@@ -83,8 +83,8 @@ The successor chain is strict and dependency ordered:
 8. `B2R20` — execute candidate cell 4 (`whispercpp-balanced`) under ATTEMPT-003.
 9. `B2R21` — execute candidate cell 5 (`sherpa-onnx-compact`) under ATTEMPT-003 using the qualified result-extraction harness.
 10. `B2R22` — execute candidate cell 6 (`sherpa-onnx-balanced`) under ATTEMPT-003 using the same qualified result-extraction harness.
-11. `B2R23` — preserve the complete ATTEMPT-003 raw transcript/failure/runtime/run-identity evidence set and prove all six cells bind the same frozen attempt. No scoring.
-12. `B2R24` — score ATTEMPT-003 under the already-frozen scorer and normalization contract. Comparative result availability may become true only if every predecessor is canonical, all required evidence verifies, and B2R24 itself satisfies the normal qualification/merge/post-merge gates.
+11. `B2R23` — preserve the complete ATTEMPT-003 raw transcript/failure/runtime/run-identity evidence set and prove all six cells bind the same frozen attempt. No scoring and no further primary decode.
+12. `B2R24` — score ATTEMPT-003 under the already-frozen scorer and normalization contract. No primary decode. Comparative result availability may become true only in terminal reconciliation after every predecessor is canonical, all required evidence verifies, and B2R24 itself satisfies the normal qualification/merge/post-merge gates.
 
 B2R10, B2R11, and B2R12 remain historical pending units of the invalidated ATTEMPT-002 chain and are superseded for execution. They MUST NOT be checked as completed merely to advance this successor chain.
 
@@ -104,6 +104,24 @@ Each successor task must satisfy all of the following before the next task becom
 Each reconciliation may advance exactly one recovery task relative to its canonical authority base. Existing transition proofs are append-only. Every completed-task proof must use a unique canonical task merge and a unique successful post-merge recovery run. The proof must bind the canonical task base, the exact qualified task head, the normal merge commit whose first and second parents are those exact SHAs, the successful `main` push recovery run for that merge SHA, the completed task, and its sole successor. Reusing a merge/run proof, bulk-advancing multiple tasks, replacing an earlier proof, or accepting a squash/rebase commit as a task merge is prohibited.
 
 Stale CI or review evidence never transfers to a changed head.
+
+## Active-task content boundary
+
+Path scope alone is not execution authority. The exact `task_candidate_scopes` and `task_content_policies` maps in the successor readiness state are frozen governance contracts established by B2R13 and MUST remain byte-semantically equivalent in every later authority state.
+
+For B2R14 through B2R24, every non-reconciliation task candidate MUST:
+
+- change only paths in the exact active-task allowlist;
+- include the task's exact required verifier and pass it with `--static-only`;
+- bind every changed artifact explicitly to the exact active B2R task and contain no reference to a different successor B2R task;
+- bind each changed JSON evidence object with top-level `task` equal to the exact active task;
+- contain no positive comparative-publication, production-selection, product-code, or primary-decode-authority declaration;
+- contain no primary-decode calls unless the active task is B2R17 through B2R22;
+- contain no scoring calls unless the active task is B2R24.
+
+The common successor verifier enforces these rules from the exact authority-base-to-head diff. A task-specific verifier cannot replace or weaken the common content policy. A reconciliation cannot modify either task-scope or task-content policy because the common workflow and static verifier compare both maps against the canonical expected policy and the authority-base copy.
+
+Primary-decode entry authority is `false` for B2R13 through B2R16, `true` only for B2R17 through B2R22, and `false` again for B2R23, B2R24, and terminal recovery state. ATTEMPT-003 must remain frozen from B2R17 onward, including B2R23, B2R24, and terminal state.
 
 ## B2R13 activation exception
 
