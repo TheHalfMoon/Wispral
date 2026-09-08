@@ -439,6 +439,14 @@ The final B2R09 verifier also fails closed on the complete ordered B2R01-B2R12 r
 **Historical B2R09 post-merge recovery run:** `34160146607`
 **Historical successor recovery unit at this reconciliation:** `B2R10`
 
+### Historical ATTEMPT-002 B2R09 snapshot wording — non-authoritative
+
+The following literal marker describes only the superseded B2R09 reconciliation snapshot and is retained so the immutable B2R09 verifier can prove what that historical snapshot said. It is not current execution authority; ATTEMPT-002 is invalidated and current recovery authority remains ATTEMPT-003 B2R15 only.
+
+```text
+**Active recovery unit:** `B2R10`
+```
+
 At that historical ATTEMPT-002 frontier, ATTEMPT-001 was historical and ineligible for comparative scoring, ATTEMPT-002 remained frozen with freeze digest `600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8`, `primary_decode_entry_open=true` applied only to B2R10, and B2R10 alone was authorized to execute candidate cell 6 (`sherpa-onnx-balanced`) against the identical frozen P0 public-human audio using the unchanged frozen C0 contract while preserving raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and all claim guards. Those statements are historical only: ATTEMPT-002 is now invalidated for material execution drift and grants no present execution authority. Current execution authority is ATTEMPT-003 B2R15 only; ATTEMPT-003 remains unfrozen, primary decoding and scoring remain closed, and B2R16+ remain unauthorized.
 
 ## Historical next action at the B2R09 reconciliation — superseded
