@@ -15,6 +15,7 @@ jobs:
       SHERPA_REVISION: 917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e
       FIXTURE_SHA256: 0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39
       HARNESS: research/000b2-public/b2r14-sherpa-result-harness.py
+      QUALIFICATION: research/000b2-public/b2r14-harness-qualification.json
       ENTRY_POINT: extract_result
 
     steps:
@@ -34,11 +35,15 @@ jobs:
           git -C "$SRC" checkout --detach FETCH_HEAD
           test "$(git -C "$SRC" rev-parse HEAD)" = "$SHERPA_REVISION"
 
-      - name: Verify B2R14 fixed harness and pinned source contract
+      - name: Verify B2R14 corrective qualification and pinned source contract
         shell: bash
         run: |
           set -euo pipefail
           test -f "$HARNESS"
+          test -f "$QUALIFICATION"
           grep -F "$ENTRY_POINT" "$HARNESS" >/dev/null
           grep -F "$FIXTURE_SHA256" "$HARNESS" >/dev/null
+          grep -F '"status": "CORRECTIVE_REQUALIFICATION_PENDING_INDEPENDENT_REVIEW"' "$QUALIFICATION" >/dev/null
+          grep -F '"corrective_requalification_required": true' "$QUALIFICATION" >/dev/null
+          grep -F '"premature_merge_eligible_as_canonical_task_completion": false' "$QUALIFICATION" >/dev/null
           PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r14.py --sherpa-source "$RUNNER_TEMP/sherpa-onnx"
