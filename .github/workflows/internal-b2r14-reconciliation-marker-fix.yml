@@ -1,0 +1,69 @@
+name: Internal B2R14 Reconciliation Marker Fix
+
+on:
+  push:
+    branches:
+      - recovery/b2r14-corrective-reconcile-to-b2r15
+    paths:
+      - '.github/workflows/internal-b2r14-reconciliation-marker-fix.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: b2r14-reconciliation-marker-fix-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  apply-bounded-fix:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact reconciliation head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Restore historical trusted marker without restoring stale authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca"
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('specs/CURRENT.md')
+          text = path.read_text(encoding='utf-8')
+          marker = "`000B2-unbiased-stt-bakeoff`\n\nState: `BLOCKED_EXTERNAL`"
+          if marker in text:
+              raise SystemExit('historical B2 marker unexpectedly already present')
+          anchor = '## Public-human P0 baseline\n'
+          if text.count(anchor) != 1:
+              raise SystemExit(f'expected exactly one insertion anchor, found {text.count(anchor)}')
+          section = '''## Historical private B2 blocker — preserved machine-contract marker\n\n`000B2-unbiased-stt-bakeoff`\n\nState: `BLOCKED_EXTERNAL`\n\nThis exact marker is retained solely for immutable trusted-entry verification of the historical private participant/media lane. It is not current recovery-action authority and MUST NOT be used to reopen the private lane. Current execution authority is ATTEMPT-003 B2R15 only; ATTEMPT-003 remains unfrozen, primary decoding and scoring remain closed, and B2R16+ remain unauthorized.\n\n'''
+          text = text.replace(anchor, section + anchor, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+          git diff --check
+          test "$(git diff --name-only)" = "specs/CURRENT.md"
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('specs/CURRENT.md').read_text(encoding='utf-8')
+          assert "`000B2-unbiased-stt-bakeoff`\n\nState: `BLOCKED_EXTERNAL`" in text
+          assert 'Current execution authority is ATTEMPT-003 B2R15 only' in text
+          assert 'B2R16+ remain unauthorized' in text
+          PY
+
+      - name: Commit bounded marker repair and remove temporary workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'TheHalfMoon'
+          git config user.email 'alshehriofficial@gmail.com'
+          git rm .github/workflows/internal-b2r14-reconciliation-marker-fix.yml
+          git add specs/CURRENT.md
+          git diff --cached --check
+          git commit -m 'docs(b2): preserve historical B2 blocked marker'
+          test "$(git diff --name-only HEAD^ HEAD | sort)" = "$(printf '%s\n' .github/workflows/internal-b2r14-reconciliation-marker-fix.yml specs/CURRENT.md | sort)"
+          git push origin HEAD:recovery/b2r14-corrective-reconcile-to-b2r15
