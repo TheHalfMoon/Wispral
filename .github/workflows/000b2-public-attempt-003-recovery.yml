@@ -35,7 +35,7 @@ jobs:
     timeout-minutes: 10
     env:
       EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
-      AUTHORITY_BASE_REVISION: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+      AUTHORITY_BASE_REVISION: ${{ github.event.pull_request.base.sha || (github.event.before != '0000000000000000000000000000000000000000' && github.event.before) || github.sha }}
       DISCOVERY_MAIN: dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff
       SHERPA_REVISION: 917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e
     steps:
