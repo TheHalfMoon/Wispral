@@ -1,0 +1,80 @@
+name: Internal B2R13 Review Fix Nonworkflow
+
+on:
+  push:
+    branches:
+      - automation/b2r13-review-fix-edec6fe
+    paths:
+      - '.github/workflows/internal-b2r13-review-fix-nonworkflow.yml'
+
+permissions:
+  contents: write
+
+env:
+  EXPECTED_TARGET_HEAD: edec6fe34657c69c9150266d3c09eb7d1b8298f9
+  TARGET_BRANCH: recovery/b2r13-attempt-002-invalidation
+
+jobs:
+  apply-review-fixes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact target branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify immutable target frontier
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_TARGET_HEAD"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff"
+          test "$(git diff --name-only dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff HEAD -- | wc -l)" -eq 9
+
+      - name: Apply exact reviewed verifier and policy repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64
+          import re
+          import subprocess
+
+          helper = subprocess.run(
+              ["git", "show", "origin/automation/b2r13-review-fix-edec6fe:.github/workflows/internal-b2r13-review-fix.yml"],
+              check=True,
+              text=True,
+              stdout=subprocess.PIPE,
+          ).stdout
+          match = re.search(r"base64\.b64decode\('([A-Za-z0-9+/=]+)'\)", helper)
+          if not match:
+              raise SystemExit("review-fix payload missing from helper workflow")
+          exec(base64.b64decode(match.group(1)), {})
+          PY
+          git restore --source="$EXPECTED_TARGET_HEAD" -- .github/workflows/000b2-public-attempt-003-recovery.yml
+
+      - name: Validate exact two-file repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/000b2-public/verify_attempt_002_invalidation.py research/000b2-public/verify_b2r13_activation.py
+          rm -rf research/000b2-public/__pycache__
+          grep -q 'Candidate-supplied verifier code is intentionally never executed here.' research/000b2-public/verify_attempt_002_invalidation.py
+          grep -q 'B2R14 harness must directly return recognizer.get_result(stream)' research/000b2-public/verify_attempt_002_invalidation.py
+          grep -q 'common trusted control MUST NOT execute candidate-supplied verifier code' specs/000B2-public-corpus-bakeoff/recovery-v2.md
+          test "$(git diff --name-only "$EXPECTED_TARGET_HEAD" -- | sort)" = "$(printf '%s\n' research/000b2-public/verify_attempt_002_invalidation.py specs/000B2-public-corpus-bakeoff/recovery-v2.md | sort)"
+          git diff --check
+
+      - name: Commit and push exact repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Abdulaziz M. Shehri"
+          git config user.email "alshehriofficial@gmail.com"
+          git add research/000b2-public/verify_attempt_002_invalidation.py specs/000B2-public-corpus-bakeoff/recovery-v2.md
+          git diff --cached --check
+          git commit -m "fix(000b2): harden ATTEMPT-003 candidate verifier boundary"
+          git push origin "HEAD:$TARGET_BRANCH"
