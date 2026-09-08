@@ -32,7 +32,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$EXPECTED_TARGET_HEAD"
           test "$(git ls-remote origin refs/heads/main | cut -f1)" = "dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff"
-          test "$(git diff --name-only dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff HEAD | wc -l)" -eq 9
+          test "$(git diff --name-only dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff HEAD -- | wc -l)" -eq 9
 
       - name: Apply minimal trusted-boundary review fixes
         shell: bash
@@ -179,21 +179,11 @@ jobs:
           set -euo pipefail
           python -m py_compile research/000b2-public/verify_attempt_002_invalidation.py research/000b2-public/verify_b2r13_activation.py
           rm -rf research/000b2-public/__pycache__
-          python - <<'PY'
-          import ast
-          from pathlib import Path
-          ast.parse(Path('research/000b2-public/verify_attempt_002_invalidation.py').read_text(encoding='utf-8'))
-          text = Path('.github/workflows/000b2-public-attempt-003-recovery.yml').read_text(encoding='utf-8')
-          assert 'B2R14_TRUSTED_CANDIDATE_HARNESS_SHAPE=PASS' in text
-          assert 'Candidate-supplied verifier code is intentionally never executed here.' in Path('research/000b2-public/verify_attempt_002_invalidation.py').read_text(encoding='utf-8')
-          PY
+          grep -q 'B2R14_TRUSTED_CANDIDATE_HARNESS_SHAPE=PASS' .github/workflows/000b2-public-attempt-003-recovery.yml
+          grep -q 'Candidate-supplied verifier code is intentionally never executed here.' research/000b2-public/verify_attempt_002_invalidation.py
           AUTHORITY_BASE_REVISION=dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff python research/000b2-public/verify_attempt_002_invalidation.py
           python research/000b2-public/verify_b2r13_activation.py
-          test "$(git diff --name-only "$EXPECTED_TARGET_HEAD" -- | sort)" = "$(printf '%s\n' \
-            .github/workflows/000b2-public-attempt-003-recovery.yml \
-            research/000b2-public/verify_attempt_002_invalidation.py \
-            specs/000B2-public-corpus-bakeoff/recovery-v2.md | sort)"
-          test "$(git diff --name-only dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff HEAD -- | wc -l)" -eq 9
+          test "$(git diff --name-only "$EXPECTED_TARGET_HEAD" -- | sort)" = "$(printf '%s\n' .github/workflows/000b2-public-attempt-003-recovery.yml research/000b2-public/verify_attempt_002_invalidation.py specs/000B2-public-corpus-bakeoff/recovery-v2.md | sort)"
 
       - name: Commit and push exact repair
         shell: bash
