@@ -42,7 +42,7 @@
 **000B2 participant materials:** `CANONICAL_FROZEN`, participant consent `EXTERNAL_NOT_OBTAINED`  
 **Blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
 **Active execution successor:** `000B2-public-corpus-bakeoff` — `READY`  
-**Qualification chronology gate:** `SATISFIED` by PR #32 merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`; machine readiness reconciled by PR #33 merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`; B2P01 is canonical at PR #34 merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`; B2P02 is canonical at PR #35 merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c` and post-merge verified; B2P03 is canonical at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58` and post-merge verified; B2P04 is canonical at PR #39 merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` and post-merge verified; B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; B2P07 is canonical at PR #45 merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` and post-merge verified; B2E01 is canonical at merge `bb3acfae1f39669d74118a564e57a131731484d3`; B2R09 is canonical and post-merge verified at task merge `fc357350270d5cb34fc1305dba4a9de41a5234c3` with recovery run `34160146607`; ATTEMPT-002 is frozen; active recovery unit is `B2R10`; only B2R10 primary decode is open; ATTEMPT-001 B2E03 and all later primary decoding are closed
+**Qualification chronology gate:** `SATISFIED` by PR #32 merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`; machine readiness reconciled by PR #33 merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`; B2P01 is canonical at PR #34 merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`; B2P02 is canonical at PR #35 merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c` and post-merge verified; B2P03 is canonical at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58` and post-merge verified; B2P04 is canonical at PR #39 merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` and post-merge verified; B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; B2P07 is canonical at PR #45 merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` and post-merge verified; B2E01 is canonical at merge `bb3acfae1f39669d74118a564e57a131731484d3`; B2R09 remains canonical historical ATTEMPT-002 evidence at task merge `fc357350270d5cb34fc1305dba4a9de41a5234c3` with recovery run `34160146607`; ATTEMPT-002 is invalidated for material execution drift; B2R13 is canonical at merge `60108c02df8397eda854d31c51eb37ee2e3fbe45` from exact qualified head `43f9d5bcb4465bd6467a7a5880f274fe4600134e` and post-merge ATTEMPT-003 Recovery run `34231594716` succeeded; active successor recovery unit is `B2R14`; ATTEMPT-003 remains unfrozen and primary decoding is closed
 **Published release:** none
 
 Live GitHub and repository truth override this document.
@@ -322,6 +322,24 @@ Execute and canonically qualify `B2E03` only: decode the identical frozen P0 pub
 B2E04 and all later candidate cells remain unauthorized
 ```
 
+## Canonical ATTEMPT-003 B2R13 recovery reconciliation
+
+B2R13 is canonically complete after PR #92 merged the exact independently reviewed activation range as real normal merge `60108c02df8397eda854d31c51eb37ee2e3fbe45` with first parent `dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff` and exact qualified head `43f9d5bcb4465bd6467a7a5880f274fe4600134e` as second parent. Exact `main` push run `34231594716` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`, path `.github/workflows/000b2-public-attempt-003-recovery.yml`) completed successfully on that exact merge SHA. This reconciliation advances exactly one successor task and does not execute B2R14.
+
+**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`
+**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`
+**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`
+**Canonical successor recovery predecessor:** `B2R13`
+**Canonical B2R13 task base:** `dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff`
+**Canonical B2R13 qualified head:** `43f9d5bcb4465bd6467a7a5880f274fe4600134e`
+**Canonical B2R13 recovery merge:** `60108c02df8397eda854d31c51eb37ee2e3fbe45`
+**Canonical B2R13 post-merge recovery run:** `34231594716`
+**Active successor recovery unit:** `B2R14`
+**ATTEMPT-003 required:** `true`
+**ATTEMPT-003 frozen:** `false`
+**ATTEMPT-003 primary decode entry open:** `false`
+
+B2R14 alone is the next bounded unit: qualify the corrected sherpa-onnx result-extraction harness against the canonical deterministic synthetic non-primary fixture and exact pinned upstream source. Primary corpus access, ATTEMPT-003 primary evidence access, scoring, ranking, synthesis, production STT selection, and product-code authority remain closed. B2R15 and every later successor unit require their own exact-head qualification, independent review, guarded normal merge, post-merge recovery proof, and separate reconciliation.
 ## Current product thesis
 
 Wispral is a voice-native control plane for AI coding agents.

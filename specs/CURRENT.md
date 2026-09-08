@@ -1,6 +1,6 @@
 # Wispral Specification Frontier
 
-**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 recovery active; B2R01 through B2R09 canonical and post-merge verified; active recovery unit `B2R10`; ATTEMPT-001 B2E03 and all later primary decoding closed
+**Status:** founding research active; ACP verified; B1 historical preregistration verified; public-corpus B2 methodology canonical; qualification-chronology gate `SATISFIED`; public-corpus B2 ATTEMPT-003 recovery active; B2R13 canonical and post-merge verified; active successor recovery unit `B2R14`; ATTEMPT-002 invalidated; ATTEMPT-003 primary decoding closed
 
 **Canonical public-corpus methodology merge:** `cfb883311c1acb45cb8422ab6b2c02443dc1b62c` from PR #28, merged from exact head `875b0e4be76e8fc0eb753af189255b38ce3dc7ca` against exact base `c54e09a2d1cca5929bb7cd5571e84ad9698d4f73`. Live chronology did not prove the required independent semantic review before that merge; the resulting qualification debt was repaired forward-only by PR #32 at canonical merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`, and machine readiness was reconciled by PR #33 at canonical merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`.
 
@@ -378,13 +378,18 @@ Live verification against pinned `sherpa-onnx==1.13.7` source revision `917bed95
 **ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`
 **Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`
 **Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`
-**Active successor recovery unit:** `B2R13`
+**Canonical successor recovery predecessor:** `B2R13`
+**Canonical B2R13 task base:** `dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff`
+**Canonical B2R13 qualified head:** `43f9d5bcb4465bd6467a7a5880f274fe4600134e`
+**Canonical B2R13 recovery merge:** `60108c02df8397eda854d31c51eb37ee2e3fbe45`
+**Canonical B2R13 post-merge recovery run:** `34231594716`
+**Active successor recovery unit:** `B2R14`
 **ATTEMPT-003 required:** `true`
 **ATTEMPT-003 frozen:** `false`
 **ATTEMPT-003 primary decode entry open:** `false`
 
-B2R13 is an invalidation/authority-recovery unit only. It MUST NOT perform a primary decode, score ATTEMPT-002, rewrite canonical B2R05-B2R09 execution bytes, promote closed PR #89/#90 evidence, or mark B2R10-B2R12 complete. `research/000b2-public/recovery-readiness.json` and the B2R10 marker above remain immutable historical ATTEMPT-002 snapshots and do not authorize new execution after this successor authority is canonical.
+B2R13 is canonical and post-merge verified. Its transition proof binds the exact canonical task base, exact independently reviewed qualified head, real two-parent normal merge, and successful `main` push run of `000B2 Public Corpus ATTEMPT-003 Recovery`. Historical ATTEMPT-002 bytes and the superseded B2R10-B2R12 frontier remain immutable and non-authoritative for new execution.
 
-The sole next bounded action is to qualify B2R13: prove ATTEMPT-002 material invalidation against exact canonical B2R09 bytes and the exact pinned sherpa-onnx upstream API, preserve all historical ATTEMPT-002 evidence, keep ATTEMPT-003 unfrozen, and keep every primary decode closed. B2R14 and every later ATTEMPT-003 unit remain unauthorized until B2R13 is independently qualified, merged, post-merge verified, and reconciled.
+The sole next bounded action is to qualify B2R14: implement and verify the corrected sherpa-onnx result-extraction harness against the frozen deterministic synthetic non-primary fixture and exact pinned upstream source. Preserve the plain Python string result exactly and fail closed on object/string API confusion. Do not access primary corpus material or ATTEMPT-003 primary evidence. B2R15 and every later ATTEMPT-003 unit remain unauthorized until B2R14 is independently qualified, merged, post-merge verified, and reconciled.
 
 Comparative scoring/ranking, synthesis, candidate-superiority claims, production STT selection, and product-code authority remain closed. Preserve `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, historical `000B2-unbiased-stt-bakeoff=BLOCKED_EXTERNAL`, `production_stt_selected=false`, and `product_code_authorized=false`.
