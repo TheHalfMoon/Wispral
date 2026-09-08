@@ -213,6 +213,25 @@ jobs:
                       raise SystemExit('reconciliation did not complete the exact authority-base active task')
                   if proofs[-1].get('canonical_task_merge') != authority_base:
                       raise SystemExit('new transition proof must bind the exact reconciliation authority-base task merge')
+                  changed = subprocess.run(
+                      ['git', 'diff', '--name-only', '--diff-filter=ACDMRTUXB', authority_base, 'HEAD', '--'],
+                      check=False,
+                      text=True,
+                      stdout=subprocess.PIPE,
+                      stderr=subprocess.PIPE,
+                  )
+                  if changed.returncode != 0:
+                      raise SystemExit('unable to compute reconciliation candidate scope')
+                  changed_paths = {line for line in changed.stdout.splitlines() if line}
+                  allowed_scope = set(expected_scope)
+                  if not changed_paths:
+                      raise SystemExit('reconciliation candidate must change canonical authority files')
+                  outside_scope = sorted(changed_paths - allowed_scope)
+                  if outside_scope:
+                      raise SystemExit(
+                          'reconciliation candidate changed paths outside canonical authority scope: '
+                          + ', '.join(outside_scope)
+                      )
 
           sha40 = re.compile(r'^[0-9a-f]{40}$')
           seen_merges: set[str] = set()
