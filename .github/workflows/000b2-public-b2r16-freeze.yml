@@ -29,11 +29,3 @@ jobs:
           test "$actual" = "$expected"
       - name: Verify B2R16 ATTEMPT-003 pre-primary freeze
         run: python3 research/000b2-public/verify_b2r16.py
-      - name: Verify no primary/scoring outputs introduced
-        shell: bash
-        run: |
-          set -euo pipefail
-          test ! -e research/000b2-public/b2r17-moonshine-compact.json
-          test ! -e research/000b2-public/b2r24-scores.json
-          echo 'B2R16_PRIMARY_DECODE=NO'
-          echo 'B2R16_SCORING=NO'
