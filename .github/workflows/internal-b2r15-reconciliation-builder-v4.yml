@@ -79,8 +79,8 @@ jobs:
           s=s.replace(old,new,1)
           marker='## Canonical ATTEMPT-003 B2R15 preexecution-evidence reconciliation'
           assert marker not in s
-          s=s.rstrip()+f'''\n\n{marker}\n\nB2R15 is canonically complete at guarded normal merge `{merge}` with first parent `{task_base}` and exact independently reviewed qualified head `{head}` as second parent. Fresh independent exact-range CodeRabbit review comment `{review}` reported no actionable substantive findings before merge. Exact `main` push run `{run}` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`, path `.github/workflows/000b2-public-attempt-003-recovery.yml`) completed successfully on that exact merge SHA. The B2R15 task cryptographically rebound ATTEMPT-003 preprocessing and execution-environment evidence to the exact frozen candidate, subset, scorer, normalization, C0, B2R14 harness, source-document, and source-blob identities without primary decoding or scoring.\n\n**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`\n**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`\n**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`\n**Canonical successor recovery predecessor:** `B2R15`\n**Canonical B2R15 task base:** `{task_base}`\n**Canonical B2R15 qualified head:** `{head}`\n**Canonical B2R15 task merge:** `{merge}`\n**Canonical B2R15 post-merge recovery run:** `{run}`\n**Active successor recovery unit:** `B2R16`\n**ATTEMPT-003 required:** `true`\n**ATTEMPT-003 frozen:** `false`\n**ATTEMPT-003 primary decode entry open:** `false`\n\nB2R16 alone is the next bounded action: freeze `000B2-PUBLIC-ATTEMPT-003` with exact candidate, subset, preprocessing, environment, scorer, normalization, and B2R14-qualified harness identities before any new primary decode. No primary decode or scoring is authorized by this reconciliation. B2R17 and every later successor remain unauthorized. Comparative publication/ranking, production selection, and product-code authority remain closed; `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, `production_stt_selected=false`, and `product_code_authorized=false` remain preserved.\n'''
-          p.write_text(s+'\n',encoding='utf-8')
+          block=f'''\n\n{marker}\n\nB2R15 is canonically complete at guarded normal merge `{merge}` with first parent `{task_base}` and exact independently reviewed qualified head `{head}` as second parent. Fresh independent exact-range CodeRabbit review comment `{review}` reported no actionable substantive findings before merge. Exact `main` push run `{run}` of `000B2 Public Corpus ATTEMPT-003 Recovery` (`workflow_id=352653404`, path `.github/workflows/000b2-public-attempt-003-recovery.yml`) completed successfully on that exact merge SHA. The B2R15 task cryptographically rebound ATTEMPT-003 preprocessing and execution-environment evidence to the exact frozen candidate, subset, scorer, normalization, C0, B2R14 harness, source-document, and source-blob identities without primary decoding or scoring.\n\n**ATTEMPT-002 status:** `INVALIDATED_MATERIAL_EXECUTION_DRIFT`\n**Successor recovery authority:** `specs/000B2-public-corpus-bakeoff/recovery-v2.md`\n**Successor machine authority:** `research/000b2-public/recovery-attempt-003-readiness.json`\n**Canonical successor recovery predecessor:** `B2R15`\n**Canonical B2R15 task base:** `{task_base}`\n**Canonical B2R15 qualified head:** `{head}`\n**Canonical B2R15 task merge:** `{merge}`\n**Canonical B2R15 post-merge recovery run:** `{run}`\n**Active successor recovery unit:** `B2R16`\n**ATTEMPT-003 required:** `true`\n**ATTEMPT-003 frozen:** `false`\n**ATTEMPT-003 primary decode entry open:** `false`\n\nB2R16 alone is the next bounded action: freeze `000B2-PUBLIC-ATTEMPT-003` with exact candidate, subset, preprocessing, environment, scorer, normalization, and B2R14-qualified harness identities before any new primary decode. No primary decode or scoring is authorized by this reconciliation. B2R17 and every later successor remain unauthorized. Comparative publication/ranking, production selection, and product-code authority remain closed; `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, `production_stt_selected=false`, and `product_code_authorized=false` remain preserved.'''
+          p.write_text((s.rstrip()+block).rstrip()+'\n',encoding='utf-8')
 
           p=Path('docs/canonical/CURRENT_STATE.md')
           s=p.read_text(encoding='utf-8')
@@ -96,7 +96,6 @@ jobs:
           p.write_text(s.replace(anchor,block+anchor,1),encoding='utf-8')
           print('B2R15_AUTHORITY_TEXT=APPLIED')
           PY
-          git diff --check
 
       - name: Create local reconciliation candidate
         shell: bash
@@ -113,6 +112,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          git diff --check "$CANONICAL_BASE" HEAD --
           expected=$(printf '%s\n' docs/canonical/CURRENT_STATE.md research/000b2-public/recovery-attempt-003-readiness.json specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md specs/CURRENT.md | sort)
           actual=$(git diff --name-only "$CANONICAL_BASE" HEAD -- | sort)
           printf 'EXPECTED_SCOPE=%s\n' "$expected"
