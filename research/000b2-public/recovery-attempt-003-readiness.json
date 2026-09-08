@@ -24,216 +24,57 @@
     "frozen": false,
     "primary_decode_entry_open": false
   },
-  "task_order": [
-    "B2R13",
-    "B2R14",
-    "B2R15",
-    "B2R16",
-    "B2R17",
-    "B2R18",
-    "B2R19",
-    "B2R20",
-    "B2R21",
-    "B2R22",
-    "B2R23",
-    "B2R24"
+  "task_order": ["B2R13", "B2R14", "B2R15", "B2R16", "B2R17", "B2R18", "B2R19", "B2R20", "B2R21", "B2R22", "B2R23", "B2R24"],
+  "activation_installation_scope": [
+    ".github/workflows/000b2-public-attempt-003-recovery.yml",
+    ".github/workflows/000b2-public-attempt-recovery.yml",
+    "research/000b2-public/attempt-002-invalidation.json",
+    "research/000b2-public/recovery-attempt-003-readiness.json",
+    "research/000b2-public/verify_attempt_002_invalidation.py",
+    "research/000b2-public/verify_b2r13_activation.py",
+    "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md",
+    "specs/000B2-public-corpus-bakeoff/recovery-v2.md",
+    "specs/CURRENT.md"
+  ],
+  "trusted_control_paths": [
+    ".github/workflows/000b2-public-attempt-003-recovery.yml",
+    ".github/workflows/000b2-public-attempt-recovery.yml",
+    "research/000b2-public/verify_attempt_002_invalidation.py",
+    "research/000b2-public/verify_b2r13_activation.py"
   ],
   "task_candidate_scopes": {
     "B2R13": [
-      ".github/workflows/000b2-public-attempt-003-recovery.yml",
-      ".github/workflows/000b2-public-attempt-recovery.yml",
       "research/000b2-public/attempt-002-invalidation.json",
       "research/000b2-public/recovery-attempt-003-readiness.json",
-      "research/000b2-public/verify_attempt_002_invalidation.py",
-      "research/000b2-public/verify_b2r13_activation.py",
       "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md",
       "specs/000B2-public-corpus-bakeoff/recovery-v2.md",
       "specs/CURRENT.md"
     ],
-    "B2R14": [
-      ".github/workflows/000b2-public-b2r14-harness.yml",
-      "research/000b2-public/b2r14-sherpa-result-harness.py",
-      "research/000b2-public/b2r14-harness-qualification.json",
-      "research/000b2-public/verify_b2r14.py"
-    ],
-    "B2R15": [
-      ".github/workflows/000b2-public-b2r15-rebinding.yml",
-      "research/000b2-public/b2r15-preprocessing-rebinding.json",
-      "research/000b2-public/b2r15-environment-rebinding.json",
-      "research/000b2-public/b2r15-provenance.json",
-      "research/000b2-public/verify_b2r15.py"
-    ],
-    "B2R16": [
-      ".github/workflows/000b2-public-b2r16-freeze.yml",
-      "research/000b2-public/b2r16-attempt-003-manifest.json",
-      "research/000b2-public/b2r16-preexecution-state.json",
-      "research/000b2-public/verify_b2r16.py"
-    ],
-    "B2R17": [
-      ".github/workflows/000b2-public-b2r17-moonshine-compact.yml",
-      "research/000b2-public/decode_b2r17.py",
-      "research/000b2-public/b2r17-moonshine-compact.json",
-      "research/000b2-public/b2r17-provenance.json",
-      "research/000b2-public/verify_b2r17.py"
-    ],
-    "B2R18": [
-      ".github/workflows/000b2-public-b2r18-moonshine-balanced.yml",
-      "research/000b2-public/decode_b2r18.py",
-      "research/000b2-public/b2r18-moonshine-balanced.json",
-      "research/000b2-public/b2r18-provenance.json",
-      "research/000b2-public/verify_b2r18.py"
-    ],
-    "B2R19": [
-      ".github/workflows/000b2-public-b2r19-whispercpp-compact.yml",
-      "research/000b2-public/decode_b2r19.py",
-      "research/000b2-public/b2r19-whispercpp-compact.json",
-      "research/000b2-public/b2r19-provenance.json",
-      "research/000b2-public/verify_b2r19.py"
-    ],
-    "B2R20": [
-      ".github/workflows/000b2-public-b2r20-whispercpp-balanced.yml",
-      "research/000b2-public/decode_b2r20.py",
-      "research/000b2-public/b2r20-whispercpp-balanced.json",
-      "research/000b2-public/b2r20-provenance.json",
-      "research/000b2-public/verify_b2r20.py"
-    ],
-    "B2R21": [
-      ".github/workflows/000b2-public-b2r21-sherpa-onnx-compact.yml",
-      "research/000b2-public/decode_b2r21.py",
-      "research/000b2-public/b2r21-sherpa-onnx-compact.json",
-      "research/000b2-public/b2r21-provenance.json",
-      "research/000b2-public/verify_b2r21.py"
-    ],
-    "B2R22": [
-      ".github/workflows/000b2-public-b2r22-sherpa-onnx-balanced.yml",
-      "research/000b2-public/decode_b2r22.py",
-      "research/000b2-public/b2r22-sherpa-onnx-balanced.json",
-      "research/000b2-public/b2r22-provenance.json",
-      "research/000b2-public/verify_b2r22.py"
-    ],
-    "B2R23": [
-      ".github/workflows/000b2-public-b2r23-evidence-set.yml",
-      "research/000b2-public/b2r23-evidence-set.json",
-      "research/000b2-public/b2r23-provenance.json",
-      "research/000b2-public/verify_b2r23.py"
-    ],
-    "B2R24": [
-      ".github/workflows/000b2-public-b2r24-scoring.yml",
-      "research/000b2-public/score_b2r24.py",
-      "research/000b2-public/b2r24-scores.json",
-      "research/000b2-public/b2r24-provenance.json",
-      "research/000b2-public/verify_b2r24.py"
-    ]
+    "B2R14": [".github/workflows/000b2-public-b2r14-harness.yml", "research/000b2-public/b2r14-sherpa-result-harness.py", "research/000b2-public/b2r14-harness-qualification.json", "research/000b2-public/verify_b2r14.py"],
+    "B2R15": [".github/workflows/000b2-public-b2r15-rebinding.yml", "research/000b2-public/b2r15-preprocessing-rebinding.json", "research/000b2-public/b2r15-environment-rebinding.json", "research/000b2-public/b2r15-provenance.json", "research/000b2-public/verify_b2r15.py"],
+    "B2R16": [".github/workflows/000b2-public-b2r16-freeze.yml", "research/000b2-public/b2r16-attempt-003-manifest.json", "research/000b2-public/b2r16-preexecution-state.json", "research/000b2-public/verify_b2r16.py"],
+    "B2R17": [".github/workflows/000b2-public-b2r17-moonshine-compact.yml", "research/000b2-public/decode_b2r17.py", "research/000b2-public/b2r17-moonshine-compact.json", "research/000b2-public/b2r17-provenance.json", "research/000b2-public/verify_b2r17.py"],
+    "B2R18": [".github/workflows/000b2-public-b2r18-moonshine-balanced.yml", "research/000b2-public/decode_b2r18.py", "research/000b2-public/b2r18-moonshine-balanced.json", "research/000b2-public/b2r18-provenance.json", "research/000b2-public/verify_b2r18.py"],
+    "B2R19": [".github/workflows/000b2-public-b2r19-whispercpp-compact.yml", "research/000b2-public/decode_b2r19.py", "research/000b2-public/b2r19-whispercpp-compact.json", "research/000b2-public/b2r19-provenance.json", "research/000b2-public/verify_b2r19.py"],
+    "B2R20": [".github/workflows/000b2-public-b2r20-whispercpp-balanced.yml", "research/000b2-public/decode_b2r20.py", "research/000b2-public/b2r20-whispercpp-balanced.json", "research/000b2-public/b2r20-provenance.json", "research/000b2-public/verify_b2r20.py"],
+    "B2R21": [".github/workflows/000b2-public-b2r21-sherpa-onnx-compact.yml", "research/000b2-public/decode_b2r21.py", "research/000b2-public/b2r21-sherpa-onnx-compact.json", "research/000b2-public/b2r21-provenance.json", "research/000b2-public/verify_b2r21.py"],
+    "B2R22": [".github/workflows/000b2-public-b2r22-sherpa-onnx-balanced.yml", "research/000b2-public/decode_b2r22.py", "research/000b2-public/b2r22-sherpa-onnx-balanced.json", "research/000b2-public/b2r22-provenance.json", "research/000b2-public/verify_b2r22.py"],
+    "B2R23": [".github/workflows/000b2-public-b2r23-evidence-set.yml", "research/000b2-public/b2r23-evidence-set.json", "research/000b2-public/b2r23-provenance.json", "research/000b2-public/verify_b2r23.py"],
+    "B2R24": [".github/workflows/000b2-public-b2r24-scoring.yml", "research/000b2-public/score_b2r24.py", "research/000b2-public/b2r24-scores.json", "research/000b2-public/b2r24-provenance.json", "research/000b2-public/verify_b2r24.py"]
   },
   "task_content_policies": {
-    "B2R13": {
-      "required_verifier": "research/000b2-public/verify_b2r13_activation.py",
-      "primary_decode_allowed": false,
-      "scoring_allowed": false,
-      "comparative_publish_allowed": false,
-      "production_selection_allowed": false,
-      "product_code_allowed": false,
-      "foreign_successor_task_references_allowed": false
-    },
-    "B2R14": {
-      "required_verifier": "research/000b2-public/verify_b2r14.py",
-      "primary_decode_allowed": false,
-      "scoring_allowed": false,
-      "comparative_publish_allowed": false,
-      "production_selection_allowed": false,
-      "product_code_allowed": false,
-      "foreign_successor_task_references_allowed": false
-    },
-    "B2R15": {
-      "required_verifier": "research/000b2-public/verify_b2r15.py",
-      "primary_decode_allowed": false,
-      "scoring_allowed": false,
-      "comparative_publish_allowed": false,
-      "production_selection_allowed": false,
-      "product_code_allowed": false,
-      "foreign_successor_task_references_allowed": false
-    },
-    "B2R16": {
-      "required_verifier": "research/000b2-public/verify_b2r16.py",
-      "primary_decode_allowed": false,
-      "scoring_allowed": false,
-      "comparative_publish_allowed": false,
-      "production_selection_allowed": false,
-      "product_code_allowed": false,
-      "foreign_successor_task_references_allowed": false
-    },
-    "B2R17": {
-      "required_verifier": "research/000b2-public/verify_b2r17.py",
-      "primary_decode_allowed": true,
-      "scoring_allowed": false,
-      "comparative_publish_allowed": false,
-      "production_selection_allowed": false,
-      "product_code_allowed": false,
-      "foreign_successor_task_references_allowed": false
-    },
-    "B2R18": {
-      "required_verifier": "research/000b2-public/verify_b2r18.py",
-      "primary_decode_allowed": true,
-      "scoring_allowed": false,
-      "comparative_publish_allowed": false,
-      "production_selection_allowed": false,
-      "product_code_allowed": false,
-      "foreign_successor_task_references_allowed": false
-    },
-    "B2R19": {
-      "required_verifier": "research/000b2-public/verify_b2r19.py",
-      "primary_decode_allowed": true,
-      "scoring_allowed": false,
-      "comparative_publish_allowed": false,
-      "production_selection_allowed": false,
-      "product_code_allowed": false,
-      "foreign_successor_task_references_allowed": false
-    },
-    "B2R20": {
-      "required_verifier": "research/000b2-public/verify_b2r20.py",
-      "primary_decode_allowed": true,
-      "scoring_allowed": false,
-      "comparative_publish_allowed": false,
-      "production_selection_allowed": false,
-      "product_code_allowed": false,
-      "foreign_successor_task_references_allowed": false
-    },
-    "B2R21": {
-      "required_verifier": "research/000b2-public/verify_b2r21.py",
-      "primary_decode_allowed": true,
-      "scoring_allowed": false,
-      "comparative_publish_allowed": false,
-      "production_selection_allowed": false,
-      "product_code_allowed": false,
-      "foreign_successor_task_references_allowed": false
-    },
-    "B2R22": {
-      "required_verifier": "research/000b2-public/verify_b2r22.py",
-      "primary_decode_allowed": true,
-      "scoring_allowed": false,
-      "comparative_publish_allowed": false,
-      "production_selection_allowed": false,
-      "product_code_allowed": false,
-      "foreign_successor_task_references_allowed": false
-    },
-    "B2R23": {
-      "required_verifier": "research/000b2-public/verify_b2r23.py",
-      "primary_decode_allowed": false,
-      "scoring_allowed": false,
-      "comparative_publish_allowed": false,
-      "production_selection_allowed": false,
-      "product_code_allowed": false,
-      "foreign_successor_task_references_allowed": false
-    },
-    "B2R24": {
-      "required_verifier": "research/000b2-public/verify_b2r24.py",
-      "primary_decode_allowed": false,
-      "scoring_allowed": true,
-      "comparative_publish_allowed": false,
-      "production_selection_allowed": false,
-      "product_code_allowed": false,
-      "foreign_successor_task_references_allowed": false
-    }
+    "B2R13": {"required_verifier": "research/000b2-public/verify_b2r13_activation.py", "primary_decode_allowed": false, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R14": {"required_verifier": "research/000b2-public/verify_b2r14.py", "primary_decode_allowed": false, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R15": {"required_verifier": "research/000b2-public/verify_b2r15.py", "primary_decode_allowed": false, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R16": {"required_verifier": "research/000b2-public/verify_b2r16.py", "primary_decode_allowed": false, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R17": {"required_verifier": "research/000b2-public/verify_b2r17.py", "primary_decode_allowed": true, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R18": {"required_verifier": "research/000b2-public/verify_b2r18.py", "primary_decode_allowed": true, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R19": {"required_verifier": "research/000b2-public/verify_b2r19.py", "primary_decode_allowed": true, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R20": {"required_verifier": "research/000b2-public/verify_b2r20.py", "primary_decode_allowed": true, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R21": {"required_verifier": "research/000b2-public/verify_b2r21.py", "primary_decode_allowed": true, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R22": {"required_verifier": "research/000b2-public/verify_b2r22.py", "primary_decode_allowed": true, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R23": {"required_verifier": "research/000b2-public/verify_b2r23.py", "primary_decode_allowed": false, "scoring_allowed": false, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false},
+    "B2R24": {"required_verifier": "research/000b2-public/verify_b2r24.py", "primary_decode_allowed": false, "scoring_allowed": true, "comparative_publish_allowed": false, "production_selection_allowed": false, "product_code_allowed": false, "foreign_successor_task_references_allowed": false}
   },
   "transition_policy": {
     "canonical_main_ref_required_after_first_completion": true,
@@ -246,22 +87,12 @@
     "exact_qualified_head_parent_required": true,
     "candidate_must_advance_at_most_one_task_from_authority_base": true,
     "authority_documents_must_declare_successor": true,
-    "reconciliation_candidate_scope": [
-      "docs/canonical/CURRENT_STATE.md",
-      "research/000b2-public/recovery-attempt-003-readiness.json",
-      "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md",
-      "specs/CURRENT.md"
-    ]
+    "reconciliation_candidate_scope": ["docs/canonical/CURRENT_STATE.md", "research/000b2-public/recovery-attempt-003-readiness.json", "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md", "specs/CURRENT.md"]
   },
   "completed_recovery_tasks": [],
   "active_recovery_unit": "B2R13",
   "transition_proofs": [],
-  "claim_guards": {
-    "human_developer_speech_accuracy_evidence": "ABSENT",
-    "comparative_result_available": false,
-    "production_stt_selected": false,
-    "product_code_authorized": false
-  },
+  "claim_guards": {"human_developer_speech_accuracy_evidence": "ABSENT", "comparative_result_available": false, "production_stt_selected": false, "product_code_authorized": false},
   "next_action": "Qualify B2R13 only: prove and canonically bind ATTEMPT-002 material invalidation against the exact pinned sherpa-onnx source while preserving historical ATTEMPT-002 bytes. Do not begin B2R14 or any primary decode; B2R10 through B2R12 under ATTEMPT-002, comparative scoring, ranking, synthesis, production STT selection, and product code remain closed.",
   "b2r14_non_primary_fixture_contract": {
     "material_class": "DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY",
