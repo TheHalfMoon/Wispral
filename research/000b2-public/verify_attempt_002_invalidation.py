@@ -301,6 +301,10 @@ def verify_successor_frontier() -> None:
         require(replacement.get("primary_decode_entry_open") is False, f"primary decode must remain closed during {active}")
     elif active in {"B2R17", "B2R18", "B2R19", "B2R20", "B2R21", "B2R22"}:
         require(replacement.get("primary_decode_entry_open") is True, f"primary decode must be open during {active}")
+    if active in {"B2R17", "B2R18", "B2R19", "B2R20", "B2R21", "B2R22", "B2R23", "B2R24"}:
+        require(replacement.get("frozen") is True, f"ATTEMPT-003 must be frozen before or during {active}")
+    if replacement.get("primary_decode_entry_open") is True:
+        require(replacement.get("frozen") is True, "ATTEMPT-003 primary decode cannot open before attempt freeze")
     if active == "B2R13":
         require(replacement.get("frozen") is False, "ATTEMPT-003 must not be frozen during B2R13 activation")
         require(completed == [], "B2R13 activation candidate must not pre-complete recovery work")
