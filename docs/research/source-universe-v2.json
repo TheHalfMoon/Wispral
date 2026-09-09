@@ -1,0 +1,564 @@
+{
+  "schema_version": "wispral-source-universe-v2",
+  "status": "NON_EXECUTABLE_IMPLEMENTATION_READY_PLANNING",
+  "prepared_date": "2026-09-07",
+  "supersedes_completeness_assumption_of": "docs/research/source-donor-registry.json",
+  "canonical_frontier_effect": "NONE",
+  "founder_permission": {
+    "status": "FOUNDER_ATTESTED_BROAD_SOURCE_USE_PERMISSION",
+    "verification": "FOUNDER_ATTESTED_NOT_EXTERNALLY_VERIFIED",
+    "scope": "ALL_SOURCE_CODE_PROJECTS_ALREADY_RECORDED_IN_WISPRAL_AND_ALL_SOURCE_CODE_PROJECTS_PREVIOUSLY_DISCUSSSED_FOR_WISPRAL",
+    "permitted_uses_reported": [
+      "copy",
+      "modify",
+      "adapt",
+      "combine",
+      "reimplement",
+      "reuse"
+    ],
+    "attestation_path": "docs/research/SOURCE_PERMISSION_ATTESTATION.md",
+    "provenance_still_required": true,
+    "transitive_assets_separately_qualified": true
+  },
+  "classes": [
+    "QUALIFIED_EXISTING",
+    "DIRECT_DONOR_CANDIDATE",
+    "SELECTIVE_DONOR_CANDIDATE",
+    "HARNESS_MECHANISM_REFERENCE",
+    "ARCHITECTURE_REFERENCE",
+    "PRODUCT_REFERENCE",
+    "BENCHMARK_RESEARCH_REFERENCE",
+    "GOVERNANCE_REFERENCE",
+    "IDENTITY_UNRESOLVED"
+  ],
+  "boundaries": [
+    "CAPTURE_RUNTIME",
+    "ACTIVATION_RUNTIME",
+    "AUDIO_CONDITIONING",
+    "STT_PROVIDER",
+    "TURN_INTERACTION",
+    "INTERPRETATION_ENGINE",
+    "CONTEXT_RESOLVER",
+    "AGENT_TRANSPORT",
+    "HARNESS_RUNTIME",
+    "TOOL_EXECUTION",
+    "TRUST_POLICY",
+    "SESSION_EVENT_JOURNAL",
+    "SANDBOX_RUNTIME",
+    "SURFACE_ADAPTERS",
+    "DIAGNOSTICS_DISTRIBUTION",
+    "EVALUATION"
+  ],
+  "sources": [
+    {
+      "id": "acp-rust-sdk",
+      "repository": "agentclientprotocol/rust-sdk",
+      "class": "QUALIFIED_EXISTING",
+      "boundaries": ["AGENT_TRANSPORT", "TRUST_POLICY"],
+      "jobs": ["structured-agent-protocol", "session-lifecycle", "cancellation", "permissions"]
+    },
+    {
+      "id": "acp-registry",
+      "repository": "agentclientprotocol/registry",
+      "class": "QUALIFIED_EXISTING",
+      "boundaries": ["AGENT_TRANSPORT"],
+      "jobs": ["agent-discovery-reference"]
+    },
+    {
+      "id": "opencode",
+      "repository": "anomalyco/opencode",
+      "class": "DIRECT_DONOR_CANDIDATE",
+      "boundaries": ["AGENT_TRANSPORT", "HARNESS_RUNTIME", "TOOL_EXECUTION", "TRUST_POLICY", "SESSION_EVENT_JOURNAL"],
+      "jobs": ["permission-state", "process-lifecycle", "pty-lifecycle", "event-stream", "client-server-separation"]
+    },
+    {
+      "id": "zed",
+      "repository": "zed-industries/zed",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "boundaries": ["AGENT_TRANSPORT", "CONTEXT_RESOLVER", "SESSION_EVENT_JOURNAL", "SURFACE_ADAPTERS"],
+      "jobs": ["acp-client-patterns", "project-worktree-context", "agent-thread-lifecycle"]
+    },
+    {
+      "id": "portable-pty",
+      "identity": "portable-pty crate / source family",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "identity_status": "EXACT_REPOSITORY_REVISION_PIN_REQUIRED",
+      "boundaries": ["AGENT_TRANSPORT", "TOOL_EXECUTION"],
+      "jobs": ["cross-platform-pty-fallback"]
+    },
+    {
+      "id": "backtalk",
+      "repository": "jaredrhod/backtalk",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "boundaries": ["ACTIVATION_RUNTIME", "TURN_INTERACTION", "AGENT_TRANSPORT"],
+      "jobs": ["agent-voice-layer"]
+    },
+    {
+      "id": "munder-difflin",
+      "repository": "chaitanyagiri/munder-difflin",
+      "class": "ARCHITECTURE_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "SESSION_EVENT_JOURNAL", "TRUST_POLICY"],
+      "jobs": ["multi-agent-lifecycle-visibility", "human-gates"]
+    },
+    {
+      "id": "speech-to-cli",
+      "repository": "techempower-org/speech-to-cli",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "boundaries": ["TURN_INTERACTION", "AGENT_TRANSPORT"],
+      "jobs": ["voice-to-terminal-prototype"]
+    },
+    {
+      "id": "voice-interface-terminal-agent",
+      "repository": "vidhan66/voice-interface-terminal-agent",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "boundaries": ["TURN_INTERACTION", "AGENT_TRANSPORT"],
+      "jobs": ["voice-to-terminal-prototype", "technical-token-failure-reference"]
+    },
+    {
+      "id": "moonshine",
+      "repository": "moonshine-ai/moonshine",
+      "revision": "234f60faa0eb388b01cdf7e60aca232af37aefda",
+      "class": "QUALIFIED_EXISTING",
+      "boundaries": ["STT_PROVIDER"],
+      "jobs": ["local-streaming-stt"]
+    },
+    {
+      "id": "whispercpp",
+      "repository": "ggml-org/whisper.cpp",
+      "revision": "371b5a7561823ab2bb32142d2751e35e7534727b",
+      "class": "QUALIFIED_EXISTING",
+      "boundaries": ["STT_PROVIDER"],
+      "jobs": ["local-cpu-asr", "streaming-adapter"]
+    },
+    {
+      "id": "sherpa-onnx",
+      "repository": "k2-fsa/sherpa-onnx",
+      "revision": "917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e",
+      "class": "QUALIFIED_EXISTING",
+      "boundaries": ["STT_PROVIDER"],
+      "jobs": ["cross-platform-streaming-asr", "rust-api"]
+    },
+    {
+      "id": "parakeet-nemo",
+      "identity": "NVIDIA Parakeet / NeMo speech stack",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "identity_status": "EXACT_REPOSITORY_MODEL_REVISION_PIN_REQUIRED",
+      "boundaries": ["STT_PROVIDER"],
+      "jobs": ["future-hardware-accelerated-asr"]
+    },
+    {
+      "id": "omnilingual-asr",
+      "identity": "Omnilingual ASR source family",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "identity_status": "EXACT_REPOSITORY_MODEL_REVISION_PIN_REQUIRED",
+      "boundaries": ["STT_PROVIDER"],
+      "jobs": ["future-broad-language-asr"]
+    },
+    {
+      "id": "specialized-medical-asr",
+      "identity": "Omi medical STT / Google MedASR and previously discussed specialized ASR sources",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "identity_status": "EXACT_SOURCE_PIN_REQUIRED_IF_PROMOTED",
+      "boundaries": ["STT_PROVIDER"],
+      "jobs": ["domain-asr-reference-only-unless-named-developer-job"]
+    },
+    {
+      "id": "openwhispr",
+      "repository": "OpenWhispr/openwhispr",
+      "reviewed_revision": "a9cf27b49bdcc9069922641ec39ac06d3483a125",
+      "class": "DIRECT_DONOR_CANDIDATE",
+      "boundaries": ["CAPTURE_RUNTIME", "ACTIVATION_RUNTIME", "AUDIO_CONDITIONING", "TURN_INTERACTION", "DIAGNOSTICS_DISTRIBUTION"],
+      "jobs": ["cross-platform-hotkeys", "background-lifecycle", "system-audio-capture", "capture-coordination", "echo-bleed-analysis", "autostart-repair"]
+    },
+    {
+      "id": "voicestudio",
+      "repository": "debpalash/VoiceStudio",
+      "reviewed_revision": "53ff367c1fdde695f17673707cd46e2b27d41546",
+      "class": "DIRECT_DONOR_CANDIDATE",
+      "boundaries": ["CAPTURE_RUNTIME", "ACTIVATION_RUNTIME", "SURFACE_ADAPTERS", "DIAGNOSTICS_DISTRIBUTION"],
+      "jobs": ["rust-native-capture-boundary", "shortcut-readiness", "race-handling", "diagnostics", "subprocess-isolation"]
+    },
+    {
+      "id": "opensuperwhisper",
+      "repository": "Starmel/OpenSuperWhisper",
+      "reviewed_revision": "bef6bc0421d0c010e8f2fb4288c0d74978c8b964",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "boundaries": ["CAPTURE_RUNTIME", "ACTIVATION_RUNTIME", "STT_PROVIDER", "TURN_INTERACTION"],
+      "jobs": ["modifier-hotkeys", "mouse-ptt", "microphone-hotplug", "provider-serialization", "queued-cancellation"]
+    },
+    {
+      "id": "meetily-local",
+      "repository": "Hankanman/Meetily-Local",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "boundaries": ["CAPTURE_RUNTIME", "AUDIO_CONDITIONING"],
+      "jobs": ["linux-pipewire-capture", "system-audio-reference"]
+    },
+    {
+      "id": "silero-vad",
+      "identity": "Silero VAD",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "identity_status": "EXACT_REPOSITORY_REVISION_PIN_REQUIRED",
+      "boundaries": ["AUDIO_CONDITIONING", "TURN_INTERACTION"],
+      "jobs": ["vad", "endpoint-observation"]
+    },
+    {
+      "id": "ten-vad",
+      "identity": "TEN VAD",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "identity_status": "EXACT_REPOSITORY_REVISION_PIN_REQUIRED",
+      "boundaries": ["AUDIO_CONDITIONING", "TURN_INTERACTION"],
+      "jobs": ["vad", "endpoint-observation"]
+    },
+    {
+      "id": "deepfilternet",
+      "identity": "DeepFilterNet",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "identity_status": "EXACT_REPOSITORY_REVISION_PIN_REQUIRED",
+      "boundaries": ["AUDIO_CONDITIONING"],
+      "jobs": ["optional-local-denoise"]
+    },
+    {
+      "id": "rnnoise",
+      "identity": "RNNoise",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "identity_status": "EXACT_REPOSITORY_REVISION_PIN_REQUIRED",
+      "boundaries": ["AUDIO_CONDITIONING"],
+      "jobs": ["optional-local-denoise"]
+    },
+    {
+      "id": "openwakeword",
+      "identity": "openWakeWord",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "identity_status": "EXACT_REPOSITORY_MODEL_REVISION_PIN_REQUIRED",
+      "boundaries": ["ACTIVATION_RUNTIME", "TURN_INTERACTION"],
+      "jobs": ["optional-wake-mode"]
+    },
+    {
+      "id": "pyannote",
+      "identity": "pyannote audio / diarization",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "identity_status": "EXACT_REPOSITORY_MODEL_REVISION_PIN_REQUIRED_IF_PROMOTED",
+      "boundaries": ["AUDIO_CONDITIONING"],
+      "jobs": ["future-diarization"]
+    },
+    {
+      "id": "moss-transcribe-diarize",
+      "identity": "MOSS Transcribe-Diarize",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "identity_status": "EXACT_REPOSITORY_REVISION_PIN_REQUIRED_IF_PROMOTED",
+      "boundaries": ["STT_PROVIDER", "AUDIO_CONDITIONING"],
+      "jobs": ["combined-transcription-diarization-reference"]
+    },
+    {
+      "id": "graphify",
+      "repository": "Graphify-Labs/graphify",
+      "class": "DIRECT_DONOR_CANDIDATE",
+      "boundaries": ["CONTEXT_RESOLVER"],
+      "jobs": ["repository-graph", "incremental-invalidation", "context-packs", "resolver-fixtures"]
+    },
+    {
+      "id": "code-graph-rag",
+      "repository": "vitali87/code-graph-rag",
+      "class": "SELECTIVE_DONOR_CANDIDATE",
+      "boundaries": ["CONTEXT_RESOLVER"],
+      "jobs": ["code-graph-retrieval"]
+    },
+    {
+      "id": "deepseek-harness",
+      "repository": "deepseek-ai/deepseek-harness",
+      "identity_verified_date": "2026-09-07",
+      "class": "HARNESS_MECHANISM_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "TOOL_EXECUTION", "SESSION_EVENT_JOURNAL", "EVALUATION"],
+      "jobs": ["minimal-agent-loop", "tool-contracts", "context-budgeting", "harness-evaluation"]
+    },
+    {
+      "id": "hkuds-helix",
+      "repository": "HKUDS/HELIX",
+      "identity_verified_date": "2026-09-07",
+      "class": "HARNESS_MECHANISM_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "TOOL_EXECUTION", "EVALUATION"],
+      "jobs": ["agent-harness-architecture", "tool-orchestration", "harness-research"]
+    },
+    {
+      "id": "hkuds-openharness",
+      "repository": "HKUDS/OpenHarness",
+      "identity_verified_date": "2026-09-07",
+      "class": "HARNESS_MECHANISM_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "TOOL_EXECUTION", "SANDBOX_RUNTIME", "EVALUATION"],
+      "jobs": ["open-harness-contracts", "sandbox-execution", "evaluation-adapters"]
+    },
+    {
+      "id": "swe-agent-mini",
+      "repository": "SWE-agent/mini-swe-agent",
+      "identity_verified_date": "2026-09-07",
+      "class": "HARNESS_MECHANISM_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "TOOL_EXECUTION"],
+      "jobs": ["minimal-coding-agent-loop", "small-tool-surface"]
+    },
+    {
+      "id": "swe-agent",
+      "repository": "SWE-agent/SWE-agent",
+      "identity_verified_date": "2026-09-07",
+      "class": "HARNESS_MECHANISM_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "TOOL_EXECUTION", "SANDBOX_RUNTIME", "EVALUATION"],
+      "jobs": ["coding-agent-loop", "environment-interface", "trajectory-evaluation"]
+    },
+    {
+      "id": "pi",
+      "repository": "earendil-works/pi",
+      "identity_verified_date": "2026-09-07",
+      "class": "HARNESS_MECHANISM_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "TOOL_EXECUTION", "SESSION_EVENT_JOURNAL"],
+      "jobs": ["coding-agent-tool-boundaries", "provider-adapters", "write-tool-semantics"]
+    },
+    {
+      "id": "openhands",
+      "repository": "OpenHands/OpenHands",
+      "identity_verified_date": "2026-09-07",
+      "class": "HARNESS_MECHANISM_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "TOOL_EXECUTION", "SANDBOX_RUNTIME", "SESSION_EVENT_JOURNAL"],
+      "jobs": ["agent-runtime", "sandboxing", "event-lifecycle", "tool-execution"]
+    },
+    {
+      "id": "openhands-software-agent-sdk",
+      "repository": "OpenHands/software-agent-sdk",
+      "identity_verified_date": "2026-09-07",
+      "class": "HARNESS_MECHANISM_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "TOOL_EXECUTION"],
+      "jobs": ["software-agent-sdk-contracts", "tool-adapters"]
+    },
+    {
+      "id": "openai-agents-sdk",
+      "repository": "openai/openai-agents-python",
+      "identity_verified_date": "2026-09-07",
+      "class": "HARNESS_MECHANISM_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "TOOL_EXECUTION", "SESSION_EVENT_JOURNAL"],
+      "jobs": ["agent-runner-contracts", "tool-calling", "handoff-tracing"]
+    },
+    {
+      "id": "deep-agents",
+      "repository": "langchain-ai/deepagents",
+      "identity_verified_date": "2026-09-07",
+      "class": "HARNESS_MECHANISM_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "TOOL_EXECUTION", "CONTEXT_RESOLVER"],
+      "jobs": ["planning-loop", "subagent-delegation", "filesystem-context"]
+    },
+    {
+      "id": "cheetahclaws",
+      "repository": "SAIL-Research-Lab/cheetahclaws",
+      "identity_verified_date": "2026-09-07",
+      "class": "HARNESS_MECHANISM_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "TOOL_EXECUTION", "EVALUATION"],
+      "jobs": ["agent-harness-research", "coding-agent-evaluation"]
+    },
+    {
+      "id": "harness-r1",
+      "repository": "DeepExperience/Harness-R1",
+      "identity_verified_date": "2026-09-07",
+      "class": "HARNESS_MECHANISM_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "EVALUATION"],
+      "jobs": ["harness-reasoning-research", "trajectory-learning-reference"]
+    },
+    {
+      "id": "agentic-harness-engineering",
+      "repository": "china-qijizhifeng/agentic-harness-engineering",
+      "identity_verified_date": "2026-09-07",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "EVALUATION"],
+      "jobs": ["harness-design-research"]
+    },
+    {
+      "id": "harness-bench",
+      "repository": "Qihoo360/harness-bench",
+      "identity_verified_date": "2026-09-07",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "boundaries": ["EVALUATION"],
+      "jobs": ["harness-comparison", "evaluation-design"]
+    },
+    {
+      "id": "harness-platform",
+      "repository": "harness/harness",
+      "identity_verified_date": "2026-09-07",
+      "class": "ARCHITECTURE_REFERENCE",
+      "boundaries": ["TOOL_EXECUTION", "TRUST_POLICY", "DIAGNOSTICS_DISTRIBUTION"],
+      "jobs": ["execution-governance", "pipeline-observability", "approval-reference"]
+    },
+    {
+      "id": "harness-ai",
+      "repository": "harness/harness-ai",
+      "identity_verified_date": "2026-09-07",
+      "class": "ARCHITECTURE_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "EVALUATION"],
+      "jobs": ["ai-harness-reference"]
+    },
+    {
+      "id": "timesfm",
+      "repository": "google-research/timesfm",
+      "identity_verified_date": "2026-09-07",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "boundaries": ["EVALUATION"],
+      "jobs": ["time-series-methodology-reference-if-future-runtime-telemetry-modeling-is-authorized"]
+    },
+    {
+      "id": "ouroboros-harness",
+      "repository": "MLEARNER701/ouroboros-harness",
+      "identity_verified_date": "2026-09-07",
+      "class": "HARNESS_MECHANISM_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "EVALUATION"],
+      "jobs": ["recursive-agent-harness-reference"]
+    },
+    {
+      "id": "cordis",
+      "identity": "Cordis source discussed for agent-harness research",
+      "class": "IDENTITY_UNRESOLVED",
+      "identity_status": "DO_NOT_IMPORT_UNTIL_EXACT_ORIGINAL_REPOSITORY_IS_RECONFIRMED",
+      "boundaries": ["HARNESS_RUNTIME"],
+      "jobs": ["harness-reference"]
+    },
+    {
+      "id": "harbor",
+      "identity": "Harbor source discussed for harness/evaluation research",
+      "class": "IDENTITY_UNRESOLVED",
+      "identity_status": "DO_NOT_IMPORT_UNTIL_EXACT_ORIGINAL_REPOSITORY_IS_RECONFIRMED",
+      "boundaries": ["SANDBOX_RUNTIME", "EVALUATION"],
+      "jobs": ["environment-benchmark-harness"]
+    },
+    {
+      "id": "one-recipe-many-harnesses",
+      "identity": "One Recipe, Many Harnesses",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "boundaries": ["EVALUATION"],
+      "jobs": ["cross-harness-comparison-methodology"]
+    },
+    {
+      "id": "scaffold-effects",
+      "identity": "Scaffold Effects",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "boundaries": ["EVALUATION"],
+      "jobs": ["harness-scaffold-effect-methodology"]
+    },
+    {
+      "id": "sbco",
+      "identity": "SBCO",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "identity_status": "EXACT_PAPER_OR_REPOSITORY_PIN_REQUIRED_IF_PROMOTED",
+      "boundaries": ["EVALUATION"],
+      "jobs": ["harness-evaluation-reference"]
+    },
+    {
+      "id": "co-harness",
+      "identity": "Co-Harness",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "identity_status": "EXACT_PAPER_OR_REPOSITORY_PIN_REQUIRED_IF_PROMOTED",
+      "boundaries": ["HARNESS_RUNTIME", "EVALUATION"],
+      "jobs": ["cooperative-harness-reference"]
+    },
+    {
+      "id": "proof-carrying-agent-actions",
+      "identity": "Proof-Carrying Agent Actions",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "boundaries": ["TRUST_POLICY", "TOOL_EXECUTION"],
+      "jobs": ["action-proof", "authorization-evidence"]
+    },
+    {
+      "id": "agent-safety-runtime-contract",
+      "identity": "Agent Safety Should Be a Runtime Contract",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "boundaries": ["TRUST_POLICY", "HARNESS_RUNTIME"],
+      "jobs": ["runtime-safety-contract"]
+    },
+    {
+      "id": "code-as-agent-harness",
+      "identity": "Code as Agent Harness",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "boundaries": ["HARNESS_RUNTIME", "TOOL_EXECUTION"],
+      "jobs": ["code-mediated-harness-design"]
+    },
+    {
+      "id": "superwhisper",
+      "identity": "Superwhisper commercial product",
+      "class": "PRODUCT_REFERENCE",
+      "boundaries": ["ACTIVATION_RUNTIME", "STT_PROVIDER", "CONTEXT_RESOLVER", "SURFACE_ADAPTERS"],
+      "jobs": ["ptt-ux", "local-cloud-visibility", "context-mode-visibility", "rewrite-stage-separation"]
+    },
+    {
+      "id": "wispr-flow",
+      "identity": "Wispr Flow",
+      "class": "PRODUCT_REFERENCE",
+      "boundaries": ["ACTIVATION_RUNTIME", "SURFACE_ADAPTERS"],
+      "jobs": ["low-friction-activation", "technical-vocabulary-ux", "cross-app-ergonomics"]
+    },
+    {
+      "id": "aqua",
+      "identity": "Aqua voice product reference",
+      "class": "PRODUCT_REFERENCE",
+      "boundaries": ["ACTIVATION_RUNTIME", "SURFACE_ADAPTERS"],
+      "jobs": ["voice-input-product-reference"]
+    },
+    {
+      "id": "circleback",
+      "identity": "Circleback",
+      "class": "PRODUCT_REFERENCE",
+      "boundaries": ["CONTEXT_RESOLVER", "SURFACE_ADAPTERS"],
+      "jobs": ["conversation-context-provenance", "visible-capture", "interface-convergence"]
+    },
+    {
+      "id": "berkeley-aside",
+      "identity": "Berkeley Aside / think-aloud research",
+      "class": "BENCHMARK_RESEARCH_REFERENCE",
+      "boundaries": ["INTERPRETATION_ENGINE", "TRUST_POLICY"],
+      "jobs": ["command-aside-semantics", "context-authority-risk"]
+    },
+    {
+      "id": "sonora",
+      "identity": "Sonora source/reference previously discussed during Wispral founding research",
+      "class": "IDENTITY_UNRESOLVED",
+      "identity_status": "DO_NOT_IMPORT_UNTIL_EXACT_ORIGINAL_IDENTITY_IS_RECONFIRMED",
+      "boundaries": ["CAPTURE_RUNTIME", "STT_PROVIDER"],
+      "jobs": ["voice-system-reference"]
+    },
+    {
+      "id": "specgrain",
+      "repository": "TheHalfMoon/SpecGrain",
+      "class": "GOVERNANCE_REFERENCE",
+      "boundaries": [],
+      "jobs": ["bounded-executable-unit-lifecycle"]
+    },
+    {
+      "id": "diffcipline",
+      "repository": "TheHalfMoon/Diffcipline",
+      "class": "GOVERNANCE_REFERENCE",
+      "boundaries": [],
+      "jobs": ["proof-before-done", "evidence-discipline"]
+    },
+    {
+      "id": "aloe-name-collision-reference",
+      "identity": "Aloe collision reference",
+      "class": "PRODUCT_REFERENCE",
+      "boundaries": [],
+      "jobs": ["naming-risk-reference"]
+    },
+    {
+      "id": "wisprus-historical-domain",
+      "identity": "WISPRUS.COM historical-domain reference",
+      "class": "PRODUCT_REFERENCE",
+      "boundaries": [],
+      "jobs": ["naming-history-reference"]
+    }
+  ],
+  "universe_rules": {
+    "unknown_identity_is_not_importable": true,
+    "permission_does_not_equal_implementation_authority": true,
+    "application_code_permission_does_not_imply_asset_rights": true,
+    "all_direct_imports_require_exact_revision": true,
+    "all_direct_imports_require_exact_paths": true,
+    "all_direct_imports_require_dependency_inventory": true,
+    "all_direct_imports_require_named_wispral_job": true,
+    "all_direct_imports_terminate_at_wispral_owned_contract": true,
+    "all_direct_imports_require_acceptance_tests": true,
+    "all_direct_imports_require_independent_review": true,
+    "donor_workflows_do_not_enter_wispral_automatically": true,
+    "donor_secrets_telemetry_cloud_fallbacks_do_not_enter_wispral_automatically": true,
+    "external_benchmarks_do_not_establish_wispral_claims": true
+  }
+}

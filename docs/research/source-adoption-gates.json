@@ -1,0 +1,190 @@
+{
+  "schema_version": "wispral-source-adoption-gates-v1",
+  "status": "NON_EXECUTABLE_PLANNING_CONTRACT",
+  "prepared_date": "2026-09-06",
+  "gates": [
+    {
+      "id": "SOURCE_QUARANTINE",
+      "required_before": "QUALIFIED_DONOR",
+      "checks": [
+        "inspect_without_repository_secrets",
+        "do_not_run_donor_ci_with_wispral_credentials",
+        "review_package_lifecycle_hooks",
+        "pin_mutable_downloads_before_execution",
+        "record_required_network_access",
+        "execute_bootstrap_only_in_bounded_qualification_environment"
+      ]
+    },
+    {
+      "id": "RIGHTS_AND_PROVENANCE",
+      "required_before": "QUALIFIED_DONOR",
+      "checks": [
+        "exact_repository",
+        "exact_revision",
+        "exact_source_paths",
+        "upstream_license",
+        "separate_permission_basis_if_relied_upon",
+        "redistribution_rights_basis",
+        "required_notices",
+        "model_data_binary_terms_separate"
+      ]
+    },
+    {
+      "id": "SUPPLY_CHAIN",
+      "required_before": "ADAPTATION_CANDIDATE",
+      "checks": [
+        "resolved_dependency_inventory",
+        "native_binary_inventory",
+        "model_and_data_digest_inventory",
+        "network_fetch_inventory",
+        "build_toolchain_identity",
+        "sbom_or_equivalent_when_possible",
+        "reproducibility_limitations"
+      ]
+    },
+    {
+      "id": "NATIVE_ISOLATION",
+      "required_before": "ADAPTATION_CANDIDATE",
+      "checks": [
+        "classify_in_process_or_subprocess_or_sidecar",
+        "crash_behavior",
+        "startup_health",
+        "shutdown_behavior",
+        "timeout_behavior",
+        "cancellation_behavior",
+        "abi_platform_notes"
+      ]
+    },
+    {
+      "id": "PRIVACY_AND_LOGGING",
+      "required_before": "ADAPTATION_CANDIDATE",
+      "checks": [
+        "no_persistent_raw_audio_by_default",
+        "no_content_telemetry_by_default",
+        "normal_logs_exclude_transcript_content",
+        "support_bundle_contents_inspectable",
+        "retention_and_rotation_documented",
+        "debug_content_is_explicit_opt_in"
+      ]
+    },
+    {
+      "id": "CANCELLATION",
+      "required_before": "PRODUCT_ADOPTED",
+      "checks": [
+        "cancellation_requested_observable",
+        "cancellation_acknowledged_when_supported",
+        "execution_stopped_observable_when_supported",
+        "stale_output_boundary_tested",
+        "forced_termination_behavior_defined"
+      ]
+    },
+    {
+      "id": "PTY_ADVERSARIAL",
+      "applies_when": "pty_or_terminal_transport",
+      "checks": [
+        "ansi_osc_control_sequence_fixtures",
+        "prompt_spoofing_fixtures",
+        "untrusted_output_not_authority",
+        "prefer_direct_argv_over_shell_interpolation",
+        "orphan_process_tests",
+        "bounded_output_and_backpressure"
+      ]
+    },
+    {
+      "id": "CONTEXT_TRUST",
+      "applies_when": "context_memory_graph_screen_repository_provider",
+      "checks": [
+        "source_class_preserved",
+        "source_identifier_preserved",
+        "revision_or_timestamp_preserved",
+        "bounded_context_budget",
+        "retrieved_text_not_authority",
+        "prompt_injection_cannot_modify_policy"
+      ]
+    },
+    {
+      "id": "NETWORK_BOUNDARY",
+      "applies_when": "network_capable_source",
+      "checks": [
+        "enumerate_network_paths",
+        "classify_required_optional_disabled_removed",
+        "no_silent_provider_fallback",
+        "provider_state_observable",
+        "credentials_least_privilege",
+        "offline_behavior_tested_for_local_claims"
+      ]
+    },
+    {
+      "id": "PLATFORM_AND_ACCESSIBILITY",
+      "required_before": "PRODUCT_ADOPTED",
+      "checks": [
+        "macos_behavior",
+        "windows_behavior",
+        "linux_x11_behavior",
+        "linux_wayland_behavior",
+        "unsupported_paths_fail_visibly",
+        "non_voice_control_fallback",
+        "terminal_visible_state"
+      ]
+    },
+    {
+      "id": "INSTRUMENTATION",
+      "required_before": "PRODUCT_ADOPTED",
+      "checks": [
+        "capture_activation_timestamp",
+        "speech_onset_timestamp",
+        "turn_decision_timestamp",
+        "partial_final_stt_timestamps",
+        "entity_resolution_timestamp",
+        "dispatch_timestamp",
+        "agent_first_update_timestamp",
+        "cancellation_timestamps",
+        "tts_stop_timestamp_when_applicable"
+      ]
+    },
+    {
+      "id": "UPSTREAM_MAINTENANCE",
+      "required_before": "PRODUCT_ADOPTED",
+      "checks": [
+        "upstream_baseline_commit",
+        "local_adaptation_commits",
+        "owning_subsystem_or_steward",
+        "update_review_cadence",
+        "known_divergence",
+        "deprecation_or_removal_condition"
+      ]
+    },
+    {
+      "id": "DISTRIBUTION_AUTHENTICITY",
+      "applies_when": "installer_updater_autostart_distribution",
+      "checks": [
+        "signed_artifact_strategy_where_supported",
+        "update_channel_identity",
+        "rollback_or_recovery",
+        "stale_executable_repair",
+        "preserve_user_disabled_autostart",
+        "no_silent_channel_downgrade",
+        "no_unreviewed_elevated_installer_script"
+      ]
+    },
+    {
+      "id": "INDEPENDENT_REVIEW",
+      "required_before": "PRODUCT_ADOPTED",
+      "checks": [
+        "exact_head_review",
+        "security_and_provenance_findings_reconciled",
+        "acceptance_tests_pass",
+        "no_external_benchmark_promoted_to_wispral_claim"
+      ]
+    }
+  ],
+  "global_fail_closed_rules": {
+    "unknown_rights_basis_blocks_import": true,
+    "unknown_native_behavior_blocks_in_process_adoption": true,
+    "unknown_high_risk_authority_semantics_blocks_adoption": true,
+    "hidden_network_fallback_blocks_local_claim": true,
+    "hidden_audio_or_transcript_persistence_blocks_adoption": true,
+    "donor_plugin_system_is_not_imported_implicitly": true,
+    "current_registry_entry_does_not_authorize_product_code": true
+  }
+}
