@@ -1,6 +1,6 @@
 # Wispral Constitution
 
-**Version:** 0.2.0  
+**Version:** 0.2.1
 **Status:** Active  
 **Ratified:** 2026-09-01  
 **Amended:** 2026-09-09  
@@ -116,7 +116,7 @@ A trusted-control repair is authorized only through a dedicated governance-contr
 2. the repair MUST strictly strengthen or restore fail-closed behavior and MUST NOT broaden task scope, reconciliation scope, execution authority, evidence authority, decode authority, scoring authority, comparative-claim authority, product authority, or completion state;
 3. the repair PR MUST describe the defect, exact canonical authority base, exact changed-path scope, expected conflict with the pre-repair immutable-control gate, compatibility impact, security/privacy impact, affected specifications, and the deterministic evidence required to prove the correction;
 4. the pre-repair immutable-control gate failure caused solely by the declared trusted-control byte change MUST be preserved as conflict evidence and MUST NOT be relabeled, suppressed, rerun-to-green, or counted as a successful gate;
-5. every exact-head gate required by canonical repository authority and applicable to the repair candidate MUST conclude successfully on the exact final repair head; a required gate that is absent, skipped, pending, cancelled, or failed is not satisfied. The sole permitted non-success is a preserved pre-repair immutable-control boundary result whose only failing condition is the declared trusted-control byte change described in item 4;
+5. every exact-head gate required by canonical repository authority and applicable to the repair candidate MUST conclude successfully on the exact final repair head; a required gate that is absent, skipped, pending, cancelled, or failed is not satisfied. The sole permitted non-successes are preserved pre-repair trusted-boundary results whose only failing condition is the declared trusted-control byte change described in item 4. Such preserved results MAY include both the immutable-control boundary and an ordinary task- or reconciliation-scope boundary when that scope boundary necessarily rejects the same trusted-control path because it is outside the ordinary candidate scope. Each preserved non-success MUST be individually evidenced, MUST occur before any dependent candidate execution or state transition, and MUST NOT conceal any unrelated failure. No other non-success category is permitted;
 6. deterministic positive and negative evidence MUST show that the repaired control accepts an exact valid candidate while rejecting the demonstrated malformed or incomplete candidate class;
 7. a fresh independent substantive review MUST cover the exact final repair range and resolve all blocking findings before merge;
 8. the repair MUST use a guarded normal merge bound to the exact reviewed head;
