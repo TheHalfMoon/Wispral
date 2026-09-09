@@ -54,8 +54,8 @@
     },
     "preexecution_state": {
       "path": "research/000b2-public/b2r16-preexecution-state.json",
-      "git_blob_sha1": "78546da56a36b00f77ecab9adb311bf4f32a827f",
-      "sha256": "cf62c57d6948242e973bd526cfc6955530d0c334fa9f9633c3779c83687b341c"
+      "git_blob_sha1": "dd872ef1c96fcc7d2357fb69975508e15f7142b4",
+      "sha256": "4bec1a5a98713193abeeb905ae767c29e8e270fe44b5e29a3a5b2fad92e028f0"
     }
   },
   "candidate_set": {
@@ -109,7 +109,7 @@
     "result_driven_changes_allowed": false
   },
   "recovery_authority": {
-    "canonical_authority_base": "8132b25479643dc955eb4d022400a9e9b36b4261",
+    "canonical_authority_base": "483484023087104a59b239d089da5f749bc8db57",
     "predecessor_task": "B2R15",
     "predecessor_task_merge": "3d31b18823b8275c99e1478b132a64f36fad05c0",
     "predecessor_post_merge_recovery_run_id": 34274935240,
@@ -129,5 +129,5 @@
     "scoring_performed": false,
     "successor_execution_authorized_at_freeze": false
   },
-  "freeze_digest_sha256": "9bb596d496831f919a9eab0f263ec88e6ff8134ae126c9664e23ae5317d0cabc"
+  "freeze_digest_sha256": "b92d0a88bb50ebde517f560878a26d0ef796abdaf931278f5bc43e372ff1ac8d"
 }

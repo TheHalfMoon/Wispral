@@ -7,7 +7,7 @@
   "frozen": false,
   "candidate_decoding_started": false,
   "primary_decoding_started": false,
-  "canonical_authority_base": "8132b25479643dc955eb4d022400a9e9b36b4261",
+  "canonical_authority_base": "483484023087104a59b239d089da5f749bc8db57",
   "recovery_predecessor": {
     "task": "B2R15",
     "canonical_task_merge": "3d31b18823b8275c99e1478b132a64f36fad05c0",

@@ -32,16 +32,16 @@ PUBLIC_WER = PUBLIC / "score_public_wer.py"
 
 TASK = "B2R16"
 ATTEMPT = "000B2-PUBLIC-ATTEMPT-003"
-AUTHORITY_BASE = "8132b25479643dc955eb4d022400a9e9b36b4261"
+TASK_AUTHORITY_BASE = "483484023087104a59b239d089da5f749bc8db57"
 PREDECESSOR_TASK = "B2R15"
 PREDECESSOR_TASK_MERGE = "3d31b18823b8275c99e1478b132a64f36fad05c0"
 PREDECESSOR_POSTMERGE_RUN = 34274935240
-PREDECESSOR_RECONCILIATION = AUTHORITY_BASE
-PRESTATE_SHA256 = "cf62c57d6948242e973bd526cfc6955530d0c334fa9f9633c3779c83687b341c"
-PRESTATE_BLOB = "78546da56a36b00f77ecab9adb311bf4f32a827f"
-MANIFEST_SHA256 = "4dc8074417679554d37ef67f38a8571faf561ead3efa4af5f2f285ab5f4b6048"
-MANIFEST_BLOB = "a0e22d11a5dc02c4bb06c1c0eaa3a5d8defbfb72"
-FREEZE_DIGEST = "9bb596d496831f919a9eab0f263ec88e6ff8134ae126c9664e23ae5317d0cabc"
+PREDECESSOR_RECONCILIATION = "8132b25479643dc955eb4d022400a9e9b36b4261"
+PRESTATE_SHA256 = "4bec1a5a98713193abeeb905ae767c29e8e270fe44b5e29a3a5b2fad92e028f0"
+PRESTATE_BLOB = "dd872ef1c96fcc7d2357fb69975508e15f7142b4"
+MANIFEST_SHA256 = "4ffcb66b4f01e1f4516273b8ed5c1a9f59c7a64651ef61afd17211a326263260"
+MANIFEST_BLOB = "2a08112625c2acd380ec0d461a846f5a32e92a68"
+FREEZE_DIGEST = "b92d0a88bb50ebde517f560878a26d0ef796abdaf931278f5bc43e372ff1ac8d"
 
 EXPECTED_SCOPE = [
     ".github/workflows/000b2-public-b2r16-freeze.yml",
@@ -121,10 +121,10 @@ def git_blob(path: Path) -> str:
     return git_output("rev-parse", f"HEAD:{path.relative_to(ROOT).as_posix()}")
 
 def verify_exact_task_range() -> None:
-    git_output("cat-file", "-e", f"{AUTHORITY_BASE}^{{commit}}")
-    git_output("merge-base", "--is-ancestor", AUTHORITY_BASE, "HEAD")
+    git_output("cat-file", "-e", f"{TASK_AUTHORITY_BASE}^{{commit}}")
+    git_output("merge-base", "--is-ancestor", TASK_AUTHORITY_BASE, "HEAD")
     changed = git_output(
-        "diff", "--name-only", "--diff-filter=ACDMRTUXB", AUTHORITY_BASE, "HEAD", "--"
+        "diff", "--name-only", "--diff-filter=ACDMRTUXB", TASK_AUTHORITY_BASE, "HEAD", "--"
     )
     changed_paths = sorted(path for path in changed.splitlines() if path)
     require(changed_paths == sorted(EXPECTED_SCOPE), "B2R16 actual candidate range scope drift")
@@ -195,7 +195,7 @@ def verify_preexecution_state(require_git: bool) -> None:
     require(document.get("task") == TASK and document.get("lane") == "PUBLIC_CORPUS" and document.get("attempt_id") == ATTEMPT, "preexecution identity drift")
     require(document.get("phase") == "PRE_PRIMARY_CAPTURE" and document.get("frozen") is False, "preexecution phase/freeze drift")
     require(document.get("candidate_decoding_started") is False and document.get("primary_decoding_started") is False, "preexecution records decoding")
-    require(document.get("canonical_authority_base") == AUTHORITY_BASE, "preexecution authority base drift")
+    require(document.get("canonical_authority_base") == TASK_AUTHORITY_BASE, "preexecution authority base drift")
     require(document.get("recovery_predecessor") == {"task": PREDECESSOR_TASK, "canonical_task_merge": PREDECESSOR_TASK_MERGE, "post_merge_recovery_run_id": PREDECESSOR_POSTMERGE_RUN, "reconciliation_merge": PREDECESSOR_RECONCILIATION}, "preexecution predecessor proof drift")
     expected = {
         "subset_manifest_sha256": "5fa108dc623760f194fdde463cbfb819288fe8f2a10279d25ec889f221b389bb",
@@ -253,7 +253,7 @@ def verify_manifest(require_git: bool) -> None:
     require(scoring.get("public_wer_adapter_git_blob_sha1") == IDENTITIES["public_wer"]["blob"] and scoring.get("public_wer_adapter_sha256") == IDENTITIES["public_wer"]["sha256"], "public WER adapter drift")
     require(scoring.get("public_p0_normalization") == EXPECTED_NORMALIZATION and scoring.get("result_driven_changes_allowed") is False, "normalization/scoring contract drift")
     recovery = document.get("recovery_authority")
-    require(isinstance(recovery, dict) and recovery.get("canonical_authority_base") == AUTHORITY_BASE and recovery.get("predecessor_task") == PREDECESSOR_TASK, "recovery authority drift")
+    require(isinstance(recovery, dict) and recovery.get("canonical_authority_base") == TASK_AUTHORITY_BASE and recovery.get("predecessor_task") == PREDECESSOR_TASK, "recovery authority drift")
     require(recovery.get("predecessor_task_merge") == PREDECESSOR_TASK_MERGE and recovery.get("predecessor_post_merge_recovery_run_id") == PREDECESSOR_POSTMERGE_RUN and recovery.get("predecessor_reconciliation_merge") == PREDECESSOR_RECONCILIATION, "predecessor proof drift")
     require(recovery.get("predecessor_provenance_git_blob_sha1") == IDENTITIES["b2r15_provenance"]["blob"], "B2R15 provenance binding drift")
     claims = document.get("claims")
