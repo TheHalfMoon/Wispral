@@ -1,7 +1,7 @@
 # Trusted-Control Repair Reconciliations
 
-**Status:** canonical append-only governance/evidence ledger  
-**Authority:** `CONSTITUTION.md` Principle XVI  
+**Status:** canonical append-only governance/evidence ledger
+**Authority:** `CONSTITUTION.md` Principle XVI
 **Successor-state effect:** none unless a later independently authorized successor reconciliation changes successor state
 
 This ledger records completed trusted-control repair sequences required by Constitution Principle XVI. A record here is not a successor task reconciliation, does not complete a B2 recovery task, does not mutate successor readiness, and cannot authorize decode, scoring, comparative claims, production selection, product code, or project completion.
