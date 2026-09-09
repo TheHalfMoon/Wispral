@@ -5,7 +5,7 @@
   "authority_precedence": "OVERRIDES_RECOVERY_READINESS_FOR_NEW_EXECUTION_AFTER_ATTEMPT_002_INVALIDATION",
   "historical_recovery_snapshot": {"path":"research/000b2-public/recovery-readiness.json","completed_through":"B2R09","active_unit_at_invalidation":"B2R10","role":"HISTORICAL_ATTEMPT_002_PRE_INVALIDATION_SNAPSHOT","active_execution_authority":false},
   "invalidated_attempt": {"attempt_id":"000B2-PUBLIC-ATTEMPT-002","invalidation_path":"research/000b2-public/attempt-002-invalidation.json","freeze_digest_sha256":"600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8","comparative_scoring_eligible":false,"candidate_superiority_claim_eligible":false,"new_primary_decode_authorized":false},
-  "replacement_attempt": {"attempt_id":"000B2-PUBLIC-ATTEMPT-003","required":true,"frozen":false,"primary_decode_entry_open":false},
+  "replacement_attempt": {"attempt_id":"000B2-PUBLIC-ATTEMPT-003","required":true,"frozen":true,"primary_decode_entry_open":true},
   "task_order": ["B2R13","B2R14","B2R15","B2R16","B2R17","B2R18","B2R19","B2R20","B2R21","B2R22","B2R23","B2R24"],
   "activation_installation_scope": [
     ".github/workflows/000b2-public-attempt-003-recovery.yml",
@@ -85,8 +85,8 @@
       "specs/CURRENT.md"
     ]
   },
-  "completed_recovery_tasks": ["B2R13","B2R14","B2R15"],
-  "active_recovery_unit": "B2R16",
+  "completed_recovery_tasks": ["B2R13","B2R14","B2R15","B2R16"],
+  "active_recovery_unit": "B2R17",
   "transition_proofs": [
     {
       "completed_task": "B2R13",
@@ -111,9 +111,17 @@
       "canonical_task_merge": "3d31b18823b8275c99e1478b132a64f36fad05c0",
       "post_merge_recovery_run_id": 34274935240,
       "successor_task": "B2R16"
+    },
+    {
+      "completed_task": "B2R16",
+      "canonical_task_base": "483484023087104a59b239d089da5f749bc8db57",
+      "qualified_task_head": "ac9f7ce993aec33e6c6436cce4efd85394a97f35",
+      "canonical_task_merge": "885307429ec8b1aa0fe173169a8c2918714c06b0",
+      "post_merge_recovery_run_id": 34415906199,
+      "successor_task": "B2R17"
     }
   ],
   "claim_guards": {"human_developer_speech_accuracy_evidence":"ABSENT","comparative_result_available":false,"production_stt_selected":false,"product_code_authorized":false},
-  "next_action": "Qualify B2R16 only: freeze 000B2-PUBLIC-ATTEMPT-003 with exact candidate, subset, preprocessing, execution-environment, scorer, normalization, and B2R14-qualified harness identities before any new primary decode. Do not perform primary decoding or scoring in B2R16; keep B2R17 and every later successor unit closed until B2R16 is separately qualified, merged, post-merge verified, and reconciled.",
+  "next_action": "Qualify B2R17 only: execute ATTEMPT-003 candidate cell 1, moonshine-compact, against the identical frozen P0 audio under the frozen C0 contract. Preserve raw outputs, failures, runtime observations, exact run identity, frozen input identities, and claim guards. Do not score; keep B2R18 and every later successor unit closed until B2R17 is separately qualified, merged, post-merge verified, and reconciled.",
   "b2r14_non_primary_fixture_contract": {"material_class":"DETERMINISTIC_SYNTHETIC_NON_PRIMARY_FIXTURE_ONLY","fixture_id":"b2r14-sherpa-result-string-contract-v1","sample_rate_hz":16000,"channel_count":1,"sample_format":"PCM_S16LE","frame_count":16000,"pcm_sha256":"0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39","primary_corpus_access":false,"frozen_p0_access":false,"attempt_003_primary_evidence_access":false}
 }

@@ -42,7 +42,7 @@
 **000B2 participant materials:** `CANONICAL_FROZEN`, participant consent `EXTERNAL_NOT_OBTAINED`  
 **Blocked successor:** `000B2-unbiased-stt-bakeoff` — `BLOCKED_EXTERNAL`  
 **Active execution successor:** `000B2-public-corpus-bakeoff` — `READY`  
-**Qualification chronology gate:** `SATISFIED` by PR #32 merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`; machine readiness reconciled by PR #33 merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`; B2P01 is canonical at PR #34 merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`; B2P02 is canonical at PR #35 merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c` and post-merge verified; B2P03 is canonical at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58` and post-merge verified; B2P04 is canonical at PR #39 merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` and post-merge verified; B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; B2P07 is canonical at PR #45 merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` and post-merge verified; B2E01 is canonical at merge `bb3acfae1f39669d74118a564e57a131731484d3`; B2R09 remains canonical historical ATTEMPT-002 evidence at task merge `fc357350270d5cb34fc1305dba4a9de41a5234c3` with recovery run `34160146607`; ATTEMPT-002 is invalidated for material execution drift; B2R13 is canonical at merge `60108c02df8397eda854d31c51eb37ee2e3fbe45` from exact qualified head `43f9d5bcb4465bd6467a7a5880f274fe4600134e` and post-merge ATTEMPT-003 Recovery run `34231594716` succeeded; historical PR #95 merge `2f4212228f24e40fbd03cfc59ab4774df94c0cc3` is preserved as premature and ineligible for B2R14 completion because the required fresh independent review did not complete before merge; corrective B2R14 is canonical at merge `e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca` from exact independently reviewed qualified head `c60751c43a2523879814d691011d5dd6d3d1e119` and post-merge ATTEMPT-003 Recovery run `34246855454` succeeded; B2R15 is canonical at guarded normal merge `3d31b18823b8275c99e1478b132a64f36fad05c0` from exact independently reviewed qualified head `1410cb81b59de07bdecee6b78e41fdc825f4a55d` and post-merge ATTEMPT-003 Recovery run `34274935240` succeeded; active successor recovery unit is `B2R16`; ATTEMPT-003 remains unfrozen and primary decoding is closed
+**Qualification chronology gate:** `SATISFIED` by PR #32 merge `44b8e5ee5fe72aa0054af1493e2fffc60f0cf0fc`; machine readiness reconciled by PR #33 merge `ea2d8a09a47a47b202f0bbb0871c362c0b26e1e7`; B2P01 is canonical at PR #34 merge `2d2937b0da1dc9b4d7278fe6bfb778eb6a75d129`; B2P02 is canonical at PR #35 merge `1ba4e42561cc53f574d5d35689e2ae499a398b5c` and post-merge verified; B2P03 is canonical at PR #37 merge `83eca872148f329033c299f6671d275edf2d7b58` and post-merge verified; B2P04 is canonical at PR #39 merge `4c4e758f22b54fa62256e57bfbd344adc817df8e` and post-merge verified; B2P05 is canonical at PR #41 merge `49538990fb4cf8223e9321261925206ed7ff5cee` and post-merge verified; B2P06 is canonical at PR #43 merge `3dceadd984ff307ce55745bf5f289890a2fac261` and post-merge verified; B2P07 is canonical at PR #45 merge `4bd5306fa1d274d7b822b73e26172dd9c7058319` and post-merge verified; B2E01 is canonical at merge `bb3acfae1f39669d74118a564e57a131731484d3`; B2R09 remains canonical historical ATTEMPT-002 evidence at task merge `fc357350270d5cb34fc1305dba4a9de41a5234c3` with recovery run `34160146607`; ATTEMPT-002 is invalidated for material execution drift; B2R13 is canonical at merge `60108c02df8397eda854d31c51eb37ee2e3fbe45` from exact qualified head `43f9d5bcb4465bd6467a7a5880f274fe4600134e` and post-merge ATTEMPT-003 Recovery run `34231594716` succeeded; historical PR #95 merge `2f4212228f24e40fbd03cfc59ab4774df94c0cc3` is preserved as premature and ineligible for B2R14 completion because the required fresh independent review did not complete before merge; corrective B2R14 is canonical at merge `e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca` from exact independently reviewed qualified head `c60751c43a2523879814d691011d5dd6d3d1e119` and post-merge ATTEMPT-003 Recovery run `34246855454` succeeded; B2R15 is canonical at guarded normal merge `3d31b18823b8275c99e1478b132a64f36fad05c0` from exact independently reviewed qualified head `1410cb81b59de07bdecee6b78e41fdc825f4a55d` and post-merge ATTEMPT-003 Recovery run `34274935240` succeeded; B2R16 is canonical at guarded normal merge `885307429ec8b1aa0fe173169a8c2918714c06b0` from exact independently reviewed qualified head `ac9f7ce993aec33e6c6436cce4efd85394a97f35` and post-merge ATTEMPT-003 Recovery run `34415906199` succeeded; active successor recovery unit is `B2R17`; ATTEMPT-003 is frozen and primary decode entry is open only for B2R17
 **Published release:** none
 
 Live GitHub and repository truth override this document.
@@ -371,12 +371,28 @@ B2R15 is canonically complete after PR #102 merged the exact independently revie
 **Canonical B2R15 qualified head:** `1410cb81b59de07bdecee6b78e41fdc825f4a55d`
 **Canonical B2R15 task merge:** `3d31b18823b8275c99e1478b132a64f36fad05c0`
 **Canonical B2R15 post-merge recovery run:** `34274935240`
-**Active successor recovery unit:** `B2R16`
+**Historical successor recovery unit at the B2R15 reconciliation:** `B2R16`
 **ATTEMPT-003 required:** `true`
-**ATTEMPT-003 frozen:** `false`
-**ATTEMPT-003 primary decode entry open:** `false`
+**ATTEMPT-003 frozen at that frontier:** `false`
+**ATTEMPT-003 primary decode entry open at that frontier:** `false`
 
-B2R16 alone is the next bounded unit: freeze `000B2-PUBLIC-ATTEMPT-003` with exact candidate, subset, preprocessing, environment, scorer, normalization, and B2R14-qualified harness identities before any new primary decode. No primary decode or scoring is authorized by this reconciliation. B2R17 and every later successor remain unauthorized. Comparative publication/ranking, production selection, and product-code authority remain closed; `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, `production_stt_selected=false`, and `product_code_authorized=false` remain preserved.
+At the B2R15 reconciliation frontier, B2R16 alone was the next bounded unit. That instruction is historical and is superseded by the canonical B2R16 reconciliation below; it grants no present execution authority.
+
+## Canonical ATTEMPT-003 B2R16 freeze reconciliation
+
+B2R16 is canonically complete after PR #104 merged the exact independently reviewed four-file freeze range as guarded normal merge `885307429ec8b1aa0fe173169a8c2918714c06b0` with first parent `483484023087104a59b239d089da5f749bc8db57` and exact qualified head `ac9f7ce993aec33e6c6436cce4efd85394a97f35` as second parent. Fresh independent exact-range CodeRabbit review comment `5609545905` reported no blocking substantive defect before merge. Exact `main` push run `34415906199` of `000B2 Public Corpus ATTEMPT-003 Recovery` completed successfully on that exact merge SHA. The task froze ATTEMPT-003 before any primary decode with freeze digest `b92d0a88bb50ebde517f560878a26d0ef796abdaf931278f5bc43e372ff1ac8d`.
+
+**Canonical successor recovery predecessor:** `B2R16`
+**Canonical B2R16 task base:** `483484023087104a59b239d089da5f749bc8db57`
+**Canonical B2R16 qualified head:** `ac9f7ce993aec33e6c6436cce4efd85394a97f35`
+**Canonical B2R16 task merge:** `885307429ec8b1aa0fe173169a8c2918714c06b0`
+**Canonical B2R16 post-merge recovery run:** `34415906199`
+**Active successor recovery unit:** `B2R17`
+**ATTEMPT-003 required:** `true`
+**ATTEMPT-003 frozen:** `true`
+**ATTEMPT-003 primary decode entry open:** `true`
+
+B2R17 alone is the next bounded unit: execute candidate cell 1 (`moonshine-compact`) against the identical frozen P0 audio under frozen C0. Preserve raw outputs, failures, runtime observations, exact run identity, frozen input identities, and claim guards. No scoring is authorized. B2R18 and every later successor remain closed. Comparative publication/ranking, production selection, and product-code authority remain closed; `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, `production_stt_selected=false`, and `product_code_authorized=false` remain preserved.
 
 ## Current product thesis
 
