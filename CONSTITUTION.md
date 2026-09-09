@@ -1,8 +1,9 @@
 # Wispral Constitution
 
-**Version:** 0.1.0  
+**Version:** 0.2.1
 **Status:** Active  
 **Ratified:** 2026-09-01  
+**Amended:** 2026-09-09  
 **Canonical ratification merge:** `3cbe212bf7202c37ec322f114c0e5486e5218d9b`
 
 ## Preamble
@@ -102,6 +103,26 @@ Core behavior MUST NOT depend on hidden background recording or undisclosed cont
 GitHub stars, trending position, press, social reach, downloads, and community size are meaningful distribution signals but do not establish product correctness or technical superiority.
 
 The project MAY pursue ambitious adoption goals, including category leadership, while keeping engineering acceptance criteria evidence-based and independently verifiable.
+
+## Principle XVI — Trusted-control repair is fail-closed and exceptional
+
+Repository controls designated as immutable for ordinary task or reconciliation candidates MUST remain immutable for those candidates. Their immutability is a trust boundary, not a reason to preserve a proven fail-open defect.
+
+If fresh independent evidence demonstrates that an immutable trusted control is materially fail-open, and the existing immutable-control gate prevents the defect from being corrected through the ordinary execution lane, all dependent execution MUST freeze until the authority conflict is resolved explicitly.
+
+A trusted-control repair is authorized only through a dedicated governance-control repair sequence that satisfies all of the following:
+
+1. the repair is limited to the exact trusted-control path or paths required to remove the demonstrated fail-open defect;
+2. the repair MUST strictly strengthen or restore fail-closed behavior and MUST NOT broaden task scope, reconciliation scope, execution authority, evidence authority, decode authority, scoring authority, comparative-claim authority, product authority, or completion state;
+3. the repair PR MUST describe the defect, exact canonical authority base, exact changed-path scope, expected conflict with the pre-repair immutable-control gate, compatibility impact, security/privacy impact, affected specifications, and the deterministic evidence required to prove the correction;
+4. the pre-repair immutable-control gate failure caused solely by the declared trusted-control byte change MUST be preserved as conflict evidence and MUST NOT be relabeled, suppressed, rerun-to-green, or counted as a successful gate;
+5. every exact-head gate required by canonical repository authority and applicable to the repair candidate MUST conclude successfully on the exact final repair head; a required gate that is absent, skipped, pending, cancelled, or failed is not satisfied. The sole permitted non-successes are preserved pre-repair trusted-boundary results whose only failing condition is the declared trusted-control byte change described in item 4. Such preserved results MAY include both the immutable-control boundary and an ordinary task- or reconciliation-scope boundary when that scope boundary necessarily rejects the same trusted-control path because it is outside the ordinary candidate scope. Each preserved non-success MUST be individually evidenced, MUST occur before any dependent candidate execution or state transition, and MUST NOT conceal any unrelated failure. No other non-success category is permitted;
+6. deterministic positive and negative evidence MUST show that the repaired control accepts an exact valid candidate while rejecting the demonstrated malformed or incomplete candidate class;
+7. a fresh independent substantive review MUST cover the exact final repair range and resolve all blocking findings before merge;
+8. the repair MUST use a guarded normal merge bound to the exact reviewed head;
+9. after merge, the actual canonical merge SHA and ancestry MUST be verified, the repaired control MUST be exercised against that exact canonical state by a deterministic verifier or canonical workflow, and a separate canonical reconciliation MUST record the repair before dependent execution resumes.
+
+This repair authority MUST NOT be used as a substitute for an ordinary required gate. If strict strengthening cannot be demonstrated under these conditions, the project remains blocked.
 
 ## Governance
 

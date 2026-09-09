@@ -9,11 +9,12 @@ Before changing the repository, read in this order:
 1. `AGENTS.md`
 2. `CONSTITUTION.md`
 3. `docs/canonical/CURRENT_STATE.md`
-4. `docs/canonical/ARCHITECTURE_INVARIANTS.md`
-5. `docs/canonical/PROGRAM_ROADMAP.md`
-6. `specs/CURRENT.md`
-7. the complete active specification authority chain (`spec.md`, `plan.md`, `tasks.md`)
-8. referenced research, benchmark, security, ADR, contract, and source files
+4. `docs/canonical/TRUSTED_CONTROL_REPAIRS.md`
+5. `docs/canonical/ARCHITECTURE_INVARIANTS.md`
+6. `docs/canonical/PROGRAM_ROADMAP.md`
+7. `specs/CURRENT.md`
+8. the complete active specification authority chain (`spec.md`, `plan.md`, `tasks.md`)
+9. referenced research, benchmark, security, ADR, contract, and source files
 
 Live repository and GitHub truth override stale handoffs, plans, summaries, and chat history.
 

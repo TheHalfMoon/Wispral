@@ -193,11 +193,33 @@ def call_name(node: ast.AST) -> str:
     return ""
 
 
+def exact_scope_matches(changed_paths: list[str], expected_paths: list[str]) -> bool:
+    """Return whether candidate paths exactly match the canonical path set."""
+    return sorted(changed_paths) == sorted(expected_paths)
+
+
+def verify_exact_scope_regression_contract() -> None:
+    """Prove exact-scope matching accepts complete sets and rejects missing or extra paths."""
+    expected = ["scope/a", "scope/b"]
+    require(
+        exact_scope_matches(["scope/b", "scope/a"], expected),
+        "exact-scope regression rejected the complete path set",
+    )
+    require(
+        not exact_scope_matches(["scope/a"], expected),
+        "exact-scope regression accepted an incomplete path set",
+    )
+    require(
+        not exact_scope_matches(["scope/a", "scope/b", "scope/c"], expected),
+        "exact-scope regression accepted an extra path",
+    )
+
+
 def verify_b2r13_candidate_content(readiness: dict[str, Any]) -> None:
     authority_base = os.environ.get("AUTHORITY_BASE_REVISION", "")
     if not authority_base:
         return
-    changed = run_git("diff", "--name-only", "--diff-filter=ACMRTUXB", authority_base, "HEAD", "--")
+    changed = run_git("diff", "--name-only", "--diff-filter=ACDMRTUXB", authority_base, "HEAD", "--")
     changed_paths = [path for path in changed.splitlines() if path]
     scopes = readiness.get("task_candidate_scopes")
     require(isinstance(scopes, dict), "task_candidate_scopes must be an object")
@@ -233,7 +255,7 @@ def verify_b2r14_non_primary_candidate(readiness: dict[str, Any]) -> None:
     authority_base = os.environ.get("AUTHORITY_BASE_REVISION", "")
     if not authority_base:
         return
-    changed = run_git("diff", "--name-only", "--diff-filter=ACMRTUXB", authority_base, "HEAD", "--")
+    changed = run_git("diff", "--name-only", "--diff-filter=ACDMRTUXB", authority_base, "HEAD", "--")
     changed_paths = [path for path in changed.splitlines() if path]
     harness_path = "research/000b2-public/b2r14-sherpa-result-harness.py"
     qualification_path = "research/000b2-public/b2r14-harness-qualification.json"
@@ -339,6 +361,7 @@ def verify_b2r14_non_primary_candidate(readiness: dict[str, Any]) -> None:
 
 
 def verify_active_task_candidate_content(readiness: dict[str, Any], active: str | None, completed: list[str]) -> None:
+    """Validate the exact active-task or one-step reconciliation candidate boundary."""
     if active is None:
         return
     if active == "B2R13":
@@ -365,15 +388,25 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
     if not isinstance(base_completed, list):
         return
     delta = len(completed) - len(base_completed)
+    changed_output = run_git("diff", "--name-only", "--diff-filter=ACDMRTUXB", authority_base, "HEAD", "--")
+    changed_paths = sorted(path for path in changed_output.splitlines() if path)
+
+    if delta == 1:
+        transition_policy = base_state.get("transition_policy")
+        require(isinstance(transition_policy, dict), "authority-base transition policy must be an object")
+        reconciliation_scope = transition_policy.get("reconciliation_candidate_scope")
+        require(isinstance(reconciliation_scope, list), "authority-base reconciliation candidate scope must be a list")
+        require(
+            exact_scope_matches(changed_paths, reconciliation_scope),
+            "reconciliation candidate must match the exact canonical reconciliation path set",
+        )
+        return
     if delta != 0:
         return
     if active == "B2R14":
         verify_b2r14_non_primary_candidate(readiness)
 
-    changed_output = run_git("diff", "--name-only", "--diff-filter=ACMRTUXB", authority_base, "HEAD", "--")
-    changed_paths = [path for path in changed_output.splitlines() if path]
-    if not changed_paths:
-        return
+    require(changed_paths, f"{active} candidate must not be empty")
 
     policies = expected_task_content_policies()
     policy = policies[active]
@@ -381,8 +414,10 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
     require(isinstance(scopes, dict), "task_candidate_scopes must be an object")
     allowed_paths = scopes.get(active)
     require(isinstance(allowed_paths, list), f"missing exact candidate scope for {active}")
-    outside_scope = sorted(set(changed_paths) - set(allowed_paths))
-    require(not outside_scope, f"{active} candidate content outside exact path scope: {', '.join(outside_scope)}")
+    require(
+        exact_scope_matches(changed_paths, allowed_paths),
+        f"{active} candidate must match the exact canonical task path set",
+    )
 
     required_verifier = policy["required_verifier"]
     require(required_verifier in changed_paths, f"{active} candidate must include its required verifier")
@@ -692,6 +727,7 @@ def main() -> None:
     args = parser.parse_args()
     require(not (args.static_only and args.sherpa_source), "choose either --static-only or --sherpa-source")
 
+    verify_exact_scope_regression_contract()
     verify_historical_bytes()
     verify_attempt_manifest()
     verify_b2r09_binding()
