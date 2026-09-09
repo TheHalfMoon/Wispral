@@ -1,11 +1,11 @@
-name: Trusted Control Repair E415 Exact Scope Evidence
+name: Trusted Control Repair 70AA Exact Scope Evidence
 
 on:
   pull_request:
     branches:
-      - evidence/trusted-control-repair-e415-base
+      - evidence/trusted-control-repair-70aa-base
     paths:
-      - research/000b2-public/trusted-control-repair-e415-trigger.md
+      - research/000b2-public/trusted-control-repair-70aa-trigger.md
 
 permissions:
   contents: read
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
-      REPAIR_HEAD: e4152b019dbf597b4df56eb58554f94418f556fd
+      REPAIR_HEAD: 70aa5e91d9f1b3e1cab7e97b32e61d9a7d3107a5
       VERIFIER_BLOB: c00b123219afa1003134d8d9805c562564710ec3
       B2R16_HEAD: ee3b419bc2b5c32bc72ced1c777a07ebfc6f85f4
     steps:
@@ -37,7 +37,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ROOT="$RUNNER_TEMP/e415-exact-scope-proof"
+          ROOT="$RUNNER_TEMP/70aa-exact-scope-proof"
           rm -rf "$ROOT"
           git clone -q . "$ROOT"
           cd "$ROOT"
