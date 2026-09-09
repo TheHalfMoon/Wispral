@@ -2,6 +2,10 @@ name: 000B2 Public Corpus B2R16 Freeze
 
 on:
   pull_request:
+    paths:
+      - "research/000b2-public/b2r16-attempt-003-manifest.json"
+      - "research/000b2-public/b2r16-preexecution-state.json"
+      - "research/000b2-public/verify_b2r16.py"
   workflow_dispatch:
 
 permissions:
