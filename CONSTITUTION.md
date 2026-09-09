@@ -116,10 +116,11 @@ A trusted-control repair is authorized only through a dedicated governance-contr
 2. the repair MUST strictly strengthen or restore fail-closed behavior and MUST NOT broaden task scope, reconciliation scope, execution authority, evidence authority, decode authority, scoring authority, comparative-claim authority, product authority, or completion state;
 3. the repair PR MUST describe the defect, exact canonical authority base, exact changed-path scope, expected conflict with the pre-repair immutable-control gate, compatibility impact, security/privacy impact, affected specifications, and the deterministic evidence required to prove the correction;
 4. the pre-repair immutable-control gate failure caused solely by the declared trusted-control byte change MUST be preserved as conflict evidence and MUST NOT be relabeled, suppressed, rerun-to-green, or counted as a successful gate;
-5. deterministic positive and negative evidence MUST show that the repaired control accepts an exact valid candidate while rejecting the demonstrated malformed or incomplete candidate class;
-6. a fresh independent substantive review MUST cover the exact final repair range and resolve all blocking findings before merge;
-7. the repair MUST use a guarded normal merge bound to the exact reviewed head;
-8. after merge, the actual canonical merge SHA and ancestry MUST be verified, the repaired control MUST be exercised against that exact canonical state by a deterministic verifier or canonical workflow, and a separate canonical reconciliation MUST record the repair before dependent execution resumes.
+5. every exact-head gate required by canonical repository authority and applicable to the repair candidate MUST conclude successfully on the exact final repair head; a required gate that is absent, skipped, pending, cancelled, or failed is not satisfied. The sole permitted non-success is a preserved pre-repair immutable-control boundary result whose only failing condition is the declared trusted-control byte change described in item 4;
+6. deterministic positive and negative evidence MUST show that the repaired control accepts an exact valid candidate while rejecting the demonstrated malformed or incomplete candidate class;
+7. a fresh independent substantive review MUST cover the exact final repair range and resolve all blocking findings before merge;
+8. the repair MUST use a guarded normal merge bound to the exact reviewed head;
+9. after merge, the actual canonical merge SHA and ancestry MUST be verified, the repaired control MUST be exercised against that exact canonical state by a deterministic verifier or canonical workflow, and a separate canonical reconciliation MUST record the repair before dependent execution resumes.
 
 This repair authority MUST NOT be used as a substitute for an ordinary required gate. If strict strengthening cannot be demonstrated under these conditions, the project remains blocked.
 
