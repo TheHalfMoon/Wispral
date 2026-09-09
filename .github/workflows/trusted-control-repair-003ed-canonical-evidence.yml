@@ -1,0 +1,228 @@
+name: Trusted Control Repair 003ED Canonical State Evidence
+
+on:
+  pull_request:
+    branches:
+      - evidence/trusted-control-repair-003ed-canonical-base
+    paths:
+      - research/000b2-public/trusted-control-repair-003ed-canonical-trigger.md
+
+permissions:
+  contents: read
+
+jobs:
+  prove-exact-scope-repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      REPAIR_HEAD: 003ed3a44b89779ff51df45cd1d015ef6da98370
+      VERIFIER_BLOB: b8ed65776c6d9b5ae313c34d91c221b13a25197e
+      B2R16_HEAD: ee3b419bc2b5c32bc72ced1c777a07ebfc6f85f4
+    steps:
+      - name: Checkout evidence PR
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Bind exact repair and B2R16 source bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse "${REPAIR_HEAD}^{commit}")" = "$REPAIR_HEAD"
+          test "$(git rev-parse "${REPAIR_HEAD}:research/000b2-public/verify_attempt_002_invalidation.py")" = "$VERIFIER_BLOB"
+          test "$(git rev-parse "${B2R16_HEAD}^{commit}")" = "$B2R16_HEAD"
+
+      - name: Prove active-task and reconciliation exact-scope behavior
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/003ed-canonical-scope-proof"
+          rm -rf "$ROOT"
+          git clone -q . "$ROOT"
+          cd "$ROOT"
+          git config user.name "Synthetic Verification"
+          git config user.email "synthetic-verification@local.invalid"
+
+          task_paths=(
+            ".github/workflows/000b2-public-b2r16-freeze.yml"
+            "research/000b2-public/b2r16-attempt-003-manifest.json"
+            "research/000b2-public/b2r16-preexecution-state.json"
+            "research/000b2-public/verify_b2r16.py"
+          )
+          reconciliation_paths=(
+            "docs/canonical/CURRENT_STATE.md"
+            "research/000b2-public/recovery-attempt-003-readiness.json"
+            "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md"
+            "specs/CURRENT.md"
+          )
+
+          reset_case() {
+            git checkout -q --detach "$REPAIR_HEAD"
+            git reset -q --hard "$REPAIR_HEAD"
+            git clean -qfd
+          }
+
+          copy_b2r16_path() {
+            local path="$1"
+            mkdir -p "$(dirname "$path")"
+            git show "${B2R16_HEAD}:${path}" > "$path"
+          }
+
+          commit_case() {
+            local label="$1"
+            git add -A
+            git commit -q -m "synthetic ${label}"
+            echo "${label}_DIFF_BEGIN"
+            git diff --name-only "$REPAIR_HEAD" HEAD
+            echo "${label}_DIFF_END"
+          }
+
+          run_task_verifier() {
+            AUTHORITY_BASE_REVISION="$REPAIR_HEAD" \
+              python3 research/000b2-public/verify_attempt_002_invalidation.py --static-only
+          }
+
+          run_reconciliation_verifier() {
+            AUTHORITY_BASE_REVISION="$REPAIR_HEAD" python3 - <<'PY'
+          import importlib.util
+          import json
+          from pathlib import Path
+
+          path = Path("research/000b2-public/verify_attempt_002_invalidation.py")
+          spec = importlib.util.spec_from_file_location("repair_verifier", path)
+          if spec is None or spec.loader is None:
+              raise SystemExit("unable to load repair verifier")
+          verifier = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(verifier)
+          verifier.verify_exact_scope_regression_contract()
+          state = json.loads(Path("research/000b2-public/recovery-attempt-003-readiness.json").read_text(encoding="utf-8"))
+          completed = list(state["completed_recovery_tasks"]) + ["B2R16"]
+          state["completed_recovery_tasks"] = completed
+          verifier.verify_active_task_candidate_content(state, "B2R16", completed)
+          PY
+          }
+
+          reset_case
+          for path in "${task_paths[@]}"; do copy_b2r16_path "$path"; done
+          commit_case TASK_EXACT
+          run_task_verifier
+          echo "TASK_EXACT_SCOPE_POSITIVE=PASS"
+
+          reset_case
+          copy_b2r16_path ".github/workflows/000b2-public-b2r16-freeze.yml"
+          copy_b2r16_path "research/000b2-public/b2r16-preexecution-state.json"
+          copy_b2r16_path "research/000b2-public/verify_b2r16.py"
+          commit_case TASK_INCOMPLETE
+          set +e
+          task_incomplete_output=$(run_task_verifier 2>&1)
+          task_incomplete_rc=$?
+          set -e
+          printf '%s\n' "$task_incomplete_output"
+          test "$task_incomplete_rc" -ne 0
+          printf '%s\n' "$task_incomplete_output" | grep -F "B2R16 candidate must match the exact canonical task path set"
+          echo "TASK_INCOMPLETE_SCOPE_REJECTION=PASS"
+
+          reset_case
+          for path in "${task_paths[@]}"; do copy_b2r16_path "$path"; done
+          printf '\n' >> README.md
+          commit_case TASK_EXTRA
+          set +e
+          task_extra_output=$(run_task_verifier 2>&1)
+          task_extra_rc=$?
+          set -e
+          printf '%s\n' "$task_extra_output"
+          test "$task_extra_rc" -ne 0
+          printf '%s\n' "$task_extra_output" | grep -F "B2R16 candidate must match the exact canonical task path set"
+          echo "TASK_EXTRA_SCOPE_REJECTION=PASS"
+
+          reset_case
+          for path in "${task_paths[@]}"; do copy_b2r16_path "$path"; done
+          git rm -q README.md
+          commit_case TASK_UNRELATED_DELETION
+          set +e
+          task_delete_output=$(run_task_verifier 2>&1)
+          task_delete_rc=$?
+          set -e
+          printf '%s\n' "$task_delete_output"
+          test "$task_delete_rc" -ne 0
+          printf '%s\n' "$task_delete_output" | grep -F "B2R16 candidate must match the exact canonical task path set"
+          echo "TASK_UNRELATED_DELETION_REJECTION=PASS"
+
+          reset_case
+          b2r13_paths=(
+            "research/000b2-public/attempt-002-invalidation.json"
+            "research/000b2-public/recovery-attempt-003-readiness.json"
+            "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md"
+            "specs/000B2-public-corpus-bakeoff/recovery-v2.md"
+          )
+          for path in "${b2r13_paths[@]}"; do printf '\n' >> "$path"; done
+          git rm -q README.md
+          commit_case B2R13_UNRELATED_DELETION
+          set +e
+          b2r13_delete_output=$(AUTHORITY_BASE_REVISION="$REPAIR_HEAD" python3 - <<'PY2' 2>&1
+          import importlib.util
+          import json
+          from pathlib import Path
+          path = Path("research/000b2-public/verify_attempt_002_invalidation.py")
+          spec = importlib.util.spec_from_file_location("repair_verifier", path)
+          if spec is None or spec.loader is None:
+              raise SystemExit("unable to load repair verifier")
+          verifier = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(verifier)
+          state = json.loads(Path("research/000b2-public/recovery-attempt-003-readiness.json").read_text(encoding="utf-8"))
+          verifier.verify_b2r13_candidate_content(state)
+          PY2
+          )
+          b2r13_delete_rc=$?
+          set -e
+          printf '%s\n' "$b2r13_delete_output"
+          test "$b2r13_delete_rc" -ne 0
+          printf '%s\n' "$b2r13_delete_output" | grep -F "B2R13 candidate must match the exact activation path set"
+          echo "B2R13_UNRELATED_DELETION_REJECTION=PASS"
+
+          reset_case
+          for path in "${reconciliation_paths[@]}"; do printf '\n' >> "$path"; done
+          commit_case RECON_EXACT
+          run_reconciliation_verifier
+          echo "RECONCILIATION_EXACT_SCOPE_POSITIVE=PASS"
+
+          reset_case
+          printf '\n' >> docs/canonical/CURRENT_STATE.md
+          printf '\n' >> research/000b2-public/recovery-attempt-003-readiness.json
+          printf '\n' >> specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md
+          commit_case RECON_INCOMPLETE
+          set +e
+          recon_incomplete_output=$(run_reconciliation_verifier 2>&1)
+          recon_incomplete_rc=$?
+          set -e
+          printf '%s\n' "$recon_incomplete_output"
+          test "$recon_incomplete_rc" -ne 0
+          printf '%s\n' "$recon_incomplete_output" | grep -F "reconciliation candidate must match the exact canonical reconciliation path set"
+          echo "RECONCILIATION_INCOMPLETE_SCOPE_REJECTION=PASS"
+
+          reset_case
+          for path in "${reconciliation_paths[@]}"; do printf '\n' >> "$path"; done
+          printf '\n' >> README.md
+          commit_case RECON_EXTRA
+          set +e
+          recon_extra_output=$(run_reconciliation_verifier 2>&1)
+          recon_extra_rc=$?
+          set -e
+          printf '%s\n' "$recon_extra_output"
+          test "$recon_extra_rc" -ne 0
+          printf '%s\n' "$recon_extra_output" | grep -F "reconciliation candidate must match the exact canonical reconciliation path set"
+          echo "RECONCILIATION_EXTRA_SCOPE_REJECTION=PASS"
+
+          reset_case
+          for path in "${reconciliation_paths[@]}"; do printf '\n' >> "$path"; done
+          git rm -q README.md
+          commit_case RECON_UNRELATED_DELETION
+          set +e
+          recon_delete_output=$(run_reconciliation_verifier 2>&1)
+          recon_delete_rc=$?
+          set -e
+          printf '%s\n' "$recon_delete_output"
+          test "$recon_delete_rc" -ne 0
+          printf '%s\n' "$recon_delete_output" | grep -F "reconciliation candidate must match the exact canonical reconciliation path set"
+          echo "RECONCILIATION_UNRELATED_DELETION_REJECTION=PASS"
