@@ -219,7 +219,7 @@ def verify_b2r13_candidate_content(readiness: dict[str, Any]) -> None:
     authority_base = os.environ.get("AUTHORITY_BASE_REVISION", "")
     if not authority_base:
         return
-    changed = run_git("diff", "--name-only", "--diff-filter=ACMRTUXB", authority_base, "HEAD", "--")
+    changed = run_git("diff", "--name-only", "--diff-filter=ACDMRTUXB", authority_base, "HEAD", "--")
     changed_paths = [path for path in changed.splitlines() if path]
     scopes = readiness.get("task_candidate_scopes")
     require(isinstance(scopes, dict), "task_candidate_scopes must be an object")
@@ -255,7 +255,7 @@ def verify_b2r14_non_primary_candidate(readiness: dict[str, Any]) -> None:
     authority_base = os.environ.get("AUTHORITY_BASE_REVISION", "")
     if not authority_base:
         return
-    changed = run_git("diff", "--name-only", "--diff-filter=ACMRTUXB", authority_base, "HEAD", "--")
+    changed = run_git("diff", "--name-only", "--diff-filter=ACDMRTUXB", authority_base, "HEAD", "--")
     changed_paths = [path for path in changed.splitlines() if path]
     harness_path = "research/000b2-public/b2r14-sherpa-result-harness.py"
     qualification_path = "research/000b2-public/b2r14-harness-qualification.json"
@@ -388,7 +388,7 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
     if not isinstance(base_completed, list):
         return
     delta = len(completed) - len(base_completed)
-    changed_output = run_git("diff", "--name-only", "--diff-filter=ACMRTUXB", authority_base, "HEAD", "--")
+    changed_output = run_git("diff", "--name-only", "--diff-filter=ACDMRTUXB", authority_base, "HEAD", "--")
     changed_paths = sorted(path for path in changed_output.splitlines() if path)
 
     if delta == 1:
