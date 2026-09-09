@@ -161,18 +161,18 @@ jobs:
           commit_case B2R13_UNRELATED_DELETION
           set +e
           b2r13_delete_output=$(AUTHORITY_BASE_REVISION="$REPAIR_HEAD" python3 - <<'PY2' 2>&1
-import importlib.util
-import json
-from pathlib import Path
-path = Path("research/000b2-public/verify_attempt_002_invalidation.py")
-spec = importlib.util.spec_from_file_location("repair_verifier", path)
-if spec is None or spec.loader is None:
-    raise SystemExit("unable to load repair verifier")
-verifier = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(verifier)
-state = json.loads(Path("research/000b2-public/recovery-attempt-003-readiness.json").read_text(encoding="utf-8"))
-verifier.verify_b2r13_candidate_content(state)
-PY2
+          import importlib.util
+          import json
+          from pathlib import Path
+          path = Path("research/000b2-public/verify_attempt_002_invalidation.py")
+          spec = importlib.util.spec_from_file_location("repair_verifier", path)
+          if spec is None or spec.loader is None:
+              raise SystemExit("unable to load repair verifier")
+          verifier = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(verifier)
+          state = json.loads(Path("research/000b2-public/recovery-attempt-003-readiness.json").read_text(encoding="utf-8"))
+          verifier.verify_b2r13_candidate_content(state)
+          PY2
           )
           b2r13_delete_rc=$?
           set -e
