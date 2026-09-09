@@ -1,0 +1,113 @@
+name: Trusted Control Repair Reconciliation Evidence
+
+on:
+  pull_request:
+    branches:
+      - evidence/trusted-control-repair-628f-base
+    paths:
+      - research/000b2-public/trusted-control-repair-evidence-trigger.md
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prove-reconciliation-scope:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      REPAIR_HEAD: 628f5494d7a4fccb324b48f731c62e238d6971de
+      VERIFIER_BLOB: ba351e274aa3f9fbbd76bff243947e2d0d397079
+    steps:
+      - name: Checkout evidence branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Bind exact repair bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse "${REPAIR_HEAD}^{commit}")" = "$REPAIR_HEAD"
+          test "$(git rev-parse "${REPAIR_HEAD}:research/000b2-public/verify_attempt_002_invalidation.py")" = "$VERIFIER_BLOB"
+
+      - name: Prove exact and malformed reconciliation scopes
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$RUNNER_TEMP/trusted-control-repair-proof"
+          rm -rf "$ROOT"
+          git clone -q . "$ROOT"
+          cd "$ROOT"
+          git config user.name "Synthetic Verification"
+          git config user.email "synthetic-verification@local.invalid"
+
+          run_case() {
+            local case_name="$1"
+            shift
+            git checkout -q --detach "$REPAIR_HEAD"
+            git reset -q --hard "$REPAIR_HEAD"
+            git clean -qfd
+            for path in "$@"; do
+              printf '\n' >> "$path"
+            done
+            git add -A
+            git commit -q -m "synthetic ${case_name} reconciliation candidate"
+            echo "${case_name}_DIFF_BEGIN"
+            git diff --name-only "$REPAIR_HEAD" HEAD
+            echo "${case_name}_DIFF_END"
+          }
+
+          invoke_reconciliation_check() {
+            AUTHORITY_BASE_REVISION="$REPAIR_HEAD" python3 - <<'PY'
+          import importlib.util
+          import json
+          from pathlib import Path
+
+          verifier_path = Path("research/000b2-public/verify_attempt_002_invalidation.py")
+          spec = importlib.util.spec_from_file_location("trusted_repair_verifier", verifier_path)
+          if spec is None or spec.loader is None:
+              raise SystemExit("unable to load exact repair verifier")
+          verifier = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(verifier)
+
+          state = json.loads(Path("research/000b2-public/recovery-attempt-003-readiness.json").read_text(encoding="utf-8"))
+          state["completed_recovery_tasks"] = list(state["completed_recovery_tasks"]) + ["B2R16"]
+          verifier.verify_active_task_candidate_content(state, "B2R16")
+          PY
+          }
+
+          exact=(
+            "docs/canonical/CURRENT_STATE.md"
+            "research/000b2-public/recovery-attempt-003-readiness.json"
+            "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md"
+            "specs/CURRENT.md"
+          )
+
+          run_case RECON_POSITIVE "${exact[@]}"
+          invoke_reconciliation_check
+          echo "RECONCILIATION_EXACT_SCOPE_POSITIVE=PASS"
+
+          run_case RECON_INCOMPLETE \
+            "docs/canonical/CURRENT_STATE.md" \
+            "research/000b2-public/recovery-attempt-003-readiness.json" \
+            "specs/000B2-public-corpus-bakeoff/recovery-v2-tasks.md"
+          set +e
+          incomplete_output=$(invoke_reconciliation_check 2>&1)
+          incomplete_rc=$?
+          set -e
+          printf '%s\n' "$incomplete_output"
+          test "$incomplete_rc" -ne 0
+          printf '%s\n' "$incomplete_output" | grep -F "reconciliation candidate must match the exact canonical reconciliation path set"
+          echo "RECONCILIATION_INCOMPLETE_SCOPE_REJECTION=PASS"
+
+          run_case RECON_EXTRA "${exact[@]}" "README.md"
+          set +e
+          extra_output=$(invoke_reconciliation_check 2>&1)
+          extra_rc=$?
+          set -e
+          printf '%s\n' "$extra_output"
+          test "$extra_rc" -ne 0
+          printf '%s\n' "$extra_output" | grep -F "reconciliation candidate must match the exact canonical reconciliation path set"
+          echo "RECONCILIATION_EXTRA_SCOPE_REJECTION=PASS"
