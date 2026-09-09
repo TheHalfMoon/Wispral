@@ -74,7 +74,7 @@ jobs:
 
           state = json.loads(Path("research/000b2-public/recovery-attempt-003-readiness.json").read_text(encoding="utf-8"))
           state["completed_recovery_tasks"] = list(state["completed_recovery_tasks"]) + ["B2R16"]
-          verifier.verify_active_task_candidate_content(state, "B2R16")
+          verifier.verify_active_task_candidate_content(state, "B2R16", state["completed_recovery_tasks"])
           PY
           }
 
