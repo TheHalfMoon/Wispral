@@ -193,6 +193,28 @@ def call_name(node: ast.AST) -> str:
     return ""
 
 
+def exact_scope_matches(changed_paths: list[str], expected_paths: list[str]) -> bool:
+    """Return whether candidate paths exactly match the canonical path set."""
+    return sorted(changed_paths) == sorted(expected_paths)
+
+
+def verify_exact_scope_regression_contract() -> None:
+    """Prove exact-scope matching accepts complete sets and rejects missing or extra paths."""
+    expected = ["scope/a", "scope/b"]
+    require(
+        exact_scope_matches(["scope/b", "scope/a"], expected),
+        "exact-scope regression rejected the complete path set",
+    )
+    require(
+        not exact_scope_matches(["scope/a"], expected),
+        "exact-scope regression accepted an incomplete path set",
+    )
+    require(
+        not exact_scope_matches(["scope/a", "scope/b", "scope/c"], expected),
+        "exact-scope regression accepted an extra path",
+    )
+
+
 def verify_b2r13_candidate_content(readiness: dict[str, Any]) -> None:
     authority_base = os.environ.get("AUTHORITY_BASE_REVISION", "")
     if not authority_base:
@@ -339,6 +361,7 @@ def verify_b2r14_non_primary_candidate(readiness: dict[str, Any]) -> None:
 
 
 def verify_active_task_candidate_content(readiness: dict[str, Any], active: str | None, completed: list[str]) -> None:
+    """Validate the exact active-task or one-step reconciliation candidate boundary."""
     if active is None:
         return
     if active == "B2R13":
@@ -374,7 +397,7 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
         reconciliation_scope = transition_policy.get("reconciliation_candidate_scope")
         require(isinstance(reconciliation_scope, list), "authority-base reconciliation candidate scope must be a list")
         require(
-            changed_paths == sorted(reconciliation_scope),
+            exact_scope_matches(changed_paths, reconciliation_scope),
             "reconciliation candidate must match the exact canonical reconciliation path set",
         )
         return
@@ -392,7 +415,7 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
     allowed_paths = scopes.get(active)
     require(isinstance(allowed_paths, list), f"missing exact candidate scope for {active}")
     require(
-        changed_paths == sorted(allowed_paths),
+        exact_scope_matches(changed_paths, allowed_paths),
         f"{active} candidate must match the exact canonical task path set",
     )
 
@@ -704,6 +727,7 @@ def main() -> None:
     args = parser.parse_args()
     require(not (args.static_only and args.sherpa_source), "choose either --static-only or --sherpa-source")
 
+    verify_exact_scope_regression_contract()
     verify_historical_bytes()
     verify_attempt_manifest()
     verify_b2r09_binding()
