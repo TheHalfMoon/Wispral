@@ -1,0 +1,56 @@
+{
+  "schema_version": "000b2-public-b2r17-provenance-v1",
+  "task": "B2R17",
+  "lane": "PUBLIC_CORPUS",
+  "state": "ATTEMPT_003_CELL_1_PRIMARY_CAPTURE_PRESERVED",
+  "authority": {
+    "canonical_authority_base": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+    "attempt_id": "000B2-PUBLIC-ATTEMPT-003",
+    "attempt_freeze_digest_sha256": "b92d0a88bb50ebde517f560878a26d0ef796abdaf931278f5bc43e372ff1ac8d",
+    "active_task": "B2R17",
+    "candidate_cell_index": 1,
+    "candidate_id": "moonshine-compact"
+  },
+  "capture_source": {
+    "workflow_name": "Internal B2R17 ATTEMPT-003 Capture",
+    "workflow_path": ".github/workflows/internal-b2r17-capture.yml",
+    "workflow_git_blob_sha1": "49f72bcc548b50b880b7fcce2b06b81fe3a84222",
+    "workflow_sha256": "9705f19db09a9ee585844b9e861eb9e42939ef0f6919d565a2fca45273839a9a",
+    "source_branch": "execution/b2r17-moonshine-compact",
+    "source_revision": "3feab78d7e910014e999a76397f46385305c37b9",
+    "source_parent": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+    "decoder_git_blob_sha1": "2d583f4dfd9e9980f6a8054f8ee86f416c3db1a1",
+    "decoder_sha256": "ce0ade690694461664465bbeaa230f362f53a8ca354127ae8c5eaf4f9e0cc89d",
+    "github_run_id": 34421672201,
+    "github_run_attempt": 1,
+    "github_job_id": 102698241270,
+    "run_conclusion": "success"
+  },
+  "captured_evidence": {
+    "path": "research/000b2-public/b2r17-moonshine-compact.json",
+    "sha256": "3750b74a6176bcde2fe4ef9be967d71d71f0b6123766836930c2eb5423d7110c",
+    "payload_sha256": "c12d29254975c94357fcc1ca8b70bcf4bfd3aa6d95414a663fb44b842e19f87e",
+    "input_count": 240,
+    "decoded_count": 209,
+    "failure_count": 31
+  },
+  "preservation_semantics": {
+    "raw_outputs_preserved": true,
+    "failures_preserved": true,
+    "runtime_observations_preserved": true,
+    "run_identity_preserved": true,
+    "frozen_input_hashes_reverified": true,
+    "reference_transcripts_loaded_by_decoder": false,
+    "accuracy_scoring_performed": false,
+    "comparative_ranking_present": false,
+    "result_driven_input_change": false
+  },
+  "claim_guards": {
+    "human_developer_speech_accuracy_evidence": "ABSENT",
+    "comparative_result_available": false,
+    "comparative_performance_authorized": false,
+    "production_stt_selected": false,
+    "product_code_authorized": false,
+    "later_successor_execution_authorized": false
+  }
+}
