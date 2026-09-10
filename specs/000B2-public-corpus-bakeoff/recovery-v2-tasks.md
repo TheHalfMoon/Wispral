@@ -9,7 +9,7 @@ The B2R01-B2R12 ledger in `tasks.md` remains historical chronology. B2R10-B2R12 
 - [x] `B2R13` — Qualify and canonically bind ATTEMPT-002 material invalidation against exact canonical B2R09 bytes and the pinned sherpa-onnx upstream API. Preserve all historical attempt bytes. No primary decode.
 - [x] `B2R14` — Qualify a corrected sherpa-onnx result-extraction harness against non-primary material only, including fail-closed string/object API regression coverage. No primary decode.
 - [x] `B2R15` — Capture or cryptographically rebind ATTEMPT-003 preprocessing and execution-environment evidence without changing candidate/subset/scorer/normalization/C0 identities. No primary decode.
-- [ ] `B2R16` — Freeze `000B2-PUBLIC-ATTEMPT-003` with exact candidate, subset, preprocessing, environment, scorer, normalization, and harness identities before any new primary decode.
+- [x] `B2R16` — Freeze `000B2-PUBLIC-ATTEMPT-003` with exact candidate, subset, preprocessing, environment, scorer, normalization, and harness identities before any new primary decode.
 - [ ] `B2R17` — Execute ATTEMPT-003 candidate cell 1, `moonshine-compact`, against the identical frozen P0 audio; preserve raw outputs, failures, runtime observations, run identity, and claim guards. No scoring.
 - [ ] `B2R18` — Execute ATTEMPT-003 candidate cell 2, `moonshine-balanced`, against the identical frozen P0 audio; preserve raw outputs, failures, runtime observations, run identity, and claim guards. No scoring.
 - [ ] `B2R19` — Execute ATTEMPT-003 candidate cell 3, `whispercpp-compact`, against the identical frozen P0 audio; preserve raw outputs, failures, runtime observations, run identity, and claim guards. No scoring.
