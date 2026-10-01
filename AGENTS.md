@@ -124,3 +124,15 @@ Every implementation or evidence PR should identify:
 - exact head under review.
 
 Reconcile head, base, CI, reviews, threads, comments, mergeability, and canonical `main` before merge. Use expected-head protection for guarded merges when available. Re-read canonical authority after merge before starting dependent work.
+
+<!-- graft:start -->
+## Graft — repository context layer
+
+Use Graft (https://github.com/trailhq/Graft, `@nanonets/graft`) only as local developer/agent repository-context and navigation tooling. It does not alter Wispral's voice/control product architecture, executable frontier, user authority, protocol boundaries, or evidence-bearing status vocabulary.
+
+If Graft is unavailable or the local `graft/` graph is absent/stale, run `graft init`, select the active agent(s), then run `graft build`. Before broad source exploration prefer `graft check`, `graft map`, `graft ask "<question>" --source`, `graft skeleton <file>`, `graft callers <symbol>`, and `graft grep "<literal>"`. After material code changes, run `graft build` again.
+
+Treat `graft/` as a local regenerable cache and do not commit it. Keep usage zero-cost and local-first; do not introduce paid model/API usage, telemetry, or unauthorized external egress.
+
+Graft output is context only, never PASS/SUPPORTED/VERIFIED evidence, benchmark evidence, security/privacy proof, or completion authority. Continue all SpecGrain, exact-head, test, Jev where applicable, Alibaba Open Code Review, CI, security, benchmark, and provenance gates. Never fabricate Graft output, execution, reviews, or evidence.
+<!-- graft:end -->
