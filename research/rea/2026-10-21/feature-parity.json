@@ -1,0 +1,295 @@
+{
+  "date": "2026-10-21",
+  "wispral_implemented": false,
+  "rows": [
+    {
+      "pillar": "WisprSide",
+      "competitor": "Wispr Flow",
+      "url": "https://wisprflow.ai/",
+      "evidence": "RUNTIME_OBSERVED public page; DOCUMENTED product positioning",
+      "reference": "Desktop/mobile dictation and onboarding entry points; no successful native workflow",
+      "planned": "Handy capture/coordinator + deliberate delivery; app formatting remains a qualified adapter",
+      "priority": "P0 safe target delivery, P1 vocabulary/formatting; native S/F/B and Arabic NOT_RUN"
+    },
+    {
+      "pillar": "WisprSide",
+      "competitor": "Aqua Voice",
+      "url": "https://aquavoice.com/",
+      "evidence": "DOCUMENTED official page; launch REA incomplete",
+      "reference": "App insertion, screen context, custom dictionary, 49-language claim; platform links",
+      "planned": "Selective context snapshot, explicit consent, inspectable rewrite; no screen capture default",
+      "priority": "P0 context privacy, P1 speech names/code; native, latency, language accuracy NOT_RUN"
+    },
+    {
+      "pillar": "WisprSide",
+      "competitor": "Superwhisper",
+      "url": "https://superwhisper.com/",
+      "evidence": "DOCUMENTED official page; launch REA incomplete",
+      "reference": "Offline/cloud speech, shortcuts, custom modes, 100+ language/dialect claim and platform links",
+      "planned": "Shared router + opt-in modes; one native capture/delivery path",
+      "priority": "P0 actual offline egress, P1 custom task mode; native support/language count NOT_RUN"
+    },
+    {
+      "pillar": "WisprSide",
+      "competitor": "VoiceInk",
+      "url": "https://github.com/Beingpax/VoiceInk",
+      "evidence": "SOURCE_VERIFIED",
+      "reference": "macOS partial-paste/Unicode and clipboard ownership mechanisms",
+      "planned": "INK-I7 later macOS adapter; do not inherit whole SwiftUI app",
+      "priority": "P1 macOS safe partial-delivery recovery; native NOT_RUN"
+    },
+    {
+      "pillar": "WisprSide",
+      "competitor": "OpenWhispr",
+      "url": "https://github.com/OpenWhispr/openwhispr",
+      "evidence": "SOURCE_VERIFIED; 17 pure tests REPRODUCED",
+      "reference": "Native target helpers, recording/repeat guards; focus restoration may fall through",
+      "planned": "INK-I6/I9; remove current-foreground fallback; no whole Electron import",
+      "priority": "P0 wrong-target refusal; actual insertion NOT_RUN"
+    },
+    {
+      "pillar": "WisprSide",
+      "competitor": "Handy",
+      "url": "https://github.com/cjpais/Handy",
+      "evidence": "SOURCE_VERIFIED",
+      "reference": "Recorder/hotkeys/coordinator, transaction receipts and native supervisor",
+      "planned": "Lead selected; extract packages before Tauri managers",
+      "priority": "P0 native lifecycle/receipt qualification; microphone/paste NOT_RUN"
+    },
+    {
+      "pillar": "WisprSide",
+      "competitor": "FreeFlow",
+      "url": "https://github.com/zachlatta/freeflow",
+      "evidence": "SOURCE_VERIFIED",
+      "reference": "Selection/context and shortcut mechanisms; screenshot fallback/network route",
+      "planned": "Narrow context seam only, explicit consent and no implicit screenshot",
+      "priority": "P0 context leak prevention; native app NOT_RUN"
+    },
+    {
+      "pillar": "WisprSide",
+      "competitor": "Voicebox",
+      "url": "https://github.com/jamiepine/voicebox",
+      "evidence": "SOURCE_VERIFIED",
+      "reference": "Desktop voice/model service integration, not measured cross-app delivery",
+      "planned": "Reference integration only; shared Core capture not duplicate engine",
+      "priority": "P2 broader assistant workflow after Ink baseline; native NOT_RUN"
+    },
+    {
+      "pillar": "WisprStudio",
+      "competitor": "VoiceStudio",
+      "url": "https://github.com/debpalash/VoiceStudio",
+      "evidence": "SOURCE_VERIFIED; synthetic pure mechanisms REPRODUCED",
+      "reference": "Fit, long-form render/resume, project, translation/alignment/dub paths",
+      "planned": "Lead selective services, one project/timeline/model inventory",
+      "priority": "P0 crash-safe production, P1 controlled dubbing; audio/GPU/quality NOT_RUN"
+    },
+    {
+      "pillar": "WisprStudio",
+      "competitor": "Voicebox",
+      "url": "https://github.com/jamiepine/voicebox",
+      "evidence": "SOURCE_VERIFIED; queue coroutine probes REPRODUCED",
+      "reference": "Generation/profiles/queue/export; 0-volume source issue and native-stop gap",
+      "planned": "Narrow generation fallback; export regression fixture, no duplicate queues",
+      "priority": "P0 correct export/cancel; actual audio/native stop NOT_RUN"
+    },
+    {
+      "pillar": "WisprStudio",
+      "competitor": "Chatterbox",
+      "url": "https://github.com/resemble-ai/chatterbox",
+      "evidence": "SOURCE_VERIFIED + official model cards",
+      "reference": "Multilingual/Turbo/Nano, conditioning and Perth watermark paths",
+      "planned": "One isolated selected engine; pin mutable dependency closure",
+      "priority": "P1 consent-backed quality/watermark continuity; acoustic and CPU/GPU NOT_RUN"
+    },
+    {
+      "pillar": "WisprStudio",
+      "competitor": "ElevenLabs",
+      "url": "https://elevenlabs.io/",
+      "evidence": "RUNTIME_OBSERVED incomplete public preview; DOCUMENTED product tabs",
+      "reference": "Public TTS/cloning/dubbing entry points; synthetic preview did not verify audio",
+      "planned": "Script/editor/consent/export parity targets from source donors",
+      "priority": "P1 actual generation/export and failure recovery; quality/voice parity NOT_RUN"
+    },
+    {
+      "pillar": "WisprStudio",
+      "competitor": "Cartesia",
+      "url": "https://cartesia.ai/",
+      "evidence": "RUNTIME_OBSERVED public/access boundary",
+      "reference": "Public model/agent entry points; sign-in form and navigation recovery",
+      "planned": "Streaming candidate comparison after legitimate accessible generation trial",
+      "priority": "P1 first-audio and artifact correctness; inference NOT_RUN"
+    },
+    {
+      "pillar": "WisprStudio",
+      "competitor": "Resemble AI",
+      "url": "https://www.resemble.ai/",
+      "evidence": "DOCUMENTED official page + Chatterbox source study",
+      "reference": "Current homepage emphasizes multimodal detection/watermarking; not proof of Studio/cloning workflow",
+      "planned": "Preserve watermark mechanisms; hosted studio remains separate reference",
+      "priority": "P1 watermark/consent artifact, P2 detection comparison; hosted generation NOT_RUN"
+    },
+    {
+      "pillar": "Klaint",
+      "competitor": "Decagon",
+      "url": "https://decagon.ai/product/voice",
+      "evidence": "DOCUMENTED + public homepage RUNTIME_OBSERVED",
+      "reference": "Talk-and-act, interruption/backtracking, language switch and transfer-summary claims",
+      "planned": "Parlant + broker + handoff; no inference of deterministic authority",
+      "priority": "P0 action/tenant/transfer correctness, P1 duplex; all actual customer flows NOT_RUN"
+    },
+    {
+      "pillar": "Klaint",
+      "competitor": "Sierra",
+      "url": "https://sierra.ai/product/agent-studio",
+      "evidence": "DOCUMENTED",
+      "reference": "Journeys/integrations, decision/tool traces, simulation/noise regression claims",
+      "planned": "Parlant journeys + scoped tools + shared trace and replay protocol",
+      "priority": "P1 replayable journey QA; runtime NOT_RUN"
+    },
+    {
+      "pillar": "Klaint",
+      "competitor": "Ada",
+      "url": "https://docs.ada.cx/",
+      "evidence": "DOCUMENTED docs; homepage 403 boundary retained",
+      "reference": "Documentation access established; homepage failure is not lack of product capability",
+      "planned": "Compare automation/knowledge/handoff only through legitimate documented/runtime scope",
+      "priority": "P1 support workflow and policy qualification; account runtime NOT_RUN"
+    },
+    {
+      "pillar": "Klaint",
+      "competitor": "Intercom Fin",
+      "url": "https://fin.ai/",
+      "evidence": "DOCUMENTED; redirect from intercom.com/fin recorded",
+      "reference": "Guidance/procedures, knowledge, simulations/QA and channel claims",
+      "planned": "Parlant policy content + Chatwoot bridge and evaluation",
+      "priority": "P1 knowledge freshness/QA and transfer; actual account NOT_RUN"
+    },
+    {
+      "pillar": "Klaint",
+      "competitor": "Parlant",
+      "url": "https://github.com/emcie-co/parlant",
+      "evidence": "SOURCE_VERIFIED",
+      "reference": "AlphaEngine, guidelines/journeys, Plan and ToolService lifecycle",
+      "planned": "Lead dialogue service; policy broker surrounds every tool invocation",
+      "priority": "P0 tenant/tool authority; full service/provider suite NOT_RUN"
+    },
+    {
+      "pillar": "Klaint",
+      "competitor": "Botpress",
+      "url": "https://github.com/botpress/botpress",
+      "evidence": "SOURCE_VERIFIED",
+      "reference": "SDK/connectors/HITL schemas; public source not entire Cloud runtime",
+      "planned": "Selected connector types/OAuth/HITL only",
+      "priority": "P0 signed replay/idempotency; hosted workflow NOT_RUN"
+    },
+    {
+      "pillar": "Klaint",
+      "competitor": "Chatwoot",
+      "url": "https://github.com/chatwoot/chatwoot",
+      "evidence": "SOURCE_VERIFIED",
+      "reference": "Account-scoped inbox/assignment and agent handoff mechanisms",
+      "planned": "Optional self-hosted inbox; separate enterprise subtree",
+      "priority": "P0 no AI after human takeover; real inbox deployment NOT_RUN"
+    },
+    {
+      "pillar": "Klaint",
+      "competitor": "Rasa",
+      "url": "https://github.com/RasaHQ/rasa",
+      "evidence": "SOURCE_VERIFIED",
+      "reference": "Rule/tracker/lock seams, maintenance/old Python boundary",
+      "planned": "Reference fixtures; no second dialogue runtime",
+      "priority": "P2 deterministic journey comparison if lead fails; app NOT_RUN"
+    },
+    {
+      "pillar": "Klaint",
+      "competitor": "Retell AI",
+      "url": "https://docs.retellai.com/build/single-multi-prompt/transfer-call",
+      "evidence": "DOCUMENTED",
+      "reference": "Call lifecycle and transfer documentation",
+      "planned": "LiveKit or Pipecat qualified topology + explicit transfer state",
+      "priority": "P0 transfer failure/ownership, P1 voice; no phone call run"
+    },
+    {
+      "pillar": "Klaint",
+      "competitor": "Vapi",
+      "url": "https://docs.vapi.ai/squads/handoff",
+      "evidence": "DOCUMENTED",
+      "reference": "Voice composition and agent handoff documentation",
+      "planned": "Single turn owner plus broker/channel mapping",
+      "priority": "P1 handoff state and interrupt mapping; no session run"
+    },
+    {
+      "pillar": "Klaint",
+      "competitor": "Bland AI",
+      "url": "https://docs.bland.ai/llms.txt",
+      "evidence": "DOCUMENTED; legacy docs transition preserved",
+      "reference": "Public docs discovery; specific transfer tutorial access limitation retained",
+      "planned": "Future qualified telephony adapter, no claims from failed tutorial fetch",
+      "priority": "P1 warm transfer/error handling; no call run"
+    },
+    {
+      "pillar": "Core/realtime",
+      "competitor": "OpenAI Realtime",
+      "url": "https://developers.openai.com/api/docs/guides/realtime-conversations",
+      "evidence": "DOCUMENTED",
+      "reference": "Transport-specific conversation/playback/truncation lifecycle",
+      "planned": "Optional adapter, explicit stop/unheard-output mapping",
+      "priority": "P0 cancel and side effects; no API inference run"
+    },
+    {
+      "pillar": "Core/realtime",
+      "competitor": "Gemini Live",
+      "url": "https://ai.google.dev/gemini-api/docs/live-api/capabilities",
+      "evidence": "DOCUMENTED",
+      "reference": "Live session/interrupt capability contract",
+      "planned": "Optional exact model/transport adapter",
+      "priority": "P1 session resume/codec and stop; no API run"
+    },
+    {
+      "pillar": "Core/realtime",
+      "competitor": "Deepgram",
+      "url": "https://developers.deepgram.com/docs/flux/state",
+      "evidence": "DOCUMENTED",
+      "reference": "EagerEndOfTurn / TurnResumed / EndOfTurn identity",
+      "planned": "Endpoint signals remain reversible, never action authorization",
+      "priority": "P1 endpoint delay/false turns; no API run"
+    },
+    {
+      "pillar": "Core/realtime",
+      "competitor": "AssemblyAI",
+      "url": "https://www.assemblyai.com/docs/streaming/getting-started/transcribe-streaming-audio",
+      "evidence": "DOCUMENTED",
+      "reference": "Streaming session/termination and session-duration billing model",
+      "planned": "Bounded lifetime and close on cancellation",
+      "priority": "P1 failure/termination; no API run"
+    },
+    {
+      "pillar": "Core/realtime",
+      "competitor": "Speechmatics",
+      "url": "https://docs.speechmatics.com/api-ref/realtime-transcription-websocket",
+      "evidence": "DOCUMENTED",
+      "reference": "Partial/final and stream/end acknowledgement framing",
+      "planned": "Explicit schema/region/key boundary",
+      "priority": "P1 finalization/language trials; no API run"
+    },
+    {
+      "pillar": "Core/realtime",
+      "competitor": "LiveKit Agents / Pipecat",
+      "url": "WISPRAL_CORE_DEEP_DIVE.md",
+      "evidence": "SOURCE_VERIFIED",
+      "reference": "Session/interrupt vs frame/worker composition",
+      "planned": "One topology-selected turn controller per session",
+      "priority": "P0 fake/native stop and stale frames; full pipeline NOT_RUN"
+    },
+    {
+      "pillar": "Developer agents",
+      "competitor": "Codex / Claude Code / Gemini CLI / ACP / Orcel",
+      "url": "WISPRAL_CORE_DEEP_DIVE.md",
+      "evidence": "SOURCE_VERIFIED adapters; canonical ACP PARTIAL",
+      "reference": "Structured permission/lifecycle/cancel boundaries; no authenticated runtime compatibility established",
+      "planned": "ACP Rust SDK; exact external adapters; minimal Orcel audit/policy reference",
+      "priority": "P0 permission/cancel registration races; all named live agent triads NOT_RUN"
+    }
+  ],
+  "claim": "Planned coverage compared to observed/documented reference; no achieved feature parity or superiority."
+}

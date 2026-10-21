@@ -1,0 +1,145 @@
+{
+  "date": "2026-10-21",
+  "records": [
+    {
+      "id": "assemblyai_streaming.json",
+      "sha256": "d97cee98bec9772c169b3dbf505e8ee991c18a53a21d7504d7696e05fb6023c5",
+      "keys": [
+        "markdown",
+        "metadata",
+        "warning"
+      ],
+      "metadata": {
+        "title": "Quickstart - AssemblyAI",
+        "sourceURL": "https://www.assemblyai.com/docs/universal-streaming",
+        "url": "https://www.assemblyai.com/docs/streaming/getting-started/transcribe-streaming-audio",
+        "statusCode": 200,
+        "contentType": "text/html; charset=utf-8",
+        "creditsUsed": 1,
+        "scrapeId": "01a15ceb-b912-726c-a92d-0ce8ad9824dd"
+      },
+      "scope": "Official documentation/search capture, not inference or product runtime measurement"
+    },
+    {
+      "id": "deepgram-official.json",
+      "sha256": "eed0405d7e0e530693da806d20b99782f68d49a7fd869ea2ccf68311cf7a7384",
+      "keys": [
+        "markdown",
+        "metadata"
+      ],
+      "metadata": {
+        "title": "Getting Started with Flux | Deepgram's Docs",
+        "sourceURL": "https://developers.deepgram.com/docs/flux/quickstart",
+        "url": "https://developers.deepgram.com/docs/flux/quickstart",
+        "statusCode": 200,
+        "contentType": "text/html; charset=utf-8",
+        "creditsUsed": 1,
+        "scrapeId": "01a15ce9-4ed8-7531-970f-7235e485a4d9"
+      },
+      "scope": "Official documentation/search capture, not inference or product runtime measurement"
+    },
+    {
+      "id": "deepgram_state.json",
+      "sha256": "ca82f3233791911bd05eb6d90d5ab8f3dc5151d550d53bed960568528fd6a4c3",
+      "keys": [
+        "markdown",
+        "metadata"
+      ],
+      "metadata": {
+        "title": "Understanding the Flux State Machine | Deepgram's Docs",
+        "sourceURL": "https://developers.deepgram.com/docs/flux/state",
+        "url": "https://developers.deepgram.com/docs/flux/state",
+        "statusCode": 200,
+        "contentType": "text/html; charset=utf-8",
+        "creditsUsed": 1,
+        "scrapeId": "01a15ceb-b82d-7609-ac18-55823fb99f55"
+      },
+      "scope": "Official documentation/search capture, not inference or product runtime measurement"
+    },
+    {
+      "id": "external-search.json",
+      "sha256": "69756bd07af512e967268912a91cdd7276855bb8b6393ffc554b951df6c7291d",
+      "keys": [
+        "success",
+        "data",
+        "id",
+        "creditsUsed",
+        "agent_hints"
+      ],
+      "metadata": null,
+      "scope": "Official documentation/search capture, not inference or product runtime measurement"
+    },
+    {
+      "id": "gemini_live.json",
+      "sha256": "cd2e3d1282322eb2d89aef3fd2b63e2db185074a1487114ce8c6b0220532170e",
+      "keys": [
+        "markdown",
+        "metadata",
+        "agent_hints"
+      ],
+      "metadata": {
+        "title": "Live API capabilities guide  |  Gemini API  |  Google AI for Developers",
+        "sourceURL": "https://ai.google.dev/gemini-api/docs/live-guide",
+        "url": "https://ai.google.dev/gemini-api/docs/live-api/capabilities",
+        "statusCode": 200,
+        "contentType": "text/html; charset=utf-8",
+        "creditsUsed": 1,
+        "scrapeId": "01a15ceb-b803-73ed-8f37-9000b82847cd"
+      },
+      "scope": "Official documentation/search capture, not inference or product runtime measurement"
+    },
+    {
+      "id": "openai-official.json",
+      "sha256": "c3a115fa94ecde6e764172a112648e2b1b521cb748c0dfd183a7bc7baf8360e1",
+      "keys": [
+        "markdown",
+        "metadata",
+        "agent_hints"
+      ],
+      "metadata": {
+        "title": "Realtime conversations | OpenAI API",
+        "sourceURL": "https://developers.openai.com/api/docs/guides/realtime-conversations",
+        "url": "https://developers.openai.com/api/docs/guides/realtime-conversations",
+        "statusCode": 200,
+        "contentType": "text/html; charset=utf-8",
+        "creditsUsed": 1,
+        "scrapeId": "01a15cea-9f7b-7152-b0b3-70b1cbeb0e68"
+      },
+      "scope": "Official documentation/search capture, not inference or product runtime measurement"
+    },
+    {
+      "id": "openai-search.json",
+      "sha256": "acec690dc964a28f91f2dd156e1ec943ba7f93c99b4cbf6a4879c8eb4b72fea9",
+      "keys": [
+        "success",
+        "data",
+        "id",
+        "creditsUsed",
+        "agent_hints"
+      ],
+      "metadata": null,
+      "scope": "Official documentation/search capture, not inference or product runtime measurement"
+    },
+    {
+      "id": "speechmatics_streaming.json",
+      "sha256": "509c257060fc5bca48dc1afc91ce28183c714a75f861dfca31d48d8046724767",
+      "keys": [
+        "markdown",
+        "metadata",
+        "warning"
+      ],
+      "metadata": {
+        "title": "Realtime API Reference | Speechmatics Docs",
+        "sourceURL": "https://docs.speechmatics.com/rt-api-ref",
+        "url": "https://docs.speechmatics.com/api-ref/realtime-transcription-websocket",
+        "statusCode": 200,
+        "contentType": "text/html; charset=utf-8",
+        "creditsUsed": 1,
+        "scrapeId": "01a15ceb-b831-707f-a206-6e69d51b6743"
+      },
+      "scope": "Official documentation/search capture, not inference or product runtime measurement"
+    }
+  ],
+  "additional_klaint_docs": "See klaint-source-evidence.json web_captures and documented_claims",
+  "model_cards": "See studio-source-evidence.json model_cards"
+}

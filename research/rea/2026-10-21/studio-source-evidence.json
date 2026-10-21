@@ -1,0 +1,2650 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-10-21T05:26:39.202Z",
+  "mission": "TheHalfMoon/Wispral#122",
+  "founder_source_authorization": "YES_CONFIRMED_BY_FOUNDER",
+  "confidential_grants": "HELD_PRIVATELY_BY_FOUNDER_NOT_SHARED",
+  "scope": "WisprStudio D0 and adjacent D1 modules; no production transplant or model inference",
+  "coverage": {
+    "repositories": 14,
+    "captured_files": 159,
+    "source_mechanisms": 29,
+    "model_cards": 11
+  },
+  "limitations": [
+    "Captured files are not automatically interpreted as code-reviewed; named mechanisms are the explicitly inspected seams.",
+    "Tree test-path heuristic is not test coverage and misclassifies melspec.py/spec.py.",
+    "Direct dependency boundaries are mapped; full lock resolution/native ABI SBOM is an integration prerequisite, not an executed install.",
+    "No donor application installation, TTS inference, speaker cloning, subjective quality, microphone, GPU, or full donor suite was run."
+  ],
+  "mechanisms": [
+    {
+      "id": "ST-FIT",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/fit_planner.py",
+      "symbol": "plan_fit",
+      "line": 135,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/fit_planner.py#L135",
+      "sha256": "0acd7c33623782cafa975f1f81cbe37362160490e8bdd34ca15f5c2b06321442",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "COPY",
+      "destination": "packages/studio-timing/fit_planner.py",
+      "direct_dependency_boundary": "math; dataclasses only",
+      "tests_or_required_fixtures": "tests/test_fit_planner.py; tests/fixtures/fit_planner/*.json",
+      "runtime_status": "REPRODUCED_SYNTHETIC_NON_AUDIO_ONLY"
+    },
+    {
+      "id": "ST-DURATION",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/duration_planner.py",
+      "symbol": "calibrate_cps",
+      "line": 87,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/duration_planner.py#L87",
+      "sha256": "1b1741f67d1d2cb391f103a5f1aa57e881b97b0b7c53897897fa940bd5bf5d55",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/studio/duration_planner.py",
+      "direct_dependency_boundary": "services.fit_planner; llm_backend; speech_rate; translator (arithmetic extraction avoids optional LLM initialization)",
+      "tests_or_required_fixtures": "tests/test_duration_planner.py",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "ST-RENDER",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/longform_render.py",
+      "symbol": "build_render_cmd",
+      "line": 707,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/longform_render.py#L707",
+      "sha256": "80d1293e23fd08f80bc5e9d14fbdd84196ce2ba02db4c962f35cc23ebb005cc4",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/studio/longform_render.py",
+      "direct_dependency_boundary": "stdlib; services.ffmpeg_utils.local_inputs_only; cache paths; optional torch only inside cache helpers",
+      "tests_or_required_fixtures": "tests/test_longform_render.py",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "ST-RESUME",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/longform_resume.py",
+      "symbol": "build_manifest",
+      "line": 72,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/longform_resume.py#L72",
+      "sha256": "13a5dcb63f4e3ca36fd4b75f2ae29fb9c5ed4a98606919e4f31d835299d1cd59",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/studio/longform_resume.py",
+      "direct_dependency_boundary": "core.durable_io; core.config.OUTPUTS_DIR; stdlib JSON/filesystem",
+      "tests_or_required_fixtures": "tests/test_longform_render.py plus new crash/restart integration fixture",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "ST-MODEL-TERMS",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/model_acceptance.py",
+      "symbol": "ensure_accepted",
+      "line": 297,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/model_acceptance.py#L297",
+      "sha256": "4bdcd3668654ebe1fa48a197defa4417be781335ab84a71cfdf0a90a8e9073ac",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/studio/model_acceptance.py",
+      "direct_dependency_boundary": "services.model_licenses; settings_store; registry; terms fingerprint; local persistence",
+      "tests_or_required_fixtures": "tests/test_model_acceptance.py; tests/test_model_acceptance_asr.py",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "ST-MODEL-LIFECYCLE",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/model_lifecycle.py",
+      "symbol": "unload",
+      "line": 285,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/model_lifecycle.py#L285",
+      "sha256": "11d203cc6a03904d202a76ce3c75c0860284441305ec18c37aea2b7ea341d441",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/studio/model_lifecycle",
+      "direct_dependency_boundary": "model_manager; subprocess_backend; asr_backend; engine-memory state; optional GPU providers",
+      "tests_or_required_fixtures": "backend/tests/test_model_load_shutdown.py",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "ST-CANCEL-SCOPE",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/inference_cancellation.py",
+      "symbol": "InferenceCancellation",
+      "line": 12,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/inference_cancellation.py#L12",
+      "sha256": "dc3483f68209f4f5092ec560225b1ddf7804ee6bb467e0bd610f2a0536460fcc",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "COPY",
+      "destination": "services/studio/inference_cancellation.py",
+      "direct_dependency_boundary": "threading; contextlib only",
+      "tests_or_required_fixtures": "studio_mechanism_probe.py",
+      "runtime_status": "REPRODUCED_SYNTHETIC_NON_AUDIO_ONLY"
+    },
+    {
+      "id": "ST-SIDECAR",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/subprocess_backend.py",
+      "symbol": "SubprocessBackend",
+      "line": 380,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/subprocess_backend.py#L380",
+      "sha256": "796990b9721a4e7c74c2d794728e82d352e1e58a8a89c339406c9a90cda4cc5f",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/model-workers/subprocess_backend.py",
+      "direct_dependency_boundary": "TTSBackend; core.contained_subprocess.spawn_owned; engine_env; model_manager; cancellation; GPU job accounting; process registry",
+      "tests_or_required_fixtures": "backend/tests/test_subprocess_recv_timeout.py",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "ST-DUB-INGEST",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/dub_pipeline.py",
+      "symbol": "ingest_pipeline",
+      "line": 1448,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/dub_pipeline.py#L1448",
+      "sha256": "f3fb506605ce5392095f0809e3a898255baa9f64056b4b8a38ea1c132f907ea5",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/studio/dubbing-ingest",
+      "direct_dependency_boundary": "FFmpeg; file/media/path checks; local job store; optional Demucs/scene detection; URL download branch excluded from first packet",
+      "tests_or_required_fixtures": "backend/tests/test_dub_caption_languages.py plus local-media end-to-end fixture",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "ST-DUB-GENERATE",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/api/routers/dub_generate.py",
+      "symbol": "dub_generate",
+      "line": 481,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/api/routers/dub_generate.py#L481",
+      "sha256": "ca8f7916b779b9e612580b7cfaff5f28e20c6162caebdb3a34865792515526f2",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/studio/dubbing-generation",
+      "direct_dependency_boundary": "FastAPI router; task/voice lease; render staging; TTS backend; per-segment cache; bounded worker; durable jobs",
+      "tests_or_required_fixtures": "backend/tests/test_tts_backend_lifecycle.py plus cancellation/restart fixture",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "ST-CLONE-REF",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/speaker_clone.py",
+      "symbol": "extract_speaker_clones",
+      "line": 58,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/speaker_clone.py#L58",
+      "sha256": "2a1e301eb234a717f79eb697a16e5d7bb190aca597dedca036130567963c16b6",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/studio/speaker_reference.py",
+      "direct_dependency_boundary": "numpy; soundfile; audio I/O; safe path storage; caller-provided segment speaker labels",
+      "tests_or_required_fixtures": "tests/test_profile_consent.py plus consent scope/revocation fixture",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "ST-CONSENT",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/api/routers/profiles.py",
+      "symbol": "record_consent",
+      "line": 1039,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/api/routers/profiles.py#L1039",
+      "sha256": "25d99c0610c050fc58f2d746229a06193f057733c68577a43adff6886deaab2a",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/consent/profile_consent.py",
+      "direct_dependency_boundary": "FastAPI upload/form; SQLite; voices directory; atomic file swap; event bus; shared profile lock",
+      "tests_or_required_fixtures": "tests/test_profile_consent.py; electron/src/renderer/src/features/clone/profile-consent.test.tsx",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "ST-WATERMARK",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/watermark.py",
+      "symbol": "mark_synthetic",
+      "line": 351,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/watermark.py#L351",
+      "sha256": "839c229a20d52ae3ddacba09dee23de7766fab4bcfef7f136898723c2d50f85b",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/studio/watermark",
+      "direct_dependency_boundary": "torch; audioseal; sample-rate conversion; generator/detector model cache; engine provenance",
+      "tests_or_required_fixtures": "new generated-audio encode/decode/short-clip failure fixture; no robustness claim yet",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "ST-DRAFT",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "electron/src/renderer/src/features/dub/dub-draft.ts",
+      "symbol": "restoreDubDraft",
+      "line": 16,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/electron/src/renderer/src/features/dub/dub-draft.ts#L16",
+      "sha256": "fd7b310b6f742eb0b62360074416d84426a4d0bed1d5be1d8531ab9476cf4c99",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "apps/studio/src/dub/restore-draft.ts",
+      "direct_dependency_boundary": "restoreExportPreferences; DubSession schema; versioned local storage; no Electron API inside inspected function",
+      "tests_or_required_fixtures": "electron/src/renderer/src/features/dub/dub-draft.test.ts (tree present, not fetched)",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "VB-PROTOCOL",
+      "repo": "jamiepine/voicebox",
+      "sha": "8af7efe62fab8d33e2a5dfbedabaa45f68a5184f",
+      "path": "backend/backends/__init__.py",
+      "symbol": "TTSBackend",
+      "line": 73,
+      "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/backends/__init__.py#L73",
+      "sha256": "0368460cf8e072bfee0f8bcb1727f3c11b2c2c53efef47a92cb59e95a59c9db9",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "REFERENCE_ONLY",
+      "destination": "contracts/tts",
+      "direct_dependency_boundary": "typing Protocol; ModelConfig; numpy types; platform mapping; HF patch import side effect",
+      "tests_or_required_fixtures": "backend/tests/test_generation_engine_resolution.py (tree present, not fetched)",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "VB-QUEUE",
+      "repo": "jamiepine/voicebox",
+      "sha": "8af7efe62fab8d33e2a5dfbedabaa45f68a5184f",
+      "path": "backend/services/task_queue.py",
+      "symbol": "cancel_generation",
+      "line": 105,
+      "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/services/task_queue.py#L105",
+      "sha256": "c08ad4dcc2e61dd6eb8d4ca55ad93a47255bc0f087ae54f9d17c56b04b360074",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "REFERENCE_ONLY",
+      "destination": "contracts/job-cancellation-tests",
+      "direct_dependency_boundary": "asyncio only on exercised path; database/history lazy error-recovery dependencies",
+      "tests_or_required_fixtures": "backend/tests/test_task_queue_cancellation.py",
+      "runtime_status": "REPRODUCED_SYNTHETIC_NON_AUDIO_ONLY"
+    },
+    {
+      "id": "VB-EXPORT",
+      "repo": "jamiepine/voicebox",
+      "sha": "8af7efe62fab8d33e2a5dfbedabaa45f68a5184f",
+      "path": "backend/services/stories.py",
+      "symbol": "export_story_audio",
+      "line": 964,
+      "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/services/stories.py#L964",
+      "sha256": "d1fd94c8bc36969639bd79d035b19a49f0a6bfaf4c6fee8b4093549c76bafecf",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "REJECT",
+      "destination": "none (do not duplicate renderer)",
+      "direct_dependency_boundary": "SQLAlchemy; numpy; audio loaders; FFmpeg; stored versions/trims/timecodes; zero-volume source concern",
+      "tests_or_required_fixtures": "backend/tests/test_story_export.py plus explicit zero-volume regression",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "VB-UI",
+      "repo": "jamiepine/voicebox",
+      "sha": "8af7efe62fab8d33e2a5dfbedabaa45f68a5184f",
+      "path": "app/src/components/StoriesTab/StoryTrackEditor.tsx",
+      "symbol": "ClipWaveform",
+      "line": 45,
+      "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/app/src/components/StoriesTab/StoryTrackEditor.tsx#L45",
+      "sha256": "3d70d426caeaf1f3eb3e625b980cbdf4079b3bf68656f8dc2679f990edda5fd6",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "REFERENCE_ONLY",
+      "destination": "apps/studio UX comparison",
+      "direct_dependency_boundary": "React; WaveSurfer; Radix/shadcn UI; Zustand; apiClient; useStories hooks; Web Audio playback",
+      "tests_or_required_fixtures": "new trim/mute/keyboard/timeline export equality fixtures",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "TTS-CHATTERBOX",
+      "repo": "resemble-ai/chatterbox",
+      "sha": "5de7a54aa4e5e2baadb0182dde554908b48b85c2",
+      "path": "src/chatterbox/tts_turbo.py",
+      "symbol": "ChatterboxTurboTTS",
+      "line": 111,
+      "url": "https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/src/chatterbox/tts_turbo.py#L111",
+      "sha256": "2f27e8ff2fa35181fdd2849367fb96ecc2cb87a1088ca7520c8bd51946599f08",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/tts/chatterbox",
+      "direct_dependency_boundary": "torch; librosa; safetensors; tokenizer; local T3/S3Gen/voice encoder; Perth; pyloudnorm",
+      "tests_or_required_fixtures": "upstream example_tts_nano.py is an example, not correctness coverage; add consent-backed generated-audio fixture",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "TTS-CHATTERBOX-AR",
+      "repo": "resemble-ai/chatterbox",
+      "sha": "5de7a54aa4e5e2baadb0182dde554908b48b85c2",
+      "path": "src/chatterbox/mtl_tts.py",
+      "symbol": "ChatterboxMultilingualTTS",
+      "line": 155,
+      "url": "https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/src/chatterbox/mtl_tts.py#L155",
+      "sha256": "936759044e54cffe8c68b91b32e01da0bc032a1e084f769f0403080d86ad153c",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/tts/chatterbox-multilingual",
+      "direct_dependency_boundary": "torch; 23-language tokenizer; T3/S3Gen; voice encoder; Perth",
+      "tests_or_required_fixtures": "new held-out Arabic/English intelligibility and reference-consent fixtures",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "TTS-COSY",
+      "repo": "QwenAudio/CosyVoice",
+      "sha": "074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc",
+      "path": "cosyvoice/cli/cosyvoice.py",
+      "symbol": "CosyVoice3",
+      "line": 189,
+      "url": "https://github.com/QwenAudio/CosyVoice/blob/074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc/cosyvoice/cli/cosyvoice.py#L189",
+      "sha256": "4b2a605f129d172cd031286a14a591396c2e8ed0bf53258acc7445525fdaa65b",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/tts/cosyvoice",
+      "direct_dependency_boundary": "HyperPyYAML; torch; ONNX; wetext; optional TensorRT/vLLM; model/frontend caches",
+      "tests_or_required_fixtures": "runtime example scripts; no dedicated automated suite found in acquired tree",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "TTS-QWEN",
+      "repo": "QwenLM/Qwen3-TTS",
+      "sha": "022e286b98fbec7e1e916cb940cdf532cd9f488e",
+      "path": "qwen_tts/inference/qwen3_tts_model.py",
+      "symbol": "create_voice_clone_prompt",
+      "line": 356,
+      "url": "https://github.com/QwenLM/Qwen3-TTS/blob/022e286b98fbec7e1e916cb940cdf532cd9f488e/qwen_tts/inference/qwen3_tts_model.py#L356",
+      "sha256": "e1da450732857c1f5fe3e36ebab85db2f6dc6a48caaff6973f463384e30275e4",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/tts/qwen3",
+      "direct_dependency_boundary": "transformers 4.57.3; torch; librosa; soundfile; tokenizer; accelerate; voice clone prompt dataclass",
+      "tests_or_required_fixtures": "examples/test_model_12hz_base.py is model-running example; no no-download independent suite established",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "TTS-KOKORO",
+      "repo": "hexgrad/kokoro",
+      "sha": "dfb907a02bba8152ca444717ca5d78747ccb4bec",
+      "path": "kokoro/pipeline.py",
+      "symbol": "KPipeline",
+      "line": 42,
+      "url": "https://github.com/hexgrad/kokoro/blob/dfb907a02bba8152ca444717ca5d78747ccb4bec/kokoro/pipeline.py#L42",
+      "sha256": "499982bbc23a1019681cdb4c327c1d911e7034e240721b95686ff1a8f15c2a9a",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/tts/kokoro",
+      "direct_dependency_boundary": "torch; misaki; espeak-ng for selected languages; HF model and per-voice packs",
+      "tests_or_required_fixtures": "tests/test_custom_stft.py; JavaScript splitting/phonemization tests not executed",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "TTS-OPENVOICE",
+      "repo": "myshell-ai/OpenVoice",
+      "sha": "74a1d147b17a8c3092dd5430504bd83ef6c7eb23",
+      "path": "openvoice/api.py",
+      "symbol": "ToneColorConverter",
+      "line": 101,
+      "url": "https://github.com/myshell-ai/OpenVoice/blob/74a1d147b17a8c3092dd5430504bd83ef6c7eb23/openvoice/api.py#L101",
+      "sha256": "6830abaf9b0ea6023fe7e3df3d9a0a1fd9b73a7dbbc13f8a892da009052637b9",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/voice-conversion/openvoice",
+      "direct_dependency_boundary": "torch; librosa; model configs; reference embeddings; optional wavmark; soundfile; base TTS separate",
+      "tests_or_required_fixtures": "no dedicated automated suite found in acquired tree",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "ALIGN-WHISPERX",
+      "repo": "m-bain/whisperX",
+      "sha": "db8fde4d31a3e7f49fe5835938685a76f5ba5477",
+      "path": "whisperx/alignment.py",
+      "symbol": "align",
+      "line": 134,
+      "url": "https://github.com/m-bain/whisperX/blob/db8fde4d31a3e7f49fe5835938685a76f5ba5477/whisperx/alignment.py#L134",
+      "sha256": "fae57ae8dc7ad779fa53e0ce2efc1efec728508b2039c8ec4030fa6d51272292",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/alignment/whisperx",
+      "direct_dependency_boundary": "torch; torchaudio; transformers Wav2Vec2; numpy; NLTK; per-language checkpoint",
+      "tests_or_required_fixtures": "tests/test_word_timestamp_interpolation.py",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "DIARIZE-PYANNOTE",
+      "repo": "pyannote/pyannote-audio",
+      "sha": "b749285c5cdd4636b2edc7f766f1352c8dde9369",
+      "path": "src/pyannote/audio/pipelines/speaker_diarization.py",
+      "symbol": "SpeakerDiarization",
+      "line": 127,
+      "url": "https://github.com/pyannote/pyannote-audio/blob/b749285c5cdd4636b2edc7f766f1352c8dde9369/src/pyannote/audio/pipelines/speaker_diarization.py#L127",
+      "sha256": "cbb358abedef5042fcc71bb970b12a2936a16686be4bda15691a224f172656fd",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/diarization/pyannote",
+      "direct_dependency_boundary": "torch; pyannote.core/database/metrics/pipeline; clustering; selected model terms; telemetry disabled explicitly",
+      "tests_or_required_fixtures": "tests and workflow inventory present; model end-to-end suite NOT_RUN",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "STEMS-DEMUCS",
+      "repo": "facebookresearch/demucs",
+      "sha": "e976d93ecc3865e5757426930257e200846a520a",
+      "path": "demucs/api.py",
+      "symbol": "Separator",
+      "line": 53,
+      "url": "https://github.com/facebookresearch/demucs/blob/e976d93ecc3865e5757426930257e200846a520a/demucs/api.py#L53",
+      "sha256": "f6b762f90cf08e64287231ec0e267d8e3ecf6361a25cfbb69bbc59806efc35c3",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/separation/demucs",
+      "direct_dependency_boundary": "torch; torchaudio; apply; audio; pretrained model/bag; model download rights",
+      "tests_or_required_fixtures": "archived upstream; representative separation quality/bleed/memory fixture required",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "F5",
+      "repo": "SWivid/F5-TTS",
+      "sha": "2f866649b779881af8bd644e76b9a6d95053da29",
+      "path": "src/f5_tts/api.py",
+      "symbol": "F5TTS",
+      "line": 24,
+      "url": "https://github.com/SWivid/F5-TTS/blob/2f866649b779881af8bd644e76b9a6d95053da29/src/f5_tts/api.py#L24",
+      "sha256": "961fff392af63f8a6953a821db07ebda23195eb28f8502dfa00bfa30b422159f",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "REFERENCE_ONLY",
+      "destination": "optional future research",
+      "direct_dependency_boundary": "torch; diffusion/vocoder; hydra; omegaConf; cached_path; soundfile; reference preprocessing",
+      "tests_or_required_fixtures": "no dedicated automated suite established; default released weights noncommercial",
+      "runtime_status": "NOT_RUN"
+    },
+    {
+      "id": "PIPER",
+      "repo": "OHF-Voice/piper1-gpl",
+      "sha": "619f513580c04dff5ef9a680f6f3f6979ed94d2e",
+      "path": "src/piper/voice.py",
+      "symbol": "PiperVoice",
+      "line": 102,
+      "url": "https://github.com/OHF-Voice/piper1-gpl/blob/619f513580c04dff5ef9a680f6f3f6979ed94d2e/src/piper/voice.py#L102",
+      "sha256": "a4fdcc9fe03e090e5d591d49f2009803b9a20e63eca1c84ef8cbf94d9ea5258f",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/tts/piper",
+      "direct_dependency_boundary": "onnxruntime; espeak-ng; per-voice config and model card; GPL source notices",
+      "tests_or_required_fixtures": "tests/test_piper.py; libpiper/tests/test_piper.cpp",
+      "runtime_status": "NOT_RUN"
+    }
+  ],
+  "sources": [
+    {
+      "repo": "debpalash/VoiceStudio",
+      "requested": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "upstream_license": "AGPL-3.0",
+      "tree_truncated": false,
+      "file_count": 3601,
+      "test_path_count": 1425,
+      "files": [
+        {
+          "path": "backend/services/dub_batching.py",
+          "blob_sha": "39742779156736800ca7305ab0f7dc6e6fd914c1",
+          "sha256": "dc5fe7e7cea506236735ff99b1d7231f0849b345954fec796f2019c4135d5c1b",
+          "bytes": 1688,
+          "lines": 57,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/dub_batching.py"
+        },
+        {
+          "path": "package.json",
+          "blob_sha": "2d042bd7e33b12c1b5d858bb8005bd8e8925bb2a",
+          "sha256": "1c05f45b7b45f4e342a8943611470c4ec4901050f468c6a70d9d5aa3b1e5fce3",
+          "bytes": 2106,
+          "lines": 48,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/package.json"
+        },
+        {
+          "path": "backend/migrations/versions/0003_voice_profile_consent.py",
+          "blob_sha": "0c5d79cb31ae1136982a5ba4d55bf735f0bf4277",
+          "sha256": "6020aa0da572b11c79311ecb838d30804475b53a51fd5e004dda347f74b159b4",
+          "bytes": 2380,
+          "lines": 59,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/migrations/versions/0003_voice_profile_consent.py"
+        },
+        {
+          "path": "backend/services/inference_cancellation.py",
+          "blob_sha": "1d3767678af2cdc4f5c4ccfa039b78eca9761f2e",
+          "sha256": "dc3483f68209f4f5092ec560225b1ddf7804ee6bb467e0bd610f2a0536460fcc",
+          "bytes": 876,
+          "lines": 33,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/inference_cancellation.py"
+        },
+        {
+          "path": "backend/core/path_authorization.py",
+          "blob_sha": "662f859edd1d4ee8e49f6f1e85ba8ebe8eaf1c2b",
+          "sha256": "255aebfbbe02ef6a5f8f152b318ac58cfa378bc9b957a29e201fce2c9f3881a2",
+          "bytes": 5294,
+          "lines": 125,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/core/path_authorization.py"
+        },
+        {
+          "path": "README.md",
+          "blob_sha": "9f5b7e01370e672810bd9b33fe3b19cd1862fd37",
+          "sha256": "84065b42eec9ca2e964f94d3ed95b13569e2e5bfd1c87cc5ea2bf8650da864a7",
+          "bytes": 8823,
+          "lines": 162,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/README.md"
+        },
+        {
+          "path": "backend/core/auth.py",
+          "blob_sha": "310023fa75615a4a4f459d6693ca59f268bf3350",
+          "sha256": "188083d17cb9d99eab4552d002adedfdff0684396d8cb472bf17989be21fe5ae",
+          "bytes": 15337,
+          "lines": 459,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/core/auth.py"
+        },
+        {
+          "path": "backend/services/model_acceptance.py",
+          "blob_sha": "30f02bec8a47de1613855d6b372822a6724924e3",
+          "sha256": "4bdcd3668654ebe1fa48a197defa4417be781335ab84a71cfdf0a90a8e9073ac",
+          "bytes": 12645,
+          "lines": 331,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/model_acceptance.py"
+        },
+        {
+          "path": "backend/tests/test_dub_caption_languages.py",
+          "blob_sha": "1e8b49e941a8516d1baf977f351fc9927f447799",
+          "sha256": "95764e19dd8c2391be4d58bf4508c1978515bfecb451f11259623cf369e8dd38",
+          "bytes": 1178,
+          "lines": 40,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/tests/test_dub_caption_languages.py"
+        },
+        {
+          "path": "backend/services/speaker_clone.py",
+          "blob_sha": "45062ddc0fe7a9886b864c5727dce4cd2ff02db1",
+          "sha256": "2a1e301eb234a717f79eb697a16e5d7bb190aca597dedca036130567963c16b6",
+          "bytes": 18599,
+          "lines": 460,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/speaker_clone.py"
+        },
+        {
+          "path": "backend/services/fit_planner.py",
+          "blob_sha": "b576d0b1684f8e2fecf395f07c0303af0e495ae1",
+          "sha256": "0acd7c33623782cafa975f1f81cbe37362160490e8bdd34ca15f5c2b06321442",
+          "bytes": 10167,
+          "lines": 232,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/fit_planner.py"
+        },
+        {
+          "path": "backend/core/path_security.py",
+          "blob_sha": "7c83f788c3b279fe96d49ff1a2da2b765b40da81",
+          "sha256": "cd97a7ce5cb2d88d518c6cbd29ce89085338b4ad5c34341f4cafd23e1e5f436b",
+          "bytes": 9320,
+          "lines": 222,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/core/path_security.py"
+        },
+        {
+          "path": "backend/tests/test_tts_backend_lifecycle.py",
+          "blob_sha": "b2a19844e71a3f7fc7c8dc9604861bf52a3e3ed1",
+          "sha256": "712f2284ea176bda059e6c0f9d7d1fabcfd682d5127d6d1a10b81bb47fa94baa",
+          "bytes": 7081,
+          "lines": 187,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/tests/test_tts_backend_lifecycle.py"
+        },
+        {
+          "path": "backend/api/routers/model_licenses.py",
+          "blob_sha": "24cc06fb09546832970ecdf5daca2c88ce3999b0",
+          "sha256": "b6dedef33b3c38364701266b721d5f105d0c52f23bf80382908e45fe40c94282",
+          "bytes": 7325,
+          "lines": 182,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/api/routers/model_licenses.py"
+        },
+        {
+          "path": "backend/core/voice_leases.py",
+          "blob_sha": "163c407ea7a806c81d9a99e122f84c5ffd136891",
+          "sha256": "3a23ba2837093755bcb8b80d010f3e81ec501fe79d220c265265479c1bc0fa15",
+          "bytes": 2726,
+          "lines": 87,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/core/voice_leases.py"
+        },
+        {
+          "path": "pyproject.toml",
+          "blob_sha": "c8ff4359021381afb020b32815e4b73224107c5c",
+          "sha256": "f069e8dafcf1af7861cdb6e41a9bc4cb03fc38e73641d3bcb0abfeb72c6e565b",
+          "bytes": 18643,
+          "lines": 371,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/pyproject.toml"
+        },
+        {
+          "path": "backend/services/model_lifecycle.py",
+          "blob_sha": "464c291a6221bffc8dac98c2abbfcaeb91f5b5c2",
+          "sha256": "11d203cc6a03904d202a76ce3c75c0860284441305ec18c37aea2b7ea341d441",
+          "bytes": 16829,
+          "lines": 394,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/model_lifecycle.py"
+        },
+        {
+          "path": "backend/services/engine_routing.py",
+          "blob_sha": "dabce1e3ff223d014f90e6b6cbd69a8013faa23e",
+          "sha256": "cb0bcfd6efd9c3a1bea157d40c5c21aab4ef71a19b389f2fb0408a20fdda729d",
+          "bytes": 12420,
+          "lines": 298,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/engine_routing.py"
+        },
+        {
+          "path": "backend/services/duration_planner.py",
+          "blob_sha": "bee8984704af5ebfa0997bb346c43689c9f24ae2",
+          "sha256": "1b1741f67d1d2cb391f103a5f1aa57e881b97b0b7c53897897fa940bd5bf5d55",
+          "bytes": 14295,
+          "lines": 330,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/duration_planner.py"
+        },
+        {
+          "path": "backend/core/job_queue.py",
+          "blob_sha": "8b662fe61df1c1c2ea41e2fa625787773c36b688",
+          "sha256": "f56a65df7c70492ca49a08f687379ceb953d9f5611449cd549ae5c929a3b614e",
+          "bytes": 7193,
+          "lines": 209,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/core/job_queue.py"
+        },
+        {
+          "path": "backend/services/translator.py",
+          "blob_sha": "ccf48ca0ebcb20f8670049f18752687a7b863d5b",
+          "sha256": "806d5692299ffc085133455c1400bc8145b8ac43a771d965db67cb2e7d2b7972",
+          "bytes": 23930,
+          "lines": 577,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/translator.py"
+        },
+        {
+          "path": "backend/engines/omnivoice_subprocess/main.py",
+          "blob_sha": "2181584e64032b5d067a0e2f952635d256f1b6ee",
+          "sha256": "43f41ad0324d731315c0123855d1a655121290c693314d23df6ad00b7e6dde80",
+          "bytes": 15461,
+          "lines": 396,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/engines/omnivoice_subprocess/main.py"
+        },
+        {
+          "path": "backend/services/longform_resume.py",
+          "blob_sha": "9263b27e2f0fcc2c7b6cda23ea0466eda4f08db7",
+          "sha256": "13a5dcb63f4e3ca36fd4b75f2ae29fb9c5ed4a98606919e4f31d835299d1cd59",
+          "bytes": 8192,
+          "lines": 204,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/longform_resume.py"
+        },
+        {
+          "path": "backend/core/audio_validation.py",
+          "blob_sha": "b29317602f798ed1c316ea18f2c85f54f2b7f953",
+          "sha256": "7d4f60cb412bb4aed89451fcd58d5aab0d7a4fb786610b2193985a620de64f00",
+          "bytes": 5734,
+          "lines": 144,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/core/audio_validation.py"
+        },
+        {
+          "path": "LICENSE",
+          "blob_sha": "be3f7b28e564e7dd05eaf59d64adba1a4065ac0e",
+          "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+          "bytes": 34523,
+          "lines": 662,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/LICENSE"
+        },
+        {
+          "path": "backend/services/watermark.py",
+          "blob_sha": "5074830002ae022e9d3deee09d1f028821d50b1d",
+          "sha256": "839c229a20d52ae3ddacba09dee23de7766fab4bcfef7f136898723c2d50f85b",
+          "bytes": 28509,
+          "lines": 709,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/watermark.py"
+        },
+        {
+          "path": "backend/tests/test_model_load_shutdown.py",
+          "blob_sha": "4f4edfc5a5262b1ca639dab2ca05f823c44c5203",
+          "sha256": "e3b75c9076a75690c71f4083faec105acbf5fba522097c67f6be180f683e29ba",
+          "bytes": 20704,
+          "lines": 502,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/tests/test_model_load_shutdown.py"
+        },
+        {
+          "path": "backend/services/longform_render.py",
+          "blob_sha": "0d5ae1d27989b60e7fc27f27253eed7a5c1b8ddf",
+          "sha256": "80d1293e23fd08f80bc5e9d14fbdd84196ce2ba02db4c962f35cc23ebb005cc4",
+          "bytes": 34533,
+          "lines": 823,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/longform_render.py"
+        },
+        {
+          "path": "backend/services/subprocess_backend.py",
+          "blob_sha": "b10a1aae4b15d8a1e88104ab33f26cdc4cbcfbc7",
+          "sha256": "796990b9721a4e7c74c2d794728e82d352e1e58a8a89c339406c9a90cda4cc5f",
+          "bytes": 53437,
+          "lines": 1181,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/subprocess_backend.py"
+        },
+        {
+          "path": "backend/api/routers/profiles.py",
+          "blob_sha": "f4b98b8e3655eda53733c75c57eeecb650ac9a8e",
+          "sha256": "25d99c0610c050fc58f2d746229a06193f057733c68577a43adff6886deaab2a",
+          "bytes": 52911,
+          "lines": 1206,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/api/routers/profiles.py"
+        },
+        {
+          "path": "backend/config/model_licenses.json",
+          "blob_sha": "4eccbd2b3c4649f202aef8aa4e786bce3acf7c10",
+          "sha256": "6b8931678fc8bc801d66dc714f585a6d4e1973713da986bba0fc0773e344a069",
+          "bytes": 140253,
+          "lines": 3034,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/config/model_licenses.json"
+        },
+        {
+          "path": "backend/services/dub_pipeline.py",
+          "blob_sha": "9346c08c5accadd476c059e581b1bcbf04b364d6",
+          "sha256": "f3fb506605ce5392095f0809e3a898255baa9f64056b4b8a38ea1c132f907ea5",
+          "bytes": 82899,
+          "lines": 1845,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/dub_pipeline.py"
+        },
+        {
+          "path": "backend/api/routers/dub_generate.py",
+          "blob_sha": "2adc768c3aed9a890fad06e828a562d097caa962",
+          "sha256": "ca8f7916b779b9e612580b7cfaff5f28e20c6162caebdb3a34865792515526f2",
+          "bytes": 107191,
+          "lines": 2092,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/api/routers/dub_generate.py"
+        },
+        {
+          "path": "backend/services/tts_backend.py",
+          "blob_sha": "496d1ea483cc57547a7a75cd85dc67a6f50335d9",
+          "sha256": "f71b9b3213ecda595cbf942d29044e3dfc0400efc9460aadf868285c5c4b7200",
+          "bytes": 203013,
+          "lines": 4495,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/tts_backend.py"
+        },
+        {
+          "path": "backend/services/model_manager.py",
+          "blob_sha": "9998e0be026349a96c2e4142d85da4f9f0961ba9",
+          "sha256": "c15c4915959758b277bef6c4272e2c6d6d643fd80d8cde0449f0a54c0c39285a",
+          "bytes": 217419,
+          "lines": 4593,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/model_manager.py"
+        },
+        {
+          "path": "backend/api/routers/generation.py",
+          "blob_sha": "5d2d3564d3a5fe640ec1a0f78d059ff089b0e7cb",
+          "sha256": "2d68552a46c4b28d13115a77fd13e5033bce8451dab81c49fd0e324ff11bcf81",
+          "bytes": 140771,
+          "lines": 2889,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/api/routers/generation.py"
+        },
+        {
+          "path": "backend/services/engine_licenses.py",
+          "error": "PATH_NOT_IN_PINNED_TREE"
+        },
+        {
+          "path": "backend/tests/test_model_licenses.py",
+          "error": "PATH_NOT_IN_PINNED_TREE"
+        },
+        {
+          "path": "backend/tests/test_fit_planner.py",
+          "error": "PATH_NOT_IN_PINNED_TREE"
+        },
+        {
+          "path": "backend/tests/test_duration_planner.py",
+          "error": "PATH_NOT_IN_PINNED_TREE"
+        },
+        {
+          "path": "backend/tests/test_inference_cancellation.py",
+          "error": "PATH_NOT_IN_PINNED_TREE"
+        },
+        {
+          "path": "backend/core/engine_licenses.py",
+          "blob_sha": "a4aed95294bf4e50ebbcd1cb779f40f5fdf9fb04",
+          "sha256": "0f0f326a0fc6b69ed49597e33ab676553762c5c1a660888d11a8c79ffa842005",
+          "bytes": 156,
+          "lines": 4,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/core/engine_licenses.py"
+        },
+        {
+          "path": "backend/services/chunked_tts.py",
+          "blob_sha": "5be72c75d0f1c50f97b7af6afa6116b08c12f7f4",
+          "sha256": "0cd7cd41cd5b55a8b82cb1ec927479fa304fcf14f7e14d55270fd18982292fff",
+          "bytes": 22529,
+          "lines": 512,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/chunked_tts.py"
+        },
+        {
+          "path": "backend/services/sentence_chunker.py",
+          "blob_sha": "25328004adbc75ffff452198b2939568c2418df5",
+          "sha256": "32a1089825f54008a84fa2d5eb54d1601247a5ee1fdd11a9eb4fa1b5d3666c2b",
+          "bytes": 22334,
+          "lines": 583,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/sentence_chunker.py"
+        },
+        {
+          "path": "backend/api/routers/dub_export.py",
+          "blob_sha": "f62d6e5f674a07b9fa0e76e9590b501db0e1f831",
+          "sha256": "588fe122559c100df92da06b446d4597fdff88cef36e995413c309faba323d5f",
+          "bytes": 101192,
+          "lines": 2275,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/api/routers/dub_export.py"
+        },
+        {
+          "path": "docs/model-credits.md",
+          "blob_sha": "8f41b910fbdb0cc09699bc3e44d4409dee5e9e6d",
+          "sha256": "e44e6f5b8da3868e302350288d0530180e331cf628f64f377da7e6f966a808fb",
+          "bytes": 5318,
+          "lines": 37,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/docs/model-credits.md"
+        },
+        {
+          "path": "backend/api/routers/dub_translate.py",
+          "blob_sha": "0868ad486b7d07f6b131d1cb1ae11fa1ebfb3693",
+          "sha256": "9a01718000a61c5140cadbf891428d7179a802755d22bd43d97bf7a03bbfa62b",
+          "bytes": 66976,
+          "lines": 1399,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/api/routers/dub_translate.py"
+        },
+        {
+          "path": "electron/src/renderer/src/components/analytics-consent.test.tsx",
+          "blob_sha": "11d496fdf4b98f3930a705db73c7e31598412d9e",
+          "sha256": "dbc2efc852cfce4325c0090f0f800a72edd1aeae5ff10f7c2162057c8b58731f",
+          "bytes": 2508,
+          "lines": 63,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/electron/src/renderer/src/components/analytics-consent.test.tsx"
+        },
+        {
+          "path": "tests/fixtures/fit_planner/all_fit.json",
+          "blob_sha": "0659bb8699fb55dfca7436cb1ebe3e5a54dafabe",
+          "sha256": "0986ab416fc24eef18672d8af27d5dba8aa7a317a71f0c785b4e123b8b47982e",
+          "bytes": 932,
+          "lines": 49,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/tests/fixtures/fit_planner/all_fit.json"
+        },
+        {
+          "path": "tests/fixtures/fit_planner/no_video_retime.json",
+          "blob_sha": "c67326bc4179a4876e793390664022afc20e9999",
+          "sha256": "096622eba8b7facda5d95896a98ec9e78c8d902f72a5618b272d7809a995eda3",
+          "bytes": 939,
+          "lines": 49,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/tests/fixtures/fit_planner/no_video_retime.json"
+        },
+        {
+          "path": "electron/src/renderer/src/components/account-consent.test.tsx",
+          "blob_sha": "b3aeae16e8f73b80ef0b74c3d30b02bf6af6d5f7",
+          "sha256": "e800e2a4ddf6d9d4b4f4ee05204e444dc28c7fcfaa2a78c900be368469c59d78",
+          "bytes": 2658,
+          "lines": 78,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/electron/src/renderer/src/components/account-consent.test.tsx"
+        },
+        {
+          "path": "tests/fixtures/fit_planner/overflow_caps.json",
+          "blob_sha": "4c056dd9a3b11a7649f092ac0c47a856546981fb",
+          "sha256": "cbe73214f208008bec4768892a99292a793884e1ccb92d9453b5922f0493e98e",
+          "bytes": 941,
+          "lines": 49,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/tests/fixtures/fit_planner/overflow_caps.json"
+        },
+        {
+          "path": "backend/tests/test_subprocess_recv_timeout.py",
+          "blob_sha": "45daff5f63615420ce5139262dd36ed5f16ce6e3",
+          "sha256": "4aac1ed3b247d5f2394e3bb8f889f8eab3ae0475e59281a36d4bf31c47703b34",
+          "bytes": 10883,
+          "lines": 250,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/tests/test_subprocess_recv_timeout.py"
+        },
+        {
+          "path": "tests/fixtures/fit_planner/audio_only_and_hybrid.json",
+          "blob_sha": "4c13e290ee3020518f0a6613bc2a5e1333601717",
+          "sha256": "0edc230794d65a6e525bada23478c478a16d3b16a969d46d6ae56225a3b1174c",
+          "bytes": 1383,
+          "lines": 69,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/tests/fixtures/fit_planner/audio_only_and_hybrid.json"
+        },
+        {
+          "path": "electron/src/renderer/src/features/dub/dub-draft.ts",
+          "blob_sha": "18bc31a5e443b01bcdb6ca0b28eba81a92b0d7f4",
+          "sha256": "fd7b310b6f742eb0b62360074416d84426a4d0bed1d5be1d8531ab9476cf4c99",
+          "bytes": 9241,
+          "lines": 214,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/electron/src/renderer/src/features/dub/dub-draft.ts"
+        },
+        {
+          "path": "tests/test_longform_render.py",
+          "blob_sha": "09a266c14acaceb0ff16c575a7b9157e19d438d4",
+          "sha256": "2e649d530630bfbb635393f7d7b6f7dbe00d65864f22f262b1c41d96ce9da294",
+          "bytes": 15618,
+          "lines": 376,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/tests/test_longform_render.py"
+        },
+        {
+          "path": "tests/test_profile_consent.py",
+          "blob_sha": "44887a8ef39aee5791bc63052a17e3f8f4aef4fc",
+          "sha256": "4b49462134f353e2d5ab84d337eb92e4ad7e4226cf9953773d3689ec9817a941",
+          "bytes": 9577,
+          "lines": 271,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/tests/test_profile_consent.py"
+        },
+        {
+          "path": "electron/tests/profile-consent-real-smoke.mjs",
+          "blob_sha": "4fc5d9a6f2e93bcc0d78767ec3c936438d28de4a",
+          "sha256": "44c7c260339bb24c91017b55269a1a0c24d18faf59d6b8707880b8f3f3f4ea3b",
+          "bytes": 2867,
+          "lines": 68,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/electron/tests/profile-consent-real-smoke.mjs"
+        },
+        {
+          "path": "electron/src/shared/api/dub.ts",
+          "blob_sha": "2e44f1089dcdce86eb074cf9a3a419ffe1d16045",
+          "sha256": "c9f8da9da7b6e6ef833ea6b6c3ab9884edf65b0a47ae367bc7f88e7578d5a5d6",
+          "bytes": 7735,
+          "lines": 243,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/electron/src/shared/api/dub.ts"
+        },
+        {
+          "path": "tests/test_model_acceptance_asr.py",
+          "blob_sha": "ac539cc9e1da42ab38d5c4c0ce2851baaed06e97",
+          "sha256": "e86fd079f7c2b2aa55ccd9d9a8d8dad58a03e20dbfa9a72ad10dd8b21e3337e0",
+          "bytes": 14164,
+          "lines": 329,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/tests/test_model_acceptance_asr.py"
+        },
+        {
+          "path": "tests/test_duration_planner.py",
+          "blob_sha": "5bd1dea18de3efec27f8c197dec8a4c5da9fdd41",
+          "sha256": "b3038dd74aa90a4c6bc0d78a99f2e639011321dd1897b662fda252c3bfe599bf",
+          "bytes": 13057,
+          "lines": 315,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/tests/test_duration_planner.py"
+        },
+        {
+          "path": "electron/src/renderer/src/features/projects/project-format.ts",
+          "blob_sha": "2be9861687065e545bf803b8e38d1da6ccc2b4e4",
+          "sha256": "8c4356389e541a4703507de217ef9239462ff0db0e482340521b22238fe3e4b4",
+          "bytes": 4418,
+          "lines": 125,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/electron/src/renderer/src/features/projects/project-format.ts"
+        },
+        {
+          "path": "electron/src/renderer/src/features/clone/profile-consent.test.tsx",
+          "blob_sha": "00ee8c5a3e93be3ccdd9fe2ff1a3ed17a68b337d",
+          "sha256": "55f6c27074dacefbff0fd8023ef554f1570b78fb2e4badd24eb315dd0c0204a9",
+          "bytes": 5431,
+          "lines": 130,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/electron/src/renderer/src/features/clone/profile-consent.test.tsx"
+        },
+        {
+          "path": "electron/src/renderer/src/features/projects/project-format.test.ts",
+          "blob_sha": "c433d8df326c3c71edf7f85ba5bf237a1455b405",
+          "sha256": "3a6443329616949574fe0c7a1493f9fdef75355549e7fc67eabd2a289053466e",
+          "bytes": 2551,
+          "lines": 72,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/electron/src/renderer/src/features/projects/project-format.test.ts"
+        },
+        {
+          "path": "tests/test_model_acceptance.py",
+          "blob_sha": "c2cbe3a1f4c442eba9f77605c4f65c719b892a2a",
+          "sha256": "2c9329fb415d5836a94a199170efb3819b2db810acdf66928737d1d068b8b0b5",
+          "bytes": 8862,
+          "lines": 215,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/tests/test_model_acceptance.py"
+        },
+        {
+          "path": "electron/src/renderer/src/features/dub/dub-timeline.tsx",
+          "blob_sha": "76e9e7952d24b8492216fe1f3db9807e6dfc5723",
+          "sha256": "ddf675446f2ba82f0c729066333ee15191d0f04aee42f4c0c2b4bfb387cede0e",
+          "bytes": 18010,
+          "lines": 452,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/electron/src/renderer/src/features/dub/dub-timeline.tsx"
+        },
+        {
+          "path": "tests/test_fit_planner.py",
+          "blob_sha": "35127f594b084d1ffd73cc9a8356ce4bebe9baf9",
+          "sha256": "a446b774e3172fed3fa6f7655afc57cbf5d2eaabf4c989ec9d1bebea690aa636",
+          "bytes": 15690,
+          "lines": 421,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/tests/test_fit_planner.py"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    },
+    {
+      "repo": "jamiepine/voicebox",
+      "requested": "jamiepine/voicebox",
+      "sha": "8af7efe62fab8d33e2a5dfbedabaa45f68a5184f",
+      "upstream_license": "MIT",
+      "tree_truncated": false,
+      "file_count": 633,
+      "test_path_count": 53,
+      "files": [
+        {
+          "path": "backend/backends/omnivoice_backend.py",
+          "blob_sha": "9a1e46281617ba77b3f2b0428f8538f4a26a8ddb",
+          "sha256": "f3108af680dba2cefc92ddc3e0710683b71fdbae8bf486cd8cb0074bcbf95659",
+          "bytes": 13420,
+          "lines": 362,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/backends/omnivoice_backend.py"
+        },
+        {
+          "path": "backend/tests/test_story_export.py",
+          "blob_sha": "c38ad2b3e60194859c8253e27c681fafc23e923d",
+          "sha256": "a868d29e7a3603c5b29eea96a73edc8717a29f329399ce82d44c85bc15e3dd0a",
+          "bytes": 6226,
+          "lines": 171,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/tests/test_story_export.py"
+        },
+        {
+          "path": "backend/routes/generations.py",
+          "blob_sha": "47b81f94297954a36ffde128f4fd1872b6187aa4",
+          "sha256": "7660d1edd8a5f915b451d4713bc0c6a0ef4b8afa185eda1933d7fb46b29ccbd1",
+          "bytes": 16180,
+          "lines": 488,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/routes/generations.py"
+        },
+        {
+          "path": "backend/pyproject.toml",
+          "blob_sha": "e734831463f0253e0e3de3b591b61b3ddfb764cb",
+          "sha256": "53b84e6eca41621663b51240e29849e5ccee77f1ba8e599577ce679d1a1b5cbd",
+          "bytes": 3068,
+          "lines": 91,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/pyproject.toml"
+        },
+        {
+          "path": "backend/tests/test_offline_guard.py",
+          "blob_sha": "05185282bbec6cda8d68c5b09f83898fdd3caad7",
+          "sha256": "42c87739454ef6568140561e08e953466b0f9e14ffd663722c864fa11c1752bc",
+          "bytes": 7513,
+          "lines": 215,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/tests/test_offline_guard.py"
+        },
+        {
+          "path": "backend/tests/test_generation_export_mp3.py",
+          "blob_sha": "b5448aa8d32f43d938061a973ffcf9ebbe00aac2",
+          "sha256": "d189e0c55f94387934185fe6f675f2299e0d93f01c5bac4865fae5ccd7271d82",
+          "bytes": 4422,
+          "lines": 123,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/tests/test_generation_export_mp3.py"
+        },
+        {
+          "path": "backend/services/task_queue.py",
+          "blob_sha": "3ec4237730933b2db2d74a0c80e56fb7e4bccac2",
+          "sha256": "c08ad4dcc2e61dd6eb8d4ca55ad93a47255bc0f087ae54f9d17c56b04b360074",
+          "bytes": 4810,
+          "lines": 140,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/services/task_queue.py"
+        },
+        {
+          "path": "backend/tests/test_task_queue_cancellation.py",
+          "blob_sha": "7ca3ecbf1ebc6373a270ec34b381d1059d140472",
+          "sha256": "f205a9623c5fca6be4fef889938c82e6051ce54a88055ca95124675650f69ce8",
+          "bytes": 1464,
+          "lines": 55,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/tests/test_task_queue_cancellation.py"
+        },
+        {
+          "path": "backend/backends/base.py",
+          "blob_sha": "a00b16048619b73ac24185c71ea10fba31a95c24",
+          "sha256": "84aefc68c22429d1ae43d6592ecf38fec4b5e0356f0ba310db06712189c66b3e",
+          "bytes": 13161,
+          "lines": 394,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/backends/base.py"
+        },
+        {
+          "path": "backend/database/models.py",
+          "blob_sha": "04133f19fdbf319ca029164c827d42f1a3edc1a2",
+          "sha256": "ec5a19352f3ccfeec7fc32a02da5430e5c1a5d9d49775d76d5b25f92f15ffaf0",
+          "bytes": 13596,
+          "lines": 312,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/database/models.py"
+        },
+        {
+          "path": "app/package.json",
+          "blob_sha": "4976697d06a6513737d4de4836f2769ae0642e3d",
+          "sha256": "dfc459b4e220c2280a86e971d525eea2dd760a1cf025b90b48fed196fef0b4b8",
+          "bytes": 2237,
+          "lines": 71,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/app/package.json"
+        },
+        {
+          "path": "backend/services/effects.py",
+          "blob_sha": "0a6f2c2a7af28a9865969dea264442c9f74e6ed9",
+          "sha256": "8825ff6ad1bbc14930a821efd6dca1e186a422e1baff88f0c5c234351895a8d7",
+          "bytes": 3771,
+          "lines": 121,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/services/effects.py"
+        },
+        {
+          "path": "backend/services/tts.py",
+          "blob_sha": "76b2397128b16fd5924be56fbeceaf07ed56b5bc",
+          "sha256": "66ffc34f5569b8bbeba9e6ca142865e08ced44394ff28cfb05260229b6deb8a3",
+          "bytes": 863,
+          "lines": 37,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/services/tts.py"
+        },
+        {
+          "path": "app/src/stores/storyStore.ts",
+          "blob_sha": "a15106079c10197b129b7e190226491e45f0024f",
+          "sha256": "80fa471736052a65d3557ffebcbbc5df99d68c9f5d700bf551759a270cdbcc6e",
+          "bytes": 4382,
+          "lines": 149,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/app/src/stores/storyStore.ts"
+        },
+        {
+          "path": "backend/tests/test_cors.py",
+          "blob_sha": "ae999c958095e7390e1fec32759523ac004a263c",
+          "sha256": "987ec577fc9d289b21451f69e8e68bbae29158b67cb97e72aba6334f89ddf897",
+          "bytes": 5663,
+          "lines": 163,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/tests/test_cors.py"
+        },
+        {
+          "path": "backend/utils/chunked_tts.py",
+          "blob_sha": "e3ed5ffeaa707a906bbcd53acf51e5993bda01b9",
+          "sha256": "5bc08677784a558f1c8711db1b1ecd54e2bfbb2fd2dda4f8eccce9496edba1a3",
+          "bytes": 11828,
+          "lines": 357,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/utils/chunked_tts.py"
+        },
+        {
+          "path": "LICENSE",
+          "blob_sha": "5eea3a019b19e982ba15fada1d245d65db2365c7",
+          "sha256": "5d515f5a28ec4b8028c2b7410ad3bb338b9d3a73dd187f9c0fc720e01e387547",
+          "bytes": 1078,
+          "lines": 22,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/LICENSE"
+        },
+        {
+          "path": "backend/services/export_import.py",
+          "blob_sha": "9dd5ca4ba13673979a376865c17c9dc4eb2187a3",
+          "sha256": "b59cb66b1b16b425ab079d57545e3cdbaf59c9f17514f3401e5eda5b04fcc6dd",
+          "bytes": 16859,
+          "lines": 462,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/services/export_import.py"
+        },
+        {
+          "path": "backend/services/profiles.py",
+          "blob_sha": "22bdf0092e00c19dcbde759648028f74d41cf328",
+          "sha256": "2be6acba1dd28e5bfb8ebb15060686e2f6a5729cc0ea714c00973596774d1948",
+          "bytes": 24485,
+          "lines": 766,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/services/profiles.py"
+        },
+        {
+          "path": "backend/mcp_server/tools.py",
+          "blob_sha": "264c8ca85e5483c60b4d98b57c39dada02968435",
+          "sha256": "f53a99d6332d3d5e5567d4b61385dcedad6b2d00c454a1bd086ef8523cd878b4",
+          "bytes": 11993,
+          "lines": 332,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/mcp_server/tools.py"
+        },
+        {
+          "path": "README.md",
+          "blob_sha": "b4db9a4f611e2d0d33a7dd82471f467837a9ce89",
+          "sha256": "da97bb488a8e02d1d6557f6e2779801e76f9d60dc513c531fe60bf3326d17116",
+          "bytes": 26539,
+          "lines": 497,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/README.md"
+        },
+        {
+          "path": "backend/services/generation.py",
+          "blob_sha": "02e8d2fb269eb88a19de226218ded2d3658a1ac9",
+          "sha256": "d593bbe792dd47d1100ab1933b52578935b812c18ca154d916791a42b47e719e",
+          "bytes": 12226,
+          "lines": 386,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/services/generation.py"
+        },
+        {
+          "path": "backend/services/stories.py",
+          "blob_sha": "da69c912cb3a8ae9bb2b535fb7c57fec987867bd",
+          "sha256": "d1fd94c8bc36969639bd79d035b19a49f0a6bfaf4c6fee8b4093549c76bafecf",
+          "bytes": 33023,
+          "lines": 1125,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/services/stories.py"
+        },
+        {
+          "path": "backend/utils/hf_offline_patch.py",
+          "blob_sha": "2377f41b01bc6fd9ad3c3a460745793fee66ebaf",
+          "sha256": "c0d5bae204f42dc4871fde18015ba6515551e4a36220ef8c089a59bc52b154fd",
+          "bytes": 13727,
+          "lines": 335,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/utils/hf_offline_patch.py"
+        },
+        {
+          "path": "app/src/components/StoriesTab/StoryTrackEditor.tsx",
+          "blob_sha": "1b945d1529e42f53a7361de2971ec3d87a68dc22",
+          "sha256": "3d70d426caeaf1f3eb3e625b980cbdf4079b3bf68656f8dc2679f990edda5fd6",
+          "bytes": 55649,
+          "lines": 1532,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/app/src/components/StoriesTab/StoryTrackEditor.tsx"
+        },
+        {
+          "path": "tauri/src-tauri/Cargo.toml",
+          "blob_sha": "4eeea184fdd03daba539664bd6ddeaeb379d2048",
+          "sha256": "db74341cfa03c2e146bd2aa156b4594078a7205aeef751578e1a880377075222",
+          "bytes": 2217,
+          "lines": 68,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/tauri/src-tauri/Cargo.toml"
+        },
+        {
+          "path": "backend/utils/audio.py",
+          "blob_sha": "90ec315ba0c3dbbf59f4d9da0b09ebb1642ce898",
+          "sha256": "d52be39ab78d0ca8df3c9c9c7b4a06f2c6e6520304bb8783db3e130c58fce45e",
+          "bytes": 11161,
+          "lines": 357,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/utils/audio.py"
+        },
+        {
+          "path": "backend/backends/kokoro_backend.py",
+          "blob_sha": "1466016a15d801bcba9cbd0dcac9ee1815858bca",
+          "sha256": "8c16c55ff3ebf321f1cf367b512fd3c5431a353ffc8e2d3311e2a82d6ca82e00",
+          "bytes": 10208,
+          "lines": 303,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/backends/kokoro_backend.py"
+        },
+        {
+          "path": "backend/backends/pytorch_backend.py",
+          "blob_sha": "7e0040d24835e57dce58193a9bfe4d882ee699b6",
+          "sha256": "07b6e5a721dc59aadaca014162dbc8d33c2f4c8cebf51a9a1077dee1fd548c6d",
+          "bytes": 14637,
+          "lines": 407,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/backends/pytorch_backend.py"
+        },
+        {
+          "path": "backend/backends/__init__.py",
+          "blob_sha": "fb80ed0e7c9c9a9ce27da118f241e91732e8d3b8",
+          "sha256": "0368460cf8e072bfee0f8bcb1727f3c11b2c2c53efef47a92cb59e95a59c9db9",
+          "bytes": 33311,
+          "lines": 998,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/backends/__init__.py"
+        },
+        {
+          "path": "backend/backends/chatterbox_turbo_backend.py",
+          "blob_sha": "0efabd1b39619b1f57c78eb35f708726cee4491c",
+          "sha256": "fab55b6a7b8a3ac1c51cc4d96094cf4436013d579152e58b1078be4942b3fc59",
+          "bytes": 7001,
+          "lines": 216,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/backends/chatterbox_turbo_backend.py"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    },
+    {
+      "repo": "resemble-ai/chatterbox",
+      "requested": "resemble-ai/chatterbox",
+      "sha": "5de7a54aa4e5e2baadb0182dde554908b48b85c2",
+      "upstream_license": "MIT",
+      "tree_truncated": false,
+      "file_count": 66,
+      "test_path_count": 1,
+      "files": [
+        {
+          "path": "README.md",
+          "blob_sha": "b0086550bfae600e6e0c1e65b7387935c4a5bb5d",
+          "sha256": "fd9315cc529c65d46ddd21ded05ba3372b6f6f39242bd015f770145bf5e0448f",
+          "bytes": 15301,
+          "lines": 238,
+          "url": "https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/README.md"
+        },
+        {
+          "path": "LICENSE",
+          "blob_sha": "c1e82fe06523f528c975719352c223a82c8f28ce",
+          "sha256": "4248e910a928849fe5815a0f9236e17fa07768d95b9193212752c464b93d6caa",
+          "bytes": 1067,
+          "lines": 21,
+          "url": "https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/LICENSE"
+        },
+        {
+          "path": "src/chatterbox/tts_turbo.py",
+          "blob_sha": "e708f0c88abd6c615b64da725f344a1312098433",
+          "sha256": "2f27e8ff2fa35181fdd2849367fb96ecc2cb87a1088ca7520c8bd51946599f08",
+          "bytes": 11379,
+          "lines": 321,
+          "url": "https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/src/chatterbox/tts_turbo.py"
+        },
+        {
+          "path": "src/chatterbox/tts.py",
+          "blob_sha": "4737f1823cf97b7ea98b1b06c1d5d8e3be62cacd",
+          "sha256": "7896787bc17e20eafcd1dce7b8a4a6ea3a6478baab771c60d63e9e81f5564195",
+          "bytes": 8924,
+          "lines": 273,
+          "url": "https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/src/chatterbox/tts.py"
+        },
+        {
+          "path": "example_tts_nano.py",
+          "blob_sha": "2f677b3409f1f36d8d228c491ef761f25829989e",
+          "sha256": "ae99bf2c4f8cd0275aaff6326831da26ba13b54ae198943d642bda33d49f76de",
+          "bytes": 754,
+          "lines": 16,
+          "url": "https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/example_tts_nano.py"
+        },
+        {
+          "path": "src/chatterbox/mtl_tts.py",
+          "blob_sha": "ec5ebff418f6abf283127c4de6bbe99580f29e69",
+          "sha256": "936759044e54cffe8c68b91b32e01da0bc032a1e084f769f0403080d86ad153c",
+          "bytes": 11721,
+          "lines": 356,
+          "url": "https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/src/chatterbox/mtl_tts.py"
+        },
+        {
+          "path": "pyproject.toml",
+          "blob_sha": "381ed774eae577cb244d699f47b64953980ce72f",
+          "sha256": "e1aab210e1eb6023a694a05e92ae4cbb08efa9510d295401303e90eec41d594f",
+          "bytes": 1328,
+          "lines": 44,
+          "url": "https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/pyproject.toml"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    },
+    {
+      "repo": "QwenAudio/CosyVoice",
+      "requested": "FunAudioLLM/CosyVoice",
+      "sha": "074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc",
+      "upstream_license": "Apache-2.0",
+      "tree_truncated": false,
+      "file_count": 164,
+      "test_path_count": 0,
+      "files": [
+        {
+          "path": "LICENSE",
+          "blob_sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "bytes": 11357,
+          "lines": 202,
+          "url": "https://github.com/QwenAudio/CosyVoice/blob/074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc/LICENSE"
+        },
+        {
+          "path": "cosyvoice/cli/cosyvoice.py",
+          "blob_sha": "7ab04a70fff9a0960f2e34ef35555c55486bf2a1",
+          "sha256": "4b2a605f129d172cd031286a14a591396c2e8ed0bf53258acc7445525fdaa65b",
+          "bytes": 14356,
+          "lines": 239,
+          "url": "https://github.com/QwenAudio/CosyVoice/blob/074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc/cosyvoice/cli/cosyvoice.py"
+        },
+        {
+          "path": "cosyvoice/cli/frontend.py",
+          "blob_sha": "6d397cc99be417e98b8d9fc7a1438ec722312276",
+          "sha256": "8d3dcb5880d76346f053f19344eac48adcff2aca70687293aadf4e1f33fadac3",
+          "bytes": 12553,
+          "lines": 225,
+          "url": "https://github.com/QwenAudio/CosyVoice/blob/074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc/cosyvoice/cli/frontend.py"
+        },
+        {
+          "path": "README.md",
+          "blob_sha": "ef8829e0e981678cd95cb1d4c88465ae97804b88",
+          "sha256": "66436370172c2830ed98aa643b31898c65e16eee14ade68f00828d21fae602e0",
+          "bytes": 13764,
+          "lines": 276,
+          "url": "https://github.com/QwenAudio/CosyVoice/blob/074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc/README.md"
+        },
+        {
+          "path": "runtime/python/fastapi/server.py",
+          "blob_sha": "1502f9cbf3c8423c0506f233a9537f7760e0b58c",
+          "sha256": "e87cd59ac552357dcabbe54711ddc25c35131d974e0b95e247c195c407b8f35f",
+          "bytes": 3732,
+          "lines": 96,
+          "url": "https://github.com/QwenAudio/CosyVoice/blob/074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc/runtime/python/fastapi/server.py"
+        },
+        {
+          "path": "cosyvoice/cli/model.py",
+          "blob_sha": "92a15d985dfbca4bb676d3fdc02732be1d07c461",
+          "sha256": "421ba52dd956505667668e0aec7fdcbcd85d733b52725b2d595bc32bcbb53ef9",
+          "bytes": 28138,
+          "lines": 451,
+          "url": "https://github.com/QwenAudio/CosyVoice/blob/074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc/cosyvoice/cli/model.py"
+        },
+        {
+          "path": "requirements.txt",
+          "blob_sha": "989bccf6108a1ba886e4021cd4a4d620aadab592",
+          "sha256": "6619a7f7f95e6c7c23dc82471294ee168a4fc0e901ab4e123881fff71f38d94c",
+          "bytes": 1125,
+          "lines": 43,
+          "url": "https://github.com/QwenAudio/CosyVoice/blob/074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc/requirements.txt"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    },
+    {
+      "repo": "QwenLM/Qwen3-TTS",
+      "requested": "QwenLM/Qwen3-TTS",
+      "sha": "022e286b98fbec7e1e916cb940cdf532cd9f488e",
+      "upstream_license": "Apache-2.0",
+      "tree_truncated": false,
+      "file_count": 37,
+      "test_path_count": 0,
+      "files": [
+        {
+          "path": "README.md",
+          "blob_sha": "8287bac4e611b907688a74b90a1d39cf7dbeec58",
+          "sha256": "51f4497e70e9ae024b10ee4bbcb470366f10592edeab56c58d2194ba2dadb745",
+          "bytes": 60501,
+          "lines": 1361,
+          "url": "https://github.com/QwenLM/Qwen3-TTS/blob/022e286b98fbec7e1e916cb940cdf532cd9f488e/README.md"
+        },
+        {
+          "path": "qwen_tts/inference/qwen3_tts_model.py",
+          "blob_sha": "f4d33bf3d60c404ee540e58488545ccf5347e25f",
+          "sha256": "e1da450732857c1f5fe3e36ebab85db2f6dc6a48caaff6973f463384e30275e4",
+          "bytes": 37121,
+          "lines": 878,
+          "url": "https://github.com/QwenLM/Qwen3-TTS/blob/022e286b98fbec7e1e916cb940cdf532cd9f488e/qwen_tts/inference/qwen3_tts_model.py"
+        },
+        {
+          "path": "pyproject.toml",
+          "blob_sha": "d4b6df580c18a6974f7dee32eff9bad170a91351",
+          "sha256": "3e82fcb21b9d48bba789a7c0a2c2dcb88ad60c4d297d60ae4575ee3eb4e4d5aa",
+          "bytes": 1099,
+          "lines": 46,
+          "url": "https://github.com/QwenLM/Qwen3-TTS/blob/022e286b98fbec7e1e916cb940cdf532cd9f488e/pyproject.toml"
+        },
+        {
+          "path": "LICENSE",
+          "blob_sha": "c347eb5ec781d2702623e8e2b5923fa1a766a64d",
+          "sha256": "a44a6081c73ad75f0255bb2bb5cab74ef1829565a895a24e53a4f11290ab7655",
+          "bytes": 11343,
+          "lines": 202,
+          "url": "https://github.com/QwenLM/Qwen3-TTS/blob/022e286b98fbec7e1e916cb940cdf532cd9f488e/LICENSE"
+        },
+        {
+          "path": "examples/test_model_12hz_base.py",
+          "blob_sha": "ec7ea4b59283c31f8af5f4a95a17857c3c907345",
+          "sha256": "73f7cba58548990a3a3f602db593fe8ae4516a81535cfe38e15943733928fb29",
+          "bytes": 6427,
+          "lines": 193,
+          "url": "https://github.com/QwenLM/Qwen3-TTS/blob/022e286b98fbec7e1e916cb940cdf532cd9f488e/examples/test_model_12hz_base.py"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    },
+    {
+      "repo": "hexgrad/kokoro",
+      "requested": "hexgrad/kokoro",
+      "sha": "dfb907a02bba8152ca444717ca5d78747ccb4bec",
+      "upstream_license": "Apache-2.0",
+      "tree_truncated": false,
+      "file_count": 108,
+      "test_path_count": 3,
+      "files": [
+        {
+          "path": "LICENSE",
+          "blob_sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "bytes": 11357,
+          "lines": 202,
+          "url": "https://github.com/hexgrad/kokoro/blob/dfb907a02bba8152ca444717ca5d78747ccb4bec/LICENSE"
+        },
+        {
+          "path": "tests/test_custom_stft.py",
+          "blob_sha": "103c083efd833c5875ceec7dcffbf766c5c1f82f",
+          "sha256": "715527cd5d2a2df55343f53bdaf617e5611a916e272ce9711b01d62bed0f4bd3",
+          "bytes": 2732,
+          "lines": 82,
+          "url": "https://github.com/hexgrad/kokoro/blob/dfb907a02bba8152ca444717ca5d78747ccb4bec/tests/test_custom_stft.py"
+        },
+        {
+          "path": "pyproject.toml",
+          "blob_sha": "e9a38d8d9d798d95471b14f4900405e70fe7c334",
+          "sha256": "f8c3ae1c6b3c2644ad27b6c66e309bee32ac48fe46b7e4e676a95b417acdd04c",
+          "bytes": 819,
+          "lines": 39,
+          "url": "https://github.com/hexgrad/kokoro/blob/dfb907a02bba8152ca444717ca5d78747ccb4bec/pyproject.toml"
+        },
+        {
+          "path": "kokoro/model.py",
+          "blob_sha": "a7622ba923d0b8b9fc559057cfc5e90b90846231",
+          "sha256": "301c55350a068c4ed3b4cbd1209d2afb848bebca72db5657405e47e9dfb604db",
+          "bytes": 6605,
+          "lines": 152,
+          "url": "https://github.com/hexgrad/kokoro/blob/dfb907a02bba8152ca444717ca5d78747ccb4bec/kokoro/model.py"
+        },
+        {
+          "path": "README.md",
+          "blob_sha": "765dcc77ff656885225fd882d3e7c3c67545325b",
+          "sha256": "b50b84220668f8247a2405b249c34c7083acc24114279ff1429fd79f46a2c04b",
+          "bytes": 8355,
+          "lines": 130,
+          "url": "https://github.com/hexgrad/kokoro/blob/dfb907a02bba8152ca444717ca5d78747ccb4bec/README.md"
+        },
+        {
+          "path": "kokoro/pipeline.py",
+          "blob_sha": "3377069191477750aead9ac8ea9bf6f9728f73c3",
+          "sha256": "499982bbc23a1019681cdb4c327c1d911e7034e240721b95686ff1a8f15c2a9a",
+          "bytes": 18113,
+          "lines": 443,
+          "url": "https://github.com/hexgrad/kokoro/blob/dfb907a02bba8152ca444717ca5d78747ccb4bec/kokoro/pipeline.py"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    },
+    {
+      "repo": "myshell-ai/OpenVoice",
+      "requested": "myshell-ai/OpenVoice",
+      "sha": "74a1d147b17a8c3092dd5430504bd83ef6c7eb23",
+      "upstream_license": "MIT",
+      "tree_truncated": false,
+      "file_count": 37,
+      "test_path_count": 0,
+      "files": [
+        {
+          "path": "LICENSE",
+          "blob_sha": "2d29d020b993b9c21e30aa6fc6c97737f34594b8",
+          "sha256": "bb3541f421e6273d3a3e3dd5bdba2bd3b79a3c2eadca65cde9c62c2467903ac0",
+          "bytes": 1057,
+          "lines": 7,
+          "url": "https://github.com/myshell-ai/OpenVoice/blob/74a1d147b17a8c3092dd5430504bd83ef6c7eb23/LICENSE"
+        },
+        {
+          "path": "README.md",
+          "blob_sha": "a720f28d4b8735e57f3d42514a2d054e18aeb62f",
+          "sha256": "3c6f5d24798763ebb9ca5fea8a1cbd21b935a140300ba531138b5518cd297dfc",
+          "bytes": 3120,
+          "lines": 71,
+          "url": "https://github.com/myshell-ai/OpenVoice/blob/74a1d147b17a8c3092dd5430504bd83ef6c7eb23/README.md"
+        },
+        {
+          "path": "openvoice/api.py",
+          "blob_sha": "48f7eebb098c7028edb65f004b9270a7aa11c520",
+          "sha256": "6830abaf9b0ea6023fe7e3df3d9a0a1fd9b73a7dbbc13f8a892da009052637b9",
+          "bytes": 7823,
+          "lines": 203,
+          "url": "https://github.com/myshell-ai/OpenVoice/blob/74a1d147b17a8c3092dd5430504bd83ef6c7eb23/openvoice/api.py"
+        },
+        {
+          "path": "requirements.txt",
+          "blob_sha": "8ddba70d611d3b15ed5b4b2ef4a020a2bd0c61df",
+          "sha256": "ff3a30cda9e6b66e5628677fd88632f72c8eef784832e08dadd11046dcafd59a",
+          "bytes": 253,
+          "lines": 17,
+          "url": "https://github.com/myshell-ai/OpenVoice/blob/74a1d147b17a8c3092dd5430504bd83ef6c7eb23/requirements.txt"
+        },
+        {
+          "path": "openvoice/se_extractor.py",
+          "blob_sha": "a41c25661013674260c2b63ec4ffdae56ca302b6",
+          "sha256": "deb53f75846b8f6e0e331a3b875b8f9e44cd03cdb99a1a8a143ff73376d69ae3",
+          "bytes": 5145,
+          "lines": 154,
+          "url": "https://github.com/myshell-ai/OpenVoice/blob/74a1d147b17a8c3092dd5430504bd83ef6c7eb23/openvoice/se_extractor.py"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    },
+    {
+      "repo": "m-bain/whisperX",
+      "requested": "m-bain/whisperX",
+      "sha": "db8fde4d31a3e7f49fe5835938685a76f5ba5477",
+      "upstream_license": "BSD-2-Clause",
+      "tree_truncated": false,
+      "file_count": 34,
+      "test_path_count": 2,
+      "files": [
+        {
+          "path": "pyproject.toml",
+          "blob_sha": "fdde305caa24b12cd6b2158d61d6fb1205cfb203",
+          "sha256": "08d8e5afdd8806389dbcdb1159e94d2a50e150df9443388cdc403628504c1ca1",
+          "bytes": 2488,
+          "lines": 80,
+          "url": "https://github.com/m-bain/whisperX/blob/db8fde4d31a3e7f49fe5835938685a76f5ba5477/pyproject.toml"
+        },
+        {
+          "path": "LICENSE",
+          "blob_sha": "21ec9f0a1ef9cdf0f0b4cadf510287102c244559",
+          "sha256": "cddc25bce26226b4a04ed12839d9006b7a4403da9020ef6428ef7282a6567441",
+          "bytes": 1297,
+          "lines": 25,
+          "url": "https://github.com/m-bain/whisperX/blob/db8fde4d31a3e7f49fe5835938685a76f5ba5477/LICENSE"
+        },
+        {
+          "path": "tests/test_word_timestamp_interpolation.py",
+          "blob_sha": "ec2e9cf24ad05159f3fbe78f38101138317fce0f",
+          "sha256": "ccbbe143acad144fbb2967547fd6fb193e62464411799e5658787cb471df8d7f",
+          "bytes": 10630,
+          "lines": 232,
+          "url": "https://github.com/m-bain/whisperX/blob/db8fde4d31a3e7f49fe5835938685a76f5ba5477/tests/test_word_timestamp_interpolation.py"
+        },
+        {
+          "path": "whisperx/alignment.py",
+          "blob_sha": "2987c36b11c953d9a7e39f815d22e979b9da10cc",
+          "sha256": "fae57ae8dc7ad779fa53e0ce2efc1efec728508b2039c8ec4030fa6d51272292",
+          "bytes": 25846,
+          "lines": 640,
+          "url": "https://github.com/m-bain/whisperX/blob/db8fde4d31a3e7f49fe5835938685a76f5ba5477/whisperx/alignment.py"
+        },
+        {
+          "path": "whisperx/diarize.py",
+          "blob_sha": "b767416e69b92bbcd48d6db06580719c69925b84",
+          "sha256": "489d4f9ad7419cb2aed26409c5fd8c49ae2d57cb5647c621c8d4613bed1e7f85",
+          "bytes": 10438,
+          "lines": 271,
+          "url": "https://github.com/m-bain/whisperX/blob/db8fde4d31a3e7f49fe5835938685a76f5ba5477/whisperx/diarize.py"
+        },
+        {
+          "path": "whisperx/asr.py",
+          "blob_sha": "edafa275faee85b622dbcd3524d6e5f2c2817792",
+          "sha256": "04d67f0766a2bc3dbbeae817056d10ebdf54862d7d163cb18124135ff0ff925e",
+          "bytes": 24416,
+          "lines": 590,
+          "url": "https://github.com/m-bain/whisperX/blob/db8fde4d31a3e7f49fe5835938685a76f5ba5477/whisperx/asr.py"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    },
+    {
+      "repo": "pyannote/pyannote-audio",
+      "requested": "pyannote/pyannote-audio",
+      "sha": "b749285c5cdd4636b2edc7f766f1352c8dde9369",
+      "upstream_license": "MIT",
+      "tree_truncated": false,
+      "file_count": 189,
+      "test_path_count": 43,
+      "files": [
+        {
+          "path": "LICENSE",
+          "blob_sha": "9712e8a75f3b007849124dfb5653863925fdaaf9",
+          "sha256": "a3b53644a76e70e289b25271b119c0a1aadaaf0db7a16225fb494fdc0e36c32a",
+          "bytes": 1061,
+          "lines": 22,
+          "url": "https://github.com/pyannote/pyannote-audio/blob/b749285c5cdd4636b2edc7f766f1352c8dde9369/LICENSE"
+        },
+        {
+          "path": "README.md",
+          "blob_sha": "8d64ca7ed05f2a4d20f73f707e1bc7288e41d6ee",
+          "sha256": "fb790724a0d1768fd0f0654d0f687a778812b6c6a9642a1ff2956debaf492f89",
+          "bytes": 12425,
+          "lines": 245,
+          "url": "https://github.com/pyannote/pyannote-audio/blob/b749285c5cdd4636b2edc7f766f1352c8dde9369/README.md"
+        },
+        {
+          "path": "src/pyannote/audio/pipelines/speaker_diarization.py",
+          "blob_sha": "e197d0312c449f941dce4d5910bc4fc27bd4b4f0",
+          "sha256": "cbb358abedef5042fcc71bb970b12a2936a16686be4bda15691a224f172656fd",
+          "bytes": 30022,
+          "lines": 788,
+          "url": "https://github.com/pyannote/pyannote-audio/blob/b749285c5cdd4636b2edc7f766f1352c8dde9369/src/pyannote/audio/pipelines/speaker_diarization.py"
+        },
+        {
+          "path": "pyproject.toml",
+          "blob_sha": "d9036deaa70d3595b11803db61aa950058558e0b",
+          "sha256": "ae8885dda73d31ba9af93578e9ff2ad82597581fd08f8e464af718747ab4a9c2",
+          "bytes": 1406,
+          "lines": 56,
+          "url": "https://github.com/pyannote/pyannote-audio/blob/b749285c5cdd4636b2edc7f766f1352c8dde9369/pyproject.toml"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    },
+    {
+      "repo": "facebookresearch/demucs",
+      "requested": "facebookresearch/demucs",
+      "sha": "e976d93ecc3865e5757426930257e200846a520a",
+      "upstream_license": "MIT",
+      "tree_truncated": false,
+      "file_count": 101,
+      "test_path_count": 3,
+      "files": [
+        {
+          "path": "demucs/api.py",
+          "blob_sha": "20079a6b5faf2d4f101031b83028cb2378d7bc0a",
+          "sha256": "f6b762f90cf08e64287231ec0e267d8e3ecf6361a25cfbb69bbc59806efc35c3",
+          "bytes": 15960,
+          "lines": 393,
+          "url": "https://github.com/facebookresearch/demucs/blob/e976d93ecc3865e5757426930257e200846a520a/demucs/api.py"
+        },
+        {
+          "path": "LICENSE",
+          "blob_sha": "a45a376fb0fcd4a3de06b6c096e62028929a2dcb",
+          "sha256": "cf9b17822d1fcd4ff32ccbe14183386fb3adf6f2ff92dc184130823f7fc28173",
+          "bytes": 1087,
+          "lines": 21,
+          "url": "https://github.com/facebookresearch/demucs/blob/e976d93ecc3865e5757426930257e200846a520a/LICENSE"
+        },
+        {
+          "path": "requirements.txt",
+          "blob_sha": "294290d31d786a0fb54ff6a32d0576a5dcf3e716",
+          "sha256": "01fac39875a4a2de0aff4c8820c85c24b43d85751e05e5cb3ca54419260b5744",
+          "bytes": 314,
+          "lines": 20,
+          "url": "https://github.com/facebookresearch/demucs/blob/e976d93ecc3865e5757426930257e200846a520a/requirements.txt"
+        },
+        {
+          "path": "README.md",
+          "blob_sha": "fe7e77b992b7918eba9491119d313abf5bc3eff1",
+          "sha256": "b2156a62247dae102c6ca3b000022d67f512743bd919523df320780120a329be",
+          "bytes": 18462,
+          "lines": 320,
+          "url": "https://github.com/facebookresearch/demucs/blob/e976d93ecc3865e5757426930257e200846a520a/README.md"
+        },
+        {
+          "path": "demucs/apply.py",
+          "blob_sha": "1540f3d44fc8bbca1ce377cc80af3cd9212278be",
+          "sha256": "b626af3b659a91aaa8386550690e0795c314e90ff64dee7a73deeaaee1275840",
+          "bytes": 12944,
+          "lines": 323,
+          "url": "https://github.com/facebookresearch/demucs/blob/e976d93ecc3865e5757426930257e200846a520a/demucs/apply.py"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    },
+    {
+      "repo": "FFmpeg/FFmpeg",
+      "requested": "FFmpeg/FFmpeg",
+      "sha": "3b3dc211fed40e7e4f627dffd6a4e221eb481880",
+      "upstream_license": "NOASSERTION",
+      "tree_truncated": false,
+      "file_count": 10934,
+      "test_path_count": 5745,
+      "files": [
+        {
+          "path": "COPYING.LGPLv2.1",
+          "blob_sha": "40924c2a6da76a2b0c639f6fe7ef0b2d095a6adb",
+          "sha256": "246041b6ecf9bc32d718a62c57877c78b5eb397b6467e74ed7ae2626ab189c30",
+          "bytes": 26517,
+          "lines": 503,
+          "url": "https://github.com/FFmpeg/FFmpeg/blob/3b3dc211fed40e7e4f627dffd6a4e221eb481880/COPYING.LGPLv2.1"
+        },
+        {
+          "path": "LICENSE.md",
+          "blob_sha": "0e75dd3030844784ae339fb51300bd1a3b1e6207",
+          "sha256": "e6dc72d5665a1ebd6dcc841de59278dad4ca77ecc47b03f1064a55c3e9ea8bb8",
+          "bytes": 4352,
+          "lines": 128,
+          "url": "https://github.com/FFmpeg/FFmpeg/blob/3b3dc211fed40e7e4f627dffd6a4e221eb481880/LICENSE.md"
+        },
+        {
+          "path": "doc/examples/resample_audio.c",
+          "blob_sha": "db9b4e5e087e33f028ce0d938337934155b4e26b",
+          "sha256": "cb2eaba58e7d21e57367d0e925f254f06ea6b8368af0d17168417d1e8487f4b5",
+          "bytes": 8222,
+          "lines": 221,
+          "url": "https://github.com/FFmpeg/FFmpeg/blob/3b3dc211fed40e7e4f627dffd6a4e221eb481880/doc/examples/resample_audio.c"
+        },
+        {
+          "path": "libavfilter/af_atempo.c",
+          "blob_sha": "768840d99c1fe9dc628999952e18d2677c44d652",
+          "sha256": "96b40923aa3d12da6a8a0b093faf36f58c5b9f011a960acb6c6907fe67b7a1b0",
+          "bytes": 38465,
+          "lines": 1191,
+          "url": "https://github.com/FFmpeg/FFmpeg/blob/3b3dc211fed40e7e4f627dffd6a4e221eb481880/libavfilter/af_atempo.c"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    },
+    {
+      "repo": "audacity/audacity",
+      "requested": "audacity/audacity",
+      "sha": "b8bc12e797d2ea3af77229b574fb651ddc8bad4c",
+      "upstream_license": "NOASSERTION",
+      "tree_truncated": false,
+      "file_count": 5212,
+      "test_path_count": 215,
+      "files": [
+        {
+          "path": "au3/libraries/au3-project-history/UndoManager.h",
+          "blob_sha": "009f5738e1cdb02d9c6a9d3355bfe15124c94a59",
+          "sha256": "f369dba07cde47f3262a37fe7c2e0f58e8ea397a66decb9a5090f095d93e50f2",
+          "bytes": 8444,
+          "lines": 241,
+          "url": "https://github.com/audacity/audacity/blob/b8bc12e797d2ea3af77229b574fb651ddc8bad4c/au3/libraries/au3-project-history/UndoManager.h"
+        },
+        {
+          "path": "au3/libraries/au3-track/TimeWarper.h",
+          "blob_sha": "f6d15abd996597c5701cb1e8b923e710dd446a3b",
+          "sha256": "1583ac33f3395c8de8413083dbdd6fb9f3cac06a8ada86627e821c465906e4e7",
+          "bytes": 5999,
+          "lines": 210,
+          "url": "https://github.com/audacity/audacity/blob/b8bc12e797d2ea3af77229b574fb651ddc8bad4c/au3/libraries/au3-track/TimeWarper.h"
+        },
+        {
+          "path": "au3/libraries/au3-project-file-io/ProjectFileIO.h",
+          "blob_sha": "057fdd9a3fd655e86e7425b7315f39c45e1b976d",
+          "sha256": "d5a440af08d04802eed975604fbe3b6a49c1ed24750e9de84eea6fc8f10a042c",
+          "bytes": 12547,
+          "lines": 347,
+          "url": "https://github.com/audacity/audacity/blob/b8bc12e797d2ea3af77229b574fb651ddc8bad4c/au3/libraries/au3-project-file-io/ProjectFileIO.h"
+        },
+        {
+          "path": "LICENSE.txt",
+          "blob_sha": "da463be6f109f2b2ba8540b84694c59cfe8d2c9f",
+          "sha256": "1580ffb4a0c6bbb716324c645682964120eae418b9a1c51842cda140343cb139",
+          "bytes": 73540,
+          "lines": 1356,
+          "url": "https://github.com/audacity/audacity/blob/b8bc12e797d2ea3af77229b574fb651ddc8bad4c/LICENSE.txt"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    },
+    {
+      "repo": "SWivid/F5-TTS",
+      "requested": "SWivid/F5-TTS",
+      "sha": "2f866649b779881af8bd644e76b9a6d95053da29",
+      "upstream_license": "MIT",
+      "tree_truncated": false,
+      "file_count": 97,
+      "test_path_count": 0,
+      "files": [
+        {
+          "path": "LICENSE",
+          "blob_sha": "98230507a05c8577744b5e6445895712fe285eff",
+          "sha256": "c70811d1402134de900e811d3eaa349eb60f4d38a8f635b27b1e378c630facd2",
+          "bytes": 1068,
+          "lines": 22,
+          "url": "https://github.com/SWivid/F5-TTS/blob/2f866649b779881af8bd644e76b9a6d95053da29/LICENSE"
+        },
+        {
+          "path": "src/f5_tts/api.py",
+          "blob_sha": "8d5855c20605400cb190c0b1d8a7e3c6647d35de",
+          "sha256": "961fff392af63f8a6953a821db07ebda23195eb28f8502dfa00bfa30b422159f",
+          "bytes": 4770,
+          "lines": 156,
+          "url": "https://github.com/SWivid/F5-TTS/blob/2f866649b779881af8bd644e76b9a6d95053da29/src/f5_tts/api.py"
+        },
+        {
+          "path": "README.md",
+          "blob_sha": "e0903aea55ae3e02c0cfa77407dcf7a49940633d",
+          "sha256": "3c74da9760857de03a0fe22d6124fd50000b986c6aeba6c23bb14635e20e4ae1",
+          "bytes": 10449,
+          "lines": 279,
+          "url": "https://github.com/SWivid/F5-TTS/blob/2f866649b779881af8bd644e76b9a6d95053da29/README.md"
+        },
+        {
+          "path": "pyproject.toml",
+          "blob_sha": "457aa225cc4643008c2223c9a1b723bf692e2455",
+          "sha256": "614bbae9e2c59acd93470cd5ea46ba568fc8ed806687f07d96dc27b5cb64e7ea",
+          "bytes": 1562,
+          "lines": 65,
+          "url": "https://github.com/SWivid/F5-TTS/blob/2f866649b779881af8bd644e76b9a6d95053da29/pyproject.toml"
+        },
+        {
+          "path": "src/f5_tts/infer/utils_infer.py",
+          "blob_sha": "1c5d51597079c9bb85b6e1d9d4038ffece1efcda",
+          "sha256": "161f33e8f81bb29e9ebc5bb0d18b46012942739aa37025876b4ddda8d2b974e0",
+          "bytes": 21266,
+          "lines": 626,
+          "url": "https://github.com/SWivid/F5-TTS/blob/2f866649b779881af8bd644e76b9a6d95053da29/src/f5_tts/infer/utils_infer.py"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    },
+    {
+      "repo": "OHF-Voice/piper1-gpl",
+      "requested": "OHF-Voice/piper1-gpl",
+      "sha": "619f513580c04dff5ef9a680f6f3f6979ed94d2e",
+      "upstream_license": "GPL-3.0",
+      "tree_truncated": false,
+      "file_count": 161,
+      "test_path_count": 29,
+      "files": [
+        {
+          "path": "README.md",
+          "blob_sha": "cce5c4c5883ec65bca085727dc822602301af0fe",
+          "sha256": "a73f576020071a1d58701a40026a451385ef4dad4c9ba0a2499544d988d06e84",
+          "bytes": 2853,
+          "lines": 63,
+          "url": "https://github.com/OHF-Voice/piper1-gpl/blob/619f513580c04dff5ef9a680f6f3f6979ed94d2e/README.md"
+        },
+        {
+          "path": "src/piper/voice.py",
+          "blob_sha": "cec608c9afdd7133e7cae0f54e33d84ed0ee2738",
+          "sha256": "a4fdcc9fe03e090e5d591d49f2009803b9a20e63eca1c84ef8cbf94d9ea5258f",
+          "bytes": 20458,
+          "lines": 576,
+          "url": "https://github.com/OHF-Voice/piper1-gpl/blob/619f513580c04dff5ef9a680f6f3f6979ed94d2e/src/piper/voice.py"
+        },
+        {
+          "path": "pyproject.toml",
+          "blob_sha": "f7ceff13b8e8ad9baac91ffd321e08831b37f312",
+          "sha256": "3d8c160ff055260d06c2606caa6e5c90cc46fb5f72c9d49e42c3b050dc24ab43",
+          "bytes": 171,
+          "lines": 11,
+          "url": "https://github.com/OHF-Voice/piper1-gpl/blob/619f513580c04dff5ef9a680f6f3f6979ed94d2e/pyproject.toml"
+        },
+        {
+          "path": "libpiper/include/piper.h",
+          "blob_sha": "c9ef282c46e9b8d758814c9f3d3b21b20de7070c",
+          "sha256": "2f8bd59fe058cf315f4376366928a7c4e3559abb0aadb7edd89ba0c5e5426f59",
+          "bytes": 9252,
+          "lines": 356,
+          "url": "https://github.com/OHF-Voice/piper1-gpl/blob/619f513580c04dff5ef9a680f6f3f6979ed94d2e/libpiper/include/piper.h"
+        },
+        {
+          "path": "COPYING",
+          "blob_sha": "10926e87f113fb026c366866d6fa466061562870",
+          "sha256": "0ae0485a5bd37a63e63603596417e4eb0e653334fa6c7f932ca3a0e85d4af227",
+          "bytes": 35148,
+          "lines": 676,
+          "url": "https://github.com/OHF-Voice/piper1-gpl/blob/619f513580c04dff5ef9a680f6f3f6979ed94d2e/COPYING"
+        },
+        {
+          "path": "tests/test_piper.py",
+          "blob_sha": "44e6ac7055335aac71279543c5ff6fc3668a8790",
+          "sha256": "9f10e7dac9535bedc92f19332625c6fca0a26d27f3d5ed04dccc61c2de80ed91",
+          "bytes": 17633,
+          "lines": 642,
+          "url": "https://github.com/OHF-Voice/piper1-gpl/blob/619f513580c04dff5ef9a680f6f3f6979ed94d2e/tests/test_piper.py"
+        },
+        {
+          "path": "docs/VOICES.md",
+          "blob_sha": "91267b225d3efe3e2d841813209bf5d52c0491a1",
+          "sha256": "cc724e58206cfaa94e2894544b9a1aca89ea45c85b36df1645a1719b029fdb55",
+          "bytes": 2870,
+          "lines": 64,
+          "url": "https://github.com/OHF-Voice/piper1-gpl/blob/619f513580c04dff5ef9a680f6f3f6979ed94d2e/docs/VOICES.md"
+        },
+        {
+          "path": "libpiper/src/piper.cpp",
+          "blob_sha": "d6bcacabb080af1d5113cd4bd1099f40578a4675",
+          "sha256": "73cfbfb4dad6e6319d04e4fef2de7d26a639c09675c4a1f0be434122fc7daa94",
+          "bytes": 27444,
+          "lines": 822,
+          "url": "https://github.com/OHF-Voice/piper1-gpl/blob/619f513580c04dff5ef9a680f6f3f6979ed94d2e/libpiper/src/piper.cpp"
+        }
+      ],
+      "status": "PINNED_SOURCE_CAPTURE"
+    }
+  ],
+  "model_cards": [
+    {
+      "repo": "ResembleAI/chatterbox",
+      "captured_at": "2026-10-21T05:20:16.467Z",
+      "method": "PUBLIC_MODEL_METADATA_AND_README_ONLY",
+      "weight_downloaded": false,
+      "runtime_status": "NOT_RUN",
+      "canonical": "ResembleAI/chatterbox",
+      "sha": "5bb1f6ee58e50c3b8d408bc82a6d3740c2db6e18",
+      "license": "mit",
+      "gated": false,
+      "downloads": 1747471,
+      "safetensors": null,
+      "readme_sha256": "6ac86d5ec7e85a9cf6566a34c6aae60ac1d50a6fceccade4c2aa57cfa6f590b4",
+      "url": "https://huggingface.co/ResembleAI/chatterbox/blob/5bb1f6ee58e50c3b8d408bc82a6d3740c2db6e18/README.md",
+      "license_lines": [
+        {
+          "line": 2,
+          "text": "license: mit"
+        },
+        {
+          "line": 3,
+          "text": "language:"
+        },
+        {
+          "line": 60,
+          "text": "**Chatterbox Multilingual V3** is the latest general-purpose multilingual TTS model in the Chatterbox family. It keeps the same 0.5B model size while improving speaker similarity, reducing hallucinations, and producing more natural, conversational speech across languages."
+        },
+        {
+          "line": 62,
+          "text": "V3 is designed for broad language coverage like V2, but with stronger stability and more expressive generation. It is the recommended multilingual model for users who want one voice cloning model that works across many languages. Try it in the [Chatterbox Multilingual TTS V3 Space](https://huggingface.co/spaces/ResembleAI/Chatterbox-Multilingual-TTS-V3)."
+        },
+        {
+          "line": 64,
+          "text": "Alongside V3, we are releasing the **Single Language Pack**: dedicated finetunes for priority languages where tighter quality control, stronger language-specific behavior, and more specialized speech generation are valuable."
+        },
+        {
+          "line": 66,
+          "text": "- **Broad Multilingual Coverage:** Designed as the main general-purpose multilingual Chatterbox model, supporting wide language coverage similar to V2."
+        },
+        {
+          "line": 67,
+          "text": "- **Single Language Pack:** Dedicated single-language models provide stronger specialization and quality control where language- and regional-dialect-specific performance matters most."
+        },
+        {
+          "line": 68,
+          "text": "- **More Consistent Speaker Similarity:** Improves voice identity and accent preservation across languages, making cross-language voice cloning more stable and reliable."
+        },
+        {
+          "line": 75,
+          "text": "| Model | Size | Languages | Key Features | Best For | Demo |"
+        },
+        {
+          "line": 77,
+          "text": "| **Chatterbox Multilingual V3** | **500M** | **23+** | Improved speaker similarity, reduced hallucinations, more natural multilingual speech | Global applications, localization, cross-language voice cloning | [Demo](https://huggingface.co/spaces/ResembleAI/Chatterbox-Multilingual-TTS-V3) |"
+        },
+        {
+          "line": 78,
+          "text": "| **Single Language Pack** | 500M each | 6 dedicated finetunes | Language- and region-specific quality control | Priority languages and dialect-sensitive applications | [Demos](#single-language-pack) |"
+        },
+        {
+          "line": 81,
+          "text": "**09/04 🔥 Introducing Chatterbox Multilingual in 23 Languages!**"
+        },
+        {
+          "line": 83,
+          "text": "We're excited to introduce **Chatterbox** and **Chatterbox Multilingual**, [Resemble AI's](https://resemble.ai) production-grade open source TTS models. Chatterbox Multilingual supports **Arabic, Danish, German, Greek, English, Spanish, Finnish, French, Hebrew, Hindi, Italian, Japanese, Korean, Malay, Dutch, Norwegian, Polish, Portuguese, Russian, Swedish, Swahili, Turkish, Chinese** out of the box. Licensed under MIT, Chatterbox has been benchmarked against leading closed-source systems like ElevenLabs, and is consistently preferred in side-by-side evaluations."
+        },
+        {
+          "line": 90,
+          "text": "- Chatterbox Multilingual V3, a 0.5B general-purpose multilingual TTS model supporting 23 languages"
+        },
+        {
+          "line": 91,
+          "text": "- Dedicated single-language finetunes for Chinese, LatAm Spanish, Brazilian Portuguese, Spain Spanish, Portugal Portuguese, and Hindi"
+        },
+        {
+          "line": 93,
+          "text": "- 0.5B Llama backbone"
+        },
+        {
+          "line": 111,
+          "text": "***Note:*** Ensure that the reference clip matches the specified language tag. Otherwise, language transfer outputs may inherit the accent of the reference clip’s language.  "
+        },
+        {
+          "line": 150,
+          "text": "wav_french = multilingual_model.generate(french_text, language_id=\"fr\")"
+        },
+        {
+          "line": 154,
+          "text": "wav_chinese = multilingual_model.generate(chinese_text, language_id=\"zh\")"
+        },
+        {
+          "line": 159,
+          "text": "## Single Language Pack"
+        },
+        {
+          "line": 161,
+          "text": "The Single Language Pack provides dedicated finetunes for priority languages and regional variants. Use these when you want stronger language-specific behavior, tighter quality control, or dialect-aware generation beyond the general multilingual model."
+        },
+        {
+          "line": 163,
+          "text": "| Language | Model Card | Demo Space |"
+        },
+        {
+          "line": 176,
+          "text": "- [Llama 3](https://github.com/meta-llama/llama3)"
+        }
+      ]
+    },
+    {
+      "repo": "ResembleAI/chatterbox-turbo",
+      "captured_at": "2026-10-21T05:20:17.112Z",
+      "method": "PUBLIC_MODEL_METADATA_AND_README_ONLY",
+      "weight_downloaded": false,
+      "runtime_status": "NOT_RUN",
+      "canonical": "ResembleAI/chatterbox-turbo",
+      "sha": "749d1c1a46eb10492095d68fbcf55691ccf137cd",
+      "license": "mit",
+      "gated": false,
+      "downloads": 0,
+      "safetensors": null,
+      "readme_sha256": "d007d8c2ed2093530d95eee9d623f8977c321f6f361c19dafa07c000375808d7",
+      "url": "https://huggingface.co/ResembleAI/chatterbox-turbo/blob/749d1c1a46eb10492095d68fbcf55691ccf137cd/README.md",
+      "license_lines": [
+        {
+          "line": 2,
+          "text": "license: mit"
+        },
+        {
+          "line": 3,
+          "text": "language:"
+        },
+        {
+          "line": 49,
+          "text": "| Model                                                                                                           | Size | Languages | Key Features                                            | Best For                                     | 🤗                                                                  | Examples |"
+        },
+        {
+          "line": 52,
+          "text": "| Chatterbox-Multilingual [(Language list)](#supported-languages)                                                 | 500M | 23+ | Zero-shot cloning, Multiple Languages                   | Global applications, Localization            | [Demo](https://huggingface.co/spaces/ResembleAI/Chatterbox-Multilingual-TTS) | [Listen](https://resemble-ai.github.io/chatterbox_demopage/) |"
+        },
+        {
+          "line": 111,
+          "text": "wav_french = multilingual_model.generate(spanish_text, language_id=\"fr\")"
+        },
+        {
+          "line": 115,
+          "text": "wav_chinese = multilingual_model.generate(chinese_text, language_id=\"zh\")"
+        },
+        {
+          "line": 125,
+          "text": "## Supported Languages "
+        },
+        {
+          "line": 126,
+          "text": "Arabic (ar) • Danish (da) • German (de) • Greek (el) • English (en) • Spanish (es) • Finnish (fi) • French (fr) • Hebrew (he) • Hindi (hi) • Italian (it) • Japanese (ja) • Korean (ko) • Malay (ms) • Dutch (nl) • Norwegian (no) • Polish (pl) • Portuguese (pt) • Russian (ru) • Swedish (sv) • Swahili (sw) • Turkish (tr) • Chinese (zh)"
+        },
+        {
+          "line": 130,
+          "text": "  - Ensure that the reference clip matches the specified language tag. Otherwise, language transfer outputs may inherit the accent of the reference clip’s language. To mitigate this, set `cfg_weight` to `0`."
+        },
+        {
+          "line": 131,
+          "text": "  - The default settings (`exaggeration=0.5`, `cfg_weight=0.5`) work well for most prompts across all languages."
+        },
+        {
+          "line": 175,
+          "text": "- [Llama 3](https://github.com/meta-llama/llama3)"
+        }
+      ]
+    },
+    {
+      "repo": "ResembleAI/chatterbox-nano",
+      "captured_at": "2026-10-21T05:20:17.591Z",
+      "method": "PUBLIC_MODEL_METADATA_AND_README_ONLY",
+      "weight_downloaded": false,
+      "runtime_status": "NOT_RUN",
+      "canonical": "ResembleAI/chatterbox-nano",
+      "sha": "71ccd1d0081b430592cea481f4307e764e07bc64",
+      "license": "mit",
+      "gated": false,
+      "downloads": 0,
+      "safetensors": null,
+      "readme_sha256": "5956fccde9b5438b42e66a59a0a06a7ea1daf22d781ad87bc20ff7ac340562bc",
+      "url": "https://huggingface.co/ResembleAI/chatterbox-nano/blob/71ccd1d0081b430592cea481f4307e764e07bc64/README.md",
+      "license_lines": [
+        {
+          "line": 2,
+          "text": "license: mit"
+        },
+        {
+          "line": 3,
+          "text": "language:"
+        },
+        {
+          "line": 49,
+          "text": "| Model                                                                                                           | Size | Languages | Key Features                                            | Best For                                     | 🤗                                                                  | Examples |"
+        },
+        {
+          "line": 53,
+          "text": "| Chatterbox-Multilingual [(Language list)](#supported-languages)                                                 | 500M | 23+ | Zero-shot cloning, Multiple Languages                   | Global applications, Localization            | [Demo](https://huggingface.co/spaces/ResembleAI/Chatterbox-Multilingual-TTS) | [Listen](https://resemble-ai.github.io/chatterbox_demopage/) |"
+        },
+        {
+          "line": 135,
+          "text": "wav_french = multilingual_model.generate(french_text, language_id=\"fr\")"
+        },
+        {
+          "line": 139,
+          "text": "wav_chinese = multilingual_model.generate(chinese_text, language_id=\"zh\")"
+        },
+        {
+          "line": 149,
+          "text": "## Supported Languages "
+        },
+        {
+          "line": 150,
+          "text": "Arabic (ar) • Danish (da) • German (de) • Greek (el) • English (en) • Spanish (es) • Finnish (fi) • French (fr) • Hebrew (he) • Hindi (hi) • Italian (it) • Japanese (ja) • Korean (ko) • Malay (ms) • Dutch (nl) • Norwegian (no) • Polish (pl) • Portuguese (pt) • Russian (ru) • Swedish (sv) • Swahili (sw) • Turkish (tr) • Chinese (zh)"
+        },
+        {
+          "line": 154,
+          "text": "  - Ensure that the reference clip matches the specified language tag. Otherwise, language transfer outputs may inherit the accent of the reference clip’s language. To mitigate this, set `cfg_weight` to `0`."
+        },
+        {
+          "line": 155,
+          "text": "  - The default settings (`exaggeration=0.5`, `cfg_weight=0.5`) work well for most prompts across all languages."
+        },
+        {
+          "line": 199,
+          "text": "- [Llama 3](https://github.com/meta-llama/llama3)"
+        }
+      ]
+    },
+    {
+      "repo": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+      "captured_at": "2026-10-21T05:20:18.007Z",
+      "method": "PUBLIC_MODEL_METADATA_AND_README_ONLY",
+      "weight_downloaded": false,
+      "runtime_status": "NOT_RUN",
+      "canonical": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+      "sha": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "license": "apache-2.0",
+      "gated": false,
+      "downloads": 2955615,
+      "safetensors": {
+        "parameters": {
+          "BF16": 1928677440
+        },
+        "total": 1928677440
+      },
+      "readme_sha256": "621b7e88f1867bc03d817176fc1f7f55f4b5a70654b2a07fdcda1e169efb024b",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/blob/fd4b254389122332181a7c3db7f27e918eec64e3/README.md",
+      "license_lines": [
+        {
+          "line": 2,
+          "text": "license: apache-2.0"
+        },
+        {
+          "line": 14,
+          "text": "Qwen3-TTS covers 10 major languages (Chinese, English, Japanese, Korean, German, French, Russian, Portuguese, Spanish, and Italian) as well as multiple dialectal voice profiles to meet global application needs. In addition, the models feature strong contextual understanding, enabling adaptive control of tone, speaking rate, and emotional expression based on instructions and text semantics, and they show markedly improved robustness to noisy input text. Key features:"
+        },
+        {
+          "line": 19,
+          "text": "* **Intelligent Text Understanding and Voice Control**: Supports speech generation driven by natural language instructions, allowing for flexible control over multi-dimensional acoustic attributes such as timbre, emotion, and prosody. By deeply integrating text semantic understanding, the model adaptively adjusts tone, rhythm, and emotional expression, achieving lifelike “what you imagine is what you hear” output."
+        },
+        {
+          "line": 37,
+          "text": "| Model | Features | Language Support | Streaming | Instruction Control |"
+        },
+        {
+          "line": 40,
+          "text": "| Qwen3-TTS-12Hz-1.7B-CustomVoice | Provides style control over target timbres via user instructions; supports 9 premium timbres covering various combinations of gender, age, language, and dialect. | Chinese, English, Japanese, Korean, German, French, Russian, Portuguese, Spanish, Italian | ✅ | ✅ |"
+        },
+        {
+          "line": 42,
+          "text": "| Qwen3-TTS-12Hz-0.6B-CustomVoice | Supports 9 premium timbres covering various combinations of gender, age, language, and dialect. | Chinese, English, Japanese, Korean, German, French, Russian, Portuguese, Spanish, Italian | ✅ |  |"
+        },
+        {
+          "line": 114,
+          "text": "For custom voice models (`Qwen3-TTS-12Hz-1.7B/0.6B-CustomVoice`), you just need to call `generate_custom_voice`, passing a single string or a batch list, along with `language`, `speaker`, and optional `instruct`. You can also call `model.get_supported_speakers()` and `model.get_supported_languages()` to see which speakers and languages the current model supports."
+        },
+        {
+          "line": 131,
+          "text": "    language=\"Chinese\", # Pass `Auto` (or omit) for auto language adaptive; if the target language is known, set it explicitly."
+        },
+        {
+          "line": 143,
+          "text": "    language=[\"Chinese\", \"English\"],"
+        },
+        {
+          "line": 151,
+          "text": "For `Qwen3-TTS-12Hz-1.7B/0.6B-CustomVoice` models, the supported speaker list and speaker descriptions are provided below. We recommend using each speaker’s native language for the best quality. Of course, each speaker can speak any language supported by the model."
+        },
+        {
+          "line": 153,
+          "text": "| Speaker | Voice Description  |  Native language |"
+        },
+        {
+          "line": 167,
+          "text": "For the voice design model (`Qwen3-TTS-12Hz-1.7B-VoiceDesign`), you can use `generate_voice_design` to provide the target text and a natural-language `instruct` description."
+        },
+        {
+          "line": 184,
+          "text": "    language=\"Chinese\","
+        },
+        {
+          "line": 195,
+          "text": "    language=[\"Chinese\", \"English\"],"
+        },
+        {
+          "line": 226,
+          "text": "    language=\"English\","
+        },
+        {
+          "line": 243,
+          "text": "    language=[\"English\", \"English\"],"
+        },
+        {
+          "line": 273,
+          "text": "    language=\"English\","
+        },
+        {
+          "line": 299,
+          "text": "    language=\"English\","
+        },
+        {
+          "line": 306,
+          "text": "    language=\"English\","
+        },
+        {
+          "line": 314,
+          "text": "    language=[\"English\", \"English\"],"
+        },
+        {
+          "line": 425,
+          "text": "During evaluation, we ran inference for all models with `dtype=torch.bfloat16` and set `max_new_tokens=2048`. All other sampling parameters used the defaults from the checkpoint’s `generate_config.json`. For the Seed-Test and InstructTTS-Eval test sets, we set `language=\"auto\"`, while for all other test sets we explicitly passed the corresponding `language`. The detailed results are shown below."
+        },
+        {
+          "line": 526,
+          "text": "      <th rowspan=\"2\" style=\"text-align: left; vertical-align: bottom;\">Language</th>"
+        },
+        {
+          "line": 991,
+          "text": "      <th rowspan=\"2\" style=\"text-align: left; vertical-align: bottom;\">Language</th>"
+        },
+        {
+          "line": 1105,
+          "text": "      <td style=\"text-align: left;\">Higgs-Audio-v2 (chunk) (Boson AI, 2025)</td>"
+        }
+      ]
+    },
+    {
+      "repo": "Qwen/Qwen3-TTS-12Hz-0.6B-Base",
+      "captured_at": "2026-10-21T05:20:18.443Z",
+      "method": "PUBLIC_MODEL_METADATA_AND_README_ONLY",
+      "weight_downloaded": false,
+      "runtime_status": "NOT_RUN",
+      "canonical": "Qwen/Qwen3-TTS-12Hz-0.6B-Base",
+      "sha": "5d83992436eae1d760afd27aff78a71d676296fc",
+      "license": "apache-2.0",
+      "gated": false,
+      "downloads": 631627,
+      "safetensors": {
+        "parameters": {
+          "BF16": 914643008
+        },
+        "total": 914643008
+      },
+      "readme_sha256": "181187b6057906bd960bc7f938d0b7a16652509776a0d52c4885b4ae5ccda0ea",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-0.6B-Base/blob/5d83992436eae1d760afd27aff78a71d676296fc/README.md",
+      "license_lines": [
+        {
+          "line": 2,
+          "text": "license: apache-2.0"
+        },
+        {
+          "line": 4,
+          "text": "language:"
+        },
+        {
+          "line": 25,
+          "text": "Qwen3-TTS is a family of advanced multilingual, controllable, robust, and streaming text-to-speech models. Trained on over 5 million hours of speech data spanning 10 languages, Qwen3-TTS supports state-of-the-art 3-second voice cloning and description-based control."
+        },
+        {
+          "line": 63,
+          "text": "    language=\"English\","
+        },
+        {
+          "line": 79,
+          "text": "Qwen3-TTS covers 10 major languages (Chinese, English, Japanese, Korean, German, French, Russian, Portuguese, Spanish, and Italian) as well as multiple dialectal voice profiles to meet global application needs. Key features:"
+        },
+        {
+          "line": 84,
+          "text": "* **Intelligent Text Understanding and Voice Control**: Supports speech generation driven by natural language instructions, allowing for flexible control over multi-dimensional acoustic attributes."
+        }
+      ]
+    },
+    {
+      "repo": "hexgrad/Kokoro-82M",
+      "captured_at": "2026-10-21T05:20:18.832Z",
+      "method": "PUBLIC_MODEL_METADATA_AND_README_ONLY",
+      "weight_downloaded": false,
+      "runtime_status": "NOT_RUN",
+      "canonical": "hexgrad/Kokoro-82M",
+      "sha": "f3ff3571791e39611d31c381e3a41a3af07b4987",
+      "license": "apache-2.0",
+      "gated": false,
+      "downloads": 10536550,
+      "safetensors": null,
+      "readme_sha256": "91dcabced89db6f109b8786642f50402d3ee87450e8189589b6f85520e7f4d78",
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M/blob/f3ff3571791e39611d31c381e3a41a3af07b4987/README.md",
+      "license_lines": [
+        {
+          "line": 2,
+          "text": "license: apache-2.0"
+        },
+        {
+          "line": 3,
+          "text": "language:"
+        },
+        {
+          "line": 9,
+          "text": "**Kokoro** is an open-weight TTS model with 82 million parameters. Despite its lightweight architecture, it delivers comparable quality to larger models while being significantly faster and more cost-efficient. With Apache-licensed weights, Kokoro can be deployed anywhere from production environments to personal projects."
+        },
+        {
+          "line": 20,
+          "text": "> This is an Apache-licensed model, and Kokoro has been deployed in numerous projects and commercial APIs. We welcome the deployment of the model in real use cases."
+        },
+        {
+          "line": 51,
+          "text": "You can run this basic cell on [Google Colab](https://colab.research.google.com/). [Listen to samples](https://huggingface.co/hexgrad/Kokoro-82M/blob/main/SAMPLES.md). For more languages and details, see [Advanced Usage](https://github.com/hexgrad/kokoro?tab=readme-ov-file#advanced-usage)."
+        },
+        {
+          "line": 61,
+          "text": "[Kokoro](/kˈOkəɹO/) is an open-weight TTS model with 82 million parameters. Despite its lightweight architecture, it delivers comparable quality to larger models while being significantly faster and more cost-efficient. With Apache-licensed weights, [Kokoro](/kˈOkəɹO/) can be deployed anywhere from production environments to personal projects."
+        },
+        {
+          "line": 82,
+          "text": "**Languages:** Multiple"
+        },
+        {
+          "line": 90,
+          "text": "- Audio licensed under Apache, MIT, etc"
+        },
+        {
+          "line": 103,
+          "text": "| Audio Data | Duration Used | License | Added to Training Set After |"
+        },
+        {
+          "line": 105,
+          "text": "| [Koniwa](https://github.com/koniwa/koniwa) `tnc` | <1h | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/deed.ja) | v0.19 / 22 Nov 2024 |"
+        },
+        {
+          "line": 106,
+          "text": "| [SIWIS](https://datashare.ed.ac.uk/handle/10283/2353) | <11h | [CC BY 4.0](https://datashare.ed.ac.uk/bitstream/handle/10283/2353/license_text) | v0.19 / 22 Nov 2024 |"
+        }
+      ]
+    },
+    {
+      "repo": "k2-fsa/OmniVoice",
+      "captured_at": "2026-10-21T05:20:19.222Z",
+      "method": "PUBLIC_MODEL_METADATA_AND_README_ONLY",
+      "weight_downloaded": false,
+      "runtime_status": "NOT_RUN",
+      "canonical": "k2-fsa/OmniVoice",
+      "sha": "c5fdb5ccb189668d56333f77ba2629f4cd7535f4",
+      "license": null,
+      "gated": false,
+      "downloads": 1873090,
+      "safetensors": {
+        "parameters": {
+          "I64": 8,
+          "F32": 612577280
+        },
+        "total": 612577288
+      },
+      "readme_sha256": "b5d645a1874baa96a460a0e3a7d5a262811d682d04ce235878a16d5fed287fd3",
+      "url": "https://huggingface.co/k2-fsa/OmniVoice/blob/c5fdb5ccb189668d56333f77ba2629f4cd7535f4/README.md",
+      "license_lines": [
+        {
+          "line": 4,
+          "text": "language:"
+        },
+        {
+          "line": 681,
+          "text": "OmniVoice is a massively multilingual zero-shot text-to-speech (TTS) model supporting over 600 languages. Built on a novel diffusion language model-style architecture, it delivers high-quality speech with superior inference speed, supporting voice cloning and voice design."
+        },
+        {
+          "line": 683,
+          "text": "- **Paper:** [OmniVoice: Towards Omnilingual Zero-Shot Text-to-Speech with Diffusion Language Models](https://huggingface.co/papers/2604.00688)"
+        },
+        {
+          "line": 690,
+          "text": "- **600+ Languages Supported**: The broadest language coverage among zero-shot TTS models."
+        },
+        {
+          "line": 695,
+          "text": "- **Diffusion Language Model-style Architecture**: A clean, streamlined, and scalable design that delivers both quality and speed."
+        },
+        {
+          "line": 774,
+          "text": "      title={OmniVoice: Towards Omnilingual Zero-Shot Text-to-Speech with Diffusion Language Models},"
+        },
+        {
+          "line": 781,
+          "text": "## License"
+        },
+        {
+          "line": 783,
+          "text": "Our code is released under the Apache 2.0 License. The pre-trained model is licensed under the CC-BY-NC due to constraints from its training data (e.g., Emilia)."
+        }
+      ]
+    },
+    {
+      "repo": "mistralai/Voxtral-4B-TTS-2603",
+      "captured_at": "2026-10-21T05:20:19.632Z",
+      "method": "PUBLIC_MODEL_METADATA_AND_README_ONLY",
+      "weight_downloaded": false,
+      "runtime_status": "NOT_RUN",
+      "canonical": "mistralai/Voxtral-4B-TTS-2603",
+      "sha": "b81be46c3777f88621676791b512bb01dc1cb970",
+      "license": "cc-by-nc-4.0",
+      "gated": false,
+      "downloads": 1637,
+      "safetensors": null,
+      "readme_sha256": "33b56cf6987186fe7ccc5057027af5132186974d9e726d1fd8c926795674da00",
+      "url": "https://huggingface.co/mistralai/Voxtral-4B-TTS-2603/blob/b81be46c3777f88621676791b512bb01dc1cb970/README.md",
+      "license_lines": [
+        {
+          "line": 3,
+          "text": "language:"
+        },
+        {
+          "line": 13,
+          "text": "license: cc-by-nc-4.0"
+        },
+        {
+          "line": 27,
+          "text": "Voxtral TTS is a frontier, open-weights text-to-speech model that’s fast, instantly adaptable, and produces lifelike speech for voice agents. The model is released with BF16 weights and a set of reference voices. These voices are licensed under CC BY-NC 4, which is the license that the model inherits."
+        },
+        {
+          "line": 39,
+          "text": "- **Realistic, expressive speech** with natural prosody and emotional range across 9 major languages, with support for diverse dialects  "
+        },
+        {
+          "line": 41,
+          "text": "- **Multilingual support**: English, French, Spanish, German, Italian, Portuguese, Dutch, Arabic, and Hindi  "
+        },
+        {
+          "line": 165,
+          "text": "## License"
+        },
+        {
+          "line": 167,
+          "text": "The provided voice-references compatible with this model are licensed under [CC BY-NC 4](https://creativecommons.org/licenses/by-nc/4.0/), e.g. from EARS, CML-TTS, IndicVoices-R and Arabic Natural Audio datasets. Thus, this model inherits the same license."
+        }
+      ]
+    },
+    {
+      "repo": "SWivid/F5-TTS",
+      "captured_at": "2026-10-21T05:20:20.044Z",
+      "method": "PUBLIC_MODEL_METADATA_AND_README_ONLY",
+      "weight_downloaded": false,
+      "runtime_status": "NOT_RUN",
+      "canonical": "SWivid/F5-TTS",
+      "sha": "84e5a410d9cead4de2f847e7c9369a6440bdfaca",
+      "license": "cc-by-nc-4.0",
+      "gated": false,
+      "downloads": 869626,
+      "safetensors": null,
+      "readme_sha256": "cf3354feaf4020527b3642b12a5a382de13d0af6bc99e8d37bee84425c1ca224",
+      "url": "https://huggingface.co/SWivid/F5-TTS/blob/84e5a410d9cead4de2f847e7c9369a6440bdfaca/README.md",
+      "license_lines": [
+        {
+          "line": 2,
+          "text": "license: cc-by-nc-4.0"
+        }
+      ]
+    },
+    {
+      "repo": "myshell-ai/OpenVoiceV2",
+      "captured_at": "2026-10-21T05:20:20.455Z",
+      "method": "PUBLIC_MODEL_METADATA_AND_README_ONLY",
+      "weight_downloaded": false,
+      "runtime_status": "NOT_RUN",
+      "canonical": "myshell-ai/OpenVoiceV2",
+      "sha": "f36e7edfe1684461a8343844af60babc2efbb727",
+      "license": "mit",
+      "gated": false,
+      "downloads": 0,
+      "safetensors": null,
+      "readme_sha256": "9f7d4211260d6105d0106705ae250c947bf3fb28e8e40a196de36a0e70d49394",
+      "url": "https://huggingface.co/myshell-ai/OpenVoiceV2/blob/f36e7edfe1684461a8343844af60babc2efbb727/README.md",
+      "license_lines": [
+        {
+          "line": 2,
+          "text": "license: mit"
+        },
+        {
+          "line": 7,
+          "text": "language:"
+        },
+        {
+          "line": 24,
+          "text": "3. Free Commercial Use. Starting from April 2024, both V2 and V1 are released under MIT License. Free for commercial use."
+        },
+        {
+          "line": 30,
+          "text": "- **Accurate Tone Color Cloning.** OpenVoice can accurately clone the reference tone color and generate speech in multiple languages and accents."
+        },
+        {
+          "line": 32,
+          "text": "- **Zero-shot Cross-lingual Voice Cloning.** Neither of the language of the generated speech nor the language of the reference speech needs to be presented in the massive-speaker multi-lingual training dataset."
+        },
+        {
+          "line": 49,
+          "text": "The input speech audio of OpenVoice can be in **Any Language**. OpenVoice can clone the voice in that speech audio, and use the voice to speak in multiple languages. For quick use, we recommend you to try the already deployed services:"
+        },
+        {
+          "line": 83,
+          "text": "Please see [`demo_part2.ipynb`](https://github.com/myshell-ai/OpenVoice/blob/main/demo_part2.ipynb) for an example for languages seen or unseen in the MSML training set."
+        }
+      ]
+    },
+    {
+      "repo": "FunAudioLLM/Fun-CosyVoice3-0.5B-2512",
+      "captured_at": "2026-10-21T05:20:20.977Z",
+      "method": "PUBLIC_MODEL_METADATA_AND_README_ONLY",
+      "weight_downloaded": false,
+      "runtime_status": "NOT_RUN",
+      "canonical": "FunAudioLLM/Fun-CosyVoice3-0.5B-2512",
+      "sha": "29e01c4e8d000f4bcd70751be16fa94bf3d85a18",
+      "license": "apache-2.0",
+      "gated": false,
+      "downloads": 241575,
+      "safetensors": null,
+      "readme_sha256": "d4ec0fe1342b60a424ce1cd8971c670d26be38068a96148bcb6a1b8a334c3088",
+      "url": "https://huggingface.co/FunAudioLLM/Fun-CosyVoice3-0.5B-2512/blob/29e01c4e8d000f4bcd70751be16fa94bf3d85a18/README.md",
+      "license_lines": [
+        {
+          "line": 2,
+          "text": "license: apache-2.0"
+        },
+        {
+          "line": 3,
+          "text": "language:"
+        },
+        {
+          "line": 16,
+          "text": "![SVG Banners](https://svg-banners.vercel.app/api?type=origin&text1=CosyVoice🤠&text2=Text-to-Speech%20💖%20Large%20Language%20Model&width=800&height=210)"
+        },
+        {
+          "line": 28,
+          "text": "**Fun-CosyVoice 3.0** is an advanced text-to-speech (TTS) system based on large language models (LLM), surpassing its predecessor (CosyVoice 2.0) in content consistency, speaker similarity, and prosody naturalness. It is designed for zero-shot multilingual speech synthesis in the wild."
+        },
+        {
+          "line": 30,
+          "text": "- **Language Coverage**: Covers 9 common languages (Chinese, English, Japanese, Korean, German, Spanish, French, Italian, Russian), 18+ Chinese dialects/accents (Guangdong, Minnan, Sichuan, Dongbei, Shan3xi, Shan1xi, Shanghai, Tianjin, Shandong, Ningxia, Gansu, etc.) and meanwhile supports both multi-lingual/cross-lingual zero-shot voice cloning."
+        },
+        {
+          "line": 35,
+          "text": "- **Instruct Support**: Supports various instructions such as languages, dialects, emotions, speed, volume, etc."
+        },
+        {
+          "line": 91,
+          "text": "| HiggsAudio-v2 | ✅ | 3B | 1.50 | 74.0 | 2.44 | 67.7 | - | - |"
+        },
+        {
+          "line": 211,
+          "text": "  title={Cosyvoice 2: Scalable streaming speech synthesis with large language models},"
+        }
+      ]
+    }
+  ]
+}

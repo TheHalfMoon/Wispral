@@ -1,0 +1,494 @@
+{
+  "schema_version": "wispral-rea-mission-evidence-v1",
+  "date": "2026-10-21",
+  "mission": "https://github.com/TheHalfMoon/Wispral/issues/122",
+  "canonical_base": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+  "status": "RESEARCH_AND_PROPOSED_PLAN_ONLY",
+  "implementation_authorized": false,
+  "founder_source_authorization": "YES_CONFIRMED_BY_FOUNDER",
+  "confidential_grants": "HELD_PRIVATELY_BY_FOUNDER_NOT_SHARED",
+  "independent_legal_review": false,
+  "source_manifests": [
+    "source-catalog.json",
+    "core-source-evidence.json",
+    "core-adjacent-source-evidence.json",
+    "studio-source-evidence.json",
+    "ink-source-evidence.json",
+    "klaint-source-evidence.json",
+    "additional-source-evidence.json",
+    "source-transplants.json"
+  ],
+  "trials": [
+    {
+      "id": "INK-PURE-01",
+      "method": "UNCHANGED_DONOR_BUILTIN_NODE_TESTS",
+      "source": "OpenWhispr/openwhispr@e4280ada144f04f20dad0bd32eaf22272f9c77b8",
+      "status": "REPRODUCED",
+      "result": "17 unique pure helper tests passed; earlier six overlap and are not additional tests",
+      "paths": [
+        "ink-source-evidence.json",
+        "reproduce_ink_pure_units.mjs",
+        "WISPRSIDE_DEEP_DIVE.md"
+      ],
+      "limits": [
+        "No native insertion/audio/app or latency test"
+      ]
+    },
+    {
+      "id": "STUDIO-MECHANISMS-01",
+      "method": "UNCHANGED_DONOR_MODULES_SYNTHETIC_NON_AUDIO",
+      "status": "REPRODUCED",
+      "result": "Eight named synthetic mechanism cases; assertions passed",
+      "paths": [
+        "studio-mechanism-probe-results.json",
+        "studio_mechanism_probe.py",
+        "WISPRSTUDIO_DEEP_DIVE.md"
+      ],
+      "limits": [
+        "No native process/GPU/audio/model or complete application test"
+      ]
+    },
+    {
+      "id": "CORE-NETWORK-01",
+      "method": "UNCHANGED_DONOR_PURE_POLICY_INDEPENDENT_FIXTURES",
+      "source": "TheHalfMoon/Ninerr@8cba15c4e4af40b12476433a49e20a1696cfc0f8",
+      "status": "REPRODUCED",
+      "result": "6/6 pure policy fixtures passed",
+      "paths": [
+        "core-network-probe-results.json",
+        "reproduce_core_policy.mjs"
+      ],
+      "limits": [
+        "No actual provider socket or OS network enforcement",
+        "No security/release approval"
+      ]
+    },
+    {
+      "id": "decagon-passive",
+      "method": "inspect_web_page",
+      "source_version": "Edg/155.0.4283.62@537.36 (@aa3a7406ba8c53a83536df539f07124d73c899bd)",
+      "official_evidence_id": "ev_f09020d93061471d5b5297ccda23a76cb3e71aaa4445be3185a23f7d5fcc7d31",
+      "status": "RUNTIME_OBSERVED_PUBLIC_PAGE_ONLY",
+      "result": "Passive public homepage inspection: DOM/accessibility present, not a customer-agent conversation.",
+      "paths": [
+        "rea-runtime-observations.json"
+      ],
+      "limits": [
+        "conversation",
+        "CRM action",
+        "handoff",
+        "latency",
+        "multi-tenancy"
+      ]
+    },
+    {
+      "id": "eleven-connect-initial",
+      "method": "capture_browser_scenario",
+      "source_version": "Chromium@155.0.4283.62",
+      "official_evidence_id": "ev_6fd5087cd4df416e315e1e6abefa4fec5218a7fea593eb1799291fef21498cc9",
+      "status": "RUNTIME_OBSERVED_INCOMPLETE_PREVIEW",
+      "result": "Fill/click completed but hydration replaced the synthetic text with default content. No generated audio established.",
+      "paths": [
+        "rea-runtime-observations.json"
+      ],
+      "limits": [
+        "audio generation",
+        "playback",
+        "latency",
+        "voice quality"
+      ]
+    },
+    {
+      "id": "eleven-connect-hydrated",
+      "method": "capture_browser_scenario",
+      "source_version": "Chromium@155.0.4283.62",
+      "official_evidence_id": "ev_024e7d0dbd25902445555555082500e324e9020ad8de65bf67154aecdc1a56a5",
+      "status": "RUNTIME_OBSERVED_NO_VERIFIED_AUDIO",
+      "result": "After hydration, synthetic text persisted. Play became disabled. hCaptcha resources and page errors were observed; their causality is not established. No audio output was verified.",
+      "paths": [
+        "rea-runtime-observations.json"
+      ],
+      "limits": [
+        "generated audio",
+        "CAPTCHA caused the outcome",
+        "successful playback",
+        "first-audio latency",
+        "quality"
+      ]
+    },
+    {
+      "id": "cartesia-connect",
+      "method": "capture_browser_scenario",
+      "source_version": "Chromium@155.0.4283.62",
+      "official_evidence_id": "ev_8c9bd64e1e4bb30944debc16b1bc0e084c8d6591fb9d2398eb0bf63d0bc9c7d0",
+      "status": "RUNTIME_OBSERVED_PUBLIC_PAGE_ONLY",
+      "result": "Public homepage and entry points observed. Product inference was not exercised.",
+      "paths": [
+        "rea-runtime-observations.json"
+      ],
+      "limits": [
+        "TTS generation",
+        "voice-agent conversation",
+        "deployment topology verified"
+      ]
+    },
+    {
+      "id": "cartesia-access-boundary",
+      "method": "capture_browser_scenario",
+      "source_version": "Chromium@155.0.4283.62",
+      "official_evidence_id": "ev_1fd8c6f1bfcd71b90283b30ddc2a1ea75b01111f123da4e85c37ecef81c97a12",
+      "status": "RUNTIME_OBSERVED_ACCESS_BOUNDARY_AND_NAVIGATION_RECOVERY",
+      "result": "Sign in reached a page with Email address and Continue. No account data was entered or submitted. Explicit navigation returned to the public page.",
+      "paths": [
+        "rea-runtime-observations.json"
+      ],
+      "limits": [
+        "authenticated generation",
+        "actual service failure/recovery",
+        "TTS quality"
+      ]
+    },
+    {
+      "id": "flow-connect",
+      "method": "capture_browser_scenario",
+      "source_version": "Chromium@155.0.4283.62",
+      "official_evidence_id": "ev_3cd2aa1b2619bd251fede8b81f45ee89410104b33bf3bc8ad20ed4c229c324b1",
+      "status": "RUNTIME_OBSERVED_PUBLIC_PAGE_ONLY",
+      "result": "Public product page offered desktop download entry points. Native dictation, microphone, insertion and OS support were not tested.",
+      "paths": [
+        "rea-runtime-observations.json"
+      ],
+      "limits": [
+        "live dictation",
+        "installation",
+        "Arabic accuracy",
+        "native privacy/offline behavior"
+      ]
+    },
+    {
+      "id": "COMPETITOR-NATIVE-AUTH-TRIADS",
+      "status": "NOT_RUN",
+      "method": "PROSPECTIVE_PROTOCOL_ONLY",
+      "result": "Native dictation, authenticated Studio/customer actions, telephony and real developer-agent triads unavailable in this study",
+      "paths": [
+        "BENCHMARK_AND_REPLAY_PROTOCOL.md"
+      ],
+      "limits": [
+        "No legitimate runtime credentials/artifacts or qualified consent/audio/hardware trials used"
+      ]
+    },
+    {
+      "id": "SPEECH-QUALITY-AND-LATENCY",
+      "status": "NOT_MEASURED",
+      "method": "PROSPECTIVE_PREREGISTRATION",
+      "result": "No WER/CER, p50/p95, TTS quality, native stop latency, RSS/VRAM or comparative performance result",
+      "paths": [
+        "BENCHMARK_AND_REPLAY_PROTOCOL.md",
+        "DONOR_EVALUATION_RUBRIC.md"
+      ],
+      "limits": [
+        "Frozen B2 evidence preserved without new decode/scoring or winner"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/adr/0001-proposed-donor-boundaries-for-platform-replan.md",
+      "bytes": 2138,
+      "sha256": "21d627eb6505c088130c6c3124cb968ed677d009fddf94eb0237b4a98bf590fa"
+    },
+    {
+      "path": "docs/adr/0002-proposed-fork-and-runtime-ownership-repair.md",
+      "bytes": 1174,
+      "sha256": "25800418a2c3a3c4f402585f508d71082766d037d21c28d2ca3f46229a1e46bd"
+    },
+    {
+      "path": "docs/strategy/WISPRAL_COPY_FIRST_WORK_PACKETS.md",
+      "bytes": 14087,
+      "sha256": "ccfa8cd307a3d72fcb76b0986bb1038d6855bf212e6abe207c05127c7fad4924"
+    },
+    {
+      "path": "docs/strategy/WISPRAL_GOVERNANCE_AMENDMENT_PROPOSAL.md",
+      "bytes": 15340,
+      "sha256": "b673cb8e763f0c3f90027a6a5a339abc875fe79e14a09c27cddb5fbcd3990a4f"
+    },
+    {
+      "path": "docs/strategy/WISPRAL_MASTER_PLAN_REBUILT.md",
+      "bytes": 13549,
+      "sha256": "9544617ff993d56666264052901151437b283c31acbc6c181a0db36b4f725fe2"
+    },
+    {
+      "path": "docs/strategy/WISPRAL_MODEL_ROUTING_CONTRACTS.md",
+      "bytes": 3399,
+      "sha256": "40f50d8c016a8f47496095a0b4fdf5b300f4f3ec703f9ae1fc6fb3fb5cd4a7bc"
+    },
+    {
+      "path": "docs/strategy/WISPRAL_PLATFORM_ARCHITECTURE_REPLAN.md",
+      "bytes": 14259,
+      "sha256": "532e5f52d2b899aa92c2eff1779e235b9bbe30b307aaf5e35785cd67d33fee45"
+    },
+    {
+      "path": "research/rea/2026-10-21/ADDITIONAL_SOURCE_REVIEW.md",
+      "bytes": 13963,
+      "sha256": "3b1eb850a05a43068b0c4fd7429a5963b1cfdbdfa6da18ded7ce6c9f07a34f92"
+    },
+    {
+      "path": "research/rea/2026-10-21/BENCHMARK_AND_REPLAY_PROTOCOL.md",
+      "bytes": 34185,
+      "sha256": "edca27792d9506b89ab1379e113ea5647b496b15e605249dc2385e5067222ab3"
+    },
+    {
+      "path": "research/rea/2026-10-21/DONOR_EVALUATION_RUBRIC.md",
+      "bytes": 7079,
+      "sha256": "113be734206f1c79ce9b418cc61a9cbc494f25eaa1902998e2e5d7a3dec43636"
+    },
+    {
+      "path": "research/rea/2026-10-21/FEATURE_PARITY_AND_GAP_MATRIX.md",
+      "bytes": 13908,
+      "sha256": "e760ff52122d46dee13d88ec3d8969ef83d4f3fe43e2c7d56700248dc7f1f8ea"
+    },
+    {
+      "path": "research/rea/2026-10-21/FORK_BOUNDARY_COMPARISON.md",
+      "bytes": 18488,
+      "sha256": "09028e65ef5baa7e8a3a6a120f9240cae094c013bbf6bb68d991af53fcb7ddc4"
+    },
+    {
+      "path": "research/rea/2026-10-21/INTERNAL_CONSISTENCY_REVIEW.md",
+      "bytes": 11754,
+      "sha256": "65ed1397890d9f4023ffda58886d121853d722aa9e7f34ed3e11250e0759d871"
+    },
+    {
+      "path": "research/rea/2026-10-21/KLAINT_DEEP_DIVE.md",
+      "bytes": 47015,
+      "sha256": "fbe457efa13d08f9e662827b9822dff6670d1966ca3b7364311902d62aa6aa87"
+    },
+    {
+      "path": "research/rea/2026-10-21/LIVE_FRONTIER_AND_HANDOFF.md",
+      "bytes": 6462,
+      "sha256": "cde8949501223a03b87c2676c2316b19341c6444b4687421cafcdfe027a669c4"
+    },
+    {
+      "path": "research/rea/2026-10-21/NEW_CANDIDATES_LOG.md",
+      "bytes": 4434,
+      "sha256": "e22b3cadafa3f496adbb739b9ddcc4f4bfae0fe16ff07397112d0184ee0e87f1"
+    },
+    {
+      "path": "research/rea/2026-10-21/OPUS_REPAIR_TRACEABILITY.md",
+      "bytes": 8934,
+      "sha256": "b34504df3cd5cb9c4457b8a7e03ded29df7233020b7400a9dcc108d0ed6e1cd0"
+    },
+    {
+      "path": "research/rea/2026-10-21/PLAN_REPAIR_INTERNAL_REVIEW.md",
+      "bytes": 7340,
+      "sha256": "dfb0f38647c154df773a62f3d6233e094862430849020dffa9c0dfb03c12f13e"
+    },
+    {
+      "path": "research/rea/2026-10-21/README.md",
+      "bytes": 6551,
+      "sha256": "72b84309b7f0252d37482d682350d9bb8470c54d8787e256f3edc51d3d4ab44c"
+    },
+    {
+      "path": "research/rea/2026-10-21/REA_METHODOLOGY.md",
+      "bytes": 7638,
+      "sha256": "5ff083943cfbe56cf292bc841235ba0c2c84d96c81c64c9986a679cc32ae07b8"
+    },
+    {
+      "path": "research/rea/2026-10-21/RIGHTS_AND_ATTRIBUTION_REGISTER.md",
+      "bytes": 21157,
+      "sha256": "b1d575b7efad2f5e678fa88eb5b531cb8b2bcca4fb2aedc9d964c11d6a72dc91"
+    },
+    {
+      "path": "research/rea/2026-10-21/SOURCE_CATALOG.md",
+      "bytes": 47777,
+      "sha256": "d643d292be133cd023a2d6cc5ab58c924adb954b5e66a2080b2f0f14e5b0e7dc"
+    },
+    {
+      "path": "research/rea/2026-10-21/SOURCE_TRANSPLANT_MATRIX.md",
+      "bytes": 42690,
+      "sha256": "3664f183df7076398aac3077b1c3871066658881d5007912c7cb3cbece7b8d6b"
+    },
+    {
+      "path": "research/rea/2026-10-21/VALIDATION.md",
+      "bytes": 4629,
+      "sha256": "86c8e6e61614e981fe9a20486c67477c4956a28385f2a63f7d182fa306be8cc4"
+    },
+    {
+      "path": "research/rea/2026-10-21/WISPRAL_CORE_DEEP_DIVE.md",
+      "bytes": 15475,
+      "sha256": "f3df815d7eff626590a7d3ef9399a878ac2aab42fa4f36f52071089b6c43997b"
+    },
+    {
+      "path": "research/rea/2026-10-21/WISPRSIDE_DEEP_DIVE.md",
+      "bytes": 33364,
+      "sha256": "0e53bbfd6a55365bc6ac116b09c62a9746cf84c2463e7e7330bdc47692e8c155"
+    },
+    {
+      "path": "research/rea/2026-10-21/WISPRSTUDIO_DEEP_DIVE.md",
+      "bytes": 35649,
+      "sha256": "85a3729700b995c7640a02fedbf70610805e44de8043eac7d3e31cad247eb2bc"
+    },
+    {
+      "path": "research/rea/2026-10-21/additional-source-evidence.json",
+      "bytes": 9879,
+      "sha256": "1152a79565f9c18d211ddb56a6de79b62bae00b09994c4e4097b30dbe8414a7b"
+    },
+    {
+      "path": "research/rea/2026-10-21/core-adjacent-source-evidence.json",
+      "bytes": 1718,
+      "sha256": "5757b0894d7e01a1332cb20a1d7dbd22bb0b122cd94a168a66d42ba3d3cb1823"
+    },
+    {
+      "path": "research/rea/2026-10-21/core-network-probe-results.json",
+      "bytes": 1232,
+      "sha256": "2d3ceddf83edde160f3777ad70dc1762e28c7548a5e97f4d9471975cb0d400a9"
+    },
+    {
+      "path": "research/rea/2026-10-21/core-policy-replay-results.json",
+      "bytes": 1686,
+      "sha256": "ef57303b2ae6307241fc814af592b851a2670d7ac89d1978828de2f45112b7ae"
+    },
+    {
+      "path": "research/rea/2026-10-21/core-source-evidence.json",
+      "bytes": 504682,
+      "sha256": "88349785fabe34bc3da65661ed759bd666ef34d570ae33b6c0fb4e4bb8fce915"
+    },
+    {
+      "path": "research/rea/2026-10-21/donor-rubric.json",
+      "bytes": 15169,
+      "sha256": "ffec059846fc7310cf299f6720c3c503cc4afa606d3cbc335abce5a94470196c"
+    },
+    {
+      "path": "research/rea/2026-10-21/feature-parity.json",
+      "bytes": 14248,
+      "sha256": "9214cbf5e388640490501a3b83cbec1230b3db34bd320b960d335cc91f4ac7d6"
+    },
+    {
+      "path": "research/rea/2026-10-21/fit-input-boundary-results.json",
+      "bytes": 3116,
+      "sha256": "b64b726e4213422b9166be590f926f32e9b8b07cc5dd04b50ccc932dc2851c08"
+    },
+    {
+      "path": "research/rea/2026-10-21/fit_input_boundary_probe.py",
+      "bytes": 7969,
+      "sha256": "ca3afe52abe2519ca5a3ff5b9cfa979c68316d04e4c44b6edcde5cc447bd9d50"
+    },
+    {
+      "path": "research/rea/2026-10-21/fork-boundary-evidence.json",
+      "bytes": 140549,
+      "sha256": "157fc3a4454095cdcef51326c5890feb83cf39daef9d2be3fcfd333ee66c5217"
+    },
+    {
+      "path": "research/rea/2026-10-21/frontier-snapshot.json",
+      "bytes": 14787,
+      "sha256": "f8031189963a4d9a952dfd1e3f2d72e6b5cfd27f4005de2019e3e47e63538c25"
+    },
+    {
+      "path": "research/rea/2026-10-21/ink-source-evidence.json",
+      "bytes": 82816,
+      "sha256": "ecede6fc080ab6fa06b434fbbf9f340e1398335310cc7ec4e5a97af0cfacf5ad"
+    },
+    {
+      "path": "research/rea/2026-10-21/klaint-source-evidence.json",
+      "bytes": 411350,
+      "sha256": "88251353e2c2b1b120ecc897325a215ec741c494ff936f06a54358a176f0ef84"
+    },
+    {
+      "path": "research/rea/2026-10-21/official-peer-observations.json",
+      "bytes": 7310,
+      "sha256": "a58c3a5bbb10757db87c169292b202564c57ec891616ea20d6914ca1540898b5"
+    },
+    {
+      "path": "research/rea/2026-10-21/official-web-source-manifest.json",
+      "bytes": 5341,
+      "sha256": "f0229c3a214c521234d7c12c486ebe30fdcac1e58e1db567f7ca3651d32786a6"
+    },
+    {
+      "path": "research/rea/2026-10-21/opus-repair-source-evidence.json",
+      "bytes": 3990,
+      "sha256": "d3d1e2074fb4ea83c354118e5eb42b4bebf041e338ed7e642d68b8f7ad1706ca"
+    },
+    {
+      "path": "research/rea/2026-10-21/packet-authorities.json",
+      "bytes": 12365,
+      "sha256": "50af1799d42df092ba6172a463e3847fa95facedd5b1a9e99880661c404f919a"
+    },
+    {
+      "path": "research/rea/2026-10-21/rea-runtime-observations.json",
+      "bytes": 45815,
+      "sha256": "79edce22e06a231656c4576fe78e1a63ff67aa71711c59b0afc0b7619658e471"
+    },
+    {
+      "path": "research/rea/2026-10-21/refresh_evidence_index.mjs",
+      "bytes": 1617,
+      "sha256": "fcfa971840f63e7b18f04ea56e7e42981f6281bd64d89b8f01f9555cc6b103b2"
+    },
+    {
+      "path": "research/rea/2026-10-21/reproduce_core_policy.mjs",
+      "bytes": 4014,
+      "sha256": "141a0d1f9a675d48f56170cb8255fd1e39043069d587bca51b71742c833fb1cb"
+    },
+    {
+      "path": "research/rea/2026-10-21/reproduce_ink_pure_units.mjs",
+      "bytes": 2992,
+      "sha256": "203cac8f9dc75477a60916cab3da26e07acfc8ffec972cfeca3a35090b88fe2b"
+    },
+    {
+      "path": "research/rea/2026-10-21/source-catalog.json",
+      "bytes": 904615,
+      "sha256": "28c8db74ca14384163f2c1e51ef36df67b05183cde9dd7f8378c2387b37526e4"
+    },
+    {
+      "path": "research/rea/2026-10-21/source-transplants.json",
+      "bytes": 196401,
+      "sha256": "03715eb9273b3ba77fcc2f23f938b280a14e4f1c737b6388405c37a4438bbd86"
+    },
+    {
+      "path": "research/rea/2026-10-21/studio-mechanism-probe-results.json",
+      "bytes": 2875,
+      "sha256": "04c783f41bc404b900005dae6ac516487db0ad89d69558653c4a5eef379efa36"
+    },
+    {
+      "path": "research/rea/2026-10-21/studio-source-evidence.json",
+      "bytes": 128601,
+      "sha256": "cc1b107eb8514525b49feeec7342c2a0257c5b0b484d81ca0acaa552dfe88ad3"
+    },
+    {
+      "path": "research/rea/2026-10-21/studio_mechanism_probe.py",
+      "bytes": 6339,
+      "sha256": "c91e90eac70a237ce0181af57069078ef8c9d7c67bf059e16bdcb04e8f2c7ecf"
+    },
+    {
+      "path": "research/rea/2026-10-21/test_research_schema.mjs",
+      "bytes": 1302,
+      "sha256": "f7f5003d26a8952692786f17a74480349093fe6054f5b985f3d2e28396380dea"
+    },
+    {
+      "path": "research/rea/2026-10-21/validate_research.mjs",
+      "bytes": 4630,
+      "sha256": "bb93de2f5143b51c1519be0bc6c1b60a8b7ea79dfc21e9abd1705278c3217e15"
+    }
+  ],
+  "index_hash_policy": "This index does not hash itself. Final Git commit binds the index and artifacts. Later validation/PR check artifacts are linked explicitly and must not be confused with source experiments.",
+  "limitations": [
+    "Per-file source bytes are not a whole-repository semantic audit.",
+    "Source-engineering rubric is judgment, not measured quality.",
+    "Official public docs and page navigation are not successful product inference.",
+    "All missing experiments have prospective protocols; no product/benchmark/release completion implied."
+  ],
+  "repair": {
+    "external_review": {
+      "pr": 125,
+      "head": "3de63649256da4004d02fa7147daf714d8b65265",
+      "reviewed_original_head": "f36338138f4b4a872b05393b5cab03856dd7bf8e",
+      "state": "UNMERGED_REVISE_RETAINED"
+    },
+    "traceability": "research/rea/2026-10-21/OPUS_REPAIR_TRACEABILITY.md",
+    "source_rows": 75,
+    "source_pins_preserved": true,
+    "rea_restarted": false,
+    "implementation_authorized": false,
+    "internal_review": "NOT_INDEPENDENT",
+    "new_fit_probe": "fit-input-boundary-results.json",
+    "governance_graph": "packet-authorities.json"
+  }
+}

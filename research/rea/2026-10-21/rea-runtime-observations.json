@@ -1,0 +1,1211 @@
+{
+  "schema": "wispral-rea-bounded-observations-v1",
+  "official_framework": {
+    "repo": "morluto/rea",
+    "source_sha": "7c6c25dda75e2d1d595a6cacc5cf9a82607f8502",
+    "executed_package": "rea-agents 6.3.0",
+    "source_main_package_version": "6.7.0",
+    "distinction": "Source main was read; it is not the executed npm package."
+  },
+  "records": [
+    {
+      "id": "decagon-passive",
+      "date": "2026-10-21",
+      "evidence_id": "ev_f09020d93061471d5b5297ccda23a76cb3e71aaa4445be3185a23f7d5fcc7d31",
+      "tool": "inspect_web_page",
+      "provider": {
+        "id": "rea-cdp-browser",
+        "name": "REA Chrome DevTools Protocol observation provider",
+        "version": "2"
+      },
+      "environment": {
+        "id": "Edg/155.0.4283.62@537.36 (@aa3a7406ba8c53a83536df539f07124d73c899bd)",
+        "platform": "unknown",
+        "architecture": "unknown",
+        "isolation": "none"
+      },
+      "parameters": {
+        "start_url": null,
+        "actions": []
+      },
+      "browser": {
+        "product": "Edg/155.0.4283.62",
+        "protocol_version": "1.3",
+        "revision": "537.36 (@aa3a7406ba8c53a83536df539f07124d73c899bd)",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+        "js_version": "15.5.9.7"
+      },
+      "completeness": {
+        "status": "policy_filtered",
+        "conditions": [
+          "attach_limited",
+          "policy_filtered"
+        ],
+        "policy_filtered_sections": [
+          "console_events",
+          "console_text",
+          "dom",
+          "frames",
+          "json_body_shapes",
+          "metadata",
+          "resources",
+          "script_sources",
+          "scripts",
+          "storage_keys",
+          "websocket_shapes"
+        ],
+        "attach_limited_sections": [
+          "console_events",
+          "metadata",
+          "network_requests",
+          "websocket_connections",
+          "websocket_frames"
+        ],
+        "truncated_sections": [],
+        "unavailable_sections": [],
+        "excluded": [
+          {
+            "section": "console_events",
+            "reason": "disallowed_origin",
+            "count": 1
+          },
+          {
+            "section": "console_text",
+            "reason": "not_approved",
+            "count": null
+          },
+          {
+            "section": "dom",
+            "reason": "unsupported_url",
+            "count": 2
+          },
+          {
+            "section": "frames",
+            "reason": "unsupported_url",
+            "count": 2
+          },
+          {
+            "section": "json_body_shapes",
+            "reason": "not_approved",
+            "count": null
+          },
+          {
+            "section": "metadata",
+            "reason": "disallowed_origin",
+            "count": 126
+          },
+          {
+            "section": "metadata",
+            "reason": "unsupported_url",
+            "count": 429
+          },
+          {
+            "section": "resources",
+            "reason": "disallowed_origin",
+            "count": 102
+          },
+          {
+            "section": "resources",
+            "reason": "unsupported_url",
+            "count": 214
+          },
+          {
+            "section": "script_sources",
+            "reason": "not_approved",
+            "count": 45
+          },
+          {
+            "section": "scripts",
+            "reason": "disallowed_origin",
+            "count": 47
+          },
+          {
+            "section": "scripts",
+            "reason": "unattributed_origin",
+            "count": 1
+          },
+          {
+            "section": "storage_keys",
+            "reason": "not_approved",
+            "count": null
+          },
+          {
+            "section": "websocket_shapes",
+            "reason": "not_approved",
+            "count": null
+          }
+        ],
+        "dropped_events": {
+          "scripts": 0,
+          "network_requests": 0,
+          "console_events": 0,
+          "websocket_connections": 0,
+          "websocket_frames": 0,
+          "webmcp_tools": 0,
+          "timeline_events": 0,
+          "total": 0
+        }
+      },
+      "steps": [],
+      "limitations": [
+        "Artifact identity is unavailable for this observation.",
+        "Observation starts when REA attaches; prior network and console activity is unavailable.",
+        "Raw network headers, bodies, cookies, storage values, console objects, and WebSocket payloads are never retained; explicitly requested primitive console text is retained verbatim, while payload captures retain value-free shapes.",
+        "Source maps are reported only as declarative URLs and are not fetched.",
+        "URL-less scripts and console events without an allowed source URL are excluded because their origin cannot be proven.",
+        "Browser host platform and architecture were not observed."
+      ],
+      "original_envelope_sha256": "00b30aeb52122f20bbe222f19c9e861ed68da3cd197babe674ef5c870f00540b",
+      "retention": "Bounded derived evidence; query values, page dumps, analytics identifiers, cookies, headers and proprietary content omitted. Digest identifies local original envelope, which is not distributed here.",
+      "status": "RUNTIME_OBSERVED_PUBLIC_PAGE_ONLY",
+      "observation": "Passive public homepage inspection: DOM/accessibility present, not a customer-agent conversation.",
+      "not_proven": [
+        "conversation",
+        "CRM action",
+        "handoff",
+        "latency",
+        "multi-tenancy"
+      ],
+      "passive_inventory": {
+        "dom_nodes": 3863,
+        "accessibility_nodes": 1028,
+        "capture_window": {
+          "started_at": "2026-10-21T05:47:41.762Z",
+          "ended_at": "2026-10-21T05:47:43.632Z",
+          "observation_ms": 500
+        },
+        "scope": "Only counts/window retained, not full public page text"
+      }
+    },
+    {
+      "id": "eleven-connect-initial",
+      "date": "2026-10-21",
+      "evidence_id": "ev_6fd5087cd4df416e315e1e6abefa4fec5218a7fea593eb1799291fef21498cc9",
+      "tool": "capture_browser_scenario",
+      "provider": {
+        "id": "rea-playwright-browser-scenario",
+        "name": "REA Playwright browser scenario capture provider",
+        "version": "1"
+      },
+      "environment": {
+        "id": "Chromium@155.0.4283.62",
+        "platform": "unknown",
+        "architecture": "unknown",
+        "isolation": "none"
+      },
+      "parameters": {
+        "browser_mode": "connect",
+        "start_url": {
+          "url": "https://elevenlabs.io/",
+          "query_parameter_names": [],
+          "query_values": "OMITTED"
+        },
+        "actions": [
+          {
+            "step_id": "enter-synthetic-text",
+            "action": "fill",
+            "locator": {
+              "kind": "role",
+              "role": "textbox",
+              "name": "Enter your text here, ElevenLabs AI Voice Generator will read it for you"
+            },
+            "value": "This is a synthetic Wispral research test. Do not change the number forty two.",
+            "destination": null
+          },
+          {
+            "step_id": "request-public-preview",
+            "action": "click",
+            "locator": {
+              "kind": "role",
+              "role": "button",
+              "name": "Play"
+            },
+            "destination": null
+          },
+          {
+            "step_id": "observe-preview-state",
+            "action": "wait_for_timeout",
+            "duration_ms": 2000,
+            "destination": null
+          }
+        ],
+        "capture": {
+          "after_each_step": [],
+          "at_end": [
+            "accessibility",
+            "url"
+          ],
+          "events": [
+            "network",
+            "console",
+            "page-errors"
+          ],
+          "network": {
+            "request_body": false,
+            "response_body": false,
+            "header_values": false
+          }
+        },
+        "scenario_sha256": "fed22ea2f0cc5d8a7085078ebeda0251af9334737162ef7e1e77ad1b222367b6"
+      },
+      "browser": {
+        "mode": "connect",
+        "process_ownership": "external",
+        "cleanup": "disconnected-external",
+        "product": "Chromium",
+        "version": "155.0.4283.62"
+      },
+      "completeness": {
+        "status": "incomplete",
+        "equality_eligible": false,
+        "missing_sections": [
+          "events"
+        ],
+        "truncated_sections": []
+      },
+      "steps": [
+        {
+          "index": 0,
+          "id": "scenario_start",
+          "action": "goto_start",
+          "elapsed_ms": 2470,
+          "before": {
+            "url": "https://decagon.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "selected_accessibility_lines": []
+        },
+        {
+          "index": 1,
+          "id": "enter-synthetic-text",
+          "action": "fill",
+          "elapsed_ms": 152,
+          "before": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "selected_accessibility_lines": []
+        },
+        {
+          "index": 2,
+          "id": "request-public-preview",
+          "action": "click",
+          "elapsed_ms": 361,
+          "before": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "selected_accessibility_lines": []
+        },
+        {
+          "index": 3,
+          "id": "observe-preview-state",
+          "action": "wait_for_timeout",
+          "elapsed_ms": 3111,
+          "before": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "accessibility_sha256": "ed408aad4bde58c38ed0ccac4c8b0a980b28e333d9ce7986b03870b0a8f4b06e",
+          "selected_accessibility_lines": [
+            "- textbox \"Enter your text here, ElevenLabs AI Voice Generator will read it for you\": In the ancient land of Eldoria, where skies shimmered and forests, whispered secrets to the wind, lived a dragon named Zephyros. [sarcastically]",
+            "- button \"Play\""
+          ]
+        }
+      ],
+      "limitations": [
+        "Artifact identity is unavailable for this observation.",
+        "Event sequence records provider receipt order; simultaneous browser causality is not inferred.",
+        "Network content is retained only when selected; response bytes are browser-decoded, not compressed wire bytes.",
+        "Request bytes are limited to what Playwright exposes; not_exposed does not establish body absence or multipart file coverage.",
+        "Network content reads settle within 5 seconds each and never wait for unfinished responses or refetch them.",
+        "Playwright scenario events do not expose request initiator stacks; receipt order does not prove causality.",
+        "Storage values are hashed only after declared-secret redaction.",
+        "Shared-context network capture excludes requests without a known root or descendant Page frame.",
+        "Some network requests had not completed when capture ended; later activity is unknown.",
+        "CDP attachment cannot recover pre-attach events or guarantee launch-time context options.",
+        "Browser host platform and architecture were not observed."
+      ],
+      "original_envelope_sha256": "04c60b893d6c7dc359f445e904a4fcb7982c753d1b19e400cafd40363c9955a9",
+      "retention": "Bounded derived evidence; query values, page dumps, analytics identifiers, cookies, headers and proprietary content omitted. Digest identifies local original envelope, which is not distributed here.",
+      "status": "RUNTIME_OBSERVED_INCOMPLETE_PREVIEW",
+      "observation": "Fill/click completed but hydration replaced the synthetic text with default content. No generated audio established.",
+      "not_proven": [
+        "audio generation",
+        "playback",
+        "latency",
+        "voice quality"
+      ]
+    },
+    {
+      "id": "eleven-connect-hydrated",
+      "date": "2026-10-21",
+      "evidence_id": "ev_024e7d0dbd25902445555555082500e324e9020ad8de65bf67154aecdc1a56a5",
+      "tool": "capture_browser_scenario",
+      "provider": {
+        "id": "rea-playwright-browser-scenario",
+        "name": "REA Playwright browser scenario capture provider",
+        "version": "1"
+      },
+      "environment": {
+        "id": "Chromium@155.0.4283.62",
+        "platform": "unknown",
+        "architecture": "unknown",
+        "isolation": "none"
+      },
+      "parameters": {
+        "browser_mode": "connect",
+        "start_url": {
+          "url": "https://elevenlabs.io/",
+          "query_parameter_names": [],
+          "query_values": "OMITTED"
+        },
+        "actions": [
+          {
+            "step_id": "settle-hydrated-demo",
+            "action": "wait_for_timeout",
+            "duration_ms": 1500,
+            "destination": null
+          },
+          {
+            "step_id": "enter-synthetic-text-after-hydration",
+            "action": "fill",
+            "locator": {
+              "kind": "role",
+              "role": "textbox",
+              "name": "Enter your text here, ElevenLabs AI Voice Generator will read it for you"
+            },
+            "value": "This is a synthetic Wispral research test. Keep the number forty two unchanged.",
+            "destination": null
+          },
+          {
+            "step_id": "request-public-preview",
+            "action": "click",
+            "locator": {
+              "kind": "role",
+              "role": "button",
+              "name": "Play"
+            },
+            "destination": null
+          },
+          {
+            "step_id": "observe-outcome",
+            "action": "wait_for_timeout",
+            "duration_ms": 2000,
+            "destination": null
+          }
+        ],
+        "capture": {
+          "after_each_step": [
+            "accessibility",
+            "url"
+          ],
+          "at_end": [
+            "accessibility",
+            "url"
+          ],
+          "events": [
+            "network",
+            "page-errors"
+          ],
+          "network": {
+            "request_body": false,
+            "response_body": false,
+            "header_values": false
+          }
+        },
+        "scenario_sha256": "7d7a89ce873e53fe6e1e6b3d88ab3880919e356e27620c3f523f75be9d06deec"
+      },
+      "browser": {
+        "mode": "connect",
+        "process_ownership": "external",
+        "cleanup": "disconnected-external",
+        "product": "Chromium",
+        "version": "155.0.4283.62"
+      },
+      "completeness": {
+        "status": "incomplete",
+        "equality_eligible": false,
+        "missing_sections": [
+          "events"
+        ],
+        "truncated_sections": []
+      },
+      "steps": [
+        {
+          "index": 0,
+          "id": "scenario_start",
+          "action": "goto_start",
+          "elapsed_ms": 1383,
+          "before": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "accessibility_sha256": "c7bbf511204eed58469ea5482122cb6a698b98700f1c7b7905f755bb46d25918",
+          "selected_accessibility_lines": [
+            "- textbox \"Enter your text here, ElevenLabs AI Voice Generator will read it for you\": In the ancient land of Eldoria, where skies shimmered and forests, whispered secrets to the wind, lived a dragon named Zephyros. [sarcastically]",
+            "- button \"Play\""
+          ]
+        },
+        {
+          "index": 1,
+          "id": "settle-hydrated-demo",
+          "action": "wait_for_timeout",
+          "elapsed_ms": 1703,
+          "before": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "accessibility_sha256": "1aa46cc999b3e1e00b78916f2f8071e62d6b075e2bc1957ee1871e9aab3cd0aa",
+          "selected_accessibility_lines": [
+            "- textbox \"Enter your text here, ElevenLabs AI Voice Generator will read it for you\": In the ancient land of Eldoria, where skies shimmered and forests, whispered secrets to the wind, lived a dragon named Zephyros. [sarcastically]",
+            "- button \"Play\""
+          ]
+        },
+        {
+          "index": 2,
+          "id": "enter-synthetic-text-after-hydration",
+          "action": "fill",
+          "elapsed_ms": 265,
+          "before": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "accessibility_sha256": "cc703fc3db2757a83362eb5ff6e89689cc9558ca727645de4c84cc475e793790",
+          "selected_accessibility_lines": [
+            "- text: This is a synthetic Wispral research test. Keep the number forty two unchanged.",
+            "- textbox \"Enter your text here, ElevenLabs AI Voice Generator will read it for you\": This is a synthetic Wispral research test. Keep the number forty two unchanged.",
+            "- button \"Play\""
+          ]
+        },
+        {
+          "index": 3,
+          "id": "request-public-preview",
+          "action": "click",
+          "elapsed_ms": 763,
+          "before": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "accessibility_sha256": "b1201915a3110b8beed9fb6654549d791cdec99a0e61ec11d134b6099daff5e6",
+          "selected_accessibility_lines": [
+            "- text: This is a synthetic Wispral research test. Keep the number forty two unchanged.",
+            "- textbox \"Enter your text here, ElevenLabs AI Voice Generator will read it for you\": This is a synthetic Wispral research test. Keep the number forty two unchanged.",
+            "- button \"Play\" [disabled]"
+          ]
+        },
+        {
+          "index": 4,
+          "id": "observe-outcome",
+          "action": "wait_for_timeout",
+          "elapsed_ms": 2145,
+          "before": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "accessibility_sha256": "b1201915a3110b8beed9fb6654549d791cdec99a0e61ec11d134b6099daff5e6",
+          "selected_accessibility_lines": [
+            "- text: This is a synthetic Wispral research test. Keep the number forty two unchanged.",
+            "- textbox \"Enter your text here, ElevenLabs AI Voice Generator will read it for you\": This is a synthetic Wispral research test. Keep the number forty two unchanged.",
+            "- button \"Play\" [disabled]"
+          ]
+        }
+      ],
+      "limitations": [
+        "Artifact identity is unavailable for this observation.",
+        "Event sequence records provider receipt order; simultaneous browser causality is not inferred.",
+        "Network content is retained only when selected; response bytes are browser-decoded, not compressed wire bytes.",
+        "Request bytes are limited to what Playwright exposes; not_exposed does not establish body absence or multipart file coverage.",
+        "Network content reads settle within 5 seconds each and never wait for unfinished responses or refetch them.",
+        "Playwright scenario events do not expose request initiator stacks; receipt order does not prove causality.",
+        "Storage values are hashed only after declared-secret redaction.",
+        "Shared-context network capture excludes requests without a known root or descendant Page frame.",
+        "Some network requests had not completed when capture ended; later activity is unknown.",
+        "CDP attachment cannot recover pre-attach events or guarantee launch-time context options.",
+        "Browser host platform and architecture were not observed."
+      ],
+      "original_envelope_sha256": "39ff4fc249dad7dea55ce3772c3d3d6056ef29d14bc1852f826a0bb49a809a75",
+      "retention": "Bounded derived evidence; query values, page dumps, analytics identifiers, cookies, headers and proprietary content omitted. Digest identifies local original envelope, which is not distributed here.",
+      "status": "RUNTIME_OBSERVED_NO_VERIFIED_AUDIO",
+      "observation": "After hydration, synthetic text persisted. Play became disabled. hCaptcha resources and page errors were observed; their causality is not established. No audio output was verified.",
+      "not_proven": [
+        "generated audio",
+        "CAPTCHA caused the outcome",
+        "successful playback",
+        "first-audio latency",
+        "quality"
+      ]
+    },
+    {
+      "id": "cartesia-connect",
+      "date": "2026-10-21",
+      "evidence_id": "ev_8c9bd64e1e4bb30944debc16b1bc0e084c8d6591fb9d2398eb0bf63d0bc9c7d0",
+      "tool": "capture_browser_scenario",
+      "provider": {
+        "id": "rea-playwright-browser-scenario",
+        "name": "REA Playwright browser scenario capture provider",
+        "version": "1"
+      },
+      "environment": {
+        "id": "Chromium@155.0.4283.62",
+        "platform": "unknown",
+        "architecture": "unknown",
+        "isolation": "none"
+      },
+      "parameters": {
+        "browser_mode": "connect",
+        "start_url": {
+          "url": "https://cartesia.ai/",
+          "query_parameter_names": [],
+          "query_values": "OMITTED"
+        },
+        "actions": [
+          {
+            "step_id": "settle-public-demo-access",
+            "action": "wait_for_timeout",
+            "duration_ms": 1200,
+            "destination": null
+          }
+        ],
+        "capture": {
+          "after_each_step": [],
+          "at_end": [
+            "accessibility",
+            "url"
+          ],
+          "events": [
+            "page-errors"
+          ],
+          "network": {
+            "request_body": false,
+            "response_body": false,
+            "header_values": false
+          }
+        },
+        "scenario_sha256": "5f46305564aceccdefa3cf54c74f9cd2117c54384d65a2d08db3cf7adb67533c"
+      },
+      "browser": {
+        "mode": "connect",
+        "process_ownership": "external",
+        "cleanup": "disconnected-external",
+        "product": "Chromium",
+        "version": "155.0.4283.62"
+      },
+      "completeness": {
+        "status": "incomplete",
+        "equality_eligible": false,
+        "missing_sections": [
+          "events"
+        ],
+        "truncated_sections": []
+      },
+      "steps": [
+        {
+          "index": 0,
+          "id": "scenario_start",
+          "action": "goto_start",
+          "elapsed_ms": 3034,
+          "before": {
+            "url": "https://elevenlabs.io/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://www.cartesia.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "selected_accessibility_lines": []
+        },
+        {
+          "index": 1,
+          "id": "settle-public-demo-access",
+          "action": "wait_for_timeout",
+          "elapsed_ms": 6460,
+          "before": {
+            "url": "https://www.cartesia.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://www.cartesia.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "accessibility_sha256": "297f008c81d506e91f531a5aebfbc17dc9a43706d020fe6a30f41a05d11bfcc7",
+          "selected_accessibility_lines": [
+            "- button \"Sign in\""
+          ]
+        }
+      ],
+      "limitations": [
+        "Artifact identity is unavailable for this observation.",
+        "Event sequence records provider receipt order; simultaneous browser causality is not inferred.",
+        "Network content is retained only when selected; response bytes are browser-decoded, not compressed wire bytes.",
+        "Request bytes are limited to what Playwright exposes; not_exposed does not establish body absence or multipart file coverage.",
+        "Network content reads settle within 5 seconds each and never wait for unfinished responses or refetch them.",
+        "Playwright scenario events do not expose request initiator stacks; receipt order does not prove causality.",
+        "Storage values are hashed only after declared-secret redaction.",
+        "CDP attachment cannot recover pre-attach events or guarantee launch-time context options.",
+        "Browser host platform and architecture were not observed."
+      ],
+      "original_envelope_sha256": "d0b8b15a3d63d8a497332108f39f8bb2268c3695464133ab975aa49af7e5a868",
+      "retention": "Bounded derived evidence; query values, page dumps, analytics identifiers, cookies, headers and proprietary content omitted. Digest identifies local original envelope, which is not distributed here.",
+      "status": "RUNTIME_OBSERVED_PUBLIC_PAGE_ONLY",
+      "observation": "Public homepage and entry points observed. Product inference was not exercised.",
+      "not_proven": [
+        "TTS generation",
+        "voice-agent conversation",
+        "deployment topology verified"
+      ]
+    },
+    {
+      "id": "cartesia-access-boundary",
+      "date": "2026-10-21",
+      "evidence_id": "ev_1fd8c6f1bfcd71b90283b30ddc2a1ea75b01111f123da4e85c37ecef81c97a12",
+      "tool": "capture_browser_scenario",
+      "provider": {
+        "id": "rea-playwright-browser-scenario",
+        "name": "REA Playwright browser scenario capture provider",
+        "version": "1"
+      },
+      "environment": {
+        "id": "Chromium@155.0.4283.62",
+        "platform": "unknown",
+        "architecture": "unknown",
+        "isolation": "none"
+      },
+      "parameters": {
+        "browser_mode": "connect",
+        "start_url": {
+          "url": "https://cartesia.ai/",
+          "query_parameter_names": [],
+          "query_values": "OMITTED"
+        },
+        "actions": [
+          {
+            "step_id": "settle",
+            "action": "wait_for_timeout",
+            "duration_ms": 800,
+            "destination": null
+          },
+          {
+            "step_id": "open-signed-out-boundary",
+            "action": "click",
+            "locator": {
+              "kind": "role",
+              "role": "button",
+              "name": "Sign in"
+            },
+            "destination": null
+          },
+          {
+            "step_id": "observe-sign-in",
+            "action": "wait_for_timeout",
+            "duration_ms": 800,
+            "destination": null
+          },
+          {
+            "step_id": "recover-public-page",
+            "action": "goto",
+            "destination": {
+              "url": "https://cartesia.ai/",
+              "query_parameter_names": [],
+              "query_values": "OMITTED"
+            }
+          }
+        ],
+        "capture": {
+          "after_each_step": [
+            "accessibility",
+            "url"
+          ],
+          "at_end": [
+            "accessibility",
+            "url"
+          ],
+          "events": [],
+          "network": {
+            "request_body": false,
+            "response_body": false,
+            "header_values": false
+          }
+        },
+        "scenario_sha256": "4a4ddb1eb536ae9aea6abe5ca9f5ef8b78f01fe7481b933de3f05f7a4d9605c2"
+      },
+      "browser": {
+        "mode": "connect",
+        "process_ownership": "external",
+        "cleanup": "disconnected-external",
+        "product": "Chromium",
+        "version": "155.0.4283.62"
+      },
+      "completeness": {
+        "status": "incomplete",
+        "equality_eligible": false,
+        "missing_sections": [
+          "events"
+        ],
+        "truncated_sections": []
+      },
+      "steps": [
+        {
+          "index": 0,
+          "id": "scenario_start",
+          "action": "goto_start",
+          "elapsed_ms": 3502,
+          "before": {
+            "url": "https://www.cartesia.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://www.cartesia.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "accessibility_sha256": "297f008c81d506e91f531a5aebfbc17dc9a43706d020fe6a30f41a05d11bfcc7",
+          "selected_accessibility_lines": [
+            "- button \"Sign in\""
+          ]
+        },
+        {
+          "index": 1,
+          "id": "settle",
+          "action": "wait_for_timeout",
+          "elapsed_ms": 865,
+          "before": {
+            "url": "https://www.cartesia.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://www.cartesia.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "accessibility_sha256": "297f008c81d506e91f531a5aebfbc17dc9a43706d020fe6a30f41a05d11bfcc7",
+          "selected_accessibility_lines": [
+            "- button \"Sign in\""
+          ]
+        },
+        {
+          "index": 2,
+          "id": "open-signed-out-boundary",
+          "action": "click",
+          "elapsed_ms": 5535,
+          "before": {
+            "url": "https://www.cartesia.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://play.cartesia.ai/sign-in",
+            "query_parameter_names": [
+              "site_cta_page",
+              "site_cta_id",
+              "site_cta_location"
+            ],
+            "query_values": "OMITTED"
+          },
+          "accessibility_sha256": "e74bc9694f7cf89e2391296175e4f01e15b4126eb86f1409159e803f0d27f8ff",
+          "selected_accessibility_lines": [
+            "- text: Email address",
+            "- textbox \"Email address\":",
+            "- button \"Continue\":",
+            "- text: Continue"
+          ]
+        },
+        {
+          "index": 3,
+          "id": "observe-sign-in",
+          "action": "wait_for_timeout",
+          "elapsed_ms": 845,
+          "before": {
+            "url": "https://play.cartesia.ai/sign-in",
+            "query_parameter_names": [
+              "site_cta_page",
+              "site_cta_id",
+              "site_cta_location"
+            ],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://play.cartesia.ai/sign-in",
+            "query_parameter_names": [
+              "site_cta_page",
+              "site_cta_id",
+              "site_cta_location"
+            ],
+            "query_values": "OMITTED"
+          },
+          "accessibility_sha256": "e74bc9694f7cf89e2391296175e4f01e15b4126eb86f1409159e803f0d27f8ff",
+          "selected_accessibility_lines": [
+            "- text: Email address",
+            "- textbox \"Email address\":",
+            "- button \"Continue\":",
+            "- text: Continue"
+          ]
+        },
+        {
+          "index": 4,
+          "id": "recover-public-page",
+          "action": "goto",
+          "elapsed_ms": 1528,
+          "before": {
+            "url": "https://play.cartesia.ai/sign-in",
+            "query_parameter_names": [
+              "site_cta_page",
+              "site_cta_id",
+              "site_cta_location"
+            ],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://www.cartesia.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "accessibility_sha256": "9329db95d78158920875fdcfe8a1b6877a1ea0f09db6285946ebba0d9b30b50d",
+          "selected_accessibility_lines": [
+            "- button \"Sign in\""
+          ]
+        }
+      ],
+      "limitations": [
+        "Artifact identity is unavailable for this observation.",
+        "Event sequence records provider receipt order; simultaneous browser causality is not inferred.",
+        "Network content is retained only when selected; response bytes are browser-decoded, not compressed wire bytes.",
+        "Request bytes are limited to what Playwright exposes; not_exposed does not establish body absence or multipart file coverage.",
+        "Network content reads settle within 5 seconds each and never wait for unfinished responses or refetch them.",
+        "Playwright scenario events do not expose request initiator stacks; receipt order does not prove causality.",
+        "Storage values are hashed only after declared-secret redaction.",
+        "CDP attachment cannot recover pre-attach events or guarantee launch-time context options.",
+        "Browser host platform and architecture were not observed."
+      ],
+      "original_envelope_sha256": "daab2e1a6e3746fdda9384334433a61f54c7551174f64b5430c2e30049f720e7",
+      "retention": "Bounded derived evidence; query values, page dumps, analytics identifiers, cookies, headers and proprietary content omitted. Digest identifies local original envelope, which is not distributed here.",
+      "status": "RUNTIME_OBSERVED_ACCESS_BOUNDARY_AND_NAVIGATION_RECOVERY",
+      "observation": "Sign in reached a page with Email address and Continue. No account data was entered or submitted. Explicit navigation returned to the public page.",
+      "not_proven": [
+        "authenticated generation",
+        "actual service failure/recovery",
+        "TTS quality"
+      ]
+    },
+    {
+      "id": "flow-connect",
+      "date": "2026-10-21",
+      "evidence_id": "ev_3cd2aa1b2619bd251fede8b81f45ee89410104b33bf3bc8ad20ed4c229c324b1",
+      "tool": "capture_browser_scenario",
+      "provider": {
+        "id": "rea-playwright-browser-scenario",
+        "name": "REA Playwright browser scenario capture provider",
+        "version": "1"
+      },
+      "environment": {
+        "id": "Chromium@155.0.4283.62",
+        "platform": "unknown",
+        "architecture": "unknown",
+        "isolation": "none"
+      },
+      "parameters": {
+        "browser_mode": "connect",
+        "start_url": {
+          "url": "https://wisprflow.ai/",
+          "query_parameter_names": [],
+          "query_values": "OMITTED"
+        },
+        "actions": [
+          {
+            "step_id": "settle-public-platform-offer",
+            "action": "wait_for_timeout",
+            "duration_ms": 1000,
+            "destination": null
+          }
+        ],
+        "capture": {
+          "after_each_step": [],
+          "at_end": [
+            "accessibility",
+            "url"
+          ],
+          "events": [],
+          "network": {
+            "request_body": false,
+            "response_body": false,
+            "header_values": false
+          }
+        },
+        "scenario_sha256": "d2274336062dd2cbc690ebbb0ad6542632ada23573d9be7017054c664bcda348"
+      },
+      "browser": {
+        "mode": "connect",
+        "process_ownership": "external",
+        "cleanup": "disconnected-external",
+        "product": "Chromium",
+        "version": "155.0.4283.62"
+      },
+      "completeness": {
+        "status": "incomplete",
+        "equality_eligible": false,
+        "missing_sections": [
+          "events"
+        ],
+        "truncated_sections": []
+      },
+      "steps": [
+        {
+          "index": 0,
+          "id": "scenario_start",
+          "action": "goto_start",
+          "elapsed_ms": 6906,
+          "before": {
+            "url": "https://www.cartesia.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://wisprflow.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "selected_accessibility_lines": []
+        },
+        {
+          "index": 1,
+          "id": "settle-public-platform-offer",
+          "action": "wait_for_timeout",
+          "elapsed_ms": 3853,
+          "before": {
+            "url": "https://wisprflow.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "after": {
+            "url": "https://wisprflow.ai/",
+            "query_parameter_names": [],
+            "query_values": "OMITTED"
+          },
+          "accessibility_sha256": "10e6a0956bc33e6c4c59fd504bca90a894338d08a78cae5a615223b505bd8b89",
+          "selected_accessibility_lines": []
+        }
+      ],
+      "limitations": [
+        "Artifact identity is unavailable for this observation.",
+        "Event sequence records provider receipt order; simultaneous browser causality is not inferred.",
+        "Network content is retained only when selected; response bytes are browser-decoded, not compressed wire bytes.",
+        "Request bytes are limited to what Playwright exposes; not_exposed does not establish body absence or multipart file coverage.",
+        "Network content reads settle within 5 seconds each and never wait for unfinished responses or refetch them.",
+        "Playwright scenario events do not expose request initiator stacks; receipt order does not prove causality.",
+        "Storage values are hashed only after declared-secret redaction.",
+        "CDP attachment cannot recover pre-attach events or guarantee launch-time context options.",
+        "Browser host platform and architecture were not observed."
+      ],
+      "original_envelope_sha256": "1907ce35faae692f194ecd8178792ecee96c3328cf1c4b61341771826ab3f521",
+      "retention": "Bounded derived evidence; query values, page dumps, analytics identifiers, cookies, headers and proprietary content omitted. Digest identifies local original envelope, which is not distributed here.",
+      "status": "RUNTIME_OBSERVED_PUBLIC_PAGE_ONLY",
+      "observation": "Public product page offered desktop download entry points. Native dictation, microphone, insertion and OS support were not tested.",
+      "not_proven": [
+        "live dictation",
+        "installation",
+        "Arabic accuracy",
+        "native privacy/offline behavior"
+      ]
+    }
+  ],
+  "failed_attempts": [
+    {
+      "target": "Wispr Flow / Aqua Voice / Superwhisper public pages",
+      "mode": "launch",
+      "result": "cleanup_incomplete",
+      "details": "Partial page artifacts; provider failed 1000 ms cleanup confirmation. Not treated as a completed application workflow."
+    },
+    {
+      "target": "ElevenLabs public page",
+      "mode": "launch",
+      "result": "cleanup_incomplete",
+      "details": "MCP launch also returned partial artifacts and cleanup failure; later connect-mode trials were separate observations."
+    },
+    {
+      "target": "CLI passive browser fallback",
+      "result": "NO_USABLE_OUTPUT",
+      "details": "Two bounded list/inspect subprocess attempts returned no usable JSON; no successful observation inferred."
+    },
+    {
+      "target": "in-app browser fallback",
+      "result": "ABORTED",
+      "details": "Initial browser entry aborted; no state or runtime result established."
+    }
+  ],
+  "availability": "REA MCP tools fluctuated during the research session: initially absent, available for captured observations, absent again, then re-advertised. Recorded observations bind their actual provider/package; tool registration alone never establishes runtime success.",
+  "failed_attempt_provenance": [
+    {
+      "id": "flow-public-launch",
+      "method": "REA CLI capture_browser_scenario",
+      "started_at": "2026-10-21T05:18:28.169Z",
+      "completed_at": "2026-10-21T05:18:44.408Z",
+      "rea_version": "6.3.0",
+      "request": {
+        "sha256": "4525f4efc11e92b093d89716d1686ca1da06043764636580d62c4a0ba49b26bd",
+        "bytes": 410
+      },
+      "response": {
+        "sha256": "04127f8eb47805f02a3e486e62e8af2ca24c989909b1a100148d1ecc315e05ad",
+        "bytes": 584782
+      },
+      "provider_evidence_id": null,
+      "error": {
+        "code": "cleanup_incomplete",
+        "category": "execution_failure",
+        "message": "Browser scenario cleanup could not be confirmed: Analysis operation timed out after 1000ms: capture_browser_scenario. Collected steps and events are retained in partial_observation. Review the reported resources before retrying.",
+        "reason": "cleanup_failed",
+        "cleanup": "incomplete",
+        "execution_failure": "unreadable_output"
+      },
+      "retention": "Bounded failure metadata; no proprietary page dump or tracking content."
+    },
+    {
+      "id": "aqua-public-launch",
+      "method": "REA CLI capture_browser_scenario",
+      "started_at": "2026-10-21T05:18:44.420Z",
+      "completed_at": "2026-10-21T05:18:58.139Z",
+      "rea_version": "6.3.0",
+      "request": {
+        "sha256": "88c6b8275ded07951c24893215352f0fbfdca31fc0722ff06e594215e64190a8",
+        "bytes": 411
+      },
+      "response": {
+        "sha256": "ec6f20c1432d81e2bedc3070cf63f0d5a7c720e429c8b5110f41459f06a7b767",
+        "bytes": 562538
+      },
+      "provider_evidence_id": null,
+      "error": {
+        "code": "cleanup_incomplete",
+        "category": "execution_failure",
+        "message": "Browser scenario cleanup could not be confirmed: Analysis operation timed out after 1000ms: capture_browser_scenario. Collected steps and events are retained in partial_observation. Review the reported resources before retrying.",
+        "reason": "cleanup_failed",
+        "cleanup": "incomplete",
+        "execution_failure": "unreadable_output"
+      },
+      "retention": "Bounded failure metadata; no proprietary page dump or tracking content."
+    },
+    {
+      "id": "superwhisper-public-launch",
+      "method": "REA CLI capture_browser_scenario",
+      "started_at": "2026-10-21T05:18:58.146Z",
+      "completed_at": "2026-10-21T05:19:51.221Z",
+      "rea_version": "6.3.0",
+      "request": {
+        "sha256": "ec3376aa00eaa4783a800ded2771fb2206fd726ee4c836e080e1f4e2f1c69102",
+        "bytes": 414
+      },
+      "response": {
+        "sha256": "4a3d440ae6b741d322c30e652cb95611fef8137ebbd73a514f43924d08538865",
+        "bytes": 940066
+      },
+      "provider_evidence_id": null,
+      "error": {
+        "code": "cleanup_incomplete",
+        "category": "execution_failure",
+        "message": "Browser scenario cleanup could not be confirmed: Analysis operation timed out after 1000ms: capture_browser_scenario. Collected steps and events are retained in partial_observation. Review the reported resources before retrying.",
+        "reason": "cleanup_failed",
+        "cleanup": "incomplete",
+        "execution_failure": "unreadable_output"
+      },
+      "retention": "Bounded failure metadata; no proprietary page dump or tracking content."
+    },
+    {
+      "id": "elevenlabs-mcp-launch",
+      "method": "REA MCP capture_browser_scenario",
+      "request": {
+        "sha256": "128064fb73130a3650146038495ae41f618bd66bf2d24a0ebc0142844590b367",
+        "bytes": 411
+      },
+      "response": {
+        "sha256": "484cb7946f68cef1f71b1a044eb7b05029051587956384ccf6d3c96778c22b03",
+        "bytes": 31461
+      },
+      "provider_evidence_id": null,
+      "error": {
+        "code": "cleanup_incomplete",
+        "category": "execution_failure",
+        "message": "Browser scenario cleanup could not be confirmed: Analysis operation timed out after 1000ms: capture_browser_scenario. Collected steps and events are retained in partial_observation. Review the reported resources before retrying.",
+        "reason": "cleanup_failed",
+        "cleanup": "incomplete",
+        "execution_failure": "unreadable_output"
+      }
+    },
+    {
+      "id": "passive-cli-no-usable-json",
+      "method": "Bounded CLI passive target attempts",
+      "output": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "attempts": 2,
+      "identity_limit": "One overwritten scratch output is retained; the two attempts do not have independent envelopes. No success or separate per-attempt digest is claimed."
+    },
+    {
+      "id": "iab-entry-aborted",
+      "method": "cua.createBrowserTab",
+      "result": "ABORTED",
+      "identity_limit": "Tool returned aborted; no capture envelope/artifact was returned, so no evidence ID or artifact digest exists."
+    }
+  ],
+  "cleanup_observation": "Connect trials reported disconnected-external. Final exact task-profile/port/PID cleanup check found no matching owned browser and stopped no process. No user browser or profile was deleted."
+}
