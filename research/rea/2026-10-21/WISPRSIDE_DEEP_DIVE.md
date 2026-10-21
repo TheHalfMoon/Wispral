@@ -1,5 +1,7 @@
 # WisprSide source investigation
 
+> V3 repair selection (Opus #125): current reuse modes/owners are in [SOURCE_TRANSPLANT_MATRIX.md](SOURCE_TRANSPLANT_MATRIX.md) and the [repair traceability](OPUS_REPAIR_TRACEABILITY.md). The original pinned source observations below remain valid; extraction-first selection/estimates are superseded where the current fork/API/contract boundary differs. No source identity or runtime result was discarded.
+
 **Mission:** [Issue #122](https://github.com/TheHalfMoon/Wispral/issues/122). **Disposition:** research and proposed transplants only; implementation authority remains closed. **Evidence date:** 2026-10-21. **Observed host:** Windows x64, Node.js 24.19.0. Hardware microphone, native insertion, packaged applications, paid APIs, Arabic recognition and macOS/Linux execution were **NOT_RUN** in this study.
 
 `FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER`

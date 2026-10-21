@@ -15,3 +15,5 @@ This ADR intentionally remains proposed because the founder requests a governanc
 ## Consequences
 
 Reuse preserves tested donor mechanisms and limits duplicate responsibility. It also creates process, schema, packaging and resource boundaries that require independent tests. No measured speech-quality winner exists. Revisit a lead when its qualified extraction fails, the release scope changes, or held-out results establish a better tradeoff. Adoption requires a dedicated amendment and applicable Grain; no earlier ADR or historical evidence is superseded by this proposal.
+
+Proposed selection refinement: [ADR 0002](0002-proposed-fork-and-runtime-ownership-repair.md) supersedes the extraction-first/global-runtime recommendation for the current V3 proposal. Neither ADR is ratified; historical source evidence remains unchanged.

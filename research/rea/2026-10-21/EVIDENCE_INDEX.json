@@ -193,9 +193,39 @@
   ],
   "files": [
     {
-      "path": "research/rea/2026-10-21/additional-source-evidence.json",
-      "bytes": 9879,
-      "sha256": "1152a79565f9c18d211ddb56a6de79b62bae00b09994c4e4097b30dbe8414a7b"
+      "path": "docs/adr/0001-proposed-donor-boundaries-for-platform-replan.md",
+      "bytes": 2138,
+      "sha256": "21d627eb6505c088130c6c3124cb968ed677d009fddf94eb0237b4a98bf590fa"
+    },
+    {
+      "path": "docs/adr/0002-proposed-fork-and-runtime-ownership-repair.md",
+      "bytes": 1174,
+      "sha256": "25800418a2c3a3c4f402585f508d71082766d037d21c28d2ca3f46229a1e46bd"
+    },
+    {
+      "path": "docs/strategy/WISPRAL_COPY_FIRST_WORK_PACKETS.md",
+      "bytes": 14087,
+      "sha256": "ccfa8cd307a3d72fcb76b0986bb1038d6855bf212e6abe207c05127c7fad4924"
+    },
+    {
+      "path": "docs/strategy/WISPRAL_GOVERNANCE_AMENDMENT_PROPOSAL.md",
+      "bytes": 15340,
+      "sha256": "b673cb8e763f0c3f90027a6a5a339abc875fe79e14a09c27cddb5fbcd3990a4f"
+    },
+    {
+      "path": "docs/strategy/WISPRAL_MASTER_PLAN_REBUILT.md",
+      "bytes": 13549,
+      "sha256": "9544617ff993d56666264052901151437b283c31acbc6c181a0db36b4f725fe2"
+    },
+    {
+      "path": "docs/strategy/WISPRAL_MODEL_ROUTING_CONTRACTS.md",
+      "bytes": 3399,
+      "sha256": "40f50d8c016a8f47496095a0b4fdf5b300f4f3ec703f9ae1fc6fb3fb5cd4a7bc"
+    },
+    {
+      "path": "docs/strategy/WISPRAL_PLATFORM_ARCHITECTURE_REPLAN.md",
+      "bytes": 14259,
+      "sha256": "532e5f52d2b899aa92c2eff1779e235b9bbe30b307aaf5e35785cd67d33fee45"
     },
     {
       "path": "research/rea/2026-10-21/ADDITIONAL_SOURCE_REVIEW.md",
@@ -206,6 +236,101 @@
       "path": "research/rea/2026-10-21/BENCHMARK_AND_REPLAY_PROTOCOL.md",
       "bytes": 34185,
       "sha256": "edca27792d9506b89ab1379e113ea5647b496b15e605249dc2385e5067222ab3"
+    },
+    {
+      "path": "research/rea/2026-10-21/DONOR_EVALUATION_RUBRIC.md",
+      "bytes": 7079,
+      "sha256": "113be734206f1c79ce9b418cc61a9cbc494f25eaa1902998e2e5d7a3dec43636"
+    },
+    {
+      "path": "research/rea/2026-10-21/FEATURE_PARITY_AND_GAP_MATRIX.md",
+      "bytes": 13908,
+      "sha256": "e760ff52122d46dee13d88ec3d8969ef83d4f3fe43e2c7d56700248dc7f1f8ea"
+    },
+    {
+      "path": "research/rea/2026-10-21/FORK_BOUNDARY_COMPARISON.md",
+      "bytes": 18488,
+      "sha256": "09028e65ef5baa7e8a3a6a120f9240cae094c013bbf6bb68d991af53fcb7ddc4"
+    },
+    {
+      "path": "research/rea/2026-10-21/INTERNAL_CONSISTENCY_REVIEW.md",
+      "bytes": 11754,
+      "sha256": "65ed1397890d9f4023ffda58886d121853d722aa9e7f34ed3e11250e0759d871"
+    },
+    {
+      "path": "research/rea/2026-10-21/KLAINT_DEEP_DIVE.md",
+      "bytes": 47015,
+      "sha256": "fbe457efa13d08f9e662827b9822dff6670d1966ca3b7364311902d62aa6aa87"
+    },
+    {
+      "path": "research/rea/2026-10-21/LIVE_FRONTIER_AND_HANDOFF.md",
+      "bytes": 6462,
+      "sha256": "cde8949501223a03b87c2676c2316b19341c6444b4687421cafcdfe027a669c4"
+    },
+    {
+      "path": "research/rea/2026-10-21/NEW_CANDIDATES_LOG.md",
+      "bytes": 4434,
+      "sha256": "e22b3cadafa3f496adbb739b9ddcc4f4bfae0fe16ff07397112d0184ee0e87f1"
+    },
+    {
+      "path": "research/rea/2026-10-21/OPUS_REPAIR_TRACEABILITY.md",
+      "bytes": 8934,
+      "sha256": "b34504df3cd5cb9c4457b8a7e03ded29df7233020b7400a9dcc108d0ed6e1cd0"
+    },
+    {
+      "path": "research/rea/2026-10-21/PLAN_REPAIR_INTERNAL_REVIEW.md",
+      "bytes": 7340,
+      "sha256": "dfb0f38647c154df773a62f3d6233e094862430849020dffa9c0dfb03c12f13e"
+    },
+    {
+      "path": "research/rea/2026-10-21/README.md",
+      "bytes": 6551,
+      "sha256": "72b84309b7f0252d37482d682350d9bb8470c54d8787e256f3edc51d3d4ab44c"
+    },
+    {
+      "path": "research/rea/2026-10-21/REA_METHODOLOGY.md",
+      "bytes": 7638,
+      "sha256": "5ff083943cfbe56cf292bc841235ba0c2c84d96c81c64c9986a679cc32ae07b8"
+    },
+    {
+      "path": "research/rea/2026-10-21/RIGHTS_AND_ATTRIBUTION_REGISTER.md",
+      "bytes": 21157,
+      "sha256": "b1d575b7efad2f5e678fa88eb5b531cb8b2bcca4fb2aedc9d964c11d6a72dc91"
+    },
+    {
+      "path": "research/rea/2026-10-21/SOURCE_CATALOG.md",
+      "bytes": 47777,
+      "sha256": "d643d292be133cd023a2d6cc5ab58c924adb954b5e66a2080b2f0f14e5b0e7dc"
+    },
+    {
+      "path": "research/rea/2026-10-21/SOURCE_TRANSPLANT_MATRIX.md",
+      "bytes": 42690,
+      "sha256": "3664f183df7076398aac3077b1c3871066658881d5007912c7cb3cbece7b8d6b"
+    },
+    {
+      "path": "research/rea/2026-10-21/VALIDATION.md",
+      "bytes": 4629,
+      "sha256": "86c8e6e61614e981fe9a20486c67477c4956a28385f2a63f7d182fa306be8cc4"
+    },
+    {
+      "path": "research/rea/2026-10-21/WISPRAL_CORE_DEEP_DIVE.md",
+      "bytes": 15475,
+      "sha256": "f3df815d7eff626590a7d3ef9399a878ac2aab42fa4f36f52071089b6c43997b"
+    },
+    {
+      "path": "research/rea/2026-10-21/WISPRSIDE_DEEP_DIVE.md",
+      "bytes": 33364,
+      "sha256": "0e53bbfd6a55365bc6ac116b09c62a9746cf84c2463e7e7330bdc47692e8c155"
+    },
+    {
+      "path": "research/rea/2026-10-21/WISPRSTUDIO_DEEP_DIVE.md",
+      "bytes": 35649,
+      "sha256": "85a3729700b995c7640a02fedbf70610805e44de8043eac7d3e31cad247eb2bc"
+    },
+    {
+      "path": "research/rea/2026-10-21/additional-source-evidence.json",
+      "bytes": 9879,
+      "sha256": "1152a79565f9c18d211ddb56a6de79b62bae00b09994c4e4097b30dbe8414a7b"
     },
     {
       "path": "research/rea/2026-10-21/core-adjacent-source-evidence.json",
@@ -233,24 +358,24 @@
       "sha256": "ffec059846fc7310cf299f6720c3c503cc4afa606d3cbc335abce5a94470196c"
     },
     {
-      "path": "research/rea/2026-10-21/DONOR_EVALUATION_RUBRIC.md",
-      "bytes": 5599,
-      "sha256": "e0c0c56e60ff806f54cbee3bac939da4b2ca68702d7699159921d113aa0227ca"
-    },
-    {
       "path": "research/rea/2026-10-21/feature-parity.json",
       "bytes": 14248,
       "sha256": "9214cbf5e388640490501a3b83cbec1230b3db34bd320b960d335cc91f4ac7d6"
     },
     {
-      "path": "research/rea/2026-10-21/FEATURE_PARITY_AND_GAP_MATRIX.md",
-      "bytes": 11458,
-      "sha256": "682ee4577cb6951bc2a1dd752958a02fdcd84e5b38701ca575f7b80ede63da5c"
+      "path": "research/rea/2026-10-21/fit-input-boundary-results.json",
+      "bytes": 3116,
+      "sha256": "b64b726e4213422b9166be590f926f32e9b8b07cc5dd04b50ccc932dc2851c08"
     },
     {
-      "path": "research/rea/2026-10-21/FINAL_INDEPENDENT_REVIEW.md",
-      "bytes": 11470,
-      "sha256": "1450933a3f2122d93fbef4c0f7fc23de6086f1d2c99554870434f843901ad4f4"
+      "path": "research/rea/2026-10-21/fit_input_boundary_probe.py",
+      "bytes": 7969,
+      "sha256": "ca3afe52abe2519ca5a3ff5b9cfa979c68316d04e4c44b6edcde5cc447bd9d50"
+    },
+    {
+      "path": "research/rea/2026-10-21/fork-boundary-evidence.json",
+      "bytes": 140549,
+      "sha256": "157fc3a4454095cdcef51326c5890feb83cf39daef9d2be3fcfd333ee66c5217"
     },
     {
       "path": "research/rea/2026-10-21/frontier-snapshot.json",
@@ -268,21 +393,6 @@
       "sha256": "88251353e2c2b1b120ecc897325a215ec741c494ff936f06a54358a176f0ef84"
     },
     {
-      "path": "research/rea/2026-10-21/KLAINT_DEEP_DIVE.md",
-      "bytes": 45163,
-      "sha256": "1acd4039d45f735fdc7b4bdb69510dd0926afb7d272f5913947f391986436a18"
-    },
-    {
-      "path": "research/rea/2026-10-21/LIVE_FRONTIER_AND_HANDOFF.md",
-      "bytes": 4871,
-      "sha256": "a243c91b6340ca2ac1149632c5f3eee0659ba8f445878543241fe38d665d85be"
-    },
-    {
-      "path": "research/rea/2026-10-21/NEW_CANDIDATES_LOG.md",
-      "bytes": 4434,
-      "sha256": "e22b3cadafa3f496adbb739b9ddcc4f4bfae0fe16ff07397112d0184ee0e87f1"
-    },
-    {
       "path": "research/rea/2026-10-21/official-peer-observations.json",
       "bytes": 7310,
       "sha256": "a58c3a5bbb10757db87c169292b202564c57ec891616ea20d6914ca1540898b5"
@@ -293,19 +403,24 @@
       "sha256": "f0229c3a214c521234d7c12c486ebe30fdcac1e58e1db567f7ca3651d32786a6"
     },
     {
+      "path": "research/rea/2026-10-21/opus-repair-source-evidence.json",
+      "bytes": 3990,
+      "sha256": "d3d1e2074fb4ea83c354118e5eb42b4bebf041e338ed7e642d68b8f7ad1706ca"
+    },
+    {
+      "path": "research/rea/2026-10-21/packet-authorities.json",
+      "bytes": 12365,
+      "sha256": "50af1799d42df092ba6172a463e3847fa95facedd5b1a9e99880661c404f919a"
+    },
+    {
       "path": "research/rea/2026-10-21/rea-runtime-observations.json",
       "bytes": 45815,
       "sha256": "79edce22e06a231656c4576fe78e1a63ff67aa71711c59b0afc0b7619658e471"
     },
     {
-      "path": "research/rea/2026-10-21/README.md",
-      "bytes": 5481,
-      "sha256": "d548c74535fbc137f763fa43cb9ff64bb5355de208a1d6c8d69bb4fa9aad0ca5"
-    },
-    {
-      "path": "research/rea/2026-10-21/REA_METHODOLOGY.md",
-      "bytes": 7638,
-      "sha256": "5ff083943cfbe56cf292bc841235ba0c2c84d96c81c64c9986a679cc32ae07b8"
+      "path": "research/rea/2026-10-21/refresh_evidence_index.mjs",
+      "bytes": 1617,
+      "sha256": "fcfa971840f63e7b18f04ea56e7e42981f6281bd64d89b8f01f9555cc6b103b2"
     },
     {
       "path": "research/rea/2026-10-21/reproduce_core_policy.mjs",
@@ -318,29 +433,14 @@
       "sha256": "203cac8f9dc75477a60916cab3da26e07acfc8ffec972cfeca3a35090b88fe2b"
     },
     {
-      "path": "research/rea/2026-10-21/RIGHTS_AND_ATTRIBUTION_REGISTER.md",
-      "bytes": 20554,
-      "sha256": "c48285fdc3bc11e947d2ee8147e3375c2a32c40cfa54f636961f05d87fad7af3"
-    },
-    {
       "path": "research/rea/2026-10-21/source-catalog.json",
       "bytes": 904615,
       "sha256": "28c8db74ca14384163f2c1e51ef36df67b05183cde9dd7f8378c2387b37526e4"
     },
     {
       "path": "research/rea/2026-10-21/source-transplants.json",
-      "bytes": 176243,
-      "sha256": "f1654282dceceab008654561a4513403149efe31518eaf0b992ce28f1d6b51a9"
-    },
-    {
-      "path": "research/rea/2026-10-21/SOURCE_CATALOG.md",
-      "bytes": 47777,
-      "sha256": "d643d292be133cd023a2d6cc5ab58c924adb954b5e66a2080b2f0f14e5b0e7dc"
-    },
-    {
-      "path": "research/rea/2026-10-21/SOURCE_TRANSPLANT_MATRIX.md",
-      "bytes": 56396,
-      "sha256": "3b61de8d71361509721f4e0338a806600c99c43507a19b8be965bc435a8449ca"
+      "bytes": 196401,
+      "sha256": "03715eb9273b3ba77fcc2f23f938b280a14e4f1c737b6388405c37a4438bbd86"
     },
     {
       "path": "research/rea/2026-10-21/studio-mechanism-probe-results.json",
@@ -358,54 +458,14 @@
       "sha256": "c91e90eac70a237ce0181af57069078ef8c9d7c67bf059e16bdcb04e8f2c7ecf"
     },
     {
+      "path": "research/rea/2026-10-21/test_research_schema.mjs",
+      "bytes": 1302,
+      "sha256": "f7f5003d26a8952692786f17a74480349093fe6054f5b985f3d2e28396380dea"
+    },
+    {
       "path": "research/rea/2026-10-21/validate_research.mjs",
-      "bytes": 3315,
-      "sha256": "c7ab8e6bdf4b2e41dd66a59a928a01c08836efd8f5eda77bfc937e3b7464b7ea"
-    },
-    {
-      "path": "research/rea/2026-10-21/VALIDATION.md",
-      "bytes": 3160,
-      "sha256": "5e7794a19a813a5a05e73a9f3a63bbc3549e85110750aefaec96593970ff6b5e"
-    },
-    {
-      "path": "research/rea/2026-10-21/WISPRAL_CORE_DEEP_DIVE.md",
-      "bytes": 14206,
-      "sha256": "70005574608e986300634ef7b08e1996977c2ed628ffee741f3442724d4085af"
-    },
-    {
-      "path": "research/rea/2026-10-21/WISPRSIDE_DEEP_DIVE.md",
-      "bytes": 32957,
-      "sha256": "302e4c61d964911208879635286eae8c4391427d31753476e2d6bf01bd782e5d"
-    },
-    {
-      "path": "research/rea/2026-10-21/WISPRSTUDIO_DEEP_DIVE.md",
-      "bytes": 35242,
-      "sha256": "858cd5c5a115a020ad4e53498b839085161e75f2d9ee000feabf386f8893874d"
-    },
-    {
-      "path": "docs/strategy/WISPRAL_PLATFORM_ARCHITECTURE_REPLAN.md",
-      "bytes": 13120,
-      "sha256": "ee30805765adc54344d2504a1eef2a157898a192c5617c88e2d9d6f26833128d"
-    },
-    {
-      "path": "docs/strategy/WISPRAL_MASTER_PLAN_REBUILT.md",
-      "bytes": 12450,
-      "sha256": "8d0b02cd3f5278a49df7c27b04508e9aac61dacd6c286b85af6de3b7dde4ef39"
-    },
-    {
-      "path": "docs/strategy/WISPRAL_COPY_FIRST_WORK_PACKETS.md",
-      "bytes": 13259,
-      "sha256": "04385f39fc70462a0d3eff7de23cee3aea3b6a64a4329c624831640ffc090622"
-    },
-    {
-      "path": "docs/strategy/WISPRAL_GOVERNANCE_AMENDMENT_PROPOSAL.md",
-      "bytes": 7797,
-      "sha256": "7663fc8a2a01a343e8bb7ff9d55c638e30ee284dd02f2e3716c52123626af38b"
-    },
-    {
-      "path": "docs/adr/0001-proposed-donor-boundaries-for-platform-replan.md",
-      "bytes": 1881,
-      "sha256": "2cb3a1bbac3cf28f1fc3b5a6b931b9e64eed816516be71c632ac89660e3ca750"
+      "bytes": 4630,
+      "sha256": "bb93de2f5143b51c1519be0bc6c1b60a8b7ea79dfc21e9abd1705278c3217e15"
     }
   ],
   "index_hash_policy": "This index does not hash itself. Final Git commit binds the index and artifacts. Later validation/PR check artifacts are linked explicitly and must not be confused with source experiments.",
@@ -414,5 +474,21 @@
     "Source-engineering rubric is judgment, not measured quality.",
     "Official public docs and page navigation are not successful product inference.",
     "All missing experiments have prospective protocols; no product/benchmark/release completion implied."
-  ]
+  ],
+  "repair": {
+    "external_review": {
+      "pr": 125,
+      "head": "3de63649256da4004d02fa7147daf714d8b65265",
+      "reviewed_original_head": "f36338138f4b4a872b05393b5cab03856dd7bf8e",
+      "state": "UNMERGED_REVISE_RETAINED"
+    },
+    "traceability": "research/rea/2026-10-21/OPUS_REPAIR_TRACEABILITY.md",
+    "source_rows": 75,
+    "source_pins_preserved": true,
+    "rea_restarted": false,
+    "implementation_authorized": false,
+    "internal_review": "NOT_INDEPENDENT",
+    "new_fit_probe": "fit-input-boundary-results.json",
+    "governance_graph": "packet-authorities.json"
+  }
 }

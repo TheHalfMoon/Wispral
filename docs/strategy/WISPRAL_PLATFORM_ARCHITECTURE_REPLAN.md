@@ -1,42 +1,35 @@
 # Wispral platform architecture replan
 
-Status: **PROPOSED — RESEARCH ONLY**, 2026-10-21. This plan follows the [source studies](../../research/rea/2026-10-21/README.md) and [72-mechanism transplant matrix](../../research/rea/2026-10-21/SOURCE_TRANSPLANT_MATRIX.md). It does not replace the active constitution, canonical architecture, specification frontier or 000G gate. Final founder names: **Wispral / WisprStudio / WisprSide / Klaint**.
+Status: **PROPOSED — RESEARCH ONLY**, 2026-10-21. This plan follows the [source studies](../../research/rea/2026-10-21/README.md) and [75-record source matrix](../../research/rea/2026-10-21/SOURCE_TRANSPLANT_MATRIX.md). It does not replace the active constitution, canonical architecture, specification frontier or 000G gate. Final founder names: **Wispral / WisprStudio / WisprSide / Klaint**.
 
-Wispral should be one voice platform with a shared Rust authority and resource core. WisprSide provides cross-application dictation and optional developer-agent control. WisprStudio provides generation, timeline/editing, long-form rendering and dubbing. Klaint provides bounded customer dialogue, tools, channels and human handoff. Each surface can ship on its own qualified capability manifest; no user must install every engine or open an account to use the local core.
+Wispral Core is shared versioned contracts, a small optional embedded policy library and conformance fixtures, not a mandatory cross-product daemon. Each product has one local authority owner appropriate to its deployment. WisprSide provides cross-application dictation and optional developer-agent control. WisprStudio provides generation, timeline/editing, long-form rendering and dubbing. Klaint provides bounded customer dialogue, tools, channels and human handoff. Each surface can ship on its own qualified capability manifest; no user must install every engine or open an account to use the local core.
 
-## Donor-led structure
+## Donor-led structure — repaired boundary selection
 
-| Layer | Proposed boundary | Why this boundary follows source evidence |
+The [pinned fork comparison](../../research/rea/2026-10-21/FORK_BOUNDARY_COMPARISON.md) supersedes extraction-first application assembly. Retain the coarsest compatible existing boundary; extract pure leaves only when they simplify qualification. Fork adoption is conditional on recorded baseline builds/tests and deltas, currently NOT_RUN.
+
+| Product/boundary | Selected reuse and exact source | Exclusion / qualification |
 | --- | --- | --- |
-| Rust Core | Session/epoch events, deterministic policy, provenance, routing, process ownership, resource leases and metadata journal | Adapt Sentrdel/Ninerr/Ascout/Orcel narrow mechanisms. Their complete applications would duplicate responsibility and import large unrelated closures |
-| Native capture and text delivery | Handy recorder/keys packages; adapted Handy transaction/coordinator; selected OpenWhispr target/failure helpers | Rust aligns with Core; C/OS helpers remain narrow. Remove focus fallback, Tauri manager coupling and insecure default screenshot behavior |
-| Speech router | A single versioned backend interface, one default per qualified configuration | No measured STT winner. Preserve frozen B2 while qualifying exact native/model identities separately |
-| Model execution | Supervised processes with locked environments and exact artifacts | VoiceStudio, Chatterbox, Qwen and CosyVoice have conflicting transformers/torch constraints. Do not combine one environment or rewrite the engines in Rust |
-| Studio services | Selective VoiceStudio fit/render/resume/project/dubbing mechanisms; one project store/timeline | Voicebox is a narrower alternative, not a second queue/database/UI alongside the lead |
-| Klaint dialogue | Parlant package/service with bounded NLP and tool interfaces | Guidelines are probabilistic behavior, not authorization. Preserve engine/package boundary rather than copy one coupled engine.py |
-| Inbox/connectors | Optional Chatwoot service; selected Botpress connector/HITL schemas | Chatwoot has a real Rails inbox/ownership model. Botpress public SDK does not reproduce Botpress Cloud runtime |
-| Realtime media | Optional Pipecat worker for local configurable pipeline; LiveKit alternative when WebRTC/SIP topology requires it | One turn controller per session. Push-to-talk must not depend on either full framework |
-| Coding agents | ACP Rust SDK; external Codex/Claude adapters through qualified protocol; Gemini/PTY only after separate trials | Preserve agent portability without making a proprietary subscription or copied agent runtime compulsory |
+| WisprSide | Pinned Handy fork 93c9ee05efe294cf2a56bd534b77ea1079f21b77, retaining Tauri/UI/settings/history/install/capture/paste/supervisor | No new Core crate required to build a baseline. Fix exact-target/context authority; Handy model loads are not cancellable at this pin, so add/test a bounded cancellation delta or report stopped-unconfirmed |
+| WisprStudio | Pinned VoiceStudio fork 28bf2c7a83b8a64836297340c52a45d716684aed, retaining project/timeline/render/resume/consent/engine integration | Keep analytics OFF (manifest already documents default-off; runtime proof missing), disable URL ingest, stage only qualified engines/assets. Existing in-process paths are not magically isolated |
+| Klaint | Parlant ea737442b8ae65854a842542e544fbe7e6144bad wrapped in one Python service, with deterministic broker, canned responses, retrievers and evaluations | No mandatory Rust process hop, Node connector host or copied Rails inbox. Optional Chatwoot is unmodified through API/webhooks |
+| Core library/contracts | Sentrdel pure policy/bounded-input, ACP schemas, source/consent/cancel envelopes and fixtures | Embed where useful. Python binding or qualified equivalent consumes same verdict fixtures; no duplicate deployment-wide supervisor |
+| Voice composition | Pipecat 9b0459b47675324843ffea17d90d8d3e422eb92c inside Klaint's Python service when voice is authorized | LiveKit Agents is REFERENCE_ONLY. Pipecat transports may use LiveKit/WebRTC/SIP bridges without adding a second session controller |
 
-```mermaid
-flowchart TB
-  Ink[WisprSide: dictation and optional agent control] --> Core
-  Studio[WisprStudio: scripts, timeline and dubbing] --> Core
-  Klaint[Klaint: customer chat and voice] --> Core
-  Core[Wispral Rust Core: authority, identity, routing, provenance and cancellation]
-  Core --> Native[Handy capture / native delivery adapters]
-  Core --> Speech[One speech router / qualified native adapters]
-  Core --> Workers[Owned workers / model and consent inventory]
-  Workers --> VS[Selected VoiceStudio services]
-  Workers --> TTS[Separate locked TTS engine environments]
-  Core --> Dialogue[Parlant dialogue service]
-  Core --> Broker[Scoped tool and channel broker]
-  Broker --> Inbox[Optional Chatwoot / selected connectors]
-  Core --> Agents[ACP adapters / independent agents]
-  Core --> RT[Optional single realtime session owner]
-```
+## One owner per responsibility
 
-Arrows denote bounded requests, not unrestricted authority or shared credentials. Proposed paths live in the transplant matrix; diagrams do not create implementation scope.
+| Responsibility | Sole owner within its runtime | Mapping and conformance |
+| --- | --- | --- |
+| Side model process subtree | Handy engine_supervisor; recorder owns only its device handle | INK-I10 is a fork delta, not another Core supervisor; Core-PROCESS is fallback/reference only. Cancel-at-load limitation must remain visible |
+| Studio backend/engine subtrees | Existing VoiceStudio containment/backend hierarchy; one parent per distinct child subtree | Keep contained_subprocess + SubprocessBackend/job registry relationships; do not put Sentrdel or Handy around those same children. Selected in-process engines need explicit stop limitations or a qualified existing sidecar path |
+| Klaint service/process | Its Python service host; Pipecat owns only session pipeline tasks | No independent model supervisor copied from desktop donors |
+| Cancellation semantics | One Core state contract; runtime owner performs stop/escalation and reports observations | request → ack → stopped/completed-before-cancel/stopped-unconfirmed; no lease release merely on ack |
+| Model inventory | One shared schema and one implementation/store per product deployment | Side's model manager and Studio model_acceptance implement the same identity/terms/consent contract. Studio model_lifecycle is a facade, not a second inventory. No shared global DB required across desktop and tenants |
+| External side effects | Side delivery transaction; Studio export commit; Klaint deterministic broker, respectively | Each request has one commit/unknown-outcome owner. Retrievers/LLMs/Plan hooks cannot authorize connector mutations |
+
+Cross-runtime acceptance: identical cancel-state fixtures at load, mid-inference, after completion/commit and crash; zero orphan children; stale epochs rejected; memory/accelerator leases released only after observed stop. A fake contract passing is not native stop proof. Global cross-product accelerator scheduling is deferred until a measured multi-product contention requirement exists.
+
+F-SIDE-0/F-STUDIO-0 preserve upstream branches, notices and baseline manifests. DELTA_REGISTER.md records finding → file → fixture → upstream-rebase status → rollback/data migration. No competing realtime framework or new general supervisor is selected.
 
 ## Authority and data contracts
 
@@ -82,11 +75,11 @@ App context is optional and narrowly scoped: user-selected text/application meta
 
 ## Workers, resource scheduling and artifact inventory
 
-Share one artifact inventory and resource lease coordinator across surfaces. Record engine source/native library/model/tokenizer/voice digests, runtime/provider versions, language support, resource profile, terms/card version and consent applicability. Cache keys include input/config/artifact/consent epoch and do not cross tenants. Source rights are founder-confirmed; model/voice rights remain distinct.
+Reuse donor lifecycle mechanisms rather than rebuild them. Each deployment has one inventory implementation and resource owner behind the common schema. VoiceStudio already has per-engine subprocess infrastructure and also in-process TTS/ASR/diarization paths; qualify the exact selected engine path, not a blanket isolation claim. Preserve its model_acceptance store and lifecycle facade, removing no consent checks.
 
-Use a separate locked environment per engine family. VoiceStudio requests transformers >=5.10.0, Chatterbox ==5.2.0, Qwen3-TTS ==4.57.3 and CosyVoice ==4.51.3 at the inspected pins, with incompatible torch/pyannote combinations. Admit only the selected engine environments, not every donor extra. Pin mutable git dependencies such as resemble-perth before execution. No auto-download during offline mode.
+Engine requirements conflict: VoiceStudio transformers >=5.10.0, Chatterbox ==5.2.0, Qwen ==4.57.3, CosyVoice ==4.51.3, plus torch/pyannote differences. Reuse retained engine-specific environments where present. Only add a sidecar delta if an admitted engine lacks a technically sufficient existing boundary. Pin mutable dependencies such as resemble-perth before execution. No auto-download, telemetry, URL media input or cloud fallback in offline jobs.
 
-Scheduling starts with one active bounded job per qualified engine/accelerator lease. Later concurrency requires measured RSS/VRAM and cancellation behavior; queue length and per-tenant work/audio-duration limits are explicit. OOM/crash quarantines the worker and marks its result incomplete. Restart resumes only digest-valid completed segments. Revoked voice consent invalidates queued cloning and future cache reads. A recording/tracing default in a donor is not the platform privacy policy.
+One runtime owner holds each job/resource lease. Bound queues/audio duration/tenant budgets; mark crash/OOM/unknown stop accurately. Resume only digest-valid source/config/artifact/consent state. Voice revocation blocks new/queued work and future cache use. Exact modality/provider contracts are in [WISPRAL_MODEL_ROUTING_CONTRACTS.md](WISPRAL_MODEL_ROUTING_CONTRACTS.md).
 
 ## Klaint tools, tenancy and human ownership
 

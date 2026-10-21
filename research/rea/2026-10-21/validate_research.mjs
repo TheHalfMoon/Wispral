@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-const root=path.resolve(process.argv[2]||'.');
+const root=path.resolve(process.argv[2]&&!process.argv[2].startsWith('--')?process.argv[2]:'.');
 const research=path.join(root,'research/rea/2026-10-21');
 const failures=[];
 const checked=[];
@@ -29,7 +29,19 @@ for(const f of index.files){const p=path.join(root,f.path);if(!fs.existsSync(p))
 const catalog=JSON.parse(fs.readFileSync(path.join(research,'source-catalog.json')));
 if(catalog.records.length!==132)failures.push({kind:'CATALOG_COUNT',actual:catalog.records.length});
 for(const s of catalog.records){if(s.sha&&!/^[a-f0-9]{40}$/.test(s.sha))failures.push({kind:'INVALID_SOURCE_PIN',repo:s.requested});if(s.tree_truncated)failures.push({kind:'TRUNCATED_TREE',repo:s.requested});}
-const transplants=JSON.parse(fs.readFileSync(path.join(research,'source-transplants.json'))).rows;
+const fixtureArg=process.argv.indexOf('--transplants');
+const transplantPath=fixtureArg>=0?path.resolve(process.argv[fixtureArg+1]):path.join(research,'source-transplants.json');
+const transplants=JSON.parse(fs.readFileSync(transplantPath)).rows;
 const seen=new Set();for(const r of transplants){if(seen.has(r.id))failures.push({kind:'DUPLICATE_MECHANISM_ID',id:r.id});seen.add(r.id);for(const s of r.sources||[])if(!s.path||!s.url||!s.sha256)failures.push({kind:'INCOMPLETE_SOURCE_IDENTITY',id:r.id});}
+for(const row of transplants){
+ if(typeof row.decision!=='string'||!row.decision||row.decision!==row.mode)failures.push({kind:'MISSING_OR_INCONSISTENT_DECISION',id:row.id});
+ if(typeof row.runtime_status!=='string'||!row.runtime_status)failures.push({kind:'MISSING_RUNTIME_STATUS',id:row.id});
+}
+const graph=JSON.parse(fs.readFileSync(path.join(research,'packet-authorities.json')));
+const nodes=new Map([...graph.nodes,...graph.packets.map(p=>({...p,requires:[p.authority,...p.requires]}))].map(n=>[n.id,n]));
+const visiting=new Set(),visited=new Set();
+function visit(id){if(!nodes.has(id)){failures.push({kind:'UNKNOWN_AUTHORITY_DEPENDENCY',id});return;}if(visiting.has(id)){failures.push({kind:'AUTHORITY_CYCLE',id});return;}if(visited.has(id))return;visiting.add(id);for(const dep of nodes.get(id).requires||[])visit(dep);visiting.delete(id);visited.add(id);}
+for(const n of nodes.values()){visit(n.id);if(n.ready!==false)failures.push({kind:'UNAUTHORIZED_READY_STATE',id:n.id});}
+for(const p of graph.packets)if(!graph.nodes.some(n=>n.id===p.authority))failures.push({kind:'MISSING_PACKET_AUTHORITY',id:p.id});
 const result={status:failures.length?'FAIL':'PASS',scope:'Bundle JSON, local links, indexed hashes, pinned identities, unique source mechanism IDs and bounded secret-pattern scan only; no product/runtime/security/release approval.',files_checked:checked.length,indexed_files:index.files.length,catalog_rows:catalog.records.length,transplant_rows:transplants.length,failures};
 console.log(JSON.stringify(result,null,2));if(failures.length)process.exitCode=1;

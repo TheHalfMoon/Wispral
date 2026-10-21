@@ -23,8 +23,16 @@ Its PASS applies only to the printed integrity scope. It does not check every re
 
 No product workspace exists in the canonical state; Cargo fmt/clippy/test for a new Wispral runtime is not applicable to this documentation-only mission. Donor full applications, native microphone/paste/OS installation, authenticated agent/customer actions, audio/model/GPU inference, telephony, human speech quality and performance benchmarks remain NOT_RUN/NOT_MEASURED as indexed. No compatibility or production-quality claim follows from bundle validation.
 
-The independent planning review is recorded in [FINAL_INDEPENDENT_REVIEW.md](FINAL_INDEPENDENT_REVIEW.md). Its scope is research integrity and plan feasibility, not the repository's required independent release/security approval.
+The internal consistency review is recorded in [INTERNAL_CONSISTENCY_REVIEW.md](INTERNAL_CONSISTENCY_REVIEW.md). INDEPENDENT_REVIEW=NOT_SATISFIED_BY_THIS_FILE. Its scope is research integrity and plan feasibility, not the repository's required independent release/security approval.
 
 ## GitHub CI
 
 The exact new PR head must be assessed after push. Existing later-PR B2R16 scope failures are described in [LIVE_FRONTIER_AND_HANDOFF.md](LIVE_FRONTIER_AND_HANDOFF.md); they remain failures. No trusted workflow/verifier is changed in this research PR. A draft delivery is not merge approval, and a missing/skipped/pending check is not a pass. Preserve final observed head/check status in the PR and handoff rather than editing historical evidence to fit this plan.
+
+## Opus repair acceptance
+
+Current map: 75 source mechanisms (original 72 plus three Parlant records at the original pin), uniform decision/runtime_status, explicit retained-fork paths and owners. Authority graph: 26 packets, each with a proposed authority, no READY state, valid references and no cycles. The validator checks the graph structurally; semantic founding dependencies are documented and reviewed separately. Missing decision/runtime_status negative fixtures must reject.
+
+Q-02 research boundary: three unittest methods / 21 named cases PASS (16 rejects, four unchanged donor golden payloads, explicit silence/empty-zero behavior). NaN/infinity, negative/zero durations, inverted/overlapping ranges and non-finite totals reject before donor plan_fit. Donor SHA before/after is identical. Full upstream pytest/native/model paths remain NOT_RUN. Reproduction and actual output: [fit_input_boundary_probe.py](fit_input_boundary_probe.py), [fit-input-boundary-results.json](fit-input-boundary-results.json).
+
+[Plan repair review](PLAN_REPAIR_INTERNAL_REVIEW.md) is same-mission fresh-context review; it is not required external approval. Final exact-head local and GitHub observations belong in the PR description and final-head evidence. Original CI failures stay FAIL; skipped mandatory jobs stay SKIPPED, not PASS. Freeze repair [#126](https://github.com/TheHalfMoon/Wispral/pull/126) remains separate.
