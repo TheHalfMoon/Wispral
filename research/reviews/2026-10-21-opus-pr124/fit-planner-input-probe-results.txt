@@ -1,0 +1,7 @@
+# plan_fit @ debpalash/VoiceStudio 28bf2c7a83b8a64836297340c52a45d716684aed backend/services/fit_planner.py sha256=0acd7c33623782cafa975f1f81cbe37362160490e8bdd34ca15f5c2b06321442
+nan_natural ACCEPTED nonfinite_output= False negative_timing= False total= 10.0
+inf_natural ACCEPTED nonfinite_output= True negative_timing= False total= 20.0
+negative_natural ACCEPTED nonfinite_output= False negative_timing= False total= 10.0
+end_before_start ACCEPTED nonfinite_output= False negative_timing= False total= 10.0
+overlap ACCEPTED nonfinite_output= False negative_timing= False total= 12.0
+nan_total ACCEPTED nonfinite_output= False negative_timing= False total= 2.0

@@ -1,0 +1,105 @@
+CORE-ACP | src/agent-client-protocol/src/session.rs | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-CANCEL | src/agent-client-protocol/src/concepts/cancellation.rs | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-PROCESS | crates/sentrdel-engine/src/process_tree.rs | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-POLICY | crates/sentrdel-policy/src/narrowing.rs | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-JSON | crates/sentrdel-engine/src/bounded_json.rs | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-NETWORK | packages/network-policy/src/policy.ts | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-IDENTITY | src/assurance/contracts/engine-descriptor.ts | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-AUDIT | crates/orcel-audit/src/lib.rs | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-REALTIME | src/pipecat/pipeline/worker.py | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-WEBRTC | livekit-agents/livekit/agents/voice/agent_session.py | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-STT-SHERPA | sherpa-onnx/python/sherpa_onnx/online_recognizer.py | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-STT-WHISPER | include/whisper.h | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-STT-MOONSHINE | language-bindings/python/src/moonshine_voice/transcriber.py | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-STT-BATCH | faster_whisper/transcribe.py | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-VAD | src/silero_vad/utils_vad.py | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-GOVERNANCE | src/specgrain/lifecycle.py | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-WINDOWS-OWNER | core/process/owner.ts | HASH_OK | blob_ok=True line_sym_ok=True
+CORE-SCOPE | packages/lens/src/capture-scope.ts | HASH_OK | blob_ok=True line_sym_ok=True
+ST-FIT | backend/services/fit_planner.py | HASH_OK | blob_ok=True line_sym_ok=True
+ST-DURATION | backend/services/duration_planner.py | HASH_OK | blob_ok=True line_sym_ok=True
+ST-RENDER | backend/services/longform_render.py | HASH_OK | blob_ok=True line_sym_ok=True
+ST-RESUME | backend/services/longform_resume.py | HASH_OK | blob_ok=True line_sym_ok=True
+ST-MODEL-TERMS | backend/services/model_acceptance.py | HASH_OK | blob_ok=True line_sym_ok=True
+ST-MODEL-LIFECYCLE | backend/services/model_lifecycle.py | HASH_OK | blob_ok=True line_sym_ok=True
+ST-CANCEL-SCOPE | backend/services/inference_cancellation.py | HASH_OK | blob_ok=True line_sym_ok=True
+ST-SIDECAR | backend/services/subprocess_backend.py | HASH_OK | blob_ok=True line_sym_ok=True
+ST-DUB-INGEST | backend/services/dub_pipeline.py | HASH_OK | blob_ok=True line_sym_ok=True
+ST-DUB-GENERATE | backend/api/routers/dub_generate.py | HASH_OK | blob_ok=True line_sym_ok=True
+ST-CLONE-REF | backend/services/speaker_clone.py | HASH_OK | blob_ok=True line_sym_ok=True
+ST-CONSENT | backend/api/routers/profiles.py | HASH_OK | blob_ok=True line_sym_ok=True
+ST-WATERMARK | backend/services/watermark.py | HASH_OK | blob_ok=True line_sym_ok=True
+ST-DRAFT | electron/src/renderer/src/features/dub/dub-draft.ts | HASH_OK | blob_ok=True line_sym_ok=True
+VB-PROTOCOL | backend/backends/__init__.py | HASH_OK | blob_ok=True line_sym_ok=True
+VB-QUEUE | backend/services/task_queue.py | HASH_OK | blob_ok=True line_sym_ok=True
+VB-EXPORT | backend/services/stories.py | HASH_OK | blob_ok=True line_sym_ok=True
+VB-UI | app/src/components/StoriesTab/StoryTrackEditor.tsx | HASH_OK | blob_ok=True line_sym_ok=True
+TTS-CHATTERBOX | src/chatterbox/tts_turbo.py | HASH_OK | blob_ok=True line_sym_ok=True
+TTS-CHATTERBOX-AR | src/chatterbox/mtl_tts.py | HASH_OK | blob_ok=True line_sym_ok=True
+TTS-COSY | cosyvoice/cli/cosyvoice.py | HASH_OK | blob_ok=True line_sym_ok=True
+TTS-QWEN | qwen_tts/inference/qwen3_tts_model.py | HASH_OK | blob_ok=True line_sym_ok=True
+TTS-KOKORO | kokoro/pipeline.py | HASH_OK | blob_ok=True line_sym_ok=True
+TTS-OPENVOICE | openvoice/api.py | HASH_OK | blob_ok=True line_sym_ok=True
+ALIGN-WHISPERX | whisperx/alignment.py | HASH_OK | blob_ok=True line_sym_ok=True
+DIARIZE-PYANNOTE | src/pyannote/audio/pipelines/speaker_diarization.py | HASH_OK | blob_ok=True line_sym_ok=True
+STEMS-DEMUCS | demucs/api.py | HASH_OK | blob_ok=True line_sym_ok=True
+F5 | src/f5_tts/api.py | HASH_OK | blob_ok=True line_sym_ok=True
+PIPER | src/piper/voice.py | HASH_OK | blob_ok=True line_sym_ok=True
+INK-I1 | src/lib.rs | NON_GITHUB | https://static.crates.io/crates/handy-recorder/handy-recorder-0.1.0.cr
+INK-I2 | src/manager.rs | NON_GITHUB | https://static.crates.io/crates/handy-keys/handy-keys-0.3.4.crate
+INK-I3 | src-tauri/src/transcription_coordinator.rs | HASH_OK | blob_ok=True line_sym_ok=n/a
+INK-I4 | src-tauri/src/paste_tx/mod.rs | HASH_OK | blob_ok=True line_sym_ok=n/a
+INK-I5 | src-tauri/src/paste_tx/windows.rs | HASH_OK | blob_ok=True line_sym_ok=n/a
+INK-I6 | resources/windows-fast-paste.c | HASH_OK | blob_ok=True line_sym_ok=n/a
+INK-I7 | VoiceInk/Infrastructure/SystemIntegration/Paste/DirectTextTyper.swift | HASH_OK | blob_ok=True line_sym_ok=n/a
+INK-I8 | Sources/AppContextService.swift | HASH_OK | blob_ok=True line_sym_ok=n/a
+INK-I9 | src/helpers/recordingGuard.js | HASH_OK | blob_ok=True line_sym_ok=n/a
+INK-I10 | src-tauri/src/engine_supervisor/supervisor.rs | HASH_OK | blob_ok=True line_sym_ok=n/a
+INK-I11 | src/cancel.rs | NON_GITHUB | https://static.crates.io/crates/transcribe-cpp/transcribe-cpp-0.4.0.cr
+INK-I12 | src-tauri/src/clipboard.rs | HASH_OK | blob_ok=True line_sym_ok=n/a
+INK-I13 | src-tauri/src/managers/transcription/policy.rs | HASH_OK | blob_ok=True line_sym_ok=n/a
+K01 | src/parlant/core/engines/alpha/engine.py | HASH_OK | blob_ok=True line_sym_ok=True
+K01 | src/parlant/core/engines/alpha/engine.py | HASH_OK | blob_ok=True line_sym_ok=True
+K01 | src/parlant/core/engines/alpha/engine.py | HASH_OK | blob_ok=True line_sym_ok=True
+K02 | src/parlant/core/guidelines.py | HASH_OK | blob_ok=True line_sym_ok=True
+K02 | src/parlant/core/journeys.py | HASH_OK | blob_ok=True line_sym_ok=True
+K02 | src/parlant/core/context_variables.py | HASH_OK | blob_ok=True line_sym_ok=True
+K02 | src/parlant/core/engines/alpha/guideline_matching/generic/guideline_actionable_batch.py | HASH_OK | blob_ok=True line_sym_ok=True
+K03 | src/parlant/core/engines/alpha/planners.py | HASH_OK | blob_ok=True line_sym_ok=True
+K03 | src/parlant/core/engines/alpha/planners.py | HASH_OK | blob_ok=True line_sym_ok=True
+K03 | src/parlant/core/engines/alpha/tool_calling/tool_caller.py | HASH_OK | blob_ok=True line_sym_ok=True
+K03 | src/parlant/core/tools.py | HASH_OK | blob_ok=True line_sym_ok=True
+K04 | src/parlant/core/sessions.py | HASH_OK | blob_ok=True line_sym_ok=True
+K04 | src/parlant/core/sessions.py | HASH_OK | blob_ok=True line_sym_ok=True
+K04 | src/parlant/core/app_modules/sessions.py | HASH_OK | blob_ok=True line_sym_ok=True
+K04 | src/parlant/api/sessions.py | HASH_OK | blob_ok=True line_sym_ok=True
+K05 | app/controllers/concerns/ensure_current_account_helper.rb | HASH_OK | blob_ok=True line_sym_ok=True
+K05 | app/controllers/api/v1/accounts/conversations/base_controller.rb | HASH_OK | blob_ok=True line_sym_ok=True
+K05 | app/controllers/api/v1/accounts/conversations/assignments_controller.rb | HASH_OK | blob_ok=True line_sym_ok=True
+K05 | app/services/conversations/assignment_service.rb | HASH_OK | blob_ok=True line_sym_ok=True
+K06 | app/listeners/agent_bot_listener.rb | HASH_OK | blob_ok=True line_sym_ok=True
+K06 | app/jobs/agent_bots/webhook_job.rb | HASH_OK | blob_ok=True line_sym_ok=True
+K06 | lib/webhooks/trigger.rb | HASH_OK | blob_ok=True line_sym_ok=True
+K06 | lib/webhooks/trigger.rb | HASH_OK | blob_ok=True line_sym_ok=True
+K07 | app/models/conversation.rb | HASH_OK | blob_ok=True line_sym_ok=True
+K07 | app/services/conversations/assignment_service.rb | HASH_OK | blob_ok=True line_sym_ok=True
+K08 | integrations/zendesk/src/actions/create-ticket.ts | HASH_OK | blob_ok=True line_sym_ok=True
+K08 | integrations/zendesk/src/actions/hitl.ts | HASH_OK | blob_ok=True line_sym_ok=True
+K08 | integrations/zendesk/src/client.ts | HASH_OK | blob_ok=True line_sym_ok=True
+K09 | integrations/hubspot/src/hitl/utils/signature.ts | HASH_OK | blob_ok=True line_sym_ok=True
+K09 | integrations/hubspot/src/actions/hitl.ts | HASH_OK | blob_ok=True line_sym_ok=True
+K09 | integrations/hubspot/src/index.ts | HASH_OK | blob_ok=True line_sym_ok=True
+K10 | interfaces/hitl/interface.definition.ts | HASH_OK | blob_ok=True line_sym_ok=True
+K11 | rasa/core/policies/rule_policy.py | HASH_OK | blob_ok=True line_sym_ok=True
+K11 | rasa/shared/core/trackers.py | HASH_OK | blob_ok=True line_sym_ok=True
+K11 | rasa/core/lock_store.py | HASH_OK | blob_ok=True line_sym_ok=True
+K11 | rasa/core/processor.py | HASH_OK | blob_ok=True line_sym_ok=True
+K12 | src/parlant/api/authorization.py | HASH_OK | blob_ok=True line_sym_ok=True
+K12 | src/parlant/api/authorization.py | HASH_OK | blob_ok=True line_sym_ok=True
+K12 | src/parlant/api/authorization.py | HASH_OK | blob_ok=True line_sym_ok=True
+Counter({'HASH_OK': 96, 'NON_GITHUB': 3})
+
+# crates.io pins (verified separately: .crate SHA-256 equals crates.io index checksum; inner file SHA-256 equals recorded; .cargo_vcs_info sha1 equals recorded revision)
+INK-I1 handy-recorder 0.1.0 index_ok=True file=cd2569b044f5 vcs=1d975fe8c10f license=MIT
+INK-I2 handy-keys 0.3.4 index_ok=True file=7141c705a7ad vcs=e7d1b8e6de82 license=MIT
+INK-I11 transcribe-cpp 0.4.0 index_ok=True file=657eb3625cc6 vcs=f1dcd15858c4 license=MIT
