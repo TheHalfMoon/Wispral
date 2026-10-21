@@ -1,0 +1,122 @@
+{
+  "status": "PASS",
+  "source_revision": "28bf2c7a83b8a64836297340c52a45d716684aed",
+  "donor_sha256_before": "0acd7c33623782cafa975f1f81cbe37362160490e8bdd34ca15f5c2b06321442",
+  "donor_sha256_after": "0acd7c33623782cafa975f1f81cbe37362160490e8bdd34ca15f5c2b06321442",
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "cases": [
+    {
+      "case": "nan_natural",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "infinite_natural",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "negative_natural",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "zero_natural_without_silence",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "zero_segment_span",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "inverted",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "overlap",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "unsorted",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "negative_start",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "nan_total",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "infinite_total",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "negative_total",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "zero_total_nonempty",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "infinite_end",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "length_mismatch",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "boolean_duration",
+      "status": "PASS",
+      "outcome": "typed rejection"
+    },
+    {
+      "case": "golden_all_fit",
+      "status": "PASS",
+      "fixture_sha256": "0986ab416fc24eef18672d8af27d5dba8aa7a317a71f0c785b4e123b8b47982e"
+    },
+    {
+      "case": "golden_audio_only_and_hybrid",
+      "status": "PASS",
+      "fixture_sha256": "0edc230794d65a6e525bada23478c478a16d3b16a969d46d6ae56225a3b1174c"
+    },
+    {
+      "case": "golden_overflow_caps",
+      "status": "PASS",
+      "fixture_sha256": "cbe73214f208008bec4768892a99292a793884e1ccb92d9453b5922f0493e98e"
+    },
+    {
+      "case": "golden_no_video_retime",
+      "status": "PASS",
+      "fixture_sha256": "096622eba8b7facda5d95896a98ec9e78c8d902f72a5618b272d7809a995eda3"
+    },
+    {
+      "case": "explicit_silence_and_empty_zero_total",
+      "status": "PASS"
+    }
+  ],
+  "tests_run": 3,
+  "failures": 0,
+  "errors": 0,
+  "limits": [
+    "Research-only boundary experiment, not product code",
+    "No audio/model/native behavior tested",
+    "Full upstream pytest suite NOT_RUN; pure golden cases and new boundary tests only",
+    "JSON golden objects match; donor file bytes unchanged"
+  ]
+}
