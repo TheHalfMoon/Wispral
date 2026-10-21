@@ -36,30 +36,27 @@ Practical requirements for Codex and contributing agents:
 9. Do not copy closed competitors' unprovided or unauthorized code merely because they are REA targets. Black-box observation and source transplants are separate activities.
 10. Do not silently alter existing frozen research results, benchmark assertions, trusted-control files, product implementation authority or constitutional governance. This record is **direction for planning**, not permission to bypass those controls.
 
-## 2. Founder-selected product naming
+## 2. Final founder-selected product naming
 
-The founder confirms the umbrella and two product names below. The previously selected **WisperType** name is **withdrawn** because of marketplace proximity to **WhisperType**; **WisperOne** was suggested but is *not selected* because an existing competing dictation product uses **WhisperOne**. A fresh dictation name is pending the founder's final choice.
+**Founder decision date:** 2026-10-21. **Status:** Final founder choice for product naming and planning; separate trademark/domain/app-store clearance is not established by this record.
 
-| Pillar | Name / status | Product role | External competitive reference |
-| --- | --- | --- | --- |
-| Umbrella | **Wispral** | Voice intelligence company, cross-product core, engine/model routing, privacy and developer platform | Open voice AI platform |
-| Creation | **Wispral Studio** | Audio creation, multilingual dubbing, authorized voice cloning, TTS, editing, multi-track work, models and exports | VoiceStudio, Voicebox, ElevenLabs |
-| Dictation | **Naming pending — Wispral Ink** (recommended provisional; also consider **Wispral One** and **Wispivo**) | Universal app-aware dictation, spoken writing/editing, accessible hotkeys and local STT | Wispr Flow, Handy, OpenWhispr, FreeFlow |
-| Conversational agents | **Klaint** | Voice/chat agents, business workflows, customer care, escalations, evaluations, integrations | Decagon, Parlant, Chatwoot, Botpress, Rasa |
+**Use the exact names and capitalization below in all new Wispral product planning, roadmaps, specifications, examples, product UI proposals, architecture diagrams, and transplants.**
 
-**Do not resume the old provisional names `Wispral Flow`, `Wispral Agents`, or `WisperType` as the new customer-facing dictation product.** Historical references may remain when explicitly labeled as historical. Technical modules may use descriptive internal names. The original coding-agent control concept remains a dictation/Klaint platform integration capability, not the exclusive product definition.
+| Product | Exact founder-selected name | Product role |
+| --- | --- | --- |
+| Umbrella | **Wispral** | Voice intelligence platform, shared core, models, routing, privacy, interoperability and developer tooling |
+| Creative studio | **WisprStudio** | Voice creation, authorized voice cloning, speech synthesis, editing, multilingual dubbing and audio production |
+| Voice typing | **WisprInk** | Cross-application dictation, contextual voice-to-text, spoken writing/editing and developer voice interaction |
+| Conversational agents | **Klaint** | AI voice/chat agents, business workflows, customer experience, escalations, testing, integrations and enterprise controls |
 
-Founder naming for **Wispral**, **Wispral Studio**, and **Klaint** is established; the replacement dictation name is an **open founder choice**, with `Wispral Ink` a researcher-recommended working label. Commercial trademark uniqueness or availability is **not** established. Conduct a professional commercial naming review before broad launch. Known preliminary collision leads, not final legal determinations:
+**Superseded historical names — NOT approved customer-facing brands:**
 
-- **REJECT `WisperType`**: differs by one letter from `WhisperType`, an existing dictation application: https://whispertype.com/ .
-- **REJECT `WisperOne` as the launch name**: `WhisperOne` is an existing, directly competing cross-app voice-to-text application: https://whisperone.app/ . One letter difference is a high naming-collision lead.
-- **CANDIDATE `Wispral Ink`**: refined shorthand for speaking-to-writing; no exact dictation product surfaced in a small initial public web search. This is NOT trademark clearance.
-- **CANDIDATE `Wispral One`**: coherent umbrella-branded personal client; better suited for a broad everyday assistant than dictation alone. Not trademark cleared.
-- **CANDIDATE `Wispivo`**: coined standalone name; verify pronunciation, cross-language meaning, software/app/store/domain and trademark availability. Not trademark cleared.
-- `Klaint` is an existing word/name in business usage, for example a Brazilian consulting company at https://www.klaint.com.br/ . A different field does not automatically clear the name.
-- `Wispral` has an existing phonetic/visual similarity concern against `Wispr`/Wispr Flow acknowledged in repository brand research.
+- `Wispral Studio` → **WisprStudio**.
+- `WisperType`, `WisperOne`, `Wispral Ink`, `WisprInk [PROVISIONAL]`, `Wispral One` and `Wispivo` → **WisprInk**.
+- `Wispral Flow` and `Wispral Agents` were early working labels and must not be promoted as these product names. The corresponding capabilities map into WisprInk and Klaint.
+- Historic citations, archived research and PR conversation may preserve the old names if explicitly identified as historical. Do not rewrite or falsify frozen evidence to erase them.
 
-Until clearance, **all names remain subject to trademark, domain and app-store review, and the dictation product name is not finalized**. Do not invent “legally cleared”, “unique globally”, “registered trademark”, or confirmed available domains.
+**Developer instruction:** The names are chosen; do not re-open a naming brainstorm or ask the founder to select among alternatives. Do not block independent REA or architecture work awaiting public trademark clearance. Do not invent a legal clearance or domain ownership claim: conduct an explicit clearance review ahead of commercial launch, including the recorded Wispr/Wispr Flow similarity issue, as separate non-blocking planning work.
 
 ## 3. Founder-nominated source families for source-first REA
 
@@ -79,8 +76,8 @@ The proposed long-term product hierarchy is:
 ```text
 Wispral (umbrella platform)
 ├── Wispral Core (speech and realtime engine contracts, safety, consent, routing)
-├── Wispral Studio (creation, production and dubbing)
-├── Wispral Ink [WORKING NAME ONLY] (cross-app dictation and developer voice interface)
+├── WisprStudio (creation, production and dubbing)
+├── WisprInk (cross-app dictation and developer voice interface)
 ├── Klaint (customer-facing conversational voice and chat agents)
 └── Wispral Platform (APIs, SDKs, integration and evaluation services)
 ```
@@ -92,8 +89,8 @@ This extends the previously narrow agent-control strategy. The existing `CONSTIT
 Codex must:
 - Read this recorded founder permission statement before concluding any donor is out of scope merely for lack of source-reuse authority.
 - Implement a useful `FOUNDER_AUTHORIZATION` column/status in its source transplant matrix, distinguished from independently checked upstream open license and unrelated weight/data rights.
-- Respect the founder-selected exact names **Wispral Studio** and **Klaint**. **Retire WisperType; do not adopt WisperOne.** Use **Wispral Ink [PROVISIONAL]** as the dictation planning label, with **Wispral One** and **Wispivo** preserved as alternatives until the founder selects a final name; do not claim trademark clearance.
+- Use the **final founder-selected product names** exactly: **Wispral** (platform), **WisprStudio** (studio), **WisprInk** (voice typing), **Klaint** (voice/chat agents). Do not silently revert to historical names or request a new naming decision. Trademark/domain/app-store clearance remains a separate prelaunch check.
 - Produce a short-list of reusable *specific files and modules*, not only a competitor survey or “reimplement it” roadmap.
 - Keep this PR/planning lane separate from existing `B2R17` research and controls; no benchmark, production, trademark clearance or deployment claims are made by this document.
 
-**Recorded outcome:** the founder states that legally valid source-code copy/modify/rename permissions already exist and the supporting documents are confidential and intentionally withheld; the fact of non-disclosure is **not** a reuse-planning blocker. User-selected umbrella/Studio/Klaint names are recorded; the replacement dictation name remains provisional. Commercial name clearance, donor-by-donor provenance, separate model/asset rights where applicable, source transplantation, implementation and evidence-based release qualification remain future work.
+**Recorded outcome:** the founder states that legally valid source-code copy/modify/rename permissions already exist and the supporting documents are confidential and intentionally withheld; the fact of non-disclosure is **not** a reuse-planning blocker. Founder-selected final platform and product names (Wispral, WisprStudio, WisprInk and Klaint) are recorded; public naming clearance remains a separate launch qualification. Commercial name clearance, donor-by-donor provenance, separate model/asset rights where applicable, source transplantation, implementation and evidence-based release qualification remain future work.
