@@ -1,0 +1,570 @@
+{
+  "status": "SOURCE_ENGINEERING_JUDGMENT_NOT_EMPIRICAL_RANKING",
+  "scale": "0..5 ordinal analyst ratings; not measured outcomes",
+  "dimensions": [
+    "functional_fit",
+    "qualified_reusable_code",
+    "technical_integration",
+    "measured_quality",
+    "security_privacy",
+    "offline_portability",
+    "maintenance_tests",
+    "compliance_economics"
+  ],
+  "scenarios": [
+    {
+      "name": "founder rubric",
+      "weights": [
+        20,
+        20,
+        15,
+        15,
+        10,
+        10,
+        5,
+        5
+      ]
+    },
+    {
+      "name": "integration emphasized",
+      "weights": [
+        15,
+        15,
+        30,
+        15,
+        10,
+        5,
+        5,
+        5
+      ]
+    },
+    {
+      "name": "offline/privacy emphasized",
+      "weights": [
+        15,
+        15,
+        10,
+        15,
+        20,
+        15,
+        5,
+        5
+      ]
+    },
+    {
+      "name": "quality emphasized",
+      "weights": [
+        15,
+        15,
+        10,
+        30,
+        10,
+        10,
+        5,
+        5
+      ]
+    }
+  ],
+  "candidates": [
+    {
+      "pillar": "Studio",
+      "name": "VoiceStudio",
+      "ratings": {
+        "functional_fit": 5,
+        "qualified_reusable_code": 4,
+        "technical_integration": 2,
+        "measured_quality": null,
+        "security_privacy": 3,
+        "offline_portability": 4,
+        "maintenance_tests": 3,
+        "compliance_economics": 2
+      },
+      "rationale": "Broad fit/render/resume/dub seams; coupled backend and incompatible engine environments; default asset restrictions separated from founder code authorization.",
+      "evidence": "SOURCE_VERIFIED selection judgment; no integrated runtime rating",
+      "measured_quality": "NOT_MEASURED",
+      "scores": [
+        {
+          "scenario": "founder rubric",
+          "known_subtotal": 61,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            61,
+            76
+          ]
+        },
+        {
+          "scenario": "integration emphasized",
+          "known_subtotal": 54,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            54,
+            69
+          ]
+        },
+        {
+          "scenario": "offline/privacy emphasized",
+          "known_subtotal": 60,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            60,
+            75
+          ]
+        },
+        {
+          "scenario": "quality emphasized",
+          "known_subtotal": 50,
+          "unknown_quality_weight": 30,
+          "possible_total_range": [
+            50,
+            80
+          ]
+        }
+      ]
+    },
+    {
+      "pillar": "Studio",
+      "name": "Voicebox",
+      "ratings": {
+        "functional_fit": 4,
+        "qualified_reusable_code": 4,
+        "technical_integration": 3,
+        "measured_quality": null,
+        "security_privacy": 3,
+        "offline_portability": 4,
+        "maintenance_tests": 3,
+        "compliance_economics": 3
+      },
+      "rationale": "Smaller generation service/desktop boundary; less long-form/dubbing breadth; asyncio cancel does not prove native stop.",
+      "evidence": "SOURCE_VERIFIED selection judgment; no integrated runtime rating",
+      "measured_quality": "NOT_MEASURED",
+      "scores": [
+        {
+          "scenario": "founder rubric",
+          "known_subtotal": 61,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            61,
+            76
+          ]
+        },
+        {
+          "scenario": "integration emphasized",
+          "known_subtotal": 58,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            58,
+            73
+          ]
+        },
+        {
+          "scenario": "offline/privacy emphasized",
+          "known_subtotal": 60,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            60,
+            75
+          ]
+        },
+        {
+          "scenario": "quality emphasized",
+          "known_subtotal": 50,
+          "unknown_quality_weight": 30,
+          "possible_total_range": [
+            50,
+            80
+          ]
+        }
+      ]
+    },
+    {
+      "pillar": "Ink",
+      "name": "Handy",
+      "ratings": {
+        "functional_fit": 5,
+        "qualified_reusable_code": 5,
+        "technical_integration": 4,
+        "measured_quality": null,
+        "security_privacy": 3,
+        "offline_portability": 4,
+        "maintenance_tests": 4,
+        "compliance_economics": 4
+      },
+      "rationale": "Rust capture/hotkey packages and transaction source match boundary; native permission/insertion behavior unqualified.",
+      "evidence": "SOURCE_VERIFIED selection judgment; no integrated runtime rating",
+      "measured_quality": "NOT_MEASURED",
+      "scores": [
+        {
+          "scenario": "founder rubric",
+          "known_subtotal": 74,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            74,
+            89
+          ]
+        },
+        {
+          "scenario": "integration emphasized",
+          "known_subtotal": 72,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            72,
+            87
+          ]
+        },
+        {
+          "scenario": "offline/privacy emphasized",
+          "known_subtotal": 70,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            70,
+            85
+          ]
+        },
+        {
+          "scenario": "quality emphasized",
+          "known_subtotal": 60,
+          "unknown_quality_weight": 30,
+          "possible_total_range": [
+            60,
+            90
+          ]
+        }
+      ]
+    },
+    {
+      "pillar": "Ink",
+      "name": "OpenWhispr",
+      "ratings": {
+        "functional_fit": 5,
+        "qualified_reusable_code": 4,
+        "technical_integration": 2,
+        "measured_quality": null,
+        "security_privacy": 2,
+        "offline_portability": 3,
+        "maintenance_tests": 4,
+        "compliance_economics": 4
+      },
+      "rationale": "Broad dictation helpers and real pure tests; large Electron glue and unsafe focus fallback require extraction.",
+      "evidence": "SOURCE_VERIFIED selection judgment; no integrated runtime rating",
+      "measured_quality": "NOT_MEASURED",
+      "scores": [
+        {
+          "scenario": "founder rubric",
+          "known_subtotal": 60,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            60,
+            75
+          ]
+        },
+        {
+          "scenario": "integration emphasized",
+          "known_subtotal": 54,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            54,
+            69
+          ]
+        },
+        {
+          "scenario": "offline/privacy emphasized",
+          "known_subtotal": 56,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            56,
+            71
+          ]
+        },
+        {
+          "scenario": "quality emphasized",
+          "known_subtotal": 49,
+          "unknown_quality_weight": 30,
+          "possible_total_range": [
+            49,
+            79
+          ]
+        }
+      ]
+    },
+    {
+      "pillar": "Klaint",
+      "name": "Parlant",
+      "ratings": {
+        "functional_fit": 5,
+        "qualified_reusable_code": 4,
+        "technical_integration": 3,
+        "measured_quality": null,
+        "security_privacy": 2,
+        "offline_portability": 3,
+        "maintenance_tests": 4,
+        "compliance_economics": 4
+      },
+      "rationale": "Real dialogue/guideline/tool lifecycle; deterministic tenant/action authority must be added around probabilistic service.",
+      "evidence": "SOURCE_VERIFIED selection judgment; no integrated runtime rating",
+      "measured_quality": "NOT_MEASURED",
+      "scores": [
+        {
+          "scenario": "founder rubric",
+          "known_subtotal": 63,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            63,
+            78
+          ]
+        },
+        {
+          "scenario": "integration emphasized",
+          "known_subtotal": 60,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            60,
+            75
+          ]
+        },
+        {
+          "scenario": "offline/privacy emphasized",
+          "known_subtotal": 58,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            58,
+            73
+          ]
+        },
+        {
+          "scenario": "quality emphasized",
+          "known_subtotal": 51,
+          "unknown_quality_weight": 30,
+          "possible_total_range": [
+            51,
+            81
+          ]
+        }
+      ]
+    },
+    {
+      "pillar": "Klaint",
+      "name": "Rasa",
+      "ratings": {
+        "functional_fit": 3,
+        "qualified_reusable_code": 3,
+        "technical_integration": 1,
+        "measured_quality": null,
+        "security_privacy": 3,
+        "offline_portability": 3,
+        "maintenance_tests": 3,
+        "compliance_economics": 4
+      },
+      "rationale": "Useful tracker/rule/lock mechanisms but maintenance mode and old Python closure; second dialogue engine duplicates lead.",
+      "evidence": "SOURCE_VERIFIED selection judgment; no integrated runtime rating",
+      "measured_quality": "NOT_MEASURED",
+      "scores": [
+        {
+          "scenario": "founder rubric",
+          "known_subtotal": 46,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            46,
+            61
+          ]
+        },
+        {
+          "scenario": "integration emphasized",
+          "known_subtotal": 40,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            40,
+            55
+          ]
+        },
+        {
+          "scenario": "offline/privacy emphasized",
+          "known_subtotal": 48,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            48,
+            63
+          ]
+        },
+        {
+          "scenario": "quality emphasized",
+          "known_subtotal": 39,
+          "unknown_quality_weight": 30,
+          "possible_total_range": [
+            39,
+            69
+          ]
+        }
+      ]
+    },
+    {
+      "pillar": "Klaint",
+      "name": "Botpress public SDK",
+      "ratings": {
+        "functional_fit": 4,
+        "qualified_reusable_code": 3,
+        "technical_integration": 2,
+        "measured_quality": null,
+        "security_privacy": 2,
+        "offline_portability": 1,
+        "maintenance_tests": 4,
+        "compliance_economics": 4
+      },
+      "rationale": "Strong selected connectors/HITL schemas; API defaults/cloud-dependent SDK is not a complete self-hosted runtime.",
+      "evidence": "SOURCE_VERIFIED selection judgment; no integrated runtime rating",
+      "measured_quality": "NOT_MEASURED",
+      "scores": [
+        {
+          "scenario": "founder rubric",
+          "known_subtotal": 48,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            48,
+            63
+          ]
+        },
+        {
+          "scenario": "integration emphasized",
+          "known_subtotal": 46,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            46,
+            61
+          ]
+        },
+        {
+          "scenario": "offline/privacy emphasized",
+          "known_subtotal": 44,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            44,
+            59
+          ]
+        },
+        {
+          "scenario": "quality emphasized",
+          "known_subtotal": 39,
+          "unknown_quality_weight": 30,
+          "possible_total_range": [
+            39,
+            69
+          ]
+        }
+      ]
+    },
+    {
+      "pillar": "Realtime",
+      "name": "Pipecat",
+      "ratings": {
+        "functional_fit": 4,
+        "qualified_reusable_code": 4,
+        "technical_integration": 4,
+        "measured_quality": null,
+        "security_privacy": 3,
+        "offline_portability": 4,
+        "maintenance_tests": 4,
+        "compliance_economics": 4
+      },
+      "rationale": "Composable local frame/worker boundary; optional provider/native closure still needs qualification.",
+      "evidence": "SOURCE_VERIFIED selection judgment; no integrated runtime rating",
+      "measured_quality": "NOT_MEASURED",
+      "scores": [
+        {
+          "scenario": "founder rubric",
+          "known_subtotal": 66,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            66,
+            81
+          ]
+        },
+        {
+          "scenario": "integration emphasized",
+          "known_subtotal": 66,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            66,
+            81
+          ]
+        },
+        {
+          "scenario": "offline/privacy emphasized",
+          "known_subtotal": 64,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            64,
+            79
+          ]
+        },
+        {
+          "scenario": "quality emphasized",
+          "known_subtotal": 54,
+          "unknown_quality_weight": 30,
+          "possible_total_range": [
+            54,
+            84
+          ]
+        }
+      ]
+    },
+    {
+      "pillar": "Realtime",
+      "name": "LiveKit Agents",
+      "ratings": {
+        "functional_fit": 5,
+        "qualified_reusable_code": 4,
+        "technical_integration": 3,
+        "measured_quality": null,
+        "security_privacy": 3,
+        "offline_portability": 3,
+        "maintenance_tests": 4,
+        "compliance_economics": 4
+      },
+      "rationale": "Strong WebRTC/room/SIP session fit; topology and media/server dependencies cost more for first local PTT path.",
+      "evidence": "SOURCE_VERIFIED selection judgment; no integrated runtime rating",
+      "measured_quality": "NOT_MEASURED",
+      "scores": [
+        {
+          "scenario": "founder rubric",
+          "known_subtotal": 65,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            65,
+            80
+          ]
+        },
+        {
+          "scenario": "integration emphasized",
+          "known_subtotal": 62,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            62,
+            77
+          ]
+        },
+        {
+          "scenario": "offline/privacy emphasized",
+          "known_subtotal": 62,
+          "unknown_quality_weight": 15,
+          "possible_total_range": [
+            62,
+            77
+          ]
+        },
+        {
+          "scenario": "quality emphasized",
+          "known_subtotal": 53,
+          "unknown_quality_weight": 30,
+          "possible_total_range": [
+            53,
+            83
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Quality is null and its full weight remains unknown, not zero or renormalized.",
+    "Integration/security/offline ratings assess inspected architecture, not deployed verification.",
+    "Rights rating concerns distribution/asset/dependency burden, not absence of founder code permission."
+  ]
+}

@@ -1,0 +1,3672 @@
+{
+  "status": "PROPOSED_NOT_IMPLEMENTED",
+  "implementation_authorized": false,
+  "rows": [
+    {
+      "id": "CORE-ACP",
+      "feature": "Structured agent transport",
+      "repo": "agentclientprotocol/rust-sdk",
+      "sha": "652d1003425319c170f1e677a1ca5af6a92269bb",
+      "source": {
+        "path": "src/agent-client-protocol/src/session.rs",
+        "symbol": "pub struct",
+        "line": 134,
+        "git_blob": "f300f92a79dc26cd6677f16b999433c82d996a20",
+        "sha256": "99c604da216bdcba46448e6d08d97e841b2c0142da6762ca31f8091adeb6ca86",
+        "url": "https://github.com/agentclientprotocol/rust-sdk/blob/652d1003425319c170f1e677a1ca5af6a92269bb/src/agent-client-protocol/src/session.rs#L134"
+      },
+      "mode": "WRAP",
+      "destination": "crates/wispral-core/src/agents/acp.rs",
+      "direct_dependency_boundary": "agent-client-protocol 3.4.0; schema/derive/futures/serde/tracing/uuid; opt-in stdio/process; v2 unstable feature separately qualified",
+      "upstream_tests": [
+        {
+          "path": "src/agent-client-protocol-conductor/tests/request_cancellation.rs",
+          "exists_in_pinned_tree": true
+        },
+        {
+          "path": "src/agent-client-protocol/src/jsonrpc/prepared_request_tests.rs",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Request-level cancellation is cooperative; v2 accepted prompt requires session/cancel for continuing work. No new authenticated agent runtime trial was run.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "src/agent-client-protocol/src/session.rs",
+          "symbol": "pub struct",
+          "line": 134,
+          "git_blob": "f300f92a79dc26cd6677f16b999433c82d996a20",
+          "sha256": "99c604da216bdcba46448e6d08d97e841b2c0142da6762ca31f8091adeb6ca86",
+          "url": "https://github.com/agentclientprotocol/rust-sdk/blob/652d1003425319c170f1e677a1ca5af6a92269bb/src/agent-client-protocol/src/session.rs#L134"
+        }
+      ],
+      "deps": "agent-client-protocol 3.4.0; schema/derive/futures/serde/tracing/uuid; opt-in stdio/process; v2 unstable feature separately qualified",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Request-level cancellation is cooperative; v2 accepted prompt requires session/cancel for continuing work. No new authenticated agent runtime trial was run."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-CANCEL",
+      "feature": "Cancellation contract",
+      "repo": "agentclientprotocol/rust-sdk",
+      "sha": "652d1003425319c170f1e677a1ca5af6a92269bb",
+      "source": {
+        "path": "src/agent-client-protocol/src/concepts/cancellation.rs",
+        "symbol": "Cancellation is **cooperative**",
+        "line": 7,
+        "git_blob": "f06f92cacddf0083710b1965816a0c7fd18df75c",
+        "sha256": "1521712735081e7fb846f2c8735173b21578f649e31a0aebb1f995224ea3a0ae",
+        "url": "https://github.com/agentclientprotocol/rust-sdk/blob/652d1003425319c170f1e677a1ca5af6a92269bb/src/agent-client-protocol/src/concepts/cancellation.rs#L7"
+      },
+      "mode": "ADAPT",
+      "destination": "contracts/core/cancellation.md",
+      "direct_dependency_boundary": "Same pinned ACP SDK; protocol v1/v2 translated outside policy",
+      "upstream_tests": [
+        {
+          "path": "src/agent-client-protocol-conductor/tests/request_cancellation.rs",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "cancel() Ok is not transport acknowledgement or stopped state; source text explicitly warns of no-op and completion races.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "src/agent-client-protocol/src/concepts/cancellation.rs",
+          "symbol": "Cancellation is **cooperative**",
+          "line": 7,
+          "git_blob": "f06f92cacddf0083710b1965816a0c7fd18df75c",
+          "sha256": "1521712735081e7fb846f2c8735173b21578f649e31a0aebb1f995224ea3a0ae",
+          "url": "https://github.com/agentclientprotocol/rust-sdk/blob/652d1003425319c170f1e677a1ca5af6a92269bb/src/agent-client-protocol/src/concepts/cancellation.rs#L7"
+        }
+      ],
+      "deps": "Same pinned ACP SDK; protocol v1/v2 translated outside policy",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "cancel() Ok is not transport acknowledgement or stopped state; source text explicitly warns of no-op and completion races."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-PROCESS",
+      "feature": "Native worker lifetime",
+      "repo": "TheHalfMoon/Sentrdel",
+      "sha": "f5747319a50831ef7cee983d253c0ca5503c9a64",
+      "source": {
+        "path": "crates/sentrdel-engine/src/process_tree.rs",
+        "symbol": "pub(crate) struct ContainedChild",
+        "line": 26,
+        "git_blob": "d3c4e8d5a2d287f6edaf973acab19c53331feb93",
+        "sha256": "3ba124bedd55e8a994187e69b99851f536f4f39897c818144e0623c99e48f54d",
+        "url": "https://github.com/TheHalfMoon/Sentrdel/blob/f5747319a50831ef7cee983d253c0ca5503c9a64/crates/sentrdel-engine/src/process_tree.rs#L26"
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/workers/contained_process.rs",
+      "direct_dependency_boundary": "process-wrap =9.1.0 std/process-group/job-object; Unix nix =0.31.3; no shell",
+      "upstream_tests": [
+        {
+          "path": "crates/sentrdel-engine/tests/t029_adversarial.rs",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Containment and kill do not prove OS sandbox or network isolation; platform absence proof must survive parent exit and PID reuse.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "crates/sentrdel-engine/src/process_tree.rs",
+          "symbol": "pub(crate) struct ContainedChild",
+          "line": 26,
+          "git_blob": "d3c4e8d5a2d287f6edaf973acab19c53331feb93",
+          "sha256": "3ba124bedd55e8a994187e69b99851f536f4f39897c818144e0623c99e48f54d",
+          "url": "https://github.com/TheHalfMoon/Sentrdel/blob/f5747319a50831ef7cee983d253c0ca5503c9a64/crates/sentrdel-engine/src/process_tree.rs#L26"
+        }
+      ],
+      "deps": "process-wrap =9.1.0 std/process-group/job-object; Unix nix =0.31.3; no shell",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Containment and kill do not prove OS sandbox or network isolation; platform absence proof must survive parent exit and PID reuse."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-POLICY",
+      "feature": "Monotonic policy composition",
+      "repo": "TheHalfMoon/Sentrdel",
+      "sha": "f5747319a50831ef7cee983d253c0ca5503c9a64",
+      "source": {
+        "path": "crates/sentrdel-policy/src/narrowing.rs",
+        "symbol": "pub fn validate_repository_narrowing(",
+        "line": 58,
+        "git_blob": "6061c101f7465f050ef41b67eaabb572bbabe749",
+        "sha256": "44a2e9a6cfaf2d795b176483e57e9dce36c9bc5d754907a4a0fa0ddeea233a2c",
+        "url": "https://github.com/TheHalfMoon/Sentrdel/blob/f5747319a50831ef7cee983d253c0ca5503c9a64/crates/sentrdel-policy/src/narrowing.rs#L58"
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/policy/narrowing.rs",
+      "direct_dependency_boundary": "Verdict and compose_verdicts from sentrdel-policy/src/lib.rs; sentrdel-schema canonical identity; extract pure lattice before considering Regorus",
+      "upstream_tests": [
+        {
+          "path": "crates/sentrdel-policy/src/narrowing.rs",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Existing ALLOW/ASK/DENY/UNDECIDABLE lattice is reusable; tenant, voice consent and target semantics remain domain-specific inputs.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "crates/sentrdel-policy/src/narrowing.rs",
+          "symbol": "pub fn validate_repository_narrowing(",
+          "line": 58,
+          "git_blob": "6061c101f7465f050ef41b67eaabb572bbabe749",
+          "sha256": "44a2e9a6cfaf2d795b176483e57e9dce36c9bc5d754907a4a0fa0ddeea233a2c",
+          "url": "https://github.com/TheHalfMoon/Sentrdel/blob/f5747319a50831ef7cee983d253c0ca5503c9a64/crates/sentrdel-policy/src/narrowing.rs#L58"
+        }
+      ],
+      "deps": "Verdict and compose_verdicts from sentrdel-policy/src/lib.rs; sentrdel-schema canonical identity; extract pure lattice before considering Regorus",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Existing ALLOW/ASK/DENY/UNDECIDABLE lattice is reusable; tenant, voice consent and target semantics remain domain-specific inputs."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-JSON",
+      "feature": "Bounded worker input",
+      "repo": "TheHalfMoon/Sentrdel",
+      "sha": "f5747319a50831ef7cee983d253c0ca5503c9a64",
+      "source": {
+        "path": "crates/sentrdel-engine/src/bounded_json.rs",
+        "symbol": "pub(crate) fn preflight_json(",
+        "line": 55,
+        "git_blob": "1e62dd5ec7d3e595d20083ac0494d2804b6d0ff7",
+        "sha256": "f1aa882015dffd8d24f4386948af5a99b660f2cd139f7c99f9bed87f56de989c",
+        "url": "https://github.com/TheHalfMoon/Sentrdel/blob/f5747319a50831ef7cee983d253c0ca5503c9a64/crates/sentrdel-engine/src/bounded_json.rs#L55"
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/workers/bounded_json.rs",
+      "direct_dependency_boundary": "stdlib parser; serde/typed decoding follows; native/SARIF context names need worker-dialect adaptation",
+      "upstream_tests": [
+        {
+          "path": "crates/sentrdel-engine/tests/t029_adversarial.rs",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Current donor limits and SARIF contexts are not safe Wispral defaults; add frame/string/depth/resource limits before materialization.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "crates/sentrdel-engine/src/bounded_json.rs",
+          "symbol": "pub(crate) fn preflight_json(",
+          "line": 55,
+          "git_blob": "1e62dd5ec7d3e595d20083ac0494d2804b6d0ff7",
+          "sha256": "f1aa882015dffd8d24f4386948af5a99b660f2cd139f7c99f9bed87f56de989c",
+          "url": "https://github.com/TheHalfMoon/Sentrdel/blob/f5747319a50831ef7cee983d253c0ca5503c9a64/crates/sentrdel-engine/src/bounded_json.rs#L55"
+        }
+      ],
+      "deps": "stdlib parser; serde/typed decoding follows; native/SARIF context names need worker-dialect adaptation",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Current donor limits and SARIF contexts are not safe Wispral defaults; add frame/string/depth/resource limits before materialization."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-NETWORK",
+      "feature": "Explicit routing policy",
+      "repo": "TheHalfMoon/Ninerr",
+      "sha": "8cba15c4e4af40b12476433a49e20a1696cfc0f8",
+      "source": {
+        "path": "packages/network-policy/src/policy.ts",
+        "symbol": "export function evaluateUrl(",
+        "line": 119,
+        "git_blob": "8ee497730c52b0d0154996fe00c28d6e3a27278b",
+        "sha256": "eb2e32a54229beac406efb5461190a6c9ade8ebae0407f8d64ff67753fcb1518",
+        "url": "https://github.com/TheHalfMoon/Ninerr/blob/8cba15c4e4af40b12476433a49e20a1696cfc0f8/packages/network-policy/src/policy.ts#L119"
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/routing/policy.rs",
+      "direct_dependency_boundary": "address.ts/errors.ts/types.ts/validation.ts; node:net isIP; dependency-free pure policy package; translate bounded logic and preserve fixtures",
+      "upstream_tests": [
+        {
+          "path": "tests/network-policy.test.mjs",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Pure decisions do not enforce actual connections: pin DNS result/socket destination, recheck redirects, and exclude credentials in URLs.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "REPRODUCED_PURE_DECISIONS_ONLY",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "packages/network-policy/src/policy.ts",
+          "symbol": "export function evaluateUrl(",
+          "line": 119,
+          "git_blob": "8ee497730c52b0d0154996fe00c28d6e3a27278b",
+          "sha256": "eb2e32a54229beac406efb5461190a6c9ade8ebae0407f8d64ff67753fcb1518",
+          "url": "https://github.com/TheHalfMoon/Ninerr/blob/8cba15c4e4af40b12476433a49e20a1696cfc0f8/packages/network-policy/src/policy.ts#L119"
+        }
+      ],
+      "deps": "address.ts/errors.ts/types.ts/validation.ts; node:net isIP; dependency-free pure policy package; translate bounded logic and preserve fixtures",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Pure decisions do not enforce actual connections: pin DNS result/socket destination, recheck redirects, and exclude credentials in URLs."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-IDENTITY",
+      "feature": "Worker qualification identity",
+      "repo": "TheHalfMoon/Ascout",
+      "sha": "48902389ec37019845fd67c8b8c53c5f499ffc85",
+      "source": {
+        "path": "src/assurance/contracts/engine-descriptor.ts",
+        "symbol": "export interface EngineDescriptorV1",
+        "line": 45,
+        "git_blob": "141c55763a72350e69d61abaa992a8b313ff2ce8",
+        "sha256": "4a013a1d11d30f90dd40401ef1904a830ced389971fc399f53b80603c716ef5c",
+        "url": "https://github.com/TheHalfMoon/Ascout/blob/48902389ec37019845fd67c8b8c53c5f499ffc85/src/assurance/contracts/engine-descriptor.ts#L45"
+      },
+      "mode": "ADAPT",
+      "destination": "contracts/core/worker_descriptor.json",
+      "direct_dependency_boundary": "intent.ts effect vocabulary; strict shape validation and SHA256 identity; Node util only for comparison",
+      "upstream_tests": [
+        {
+          "path": "src/assurance/contracts/engine-qualification.ts",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Descriptor/source presence is not independent qualification or authority; no scanner engine is imported.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "src/assurance/contracts/engine-descriptor.ts",
+          "symbol": "export interface EngineDescriptorV1",
+          "line": 45,
+          "git_blob": "141c55763a72350e69d61abaa992a8b313ff2ce8",
+          "sha256": "4a013a1d11d30f90dd40401ef1904a830ced389971fc399f53b80603c716ef5c",
+          "url": "https://github.com/TheHalfMoon/Ascout/blob/48902389ec37019845fd67c8b8c53c5f499ffc85/src/assurance/contracts/engine-descriptor.ts#L45"
+        }
+      ],
+      "deps": "intent.ts effect vocabulary; strict shape validation and SHA256 identity; Node util only for comparison",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Descriptor/source presence is not independent qualification or authority; no scanner engine is imported."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-AUDIT",
+      "feature": "Metadata audit event",
+      "repo": "TheHalfMoon/Orcel",
+      "sha": "57af189b90882fb1d65a1d396de8db7b07a1fe32",
+      "source": {
+        "path": "crates/orcel-audit/src/lib.rs",
+        "symbol": "pub fn record(",
+        "line": 42,
+        "git_blob": "1cd0476ecd8e37f82d669388658ee516f2a894e9",
+        "sha256": "3acb4688200f868a95392a452e62d70c8920acc54aef338aafc27a00f6612a3e",
+        "url": "https://github.com/TheHalfMoon/Orcel/blob/57af189b90882fb1d65a1d396de8db7b07a1fe32/crates/orcel-audit/src/lib.rs#L42"
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/journal/metadata.rs",
+      "direct_dependency_boundary": "RequestEnvelope; serde/serde_json; orcel-platform private path helper; inspect helper closure before copy",
+      "upstream_tests": [
+        {
+          "path": "crates/orcel-audit/src/lib.rs",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Append+flush is not fsync/hash-chain durability; do not log raw args, voice media, tokens or make action success depend on uncommitted receipt.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "crates/orcel-audit/src/lib.rs",
+          "symbol": "pub fn record(",
+          "line": 42,
+          "git_blob": "1cd0476ecd8e37f82d669388658ee516f2a894e9",
+          "sha256": "3acb4688200f868a95392a452e62d70c8920acc54aef338aafc27a00f6612a3e",
+          "url": "https://github.com/TheHalfMoon/Orcel/blob/57af189b90882fb1d65a1d396de8db7b07a1fe32/crates/orcel-audit/src/lib.rs#L42"
+        }
+      ],
+      "deps": "RequestEnvelope; serde/serde_json; orcel-platform private path helper; inspect helper closure before copy",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Append+flush is not fsync/hash-chain durability; do not log raw args, voice media, tokens or make action success depend on uncommitted receipt."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-REALTIME",
+      "feature": "Local configurable voice pipeline",
+      "repo": "pipecat-ai/pipecat",
+      "sha": "9b0459b47675324843ffea17d90d8d3e422eb92c",
+      "source": {
+        "path": "src/pipecat/pipeline/worker.py",
+        "symbol": "class PipelineWorker(",
+        "line": 201,
+        "git_blob": "ee8015add27b6d4858ed365f2a46cc527fe72ad2",
+        "sha256": "09bdb1237c7958a5b65e8e358becf24299dd7fd5a5fa79f5fdf833e040f41b48",
+        "url": "https://github.com/pipecat-ai/pipecat/blob/9b0459b47675324843ffea17d90d8d3e422eb92c/src/pipecat/pipeline/worker.py#L201"
+      },
+      "mode": "OUT_OF_PROCESS",
+      "destination": "services/realtime/pipecat_worker.py",
+      "direct_dependency_boundary": "Python >=3.11; frame processor/bus/workers/pydantic/aiohttp/numpy/onnxruntime and selected provider extras; preserve package boundary",
+      "upstream_tests": [
+        {
+          "path": "tests/test_pipeline.py",
+          "exists_in_pinned_tree": true
+        },
+        {
+          "path": "tests/test_tts_interruptible_service.py",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "pipeline/task.py is deprecated; cancellation enqueues CancelFrame and is not evidence committed external tools were undone.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "src/pipecat/pipeline/worker.py",
+          "symbol": "class PipelineWorker(",
+          "line": 201,
+          "git_blob": "ee8015add27b6d4858ed365f2a46cc527fe72ad2",
+          "sha256": "09bdb1237c7958a5b65e8e358becf24299dd7fd5a5fa79f5fdf833e040f41b48",
+          "url": "https://github.com/pipecat-ai/pipecat/blob/9b0459b47675324843ffea17d90d8d3e422eb92c/src/pipecat/pipeline/worker.py#L201"
+        }
+      ],
+      "deps": "Python >=3.11; frame processor/bus/workers/pydantic/aiohttp/numpy/onnxruntime and selected provider extras; preserve package boundary",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "pipeline/task.py is deprecated; cancellation enqueues CancelFrame and is not evidence committed external tools were undone."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-WEBRTC",
+      "feature": "Optional room and telephony sessions",
+      "repo": "livekit/agents",
+      "sha": "3c6e651249bdad0ef812b7b03dfde4b7480f5c5c",
+      "source": {
+        "path": "livekit-agents/livekit/agents/voice/agent_session.py",
+        "symbol": "class AgentSession(",
+        "line": 383,
+        "git_blob": "7c9eb47ca304e139f6c4520914ccd53ba3ca376d",
+        "sha256": "c6f2af07150e591866417bff5d0db5d69f36481efeef1a6705ac56f63c8ca933",
+        "url": "https://github.com/livekit/agents/blob/3c6e651249bdad0ef812b7b03dfde4b7480f5c5c/livekit-agents/livekit/agents/voice/agent_session.py#L383"
+      },
+      "mode": "OUT_OF_PROCESS",
+      "destination": "services/realtime/livekit_adapter.py",
+      "direct_dependency_boundary": "livekit-agents package and rtc/protocol/api; FFmpeg/PyAV and explicit STT/TTS/model plugins; local/self-hosted media topology still to qualify",
+      "upstream_tests": [
+        {
+          "path": "tests/test_agent_session.py",
+          "exists_in_pinned_tree": true
+        },
+        {
+          "path": "tests/test_interrupt_protected_speech.py",
+          "exists_in_pinned_tree": true
+        },
+        {
+          "path": "tests/test_false_interruption_resume.py",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Use only when WebRTC/SIP topology is selected; do not run an overlapping Pipecat turn controller for the same session; recording and tracing require explicit policy.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "livekit-agents/livekit/agents/voice/agent_session.py",
+          "symbol": "class AgentSession(",
+          "line": 383,
+          "git_blob": "7c9eb47ca304e139f6c4520914ccd53ba3ca376d",
+          "sha256": "c6f2af07150e591866417bff5d0db5d69f36481efeef1a6705ac56f63c8ca933",
+          "url": "https://github.com/livekit/agents/blob/3c6e651249bdad0ef812b7b03dfde4b7480f5c5c/livekit-agents/livekit/agents/voice/agent_session.py#L383"
+        }
+      ],
+      "deps": "livekit-agents package and rtc/protocol/api; FFmpeg/PyAV and explicit STT/TTS/model plugins; local/self-hosted media topology still to qualify",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Use only when WebRTC/SIP topology is selected; do not run an overlapping Pipecat turn controller for the same session; recording and tracing require explicit policy."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-STT-SHERPA",
+      "feature": "Streaming speech ABI candidate",
+      "repo": "k2-fsa/sherpa-onnx",
+      "sha": "a63f82130d91d99a23a43f346104706881b31ff1",
+      "source": {
+        "path": "sherpa-onnx/python/sherpa_onnx/online_recognizer.py",
+        "symbol": "def get_result(self, s: OnlineStream) -> str:",
+        "line": 1094,
+        "git_blob": "18b49aaf40dc6e43606c63c9633762e8f573876b",
+        "sha256": "a80620a5eb35e06a190584c2c643e5210bff672410283e5a8f106655c1519c9e",
+        "url": "https://github.com/k2-fsa/sherpa-onnx/blob/a63f82130d91d99a23a43f346104706881b31ff1/sherpa-onnx/python/sherpa_onnx/online_recognizer.py#L1094"
+      },
+      "mode": "WRAP",
+      "destination": "adapters/speech/sherpa/",
+      "direct_dependency_boundary": "C ABI native library+ONNX execution provider+exact model/tokenizer set; Python API trace is separate from Rust C boundary",
+      "upstream_tests": [
+        {
+          "path": "sherpa-onnx/c-api/c-api.h",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "get_result returns string, get_result_all returns object. Remains a candidate; frozen B2 identities/configurations are not changed.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "sherpa-onnx/python/sherpa_onnx/online_recognizer.py",
+          "symbol": "def get_result(self, s: OnlineStream) -> str:",
+          "line": 1094,
+          "git_blob": "18b49aaf40dc6e43606c63c9633762e8f573876b",
+          "sha256": "a80620a5eb35e06a190584c2c643e5210bff672410283e5a8f106655c1519c9e",
+          "url": "https://github.com/k2-fsa/sherpa-onnx/blob/a63f82130d91d99a23a43f346104706881b31ff1/sherpa-onnx/python/sherpa_onnx/online_recognizer.py#L1094"
+        }
+      ],
+      "deps": "C ABI native library+ONNX execution provider+exact model/tokenizer set; Python API trace is separate from Rust C boundary",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "get_result returns string, get_result_all returns object. Remains a candidate; frozen B2 identities/configurations are not changed."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-STT-WHISPER",
+      "feature": "CPU-capable alternative ABI",
+      "repo": "ggml-org/whisper.cpp",
+      "sha": "231638a0717b7822784297e5980965ffcec05810",
+      "source": {
+        "path": "include/whisper.h",
+        "symbol": "struct whisper_full_params",
+        "line": 82,
+        "git_blob": "545084ef26ee80af25db1d43479d0187abd979c4",
+        "sha256": "a7d19f7feb5be52426628ff07e0602de28a30dc4312d0d0603e1e536753f76dd",
+        "url": "https://github.com/ggml-org/whisper.cpp/blob/231638a0717b7822784297e5980965ffcec05810/include/whisper.h#L82"
+      },
+      "mode": "WRAP",
+      "destination": "adapters/speech/whispercpp/",
+      "direct_dependency_boundary": "ggml/C++ build and platform accelerators; exact GGML model and runtime artifact; abort callback contract",
+      "upstream_tests": [
+        {
+          "path": "examples/stream/stream.cpp",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Example stream repeatedly runs whisper_full on windows; do not call it proven native incremental decoding or choose a quality winner.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "include/whisper.h",
+          "symbol": "struct whisper_full_params",
+          "line": 82,
+          "git_blob": "545084ef26ee80af25db1d43479d0187abd979c4",
+          "sha256": "a7d19f7feb5be52426628ff07e0602de28a30dc4312d0d0603e1e536753f76dd",
+          "url": "https://github.com/ggml-org/whisper.cpp/blob/231638a0717b7822784297e5980965ffcec05810/include/whisper.h#L82"
+        }
+      ],
+      "deps": "ggml/C++ build and platform accelerators; exact GGML model and runtime artifact; abort callback contract",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Example stream repeatedly runs whisper_full on windows; do not call it proven native incremental decoding or choose a quality winner."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-STT-MOONSHINE",
+      "feature": "Incremental alternative API",
+      "repo": "moonshine-ai/moonshine",
+      "sha": "234f60faa0eb388b01cdf7e60aca232af37aefda",
+      "source": {
+        "path": "language-bindings/python/src/moonshine_voice/transcriber.py",
+        "symbol": "class Stream:",
+        "line": 523,
+        "git_blob": "7193028a24c47b2914c552e2edfd143212899f4f",
+        "sha256": "d96159533259267aa9ce7bd98721ebbdd375431f806fa06fdb3fb1c5a40e435f",
+        "url": "https://github.com/moonshine-ai/moonshine/blob/234f60faa0eb388b01cdf7e60aca232af37aefda/language-bindings/python/src/moonshine_voice/transcriber.py#L523"
+      },
+      "mode": "WRAP",
+      "destination": "adapters/speech/moonshine/",
+      "direct_dependency_boundary": "Native C library through ctypes/C ABI; exact model catalog/files; transcript event and stream lifetimes",
+      "upstream_tests": [
+        {
+          "path": "core/transcriber-concurrency-test.cpp",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Updated source catalog is separate from canonical frozen benchmark pin; no new ASR decoding or scoring performed.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "language-bindings/python/src/moonshine_voice/transcriber.py",
+          "symbol": "class Stream:",
+          "line": 523,
+          "git_blob": "7193028a24c47b2914c552e2edfd143212899f4f",
+          "sha256": "d96159533259267aa9ce7bd98721ebbdd375431f806fa06fdb3fb1c5a40e435f",
+          "url": "https://github.com/moonshine-ai/moonshine/blob/234f60faa0eb388b01cdf7e60aca232af37aefda/language-bindings/python/src/moonshine_voice/transcriber.py#L523"
+        }
+      ],
+      "deps": "Native C library through ctypes/C ABI; exact model catalog/files; transcript event and stream lifetimes",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Updated source catalog is separate from canonical frozen benchmark pin; no new ASR decoding or scoring performed."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-STT-BATCH",
+      "feature": "Studio accelerated transcription alternative",
+      "repo": "SYSTRAN/faster-whisper",
+      "sha": "9e472ae9de8bb374552f531f752654554b76b2d6",
+      "source": {
+        "path": "faster_whisper/transcribe.py",
+        "symbol": "class WhisperModel:",
+        "line": 622,
+        "git_blob": "47a571e97235e9b1a0afcaeb0fe90bbe88bc8e71",
+        "sha256": "d88c67a88a98a57d41b8b15ea419c8d2e95177b763156a008ac0173046da8159",
+        "url": "https://github.com/SYSTRAN/faster-whisper/blob/9e472ae9de8bb374552f531f752654554b76b2d6/faster_whisper/transcribe.py#L622"
+      },
+      "mode": "OUT_OF_PROCESS",
+      "destination": "services/speech/faster_whisper_worker.py",
+      "direct_dependency_boundary": "CTranslate2/numpy/tokenizers/PyAV; Silero VAD and model conversion artifacts",
+      "upstream_tests": [
+        {
+          "path": "tests/test_transcribe.py",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Batch/generator segments do not establish incremental recognition; keep Studio bulk job out of latency-critical capture path.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "faster_whisper/transcribe.py",
+          "symbol": "class WhisperModel:",
+          "line": 622,
+          "git_blob": "47a571e97235e9b1a0afcaeb0fe90bbe88bc8e71",
+          "sha256": "d88c67a88a98a57d41b8b15ea419c8d2e95177b763156a008ac0173046da8159",
+          "url": "https://github.com/SYSTRAN/faster-whisper/blob/9e472ae9de8bb374552f531f752654554b76b2d6/faster_whisper/transcribe.py#L622"
+        }
+      ],
+      "deps": "CTranslate2/numpy/tokenizers/PyAV; Silero VAD and model conversion artifacts",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Batch/generator segments do not establish incremental recognition; keep Studio bulk job out of latency-critical capture path."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-VAD",
+      "feature": "Speech activity probability",
+      "repo": "snakers4/silero-vad",
+      "sha": "1e261b036686cd0017d500ee96acd1c4ba572a9d",
+      "source": {
+        "path": "src/silero_vad/utils_vad.py",
+        "symbol": "class VADIterator:",
+        "line": 591,
+        "git_blob": "4b3bef714cae87a44381077ac0519fd1a0f45089",
+        "sha256": "7e0f9b3334ee4feb79abcf2251be12458329077bce28c8540878ed9d35e5aa6b",
+        "url": "https://github.com/snakers4/silero-vad/blob/1e261b036686cd0017d500ee96acd1c4ba572a9d/src/silero_vad/utils_vad.py#L591"
+      },
+      "mode": "WRAP",
+      "destination": "adapters/speech/vad/",
+      "direct_dependency_boundary": "Silero ONNX/JIT model and per-stream state; prefer qualified native ONNX boundary over importing Torch into Rust",
+      "upstream_tests": [
+        {
+          "path": "tests/test_vad_iterator.py",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "VADIterator supports configured 8/16 kHz path; speech activity is not semantic end-of-turn and must not authorize action.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "src/silero_vad/utils_vad.py",
+          "symbol": "class VADIterator:",
+          "line": 591,
+          "git_blob": "4b3bef714cae87a44381077ac0519fd1a0f45089",
+          "sha256": "7e0f9b3334ee4feb79abcf2251be12458329077bce28c8540878ed9d35e5aa6b",
+          "url": "https://github.com/snakers4/silero-vad/blob/1e261b036686cd0017d500ee96acd1c4ba572a9d/src/silero_vad/utils_vad.py#L591"
+        }
+      ],
+      "deps": "Silero ONNX/JIT model and per-stream state; prefer qualified native ONNX boundary over importing Torch into Rust",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "VADIterator supports configured 8/16 kHz path; speech activity is not semantic end-of-turn and must not authorize action."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-GOVERNANCE",
+      "feature": "Bounded work lifecycle",
+      "repo": "TheHalfMoon/SpecGrain",
+      "sha": "5de7d6499bb0a9e3a191fc0934399cf099d1980a",
+      "source": {
+        "path": "src/specgrain/lifecycle.py",
+        "symbol": "class SpecState(StrEnum):",
+        "line": 16,
+        "git_blob": "051f02c7563ef57eb676592788871b4b5ad08a70",
+        "sha256": "ce9ebcd3ad4e429c5c9a59d2085708c9582831592825199310ba09adee0502cb",
+        "url": "https://github.com/TheHalfMoon/SpecGrain/blob/5de7d6499bb0a9e3a191fc0934399cf099d1980a/src/specgrain/lifecycle.py#L16"
+      },
+      "mode": "REFERENCE_ONLY",
+      "destination": "docs/strategy/WISPRAL_COPY_FIRST_WORK_PACKETS.md",
+      "direct_dependency_boundary": "Python >=3.11, standard library; governance tool, no runtime dependency",
+      "upstream_tests": [
+        {
+          "path": "tests/test_lifecycle.py",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Reuse lifecycle discipline and exact readiness evidence, not a second product workflow engine.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "src/specgrain/lifecycle.py",
+          "symbol": "class SpecState(StrEnum):",
+          "line": 16,
+          "git_blob": "051f02c7563ef57eb676592788871b4b5ad08a70",
+          "sha256": "ce9ebcd3ad4e429c5c9a59d2085708c9582831592825199310ba09adee0502cb",
+          "url": "https://github.com/TheHalfMoon/SpecGrain/blob/5de7d6499bb0a9e3a191fc0934399cf099d1980a/src/specgrain/lifecycle.py#L16"
+        }
+      ],
+      "deps": "Python >=3.11, standard library; governance tool, no runtime dependency",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Reuse lifecycle discipline and exact readiness evidence, not a second product workflow engine."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-WINDOWS-OWNER",
+      "feature": "Alternate Windows media process owner",
+      "repo": "TheHalfMoon/Yamakan",
+      "sha": "1bb71e8c4bfbe885f37deb4d4f0961b41d1a022e",
+      "source": {
+        "path": "core/process/owner.ts",
+        "symbol": "export class ProcessOwner",
+        "line": 117,
+        "git_blob": "4422224f851612fae814e4fe9f79607ec1c4c83d",
+        "sha256": "9fb82c26b4826ab4947e6c89964ddea331b35368d2944428bf2bb9867f01d994",
+        "url": "https://github.com/TheHalfMoon/Yamakan/blob/1bb71e8c4bfbe885f37deb4d4f0961b41d1a022e/core/process/owner.ts#L117"
+      },
+      "mode": "REFERENCE_ONLY",
+      "destination": "research/future/windows-worker-containment/",
+      "direct_dependency_boundary": "native/procd Rust helper, minimal environment, suspended-start acknowledgement, AppContainer/JobObject, command/errors.ts",
+      "upstream_tests": [
+        {
+          "path": "tests/process-owner.test.ts",
+          "exists_in_pinned_tree": true
+        },
+        {
+          "path": "tests/resource-policy.test.ts",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Useful stronger Windows isolation alternative; current donor explicitly labels POSIX unqualified; full native closure has not been tested here.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "core/process/owner.ts",
+          "symbol": "export class ProcessOwner",
+          "line": 117,
+          "git_blob": "4422224f851612fae814e4fe9f79607ec1c4c83d",
+          "sha256": "9fb82c26b4826ab4947e6c89964ddea331b35368d2944428bf2bb9867f01d994",
+          "url": "https://github.com/TheHalfMoon/Yamakan/blob/1bb71e8c4bfbe885f37deb4d4f0961b41d1a022e/core/process/owner.ts#L117"
+        }
+      ],
+      "deps": "native/procd Rust helper, minimal environment, suspended-start acknowledgement, AppContainer/JobObject, command/errors.ts",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Useful stronger Windows isolation alternative; current donor explicitly labels POSIX unqualified; full native closure has not been tested here."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "CORE-SCOPE",
+      "feature": "Bounded evidence scope",
+      "repo": "TheHalfMoon/Skilit",
+      "sha": "2b053d351385e5100f69494247d8aa42fe8a84be",
+      "source": {
+        "path": "packages/lens/src/capture-scope.ts",
+        "symbol": "export interface CaptureScopeInventory",
+        "line": 63,
+        "git_blob": "0a14562730439326f7572f8ce1e73076a1d0d801",
+        "sha256": "12c16ef29eb9e179a6a26c4ca365d7d4b00a4ba3a6318e4283dd80661dcae7e3",
+        "url": "https://github.com/TheHalfMoon/Skilit/blob/2b053d351385e5100f69494247d8aa42fe8a84be/packages/lens/src/capture-scope.ts#L63"
+      },
+      "mode": "REFERENCE_ONLY",
+      "destination": "research/future/context-scope/",
+      "direct_dependency_boundary": "url-guard.ts and crypto; exact HTTPS host/budget rules; capture worker closure external",
+      "upstream_tests": [
+        {
+          "path": "packages/lens/tests/capture-network.test.mjs",
+          "exists_in_pinned_tree": true
+        }
+      ],
+      "required_acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "limitation": "Public website capture inventory is not microphone/app-context permission; avoid importing browser worker into Core.",
+      "source_status": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "pillar": "Core",
+      "sources": [
+        {
+          "path": "packages/lens/src/capture-scope.ts",
+          "symbol": "export interface CaptureScopeInventory",
+          "line": 63,
+          "git_blob": "0a14562730439326f7572f8ce1e73076a1d0d801",
+          "sha256": "12c16ef29eb9e179a6a26c4ca365d7d4b00a4ba3a6318e4283dd80661dcae7e3",
+          "url": "https://github.com/TheHalfMoon/Skilit/blob/2b053d351385e5100f69494247d8aa42fe8a84be/packages/lens/src/capture-scope.ts#L63"
+        }
+      ],
+      "deps": "url-guard.ts and crypto; exact HTTPS host/budget rules; capture worker closure external",
+      "acceptance": [
+        "Verify complete admitted dependency/native/model identity before integration",
+        "Independent positive, negative, stale-result and rollback fixtures at exact candidate head"
+      ],
+      "risks": [
+        "Public website capture inventory is not microphone/app-context permission; avoid importing browser worker into Core."
+      ],
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+    },
+    {
+      "id": "ST-FIT",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/fit_planner.py",
+      "symbol": "plan_fit",
+      "line": 135,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/fit_planner.py#L135",
+      "sha256": "0acd7c33623782cafa975f1f81cbe37362160490e8bdd34ca15f5c2b06321442",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "COPY",
+      "destination": "packages/studio-timing/fit_planner.py",
+      "direct_dependency_boundary": "math; dataclasses only",
+      "tests_or_required_fixtures": "tests/test_fit_planner.py; tests/fixtures/fit_planner/*.json",
+      "runtime_status": "REPRODUCED_SYNTHETIC_NON_AUDIO_ONLY",
+      "pillar": "WisprStudio",
+      "mode": "COPY",
+      "sources": [
+        {
+          "path": "backend/services/fit_planner.py",
+          "symbol": "plan_fit",
+          "line": 135,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/fit_planner.py#L135",
+          "sha256": "0acd7c33623782cafa975f1f81cbe37362160490e8bdd34ca15f5c2b06321442"
+        }
+      ],
+      "deps": "math; dataclasses only",
+      "acceptance": [
+        "tests/test_fit_planner.py; tests/fixtures/fit_planner/*.json"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ST-DURATION",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/duration_planner.py",
+      "symbol": "calibrate_cps",
+      "line": 87,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/duration_planner.py#L87",
+      "sha256": "1b1741f67d1d2cb391f103a5f1aa57e881b97b0b7c53897897fa940bd5bf5d55",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/studio/duration_planner.py",
+      "direct_dependency_boundary": "services.fit_planner; llm_backend; speech_rate; translator (arithmetic extraction avoids optional LLM initialization)",
+      "tests_or_required_fixtures": "tests/test_duration_planner.py",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "ADAPT",
+      "sources": [
+        {
+          "path": "backend/services/duration_planner.py",
+          "symbol": "calibrate_cps",
+          "line": 87,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/duration_planner.py#L87",
+          "sha256": "1b1741f67d1d2cb391f103a5f1aa57e881b97b0b7c53897897fa940bd5bf5d55"
+        }
+      ],
+      "deps": "services.fit_planner; llm_backend; speech_rate; translator (arithmetic extraction avoids optional LLM initialization)",
+      "acceptance": [
+        "tests/test_duration_planner.py"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ST-RENDER",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/longform_render.py",
+      "symbol": "build_render_cmd",
+      "line": 707,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/longform_render.py#L707",
+      "sha256": "80d1293e23fd08f80bc5e9d14fbdd84196ce2ba02db4c962f35cc23ebb005cc4",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/studio/longform_render.py",
+      "direct_dependency_boundary": "stdlib; services.ffmpeg_utils.local_inputs_only; cache paths; optional torch only inside cache helpers",
+      "tests_or_required_fixtures": "tests/test_longform_render.py",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "ADAPT",
+      "sources": [
+        {
+          "path": "backend/services/longform_render.py",
+          "symbol": "build_render_cmd",
+          "line": 707,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/longform_render.py#L707",
+          "sha256": "80d1293e23fd08f80bc5e9d14fbdd84196ce2ba02db4c962f35cc23ebb005cc4"
+        }
+      ],
+      "deps": "stdlib; services.ffmpeg_utils.local_inputs_only; cache paths; optional torch only inside cache helpers",
+      "acceptance": [
+        "tests/test_longform_render.py"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ST-RESUME",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/longform_resume.py",
+      "symbol": "build_manifest",
+      "line": 72,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/longform_resume.py#L72",
+      "sha256": "13a5dcb63f4e3ca36fd4b75f2ae29fb9c5ed4a98606919e4f31d835299d1cd59",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/studio/longform_resume.py",
+      "direct_dependency_boundary": "core.durable_io; core.config.OUTPUTS_DIR; stdlib JSON/filesystem",
+      "tests_or_required_fixtures": "tests/test_longform_render.py plus new crash/restart integration fixture",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "ADAPT",
+      "sources": [
+        {
+          "path": "backend/services/longform_resume.py",
+          "symbol": "build_manifest",
+          "line": 72,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/longform_resume.py#L72",
+          "sha256": "13a5dcb63f4e3ca36fd4b75f2ae29fb9c5ed4a98606919e4f31d835299d1cd59"
+        }
+      ],
+      "deps": "core.durable_io; core.config.OUTPUTS_DIR; stdlib JSON/filesystem",
+      "acceptance": [
+        "tests/test_longform_render.py plus new crash/restart integration fixture"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ST-MODEL-TERMS",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/model_acceptance.py",
+      "symbol": "ensure_accepted",
+      "line": 297,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/model_acceptance.py#L297",
+      "sha256": "4bdcd3668654ebe1fa48a197defa4417be781335ab84a71cfdf0a90a8e9073ac",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/studio/model_acceptance.py",
+      "direct_dependency_boundary": "services.model_licenses; settings_store; registry; terms fingerprint; local persistence",
+      "tests_or_required_fixtures": "tests/test_model_acceptance.py; tests/test_model_acceptance_asr.py",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "ADAPT",
+      "sources": [
+        {
+          "path": "backend/services/model_acceptance.py",
+          "symbol": "ensure_accepted",
+          "line": 297,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/model_acceptance.py#L297",
+          "sha256": "4bdcd3668654ebe1fa48a197defa4417be781335ab84a71cfdf0a90a8e9073ac"
+        }
+      ],
+      "deps": "services.model_licenses; settings_store; registry; terms fingerprint; local persistence",
+      "acceptance": [
+        "tests/test_model_acceptance.py; tests/test_model_acceptance_asr.py"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ST-MODEL-LIFECYCLE",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/model_lifecycle.py",
+      "symbol": "unload",
+      "line": 285,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/model_lifecycle.py#L285",
+      "sha256": "11d203cc6a03904d202a76ce3c75c0860284441305ec18c37aea2b7ea341d441",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/studio/model_lifecycle",
+      "direct_dependency_boundary": "model_manager; subprocess_backend; asr_backend; engine-memory state; optional GPU providers",
+      "tests_or_required_fixtures": "backend/tests/test_model_load_shutdown.py",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "backend/services/model_lifecycle.py",
+          "symbol": "unload",
+          "line": 285,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/model_lifecycle.py#L285",
+          "sha256": "11d203cc6a03904d202a76ce3c75c0860284441305ec18c37aea2b7ea341d441"
+        }
+      ],
+      "deps": "model_manager; subprocess_backend; asr_backend; engine-memory state; optional GPU providers",
+      "acceptance": [
+        "backend/tests/test_model_load_shutdown.py"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ST-CANCEL-SCOPE",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/inference_cancellation.py",
+      "symbol": "InferenceCancellation",
+      "line": 12,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/inference_cancellation.py#L12",
+      "sha256": "dc3483f68209f4f5092ec560225b1ddf7804ee6bb467e0bd610f2a0536460fcc",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "COPY",
+      "destination": "services/studio/inference_cancellation.py",
+      "direct_dependency_boundary": "threading; contextlib only",
+      "tests_or_required_fixtures": "studio_mechanism_probe.py",
+      "runtime_status": "REPRODUCED_SYNTHETIC_NON_AUDIO_ONLY",
+      "pillar": "WisprStudio",
+      "mode": "COPY",
+      "sources": [
+        {
+          "path": "backend/services/inference_cancellation.py",
+          "symbol": "InferenceCancellation",
+          "line": 12,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/inference_cancellation.py#L12",
+          "sha256": "dc3483f68209f4f5092ec560225b1ddf7804ee6bb467e0bd610f2a0536460fcc"
+        }
+      ],
+      "deps": "threading; contextlib only",
+      "acceptance": [
+        "studio_mechanism_probe.py"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ST-SIDECAR",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/subprocess_backend.py",
+      "symbol": "SubprocessBackend",
+      "line": 380,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/subprocess_backend.py#L380",
+      "sha256": "796990b9721a4e7c74c2d794728e82d352e1e58a8a89c339406c9a90cda4cc5f",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/model-workers/subprocess_backend.py",
+      "direct_dependency_boundary": "TTSBackend; core.contained_subprocess.spawn_owned; engine_env; model_manager; cancellation; GPU job accounting; process registry",
+      "tests_or_required_fixtures": "backend/tests/test_subprocess_recv_timeout.py",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "ADAPT",
+      "sources": [
+        {
+          "path": "backend/services/subprocess_backend.py",
+          "symbol": "SubprocessBackend",
+          "line": 380,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/subprocess_backend.py#L380",
+          "sha256": "796990b9721a4e7c74c2d794728e82d352e1e58a8a89c339406c9a90cda4cc5f"
+        }
+      ],
+      "deps": "TTSBackend; core.contained_subprocess.spawn_owned; engine_env; model_manager; cancellation; GPU job accounting; process registry",
+      "acceptance": [
+        "backend/tests/test_subprocess_recv_timeout.py"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ST-DUB-INGEST",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/dub_pipeline.py",
+      "symbol": "ingest_pipeline",
+      "line": 1448,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/dub_pipeline.py#L1448",
+      "sha256": "f3fb506605ce5392095f0809e3a898255baa9f64056b4b8a38ea1c132f907ea5",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/studio/dubbing-ingest",
+      "direct_dependency_boundary": "FFmpeg; file/media/path checks; local job store; optional Demucs/scene detection; URL download branch excluded from first packet",
+      "tests_or_required_fixtures": "backend/tests/test_dub_caption_languages.py plus local-media end-to-end fixture",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "backend/services/dub_pipeline.py",
+          "symbol": "ingest_pipeline",
+          "line": 1448,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/dub_pipeline.py#L1448",
+          "sha256": "f3fb506605ce5392095f0809e3a898255baa9f64056b4b8a38ea1c132f907ea5"
+        }
+      ],
+      "deps": "FFmpeg; file/media/path checks; local job store; optional Demucs/scene detection; URL download branch excluded from first packet",
+      "acceptance": [
+        "backend/tests/test_dub_caption_languages.py plus local-media end-to-end fixture"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ST-DUB-GENERATE",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/api/routers/dub_generate.py",
+      "symbol": "dub_generate",
+      "line": 481,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/api/routers/dub_generate.py#L481",
+      "sha256": "ca8f7916b779b9e612580b7cfaff5f28e20c6162caebdb3a34865792515526f2",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/studio/dubbing-generation",
+      "direct_dependency_boundary": "FastAPI router; task/voice lease; render staging; TTS backend; per-segment cache; bounded worker; durable jobs",
+      "tests_or_required_fixtures": "backend/tests/test_tts_backend_lifecycle.py plus cancellation/restart fixture",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "backend/api/routers/dub_generate.py",
+          "symbol": "dub_generate",
+          "line": 481,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/api/routers/dub_generate.py#L481",
+          "sha256": "ca8f7916b779b9e612580b7cfaff5f28e20c6162caebdb3a34865792515526f2"
+        }
+      ],
+      "deps": "FastAPI router; task/voice lease; render staging; TTS backend; per-segment cache; bounded worker; durable jobs",
+      "acceptance": [
+        "backend/tests/test_tts_backend_lifecycle.py plus cancellation/restart fixture"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ST-CLONE-REF",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/speaker_clone.py",
+      "symbol": "extract_speaker_clones",
+      "line": 58,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/speaker_clone.py#L58",
+      "sha256": "2a1e301eb234a717f79eb697a16e5d7bb190aca597dedca036130567963c16b6",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/studio/speaker_reference.py",
+      "direct_dependency_boundary": "numpy; soundfile; audio I/O; safe path storage; caller-provided segment speaker labels",
+      "tests_or_required_fixtures": "tests/test_profile_consent.py plus consent scope/revocation fixture",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "ADAPT",
+      "sources": [
+        {
+          "path": "backend/services/speaker_clone.py",
+          "symbol": "extract_speaker_clones",
+          "line": 58,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/speaker_clone.py#L58",
+          "sha256": "2a1e301eb234a717f79eb697a16e5d7bb190aca597dedca036130567963c16b6"
+        }
+      ],
+      "deps": "numpy; soundfile; audio I/O; safe path storage; caller-provided segment speaker labels",
+      "acceptance": [
+        "tests/test_profile_consent.py plus consent scope/revocation fixture"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ST-CONSENT",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/api/routers/profiles.py",
+      "symbol": "record_consent",
+      "line": 1039,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/api/routers/profiles.py#L1039",
+      "sha256": "25d99c0610c050fc58f2d746229a06193f057733c68577a43adff6886deaab2a",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "services/consent/profile_consent.py",
+      "direct_dependency_boundary": "FastAPI upload/form; SQLite; voices directory; atomic file swap; event bus; shared profile lock",
+      "tests_or_required_fixtures": "tests/test_profile_consent.py; electron/src/renderer/src/features/clone/profile-consent.test.tsx",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "ADAPT",
+      "sources": [
+        {
+          "path": "backend/api/routers/profiles.py",
+          "symbol": "record_consent",
+          "line": 1039,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/api/routers/profiles.py#L1039",
+          "sha256": "25d99c0610c050fc58f2d746229a06193f057733c68577a43adff6886deaab2a"
+        }
+      ],
+      "deps": "FastAPI upload/form; SQLite; voices directory; atomic file swap; event bus; shared profile lock",
+      "acceptance": [
+        "tests/test_profile_consent.py; electron/src/renderer/src/features/clone/profile-consent.test.tsx"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ST-WATERMARK",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "backend/services/watermark.py",
+      "symbol": "mark_synthetic",
+      "line": 351,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/watermark.py#L351",
+      "sha256": "839c229a20d52ae3ddacba09dee23de7766fab4bcfef7f136898723c2d50f85b",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/studio/watermark",
+      "direct_dependency_boundary": "torch; audioseal; sample-rate conversion; generator/detector model cache; engine provenance",
+      "tests_or_required_fixtures": "new generated-audio encode/decode/short-clip failure fixture; no robustness claim yet",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "backend/services/watermark.py",
+          "symbol": "mark_synthetic",
+          "line": 351,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/backend/services/watermark.py#L351",
+          "sha256": "839c229a20d52ae3ddacba09dee23de7766fab4bcfef7f136898723c2d50f85b"
+        }
+      ],
+      "deps": "torch; audioseal; sample-rate conversion; generator/detector model cache; engine provenance",
+      "acceptance": [
+        "new generated-audio encode/decode/short-clip failure fixture; no robustness claim yet"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ST-DRAFT",
+      "repo": "debpalash/VoiceStudio",
+      "sha": "28bf2c7a83b8a64836297340c52a45d716684aed",
+      "path": "electron/src/renderer/src/features/dub/dub-draft.ts",
+      "symbol": "restoreDubDraft",
+      "line": 16,
+      "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/electron/src/renderer/src/features/dub/dub-draft.ts#L16",
+      "sha256": "fd7b310b6f742eb0b62360074416d84426a4d0bed1d5be1d8531ab9476cf4c99",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "ADAPT",
+      "destination": "apps/studio/src/dub/restore-draft.ts",
+      "direct_dependency_boundary": "restoreExportPreferences; DubSession schema; versioned local storage; no Electron API inside inspected function",
+      "tests_or_required_fixtures": "electron/src/renderer/src/features/dub/dub-draft.test.ts (tree present, not fetched)",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "ADAPT",
+      "sources": [
+        {
+          "path": "electron/src/renderer/src/features/dub/dub-draft.ts",
+          "symbol": "restoreDubDraft",
+          "line": 16,
+          "url": "https://github.com/debpalash/VoiceStudio/blob/28bf2c7a83b8a64836297340c52a45d716684aed/electron/src/renderer/src/features/dub/dub-draft.ts#L16",
+          "sha256": "fd7b310b6f742eb0b62360074416d84426a4d0bed1d5be1d8531ab9476cf4c99"
+        }
+      ],
+      "deps": "restoreExportPreferences; DubSession schema; versioned local storage; no Electron API inside inspected function",
+      "acceptance": [
+        "electron/src/renderer/src/features/dub/dub-draft.test.ts (tree present, not fetched)"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "VB-PROTOCOL",
+      "repo": "jamiepine/voicebox",
+      "sha": "8af7efe62fab8d33e2a5dfbedabaa45f68a5184f",
+      "path": "backend/backends/__init__.py",
+      "symbol": "TTSBackend",
+      "line": 73,
+      "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/backends/__init__.py#L73",
+      "sha256": "0368460cf8e072bfee0f8bcb1727f3c11b2c2c53efef47a92cb59e95a59c9db9",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "REFERENCE_ONLY",
+      "destination": "contracts/tts",
+      "direct_dependency_boundary": "typing Protocol; ModelConfig; numpy types; platform mapping; HF patch import side effect",
+      "tests_or_required_fixtures": "backend/tests/test_generation_engine_resolution.py (tree present, not fetched)",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "REFERENCE_ONLY",
+      "sources": [
+        {
+          "path": "backend/backends/__init__.py",
+          "symbol": "TTSBackend",
+          "line": 73,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/backends/__init__.py#L73",
+          "sha256": "0368460cf8e072bfee0f8bcb1727f3c11b2c2c53efef47a92cb59e95a59c9db9"
+        }
+      ],
+      "deps": "typing Protocol; ModelConfig; numpy types; platform mapping; HF patch import side effect",
+      "acceptance": [
+        "backend/tests/test_generation_engine_resolution.py (tree present, not fetched)"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "VB-QUEUE",
+      "repo": "jamiepine/voicebox",
+      "sha": "8af7efe62fab8d33e2a5dfbedabaa45f68a5184f",
+      "path": "backend/services/task_queue.py",
+      "symbol": "cancel_generation",
+      "line": 105,
+      "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/services/task_queue.py#L105",
+      "sha256": "c08ad4dcc2e61dd6eb8d4ca55ad93a47255bc0f087ae54f9d17c56b04b360074",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "REFERENCE_ONLY",
+      "destination": "contracts/job-cancellation-tests",
+      "direct_dependency_boundary": "asyncio only on exercised path; database/history lazy error-recovery dependencies",
+      "tests_or_required_fixtures": "backend/tests/test_task_queue_cancellation.py",
+      "runtime_status": "REPRODUCED_SYNTHETIC_NON_AUDIO_ONLY",
+      "pillar": "WisprStudio",
+      "mode": "REFERENCE_ONLY",
+      "sources": [
+        {
+          "path": "backend/services/task_queue.py",
+          "symbol": "cancel_generation",
+          "line": 105,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/services/task_queue.py#L105",
+          "sha256": "c08ad4dcc2e61dd6eb8d4ca55ad93a47255bc0f087ae54f9d17c56b04b360074"
+        }
+      ],
+      "deps": "asyncio only on exercised path; database/history lazy error-recovery dependencies",
+      "acceptance": [
+        "backend/tests/test_task_queue_cancellation.py"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "VB-EXPORT",
+      "repo": "jamiepine/voicebox",
+      "sha": "8af7efe62fab8d33e2a5dfbedabaa45f68a5184f",
+      "path": "backend/services/stories.py",
+      "symbol": "export_story_audio",
+      "line": 964,
+      "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/services/stories.py#L964",
+      "sha256": "d1fd94c8bc36969639bd79d035b19a49f0a6bfaf4c6fee8b4093549c76bafecf",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "REJECT",
+      "destination": "none (do not duplicate renderer)",
+      "direct_dependency_boundary": "SQLAlchemy; numpy; audio loaders; FFmpeg; stored versions/trims/timecodes; zero-volume source concern",
+      "tests_or_required_fixtures": "backend/tests/test_story_export.py plus explicit zero-volume regression",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "REJECT",
+      "sources": [
+        {
+          "path": "backend/services/stories.py",
+          "symbol": "export_story_audio",
+          "line": 964,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/backend/services/stories.py#L964",
+          "sha256": "d1fd94c8bc36969639bd79d035b19a49f0a6bfaf4c6fee8b4093549c76bafecf"
+        }
+      ],
+      "deps": "SQLAlchemy; numpy; audio loaders; FFmpeg; stored versions/trims/timecodes; zero-volume source concern",
+      "acceptance": [
+        "backend/tests/test_story_export.py plus explicit zero-volume regression"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "VB-UI",
+      "repo": "jamiepine/voicebox",
+      "sha": "8af7efe62fab8d33e2a5dfbedabaa45f68a5184f",
+      "path": "app/src/components/StoriesTab/StoryTrackEditor.tsx",
+      "symbol": "ClipWaveform",
+      "line": 45,
+      "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/app/src/components/StoriesTab/StoryTrackEditor.tsx#L45",
+      "sha256": "3d70d426caeaf1f3eb3e625b980cbdf4079b3bf68656f8dc2679f990edda5fd6",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "REFERENCE_ONLY",
+      "destination": "apps/studio UX comparison",
+      "direct_dependency_boundary": "React; WaveSurfer; Radix/shadcn UI; Zustand; apiClient; useStories hooks; Web Audio playback",
+      "tests_or_required_fixtures": "new trim/mute/keyboard/timeline export equality fixtures",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "REFERENCE_ONLY",
+      "sources": [
+        {
+          "path": "app/src/components/StoriesTab/StoryTrackEditor.tsx",
+          "symbol": "ClipWaveform",
+          "line": 45,
+          "url": "https://github.com/jamiepine/voicebox/blob/8af7efe62fab8d33e2a5dfbedabaa45f68a5184f/app/src/components/StoriesTab/StoryTrackEditor.tsx#L45",
+          "sha256": "3d70d426caeaf1f3eb3e625b980cbdf4079b3bf68656f8dc2679f990edda5fd6"
+        }
+      ],
+      "deps": "React; WaveSurfer; Radix/shadcn UI; Zustand; apiClient; useStories hooks; Web Audio playback",
+      "acceptance": [
+        "new trim/mute/keyboard/timeline export equality fixtures"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "TTS-CHATTERBOX",
+      "repo": "resemble-ai/chatterbox",
+      "sha": "5de7a54aa4e5e2baadb0182dde554908b48b85c2",
+      "path": "src/chatterbox/tts_turbo.py",
+      "symbol": "ChatterboxTurboTTS",
+      "line": 111,
+      "url": "https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/src/chatterbox/tts_turbo.py#L111",
+      "sha256": "2f27e8ff2fa35181fdd2849367fb96ecc2cb87a1088ca7520c8bd51946599f08",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/tts/chatterbox",
+      "direct_dependency_boundary": "torch; librosa; safetensors; tokenizer; local T3/S3Gen/voice encoder; Perth; pyloudnorm",
+      "tests_or_required_fixtures": "upstream example_tts_nano.py is an example, not correctness coverage; add consent-backed generated-audio fixture",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "src/chatterbox/tts_turbo.py",
+          "symbol": "ChatterboxTurboTTS",
+          "line": 111,
+          "url": "https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/src/chatterbox/tts_turbo.py#L111",
+          "sha256": "2f27e8ff2fa35181fdd2849367fb96ecc2cb87a1088ca7520c8bd51946599f08"
+        }
+      ],
+      "deps": "torch; librosa; safetensors; tokenizer; local T3/S3Gen/voice encoder; Perth; pyloudnorm",
+      "acceptance": [
+        "upstream example_tts_nano.py is an example, not correctness coverage; add consent-backed generated-audio fixture"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "TTS-CHATTERBOX-AR",
+      "repo": "resemble-ai/chatterbox",
+      "sha": "5de7a54aa4e5e2baadb0182dde554908b48b85c2",
+      "path": "src/chatterbox/mtl_tts.py",
+      "symbol": "ChatterboxMultilingualTTS",
+      "line": 155,
+      "url": "https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/src/chatterbox/mtl_tts.py#L155",
+      "sha256": "936759044e54cffe8c68b91b32e01da0bc032a1e084f769f0403080d86ad153c",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/tts/chatterbox-multilingual",
+      "direct_dependency_boundary": "torch; 23-language tokenizer; T3/S3Gen; voice encoder; Perth",
+      "tests_or_required_fixtures": "new held-out Arabic/English intelligibility and reference-consent fixtures",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "src/chatterbox/mtl_tts.py",
+          "symbol": "ChatterboxMultilingualTTS",
+          "line": 155,
+          "url": "https://github.com/resemble-ai/chatterbox/blob/5de7a54aa4e5e2baadb0182dde554908b48b85c2/src/chatterbox/mtl_tts.py#L155",
+          "sha256": "936759044e54cffe8c68b91b32e01da0bc032a1e084f769f0403080d86ad153c"
+        }
+      ],
+      "deps": "torch; 23-language tokenizer; T3/S3Gen; voice encoder; Perth",
+      "acceptance": [
+        "new held-out Arabic/English intelligibility and reference-consent fixtures"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "TTS-COSY",
+      "repo": "QwenAudio/CosyVoice",
+      "sha": "074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc",
+      "path": "cosyvoice/cli/cosyvoice.py",
+      "symbol": "CosyVoice3",
+      "line": 189,
+      "url": "https://github.com/QwenAudio/CosyVoice/blob/074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc/cosyvoice/cli/cosyvoice.py#L189",
+      "sha256": "4b2a605f129d172cd031286a14a591396c2e8ed0bf53258acc7445525fdaa65b",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/tts/cosyvoice",
+      "direct_dependency_boundary": "HyperPyYAML; torch; ONNX; wetext; optional TensorRT/vLLM; model/frontend caches",
+      "tests_or_required_fixtures": "runtime example scripts; no dedicated automated suite found in acquired tree",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "cosyvoice/cli/cosyvoice.py",
+          "symbol": "CosyVoice3",
+          "line": 189,
+          "url": "https://github.com/QwenAudio/CosyVoice/blob/074ca6dc9e80a2f424f1f74b48bdd7d3fea531cc/cosyvoice/cli/cosyvoice.py#L189",
+          "sha256": "4b2a605f129d172cd031286a14a591396c2e8ed0bf53258acc7445525fdaa65b"
+        }
+      ],
+      "deps": "HyperPyYAML; torch; ONNX; wetext; optional TensorRT/vLLM; model/frontend caches",
+      "acceptance": [
+        "runtime example scripts; no dedicated automated suite found in acquired tree"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "TTS-QWEN",
+      "repo": "QwenLM/Qwen3-TTS",
+      "sha": "022e286b98fbec7e1e916cb940cdf532cd9f488e",
+      "path": "qwen_tts/inference/qwen3_tts_model.py",
+      "symbol": "create_voice_clone_prompt",
+      "line": 356,
+      "url": "https://github.com/QwenLM/Qwen3-TTS/blob/022e286b98fbec7e1e916cb940cdf532cd9f488e/qwen_tts/inference/qwen3_tts_model.py#L356",
+      "sha256": "e1da450732857c1f5fe3e36ebab85db2f6dc6a48caaff6973f463384e30275e4",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/tts/qwen3",
+      "direct_dependency_boundary": "transformers 4.57.3; torch; librosa; soundfile; tokenizer; accelerate; voice clone prompt dataclass",
+      "tests_or_required_fixtures": "examples/test_model_12hz_base.py is model-running example; no no-download independent suite established",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "qwen_tts/inference/qwen3_tts_model.py",
+          "symbol": "create_voice_clone_prompt",
+          "line": 356,
+          "url": "https://github.com/QwenLM/Qwen3-TTS/blob/022e286b98fbec7e1e916cb940cdf532cd9f488e/qwen_tts/inference/qwen3_tts_model.py#L356",
+          "sha256": "e1da450732857c1f5fe3e36ebab85db2f6dc6a48caaff6973f463384e30275e4"
+        }
+      ],
+      "deps": "transformers 4.57.3; torch; librosa; soundfile; tokenizer; accelerate; voice clone prompt dataclass",
+      "acceptance": [
+        "examples/test_model_12hz_base.py is model-running example; no no-download independent suite established"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "TTS-KOKORO",
+      "repo": "hexgrad/kokoro",
+      "sha": "dfb907a02bba8152ca444717ca5d78747ccb4bec",
+      "path": "kokoro/pipeline.py",
+      "symbol": "KPipeline",
+      "line": 42,
+      "url": "https://github.com/hexgrad/kokoro/blob/dfb907a02bba8152ca444717ca5d78747ccb4bec/kokoro/pipeline.py#L42",
+      "sha256": "499982bbc23a1019681cdb4c327c1d911e7034e240721b95686ff1a8f15c2a9a",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/tts/kokoro",
+      "direct_dependency_boundary": "torch; misaki; espeak-ng for selected languages; HF model and per-voice packs",
+      "tests_or_required_fixtures": "tests/test_custom_stft.py; JavaScript splitting/phonemization tests not executed",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "kokoro/pipeline.py",
+          "symbol": "KPipeline",
+          "line": 42,
+          "url": "https://github.com/hexgrad/kokoro/blob/dfb907a02bba8152ca444717ca5d78747ccb4bec/kokoro/pipeline.py#L42",
+          "sha256": "499982bbc23a1019681cdb4c327c1d911e7034e240721b95686ff1a8f15c2a9a"
+        }
+      ],
+      "deps": "torch; misaki; espeak-ng for selected languages; HF model and per-voice packs",
+      "acceptance": [
+        "tests/test_custom_stft.py; JavaScript splitting/phonemization tests not executed"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "TTS-OPENVOICE",
+      "repo": "myshell-ai/OpenVoice",
+      "sha": "74a1d147b17a8c3092dd5430504bd83ef6c7eb23",
+      "path": "openvoice/api.py",
+      "symbol": "ToneColorConverter",
+      "line": 101,
+      "url": "https://github.com/myshell-ai/OpenVoice/blob/74a1d147b17a8c3092dd5430504bd83ef6c7eb23/openvoice/api.py#L101",
+      "sha256": "6830abaf9b0ea6023fe7e3df3d9a0a1fd9b73a7dbbc13f8a892da009052637b9",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/voice-conversion/openvoice",
+      "direct_dependency_boundary": "torch; librosa; model configs; reference embeddings; optional wavmark; soundfile; base TTS separate",
+      "tests_or_required_fixtures": "no dedicated automated suite found in acquired tree",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "openvoice/api.py",
+          "symbol": "ToneColorConverter",
+          "line": 101,
+          "url": "https://github.com/myshell-ai/OpenVoice/blob/74a1d147b17a8c3092dd5430504bd83ef6c7eb23/openvoice/api.py#L101",
+          "sha256": "6830abaf9b0ea6023fe7e3df3d9a0a1fd9b73a7dbbc13f8a892da009052637b9"
+        }
+      ],
+      "deps": "torch; librosa; model configs; reference embeddings; optional wavmark; soundfile; base TTS separate",
+      "acceptance": [
+        "no dedicated automated suite found in acquired tree"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "ALIGN-WHISPERX",
+      "repo": "m-bain/whisperX",
+      "sha": "db8fde4d31a3e7f49fe5835938685a76f5ba5477",
+      "path": "whisperx/alignment.py",
+      "symbol": "align",
+      "line": 134,
+      "url": "https://github.com/m-bain/whisperX/blob/db8fde4d31a3e7f49fe5835938685a76f5ba5477/whisperx/alignment.py#L134",
+      "sha256": "fae57ae8dc7ad779fa53e0ce2efc1efec728508b2039c8ec4030fa6d51272292",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/alignment/whisperx",
+      "direct_dependency_boundary": "torch; torchaudio; transformers Wav2Vec2; numpy; NLTK; per-language checkpoint",
+      "tests_or_required_fixtures": "tests/test_word_timestamp_interpolation.py",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "whisperx/alignment.py",
+          "symbol": "align",
+          "line": 134,
+          "url": "https://github.com/m-bain/whisperX/blob/db8fde4d31a3e7f49fe5835938685a76f5ba5477/whisperx/alignment.py#L134",
+          "sha256": "fae57ae8dc7ad779fa53e0ce2efc1efec728508b2039c8ec4030fa6d51272292"
+        }
+      ],
+      "deps": "torch; torchaudio; transformers Wav2Vec2; numpy; NLTK; per-language checkpoint",
+      "acceptance": [
+        "tests/test_word_timestamp_interpolation.py"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "DIARIZE-PYANNOTE",
+      "repo": "pyannote/pyannote-audio",
+      "sha": "b749285c5cdd4636b2edc7f766f1352c8dde9369",
+      "path": "src/pyannote/audio/pipelines/speaker_diarization.py",
+      "symbol": "SpeakerDiarization",
+      "line": 127,
+      "url": "https://github.com/pyannote/pyannote-audio/blob/b749285c5cdd4636b2edc7f766f1352c8dde9369/src/pyannote/audio/pipelines/speaker_diarization.py#L127",
+      "sha256": "cbb358abedef5042fcc71bb970b12a2936a16686be4bda15691a224f172656fd",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/diarization/pyannote",
+      "direct_dependency_boundary": "torch; pyannote.core/database/metrics/pipeline; clustering; selected model terms; telemetry disabled explicitly",
+      "tests_or_required_fixtures": "tests and workflow inventory present; model end-to-end suite NOT_RUN",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "src/pyannote/audio/pipelines/speaker_diarization.py",
+          "symbol": "SpeakerDiarization",
+          "line": 127,
+          "url": "https://github.com/pyannote/pyannote-audio/blob/b749285c5cdd4636b2edc7f766f1352c8dde9369/src/pyannote/audio/pipelines/speaker_diarization.py#L127",
+          "sha256": "cbb358abedef5042fcc71bb970b12a2936a16686be4bda15691a224f172656fd"
+        }
+      ],
+      "deps": "torch; pyannote.core/database/metrics/pipeline; clustering; selected model terms; telemetry disabled explicitly",
+      "acceptance": [
+        "tests and workflow inventory present; model end-to-end suite NOT_RUN"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "STEMS-DEMUCS",
+      "repo": "facebookresearch/demucs",
+      "sha": "e976d93ecc3865e5757426930257e200846a520a",
+      "path": "demucs/api.py",
+      "symbol": "Separator",
+      "line": 53,
+      "url": "https://github.com/facebookresearch/demucs/blob/e976d93ecc3865e5757426930257e200846a520a/demucs/api.py#L53",
+      "sha256": "f6b762f90cf08e64287231ec0e267d8e3ecf6361a25cfbb69bbc59806efc35c3",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/separation/demucs",
+      "direct_dependency_boundary": "torch; torchaudio; apply; audio; pretrained model/bag; model download rights",
+      "tests_or_required_fixtures": "archived upstream; representative separation quality/bleed/memory fixture required",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "demucs/api.py",
+          "symbol": "Separator",
+          "line": 53,
+          "url": "https://github.com/facebookresearch/demucs/blob/e976d93ecc3865e5757426930257e200846a520a/demucs/api.py#L53",
+          "sha256": "f6b762f90cf08e64287231ec0e267d8e3ecf6361a25cfbb69bbc59806efc35c3"
+        }
+      ],
+      "deps": "torch; torchaudio; apply; audio; pretrained model/bag; model download rights",
+      "acceptance": [
+        "archived upstream; representative separation quality/bleed/memory fixture required"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "F5",
+      "repo": "SWivid/F5-TTS",
+      "sha": "2f866649b779881af8bd644e76b9a6d95053da29",
+      "path": "src/f5_tts/api.py",
+      "symbol": "F5TTS",
+      "line": 24,
+      "url": "https://github.com/SWivid/F5-TTS/blob/2f866649b779881af8bd644e76b9a6d95053da29/src/f5_tts/api.py#L24",
+      "sha256": "961fff392af63f8a6953a821db07ebda23195eb28f8502dfa00bfa30b422159f",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "REFERENCE_ONLY",
+      "destination": "optional future research",
+      "direct_dependency_boundary": "torch; diffusion/vocoder; hydra; omegaConf; cached_path; soundfile; reference preprocessing",
+      "tests_or_required_fixtures": "no dedicated automated suite established; default released weights noncommercial",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "REFERENCE_ONLY",
+      "sources": [
+        {
+          "path": "src/f5_tts/api.py",
+          "symbol": "F5TTS",
+          "line": 24,
+          "url": "https://github.com/SWivid/F5-TTS/blob/2f866649b779881af8bd644e76b9a6d95053da29/src/f5_tts/api.py#L24",
+          "sha256": "961fff392af63f8a6953a821db07ebda23195eb28f8502dfa00bfa30b422159f"
+        }
+      ],
+      "deps": "torch; diffusion/vocoder; hydra; omegaConf; cached_path; soundfile; reference preprocessing",
+      "acceptance": [
+        "no dedicated automated suite established; default released weights noncommercial"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "PIPER",
+      "repo": "OHF-Voice/piper1-gpl",
+      "sha": "619f513580c04dff5ef9a680f6f3f6979ed94d2e",
+      "path": "src/piper/voice.py",
+      "symbol": "PiperVoice",
+      "line": 102,
+      "url": "https://github.com/OHF-Voice/piper1-gpl/blob/619f513580c04dff5ef9a680f6f3f6979ed94d2e/src/piper/voice.py#L102",
+      "sha256": "a4fdcc9fe03e090e5d591d49f2009803b9a20e63eca1c84ef8cbf94d9ea5258f",
+      "method": "DIRECT_SOURCE_INSPECTION",
+      "status": "SOURCE_VERIFIED",
+      "decision": "OUT_OF_PROCESS",
+      "destination": "adapters/tts/piper",
+      "direct_dependency_boundary": "onnxruntime; espeak-ng; per-voice config and model card; GPL source notices",
+      "tests_or_required_fixtures": "tests/test_piper.py; libpiper/tests/test_piper.cpp",
+      "runtime_status": "NOT_RUN",
+      "pillar": "WisprStudio",
+      "mode": "OUT_OF_PROCESS",
+      "sources": [
+        {
+          "path": "src/piper/voice.py",
+          "symbol": "PiperVoice",
+          "line": 102,
+          "url": "https://github.com/OHF-Voice/piper1-gpl/blob/619f513580c04dff5ef9a680f6f3f6979ed94d2e/src/piper/voice.py#L102",
+          "sha256": "a4fdcc9fe03e090e5d591d49f2009803b9a20e63eca1c84ef8cbf94d9ea5258f"
+        }
+      ],
+      "deps": "onnxruntime; espeak-ng; per-voice config and model card; GPL source notices",
+      "acceptance": [
+        "tests/test_piper.py; libpiper/tests/test_piper.cpp"
+      ],
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+    },
+    {
+      "id": "INK-I1",
+      "feature": "Native capture",
+      "donor": "handy-recorder",
+      "source": {
+        "path": "src/lib.rs",
+        "bytes": 6235,
+        "sha256": "cd2569b044f5aefa2ca8a7164e465c18469d577b30a0f5fe37c78158a8c01d8b",
+        "package": "handy-recorder",
+        "version": "0.1.0",
+        "revision": "1d975fe8c10f9a69d778cf16955c7e0699b4b8e1",
+        "archive_sha256": "4a734d6d16eb8eb485548d75f383fa0c09d65b037a20e648c19730860f7a8a3f",
+        "url": "https://static.crates.io/crates/handy-recorder/handy-recorder-0.1.0.crate",
+        "line": 89,
+        "symbols": [
+          "Recorder::start",
+          "Recorder::stop",
+          "Stopped::is_complete"
+        ]
+      },
+      "mode": "WRAP",
+      "destination": "crates/wispral-core/src/audio/handy_capture.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "handy-cpal =0.18.2",
+        "rtrb 0.4.0",
+        "rubato =5.0.0",
+        "dasp_sample 0.11",
+        "Rust >=1.88"
+      ],
+      "upstream_test_paths": [
+        "src/tests/failures.rs",
+        "src/tests/lifecycle.rs",
+        "src/tests/formats.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Exact fake samples and dropped-frame signal",
+        "No-audio/device disconnect/permission failure",
+        "Close/cancel releases recorder"
+      ],
+      "estimate": "1–3 engineer-days",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Use text-only input and disable microphone adapter",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "pillar": "WisprSide",
+      "repo": "handy-recorder",
+      "sha": "1d975fe8c10f9a69d778cf16955c7e0699b4b8e1",
+      "sources": [
+        {
+          "path": "src/lib.rs",
+          "bytes": 6235,
+          "sha256": "cd2569b044f5aefa2ca8a7164e465c18469d577b30a0f5fe37c78158a8c01d8b",
+          "package": "handy-recorder",
+          "version": "0.1.0",
+          "revision": "1d975fe8c10f9a69d778cf16955c7e0699b4b8e1",
+          "archive_sha256": "4a734d6d16eb8eb485548d75f383fa0c09d65b037a20e648c19730860f7a8a3f",
+          "url": "https://static.crates.io/crates/handy-recorder/handy-recorder-0.1.0.crate",
+          "line": 89,
+          "symbols": [
+            "Recorder::start",
+            "Recorder::stop",
+            "Stopped::is_complete"
+          ]
+        }
+      ],
+      "deps": [
+        "handy-cpal =0.18.2",
+        "rtrb 0.4.0",
+        "rubato =5.0.0",
+        "dasp_sample 0.11",
+        "Rust >=1.88"
+      ],
+      "acceptance": [
+        "Exact fake samples and dropped-frame signal",
+        "No-audio/device disconnect/permission failure",
+        "Close/cancel releases recorder"
+      ],
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I2",
+      "feature": "Platform activation",
+      "donor": "handy-keys",
+      "source": {
+        "path": "src/manager.rs",
+        "bytes": 23053,
+        "sha256": "7141c705a7adb28cc7a4865168cf8fef3dc84061d7ce3a4dee102731c0e57ef2",
+        "package": "handy-keys",
+        "version": "0.3.4",
+        "revision": "e7d1b8e6de8258f21ee1d60608d16f8d195157bf",
+        "archive_sha256": "1a007b6c921d3273fd88aac45b516eee01e5a9dc2d76bb6f1a981500cc0d818a",
+        "url": "https://static.crates.io/crates/handy-keys/handy-keys-0.3.4.crate",
+        "line": 92,
+        "symbols": [
+          "HotkeyManager::new",
+          "HotkeyManager::new_with_blocking",
+          "ManagerState::process_event"
+        ]
+      },
+      "mode": "WRAP",
+      "destination": "crates/wispral-core/src/platform/activation.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "Windows LL hooks",
+        "macOS AX",
+        "Linux evdev/uinput",
+        "serde",
+        "bitflags"
+      ],
+      "upstream_test_paths": [
+        "tests/synthetic_input.rs",
+        "src/manager.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Hold/toggle/repeat and modifiers",
+        "Lock/resume/session change",
+        "No blanket elevated Linux access"
+      ],
+      "estimate": "1–3 engineer-days per native platform",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Visible keyboard/button fallback",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "pillar": "WisprSide",
+      "repo": "handy-keys",
+      "sha": "e7d1b8e6de8258f21ee1d60608d16f8d195157bf",
+      "sources": [
+        {
+          "path": "src/manager.rs",
+          "bytes": 23053,
+          "sha256": "7141c705a7adb28cc7a4865168cf8fef3dc84061d7ce3a4dee102731c0e57ef2",
+          "package": "handy-keys",
+          "version": "0.3.4",
+          "revision": "e7d1b8e6de8258f21ee1d60608d16f8d195157bf",
+          "archive_sha256": "1a007b6c921d3273fd88aac45b516eee01e5a9dc2d76bb6f1a981500cc0d818a",
+          "url": "https://static.crates.io/crates/handy-keys/handy-keys-0.3.4.crate",
+          "line": 92,
+          "symbols": [
+            "HotkeyManager::new",
+            "HotkeyManager::new_with_blocking",
+            "ManagerState::process_event"
+          ]
+        }
+      ],
+      "deps": [
+        "Windows LL hooks",
+        "macOS AX",
+        "Linux evdev/uinput",
+        "serde",
+        "bitflags"
+      ],
+      "acceptance": [
+        "Hold/toggle/repeat and modifiers",
+        "Lock/resume/session change",
+        "No blanket elevated Linux access"
+      ],
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I3",
+      "feature": "Activation state reducer",
+      "donor": "cjpais/Handy",
+      "source": {
+        "path": "src-tauri/src/transcription_coordinator.rs",
+        "blob_sha": "a35bff37eaa6bd3f2fe9dce4403d96746be36e3c",
+        "sha256": "4b18ccaa6aa0a1c0f69c08e7aea4acf9b3bbe394c11f3f07851cca8944bfdb08",
+        "bytes": 61313,
+        "lines": 1618,
+        "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/transcription_coordinator.rs",
+        "repo": "cjpais/Handy",
+        "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+        "line": 97,
+        "symbols": [
+          "CoordinatorState",
+          "classify_busy_input",
+          "classify_ptt_event"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/audio/activation_state.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "std channels/Instant",
+        "replace Tauri actions with typed effects"
+      ],
+      "upstream_test_paths": [
+        "src-tauri/src/transcription_coordinator.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Busy toggle parity",
+        "Cancel drops remembered press",
+        "Autorepeat burst spanning processing drain"
+      ],
+      "estimate": "1–2 engineer-days",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Keep PTT-only explicit button",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "pillar": "WisprSide",
+      "repo": "cjpais/Handy",
+      "sha": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+      "sources": [
+        {
+          "path": "src-tauri/src/transcription_coordinator.rs",
+          "blob_sha": "a35bff37eaa6bd3f2fe9dce4403d96746be36e3c",
+          "sha256": "4b18ccaa6aa0a1c0f69c08e7aea4acf9b3bbe394c11f3f07851cca8944bfdb08",
+          "bytes": 61313,
+          "lines": 1618,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/transcription_coordinator.rs",
+          "repo": "cjpais/Handy",
+          "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+          "line": 97,
+          "symbols": [
+            "CoordinatorState",
+            "classify_busy_input",
+            "classify_ptt_event"
+          ]
+        }
+      ],
+      "deps": [
+        "std channels/Instant",
+        "replace Tauri actions with typed effects"
+      ],
+      "acceptance": [
+        "Busy toggle parity",
+        "Cancel drops remembered press",
+        "Autorepeat burst spanning processing drain"
+      ],
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I4",
+      "feature": "Clipboard transaction reducer",
+      "donor": "cjpais/Handy",
+      "source": {
+        "path": "src-tauri/src/paste_tx/mod.rs",
+        "blob_sha": "71fdc5524eba12bf1a703302bbdd2a69ff7c3537",
+        "sha256": "2d70bc1ff915c899c02ad981649a4b4c9eb4e547a74066b6b5e679ca371d2c44",
+        "bytes": 11071,
+        "lines": 284,
+        "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/paste_tx/mod.rs",
+        "repo": "cjpais/Handy",
+        "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+        "line": 139,
+        "symbols": [
+          "TxState",
+          "evaluate",
+          "record_receipt"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/insertion/transaction.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "std time/state",
+        "log shim"
+      ],
+      "upstream_test_paths": [
+        "src-tauri/src/paste_tx/mod.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Pre-injection reads ignored",
+        "External copy/ownership loss",
+        "Multiple receipts/timeout/cancel"
+      ],
+      "estimate": "1–2 engineer-days",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Manual-copy output",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "pillar": "WisprSide",
+      "repo": "cjpais/Handy",
+      "sha": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+      "sources": [
+        {
+          "path": "src-tauri/src/paste_tx/mod.rs",
+          "blob_sha": "71fdc5524eba12bf1a703302bbdd2a69ff7c3537",
+          "sha256": "2d70bc1ff915c899c02ad981649a4b4c9eb4e547a74066b6b5e679ca371d2c44",
+          "bytes": 11071,
+          "lines": 284,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/paste_tx/mod.rs",
+          "repo": "cjpais/Handy",
+          "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+          "line": 139,
+          "symbols": [
+            "TxState",
+            "evaluate",
+            "record_receipt"
+          ]
+        }
+      ],
+      "deps": [
+        "std time/state",
+        "log shim"
+      ],
+      "acceptance": [
+        "Pre-injection reads ignored",
+        "External copy/ownership loss",
+        "Multiple receipts/timeout/cancel"
+      ],
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I5",
+      "feature": "Windows delayed-render paste",
+      "donor": "cjpais/Handy",
+      "source": {
+        "path": "src-tauri/src/paste_tx/windows.rs",
+        "blob_sha": "55f13bf52044a485afa4fae72fa776b4facdff44",
+        "sha256": "11d975d768b06070c70f6a4026d5139f30f49940c13ee1414ffa53906e6ec1ed",
+        "bytes": 22234,
+        "lines": 625,
+        "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/paste_tx/windows.rs",
+        "repo": "cjpais/Handy",
+        "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+        "line": 574,
+        "symbols": [
+          "run",
+          "paste_wnd_proc",
+          "on_timer",
+          "snapshot_clipboard"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/platform/windows/insertion.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "windows 0.61.3 Win32 APIs",
+        "enigo or bounded native injector",
+        "replace Tauri/settings"
+      ],
+      "upstream_test_paths": [
+        "src-tauri/src/paste_tx/mod.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Independent reader versus intended editor",
+        "Target/process/focus freshness",
+        "Sequence ownership and rich clipboard cleanup",
+        "No auto-submit"
+      ],
+      "estimate": "2–4 engineer-days",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Manual-copy output; refuse unknown recipient",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "pillar": "WisprSide",
+      "repo": "cjpais/Handy",
+      "sha": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+      "sources": [
+        {
+          "path": "src-tauri/src/paste_tx/windows.rs",
+          "blob_sha": "55f13bf52044a485afa4fae72fa776b4facdff44",
+          "sha256": "11d975d768b06070c70f6a4026d5139f30f49940c13ee1414ffa53906e6ec1ed",
+          "bytes": 22234,
+          "lines": 625,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/paste_tx/windows.rs",
+          "repo": "cjpais/Handy",
+          "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+          "line": 574,
+          "symbols": [
+            "run",
+            "paste_wnd_proc",
+            "on_timer",
+            "snapshot_clipboard"
+          ]
+        }
+      ],
+      "deps": [
+        "windows 0.61.3 Win32 APIs",
+        "enigo or bounded native injector",
+        "replace Tauri/settings"
+      ],
+      "acceptance": [
+        "Independent reader versus intended editor",
+        "Target/process/focus freshness",
+        "Sequence ownership and rich clipboard cleanup",
+        "No auto-submit"
+      ],
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I6",
+      "feature": "Windows target detection",
+      "donor": "OpenWhispr/openwhispr",
+      "source": {
+        "path": "resources/windows-fast-paste.c",
+        "blob_sha": "e542c1229a25c8a26d4e9b33a0d8f4eb39b9f3be",
+        "sha256": "2c09e78e7f4d29c41f4d18b23715cf7d1382795b09cc741f9ab73eb08e32256c",
+        "bytes": 12186,
+        "lines": 368,
+        "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/resources/windows-fast-paste.c",
+        "repo": "OpenWhispr/openwhispr",
+        "revision": "e4280ada144f04f20dad0bd32eaf22272f9c77b8",
+        "line": 182,
+        "symbols": [
+          "GetExeName",
+          "GetWindowTitleUtf8",
+          "RestoreForegroundWindow"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/platform/windows/target.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "Win32 process/window/keyboard APIs",
+        "remove current-foreground fallback"
+      ],
+      "upstream_test_paths": [
+        "test/helpers/windowsPasteTarget.test.js",
+        "test/helpers/captureDictationTargetIpc.test.js"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Closed/recycled HWND",
+        "Failed restore refuses injection",
+        "UIPI/elevated target and non-Latin layout"
+      ],
+      "estimate": "1–3 engineer-days",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Refuse injection and preserve transcript",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "pillar": "WisprSide",
+      "repo": "OpenWhispr/openwhispr",
+      "sha": "e4280ada144f04f20dad0bd32eaf22272f9c77b8",
+      "sources": [
+        {
+          "path": "resources/windows-fast-paste.c",
+          "blob_sha": "e542c1229a25c8a26d4e9b33a0d8f4eb39b9f3be",
+          "sha256": "2c09e78e7f4d29c41f4d18b23715cf7d1382795b09cc741f9ab73eb08e32256c",
+          "bytes": 12186,
+          "lines": 368,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/resources/windows-fast-paste.c",
+          "repo": "OpenWhispr/openwhispr",
+          "revision": "e4280ada144f04f20dad0bd32eaf22272f9c77b8",
+          "line": 182,
+          "symbols": [
+            "GetExeName",
+            "GetWindowTitleUtf8",
+            "RestoreForegroundWindow"
+          ]
+        }
+      ],
+      "deps": [
+        "Win32 process/window/keyboard APIs",
+        "remove current-foreground fallback"
+      ],
+      "acceptance": [
+        "Closed/recycled HWND",
+        "Failed restore refuses injection",
+        "UIPI/elevated target and non-Latin layout"
+      ],
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I7",
+      "feature": "macOS clipboard and partial Unicode delivery",
+      "donor": "Beingpax/VoiceInk",
+      "source": {
+        "path": "VoiceInk/Infrastructure/SystemIntegration/Paste/DirectTextTyper.swift",
+        "blob_sha": "b68e3170ac67729f58f33ff894328444c7a4082c",
+        "sha256": "f8268aaf1b7af6cc9d68b9cde7e7d9d6771cd5e79053d33d7caa04d0a5289d57",
+        "bytes": 4678,
+        "lines": 113,
+        "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/VoiceInk/Infrastructure/SystemIntegration/Paste/DirectTextTyper.swift",
+        "repo": "Beingpax/VoiceInk",
+        "revision": "22e5ec5479b712797c3b338fcb875961e58800b6",
+        "line": 25,
+        "symbols": [
+          "type",
+          "unicodeChunks",
+          "CursorPaster::PasteOutcome"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "platform/macos/WispralInput/DirectTextTyper.swift",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "AppKit",
+        "ApplicationServices",
+        "purpose/target guard",
+        "GPLv3 source notice plus founder-confirmed grant"
+      ],
+      "upstream_test_paths": [
+        "Tests/VoiceInkUITests/VoiceInkUITests.swift"
+      ],
+      "test_coverage_limit": "Only general UI test scaffold path discovered; dedicated insertion coverage not established; add independent native tests.",
+      "required_independent_acceptance": [
+        "Arabic/emoji/combining-mark/control fixtures",
+        "Partial delivery never automatically retried",
+        "AX revoke/modifier held/new focus"
+      ],
+      "estimate": "2–4 engineer-days on macOS",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Manual copy; report PARTIAL/UNKNOWN",
+      "rights_status": "FOUNDER_CONFIRMED_SOURCE_GRANT; upstream LICENSE says GPLv3; notices retained",
+      "pillar": "WisprSide",
+      "repo": "Beingpax/VoiceInk",
+      "sha": "22e5ec5479b712797c3b338fcb875961e58800b6",
+      "sources": [
+        {
+          "path": "VoiceInk/Infrastructure/SystemIntegration/Paste/DirectTextTyper.swift",
+          "blob_sha": "b68e3170ac67729f58f33ff894328444c7a4082c",
+          "sha256": "f8268aaf1b7af6cc9d68b9cde7e7d9d6771cd5e79053d33d7caa04d0a5289d57",
+          "bytes": 4678,
+          "lines": 113,
+          "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/VoiceInk/Infrastructure/SystemIntegration/Paste/DirectTextTyper.swift",
+          "repo": "Beingpax/VoiceInk",
+          "revision": "22e5ec5479b712797c3b338fcb875961e58800b6",
+          "line": 25,
+          "symbols": [
+            "type",
+            "unicodeChunks",
+            "CursorPaster::PasteOutcome"
+          ]
+        }
+      ],
+      "deps": [
+        "AppKit",
+        "ApplicationServices",
+        "purpose/target guard",
+        "GPLv3 source notice plus founder-confirmed grant"
+      ],
+      "acceptance": [
+        "Arabic/emoji/combining-mark/control fixtures",
+        "Partial delivery never automatically retried",
+        "AX revoke/modifier held/new focus"
+      ],
+      "rights": "FOUNDER_CONFIRMED_SOURCE_GRANT; upstream LICENSE says GPLv3; notices retained"
+    },
+    {
+      "id": "INK-I8",
+      "feature": "macOS selection snapshot",
+      "donor": "zachlatta/freeflow",
+      "source": {
+        "path": "Sources/AppContextService.swift",
+        "blob_sha": "aedcc628fae1f29055b7bc11c6ff43f6d01d9060",
+        "sha256": "a28a5e7c23d61e2e2b4e7b7f1f7c6017bcdbe9c81d01a793d9fdb04025dba99b",
+        "bytes": 31364,
+        "lines": 807,
+        "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/Sources/AppContextService.swift",
+        "repo": "zachlatta/freeflow",
+        "revision": "797a3f32e6b525b8d942512db2801466d3a651f7",
+        "line": 96,
+        "symbols": [
+          "collectSelectionSnapshot",
+          "AppSelectionSnapshot"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "platform/macos/WispralInput/SelectionSnapshot.swift",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "AppKit",
+        "ApplicationServices",
+        "explicit context consent and sensitive-field exclusion"
+      ],
+      "upstream_test_paths": [
+        "Tests/AppContextServiceTests.swift"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Selection digest and focus expiry",
+        "No screen/clipboard read by default",
+        "No inherited cloud route"
+      ],
+      "estimate": "1–2 engineer-days on macOS",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Contextless dictation",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "pillar": "WisprSide",
+      "repo": "zachlatta/freeflow",
+      "sha": "797a3f32e6b525b8d942512db2801466d3a651f7",
+      "sources": [
+        {
+          "path": "Sources/AppContextService.swift",
+          "blob_sha": "aedcc628fae1f29055b7bc11c6ff43f6d01d9060",
+          "sha256": "a28a5e7c23d61e2e2b4e7b7f1f7c6017bcdbe9c81d01a793d9fdb04025dba99b",
+          "bytes": 31364,
+          "lines": 807,
+          "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/Sources/AppContextService.swift",
+          "repo": "zachlatta/freeflow",
+          "revision": "797a3f32e6b525b8d942512db2801466d3a651f7",
+          "line": 96,
+          "symbols": [
+            "collectSelectionSnapshot",
+            "AppSelectionSnapshot"
+          ]
+        }
+      ],
+      "deps": [
+        "AppKit",
+        "ApplicationServices",
+        "explicit context consent and sensitive-field exclusion"
+      ],
+      "acceptance": [
+        "Selection digest and focus expiry",
+        "No screen/clipboard read by default",
+        "No inherited cloud route"
+      ],
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I9",
+      "feature": "Empty container and repeat fixtures",
+      "donor": "OpenWhispr/openwhispr",
+      "source": {
+        "path": "src/helpers/recordingGuard.js",
+        "blob_sha": "4fc4b8f89ebde252d715d93741506699a8371d62",
+        "sha256": "a9b60c5b821cb99346b2060959f163ff617fb2e55e9e8d7ddbaedffe2517eb6d",
+        "bytes": 761,
+        "lines": 14,
+        "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/src/helpers/recordingGuard.js",
+        "repo": "OpenWhispr/openwhispr",
+        "revision": "e4280ada144f04f20dad0bd32eaf22272f9c77b8",
+        "line": 10,
+        "symbols": [
+          "isEmptyRecording",
+          "createHotkeyRepeatGate"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "research/fixtures/ink/recording_guard_cases.json",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "PURE_UNIT_CASES_REPRODUCED",
+      "dependency_boundary": [
+        "No runtime framework for source predicates",
+        "preserve threshold/format limitations"
+      ],
+      "upstream_test_paths": [
+        "test/helpers/recordingGuard.test.js",
+        "test/helpers/hotkeyRepeatGate.test.js"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "255/256 boundary and non-finite size",
+        "Short container false rejection",
+        "Quick intentional tap versus autorepeat"
+      ],
+      "estimate": "0.5–1 engineer-day",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Disable heuristic when format unqualified",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "pillar": "WisprSide",
+      "repo": "OpenWhispr/openwhispr",
+      "sha": "e4280ada144f04f20dad0bd32eaf22272f9c77b8",
+      "sources": [
+        {
+          "path": "src/helpers/recordingGuard.js",
+          "blob_sha": "4fc4b8f89ebde252d715d93741506699a8371d62",
+          "sha256": "a9b60c5b821cb99346b2060959f163ff617fb2e55e9e8d7ddbaedffe2517eb6d",
+          "bytes": 761,
+          "lines": 14,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/src/helpers/recordingGuard.js",
+          "repo": "OpenWhispr/openwhispr",
+          "revision": "e4280ada144f04f20dad0bd32eaf22272f9c77b8",
+          "line": 10,
+          "symbols": [
+            "isEmptyRecording",
+            "createHotkeyRepeatGate"
+          ]
+        }
+      ],
+      "deps": [
+        "No runtime framework for source predicates",
+        "preserve threshold/format limitations"
+      ],
+      "acceptance": [
+        "255/256 boundary and non-finite size",
+        "Short container false rejection",
+        "Quick intentional tap versus autorepeat"
+      ],
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I10",
+      "feature": "Native inference process supervisor",
+      "donor": "cjpais/Handy",
+      "source": {
+        "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+        "blob_sha": "713b9a57966ac41fde944be55890e844a89913a1",
+        "sha256": "ca04fd37091927931e57b786b2c2c0432289d2e61d316d2e949178dfe5228c7e",
+        "bytes": 73764,
+        "lines": 2019,
+        "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/engine_supervisor/supervisor.rs",
+        "repo": "cjpais/Handy",
+        "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+        "line": 329,
+        "symbols": [
+          "EngineSupervisor::cancel",
+          "Worker::spawn",
+          "Worker::wait",
+          "LoadSpec"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/model/worker_supervisor.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "std child process/channels",
+        "serde framed IPC",
+        "transcribe-cpp-specific types require adapter",
+        "smaller IPC frame/session bounds"
+      ],
+      "upstream_test_paths": [
+        "src-tauri/src/engine_supervisor/supervisor.rs",
+        "src-tauri/src/engine_supervisor/protocol.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Crash/hang/forced stop and late results",
+        "No fixture skip accepted as cancellation proof",
+        "Exact worker/model identity and resource budget"
+      ],
+      "estimate": "2–4 engineer-days after backend qualification",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Disable worker and retain selected fallback contract",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "pillar": "WisprSide",
+      "repo": "cjpais/Handy",
+      "sha": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+      "sources": [
+        {
+          "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+          "blob_sha": "713b9a57966ac41fde944be55890e844a89913a1",
+          "sha256": "ca04fd37091927931e57b786b2c2c0432289d2e61d316d2e949178dfe5228c7e",
+          "bytes": 73764,
+          "lines": 2019,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/engine_supervisor/supervisor.rs",
+          "repo": "cjpais/Handy",
+          "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+          "line": 329,
+          "symbols": [
+            "EngineSupervisor::cancel",
+            "Worker::spawn",
+            "Worker::wait",
+            "LoadSpec"
+          ]
+        }
+      ],
+      "deps": [
+        "std child process/channels",
+        "serde framed IPC",
+        "transcribe-cpp-specific types require adapter",
+        "smaller IPC frame/session bounds"
+      ],
+      "acceptance": [
+        "Crash/hang/forced stop and late results",
+        "No fixture skip accepted as cancellation proof",
+        "Exact worker/model identity and resource budget"
+      ],
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I11",
+      "feature": "STT candidate binding",
+      "donor": "transcribe-cpp",
+      "source": {
+        "path": "src/cancel.rs",
+        "bytes": 2048,
+        "sha256": "657eb3625cc67e0bbb728d8a9ea304a3c6247228ae1cac61b2693b74f7590b7a",
+        "package": "transcribe-cpp",
+        "version": "0.4.0",
+        "revision": "f1dcd15858c4bbba87ca97862b4e448b2cf15b8f",
+        "archive_sha256": "f6cad85eeb846a7064891c8b49b92a57a0f2d4dd089104cb199608b23043555e",
+        "url": "https://static.crates.io/crates/transcribe-cpp/transcribe-cpp-0.4.0.crate",
+        "line": 17,
+        "symbols": [
+          "CancelToken",
+          "abort_trampoline",
+          "Session::set_cancel_token"
+        ]
+      },
+      "mode": "REFERENCE_ONLY",
+      "destination": "research/qualification/transcribe-cpp/",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "transcribe-cpp-sys 0.4.0 native source not qualified",
+        "selected checkpoint rights",
+        "backend-specific drivers"
+      ],
+      "upstream_test_paths": [
+        "tests/cancel.rs",
+        "tests/no_model.rs",
+        "tests/streaming.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Fixture presence fails closed",
+        "Actual abort observed, partial preserved",
+        "No general support/latency claims"
+      ],
+      "estimate": "2–5 engineer-days for separate qualification",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Keep current frozen B2 registry unchanged",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "pillar": "WisprSide",
+      "repo": "transcribe-cpp",
+      "sha": "f1dcd15858c4bbba87ca97862b4e448b2cf15b8f",
+      "sources": [
+        {
+          "path": "src/cancel.rs",
+          "bytes": 2048,
+          "sha256": "657eb3625cc67e0bbb728d8a9ea304a3c6247228ae1cac61b2693b74f7590b7a",
+          "package": "transcribe-cpp",
+          "version": "0.4.0",
+          "revision": "f1dcd15858c4bbba87ca97862b4e448b2cf15b8f",
+          "archive_sha256": "f6cad85eeb846a7064891c8b49b92a57a0f2d4dd089104cb199608b23043555e",
+          "url": "https://static.crates.io/crates/transcribe-cpp/transcribe-cpp-0.4.0.crate",
+          "line": 17,
+          "symbols": [
+            "CancelToken",
+            "abort_trampoline",
+            "Session::set_cancel_token"
+          ]
+        }
+      ],
+      "deps": [
+        "transcribe-cpp-sys 0.4.0 native source not qualified",
+        "selected checkpoint rights",
+        "backend-specific drivers"
+      ],
+      "acceptance": [
+        "Fixture presence fails closed",
+        "Actual abort observed, partial preserved",
+        "No general support/latency claims"
+      ],
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I12",
+      "feature": "Linux insertion dispatch",
+      "donor": "cjpais/Handy",
+      "source": {
+        "path": "src-tauri/src/clipboard.rs",
+        "blob_sha": "6beba07856431edd066b9a963c53060e2ae3a555",
+        "sha256": "073e01aeb70c02b8fc23e1fa9af01e448305c1fa2c32e3311dcc12f6c2570f17",
+        "bytes": 35876,
+        "lines": 1016,
+        "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/clipboard.rs",
+        "repo": "cjpais/Handy",
+        "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+        "line": 164,
+        "symbols": [
+          "try_direct_typing_linux",
+          "try_send_key_combo_linux",
+          "write_clipboard_via_wl_copy"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/platform/linux/insertion.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "bounded external executables selected per compositor",
+        "enigo",
+        "wl-copy/xdo/portal alternatives separate"
+      ],
+      "upstream_test_paths": [
+        "src-tauri/src/clipboard.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "X11/Wayland separate permission outcomes",
+        "No shell interpolation of transcript",
+        "Clipboard ownership and terminal shortcut",
+        "Tool absent/refused retains manual copy"
+      ],
+      "estimate": "2–5 engineer-days across declared Linux sessions",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Manual-copy output",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "pillar": "WisprSide",
+      "repo": "cjpais/Handy",
+      "sha": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+      "sources": [
+        {
+          "path": "src-tauri/src/clipboard.rs",
+          "blob_sha": "6beba07856431edd066b9a963c53060e2ae3a555",
+          "sha256": "073e01aeb70c02b8fc23e1fa9af01e448305c1fa2c32e3311dcc12f6c2570f17",
+          "bytes": 35876,
+          "lines": 1016,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/clipboard.rs",
+          "repo": "cjpais/Handy",
+          "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+          "line": 164,
+          "symbols": [
+            "try_direct_typing_linux",
+            "try_send_key_combo_linux",
+            "write_clipboard_via_wl_copy"
+          ]
+        }
+      ],
+      "deps": [
+        "bounded external executables selected per compositor",
+        "enigo",
+        "wl-copy/xdo/portal alternatives separate"
+      ],
+      "acceptance": [
+        "X11/Wayland separate permission outcomes",
+        "No shell interpolation of transcript",
+        "Clipboard ownership and terminal shortcut",
+        "Tool absent/refused retains manual copy"
+      ],
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I13",
+      "feature": "Streaming semantics and provenance",
+      "donor": "cjpais/Handy",
+      "source": {
+        "path": "src-tauri/src/managers/transcription/policy.rs",
+        "blob_sha": "82bd83ee3e2cf9e0147123af456a9027ee1c4cad",
+        "sha256": "e9c1368e546db587b580eb1518e078d4f398c9b57a019f48a498d88874a652ff",
+        "bytes": 2302,
+        "lines": 70,
+        "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/managers/transcription/policy.rs",
+        "repo": "cjpais/Handy",
+        "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+        "line": 51,
+        "symbols": [
+          "ModelTraits",
+          "LiveDecode",
+          "BatchDecode",
+          "StreamTextEvent"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/speech/stream_semantics.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "backend capability snapshot",
+        "separate immutable raw/normalized/rewritten results"
+      ],
+      "upstream_test_paths": [
+        "src-tauri/src/managers/transcription.rs",
+        "src-tauri/src/managers/transcription/policy.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Native incremental versus chunked/batch labels",
+        "Tentative never final authority",
+        "Cancel generation blocks late delivery"
+      ],
+      "estimate": "1–2 engineer-days after STT contract qualification",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Batch-only explicit mode",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "pillar": "WisprSide",
+      "repo": "cjpais/Handy",
+      "sha": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+      "sources": [
+        {
+          "path": "src-tauri/src/managers/transcription/policy.rs",
+          "blob_sha": "82bd83ee3e2cf9e0147123af456a9027ee1c4cad",
+          "sha256": "e9c1368e546db587b580eb1518e078d4f398c9b57a019f48a498d88874a652ff",
+          "bytes": 2302,
+          "lines": 70,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/managers/transcription/policy.rs",
+          "repo": "cjpais/Handy",
+          "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+          "line": 51,
+          "symbols": [
+            "ModelTraits",
+            "LiveDecode",
+            "BatchDecode",
+            "StreamTextEvent"
+          ]
+        }
+      ],
+      "deps": [
+        "backend capability snapshot",
+        "separate immutable raw/normalized/rewritten results"
+      ],
+      "acceptance": [
+        "Native incremental versus chunked/batch labels",
+        "Tentative never final authority",
+        "Cancel generation blocks late delivery"
+      ],
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "K01",
+      "feature": "Conversation planning and response lifecycle",
+      "repo": "emcie-co/parlant",
+      "sha": "ea737442b8ae65854a842542e544fbe7e6144bad",
+      "mode": "OUT_OF_PROCESS",
+      "destination": "services/klaint-dialogue/parlant_adapter.py",
+      "sources": [
+        {
+          "path": "src/parlant/core/engines/alpha/engine.py",
+          "symbol": "class AlphaEngine",
+          "line": 142,
+          "sha256": "01af9f269cbbb235060d166d3eab075dbc9b184b2be3f31854a1521cd7a4effa",
+          "git_blob": "9107dd2c424600f39ec75f866d8b7b76d56400f0",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/engines/alpha/engine.py#L142"
+        },
+        {
+          "path": "src/parlant/core/engines/alpha/engine.py",
+          "symbol": "async def process(",
+          "line": 190,
+          "sha256": "01af9f269cbbb235060d166d3eab075dbc9b184b2be3f31854a1521cd7a4effa",
+          "git_blob": "9107dd2c424600f39ec75f866d8b7b76d56400f0",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/engines/alpha/engine.py#L190"
+        },
+        {
+          "path": "src/parlant/core/engines/alpha/engine.py",
+          "symbol": "async def _run_initial_preparation_iteration(",
+          "line": 579,
+          "sha256": "01af9f269cbbb235060d166d3eab075dbc9b184b2be3f31854a1521cd7a4effa",
+          "git_blob": "9107dd2c424600f39ec75f866d8b7b76d56400f0",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/engines/alpha/engine.py#L579"
+        }
+      ],
+      "dependencies": [
+        "Python >=3.10,<3.15; parlant package core and adapters; injected NLPService; document persistence; logger/tracer/meter; transport bridge"
+      ],
+      "upstream_tests": [
+        "tests/core/stable/engines/alpha/test_baseline_scenarios.py",
+        "tests/core/stable/engines/alpha/test_user_story_scenarios.py"
+      ],
+      "tests_run": "NOT_RUN",
+      "wispral_acceptance": [
+        "One synthetic customer session produces ordered events with session/turn/source identity",
+        "Manual mode produces no automatic response",
+        "Provider timeout or process death gives visible failed outcome and preserves transcript"
+      ],
+      "risks": [
+        "Engine imports a broad package closure; copying engine.py alone is not viable",
+        "No local-model latency, Arabic quality or production reliability measured"
+      ],
+      "rights": "FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER; retain upstream license and notices; confidential additional grants not independently inspected",
+      "decision_status": "PLANNING_CANDIDATE_NOT_PRODUCT_AUTHORIZATION",
+      "pillar": "Klaint",
+      "deps": [
+        "Python >=3.10,<3.15; parlant package core and adapters; injected NLPService; document persistence; logger/tracer/meter; transport bridge"
+      ],
+      "acceptance": [
+        "One synthetic customer session produces ordered events with session/turn/source identity",
+        "Manual mode produces no automatic response",
+        "Provider timeout or process death gives visible failed outcome and preserves transcript"
+      ]
+    },
+    {
+      "id": "K02",
+      "feature": "Guidelines, journeys and freshness-aware context",
+      "repo": "emcie-co/parlant",
+      "sha": "ea737442b8ae65854a842542e544fbe7e6144bad",
+      "mode": "WRAP",
+      "destination": "services/klaint-dialogue/policy_content/",
+      "sources": [
+        {
+          "path": "src/parlant/core/guidelines.py",
+          "symbol": "class Guideline",
+          "line": 48,
+          "sha256": "51951dc16790812ae75f5e5b4e626f8de440eecee066ec1417c4bcfc9d027723",
+          "git_blob": "91a046176c330d65491f5a7c7f196d6eef3657c5",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/guidelines.py#L48"
+        },
+        {
+          "path": "src/parlant/core/journeys.py",
+          "symbol": "class Journey",
+          "line": 60,
+          "sha256": "9c5f38a093d525776990904a0e1e93c15ea4343908c8b61b69782c82d75000e4",
+          "git_blob": "bcb58c55eaeeaa0b7ebd46f3710115bcab8dd64a",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/journeys.py#L60"
+        },
+        {
+          "path": "src/parlant/core/context_variables.py",
+          "symbol": "class ContextVariable",
+          "line": 49,
+          "sha256": "5ca97f7f7002e601a0fadf54e4a111625b170767a8d0bc4929510b117062471a",
+          "git_blob": "a0c9f0c6f9b93202460a515bce812694b456fb73",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/context_variables.py#L49"
+        },
+        {
+          "path": "src/parlant/core/engines/alpha/guideline_matching/generic/guideline_actionable_batch.py",
+          "symbol": "class GenericActionableGuidelineMatchingBatch",
+          "line": 71,
+          "sha256": "9c04b3c6c3856ffa19c0acf2744c40fcb7e9b869e004413db70dbe88776978c1",
+          "git_blob": "d12c38ca8a0b2a95830d507f6a42971f3b3cd512",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/engines/alpha/guideline_matching/generic/guideline_actionable_batch.py#L71"
+        }
+      ],
+      "dependencies": [
+        "Parlant entities and persistence; Pydantic; SchematicGenerator; NLP adapter; glossary/relationship resolution"
+      ],
+      "upstream_tests": [
+        "tests/core/stable/engines/alpha/test_guideline_matcher.py",
+        "tests/core/stable/engines/alpha/test_journey_node_selection.py",
+        "tests/api/test_context_variables.py"
+      ],
+      "tests_run": "NOT_RUN",
+      "wispral_acceptance": [
+        "Prompt injection in knowledge/tool output never changes action authority",
+        "Contradictory and stale guidelines produce visible uncertainty",
+        "Customer variable cache keys cannot cross tenant"
+      ],
+      "risks": [
+        "Condition matching calls a schematic generator and is probabilistic",
+        "Do not reinterpret guidelines as deterministic business authorization"
+      ],
+      "rights": "FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER; retain upstream license and notices; confidential additional grants not independently inspected",
+      "decision_status": "PLANNING_CANDIDATE_NOT_PRODUCT_AUTHORIZATION",
+      "pillar": "Klaint",
+      "deps": [
+        "Parlant entities and persistence; Pydantic; SchematicGenerator; NLP adapter; glossary/relationship resolution"
+      ],
+      "acceptance": [
+        "Prompt injection in knowledge/tool output never changes action authority",
+        "Contradictory and stale guidelines produce visible uncertainty",
+        "Customer variable cache keys cannot cross tenant"
+      ]
+    },
+    {
+      "id": "K03",
+      "feature": "Tool proposal interception and execution boundary",
+      "repo": "emcie-co/parlant",
+      "sha": "ea737442b8ae65854a842542e544fbe7e6144bad",
+      "mode": "ADAPT",
+      "destination": "services/klaint-dialogue/brokered_tool_service.py",
+      "sources": [
+        {
+          "path": "src/parlant/core/engines/alpha/planners.py",
+          "symbol": "async def on_tools_inferred(",
+          "line": 57,
+          "sha256": "1c55435a8c36cc26a64f3cf64550b77cf23e997456ec87f08aee187310cc8253",
+          "git_blob": "dfe95dec75f1704a7c7c24a6013482ed2094eb63",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/engines/alpha/planners.py#L57"
+        },
+        {
+          "path": "src/parlant/core/engines/alpha/planners.py",
+          "symbol": "class NullPlan",
+          "line": 80,
+          "sha256": "1c55435a8c36cc26a64f3cf64550b77cf23e997456ec87f08aee187310cc8253",
+          "git_blob": "dfe95dec75f1704a7c7c24a6013482ed2094eb63",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/engines/alpha/planners.py#L80"
+        },
+        {
+          "path": "src/parlant/core/engines/alpha/tool_calling/tool_caller.py",
+          "symbol": "async def _run_tool(",
+          "line": 266,
+          "sha256": "79f3776b304ec2e7d2d2f9103cb630807b04fbefdb67b85e49b696f677be3f2d",
+          "git_blob": "38957682ff8085da2d472d68eeda0cf7dae69783",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/engines/alpha/tool_calling/tool_caller.py#L266"
+        },
+        {
+          "path": "src/parlant/core/tools.py",
+          "symbol": "class ToolService",
+          "line": 347,
+          "sha256": "e0ebb33df30397fd0da848e01e93eb9a796bf4f7647f8f97c0f9442dfad387d1",
+          "git_blob": "bffee41e33911047e92e954cfe733ac0cd53de3a",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/tools.py#L347"
+        }
+      ],
+      "dependencies": [
+        "Plan/PlannerProvider; ToolService registry; Wispral Core authorization broker; connector credentials outside planner"
+      ],
+      "upstream_tests": [
+        "tests/core/stable/engines/alpha/test_tool_caller.py"
+      ],
+      "tests_run": "NOT_RUN",
+      "wispral_acceptance": [
+        "Denied, expired, substituted or cross-tenant requests execute zero external mutations",
+        "Model arguments cannot override principal, account scope, tool identity, idempotency key or approval expiry",
+        "Cancellation before commit prevents execution; cancellation after commit reports committed result"
+      ],
+      "risks": [
+        "NullPlan flattens inferred batches; upstream ToolCaller directly invokes the registered service",
+        "Custom plan alone is insufficient if another path can bypass it; put mandatory enforcement in each registered brokered ToolService",
+        "Logs include tool arguments/results and must be redacted"
+      ],
+      "rights": "FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER; retain upstream license and notices; confidential additional grants not independently inspected",
+      "decision_status": "PLANNING_CANDIDATE_NOT_PRODUCT_AUTHORIZATION",
+      "pillar": "Klaint",
+      "deps": [
+        "Plan/PlannerProvider; ToolService registry; Wispral Core authorization broker; connector credentials outside planner"
+      ],
+      "acceptance": [
+        "Denied, expired, substituted or cross-tenant requests execute zero external mutations",
+        "Model arguments cannot override principal, account scope, tool identity, idempotency key or approval expiry",
+        "Cancellation before commit prevents execution; cancellation after commit reports committed result"
+      ]
+    },
+    {
+      "id": "K04",
+      "feature": "Session history, trace and manual takeover",
+      "repo": "emcie-co/parlant",
+      "sha": "ea737442b8ae65854a842542e544fbe7e6144bad",
+      "mode": "WRAP",
+      "destination": "services/klaint-dialogue/session_bridge.py",
+      "sources": [
+        {
+          "path": "src/parlant/core/sessions.py",
+          "symbol": "class Session",
+          "line": 250,
+          "sha256": "b2103cc5159ca4bd20a5fca377e82df1d695b4526cf16b6d45e4fcc0e0a1424c",
+          "git_blob": "cf0e1250abc982d4a6c42ebfcf0812096502f76b",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/sessions.py#L250"
+        },
+        {
+          "path": "src/parlant/core/sessions.py",
+          "symbol": "class SessionDocumentStore",
+          "line": 649,
+          "sha256": "b2103cc5159ca4bd20a5fca377e82df1d695b4526cf16b6d45e4fcc0e0a1424c",
+          "git_blob": "cf0e1250abc982d4a6c42ebfcf0812096502f76b",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/sessions.py#L649"
+        },
+        {
+          "path": "src/parlant/core/app_modules/sessions.py",
+          "symbol": "class SessionModule",
+          "line": 103,
+          "sha256": "476c3454c237e73f8dd5906550406eba30fc13cd017e1a18ef0c4715698ceb13",
+          "git_blob": "922262ec2185f4df5953ef1359760973027d77e9",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/app_modules/sessions.py#L103"
+        },
+        {
+          "path": "src/parlant/api/sessions.py",
+          "symbol": "class SessionModeDTO",
+          "line": 174,
+          "sha256": "29b32db9c94b6a9ae4a8cc5a2683556aa6552e770b3d72dea1ca42ef9b47f792",
+          "git_blob": "39881c4569a7c461d1a5c78e4b3209df35980b3e",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/api/sessions.py#L174"
+        }
+      ],
+      "dependencies": [
+        "DocumentDatabase and migrations; SessionListener; background task service; session/customer mapping; core event journal"
+      ],
+      "upstream_tests": [
+        "tests/api/test_sessions.py"
+      ],
+      "tests_run": "NOT_RUN",
+      "wispral_acceptance": [
+        "Event history keeps raw customer source separate from AI/human sources",
+        "Entering manual mode stops new automatic replies and in-flight work is cancelled or reconciled separately",
+        "Deletion removes applicable derived state and discloses retained audit metadata"
+      ],
+      "risks": [
+        "Session identifiers are not tenant authentication",
+        "Changing mode is not proof that an already-running external action stopped",
+        "No multi-worker tenant isolation or cancellation runtime trial performed"
+      ],
+      "rights": "FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER; retain upstream license and notices; confidential additional grants not independently inspected",
+      "decision_status": "PLANNING_CANDIDATE_NOT_PRODUCT_AUTHORIZATION",
+      "pillar": "Klaint",
+      "deps": [
+        "DocumentDatabase and migrations; SessionListener; background task service; session/customer mapping; core event journal"
+      ],
+      "acceptance": [
+        "Event history keeps raw customer source separate from AI/human sources",
+        "Entering manual mode stops new automatic replies and in-flight work is cancelled or reconciled separately",
+        "Deletion removes applicable derived state and discloses retained audit metadata"
+      ]
+    },
+    {
+      "id": "K05",
+      "feature": "Account-scoped inbox and human assignment",
+      "repo": "chatwoot/chatwoot",
+      "sha": "8006117055a0d4f9e6d6340a13f7ef5c33dfeec8",
+      "mode": "OUT_OF_PROCESS",
+      "destination": "integrations/chatwoot/account_bridge/",
+      "sources": [
+        {
+          "path": "app/controllers/concerns/ensure_current_account_helper.rb",
+          "symbol": "def ensure_current_account",
+          "line": 9,
+          "sha256": "b9bcda2ef09908d5269e0b5e46eb2aba260299af4a2b3035ccc6e500bc0f4149",
+          "git_blob": "7ed39fa981abac1c497988d6f079dfcfcd6395a7",
+          "url": "https://github.com/chatwoot/chatwoot/blob/8006117055a0d4f9e6d6340a13f7ef5c33dfeec8/app/controllers/concerns/ensure_current_account_helper.rb#L9"
+        },
+        {
+          "path": "app/controllers/api/v1/accounts/conversations/base_controller.rb",
+          "symbol": "def conversation",
+          "line": 6,
+          "sha256": "24806200e3281cf4d3a201e3be078c5344669c95a5c147040bb5e7d97ab2ee62",
+          "git_blob": "223530e270867faddaa54215aaaa311d412a622d",
+          "url": "https://github.com/chatwoot/chatwoot/blob/8006117055a0d4f9e6d6340a13f7ef5c33dfeec8/app/controllers/api/v1/accounts/conversations/base_controller.rb#L6"
+        },
+        {
+          "path": "app/controllers/api/v1/accounts/conversations/assignments_controller.rb",
+          "symbol": "def set_agent",
+          "line": 15,
+          "sha256": "553f2ca2ae0abfd405e8c84ff1ad3f6001dcda6f5b4868491f2377cc65f83a56",
+          "git_blob": "d8df44c70e189b63ab9048ee4721d686c7d4a563",
+          "url": "https://github.com/chatwoot/chatwoot/blob/8006117055a0d4f9e6d6340a13f7ef5c33dfeec8/app/controllers/api/v1/accounts/conversations/assignments_controller.rb#L15"
+        },
+        {
+          "path": "app/services/conversations/assignment_service.rb",
+          "symbol": "def assign_agent",
+          "line": 16,
+          "sha256": "589ec776f26297022a9a0023f2f0bbdd0a7c1fdcf85ec8743a888f34989175ac",
+          "git_blob": "74da61c84b081115df018a296e48c70b057daf8f",
+          "url": "https://github.com/chatwoot/chatwoot/blob/8006117055a0d4f9e6d6340a13f7ef5c33dfeec8/app/services/conversations/assignment_service.rb#L16"
+        }
+      ],
+      "dependencies": [
+        "Ruby 3.4.4; Rails 7.2.3.1; PostgreSQL; Redis/ActiveJob; Pundit; existing Chatwoot schemas and callbacks"
+      ],
+      "upstream_tests": [
+        "spec/controllers/api/v1/accounts/conversations/assignments_controller_spec.rb",
+        "spec/services/conversations/assignment_service_spec.rb",
+        "spec/policies/conversation_policy_spec.rb"
+      ],
+      "tests_run": "NOT_RUN",
+      "wispral_acceptance": [
+        "Cross-account conversation, assignee, bot or inbox identifiers denied",
+        "Human takeover clears AI ownership and prevents duplicate subsequent AI reply",
+        "Two concurrent takeovers result in one acknowledged owner and recoverable history"
+      ],
+      "risks": [
+        "Keep full Rails app behind API; model/controller snippets depend on callbacks, authorization and migrations",
+        "Global/system bots accessible_to scope needs explicit tenant allowlist in Wispral",
+        "Enterprise prepend/include hooks require composition inventory"
+      ],
+      "rights": "FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER; retain upstream license and notices; confidential additional grants not independently inspected",
+      "decision_status": "PLANNING_CANDIDATE_NOT_PRODUCT_AUTHORIZATION",
+      "pillar": "Klaint",
+      "deps": [
+        "Ruby 3.4.4; Rails 7.2.3.1; PostgreSQL; Redis/ActiveJob; Pundit; existing Chatwoot schemas and callbacks"
+      ],
+      "acceptance": [
+        "Cross-account conversation, assignee, bot or inbox identifiers denied",
+        "Human takeover clears AI ownership and prevents duplicate subsequent AI reply",
+        "Two concurrent takeovers result in one acknowledged owner and recoverable history"
+      ]
+    },
+    {
+      "id": "K06",
+      "feature": "Bot webhook, retry and failure recovery",
+      "repo": "chatwoot/chatwoot",
+      "sha": "8006117055a0d4f9e6d6340a13f7ef5c33dfeec8",
+      "mode": "ADAPT",
+      "destination": "integrations/chatwoot/webhook_bridge/",
+      "sources": [
+        {
+          "path": "app/listeners/agent_bot_listener.rb",
+          "symbol": "def process_webhook_bot_event",
+          "line": 84,
+          "sha256": "cf733d9ade2e9ff4564e7f41deeeaede8e3a2a95edf7d4a5dbe0a6b4653088a3",
+          "git_blob": "6a4aeb2d62b83980646ea8c2c19a4408a844fed9",
+          "url": "https://github.com/chatwoot/chatwoot/blob/8006117055a0d4f9e6d6340a13f7ef5c33dfeec8/app/listeners/agent_bot_listener.rb#L84"
+        },
+        {
+          "path": "app/jobs/agent_bots/webhook_job.rb",
+          "symbol": "retry_on",
+          "line": 3,
+          "sha256": "46fcd155a04a5f60b750243456188262c2bb924ffc1ddcf64fa46440249dc8d5",
+          "git_blob": "7e0041c206f787e303daee34d4967ade721a5e92",
+          "url": "https://github.com/chatwoot/chatwoot/blob/8006117055a0d4f9e6d6340a13f7ef5c33dfeec8/app/jobs/agent_bots/webhook_job.rb#L3"
+        },
+        {
+          "path": "lib/webhooks/trigger.rb",
+          "symbol": "def request_headers",
+          "line": 54,
+          "sha256": "959ed3af1dfad92fc7540e16c45c2cf6811aeeac702f22ec17715d65a071a42f",
+          "git_blob": "57d96f51d5fa6014a7afa6291682e8f63ab488e8",
+          "url": "https://github.com/chatwoot/chatwoot/blob/8006117055a0d4f9e6d6340a13f7ef5c33dfeec8/lib/webhooks/trigger.rb#L54"
+        },
+        {
+          "path": "lib/webhooks/trigger.rb",
+          "symbol": "def update_conversation_status",
+          "line": 77,
+          "sha256": "959ed3af1dfad92fc7540e16c45c2cf6811aeeac702f22ec17715d65a071a42f",
+          "git_blob": "57d96f51d5fa6014a7afa6291682e8f63ab488e8",
+          "url": "https://github.com/chatwoot/chatwoot/blob/8006117055a0d4f9e6d6340a13f7ef5c33dfeec8/lib/webhooks/trigger.rb#L77"
+        }
+      ],
+      "dependencies": [
+        "Chatwoot signed webhook contract; SafeFetch; delivery identity; secret storage; bounded deduplication cache; core audit"
+      ],
+      "upstream_tests": [
+        "spec/lib/webhooks/trigger_spec.rb",
+        "spec/listeners/agent_bot_listener_spec.rb"
+      ],
+      "tests_run": "NOT_RUN",
+      "wispral_acceptance": [
+        "Validate HMAC over exact raw timestamp/body, constant-time compare and bounded timestamp skew",
+        "Replay same delivery ID without duplicate tool action",
+        "Exhausted retries produce a human-visible open/recovery state without losing transcript",
+        "Credentials and message bodies are absent from failure logs"
+      ],
+      "risks": [
+        "Upstream header generation does not provide the new receiver or deduplication ledger",
+        "Secret encryption depends on deployment configuration",
+        "Retry or timeout alone does not mean external action was not committed"
+      ],
+      "rights": "FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER; retain upstream license and notices; confidential additional grants not independently inspected",
+      "decision_status": "PLANNING_CANDIDATE_NOT_PRODUCT_AUTHORIZATION",
+      "pillar": "Klaint",
+      "deps": [
+        "Chatwoot signed webhook contract; SafeFetch; delivery identity; secret storage; bounded deduplication cache; core audit"
+      ],
+      "acceptance": [
+        "Validate HMAC over exact raw timestamp/body, constant-time compare and bounded timestamp skew",
+        "Replay same delivery ID without duplicate tool action",
+        "Exhausted retries produce a human-visible open/recovery state without losing transcript",
+        "Credentials and message bodies are absent from failure logs"
+      ]
+    },
+    {
+      "id": "K07",
+      "feature": "Human handoff state and race boundary",
+      "repo": "chatwoot/chatwoot",
+      "sha": "8006117055a0d4f9e6d6340a13f7ef5c33dfeec8",
+      "mode": "WRAP",
+      "destination": "integrations/chatwoot/handoff_state/",
+      "sources": [
+        {
+          "path": "app/models/conversation.rb",
+          "symbol": "def bot_handoff!",
+          "line": 184,
+          "sha256": "b09e0e2a58a334c91e7c8678fcd04d3608cc8bb83cae773001d97853a2d16820",
+          "git_blob": "335191af81916bba5ac3397b28c3f7677df1de4f",
+          "url": "https://github.com/chatwoot/chatwoot/blob/8006117055a0d4f9e6d6340a13f7ef5c33dfeec8/app/models/conversation.rb#L184"
+        },
+        {
+          "path": "app/services/conversations/assignment_service.rb",
+          "symbol": "def assign_agent_bot",
+          "line": 29,
+          "sha256": "589ec776f26297022a9a0023f2f0bbdd0a7c1fdcf85ec8743a888f34989175ac",
+          "git_blob": "74da61c84b081115df018a296e48c70b057daf8f",
+          "url": "https://github.com/chatwoot/chatwoot/blob/8006117055a0d4f9e6d6340a13f7ef5c33dfeec8/app/services/conversations/assignment_service.rb#L29"
+        }
+      ],
+      "dependencies": [
+        "Account/inbox/conversation mapping; assignment API; core turn cancellation; optional voice transport transfer"
+      ],
+      "upstream_tests": [
+        "spec/models/conversation_spec.rb",
+        "spec/services/conversations/assignment_service_spec.rb"
+      ],
+      "tests_run": "NOT_RUN",
+      "wispral_acceptance": [
+        "Transfer to human with summary and verified context retains ownership epoch",
+        "Agent resumes only after explicit human release; stale AI events cannot reopen ownership",
+        "Offline human destination yields explicit fallback and queue state"
+      ],
+      "risks": [
+        "bot_handoff! source calls eligibility best-effort and nonlocking; do not use it as a lock",
+        "Inbox assignment is distinct from SIP/PSTN warm call transfer"
+      ],
+      "rights": "FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER; retain upstream license and notices; confidential additional grants not independently inspected",
+      "decision_status": "PLANNING_CANDIDATE_NOT_PRODUCT_AUTHORIZATION",
+      "pillar": "Klaint",
+      "deps": [
+        "Account/inbox/conversation mapping; assignment API; core turn cancellation; optional voice transport transfer"
+      ],
+      "acceptance": [
+        "Transfer to human with summary and verified context retains ownership epoch",
+        "Agent resumes only after explicit human release; stale AI events cannot reopen ownership",
+        "Offline human destination yields explicit fallback and queue state"
+      ]
+    },
+    {
+      "id": "K08",
+      "feature": "Zendesk ticket and HITL connector",
+      "repo": "botpress/botpress",
+      "sha": "4dbedde32c5947f2646a03f80421cfd786b8bcd9",
+      "mode": "ADAPT",
+      "destination": "adapters/connectors/zendesk/",
+      "sources": [
+        {
+          "path": "integrations/zendesk/src/actions/create-ticket.ts",
+          "symbol": "export const createTicket",
+          "line": 5,
+          "sha256": "9207e9be05519c37caff404e6f8ce710bd2864455ebaa19b541227693fc641e9",
+          "git_blob": "37e210d57f6c6434000394b3a9a2c264d40ded09",
+          "url": "https://github.com/botpress/botpress/blob/4dbedde32c5947f2646a03f80421cfd786b8bcd9/integrations/zendesk/src/actions/create-ticket.ts#L5"
+        },
+        {
+          "path": "integrations/zendesk/src/actions/hitl.ts",
+          "symbol": "export const startHitl",
+          "line": 6,
+          "sha256": "32120f2b3a473908881e8aeba7eac6cdcbbf57806da4f38babd749cdba55e808",
+          "git_blob": "0c009797fb5b0bd0def5476aec2628027ad50eb2",
+          "url": "https://github.com/botpress/botpress/blob/4dbedde32c5947f2646a03f80421cfd786b8bcd9/integrations/zendesk/src/actions/hitl.ts#L6"
+        },
+        {
+          "path": "integrations/zendesk/src/client.ts",
+          "symbol": "class ZendeskApi",
+          "line": 36,
+          "sha256": "5be7e88e34fc2ca89f512527bfe381694a5eb1b6abce88cea549109dff7f1045",
+          "git_blob": "dc9b110ee86d8ec122264bcff4e765f241d38d47",
+          "url": "https://github.com/botpress/botpress/blob/4dbedde32c5947f2646a03f80421cfd786b8bcd9/integrations/zendesk/src/client.ts#L36"
+        }
+      ],
+      "dependencies": [
+        "Node/TypeScript; Axios and axios-retry; schemas and OAuth refresh; replace generated .botpress types/client/context; broker-owned credentials"
+      ],
+      "upstream_tests": [
+        "integrations/zendesk/src/oauth/strip-subdomain.test.ts"
+      ],
+      "tests_run": "NOT_RUN",
+      "wispral_acceptance": [
+        "Synthetic Zendesk API verifies create/get/handoff and explicit requester ownership",
+        "429, timeout-after-commit and revoked OAuth token cannot duplicate ticket",
+        "Connector configured domain validated and secrets redacted"
+      ],
+      "risks": [
+        "createTicket performs external mutation; never run just because inferred",
+        "startHitl uses Botpress user/conversation APIs that require substitution",
+        "Public connector is not standalone Cloud runtime"
+      ],
+      "rights": "FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER; retain upstream license and notices; confidential additional grants not independently inspected",
+      "decision_status": "PLANNING_CANDIDATE_NOT_PRODUCT_AUTHORIZATION",
+      "pillar": "Klaint",
+      "deps": [
+        "Node/TypeScript; Axios and axios-retry; schemas and OAuth refresh; replace generated .botpress types/client/context; broker-owned credentials"
+      ],
+      "acceptance": [
+        "Synthetic Zendesk API verifies create/get/handoff and explicit requester ownership",
+        "429, timeout-after-commit and revoked OAuth token cannot duplicate ticket",
+        "Connector configured domain validated and secrets redacted"
+      ]
+    },
+    {
+      "id": "K09",
+      "feature": "HubSpot signed webhook and HITL connector",
+      "repo": "botpress/botpress",
+      "sha": "4dbedde32c5947f2646a03f80421cfd786b8bcd9",
+      "mode": "ADAPT",
+      "destination": "adapters/connectors/hubspot/",
+      "sources": [
+        {
+          "path": "integrations/hubspot/src/hitl/utils/signature.ts",
+          "symbol": "export function validateHubSpotSignature",
+          "line": 8,
+          "sha256": "e7a612fe29f6a3ff97d080509a052c99b6a24c02c7da2474193394b03fc03d9c",
+          "git_blob": "f2bba6d6566e136ec1abcedc26861608d29e2bf1",
+          "url": "https://github.com/botpress/botpress/blob/4dbedde32c5947f2646a03f80421cfd786b8bcd9/integrations/hubspot/src/hitl/utils/signature.ts#L8"
+        },
+        {
+          "path": "integrations/hubspot/src/actions/hitl.ts",
+          "symbol": "export const",
+          "line": 6,
+          "sha256": "4a751c22210cd4c23159cd41629a2ea098a60aa4f4f0435f4dc08a89086dd5c4",
+          "git_blob": "f1c5060c5e319b0858461c429eee6c91befa88da",
+          "url": "https://github.com/botpress/botpress/blob/4dbedde32c5947f2646a03f80421cfd786b8bcd9/integrations/hubspot/src/actions/hitl.ts#L6"
+        },
+        {
+          "path": "integrations/hubspot/src/index.ts",
+          "symbol": "new bp.Integration",
+          "line": 7,
+          "sha256": "c2ef965e30848ddd318547c34171d09bbdef97f0cfa5f9c02a0d55531f1b9d7f",
+          "git_blob": "7a92976d95b50623aa7f30b42cf8f3b00d70bc59",
+          "url": "https://github.com/botpress/botpress/blob/4dbedde32c5947f2646a03f80421cfd786b8bcd9/integrations/hubspot/src/index.ts#L7"
+        }
+      ],
+      "dependencies": [
+        "Node crypto; @hubspot/api-client ^13.1.0; generated .botpress context replacement; OAuth/client state; HITL interface"
+      ],
+      "upstream_tests": [
+        "integrations/hubspot/vitest.config.ts"
+      ],
+      "tests_run": "NOT_RUN",
+      "wispral_acceptance": [
+        "Valid signature succeeds; invalid/missing/wrong-length signature rejects",
+        "Stale, future-skewed, nonnumeric timestamp and replayed delivery reject",
+        "Account identity comes from verified connector installation, never request body"
+      ],
+      "risks": [
+        "Upstream timestampDiff check rejects only too-old values; add symmetric finite timestamp validation before reuse",
+        "Full connector dependency closure includes shared workspace packages and generated files; not copied verbatim"
+      ],
+      "rights": "FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER; retain upstream license and notices; confidential additional grants not independently inspected",
+      "decision_status": "PLANNING_CANDIDATE_NOT_PRODUCT_AUTHORIZATION",
+      "pillar": "Klaint",
+      "deps": [
+        "Node crypto; @hubspot/api-client ^13.1.0; generated .botpress context replacement; OAuth/client state; HITL interface"
+      ],
+      "acceptance": [
+        "Valid signature succeeds; invalid/missing/wrong-length signature rejects",
+        "Stale, future-skewed, nonnumeric timestamp and replayed delivery reject",
+        "Account identity comes from verified connector installation, never request body"
+      ]
+    },
+    {
+      "id": "K10",
+      "feature": "Portable human handoff schema",
+      "repo": "botpress/botpress",
+      "sha": "4dbedde32c5947f2646a03f80421cfd786b8bcd9",
+      "mode": "ADAPT",
+      "destination": "contracts/klaint/handoff/",
+      "sources": [
+        {
+          "path": "interfaces/hitl/interface.definition.ts",
+          "symbol": "export default",
+          "line": 43,
+          "sha256": "32d687f2c1151b690a77db4ab8c2f8a985ceed05b2bb4201367efa5cbf4b8e83",
+          "git_blob": "b77d4137c5489b36eae814e202e4c0054f7567ea",
+          "url": "https://github.com/botpress/botpress/blob/4dbedde32c5947f2646a03f80421cfd786b8bcd9/interfaces/hitl/interface.definition.ts#L43"
+        }
+      ],
+      "dependencies": [
+        "Botpress sdk/z schema references translated into versioned Wispral contract; message/source mapping"
+      ],
+      "upstream_tests": [
+        "integrations/zendesk-messaging-hitl/src/misc/split-text-message.test.ts"
+      ],
+      "tests_run": "NOT_RUN",
+      "wispral_acceptance": [
+        "Round-trip start/stop/status and transcript with human/AI attribution",
+        "Missing destination, rejected transfer and duplicate handoff events are distinct results"
+      ],
+      "risks": [
+        "Do not bring Botpress cloud client just to reuse types",
+        "Assistant-to-assistant transfer, inbox human ownership and telephony warm transfer are different capabilities"
+      ],
+      "rights": "FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER; retain upstream license and notices; confidential additional grants not independently inspected",
+      "decision_status": "PLANNING_CANDIDATE_NOT_PRODUCT_AUTHORIZATION",
+      "pillar": "Klaint",
+      "deps": [
+        "Botpress sdk/z schema references translated into versioned Wispral contract; message/source mapping"
+      ],
+      "acceptance": [
+        "Round-trip start/stop/status and transcript with human/AI attribution",
+        "Missing destination, rejected transfer and duplicate handoff events are distinct results"
+      ]
+    },
+    {
+      "id": "K11",
+      "feature": "Legacy dialogue state and rule alternative",
+      "repo": "RasaHQ/rasa",
+      "sha": "60a3cff9c08183760355b07bd60f5223d8916d6b",
+      "mode": "REFERENCE_ONLY",
+      "destination": "research/reference/rasa/",
+      "sources": [
+        {
+          "path": "rasa/core/policies/rule_policy.py",
+          "symbol": "class RulePolicy",
+          "line": 99,
+          "sha256": "952d1a13906511ac9b8d1c3dcd27148b24bbcd6610ebb13bff23f2fb1667b2b5",
+          "git_blob": "8ec921f949b3a6acdcaf80c573dfe508055211a9",
+          "url": "https://github.com/RasaHQ/rasa/blob/60a3cff9c08183760355b07bd60f5223d8916d6b/rasa/core/policies/rule_policy.py#L99"
+        },
+        {
+          "path": "rasa/shared/core/trackers.py",
+          "symbol": "class DialogueStateTracker",
+          "line": 125,
+          "sha256": "33eababde59f2ef873e27bd13cfd7842e1e2df07e09f17ebd6521d323a547e50",
+          "git_blob": "8b3c6b8ffbb78f3ff1248517281ee67061a2b707",
+          "url": "https://github.com/RasaHQ/rasa/blob/60a3cff9c08183760355b07bd60f5223d8916d6b/rasa/shared/core/trackers.py#L125"
+        },
+        {
+          "path": "rasa/core/lock_store.py",
+          "symbol": "class LockStore",
+          "line": 40,
+          "sha256": "3d82c120383d1f18b9f727c0a8ca5beef8fe2ac3f8290ad156a44c27c680697d",
+          "git_blob": "e8baff134a2e69da156269fe835955cdf8648f35",
+          "url": "https://github.com/RasaHQ/rasa/blob/60a3cff9c08183760355b07bd60f5223d8916d6b/rasa/core/lock_store.py#L40"
+        },
+        {
+          "path": "rasa/core/processor.py",
+          "symbol": "async def _run_prediction_loop",
+          "line": 856,
+          "sha256": "f42dfbf26e2ffcb66e08cf4180d1de1cce2a8f59389d5d3b4ea12a95b1f186dd",
+          "git_blob": "fc628c7a72479bda818b09cc773583445c716594",
+          "url": "https://github.com/RasaHQ/rasa/blob/60a3cff9c08183760355b07bd60f5223d8916d6b/rasa/core/processor.py#L856"
+        }
+      ],
+      "dependencies": [
+        "Python >=3.8,<3.11; Rasa 3.6.21; graph/training/domain/features; SQLAlchemy/Redis; TensorFlow ecosystem"
+      ],
+      "upstream_tests": [
+        "tests/core/policies/test_rule_policy.py",
+        "tests/core/test_lock_store.py",
+        "tests/shared/core/test_trackers.py"
+      ],
+      "tests_run": "NOT_RUN",
+      "wispral_acceptance": [
+        "If later proposed, first prove an unmet deterministic dialogue task and isolated runtime without parallel source of truth"
+      ],
+      "risks": [
+        "README states maintenance mode; current CALM/Hello Rasa cannot be inferred from this source",
+        "Would duplicate the selected dialogue engine and introduce older conflicting Python/dependency envelope"
+      ],
+      "rights": "FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER; retain upstream license and notices; confidential additional grants not independently inspected",
+      "decision_status": "PLANNING_CANDIDATE_NOT_PRODUCT_AUTHORIZATION",
+      "pillar": "Klaint",
+      "deps": [
+        "Python >=3.8,<3.11; Rasa 3.6.21; graph/training/domain/features; SQLAlchemy/Redis; TensorFlow ecosystem"
+      ],
+      "acceptance": [
+        "If later proposed, first prove an unmet deterministic dialogue task and isolated runtime without parallel source of truth"
+      ]
+    },
+    {
+      "id": "K12",
+      "feature": "Authorization reference and required override",
+      "repo": "emcie-co/parlant",
+      "sha": "ea737442b8ae65854a842542e544fbe7e6144bad",
+      "mode": "ADAPT",
+      "destination": "services/klaint-dialogue/tenant_authorization.py",
+      "sources": [
+        {
+          "path": "src/parlant/api/authorization.py",
+          "symbol": "class DevelopmentAuthorizationPolicy",
+          "line": 176,
+          "sha256": "33e9298bd9e165b1d7013f38ab4bd340d6be9d6c8bf3bf3886e1f7416ddcf639",
+          "git_blob": "c6014b2102311bb165adb557283a04333209968a",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/api/authorization.py#L176"
+        },
+        {
+          "path": "src/parlant/api/authorization.py",
+          "symbol": "class ProductionAuthorizationPolicy",
+          "line": 214,
+          "sha256": "33e9298bd9e165b1d7013f38ab4bd340d6be9d6c8bf3bf3886e1f7416ddcf639",
+          "git_blob": "c6014b2102311bb165adb557283a04333209968a",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/api/authorization.py#L214"
+        },
+        {
+          "path": "src/parlant/api/authorization.py",
+          "symbol": "class AuthorizationException",
+          "line": 130,
+          "sha256": "33e9298bd9e165b1d7013f38ab4bd340d6be9d6c8bf3bf3886e1f7416ddcf639",
+          "git_blob": "c6014b2102311bb165adb557283a04333209968a",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/api/authorization.py#L130"
+        }
+      ],
+      "dependencies": [
+        "Authenticated TenantPrincipal from Wispral Core; explicit ownership checks; API operation allowlist; redaction and tenant rate limiting"
+      ],
+      "upstream_tests": [
+        "tests/api/test_sessions.py"
+      ],
+      "tests_run": "NOT_RUN",
+      "wispral_acceptance": [
+        "Unauthenticated guessed session ID and cross-tenant customer/event reads deny",
+        "Development policy cannot start on exposed production listener",
+        "Authorization exceptions never print auth/cookie headers"
+      ],
+      "risks": [
+        "Development policy permits all; production policy is operation allowlist, not tenant ownership proof",
+        "AuthorizationException formats request headers in exception string; redact before application logging"
+      ],
+      "rights": "FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER; retain upstream license and notices; confidential additional grants not independently inspected",
+      "decision_status": "PLANNING_CANDIDATE_NOT_PRODUCT_AUTHORIZATION",
+      "pillar": "Klaint",
+      "deps": [
+        "Authenticated TenantPrincipal from Wispral Core; explicit ownership checks; API operation allowlist; redaction and tenant rate limiting"
+      ],
+      "acceptance": [
+        "Unauthenticated guessed session ID and cross-tenant customer/event reads deny",
+        "Development policy cannot start on exposed production listener",
+        "Authorization exceptions never print auth/cookie headers"
+      ]
+    }
+  ]
+}

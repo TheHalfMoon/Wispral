@@ -1,0 +1,119 @@
+{
+  "records": [
+    {
+      "url": "https://aquavoice.com/",
+      "date": "2026-10-21",
+      "status": "DOCUMENTED_NOT_RUNTIME",
+      "metadata": {
+        "title": "Aqua Voice - Fast and Accurate Voice Dictation",
+        "sourceURL": "https://aquavoice.com/",
+        "url": "https://aquavoice.com/",
+        "statusCode": 200,
+        "contentType": "text/html; charset=utf-8",
+        "creditsUsed": 1,
+        "scrapeId": "01a15e06-4968-771f-9cf1-fbb7d3b3938c"
+      },
+      "selected_lines": [
+        "![](https://aquavoice.com/_next/image?url=%2Fimages%2Fhome%2Fimac-wave-display.png&w=3840&q=75)",
+        "[macOS](https://aquavoice.com/mac)· [Windows](https://aquavoice.com/windows)· [iPhone](https://aquavoice.com/ios)· [Android](https://aquavoice.com/android)",
+        "Aqua Voice: I barely type long prompts now, just talk. Saved ~5 hrs typing in 2 weeks. Much more accurate than macOS dictation.](https://x.com/nozmen/status/2019405181864276301)",
+        "Aqua is a true power tool: quick, reliable and understands your context - they were early at appreciating the value of context engineering.](https://x.com/gkossakowski/status/1974510899471007882)",
+        "just subscribed to aqua voice and wow you guys are cooking, best dictation app i've tried so far](https://x.com/utkusays/status/1973397718753054737)",
+        "### Give Codex the full context.",
+        "### Dictate ready-to-send emails.",
+        "MacBook Pro Mic",
+        "MacBook Pro Mic",
+        "Preview Aqua on your phone![](https://aquavoice.com/images/icons/android-glyph-header.svg)Android![](https://aquavoice.com/images/icons/apple-glyph-header.svg)iOS",
+        "[![QR code that opens Aqua Voice on Google Play](https://aquavoice.com/images/android/download-qr.svg)![](https://aquavoice.com/_next/image?url=%2Fimages%2Ficons%2Forb-128.png&w=256&q=75)](https://aquavoice.com/mobile)",
+        "[![](https://aquavoice.com/images/icons/android-glyph-header.svg)Get Started on Android](https://aquavoice.com/mobile)",
+        "[Meet Aqua for Android↗](https://aquavoice.com/android)",
+        "![](https://aquavoice.com/_next/image?url=%2Fimages%2Fios%2Fiphone-frame.webp&w=3840&q=75)",
+        "![Aqua refining dictated text in real time](https://aquavoice.com/_next/image?url=%2Fimages%2Fhome%2Ffeature-live-refinement.png&w=3840&q=75)",
+        "![Aqua custom dictionary interface](https://aquavoice.com/_next/image?url=%2Fimages%2Fhome%2Ffeature-custom-dictionary.png&w=3840&q=75)",
+        "### Custom dictionary.",
+        "Custom prompting",
+        "49 Languages",
+        "![Aqua multilingual speech model globe graphic](https://aquavoice.com/_next/image?url=%2Fimages%2Fhome%2Ffeature-languages-globe.png&w=3840&q=75)",
+        "### Speaks your language.",
+        "Understands 49 languages with clarity and precision, adapting naturally to how you speak."
+      ]
+    },
+    {
+      "url": "https://superwhisper.com/",
+      "date": "2026-10-21",
+      "status": "DOCUMENTED_NOT_RUNTIME",
+      "metadata": {
+        "title": "Superwhisper — AI Voice to Text for macOS, Windows, iOS & Android",
+        "sourceURL": "https://superwhisper.com/",
+        "url": "https://superwhisper.com/",
+        "statusCode": 200,
+        "contentType": "text/html; charset=utf-8",
+        "creditsUsed": 1,
+        "scrapeId": "01a15e06-49e9-74b5-b466-2c0f0036b137"
+      },
+      "selected_lines": [
+        "Download for MacDownload for Windows",
+        "Download [Also available for iOS and Android](https://superwhisper.com/download)",
+        "![Cloudflare](https://superwhisper.com/icon/logos/trusted/cloudflare.webp)",
+        "![](https://superwhisper.com/icon/logos/trusted/cloudflare.webp)",
+        "[See the companies using Superwhisper](https://superwhisper.com/customers)",
+        "![](https://superwhisper.com/image/whatsinside/offline/background.webp)",
+        "![](https://superwhisper.com/image/whatsinside/offline/icon.svg)",
+        "### Duh, yes online tooWorks offline",
+        "Superwhisper works offline, so you can transcribe anytime.",
+        "![](https://superwhisper.com/image/whatsinside/language/background.webp)",
+        "![](https://superwhisper.com/image/whatsinside/language/icon.svg)",
+        "### Multilanguage support",
+        "Superwhisper supports 100+ languages & dialects.",
+        "Set custom shortcuts to launch, dictate and control.",
+        "Create modes designed for your tasks, whether you're writing a message, a document, speaking another language...",
+        "Language",
+        "Language Modelsⓘ",
+        "Custom Mode",
+        "Custom Mode lets you define how Superwhisper thinks, writes, and formats. Down to the finest detail.",
+        "Allow agents to one shot your next feature by giving them more context. Talk through your change and skip the typing.",
+        "[![QR code for the iOS and Android downloads](https://superwhisper.com/image/mobile-download-qr.svg)](https://superwhisper.com/mobile)",
+        "Take Superwhisper with you on iOS and Android. Keep your tone, punctuation, and formatting consistent wherever you go."
+      ]
+    },
+    {
+      "url": "https://www.resemble.ai/",
+      "date": "2026-10-21",
+      "status": "DOCUMENTED_NOT_RUNTIME",
+      "metadata": {
+        "title": "Multimodal Deepfake Detection and Watermarking for Enterprise | Resemble AI",
+        "sourceURL": "https://www.resemble.ai/",
+        "url": "https://www.resemble.ai/",
+        "statusCode": 200,
+        "contentType": "text/html; charset=utf-8",
+        "creditsUsed": 1,
+        "scrapeId": "01a15e06-4968-75bd-a3b0-61b5117d42ce"
+      },
+      "selected_lines": [
+        "By clicking **\"Accept\"**, you agree to the storing of cookies on your device to enhance site navigation, analyze site usage, and assist in our marketing efforts. View our [Privacy Policy](https://www.resemble.ai/privacy-policy) for more information.",
+        "[Privacy Policy](https://policies.google.com/privacy)",
+        "[Privacy Policy](https://policies.google.com/privacy)",
+        "Local Storage",
+        "Cloudflare",
+        "[Privacy Policy](https://www.cloudflare.com/privacypolicy/)",
+        "[Privacy Policy](https://posthog.com/privacy)",
+        "[Privacy Policy](https://segment.com/legal/privacy)",
+        "[Privacy Policy](https://policies.google.com/privacy)",
+        "[Privacy Policy](https://legal.hubspot.com/privacy-policy)",
+        "[Privacy Policy](https://privacy.microsoft.com/en-us/privacystatement)",
+        "Used by Microsoft Clarity to connect multiple page views by a user into a single Clarity session recording",
+        "[Privacy Policy](https://policies.google.com/privacy)",
+        "[Privacy Policy](https://policies.google.com/privacy)",
+        "VISITOR\\_PRIVACY\\_METADATA",
+        "Stores visitor privacy settings and consent information for personalized advertising",
+        "Local Storage",
+        "Persistent in browser local storage until manually cleared",
+        "[Privacy Policy](https://policies.google.com/privacy)",
+        "Local Storage",
+        "[Privacy Policy](https://www.linkedin.com/legal/privacy-policy)",
+        "Local Storage"
+      ]
+    }
+  ],
+  "limitation": "Selected public-page lines and metadata; vendor assertions are not independent quality, privacy or platform evidence."
+}

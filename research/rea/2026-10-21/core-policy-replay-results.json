@@ -1,0 +1,50 @@
+{
+  "id": "CORE-NETWORK-01",
+  "method": "UNCHANGED_PINNED_SOURCE_MODULE_WITH_INDEPENDENT_SYNTHETIC_FIXTURES",
+  "status": "REPRODUCED",
+  "captured_at": "2026-10-21T10:48:15.479Z",
+  "node": "v24.19.0",
+  "platform": "win32",
+  "arch": "x64",
+  "repo": "TheHalfMoon/Ninerr",
+  "sha": "8cba15c4e4af40b12476433a49e20a1696cfc0f8",
+  "tests": [
+    {
+      "name": "offline policy refuses remote and loopback provider routes",
+      "status": "PASS"
+    },
+    {
+      "name": "allowed route remains purpose/capability scoped",
+      "status": "PASS"
+    },
+    {
+      "name": "credentials and misleading host suffix cannot widen route",
+      "status": "PASS"
+    },
+    {
+      "name": "private or mixed DNS answers fail pure postresolution decision",
+      "status": "PASS"
+    },
+    {
+      "name": "caller-crafted allowed decision is refused",
+      "status": "PASS"
+    },
+    {
+      "name": "unknown policy key is rejected",
+      "status": "PASS"
+    }
+  ],
+  "limitations": [
+    "No socket was opened by this pure decision module; no enforcement of real outbound requests was tested.",
+    "No integrated Wispral security, tenant isolation or release gate is satisfied by these probes."
+  ],
+  "passed": 6,
+  "total": 6,
+  "source_sha256": {
+    "policy.ts": "eb2e32a54229beac406efb5461190a6c9ade8ebae0407f8d64ff67753fcb1518",
+    "address.ts": "93ae122ac9b8f0529908a973eeee009ac23cdf0b579b4e1c932d4ca8b84175b3",
+    "errors.ts": "a1003fcf41164cf2a1da3bfc67834d12a098857af7f088905b3b87c1a9328024",
+    "types.ts": "2e68e1c7b0502973e73335bd8b39c7e276c1a73b66a5b632e97e965c091eea8b",
+    "validation.ts": "b6dd8fd46adec96010826eb42999b35d4803c7e6d52131a677d6b619b0ae354a"
+  }
+}
