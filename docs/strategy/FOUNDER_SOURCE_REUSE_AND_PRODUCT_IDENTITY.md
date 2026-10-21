@@ -38,7 +38,7 @@ Practical requirements for Codex and contributing agents:
 
 ## 2. Final founder-selected product naming
 
-**Founder decision date:** 2026-10-21. **Status:** Final founder choice for product naming and planning; separate trademark/domain/app-store clearance is not established by this record.
+**Founder decision date:** 2026-10-21. **Latest confirmed update:** The founder has **renamed the dictation/companion product from WisprInk to WisprSide**, and affirmed this exact spelling. This supersedes earlier WisprInk naming choices; separate trademark/domain/app-store clearance is not established by this record.
 
 **Use the exact names and capitalization below in all new Wispral product planning, roadmaps, specifications, examples, product UI proposals, architecture diagrams, and transplants.**
 
@@ -46,14 +46,14 @@ Practical requirements for Codex and contributing agents:
 | --- | --- | --- |
 | Umbrella | **Wispral** | Voice intelligence platform, shared core, models, routing, privacy, interoperability and developer tooling |
 | Creative studio | **WisprStudio** | Voice creation, authorized voice cloning, speech synthesis, editing, multilingual dubbing and audio production |
-| Voice typing | **WisprInk** | Cross-application dictation, contextual voice-to-text, spoken writing/editing and developer voice interaction |
+| Voice companion & typing | **WisprSide** | Cross-application dictation, contextual voice-to-text, spoken writing/editing, and extensible user-side voice assistance/developer voice interaction |
 | Conversational agents | **Klaint** | AI voice/chat agents, business workflows, customer experience, escalations, testing, integrations and enterprise controls |
 
 **Superseded historical names — NOT approved customer-facing brands:**
 
 - `Wispral Studio` → **WisprStudio**.
-- `WisperType`, `WisperOne`, `Wispral Ink`, `WisprInk [PROVISIONAL]`, `Wispral One` and `Wispivo` → **WisprInk**.
-- `Wispral Flow` and `Wispral Agents` were early working labels and must not be promoted as these product names. The corresponding capabilities map into WisprInk and Klaint.
+- `WisperType`, `WisperOne`, `Wispral Ink`, `Wispral One` and `Wispivo` were earlier naming candidates. The formerly final **WisprInk** spelling has now also been superseded → **WisprSide**.
+- `Wispral Flow` and `Wispral Agents` were early working labels and must not be promoted as these product names. The corresponding capabilities map into WisprSide and Klaint.
 - Historic citations, archived research and PR conversation may preserve the old names if explicitly identified as historical. Do not rewrite or falsify frozen evidence to erase them.
 
 **Developer instruction:** The names are chosen; do not re-open a naming brainstorm or ask the founder to select among alternatives. Do not block independent REA or architecture work awaiting public trademark clearance. Do not invent a legal clearance or domain ownership claim: conduct an explicit clearance review ahead of commercial launch, including the recorded Wispr/Wispr Flow similarity issue, as separate non-blocking planning work.
@@ -77,7 +77,7 @@ The proposed long-term product hierarchy is:
 Wispral (umbrella platform)
 ├── Wispral Core (speech and realtime engine contracts, safety, consent, routing)
 ├── WisprStudio (creation, production and dubbing)
-├── WisprInk (cross-app dictation and developer voice interface)
+├── WisprSide (cross-app dictation, voice companion and developer voice interface)
 ├── Klaint (customer-facing conversational voice and chat agents)
 └── Wispral Platform (APIs, SDKs, integration and evaluation services)
 ```
@@ -89,8 +89,8 @@ This extends the previously narrow agent-control strategy. The existing `CONSTIT
 Codex must:
 - Read this recorded founder permission statement before concluding any donor is out of scope merely for lack of source-reuse authority.
 - Implement a useful `FOUNDER_AUTHORIZATION` column/status in its source transplant matrix, distinguished from independently checked upstream open license and unrelated weight/data rights.
-- Use the **final founder-selected product names** exactly: **Wispral** (platform), **WisprStudio** (studio), **WisprInk** (voice typing), **Klaint** (voice/chat agents). Do not silently revert to historical names or request a new naming decision. Trademark/domain/app-store clearance remains a separate prelaunch check.
+- Use the **final founder-selected product names** exactly: **Wispral** (platform), **WisprStudio** (studio), **WisprSide** (voice typing and companion), **Klaint** (voice/chat agents). Do not silently revert to historical names or request a new naming decision. Trademark/domain/app-store clearance remains a separate prelaunch check.
 - Produce a short-list of reusable *specific files and modules*, not only a competitor survey or “reimplement it” roadmap.
 - Keep this PR/planning lane separate from existing `B2R17` research and controls; no benchmark, production, trademark clearance or deployment claims are made by this document.
 
-**Recorded outcome:** the founder states that legally valid source-code copy/modify/rename permissions already exist and the supporting documents are confidential and intentionally withheld; the fact of non-disclosure is **not** a reuse-planning blocker. Founder-selected final platform and product names (Wispral, WisprStudio, WisprInk and Klaint) are recorded; public naming clearance remains a separate launch qualification. Commercial name clearance, donor-by-donor provenance, separate model/asset rights where applicable, source transplantation, implementation and evidence-based release qualification remain future work.
+**Recorded outcome:** the founder states that legally valid source-code copy/modify/rename permissions already exist and the supporting documents are confidential and intentionally withheld; the fact of non-disclosure is **not** a reuse-planning blocker. Founder-selected final platform and product names (Wispral, WisprStudio, WisprSide and Klaint) are recorded; public naming clearance remains a separate launch qualification. Commercial name clearance, donor-by-donor provenance, separate model/asset rights where applicable, source transplantation, implementation and evidence-based release qualification remain future work.
