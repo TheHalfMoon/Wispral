@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-21T12:59:28.775Z",
+  "branch_protection": {
+    "status": "UNKNOWN_API_UNAVAILABLE",
+    "exit": 1,
+    "error": "gh: Branch not protected (HTTP 404)"
+  },
+  "rulesets": {
+    "status": "READABLE",
+    "data": []
+  },
+  "branch_metadata": {
+    "name": "main",
+    "protected": false,
+    "sha": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4"
+  },
+  "rulesets_including_parents": [],
+  "interpretation": "Current branch metadata says protected=false; classic protection endpoint returned 404 Branch not protected; rulesets including parents returned empty. No classic required-check list is exposed. Governance-required gates still apply; recheck at merge. Earlier 403 observations remain historical, not current state."
+}

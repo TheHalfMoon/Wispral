@@ -14,6 +14,8 @@ jobs:
     env:
       TASK: B2R16
       EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+      CHECKER_SHA256: b4ad0f3ef02394e28c982100acb68a719acde0d9a137b62be662871756eefe16
+      TEST_SHA256: 3b144f15d9870877e891d7847384aa058acd73a5c1fc1ab648bb6d1c04c4aae2
 
     steps:
       - name: Checkout exact B2R16 revision
@@ -30,8 +32,27 @@ jobs:
           test -n "$EXACT_REVISION"
           test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
 
-      - name: Verify B2R16 ATTEMPT-003 pre-primary freeze
+      - name: Verify checker and fixture source identities before execution
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r16.py --require-git
+          python -I - <<'PY'
+          import hashlib, os
+          from pathlib import Path
+          for filename, variable in (("verify_b2r16_preservation.py", "CHECKER_SHA256"), ("test_b2r16_preservation.py", "TEST_SHA256")):
+              data = (Path("research/000b2-public") / filename).read_bytes()
+              if hashlib.sha256(data).hexdigest() != os.environ[variable]:
+                  raise SystemExit("B2R16 control source digest mismatch: " + filename)
+          PY
+
+      - name: Verify historical B2R16 proof and frozen object preservation
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -I research/000b2-public/verify_b2r16_preservation.py --candidate "$EXACT_REVISION"
+
+      - name: Prove frozen-file tamper rejection
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -I research/000b2-public/test_b2r16_preservation.py

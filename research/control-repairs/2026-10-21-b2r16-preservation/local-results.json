@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-21T13:02:35.168720+00:00",
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "status": "PASS",
+  "canonical_base": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+  "qualified_head": "ac9f7ce993aec33e6c6436cce4efd85394a97f35",
+  "frozen_merge": "885307429ec8b1aa0fe173169a8c2918714c06b0",
+  "prechange_failures_preserved": [
+    {
+      "candidate": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+      "original_exit": 1,
+      "original_stdout": "",
+      "original_stderr": "B2R16_ATTEMPT_003_FREEZE=FAIL: B2R16 actual candidate range scope drift\n",
+      "preservation_result": "PASS"
+    },
+    {
+      "candidate": "f36338138f4b4a872b05393b5cab03856dd7bf8e",
+      "original_exit": 1,
+      "original_stdout": "",
+      "original_stderr": "B2R16_ATTEMPT_003_FREEZE=FAIL: B2R16 actual candidate range scope drift\n",
+      "preservation_result": "PASS"
+    }
+  ],
+  "historical_stdout": "B2R16_ATTEMPT_003_FREEZE=PASS\nB2R16_FREEZE_DIGEST=b92d0a88bb50ebde517f560878a26d0ef796abdaf931278f5bc43e372ff1ac8d\nATTEMPT_003_FROZEN_EVIDENCE=YES\nATTEMPT_003_CANDIDATE_DECODING_STARTED_AT_FREEZE=NO\nATTEMPT_003_PRIMARY_DECODING_STARTED_AT_FREEZE=NO\nATTEMPT_003_SCORING_PERFORMED_AT_FREEZE=NO\nHUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT\n",
+  "suite_exit": 0,
+  "suite_stdout": "",
+  "suite_stderr": "test_candidate_identity_rejects_refs_and_options (__main__.PreservationTests.test_candidate_identity_rejects_refs_and_options) ... ok\ntest_delete_mode_and_symlink_rejected (__main__.PreservationTests.test_delete_mode_and_symlink_rejected) ... ok\ntest_every_frozen_path_rejects_byte_change (__main__.PreservationTests.test_every_frozen_path_rejects_byte_change) ... ok\ntest_exact_replacement_workflow_and_its_tampering (__main__.PreservationTests.test_exact_replacement_workflow_and_its_tampering) ... ok\ntest_historical_stdout_unchanged (__main__.PreservationTests.test_historical_stdout_unchanged) ... ok\ntest_mutable_checker_and_tests_cannot_bypass_unchanged_workflow (__main__.PreservationTests.test_mutable_checker_and_tests_cannot_bypass_unchanged_workflow) ... ok\ntest_unchanged_main_and_original_plan (__main__.PreservationTests.test_unchanged_main_and_original_plan) ... ok\n\n----------------------------------------------------------------------\nRan 7 tests in 187.484s\n\nOK\n",
+  "frozen_paths": 16,
+  "byte_mutation_cases": 16,
+  "deletion_mode_symlink_cases": 48,
+  "controls": {
+    ".github/workflows/000b2-public-b2r16-freeze.yml": "24fbc7f9beb378ffdd987f4eeceb47c6e6f66122dcf83b86c468a4dea6ce2fc3",
+    "research/000b2-public/verify_b2r16_preservation.py": "b4ad0f3ef02394e28c982100acb68a719acde0d9a137b62be662871756eefe16",
+    "research/000b2-public/test_b2r16_preservation.py": "3b144f15d9870877e891d7847384aa058acd73a5c1fc1ab648bb6d1c04c4aae2"
+  },
+  "limits": [
+    "Local control proof, not merge approval",
+    "Workflow itself still requires trusted canonical bootstrap and branch protection",
+    "Historical workflow identity plus one exact declared replacement, no arbitrary exception",
+    "Protected product/benchmark authorities unchanged"
+  ]
+}
