@@ -1,0 +1,94 @@
+{
+  "method": "DIRECT_PINNED_SOURCE_REVIEW_NO_REA_RESTART",
+  "source_revision": "ea737442b8ae65854a842542e544fbe7e6144bad",
+  "records": [
+    {
+      "id": "K13",
+      "feature": "Canned response commitment boundary",
+      "repo": "emcie-co/parlant",
+      "sha": "ea737442b8ae65854a842542e544fbe7e6144bad",
+      "pillar": "Klaint",
+      "mode": "WRAP",
+      "decision": "WRAP",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "sources": [
+        {
+          "path": "src/parlant/core/engines/alpha/canned_response_generator.py",
+          "symbol": "class CannedResponseGenerator(",
+          "line": 504,
+          "git_blob": "591d0f185a1536dfd06fdcf3cd39250ebbeb4ef5",
+          "sha256": "908a6d10ef4ec84b307dbbe7d2951f0e978fb2d0176dbf55c5abc575311ed16a",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/engines/alpha/canned_response_generator.py#L504"
+        }
+      ],
+      "destination": "services/klaint-dialogue/",
+      "deps": "Existing Parlant package; tenant-scoped storage/NLPService; no additional runtime",
+      "acceptance": [
+        "Only approved commitment template or handoff",
+        "Cited tenant-scoped retrieval and deterministic action scorer"
+      ],
+      "owner": "Klaint single Python service",
+      "rights": "Founder-confirmed source authorization; preserve Apache notices; models separate"
+    },
+    {
+      "id": "K14",
+      "feature": "Tenant-scoped cited retrieval",
+      "repo": "emcie-co/parlant",
+      "sha": "ea737442b8ae65854a842542e544fbe7e6144bad",
+      "pillar": "Klaint",
+      "mode": "WRAP",
+      "decision": "WRAP",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "sources": [
+        {
+          "path": "docs/concepts/customization/retrievers.md",
+          "symbol": "# Retrievers",
+          "line": 1,
+          "git_blob": "13c27ec4e9ed04bce6508a85d2f002f10e83d0d1",
+          "sha256": "a88ddb4c63947f069c9ee22c728929adf58e35326f65f9239bb84bc2010b3d30",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/docs/concepts/customization/retrievers.md#L1"
+        }
+      ],
+      "destination": "services/klaint-dialogue/",
+      "deps": "Existing Parlant package; tenant-scoped storage/NLPService; no additional runtime",
+      "acceptance": [
+        "Only approved commitment template or handoff",
+        "Cited tenant-scoped retrieval and deterministic action scorer"
+      ],
+      "owner": "Klaint single Python service",
+      "rights": "Founder-confirmed source authorization; preserve Apache notices; models separate"
+    },
+    {
+      "id": "K15",
+      "feature": "Dialogue evaluations and deterministic outcome scorer",
+      "repo": "emcie-co/parlant",
+      "sha": "ea737442b8ae65854a842542e544fbe7e6144bad",
+      "pillar": "Klaint",
+      "mode": "WRAP",
+      "decision": "WRAP",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "sources": [
+        {
+          "path": "src/parlant/api/evaluations.py",
+          "symbol": "def create_router(",
+          "line": 514,
+          "git_blob": "d4751e542114e6af4e8dee4da09adedd66907e0a",
+          "sha256": "33fa939b6de5f5e874a8ddd6f56a391e214530a0f4c4356eb703d3665885e078",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/api/evaluations.py#L514"
+        }
+      ],
+      "destination": "services/klaint-dialogue/",
+      "deps": "Existing Parlant package; tenant-scoped storage/NLPService; no additional runtime",
+      "acceptance": [
+        "Only approved commitment template or handoff",
+        "Cited tenant-scoped retrieval and deterministic action scorer"
+      ],
+      "owner": "Klaint single Python service",
+      "rights": "Founder-confirmed source authorization; preserve Apache notices; models separate"
+    }
+  ],
+  "runtime_status": "NOT_RUN"
+}
