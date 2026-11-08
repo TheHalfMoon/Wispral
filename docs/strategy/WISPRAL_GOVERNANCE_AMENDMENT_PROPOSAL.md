@@ -73,6 +73,38 @@ G-01 acceptance requires a reviewer to compare each of the above old phrases aga
 
 M1 is an ordinary **fail-closed over-application** repair, not a Principle XVI fail-open repair. Its dedicated PR must preserve the original red results, exact historical PASS and frozen-object mutation rejection. Earlier API 403 observations remain historical. The repair-session API recheck returns `protected=false` on main, 404 “Branch not protected” from classic protection, and an empty ruleset list including parents. No classic required-check list is exposed; governance-required gates still apply. Recheck settings at merge and record UNKNOWN if access fails. Do not infer an exemption from #118 having merged while a check was red. Neither repair nor plan is merge-approved.
 
+### Control-lane deadlock (Opus re-review N1)
+
+These observations were read from GitHub on 2026-11-08. They show that the ordinary lane cannot currently admit any of the three relevant PRs:
+
+| PR | Failing gate | Observed result | Cause |
+| --- | --- | --- | --- |
+| #120, B2R17: the sole authorized execution unit | `verify-b2r16-freeze` | `fail` | Same over-application as M1 |
+| #126, B2R16 preservation repair | `000B2 Public Corpus ATTEMPT-003 Trusted PR Gate` / `verify-successor-pr-from-canonical-base` (job `119240340129`) | `TRUSTED_PR_GATE=FAIL: B2R17 candidate path scope violation` | It changes a `000b2-public-*` workflow outside the B2R17 candidate scope |
+| #126, B2R16 preservation repair | `000B2 Public Corpus ATTEMPT-003 Recovery` / `verify-successor-recovery` (job `119240337239`) | `TRUSTED_BOUNDARY=FAIL: B2R17 task-candidate path scope violation` | Same B2R17 scope rule |
+| #124 and every later PR | `verify-b2r16-freeze` | `fail` | Same over-application as M1 |
+
+The result is a cycle:
+
+- B2R17 cannot pass while the freeze over-application stands.
+- The freeze repair cannot pass while B2R17's single-candidate scope gates stand.
+- A canonical readiness reconciliation that names the repair as the next unit would touch `specs/CURRENT.md` and `docs/canonical/CURRENT_STATE.md`. Both are paths of the same Trusted PR Gate, and that PR would also fail `verify-b2r16-freeze`.
+
+Principle XVI does not apply, because no fail-open defect is demonstrated. No ordinary lane exists. Re-running checks, adding skips or path filters, or merging with red gates (as happened with #118) are all excluded.
+
+The only legitimate resolution is an explicit founder governance decision, recorded before any dependent merge. The proposed form is a narrow constitutional PATCH or MINOR amendment adding a **fail-closed over-application deadlock lane** that mirrors Principle XVI's rigor:
+
+1. The lane may change only the exact control path or paths whose applicability causes the cycle. It must strictly preserve every frozen-object and historical-PASS guarantee, and must not broaden task, scoring or product authority.
+2. The pre-change failures caused solely by the declared applicability conflict are preserved individually as conflict evidence. They are never relabelled as passes.
+3. Every other applicable gate succeeds at the exact final head.
+4. A fresh independent review covers the exact range, followed by a guarded merge, post-merge canonical verification and a separate canonical reconciliation.
+
+Under that lane, #126 merges first. #120 then re-runs normally. The constitutional scope amendment and #124 follow through ordinary gates.
+
+If the founder declines this lane, the alternative is the same narrow amendment text applied only to B2R17's scope gates, so that #126 is admitted as a declared second candidate. That alternative is not preferred, because it widens a task scope.
+
+This proposal does not decide between the two.
+
 1. Review this research PR as planning-only, including source choices and missing evidence. Preserve its actual failed/pending/unavailable CI results.
 2. Recheck canonical main, open PRs and required exact-head controls. Diagnose the B2R16 later-PR scope conflict independently. Determine the applicable governance/control lane from live authority; Principle XVI must not be used as a convenient substitute for an ordinary gate or for an unproven fail-open defect.
 3. Open a dedicated amendment PR with exact canonical base, changed paths, proposed major version, compatibility impacts, security/privacy and affected specs. Resolve independent substantive review and required gates at the final head; use the prescribed guarded merge and verify actual canonical ancestry.

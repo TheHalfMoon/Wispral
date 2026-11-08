@@ -19,6 +19,55 @@ The [four deep dives](../../research/rea/2026-10-21/README.md), [source transpla
 
 M1 is reproduced on canonical main as well as #124; it is fail-closed over-application, not a Principle XVI fail-open repair. The separate B2R16 preservation PR retains the old verifier/payloads and historical PASS, adds frozen-object mutation checks and changes only the declared control workflow. Earlier API 403 was historical. Current API reports main protected=false, classic protection 404 and no rulesets; governance-required checks remain binding; preserve #118's red-check merge as fact, not permission. No merge is authorized here.
 
+**The control lanes are currently deadlocked (N1).** Three facts combine into a cycle:
+
+- #120 (B2R17, the sole authorized unit) fails `verify-b2r16-freeze`.
+- #126 fails the ATTEMPT-003 Trusted PR Gate and Recovery boundary with "B2R17 candidate path scope violation".
+- Any canonical readiness PR would hit the same gates.
+
+No ordinary lane can break this cycle. The first W0 step is therefore a founder governance decision on the narrow **fail-closed over-application deadlock lane** described in the [governance proposal](WISPRAL_GOVERNANCE_AMENDMENT_PROPOSAL.md#control-lane-deadlock-opus-re-review-n1).
+
+The proposed order is:
+
+1. Deadlock-lane amendment.
+2. #126.
+3. #120 re-run and reconciliation.
+4. Scope amendment and #124.
+
+Merging with red gates is not an option.
+
+### Execution sequence to the first unit of work
+
+Each step starts only after the previous step's exit criterion holds on canonical `main`. "Founder" means the repository owner's explicit recorded decision.
+
+1. **Founder decision on N1.**
+   - Do: choose the [deadlock-lane amendment](PROPOSED_AMENDMENT_CONTROL_DEADLOCK_LANE.md) (preferred) or the second-candidate fallback.
+   - Exit: the decision is recorded on #124 or #126.
+2. **Lane amendment PR.**
+   - Do: open a `CONSTITUTION.md`-only PR with the proposed Principle XVII text.
+   - Exit: an independent review is complete and a guarded merge is done. The red `verify-b2r16-freeze` result is preserved as conflict evidence.
+3. **#126 under the new lane.**
+   - Do: preserve the listed red results and get all other applicable gates green.
+   - Exit: an independent review and a guarded merge. On the canonical state, a no-op PR passes `verify-b2r16-freeze`.
+4. **Canonical reconciliation of the repair.**
+   - Do: record the #118 red merge, the #126 merge and post-merge verification.
+   - Exit: the reconciliation passes the repaired controls.
+5. **#120 / B2R17.**
+   - Do: re-run, review, guarded merge and B2R17 reconciliation, under the unchanged B2 discipline.
+   - Exit: canonical `main` names the next B-chain disposition. No STT winner is inferred.
+6. **Scope amendment (G-01).**
+   - Do: the major constitutional amendment, using the mission, anti-roadmap and A12 dispositions and the founding-chain table in the [governance proposal](WISPRAL_GOVERNANCE_AMENDMENT_PROPOSAL.md).
+   - Exit: canonical `AGENTS.md`, roadmap, invariants and `specs/CURRENT.md` reconciled together.
+7. **Merge #124 as planning-only research.**
+   - Exit: all gates green and an independent final-range review. No packet becomes READY by this merge.
+8. **000F intake and 000G selection.**
+   - Do: record the REA bundle as 000F input, and select exactly one bounded unit of work. Recommended: Q-02, the unchanged fit planner plus guard, which has no STT, model or microphone dependency. Alternative: Q-01.
+   - Exit: that one unit is READY in `specs/CURRENT.md`.
+9. **First unit of work, then F-SIDE-0 under named 000E research authority.**
+   - Exit: Q-02 is VERIFIED, and the Handy fork baseline manifest is recorded with actual pass, fail and skip counts.
+
+Each step carries the dependencies in [packet-authorities.json](../../research/rea/2026-10-21/packet-authorities.json). No step is complete because a later document assumes it.
+
 G-01 must explicitly reconcile B2R17, 000C, 000D, 000E, 000F and 000G using the [amendment graph](WISPRAL_GOVERNANCE_AMENDMENT_PROPOSAL.md) and [packet authorities](../../research/rea/2026-10-21/packet-authorities.json). The REA bundle is 000F input, not completed licensing/supply-chain qualification. Native Side work supplies 000E evidence; 000C/000D apply to optional agent/duplex capabilities. Pure non-STT Q-01/Q-02/Q-03 do not wait on B2 only **after** legitimate re-scope/000G selection; speech I-01 still requires its canonical B-chain disposition. Current main has not adopted this.
 
 Resolve the exact AGENTS mission negation, every anti-roadmap item and per-product A12 surface rule through the dedicated amendment, not hidden exceptions. All product packets remain DRAFT. Governance preparation effort is 1–3 engineer-days **only for drafting**, with unestimated independent review/CI/owner-setting and canonical reconciliation latency; it is not time-to-implementation.
