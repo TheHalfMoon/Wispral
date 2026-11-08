@@ -4,7 +4,7 @@
 
 **Rights columns are separate:** "Public license" is what the repository declares (`SOURCE_VERIFIED`). "Founder grant" records `FOUNDER_SOURCE_AUTHORIZATION=YES_CONFIRMED_BY_FOUNDER` for founder-supplied or founder-owned sources; the private documents were not requested or inspected. Weight, dataset, font and voice rights are never inferred from either.
 
-**Open rights item:** the Wispral repository itself has **no LICENSE file** (`gh api` license = none, `SOURCE_VERIFIED`). The founder must choose Wispral's outbound license before any code is copied into it (decision Q-01 in the [handoff](FINAL_HANDOFF.md)).
+**Rights item Q-01 (resolved 2026-11-09):** the founder chose **Apache-2.0** as Wispral's outbound licence, and `LICENSE` is at the repository root. The conditions for landing adopted code are in [`RIGHTS_REGISTER.md`](RIGHTS_REGISTER.md) §1. Before that date, the repository had no LICENSE (`gh api` license = none).
 
 **CORE-00 (2026-11-08):** every anchor below was re-verified at its pin (`ANCHORS=57 PASS=57`). The per-donor rights, reference-only files and the closed licence gate are in [`RIGHTS_REGISTER.md`](RIGHTS_REGISTER.md); corrections to earlier records, including full SHAs for the short pins below, are in [`CATALOG_ERRATA.md`](CATALOG_ERRATA.md).
 
