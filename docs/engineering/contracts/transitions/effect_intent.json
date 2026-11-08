@@ -1,0 +1,13 @@
+{
+  "description": "Allowed effect_intent state transitions, copied from TheHalfMoon/Orcel@f0b78e6544cf6ea9c2457a6b6f483490c7bd0f6f crates/orcel-journal/src/lib.rs IntentState::may_become (SOURCE_VERIFIED 2026-11-08). A recorded intent never returns to pending; settled, abandoned and reconciled are terminal; abandoned cannot follow dispatched; an interrupted dispatched intent is unknown.",
+  "initial": ["pending"],
+  "terminal": ["settled", "abandoned", "reconciled"],
+  "allowed": {
+    "pending": ["dispatched", "settled", "abandoned", "reconciled"],
+    "dispatched": ["settled", "unknown", "reconciled"],
+    "unknown": ["reconciled"],
+    "settled": [],
+    "abandoned": [],
+    "reconciled": []
+  }
+}

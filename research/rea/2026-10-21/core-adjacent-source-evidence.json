@@ -1,0 +1,41 @@
+{
+  "records": [
+    {
+      "repo": "openai/whisper",
+      "sha": "86098128c0b4f24f0e2aa2994de830614b474227",
+      "path": "whisper/transcribe.py",
+      "symbol": "def transcribe(",
+      "line": 38,
+      "git_blob": "56b29fbc888dd607c464ca90c427cf633b24f147",
+      "sha256": "176f5ab30e961bec2a7872f5701a1f5bf3cbfc77946e50512f0f0cf00a1ceacf",
+      "url": "https://github.com/openai/whisper/blob/86098128c0b4f24f0e2aa2994de830614b474227/whisper/transcribe.py#L38",
+      "status": "SOURCE_VERIFIED",
+      "runtime": "NOT_RUN"
+    },
+    {
+      "repo": "modelscope/FunASR",
+      "sha": "1d066f9d560c9c93100ea6b04582e857930d893b",
+      "path": "funasr/auto/auto_model.py",
+      "symbol": "def build_model(",
+      "line": 645,
+      "git_blob": "55f9cf9dd8d4d946add167f05285ed1b298406ad",
+      "sha256": "e9bac7187c1aa69580484c915291a5add4c1fd77d73e8a2f2f9fc88f33ed688c",
+      "url": "https://github.com/modelscope/FunASR/blob/1d066f9d560c9c93100ea6b04582e857930d893b/funasr/auto/auto_model.py#L645",
+      "status": "SOURCE_VERIFIED",
+      "runtime": "NOT_RUN"
+    },
+    {
+      "repo": "jitsi/jiwer",
+      "sha": "2227002889f20f3fb19d523eeb322732cb67b431",
+      "path": "src/jiwer/process.py",
+      "symbol": "def process_words(",
+      "line": 129,
+      "git_blob": "0e6a8a79bec1f500a85646a9c0f86864972bb573",
+      "sha256": "29c424bed1750ad785b76f3491caed6f4bcef582e9bf884667ae6626b73e0110",
+      "url": "https://github.com/jitsi/jiwer/blob/2227002889f20f3fb19d523eeb322732cb67b431/src/jiwer/process.py#L129",
+      "status": "SOURCE_VERIFIED",
+      "runtime": "NOT_RUN"
+    }
+  ],
+  "scope": "Adjacent ASR/scorer source alternatives only; no product selection, decode or scoring authority"
+}

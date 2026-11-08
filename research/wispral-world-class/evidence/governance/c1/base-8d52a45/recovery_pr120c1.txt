@@ -1,0 +1,28 @@
+## DEFINITION 8d52a4579a0b1c6555cbe8443027c1950493b326:.github/workflows/000b2-public-attempt-003-recovery.yml job=verify-successor-recovery
+## CANDIDATE HEAD 0141ef59c402e6961c2d7a58fcef533eee8d763b
+## STEP 1 Checkout exact revision: uses actions/checkout@11d5960a326750d5838078e36cf38b85af677262 (performed by harness setup)
+## STEP 2 Verify exact revision and authority base: exit 0
+   dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff
+   8d52a4579a0b1c6555cbe8443027c1950493b326
+   EXACT_REVISION=0141ef59c402e6961c2d7a58fcef533eee8d763b
+   AUTHORITY_BASE_REVISION=8d52a4579a0b1c6555cbe8443027c1950493b326
+   DISCOVERY_MAIN=dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff
+## STEP 3 Fetch exact pinned sherpa-onnx source before candidate boundary: exit 0
+   Initialized empty Git repository in $RUNNER_TEMP/sherpa-onnx/.git/
+   From https://github.com/k2-fsa/sherpa-onnx
+    * branch            917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e -> FETCH_HEAD
+   HEAD is now at 917bed9 Release v1.13.7 (#3909)
+## STEP 4 Trusted pre-candidate execution boundary: exit 1
+   TRUSTED_BOUNDARY=FAIL: B2R17 task-candidate path scope violation
+## STEP 5 Verify current successor frontier without external source access: exit 1
+   ATTEMPT_002_INVALIDATION=FAIL: B2R17 candidate must match the exact canonical task path set
+## STEP 6 Verify material drift against exact pinned sherpa-onnx API: exit 1
+   ATTEMPT_002_INVALIDATION=FAIL: B2R17 candidate must match the exact canonical task path set
+## STEP 7 Preserve fail-closed recovery boundary and canonical transition proofs: exit 0
+   ACTIVE_SUCCESSOR_RECOVERY_UNIT=B2R17
+   VALIDATED_SUCCESSOR_TRANSITIONS=4
+   ATTEMPT_002_NEW_PRIMARY_DECODE_AUTHORIZED=NO
+   ATTEMPT_003_PRIMARY_DECODE_AUTHORIZED=YES
+   COMPARATIVE_RESULT_AVAILABLE=NO
+   PRODUCTION_STT_SELECTED=NO
+   PRODUCT_CODE_AUTHORIZED=NO

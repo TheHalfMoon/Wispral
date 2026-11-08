@@ -1,0 +1,13 @@
+{
+  "description": "Allowed cancellation state transitions (CANDIDATE). Acknowledgement is not stop. stopped_unconfirmed may later become observed_stopped or failed when the owner finally observes the process; no terminal state changes again.",
+  "initial": ["requested"],
+  "terminal": ["observed_stopped", "completed_before_cancel", "failed"],
+  "allowed": {
+    "requested": ["acknowledged", "observed_stopped", "completed_before_cancel", "stopped_unconfirmed", "failed"],
+    "acknowledged": ["observed_stopped", "completed_before_cancel", "stopped_unconfirmed", "failed"],
+    "stopped_unconfirmed": ["observed_stopped", "failed"],
+    "observed_stopped": [],
+    "completed_before_cancel": [],
+    "failed": []
+  }
+}

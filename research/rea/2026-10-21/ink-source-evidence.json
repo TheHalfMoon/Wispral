@@ -1,0 +1,1857 @@
+{
+  "schema_version": 1,
+  "product": "WisprSide",
+  "mission": "https://github.com/TheHalfMoon/Wispral/issues/122",
+  "captured_at": "2026-10-21T05:30:54.426Z",
+  "authorization": {
+    "FOUNDER_SOURCE_AUTHORIZATION": "YES_CONFIRMED_BY_FOUNDER",
+    "CONFIDENTIAL_GRANTS": "HELD_PRIVATELY_BY_FOUNDER_NOT_SHARED",
+    "independently_inspected": false
+  },
+  "scope": {
+    "source_files_captured": 66,
+    "whole_repository_audit": false,
+    "source_fetches_are_not_runtime_tests": true,
+    "product_implementation": false
+  },
+  "source_records": [
+    {
+      "repo": "OpenWhispr/openwhispr",
+      "requested": "OpenWhispr/openwhispr",
+      "sha": "e4280ada144f04f20dad0bd32eaf22272f9c77b8",
+      "license": "MIT",
+      "files": [
+        {
+          "path": "LICENSE",
+          "blob_sha": "96cbe9720e34c13191bda9c9704e1353c0760dc7",
+          "sha256": "ecf1a12d3dc51085d2f3a720dc177c7da3cd075ea3fadcc6a1b719fb44ed30e0",
+          "bytes": 1071,
+          "lines": 21,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/LICENSE"
+        },
+        {
+          "path": "package.json",
+          "blob_sha": "0fcf7f2d2523536df6258565e9b79d90f08142c9",
+          "sha256": "619c02914ef606ccc2d5ef02e128419ca7918ecbc13840e103fea9d26d57510d",
+          "bytes": 13296,
+          "lines": 236,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/package.json"
+        },
+        {
+          "path": "src/helpers/clipboard.js",
+          "blob_sha": "aba17dbf8f5798ef6822c6abb4ce409586ba0b83",
+          "sha256": "46e45f06aebae62230928fb83304ebc5ea8700c030caa4aa47b586c639c6382b",
+          "bytes": 89396,
+          "lines": 2532,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/src/helpers/clipboard.js"
+        },
+        {
+          "path": "src/helpers/windowsPasteTarget.js",
+          "blob_sha": "f6ad812a30c951a4aa9efd306c8e1796d22b9fa0",
+          "sha256": "dc710017c902366b6d45f20b5b89a0c152ddbda617890b1d816b69b43aea9648",
+          "bytes": 1506,
+          "lines": 36,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/src/helpers/windowsPasteTarget.js"
+        },
+        {
+          "path": "resources/windows-fast-paste.c",
+          "blob_sha": "e542c1229a25c8a26d4e9b33a0d8f4eb39b9f3be",
+          "sha256": "2c09e78e7f4d29c41f4d18b23715cf7d1382795b09cc741f9ab73eb08e32256c",
+          "bytes": 12186,
+          "lines": 368,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/resources/windows-fast-paste.c"
+        },
+        {
+          "path": "src/helpers/recordingGuard.js",
+          "blob_sha": "4fc4b8f89ebde252d715d93741506699a8371d62",
+          "sha256": "a9b60c5b821cb99346b2060959f163ff617fb2e55e9e8d7ddbaedffe2517eb6d",
+          "bytes": 761,
+          "lines": 14,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/src/helpers/recordingGuard.js"
+        },
+        {
+          "path": "src/helpers/hotkeyManager.js",
+          "blob_sha": "62ce31c836c9e6f9fa7864c96d6dae689a30d8b7",
+          "sha256": "d9981604f49f58176b08952e42a848b5a8c5aab0e7e9d82f8289f67124f4d877",
+          "bytes": 63913,
+          "lines": 1747,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/src/helpers/hotkeyManager.js"
+        },
+        {
+          "path": "src/helpers/screenContextCapture.js",
+          "blob_sha": "dc38fcd7a45a136a0646b1c2a003b746c0054655",
+          "sha256": "04652e55098ef48fd185e5213d743148f689c338a626875c3571d84d0d170fb9",
+          "bytes": 4957,
+          "lines": 123,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/src/helpers/screenContextCapture.js"
+        },
+        {
+          "path": "src/helpers/hotkeyRepeatGate.js",
+          "blob_sha": "56971a96d1f765115c749975be2d0666b0661160",
+          "sha256": "4fe4433500a216efb46adc0b09cdab347e17795da401dcb28c90aed1d4ea7e4e",
+          "bytes": 658,
+          "lines": 18,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/src/helpers/hotkeyRepeatGate.js"
+        },
+        {
+          "path": "test/helpers/clipboardRestore.test.js",
+          "blob_sha": "f08b004c120b16064fcc0fd942fce2745e638eb6",
+          "sha256": "1689cea18616ad27422048f336ef668dd3e041841089ebaa7c0f04ecb4f76c63",
+          "bytes": 66066,
+          "lines": 1812,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/test/helpers/clipboardRestore.test.js"
+        },
+        {
+          "path": "test/helpers/windowsPasteTarget.test.js",
+          "blob_sha": "698d72bb5b25980e4677f504419b1aaf586ed213",
+          "sha256": "14e9ed9ebd299c13c689baea2fb450d7e254c2c2fd12943e8ddebe651f6bdb43",
+          "bytes": 2677,
+          "lines": 81,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/test/helpers/windowsPasteTarget.test.js"
+        },
+        {
+          "path": "test/helpers/captureDictationTargetIpc.test.js",
+          "blob_sha": "e467c2b7afdc22a5ecb588dfab37b38ff89a912f",
+          "sha256": "85e7b178f25e79a154e12980d70e99d8b372fca63751f5939721ae835ae17a68",
+          "bytes": 3529,
+          "lines": 116,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/test/helpers/captureDictationTargetIpc.test.js"
+        },
+        {
+          "path": "test/helpers/ipcPasteOutcome.test.js",
+          "blob_sha": "c65a3ddf681d28351fb118e44c2745ebba0ad1fa",
+          "sha256": "252adb03083dcadab71bc5f2cc676c6e9c134cb8a3345872d1e1f9d9a17f9bbc",
+          "bytes": 9104,
+          "lines": 288,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/test/helpers/ipcPasteOutcome.test.js"
+        },
+        {
+          "path": "test/helpers/useAudioRecordingStreamingCancel.test.js",
+          "blob_sha": "7d8437c0cb30b267a540170d5cc3288e6e7982c6",
+          "sha256": "600a59d494df9f485eeaf0775d94833041c7f680b324c87f14387c7d23ed8469",
+          "bytes": 11046,
+          "lines": 351,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/test/helpers/useAudioRecordingStreamingCancel.test.js"
+        },
+        {
+          "path": "src/helpers/audioManager.js",
+          "blob_sha": "f60c8f461a7bf248251ae8e06cae16973d29fb59",
+          "sha256": "acf08e8bc423bc1f7bcff21317215bcdcf45fc43d1dbc4e95c82abb5aacb8504",
+          "bytes": 252555,
+          "lines": 6577,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/src/helpers/audioManager.js"
+        },
+        {
+          "path": "src/helpers/ipcHandlers.js",
+          "blob_sha": "34017391549473318f235e3c7d256f25a1ac0684",
+          "sha256": "708974641a3dd12ebd9fde7ed7ffa7c53d54f24c49a30037cea360085ced5cac",
+          "bytes": 511139,
+          "lines": 13330,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/src/helpers/ipcHandlers.js"
+        },
+        {
+          "path": "src/utils/windowContext.ts",
+          "blob_sha": "91c60582cf327ec61cb3f7c1e0ba3a4aff2f52a2",
+          "sha256": "d27720039b831ecee2072e4d769db50ea9b28f8ed82d609821ef36599b218c18",
+          "bytes": 440,
+          "lines": 10,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/src/utils/windowContext.ts"
+        },
+        {
+          "path": "src/hooks/useAudioRecording.js",
+          "blob_sha": "61740ada757d7dbbd27b3ee6bd565c5a235e6ba6",
+          "sha256": "70387b078d7d0a75391980589fdfa9be635a9f77ff5d6a50946bff959b3acb96",
+          "bytes": 50134,
+          "lines": 1223,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/src/hooks/useAudioRecording.js"
+        },
+        {
+          "path": "test/helpers/recordingGuard.test.js",
+          "blob_sha": "65369a62f88eb82d9dbe38f5d30d2dc725271ad6",
+          "sha256": "4c1139c93167f0885cc59e9c7e04db936cdc0a9ed5145ad8c7d49acbdad3ae56",
+          "bytes": 1540,
+          "lines": 47,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/test/helpers/recordingGuard.test.js"
+        },
+        {
+          "path": "test/helpers/hotkeyRepeatGate.test.js",
+          "blob_sha": "23187b3599b9f08c6c82f58faa676ce696731cfc",
+          "sha256": "6a0769a73ca5ab0fc833fa79999b6bb3b1d16021460021072cbbbea9a9752a36",
+          "bytes": 1076,
+          "lines": 32,
+          "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/test/helpers/hotkeyRepeatGate.test.js"
+        }
+      ]
+    },
+    {
+      "repo": "cjpais/Handy",
+      "requested": "cjpais/Handy",
+      "sha": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+      "license": "MIT",
+      "files": [
+        {
+          "path": "LICENSE",
+          "blob_sha": "ff8dfab0159b41263ccc3c50da54007ca6752a22",
+          "sha256": "3564e8ec14055ed54f896e8660a62627ea4fc3a1b64f72b798593df00e1f4edc",
+          "bytes": 1064,
+          "lines": 22,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/LICENSE"
+        },
+        {
+          "path": "src-tauri/Cargo.toml",
+          "blob_sha": "ef04f994fed4638f2d37ef6ca9595fd8f38e1537",
+          "sha256": "4af073b786101021cd9e90ff314eabd88d2c3bbb7148763deb9d960f0da62623",
+          "bytes": 7309,
+          "lines": 188,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/Cargo.toml"
+        },
+        {
+          "path": "src-tauri/Cargo.lock",
+          "blob_sha": "5b3c17200d8429b12c76a1252fa4298b6576a663",
+          "sha256": "e3e3b37013789f722518486160ee3ca1b34ffa0a790340a1f59bb92ac7882767",
+          "bytes": 222566,
+          "lines": 9156,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/Cargo.lock"
+        },
+        {
+          "path": "src-tauri/src/clipboard.rs",
+          "blob_sha": "6beba07856431edd066b9a963c53060e2ae3a555",
+          "sha256": "073e01aeb70c02b8fc23e1fa9af01e448305c1fa2c32e3311dcc12f6c2570f17",
+          "bytes": 35876,
+          "lines": 1016,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/clipboard.rs"
+        },
+        {
+          "path": "src-tauri/src/paste_tx/mod.rs",
+          "blob_sha": "71fdc5524eba12bf1a703302bbdd2a69ff7c3537",
+          "sha256": "2d70bc1ff915c899c02ad981649a4b4c9eb4e547a74066b6b5e679ca371d2c44",
+          "bytes": 11071,
+          "lines": 284,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/paste_tx/mod.rs"
+        },
+        {
+          "path": "src-tauri/src/paste_tx/windows.rs",
+          "blob_sha": "55f13bf52044a485afa4fae72fa776b4facdff44",
+          "sha256": "11d975d768b06070c70f6a4026d5139f30f49940c13ee1414ffa53906e6ec1ed",
+          "bytes": 22234,
+          "lines": 625,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/paste_tx/windows.rs"
+        },
+        {
+          "path": "src-tauri/src/paste_tx/macos.rs",
+          "blob_sha": "0c4113b676dfaa4aabbcab5a6aa639fd6f8496d1",
+          "sha256": "a4f9ebd9011f271b93c49486aaf5456e1fa17cf68430d6b0d4619954615ad38b",
+          "bytes": 13036,
+          "lines": 337,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/paste_tx/macos.rs"
+        },
+        {
+          "path": "src-tauri/src/shortcut/handler.rs",
+          "blob_sha": "3365b3fbe534a18fbe8088479fbacdd90d30e66a",
+          "sha256": "49358bf04c25a005c7fa1dcd50dc5ef0e0328defc799300d284fb8019af3567a",
+          "bytes": 2614,
+          "lines": 77,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/shortcut/handler.rs"
+        },
+        {
+          "path": "src-tauri/src/shortcut/handy_keys.rs",
+          "blob_sha": "a3131cbd50b84b04ac08760c86f233673b420bc1",
+          "sha256": "72cb6456be6acbc82df4f9d48b132df75a8b4ac808ae4301e2b33a5786f47fa0",
+          "bytes": 19344,
+          "lines": 530,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/shortcut/handy_keys.rs"
+        },
+        {
+          "path": "src-tauri/src/shortcut/mod.rs",
+          "blob_sha": "d4a8e00dbf73e7beb06e9df38efd81a8a256bed3",
+          "sha256": "69050d1f0d47978e9ba8d26a6f5d551535fa2c0933ba534720bf4839c036db69",
+          "bytes": 50337,
+          "lines": 1517,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/shortcut/mod.rs"
+        },
+        {
+          "path": "src-tauri/src/actions.rs",
+          "blob_sha": "a159841e2880f70cc9f611b5b646491d5633191f",
+          "sha256": "3d725dff3d5118f8e98c37413d5d3269cdaaf65a2c2ab16d092999836f345cc9",
+          "bytes": 38547,
+          "lines": 964,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/actions.rs"
+        },
+        {
+          "path": "src-tauri/src/managers/audio.rs",
+          "blob_sha": "077be9a84646f74c88729e7c6ed818f4c29791ce",
+          "sha256": "401b4b924cb986095a79f7be7d58de850e4322b0b186660273277b1cc83f3f68",
+          "bytes": 52119,
+          "lines": 1343,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/managers/audio.rs"
+        },
+        {
+          "path": "src-tauri/src/managers/transcription.rs",
+          "blob_sha": "ce666b53cb60b362e3ccbd7bd02bd7d31f33721b",
+          "sha256": "925d1a38a194f5b2db2128f79eead35d58ee81959184f8675a7999bd33cdb534",
+          "bytes": 83223,
+          "lines": 2234,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/managers/transcription.rs"
+        },
+        {
+          "path": "src-tauri/src/managers/transcription/policy.rs",
+          "blob_sha": "82bd83ee3e2cf9e0147123af456a9027ee1c4cad",
+          "sha256": "e9c1368e546db587b580eb1518e078d4f398c9b57a019f48a498d88874a652ff",
+          "bytes": 2302,
+          "lines": 70,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/managers/transcription/policy.rs"
+        },
+        {
+          "path": "src-tauri/src/transcription_coordinator.rs",
+          "blob_sha": "a35bff37eaa6bd3f2fe9dce4403d96746be36e3c",
+          "sha256": "4b18ccaa6aa0a1c0f69c08e7aea4acf9b3bbe394c11f3f07851cca8944bfdb08",
+          "bytes": 61313,
+          "lines": 1618,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/transcription_coordinator.rs"
+        },
+        {
+          "path": "src-tauri/src/input.rs",
+          "blob_sha": "f479f8b0e145215e7fecab29de1e6cf10fe749b7",
+          "sha256": "9101e683c92d3a48de64b9c39b1f24943ee9993ced1970488371e422a5861844",
+          "bytes": 11071,
+          "lines": 275,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/input.rs"
+        },
+        {
+          "path": "src-tauri/src/settings.rs",
+          "blob_sha": "eff41ea7a0fdea057ccb6f97d4abe72fc30980f8",
+          "sha256": "b1a69ef005111bab1e3a32b483ddc980f2098ce24268aef5b6809677bdffd83a",
+          "bytes": 68340,
+          "lines": 1845,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/settings.rs"
+        },
+        {
+          "path": "src-tauri/src/audio_toolkit/audio/sink.rs",
+          "blob_sha": "eefa619e2abd9dd0c90782927c245ab08c2c5b48",
+          "sha256": "25137ab7abf6b7d170fa0999dc01c8caa8c9fb0a0c5ebb006cf53254106d1ef9",
+          "bytes": 6662,
+          "lines": 198,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/audio_toolkit/audio/sink.rs"
+        },
+        {
+          "path": "src-tauri/src/engine_supervisor/worker.rs",
+          "blob_sha": "6a9a15a1dd41512d653a5ad3a3ea016eed3daa4f",
+          "sha256": "7287133dd398122e28c5c159a5e348bac97881553654d770f916549adc9579dc",
+          "bytes": 17489,
+          "lines": 480,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/engine_supervisor/worker.rs"
+        },
+        {
+          "path": "src-tauri/src/engine_supervisor/protocol.rs",
+          "blob_sha": "cb8fb8f5321803d0b56432de78ca2665f3f14759",
+          "sha256": "9ac42e3e3aa9aea156898124a1aa66350742660465fa32054c0f6bd90d6375e5",
+          "bytes": 10491,
+          "lines": 315,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/engine_supervisor/protocol.rs"
+        },
+        {
+          "path": "src-tauri/src/audio_toolkit/audio/sink/tests.rs",
+          "blob_sha": "49afb502d10529b39b2fbc71c64b9de879754ec2",
+          "sha256": "3a4cf1e3a0f86bc2504bab116233f6201d7d3cf8970d3319850f205bc0d8813c",
+          "bytes": 4470,
+          "lines": 153,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/audio_toolkit/audio/sink/tests.rs"
+        },
+        {
+          "path": "src-tauri/src/engine_supervisor/mod.rs",
+          "blob_sha": "0d733e8a89a7b7d11143d250508b07b3def7ece1",
+          "sha256": "7823cee371f8c87ae31da08b7231336b75b23dffbd168925b73f46eb531e50f8",
+          "bytes": 2220,
+          "lines": 54,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/engine_supervisor/mod.rs"
+        },
+        {
+          "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+          "blob_sha": "713b9a57966ac41fde944be55890e844a89913a1",
+          "sha256": "ca04fd37091927931e57b786b2c2c0432289d2e61d316d2e949178dfe5228c7e",
+          "bytes": 73764,
+          "lines": 2019,
+          "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/engine_supervisor/supervisor.rs"
+        }
+      ]
+    },
+    {
+      "repo": "zachlatta/freeflow",
+      "requested": "zachlatta/freeflow",
+      "sha": "797a3f32e6b525b8d942512db2801466d3a651f7",
+      "license": "MIT",
+      "files": [
+        {
+          "path": "LICENSE",
+          "blob_sha": "6a4543917887700ef788d9b9f7250e7cc1960854",
+          "sha256": "121e01b10b43ece3c10ce3eaf5db22915326aad843c3a271a834660096467add",
+          "bytes": 1067,
+          "lines": 22,
+          "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/LICENSE"
+        },
+        {
+          "path": "Makefile",
+          "blob_sha": "e13bc560ff54aaba07ed8d6706a7b69db5bb3950",
+          "sha256": "a9f38b9b9c83fbf69b5e056e950a1016838c848725213b51e56b89e8507c2189",
+          "bytes": 7160,
+          "lines": 178,
+          "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/Makefile"
+        },
+        {
+          "path": "Sources/AppContextService.swift",
+          "blob_sha": "aedcc628fae1f29055b7bc11c6ff43f6d01d9060",
+          "sha256": "a28a5e7c23d61e2e2b4e7b7f1f7c6017bcdbe9c81d01a793d9fdb04025dba99b",
+          "bytes": 31364,
+          "lines": 807,
+          "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/Sources/AppContextService.swift"
+        },
+        {
+          "path": "Sources/AudioRecorder.swift",
+          "blob_sha": "987abfbc2667093614c1820ca6b9cf4dbf7c7895",
+          "sha256": "525231bad982a84fc8dcd4fb46128a959fd0c1016ba2b7ee00103b3eaeb3e834",
+          "bytes": 35200,
+          "lines": 905,
+          "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/Sources/AudioRecorder.swift"
+        },
+        {
+          "path": "Sources/ShortcutCore/DictationShortcutSessionController.swift",
+          "blob_sha": "e71ea4a1cb2e8a5876b32bb68904ba21a12a490f",
+          "sha256": "47a91459ad2aa0b6d40d15241fb5a24e1a9ffb34902319b3505e047aa91498f3",
+          "bytes": 2463,
+          "lines": 86,
+          "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/Sources/ShortcutCore/DictationShortcutSessionController.swift"
+        },
+        {
+          "path": "Sources/ContextInferenceFailure.swift",
+          "blob_sha": "6f265f12cb1c38f81b7a7a7458cb9ed0555658b7",
+          "sha256": "548e2896ccae7a0bae176cc3602011c02f8b5541ea02b1143ce38ccf6cbe4f16",
+          "bytes": 2653,
+          "lines": 52,
+          "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/Sources/ContextInferenceFailure.swift"
+        },
+        {
+          "path": "Sources/TranscriptionService.swift",
+          "blob_sha": "291f5e875c68c6b8ec9588a5d3bb6d8dd4e5c9ef",
+          "sha256": "5932353352f527c44f34a80ff52bea9a8d08723d65e246f02c4c4e1effa7e434",
+          "bytes": 17235,
+          "lines": 455,
+          "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/Sources/TranscriptionService.swift"
+        },
+        {
+          "path": "Sources/PostProcessingService.swift",
+          "blob_sha": "eed3cfdfb9507e2afc5931a9a0a315506ffc6b87",
+          "sha256": "a3ae1c6c2da2d694962383313a0a014626be2cff39f7e5e5f4923f3d09605261",
+          "bytes": 41322,
+          "lines": 918,
+          "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/Sources/PostProcessingService.swift"
+        },
+        {
+          "path": "Sources/AppState.swift",
+          "blob_sha": "204bc923ef5e7e55174b9c4b6835b1a0c1d7fdd1",
+          "sha256": "54688deb78d7914fe2dbf378f6e608e221391340a9c7382e186aef053d49a430",
+          "bytes": 147087,
+          "lines": 3451,
+          "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/Sources/AppState.swift"
+        },
+        {
+          "path": "Tests/AppContextServiceTests.swift",
+          "blob_sha": "dafa0d10fc2394f59df70ed8825eb904bb0cbbb4",
+          "sha256": "86d73ccdee302e3413655085534142e8b06a60ab53d0f82955e74cfcde6cb13a",
+          "bytes": 10089,
+          "lines": 190,
+          "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/Tests/AppContextServiceTests.swift"
+        },
+        {
+          "path": "Tests/ShortcutCoreTests.swift",
+          "blob_sha": "17ca65fbf4e192007f5e2e813c30f8e381220643",
+          "sha256": "28c829f169b400a5cfa802e30fdf4751a542fe2af9d58dab35ce9d11a2189854",
+          "bytes": 14725,
+          "lines": 348,
+          "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/Tests/ShortcutCoreTests.swift"
+        }
+      ]
+    },
+    {
+      "repo": "Beingpax/VoiceInk",
+      "requested": "Beingpax/VoiceInk",
+      "sha": "22e5ec5479b712797c3b338fcb875961e58800b6",
+      "license": "NOASSERTION",
+      "files": [
+        {
+          "path": "LICENSE",
+          "blob_sha": "edf3f3bb269575c0c3b485b51a38bbfbb76abcd2",
+          "sha256": "ffc4047c35e2601b4eb76e810b06d5d9754104e8f0e9b057c8a885fb8c7d4776",
+          "bytes": 1442,
+          "lines": 29,
+          "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/LICENSE"
+        },
+        {
+          "path": "VoiceInk.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+          "blob_sha": "eda0ebe6a814b53df1ed187c4ccf3197f7e17c3d",
+          "sha256": "bac62cbef3d781de153afc2623d86bc520b1fce5aa73727a747498792c81efdd",
+          "bytes": 7693,
+          "lines": 257,
+          "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/VoiceInk.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+        },
+        {
+          "path": "Tests/VoiceInkTests/AutoLearnAIReviewerTests.swift",
+          "blob_sha": "40dbbf1d8d8b676938dc91e40cb9bd4073132462",
+          "sha256": "98fc75288efe189936efd055cde07c58a44daa97aa7de1c3fa3f7805f1eaed18",
+          "bytes": 1403,
+          "lines": 42,
+          "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/Tests/VoiceInkTests/AutoLearnAIReviewerTests.swift"
+        },
+        {
+          "path": "VoiceInk/Features/Recording/Workflows/TranscriptionPipeline.swift",
+          "blob_sha": "9729654cc8eafbb96119df19f49194568b4d5117",
+          "sha256": "c1c91e8e0dd39659275345860173816673c9a5dff5bcd6a76e7cc80e04435902",
+          "bytes": 13441,
+          "lines": 307,
+          "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/VoiceInk/Features/Recording/Workflows/TranscriptionPipeline.swift"
+        },
+        {
+          "path": "VoiceInk/Features/Recording/Workflows/TranscriptionDelivery.swift",
+          "blob_sha": "2e0644e83e01a0dac27dc50fd3107e09f3611049",
+          "sha256": "3132c9ba9f0ce7ee9b7215f7d9d39f94f1ff5b554abf6a1dbb9d15ffda87606f",
+          "bytes": 7647,
+          "lines": 202,
+          "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/VoiceInk/Features/Recording/Workflows/TranscriptionDelivery.swift"
+        },
+        {
+          "path": "VoiceInk/Features/Recording/Context/RecordingContextSnapshot.swift",
+          "blob_sha": "8760850d8f0b12e8850afa86f5d6d605b3a96fb9",
+          "sha256": "7ffce7ec67267c91c4ed349203ef10320070a62b164c9e6ace146d6301b4f748",
+          "bytes": 1865,
+          "lines": 57,
+          "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/VoiceInk/Features/Recording/Context/RecordingContextSnapshot.swift"
+        },
+        {
+          "path": "VoiceInk/Infrastructure/SystemIntegration/Paste/CursorPaster.swift",
+          "blob_sha": "1debcc3daea4f2ae026515067c7929928ba477e3",
+          "sha256": "fc8ec048ddbdd54f2b0f32c381e7795ada20719b7cbcf66b690da92831b7ab3c",
+          "bytes": 12636,
+          "lines": 324,
+          "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/VoiceInk/Infrastructure/SystemIntegration/Paste/CursorPaster.swift"
+        },
+        {
+          "path": "VoiceInk/Infrastructure/SystemIntegration/Paste/ClipboardManager.swift",
+          "blob_sha": "b8364769e53993df47de15ea1af3089684ea3ba6",
+          "sha256": "835cbab608b289d96a2caca1017e4d73cce02d0f2f1bdd21c04629f2db36a308",
+          "bytes": 2641,
+          "lines": 77,
+          "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/VoiceInk/Infrastructure/SystemIntegration/Paste/ClipboardManager.swift"
+        },
+        {
+          "path": "VoiceInk/Infrastructure/SystemIntegration/Paste/DirectTextTyper.swift",
+          "blob_sha": "b68e3170ac67729f58f33ff894328444c7a4082c",
+          "sha256": "f8268aaf1b7af6cc9d68b9cde7e7d9d6771cd5e79053d33d7caa04d0a5289d57",
+          "bytes": 4678,
+          "lines": 113,
+          "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/VoiceInk/Infrastructure/SystemIntegration/Paste/DirectTextTyper.swift"
+        },
+        {
+          "path": "VoiceInk/Infrastructure/SystemIntegration/Accessibility/SelectedTextService.swift",
+          "blob_sha": "1420109fba837035fd1d8c49cfd72e390e1c08c5",
+          "sha256": "ea865f1720e766c0deefa4c22e8f92fdb13905362978e47839cb7e3e4d2fe0e5",
+          "bytes": 1180,
+          "lines": 36,
+          "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/VoiceInk/Infrastructure/SystemIntegration/Accessibility/SelectedTextService.swift"
+        },
+        {
+          "path": "VoiceInk/Infrastructure/SystemIntegration/Context/ActiveWindowService.swift",
+          "blob_sha": "825358c9f077a50bcd93f62b06c04ad4e860f2bf",
+          "sha256": "3d0e0d82f77f97544099133f5a35bc95e1888fcb4467f45df2a3fe80ed54320c",
+          "bytes": 2597,
+          "lines": 81,
+          "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/VoiceInk/Infrastructure/SystemIntegration/Context/ActiveWindowService.swift"
+        },
+        {
+          "path": "VoiceInk/Features/Recording/Streaming/StreamingTranscriptionService.swift",
+          "blob_sha": "2443f628c8fdc9c7eea6b0ec6e845d76f2c3551c",
+          "sha256": "b5494a43dff9ad501d77d5aa0e9fcda9a75b7f9f1bbfeb1b7757c39e837b4d57",
+          "bytes": 18950,
+          "lines": 507,
+          "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/VoiceInk/Features/Recording/Streaming/StreamingTranscriptionService.swift"
+        }
+      ]
+    }
+  ],
+  "additional_published_sources": [
+    {
+      "name": "handy-recorder",
+      "version": "0.1.0",
+      "url": "https://static.crates.io/crates/handy-recorder/handy-recorder-0.1.0.crate",
+      "sha256": "4a734d6d16eb8eb485548d75f383fa0c09d65b037a20e648c19730860f7a8a3f",
+      "expected_sha256": "4a734d6d16eb8eb485548d75f383fa0c09d65b037a20e648c19730860f7a8a3f",
+      "checksum_matches": true,
+      "compressed_bytes": 66867,
+      "files": [
+        {
+          "path": "handy-recorder-0.1.0/.cargo_vcs_info.json",
+          "bytes": 115,
+          "sha256": "27e947de7b4356b943d137c184262ebe0b11fdd5b4714d04d5453000e51a4949"
+        },
+        {
+          "path": "handy-recorder-0.1.0/Cargo.lock",
+          "bytes": 28865,
+          "sha256": "0a7e6614d6a350dee54c4937a5d7953caa88d7f7967512cfe495dfbfbc981cbd"
+        },
+        {
+          "path": "handy-recorder-0.1.0/Cargo.toml",
+          "bytes": 2542,
+          "sha256": "c14cd1cf3d4ccab666025d74bc9db9f740494fda96e63cdf126830804f7184a6"
+        },
+        {
+          "path": "handy-recorder-0.1.0/Cargo.toml.orig",
+          "bytes": 2343,
+          "sha256": "caf5a47a717530e30b1a15b5cd45dbff12feee1a667703bbf3227cd3a27b5851"
+        },
+        {
+          "path": "handy-recorder-0.1.0/LICENSE",
+          "bytes": 1071,
+          "sha256": "7bdc9173edfab31d76a0ceaad5ad5b5c1fd2ceeb31c7073ffde997b39ab6e692"
+        },
+        {
+          "path": "handy-recorder-0.1.0/README.md",
+          "bytes": 1854,
+          "sha256": "8588cf35bce8df3235cbbc2b0b8144e52b0d67cb5eaa11c7f5694597b5e11169"
+        },
+        {
+          "path": "handy-recorder-0.1.0/examples/list_devices.rs",
+          "bytes": 700,
+          "sha256": "eb34e2d6740944a63757578be2a2872bc63c487e3926978b1909d67f977a3efc"
+        },
+        {
+          "path": "handy-recorder-0.1.0/examples/push_to_talk.rs",
+          "bytes": 4770,
+          "sha256": "9db62d8de7eeea9d12fe36df46c2de6183ea151ee164b765ecbb9f63da78f3e6"
+        },
+        {
+          "path": "handy-recorder-0.1.0/examples/record.rs",
+          "bytes": 1339,
+          "sha256": "dc23e3417bbeb35e0e775e50674863678c98c9d3a3be893f7262192c3c5b267c"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/backend/cpal/error.rs",
+          "bytes": 10036,
+          "sha256": "eb8528cee883dbf643c922f8c3b7121536bbeb4a0e95d398ad52e34205fd39ac"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/backend/cpal/mod.rs",
+          "bytes": 16949,
+          "sha256": "d51524a49bc5d1103a71a297e32459296cdfac4d10ca03b074fff849c50bc34f"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/backend/cpal/pulse.rs",
+          "bytes": 5342,
+          "sha256": "98e6dd06f46ff8b5c5c8e4ba34f4f97bc1bf2735926b1feaa7bbbe2f643f2c8e"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/backend/fake.rs",
+          "bytes": 8114,
+          "sha256": "38d2f0d860f2f34b83915b1a215ca37ff6558a412408dddc9f6a8deadc512b24"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/backend/headset_macos.rs",
+          "bytes": 6058,
+          "sha256": "229da72989bdfb63f635116ca9bdddd7c9bf2218bbb69bded2cd9e6231e1eacf"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/backend/mod.rs",
+          "bytes": 5372,
+          "sha256": "776081152b328019f890d3e75b0e68cb8fa3cde84edf334368b303ea9d9c94ad"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/backend/permission.rs",
+          "bytes": 2935,
+          "sha256": "73d0d33586edd3a0b24f27303202b2d2795f60b91dc253d6d9dd56563f08722b"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/capture/delivery.rs",
+          "bytes": 19039,
+          "sha256": "a428c7817d8c26d4eae0800e94e3886dc3993ac80cc2110c0907cf2b03f6d714"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/capture/engine.rs",
+          "bytes": 32663,
+          "sha256": "e52410c9618cac2aa1e7c4730bc9f0bd7a9dc74dfe69b86f703f630dbbfac8c7"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/capture/mod.rs",
+          "bytes": 1420,
+          "sha256": "b6b50cc87a308f74dd89587f87107fbdb1f34da3893a979f32dbd3957a9b91f6"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/capture/resampler.rs",
+          "bytes": 15138,
+          "sha256": "7c484e7a755de3bb9ad7d629c7fc91a36974fa0a0d22421f780abd170fa77bb9"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/capture/transport/tests.rs",
+          "bytes": 3293,
+          "sha256": "1abebcaa895b0d8b8d9946a8326f1f044ee3d98ea570a18d06c8feed96d6d4d7"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/capture/transport.rs",
+          "bytes": 5282,
+          "sha256": "4fca2cd3151428fcff5a00a77b1a9d417c81e5d8f25e9b2ca2cbd86164c73080"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/capture/watchdog.rs",
+          "bytes": 10515,
+          "sha256": "149bbe2cfafe7dc1e4d10f95e14da3ed109661182faabdafeea436708c79c54f"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/device.rs",
+          "bytes": 1535,
+          "sha256": "9b5cb0063b5492d1e5bea97a83b3536259f84a76692a4e43bedf6cc6e94eae4f"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/error.rs",
+          "bytes": 8792,
+          "sha256": "06989c80a9aaa94b92f93f7f65d0013db06358a8c398d1c89e236e2bda7cb5b0"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/lib.rs",
+          "bytes": 6235,
+          "sha256": "cd2569b044f5aefa2ca8a7164e465c18469d577b30a0f5fe37c78158a8c01d8b"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/sink.rs",
+          "bytes": 2252,
+          "sha256": "b134415aa3d1dd83964d420bff3fadab65c7c4ddd8debec5cd8053b8e8db81ad"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/testing.rs",
+          "bytes": 3900,
+          "sha256": "715e6d792e136e7030a4ecf65bfdc05cf84ef5fb4c5a60095788468d13d34b33"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/tests/failures.rs",
+          "bytes": 32617,
+          "sha256": "9b3019b1dc175d805e3ec9fb7efef0b9691cd473a5c1f5cae9ebdd4d3b94e1d3"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/tests/formats.rs",
+          "bytes": 6471,
+          "sha256": "7d83bd1f84501620ceabdc4c835a32195acbd1d178da5a66872a1aacbf93d7bd"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/tests/lifecycle.rs",
+          "bytes": 9617,
+          "sha256": "0483fe9d794649935c6f5a58b3ce17967c55adf1a6c161ee3c9d5dedf798e47b"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/tests/mod.rs",
+          "bytes": 107,
+          "sha256": "e54d65af203931d7c8ba66b5d367db804f97dbc6cc3454b185130c04c0c7eed1"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/tests/support.rs",
+          "bytes": 5860,
+          "sha256": "cf84ee7fb8d035399b1474d3c9ea35f44b1869fd3633b95c1528a3cc22def220"
+        },
+        {
+          "path": "handy-recorder-0.1.0/src/types.rs",
+          "bytes": 2333,
+          "sha256": "284b540a3195ad47063ab2859c8339124f2127ee56eaa355ed2c4608335ca4c8"
+        }
+      ],
+      "method": "SOURCE_VERIFIED",
+      "runtime": "NOT_RUN"
+    },
+    {
+      "name": "handy-keys",
+      "version": "0.3.4",
+      "url": "https://static.crates.io/crates/handy-keys/handy-keys-0.3.4.crate",
+      "sha256": "1a007b6c921d3273fd88aac45b516eee01e5a9dc2d76bb6f1a981500cc0d818a",
+      "expected_sha256": "1a007b6c921d3273fd88aac45b516eee01e5a9dc2d76bb6f1a981500cc0d818a",
+      "checksum_matches": true,
+      "compressed_bytes": 82296,
+      "files": [
+        {
+          "path": "handy-keys-0.3.4/.cargo_vcs_info.json",
+          "bytes": 94,
+          "sha256": "235ab55e1385f649f136d710889750b1b768c038bcb1a92512ae7349cc063b7d"
+        },
+        {
+          "path": "handy-keys-0.3.4/.gitignore",
+          "bytes": 166,
+          "sha256": "88707cda7ba4226eda3ffa91d8284f1a0d12b827f06fb9bc48425cc0d4af04af"
+        },
+        {
+          "path": "handy-keys-0.3.4/Cargo.lock",
+          "bytes": 12829,
+          "sha256": "a199e689d85b6bf0fc7ba5c235cc0348bd8ed22e5946ab750d3e26af0ca329bc"
+        },
+        {
+          "path": "handy-keys-0.3.4/Cargo.toml",
+          "bytes": 2923,
+          "sha256": "1dea4b09dd340d5e2b70a558c554f18369a28f26e11b50f5d12181869cb13c56"
+        },
+        {
+          "path": "handy-keys-0.3.4/Cargo.toml.orig",
+          "bytes": 2156,
+          "sha256": "7673661171cb589e5a0d44d29621298b569f05544fed96cd289276508f063245"
+        },
+        {
+          "path": "handy-keys-0.3.4/LICENSE",
+          "bytes": 1071,
+          "sha256": "7bdc9173edfab31d76a0ceaad5ad5b5c1fd2ceeb31c7073ffde997b39ab6e692"
+        },
+        {
+          "path": "handy-keys-0.3.4/README.md",
+          "bytes": 5532,
+          "sha256": "02ac6e66f21571332a9d17318097c3751e730b2fdb461fbd5b918c7d38e3cfbe"
+        },
+        {
+          "path": "handy-keys-0.3.4/TESTING.md",
+          "bytes": 2673,
+          "sha256": "162bc9bd55c9db4d0561b6bb8e4bf55d58b3654cf53271d1b7e163d29d9c8a2e"
+        },
+        {
+          "path": "handy-keys-0.3.4/examples/basic.rs",
+          "bytes": 3432,
+          "sha256": "b607ebceb07a850a0d5412baa6bd33b6532181d4c4ffbd901b53e0ca163f1689"
+        },
+        {
+          "path": "handy-keys-0.3.4/examples/diagnostic.rs",
+          "bytes": 2773,
+          "sha256": "becaee4e1ca91c82048979b251feeee2401a701e1eaacc0c37a824dd7d7c13a4"
+        },
+        {
+          "path": "handy-keys-0.3.4/examples/mask_live_check.rs",
+          "bytes": 5252,
+          "sha256": "f8f878e1edf2d5b822b2ac0acb2e902a5bf61a39d49dbb393c9d7dc0d2a86856"
+        },
+        {
+          "path": "handy-keys-0.3.4/examples/menu_mask_test.rs",
+          "bytes": 1903,
+          "sha256": "c580cae5898fe52a6e287a6c57ccc8f987c7c8f0d48f54553f65ef7b62fec203"
+        },
+        {
+          "path": "handy-keys-0.3.4/examples/record_hotkey.rs",
+          "bytes": 1567,
+          "sha256": "099b9484e64a90f93ada930e4a7ebf4ff06923da6759ca93f9e805ad7d8b9c1c"
+        },
+        {
+          "path": "handy-keys-0.3.4/scripts/check-all.sh",
+          "bytes": 1165,
+          "sha256": "98cd5ce1b687ce7910298a501d16d07a05e1a6a73efda95476148e445c4f05aa"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/error.rs",
+          "bytes": 1302,
+          "sha256": "e750eec89a6d64d96862c9a7854c24a10b9d21d03238f8860aed3095c7ad9408"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/lib.rs",
+          "bytes": 5333,
+          "sha256": "1fe4cd5ba1d0a4a750a6839779218ab5e2efd6286b0f140f6bdb55b0f3aa28d4"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/listener.rs",
+          "bytes": 6139,
+          "sha256": "b4edb42865eb2baa61f67b3ee4529a27a7b9515376ae522fc320fc635003c593"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/manager.rs",
+          "bytes": 23053,
+          "sha256": "7141c705a7adb28cc7a4865168cf8fef3dc84061d7ce3a4dee102731c0e57ef2"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/platform/linux/keycode.rs",
+          "bytes": 10660,
+          "sha256": "7c509dea6220f41468b0437a599819b45951b13416176996cdff4790af03c5b2"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/platform/linux/listener.rs",
+          "bytes": 49309,
+          "sha256": "0158f49bf93544dbd6c92228c62f184ffe9c051a97b5e454f36e5fc51979e746"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/platform/linux/mod.rs",
+          "bytes": 108,
+          "sha256": "33465fc22d0861c37dbb0a7b3f7c0abb665bd3cdcbda65c968d421fb3c54bc20"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/platform/macos/keycode.rs",
+          "bytes": 11222,
+          "sha256": "29471bb571097ce2ff469ddbd8aed26ad8b8f83f2ef006de2e4d372dfb34b63c"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/platform/macos/listener.rs",
+          "bytes": 28817,
+          "sha256": "d735e6172c3ef4f1147bad7e11bd8ed5c93b21fc667eef204cdb802d3858f999"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/platform/macos/mod.rs",
+          "bytes": 168,
+          "sha256": "943f5ab89a7d9825374510a0853c00156d199a1e61478db1c9ee87bfb543d0c7"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/platform/macos/permissions.rs",
+          "bytes": 570,
+          "sha256": "f248d6090b1b206da92151046df27eee8a9b7a5c4055c196f9cd1a20bd127152"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/platform/mod.rs",
+          "bytes": 214,
+          "sha256": "969a41f912527f84f5322d96164bfcfa13b022f695be824db4226f52e615bd22"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/platform/state.rs",
+          "bytes": 5597,
+          "sha256": "30f254ea680f804a60e4756b8de7cee2799ff0e2eeb0ddd89cc1a17eb3955974"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/platform/windows/keycode.rs",
+          "bytes": 20233,
+          "sha256": "94f71c9e8280a831abc2654a655ef0b22f19c8622c752a6b26f8185a3a69e42d"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/platform/windows/listener.rs",
+          "bytes": 43262,
+          "sha256": "39ac691ca9f7cda6bd972a1ce61d8b133bc3421b53ed6dcfbcabe28c7353aec5"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/platform/windows/mod.rs",
+          "bytes": 79,
+          "sha256": "ec8e8fbb158f186411852dffae908503adeeb6ec3c63b53f92213bc07c5c8328"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/types/hotkey.rs",
+          "bytes": 12491,
+          "sha256": "875df6b9490ba45dd4a4502b123498db5d545a5286ef87daba324d11da883036"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/types/key.rs",
+          "bytes": 21997,
+          "sha256": "17dec60f06c8eb1b613ae9ec7f1fdf43752f0a787458698f6c5a5cf037d42b3e"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/types/mod.rs",
+          "bytes": 196,
+          "sha256": "2873f98747c6729e771971b8e19110ab460875a7b369114d65e23e613d10152c"
+        },
+        {
+          "path": "handy-keys-0.3.4/src/types/modifiers.rs",
+          "bytes": 13631,
+          "sha256": "130f4da9fe438f48c793642f91616ae0bcf0579949c2ce22029db2fb19023fd1"
+        },
+        {
+          "path": "handy-keys-0.3.4/tests/macos_ipc_quiescence.rs",
+          "bytes": 4547,
+          "sha256": "a1424db51791b3eed5726643d4220dfb6e9127910ab9c45b8873536540e1f0bf"
+        },
+        {
+          "path": "handy-keys-0.3.4/tests/synthetic_input.rs",
+          "bytes": 24534,
+          "sha256": "d8d3159d8a92ef80b8b1b543ea7510f7432b25cc2c1c5ea036a7d8cad4ba89cb"
+        }
+      ],
+      "method": "SOURCE_VERIFIED",
+      "runtime": "NOT_RUN"
+    },
+    {
+      "name": "transcribe-cpp",
+      "version": "0.4.0",
+      "url": "https://static.crates.io/crates/transcribe-cpp/transcribe-cpp-0.4.0.crate",
+      "sha256": "f6cad85eeb846a7064891c8b49b92a57a0f2d4dd089104cb199608b23043555e",
+      "expected_sha256": "f6cad85eeb846a7064891c8b49b92a57a0f2d4dd089104cb199608b23043555e",
+      "checksum_matches": true,
+      "compressed_bytes": 72493,
+      "files": [
+        {
+          "path": "transcribe-cpp-0.4.0/.cargo_vcs_info.json",
+          "bytes": 122,
+          "sha256": "b7a21f793e98f99d4e6d95791272d728dffd105c818f723339c6e48a81c05c7d"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/Cargo.lock",
+          "bytes": 5573,
+          "sha256": "74bac7538660e504c6525e226e888a1083a5fe276a4245bf7b8eeb9b7ecf4b8f"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/Cargo.toml",
+          "bytes": 3024,
+          "sha256": "febc8582541478a285888b2c6e40ce4ceda69617763a41717b78fdcf7b4b5e68"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/Cargo.toml.orig",
+          "bytes": 2424,
+          "sha256": "faa06558168c9c20549bcdd9764cf6d9c4a03860c946f9ae636d778e0a85c554"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/LICENSE",
+          "bytes": 1083,
+          "sha256": "86a53633b56f6b029d3cb42158bcc7aac0cdff898aceb13e83b93e368bbc4ac6"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/README.md",
+          "bytes": 10969,
+          "sha256": "08fafadf2d02ec39da2db6ce4d59f2ac336ee983257eca5448889299c67b2dd2"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/build.rs",
+          "bytes": 2773,
+          "sha256": "7b6bad39bfe38b412cbcb09255d581dfdaa375241ac2c061b3b8e47d4c45c001"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/examples/backend-select.rs",
+          "bytes": 3133,
+          "sha256": "c5bda0d21e692a58a9a3494c2d52e611c7191130028162228c32ecc613cfe888"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/examples/batch.rs",
+          "bytes": 1360,
+          "sha256": "b9d1ef8c6670a6350c71ff301e8f0caf8253c5dce86f81a0c0e67cf3ec72b2cb"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/examples/common/mod.rs",
+          "bytes": 3039,
+          "sha256": "741ee545697363bf233d529ffbc1d90d5bfca43f4e71bbe811ff10cdeffa0981"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/examples/error-handling.rs",
+          "bytes": 3239,
+          "sha256": "1316ceececea78b8ce9278d2e782a971594e3702981a6017aacd16e79f18e6ee"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/examples/streaming.rs",
+          "bytes": 2472,
+          "sha256": "618ed2a36be77dea6f48fcdee247b9dd87d9c122bb5418ac8ba09fb764f144a8"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/examples/transcribe-file.rs",
+          "bytes": 2400,
+          "sha256": "64a07c9170748d0f376b31d4013859504a2c30a5b590388af3c239808ac18ad4"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/backend.rs",
+          "bytes": 12423,
+          "sha256": "0f49fcd38536262f42cd2e5834b5faa892e15df1d3e9d0bd654d3e4afd73367d"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/cancel.rs",
+          "bytes": 2048,
+          "sha256": "657eb3625cc67e0bbb728d8a9ea304a3c6247228ae1cac61b2693b74f7590b7a"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/diarize.rs",
+          "bytes": 6620,
+          "sha256": "02efbef5186c4c4a840b0a422e899f57af17bf5738e5fa18c89b2f54b532493f"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/error.rs",
+          "bytes": 16376,
+          "sha256": "e6533a06516335083cf75fe91c9b15834380cb030cbbde6fa0b29dc21685327e"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/family.rs",
+          "bytes": 12230,
+          "sha256": "1e27a3d036ca3deee76f9e0d521beb08c6a0a3f778e082416a38c393c6522fb4"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/langid.rs",
+          "bytes": 10559,
+          "sha256": "43e6e94c453b6db3b535a669847d287b7e52485f92189fbbdfc61eaab7a8ee9c"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/lib.rs",
+          "bytes": 4248,
+          "sha256": "564067955259655a62de92c219d1d61a6ff5035a5d5da7bf3c3604cfcd011086"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/logging.rs",
+          "bytes": 1938,
+          "sha256": "cc8cfcab906edb4f4f053d76960cf8ff4295502ca0d229a0328da90a551527f0"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/model.rs",
+          "bytes": 19417,
+          "sha256": "3b3ea3323cf2465a4add303aada51feb46124dd8f8076d08f5f1b3aa7ada8f02"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/result.rs",
+          "bytes": 6806,
+          "sha256": "95bbb6b297da7af14fc690f15a4e5d86cf82fda4e8ab1a04900699d7391ae9b1"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/session.rs",
+          "bytes": 28116,
+          "sha256": "fd3917739986edd097505a2ddf2e2b3dc7d4177378ab0a050353580d296600bb"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/streaming.rs",
+          "bytes": 4106,
+          "sha256": "1eb9f0a8a6248e2f72a4d59f1b21724078498216e199faeb425fc0c8bd0d5bbd"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/types.rs",
+          "bytes": 15656,
+          "sha256": "de346fa1fc5053c35c019b769450b15dda2be8a4db558e490307afce19bd7a20"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/vad.rs",
+          "bytes": 12445,
+          "sha256": "782ab7ce69bd8d0ddbd8744eba94864b4c570c30414b566297d72c3f930bf334"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/src/version.rs",
+          "bytes": 2863,
+          "sha256": "32de0d667e4fe424e3e3631b6771ef0f738fb3f4a761110a7d2736203effb5ed"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/backend_mask.rs",
+          "bytes": 1733,
+          "sha256": "8b745abd372e0ab634edca2371ada7c01382c4e4070f8528ee6e21f94f27c54f"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/cancel.rs",
+          "bytes": 2708,
+          "sha256": "b3cb383fdf10e1614957b1bd3169c040d76f9d519e8c5824c542551a2f50bc51"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/common/mod.rs",
+          "bytes": 7555,
+          "sha256": "b1dfae303cad7a15a6abd3c7fb2febb9ffa548588747c667423c8abedac69d8e"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/degradation.rs",
+          "bytes": 4297,
+          "sha256": "0c280750034c13be1b52650f1ea71c49a89f4292fc66ef75ca54f74cbc3579bb"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/device_select.rs",
+          "bytes": 1701,
+          "sha256": "a50d513a771b879e3ba4311d808deb4999a69e09f41add5ae50c422a99e4b60c"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/diarize.rs",
+          "bytes": 4124,
+          "sha256": "e610ea701b85b60f17d25994baeeed499c6f5e98ec42b77dfc7c5303b7f65179"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/extensions.rs",
+          "bytes": 2062,
+          "sha256": "0ed889b102fd95ca1b78ac166eec0f460a8808a3964d76841d1650bf19009a48"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/family.rs",
+          "bytes": 5875,
+          "sha256": "0d6e1088adab25a31377dcbba004fde458893c56f6a20007600250e2e50293ab"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/langid.rs",
+          "bytes": 4389,
+          "sha256": "98e8a7bb669d1f150e502ac64f171812e628855fe7085a4b80f370f210d77eb8"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/no_model.rs",
+          "bytes": 5435,
+          "sha256": "70f798e9411f4af909ac4bbc7d1e65dbda4fed849b4fb4f8783470d8ac66c849"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/prompting.rs",
+          "bytes": 3609,
+          "sha256": "22b437b175048dd10029e6d4a8263390da02488c0dca3f56052a06e83726432f"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/serde.rs",
+          "bytes": 9388,
+          "sha256": "e0f711788c02a8b8cc4f367ae7718d0ca811aee1b59017d94edd2ee1c197e981"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/streaming.rs",
+          "bytes": 12056,
+          "sha256": "38777770d94bfc81b8a7a970bec0d52bbaded6d80821038abc09abf158fcfa95"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/transcribe.rs",
+          "bytes": 10172,
+          "sha256": "91405b28869abc5677b9cc389f583ce3c83c3f8dd8463c1b1a60b84950dcceaf"
+        },
+        {
+          "path": "transcribe-cpp-0.4.0/tests/vad.rs",
+          "bytes": 1660,
+          "sha256": "1155e3dfad46b226582cc6a856c11840764953a016317e0e1d5487b6f2a4ee84"
+        }
+      ],
+      "method": "SOURCE_VERIFIED",
+      "runtime": "NOT_RUN"
+    }
+  ],
+  "transplants": [
+    {
+      "id": "INK-I1",
+      "feature": "Native capture",
+      "donor": "handy-recorder",
+      "source": {
+        "path": "src/lib.rs",
+        "bytes": 6235,
+        "sha256": "cd2569b044f5aefa2ca8a7164e465c18469d577b30a0f5fe37c78158a8c01d8b",
+        "package": "handy-recorder",
+        "version": "0.1.0",
+        "revision": "1d975fe8c10f9a69d778cf16955c7e0699b4b8e1",
+        "archive_sha256": "4a734d6d16eb8eb485548d75f383fa0c09d65b037a20e648c19730860f7a8a3f",
+        "url": "https://static.crates.io/crates/handy-recorder/handy-recorder-0.1.0.crate",
+        "line": 89,
+        "symbols": [
+          "Recorder::start",
+          "Recorder::stop",
+          "Stopped::is_complete"
+        ]
+      },
+      "mode": "WRAP",
+      "destination": "crates/wispral-core/src/audio/handy_capture.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "handy-cpal =0.18.2",
+        "rtrb 0.4.0",
+        "rubato =5.0.0",
+        "dasp_sample 0.11",
+        "Rust >=1.88"
+      ],
+      "upstream_test_paths": [
+        "src/tests/failures.rs",
+        "src/tests/lifecycle.rs",
+        "src/tests/formats.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Exact fake samples and dropped-frame signal",
+        "No-audio/device disconnect/permission failure",
+        "Close/cancel releases recorder"
+      ],
+      "estimate": "1–3 engineer-days",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Use text-only input and disable microphone adapter",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I2",
+      "feature": "Platform activation",
+      "donor": "handy-keys",
+      "source": {
+        "path": "src/manager.rs",
+        "bytes": 23053,
+        "sha256": "7141c705a7adb28cc7a4865168cf8fef3dc84061d7ce3a4dee102731c0e57ef2",
+        "package": "handy-keys",
+        "version": "0.3.4",
+        "revision": "e7d1b8e6de8258f21ee1d60608d16f8d195157bf",
+        "archive_sha256": "1a007b6c921d3273fd88aac45b516eee01e5a9dc2d76bb6f1a981500cc0d818a",
+        "url": "https://static.crates.io/crates/handy-keys/handy-keys-0.3.4.crate",
+        "line": 92,
+        "symbols": [
+          "HotkeyManager::new",
+          "HotkeyManager::new_with_blocking",
+          "ManagerState::process_event"
+        ]
+      },
+      "mode": "WRAP",
+      "destination": "crates/wispral-core/src/platform/activation.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "Windows LL hooks",
+        "macOS AX",
+        "Linux evdev/uinput",
+        "serde",
+        "bitflags"
+      ],
+      "upstream_test_paths": [
+        "tests/synthetic_input.rs",
+        "src/manager.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Hold/toggle/repeat and modifiers",
+        "Lock/resume/session change",
+        "No blanket elevated Linux access"
+      ],
+      "estimate": "1–3 engineer-days per native platform",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Visible keyboard/button fallback",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I3",
+      "feature": "Activation state reducer",
+      "donor": "cjpais/Handy",
+      "source": {
+        "path": "src-tauri/src/transcription_coordinator.rs",
+        "blob_sha": "a35bff37eaa6bd3f2fe9dce4403d96746be36e3c",
+        "sha256": "4b18ccaa6aa0a1c0f69c08e7aea4acf9b3bbe394c11f3f07851cca8944bfdb08",
+        "bytes": 61313,
+        "lines": 1618,
+        "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/transcription_coordinator.rs",
+        "repo": "cjpais/Handy",
+        "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+        "line": 97,
+        "symbols": [
+          "CoordinatorState",
+          "classify_busy_input",
+          "classify_ptt_event"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/audio/activation_state.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "std channels/Instant",
+        "replace Tauri actions with typed effects"
+      ],
+      "upstream_test_paths": [
+        "src-tauri/src/transcription_coordinator.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Busy toggle parity",
+        "Cancel drops remembered press",
+        "Autorepeat burst spanning processing drain"
+      ],
+      "estimate": "1–2 engineer-days",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Keep PTT-only explicit button",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I4",
+      "feature": "Clipboard transaction reducer",
+      "donor": "cjpais/Handy",
+      "source": {
+        "path": "src-tauri/src/paste_tx/mod.rs",
+        "blob_sha": "71fdc5524eba12bf1a703302bbdd2a69ff7c3537",
+        "sha256": "2d70bc1ff915c899c02ad981649a4b4c9eb4e547a74066b6b5e679ca371d2c44",
+        "bytes": 11071,
+        "lines": 284,
+        "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/paste_tx/mod.rs",
+        "repo": "cjpais/Handy",
+        "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+        "line": 139,
+        "symbols": [
+          "TxState",
+          "evaluate",
+          "record_receipt"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/insertion/transaction.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "std time/state",
+        "log shim"
+      ],
+      "upstream_test_paths": [
+        "src-tauri/src/paste_tx/mod.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Pre-injection reads ignored",
+        "External copy/ownership loss",
+        "Multiple receipts/timeout/cancel"
+      ],
+      "estimate": "1–2 engineer-days",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Manual-copy output",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I5",
+      "feature": "Windows delayed-render paste",
+      "donor": "cjpais/Handy",
+      "source": {
+        "path": "src-tauri/src/paste_tx/windows.rs",
+        "blob_sha": "55f13bf52044a485afa4fae72fa776b4facdff44",
+        "sha256": "11d975d768b06070c70f6a4026d5139f30f49940c13ee1414ffa53906e6ec1ed",
+        "bytes": 22234,
+        "lines": 625,
+        "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/paste_tx/windows.rs",
+        "repo": "cjpais/Handy",
+        "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+        "line": 574,
+        "symbols": [
+          "run",
+          "paste_wnd_proc",
+          "on_timer",
+          "snapshot_clipboard"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/platform/windows/insertion.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "windows 0.61.3 Win32 APIs",
+        "enigo or bounded native injector",
+        "replace Tauri/settings"
+      ],
+      "upstream_test_paths": [
+        "src-tauri/src/paste_tx/mod.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Independent reader versus intended editor",
+        "Target/process/focus freshness",
+        "Sequence ownership and rich clipboard cleanup",
+        "No auto-submit"
+      ],
+      "estimate": "2–4 engineer-days",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Manual-copy output; refuse unknown recipient",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I6",
+      "feature": "Windows target detection",
+      "donor": "OpenWhispr/openwhispr",
+      "source": {
+        "path": "resources/windows-fast-paste.c",
+        "blob_sha": "e542c1229a25c8a26d4e9b33a0d8f4eb39b9f3be",
+        "sha256": "2c09e78e7f4d29c41f4d18b23715cf7d1382795b09cc741f9ab73eb08e32256c",
+        "bytes": 12186,
+        "lines": 368,
+        "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/resources/windows-fast-paste.c",
+        "repo": "OpenWhispr/openwhispr",
+        "revision": "e4280ada144f04f20dad0bd32eaf22272f9c77b8",
+        "line": 182,
+        "symbols": [
+          "GetExeName",
+          "GetWindowTitleUtf8",
+          "RestoreForegroundWindow"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/platform/windows/target.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "Win32 process/window/keyboard APIs",
+        "remove current-foreground fallback"
+      ],
+      "upstream_test_paths": [
+        "test/helpers/windowsPasteTarget.test.js",
+        "test/helpers/captureDictationTargetIpc.test.js"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Closed/recycled HWND",
+        "Failed restore refuses injection",
+        "UIPI/elevated target and non-Latin layout"
+      ],
+      "estimate": "1–3 engineer-days",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Refuse injection and preserve transcript",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I7",
+      "feature": "macOS clipboard and partial Unicode delivery",
+      "donor": "Beingpax/VoiceInk",
+      "source": {
+        "path": "VoiceInk/Infrastructure/SystemIntegration/Paste/DirectTextTyper.swift",
+        "blob_sha": "b68e3170ac67729f58f33ff894328444c7a4082c",
+        "sha256": "f8268aaf1b7af6cc9d68b9cde7e7d9d6771cd5e79053d33d7caa04d0a5289d57",
+        "bytes": 4678,
+        "lines": 113,
+        "url": "https://github.com/Beingpax/VoiceInk/blob/22e5ec5479b712797c3b338fcb875961e58800b6/VoiceInk/Infrastructure/SystemIntegration/Paste/DirectTextTyper.swift",
+        "repo": "Beingpax/VoiceInk",
+        "revision": "22e5ec5479b712797c3b338fcb875961e58800b6",
+        "line": 25,
+        "symbols": [
+          "type",
+          "unicodeChunks",
+          "CursorPaster::PasteOutcome"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "platform/macos/WispralInput/DirectTextTyper.swift",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "AppKit",
+        "ApplicationServices",
+        "purpose/target guard",
+        "GPLv3 source notice plus founder-confirmed grant"
+      ],
+      "upstream_test_paths": [
+        "Tests/VoiceInkUITests/VoiceInkUITests.swift"
+      ],
+      "test_coverage_limit": "Only general UI test scaffold path discovered; dedicated insertion coverage not established; add independent native tests.",
+      "required_independent_acceptance": [
+        "Arabic/emoji/combining-mark/control fixtures",
+        "Partial delivery never automatically retried",
+        "AX revoke/modifier held/new focus"
+      ],
+      "estimate": "2–4 engineer-days on macOS",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Manual copy; report PARTIAL/UNKNOWN",
+      "rights_status": "FOUNDER_CONFIRMED_SOURCE_GRANT; upstream LICENSE says GPLv3; notices retained"
+    },
+    {
+      "id": "INK-I8",
+      "feature": "macOS selection snapshot",
+      "donor": "zachlatta/freeflow",
+      "source": {
+        "path": "Sources/AppContextService.swift",
+        "blob_sha": "aedcc628fae1f29055b7bc11c6ff43f6d01d9060",
+        "sha256": "a28a5e7c23d61e2e2b4e7b7f1f7c6017bcdbe9c81d01a793d9fdb04025dba99b",
+        "bytes": 31364,
+        "lines": 807,
+        "url": "https://github.com/zachlatta/freeflow/blob/797a3f32e6b525b8d942512db2801466d3a651f7/Sources/AppContextService.swift",
+        "repo": "zachlatta/freeflow",
+        "revision": "797a3f32e6b525b8d942512db2801466d3a651f7",
+        "line": 96,
+        "symbols": [
+          "collectSelectionSnapshot",
+          "AppSelectionSnapshot"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "platform/macos/WispralInput/SelectionSnapshot.swift",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "AppKit",
+        "ApplicationServices",
+        "explicit context consent and sensitive-field exclusion"
+      ],
+      "upstream_test_paths": [
+        "Tests/AppContextServiceTests.swift"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Selection digest and focus expiry",
+        "No screen/clipboard read by default",
+        "No inherited cloud route"
+      ],
+      "estimate": "1–2 engineer-days on macOS",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Contextless dictation",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I9",
+      "feature": "Empty container and repeat fixtures",
+      "donor": "OpenWhispr/openwhispr",
+      "source": {
+        "path": "src/helpers/recordingGuard.js",
+        "blob_sha": "4fc4b8f89ebde252d715d93741506699a8371d62",
+        "sha256": "a9b60c5b821cb99346b2060959f163ff617fb2e55e9e8d7ddbaedffe2517eb6d",
+        "bytes": 761,
+        "lines": 14,
+        "url": "https://github.com/OpenWhispr/openwhispr/blob/e4280ada144f04f20dad0bd32eaf22272f9c77b8/src/helpers/recordingGuard.js",
+        "repo": "OpenWhispr/openwhispr",
+        "revision": "e4280ada144f04f20dad0bd32eaf22272f9c77b8",
+        "line": 10,
+        "symbols": [
+          "isEmptyRecording",
+          "createHotkeyRepeatGate"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "research/fixtures/ink/recording_guard_cases.json",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "PURE_UNIT_CASES_REPRODUCED",
+      "dependency_boundary": [
+        "No runtime framework for source predicates",
+        "preserve threshold/format limitations"
+      ],
+      "upstream_test_paths": [
+        "test/helpers/recordingGuard.test.js",
+        "test/helpers/hotkeyRepeatGate.test.js"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "255/256 boundary and non-finite size",
+        "Short container false rejection",
+        "Quick intentional tap versus autorepeat"
+      ],
+      "estimate": "0.5–1 engineer-day",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Disable heuristic when format unqualified",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I10",
+      "feature": "Native inference process supervisor",
+      "donor": "cjpais/Handy",
+      "source": {
+        "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+        "blob_sha": "713b9a57966ac41fde944be55890e844a89913a1",
+        "sha256": "ca04fd37091927931e57b786b2c2c0432289d2e61d316d2e949178dfe5228c7e",
+        "bytes": 73764,
+        "lines": 2019,
+        "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/engine_supervisor/supervisor.rs",
+        "repo": "cjpais/Handy",
+        "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+        "line": 329,
+        "symbols": [
+          "EngineSupervisor::cancel",
+          "Worker::spawn",
+          "Worker::wait",
+          "LoadSpec"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/model/worker_supervisor.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "std child process/channels",
+        "serde framed IPC",
+        "transcribe-cpp-specific types require adapter",
+        "smaller IPC frame/session bounds"
+      ],
+      "upstream_test_paths": [
+        "src-tauri/src/engine_supervisor/supervisor.rs",
+        "src-tauri/src/engine_supervisor/protocol.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Crash/hang/forced stop and late results",
+        "No fixture skip accepted as cancellation proof",
+        "Exact worker/model identity and resource budget"
+      ],
+      "estimate": "2–4 engineer-days after backend qualification",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Disable worker and retain selected fallback contract",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I11",
+      "feature": "STT candidate binding",
+      "donor": "transcribe-cpp",
+      "source": {
+        "path": "src/cancel.rs",
+        "bytes": 2048,
+        "sha256": "657eb3625cc67e0bbb728d8a9ea304a3c6247228ae1cac61b2693b74f7590b7a",
+        "package": "transcribe-cpp",
+        "version": "0.4.0",
+        "revision": "f1dcd15858c4bbba87ca97862b4e448b2cf15b8f",
+        "archive_sha256": "f6cad85eeb846a7064891c8b49b92a57a0f2d4dd089104cb199608b23043555e",
+        "url": "https://static.crates.io/crates/transcribe-cpp/transcribe-cpp-0.4.0.crate",
+        "line": 17,
+        "symbols": [
+          "CancelToken",
+          "abort_trampoline",
+          "Session::set_cancel_token"
+        ]
+      },
+      "mode": "REFERENCE_ONLY",
+      "destination": "research/qualification/transcribe-cpp/",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "transcribe-cpp-sys 0.4.0 native source not qualified",
+        "selected checkpoint rights",
+        "backend-specific drivers"
+      ],
+      "upstream_test_paths": [
+        "tests/cancel.rs",
+        "tests/no_model.rs",
+        "tests/streaming.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Fixture presence fails closed",
+        "Actual abort observed, partial preserved",
+        "No general support/latency claims"
+      ],
+      "estimate": "2–5 engineer-days for separate qualification",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Keep current frozen B2 registry unchanged",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I12",
+      "feature": "Linux insertion dispatch",
+      "donor": "cjpais/Handy",
+      "source": {
+        "path": "src-tauri/src/clipboard.rs",
+        "blob_sha": "6beba07856431edd066b9a963c53060e2ae3a555",
+        "sha256": "073e01aeb70c02b8fc23e1fa9af01e448305c1fa2c32e3311dcc12f6c2570f17",
+        "bytes": 35876,
+        "lines": 1016,
+        "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/clipboard.rs",
+        "repo": "cjpais/Handy",
+        "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+        "line": 164,
+        "symbols": [
+          "try_direct_typing_linux",
+          "try_send_key_combo_linux",
+          "write_clipboard_via_wl_copy"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/platform/linux/insertion.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "bounded external executables selected per compositor",
+        "enigo",
+        "wl-copy/xdo/portal alternatives separate"
+      ],
+      "upstream_test_paths": [
+        "src-tauri/src/clipboard.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "X11/Wayland separate permission outcomes",
+        "No shell interpolation of transcript",
+        "Clipboard ownership and terminal shortcut",
+        "Tool absent/refused retains manual copy"
+      ],
+      "estimate": "2–5 engineer-days across declared Linux sessions",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Manual-copy output",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    },
+    {
+      "id": "INK-I13",
+      "feature": "Streaming semantics and provenance",
+      "donor": "cjpais/Handy",
+      "source": {
+        "path": "src-tauri/src/managers/transcription/policy.rs",
+        "blob_sha": "82bd83ee3e2cf9e0147123af456a9027ee1c4cad",
+        "sha256": "e9c1368e546db587b580eb1518e078d4f398c9b57a019f48a498d88874a652ff",
+        "bytes": 2302,
+        "lines": 70,
+        "url": "https://github.com/cjpais/Handy/blob/93c9ee05efe294cf2a56bd534b77ea1079f21b77/src-tauri/src/managers/transcription/policy.rs",
+        "repo": "cjpais/Handy",
+        "revision": "93c9ee05efe294cf2a56bd534b77ea1079f21b77",
+        "line": 51,
+        "symbols": [
+          "ModelTraits",
+          "LiveDecode",
+          "BatchDecode",
+          "StreamTextEvent"
+        ]
+      },
+      "mode": "ADAPT",
+      "destination": "crates/wispral-core/src/speech/stream_semantics.rs",
+      "implementation_authorized": false,
+      "source_method": "SOURCE_VERIFIED",
+      "runtime_status": "NOT_RUN",
+      "dependency_boundary": [
+        "backend capability snapshot",
+        "separate immutable raw/normalized/rewritten results"
+      ],
+      "upstream_test_paths": [
+        "src-tauri/src/managers/transcription.rs",
+        "src-tauri/src/managers/transcription/policy.rs"
+      ],
+      "test_coverage_limit": "Selected test sources inspected where discussed in the report; no full-suite runtime claim.",
+      "required_independent_acceptance": [
+        "Native incremental versus chunked/batch labels",
+        "Tentative never final authority",
+        "Cancel generation blocks late delivery"
+      ],
+      "estimate": "1–2 engineer-days after STT contract qualification",
+      "estimate_basis": "Engineering planning judgment, not measured effort",
+      "rollback": "Batch-only explicit mode",
+      "rights_status": "MIT_SOURCE; provenance and notices retained; external assets separate"
+    }
+  ],
+  "build_new_exceptions": [
+    {
+      "id": "INK-I14",
+      "feature": "Exact-target authorization and context consent binding",
+      "destination": "Core contract/policy glue",
+      "reason": "Inspected donors provide partial identities/receipts/generations but no complete binding of audio/session, process/start identity, selection digest, purpose/expiry, routing consent and insertion generation.",
+      "reuse_first": [
+        "Native target detection",
+        "Session marker",
+        "Cancel generation",
+        "Wispral deterministic policy contracts"
+      ],
+      "implementation_authorized": false
+    }
+  ],
+  "experiments": [
+    {
+      "id": "INK-UNIT-01",
+      "method": "REPRODUCED",
+      "captured_at": "2026-10-21T05:19:03.784Z",
+      "software": "v24.19.0",
+      "platform": "win32",
+      "architecture": "x64",
+      "repo": "OpenWhispr/openwhispr",
+      "sha": "e4280ada144f04f20dad0bd32eaf22272f9c77b8",
+      "command": "node --test work/ink-scratch/OpenWhispr__openwhispr/test/helpers/windowsPasteTarget.test.js",
+      "exit_code": 0,
+      "stdout": "✔ another app's window is restored, as it was before the tray could start dictation (1.424ms)\n✔ our own window stays a target, so dictating into a note still pastes there (0.5656ms)\n✔ our own non-window surface is dropped rather than force-activated (0.3408ms)\n✔ a 32-bit window handle compares by value, not by buffer width (0.2427ms)\n✔ an unreadable window identity keeps the old behaviour (0.6658ms)\n✔ handles parse as hex with or without the 0x the helper may print (1.4175ms)\nℹ tests 6\nℹ suites 0\nℹ pass 6\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 264.6648\n",
+      "stderr": "",
+      "limitations": [
+        "Exact upstream pure helper unit test only; not a native focus or clipboard integration test.",
+        "Does not establish intended target identity security.",
+        "No audio or competitor user workflow exercised."
+      ],
+      "coverage": {
+        "unique_tests": 6,
+        "overlaps": "INK-UNIT-02"
+      },
+      "performance_claim": "NONE"
+    },
+    {
+      "id": "INK-UNIT-02",
+      "method": "REPRODUCED",
+      "captured_at": "2026-10-21T05:20:05.767Z",
+      "software": "v24.19.0",
+      "platform": "win32",
+      "architecture": "x64",
+      "repo": "OpenWhispr/openwhispr",
+      "sha": "e4280ada144f04f20dad0bd32eaf22272f9c77b8",
+      "command": "node --test work/ink-scratch/OpenWhispr__openwhispr/test/helpers/windowsPasteTarget.test.js work/ink-scratch/OpenWhispr__openwhispr/test/helpers/recordingGuard.test.js work/ink-scratch/OpenWhispr__openwhispr/test/helpers/hotkeyRepeatGate.test.js",
+      "exit_code": 0,
+      "stdout": "✔ a held key is one press: autorepeats renew the window instead of leaking through (2.5905ms)\n✔ a deliberate second press after the window counts (0.3177ms)\n✔ a quick second tap inside the window is treated as a repeat (0.2498ms)\n(node:61596) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///[SCRATCH_ROOT]/work/ink-scratch/OpenWhispr__openwhispr/src/helpers/recordingGuard.js is not specified and it doesn't parse as CommonJS.\nReparsing as ES module because module syntax was detected. This incurs a performance overhead.\nTo eliminate this warning, add \"type\": \"module\" to \\\\?\\[SCRATCH_ROOT]\\work\\ink-scratch\\OpenWhispr__openwhispr\\package.json.\n(Use `node --trace-warnings ...` to show where the warning was created)\n✔ flags an empty WebM container (issue #864 double-trigger, ~110 bytes) (5.3859ms)\n✔ flags a zero-byte blob (0.4961ms)\n✔ flags 255 bytes (just under the threshold) (2.404ms)\n✔ allows exactly 256 bytes (boundary) (0.5318ms)\n✔ allows a short real utterance with real audio bytes (no silent data loss) (0.9247ms)\n✔ allows a normal full-length recording (0.4916ms)\n✔ treats missing / null / NaN size as empty (defensive) (0.4256ms)\n✔ MIN_AUDIO_BYTES is 256 (0.3604ms)\n✔ another app's window is restored, as it was before the tray could start dictation (1.3461ms)\n✔ our own window stays a target, so dictating into a note still pastes there (0.4412ms)\n✔ our own non-window surface is dropped rather than force-activated (0.2569ms)\n✔ a 32-bit window handle compares by value, not by buffer width (0.2565ms)\n✔ an unreadable window identity keeps the old behaviour (0.3073ms)\n✔ handles parse as hex with or without the 0x the helper may print (4.3467ms)\nℹ tests 17\nℹ suites 0\nℹ pass 17\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 214.9168\n",
+      "stderr": "",
+      "limitations": [
+        "Exact upstream pure helper unit tests only; not a native focus or clipboard integration test.",
+        "Does not establish intended target identity security.",
+        "Recording tests supply byte counts, not audio; no recognition or capture quality established.",
+        "Hotkey tests supply deterministic synthetic times; no physical keyboard tested.",
+        "No audio or competitor user workflow exercised."
+      ],
+      "coverage": {
+        "unique_tests": 17,
+        "tests_passed": 17,
+        "tests_failed": 0,
+        "scope": "Pure helper cases only"
+      },
+      "performance_claim": "NONE"
+    }
+  ],
+  "not_run": [
+    "Native Windows microphone/hotkey/paste workflows",
+    "macOS/Swift/AX/runtime tests",
+    "Linux/X11/Wayland/evdev runtime tests",
+    "Handy Rust/native worker and crate tests",
+    "Private/paid competitor account workflows",
+    "Actual English/Arabic/Gulf speech recognition",
+    "Latency/WER/CER/meaning distortion/offline/privacy benchmarks"
+  ],
+  "limitations": [
+    "No full dependency safety audit or release gate satisfied",
+    "transcribe-cpp-sys source and checkpoints not qualified",
+    "Crate VCS information is publisher-declared; downloaded archive checksum was independently verified",
+    "No percentage of shipped code reuse established",
+    "All destination paths and estimates are proposals"
+  ]
+}

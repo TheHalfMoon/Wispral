@@ -1,0 +1,468 @@
+$ ls -la
+total 105
+drwxr-xr-x 1 <user> 197609     0 Nov  8 06:09 .
+drwxr-xr-x 1 <user> 197609     0 Nov  8 06:09 ..
+-rw-r--r-- 1 <user> 197609  3471 Nov  8 05:52 REVIEW_PROMPT.md
+-rw-r--r-- 1 <user> 197609   407 Nov  8 06:09 bundle.sha256
+-rw-r--r-- 1 <user> 197609 18673 Nov  8 05:51 c1.diff
+-rw-r--r-- 1 <user> 197609  5232 Nov  8 05:51 c1_vs_126.diff
+-rw-r--r-- 1 <user> 197609  7316 Nov  8 05:51 evidence_README.md
+-rw-r--r-- 1 <user> 197609  9572 Nov  8 05:51 principle_xvii.md
+
+
+$ git -C . rev-parse --is-inside-work-tree 2>&1; ls -la <home>/AppData/Local/Temp/claude/review
+fatal: not a git repository (or any of the parent directories): .git
+total 105
+drwxr-xr-x 1 <user> 197609     0 Nov  8 06:09 .
+drwxr-xr-x 1 <user> 197609     0 Nov  8 06:09 ..
+-rw-r--r-- 1 <user> 197609  3471 Nov  8 05:52 REVIEW_PROMPT.md
+-rw-r--r-- 1 <user> 197609   407 Nov  8 06:09 bundle.sha256
+-rw-r--r-- 1 <user> 197609 18673 Nov  8 05:51 c1.diff
+-rw-r--r-- 1 <user> 197609  5232 Nov  8 05:51 c1_vs_126.diff
+-rw-r--r-- 1 <user> 197609  7316 Nov  8 05:51 evidence_README.md
+-rw-r--r-- 1 <user> 197609  9572 Nov  8 05:51 principle_xvii.md
+
+
+$ {"path": "<home>\\AppData\\Local\\Temp\\claude\\review\\bundle.sha256"}
+Read file <home>\AppData\Local\Temp\claude\review\bundle.sha256, lines 1-5
+1: 324b2e462ef6d0d59071f59a6105230e1083e6d5febb9c465b5af4afd855ccf8 *REVIEW_PROMPT.md
+2: 8023a3231b7833d3a37b97f508699b2a05305b5211b5c923e23d54cbe4740e7e *c1.diff
+3: 39b814e4185c145b5e858d78ad502f425707eb9af02dd48660bd59b8bfdeb4cb *principle_xvii.md
+4: 036320a22aa079c93ce1ceb48f26aead045f83fb79fdcfbdcf6bf23d1faa5e78 *c1_vs_126.diff
+5: c46ae454f2f3bb4363201a248a284b45a598e19bd43fd5ae87a7098f05e1a495 *evidence_README.md
+
+$ {"path": "<home>\\AppData\\Local\\Temp\\claude\\review\\REVIEW_PROMPT.md"}
+Read file <home>\AppData\Local\Temp\claude\review\REVIEW_PROMPT.md, lines 1-46
+1: You are an independent code and governance reviewer. Review pull request #130 of the public repository TheHalfMoon/Wispral. The exact range under review is `8d52a4579a0b1c6555cbe8443027c1950493b326..de095ea3260698a84332ffd6cf708e336c645d51` (head `de095ea3260698a84332ffd6cf708e336c645d51`).
+2: 
+3: The change was authored with an Anthropic Claude model. You are the different-vendor reviewer required by the repository's Constitution, Governance item 7(c). Your review must be substantive: examine the exact range, an
+
+$ sha256sum REVIEW_PROMPT.md c1.diff principle_xvii.md c1_vs_126.diff evidence_README.md
+324b2e462ef6d0d59071f59a6105230e1083e6d5febb9c465b5af4afd855ccf8 *REVIEW_PROMPT.md
+8023a3231b7833d3a37b97f508699b2a05305b5211b5c923e23d54cbe4740e7e *c1.diff
+39b814e4185c145b5e858d78ad502f425707eb9af02dd48660bd59b8bfdeb4cb *principle_xvii.md
+036320a22aa079c93ce1ceb48f26aead045f83fb79fdcfbdcf6bf23d1faa5e78 *c1_vs_126.diff
+c46ae454f2f3bb4363201a248a284b45a598e19bd43fd5ae87a7098f05e1a495 *evidence_README.md
+
+
+$ git --version; gh --version 2>&1 | head -3
+git version 2.56.0.windows.4
+gh version 2.96.0 (2026-07-02)
+https://github.com/cli/cli/releases/tag/v2.96.0
+
+
+$ cd <home>/AppData/Local/Temp/opencode && rm -rf wispral_review && git clone --filter=blob:none --no-checkout https://github.com/TheHalfMoon/Wispral.git wispral_review 2>&1 | tail -20
+Cloning into 'wispral_review'...
+
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && git log --oneline -3 2>&1 && git cat-file -t 8d52a4579a0b1c6555cbe8443027c1950493b326 2>&1 && git cat-file -t de095ea3260698a84332ffd6cf708e336c645d51 2>&1
+8d52a45 governance: adopt Constitution 0.3.0 Principle XVII and qualifying review (#129)
+447d7da governance: make XVII non-concealment satisfiable for repeated classifications
+30c3e3e governance: scope transitional condition 3 per pull request
+commit
+commit
+
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && git diff --stat 8d52a4579a0b1c6555cbe8443027c1950493b326..de095ea3260698a84332ffd6cf708e336c645d51 && git log --oneline 8d52a4579a0b1c6555cbe8443027c1950493b326..de095ea3260698a84332ffd6cf708e336c645d51
+ .github/workflows/000b2-public-b2r16-freeze.yml    |  56 ++++++--
+ research/000b2-public/test_b2r16_preservation.py   | 124 +++++++++++++++++
+ research/000b2-public/verify_b2r16_preservation.py | 151 +++++++++++++++++++++
+ 3 files changed, 321 insertions(+), 10 deletions(-)
+de095ea fix(ci): run the B2R16 freeze preservation from a base-defined job
+8457324 research(000b2): import B2R16 preservation checker and tests from #126
+
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && gh pr view 130 --repo TheHalfMoon/Wispral --json number,title,state,headRefOid,baseRefOid,body,files,url 2>&1 | head -200
+{"baseRefOid":"8d52a4579a0b1c6555cbe8443027c1950493b326","body":"## Defect\n\n`verify-b2r16-freeze` runs on every pull request and fails on canonical `main` itself:\n\n> `B2R16_ATTEMPT_003_FREEZE=FAIL: B2R16 actual candidate range scope drift`\n\n- **Assigned class.** Canonical authority assigns the freeze verifier to the B2R16 task candidate: `000b2-public-b2r16-freeze.yml` runs `verify_b2r16.py --require-git`, which diffs the candidate range against a fixed historical base.\n- **Over-application.** The workflow triggers on every `pull_request`, with no path filter. So every later candidate, 
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && gh pr checks 130 --repo TheHalfMoon/Wispral 2>&1 | head -100
+verify-successor-pr-from-canonical-base	fail	4s	https://github.com/TheHalfMoon/Wispral/actions/runs/42438879562/job/128603620369	
+verify-successor-recovery	fail	8s	https://github.com/TheHalfMoon/Wispral/actions/runs/42438881215/job/128603624143	
+bootstrap-self-test	skipping	0	https://github.com/TheHalfMoon/Wispral/actions/runs/42439620448/job/128605864534	
+resolve-active-b2-head	skipping	0	https://github.com/TheHalfMoon/Wispral/actions/runs/42439620448/job/128605846400	
+reverify-active-b2-after-base-push	skipping	0	https://github.com/TheHalfMoon/Wispral/actions/runs/42439620448/job/12860584685
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && git worktree add --detach ../wispral_head de095ea3260698a84332ffd6cf708e336c645d51 2>&1 | tail -5 && git worktree add --detach ../wispral_base 8d52a4579a0b1c6555cbe8443027c1950493b326 2>&1 | tail -5
+Preparing worktree (detached HEAD de095ea)
+Updating files:   0% (1/242)Updating files:   1% (3/242)Updating files:   2% (5/242)Updating files:   3% (8/242)Updating files:   4% (10/242)Updating files:   5% (13/242)Updating files:   6% (15/242)Updating files:   7% (17/242)Updating files:   8% (20/242)Updating files:   9% (22/242)Updating files:  10% (25/242)Updating files:  11% (27/242)Updating files:  12% (30/242)Updating files:  13% (32/242)Updating files:  14% (34/242)Updating files:  15% (37/242)Updating files:  16% (39/242)Updating files:  17% (42/242)Updating files:  18% 
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_head && nl -ba research/000b2-public/test_b2r16_preservation.py
+     1	"""Independent Git-object mutation fixtures; no frozen working file is edited."""
+     2	import importlib.util
+     3	import json
+     4	import os
+     5	from pathlib import Path
+     6	import subprocess
+     7	import sys
+     8	import unittest
+     9	
+    10	SPEC = importlib.util.spec_from_file_location("preservation", Path(__file__).with_name("verify_b2r16_preservation.py"))
+    11	CHECK = importlib.util.module_from_spec(SPEC)
+    12	SPEC.loader.exec_module(CHECK)
+    13	
+    14	
+    15	def candidate_with(file, mode="modify", base=None, payload=None):
+    16	    root = CHECK.ROOT
+    
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_head && nl -ba .github/workflows/000b2-public-b2r16-freeze.yml && echo '---CHECKER---' && nl -ba research/000b2-public/verify_b2r16_preservation.py
+     1	name: 000B2 Public Corpus B2R16 Freeze
+     2	
+     3	# Constitution Principle XVII correction C1. The job definition and the code it
+     4	# runs come from the base branch (pull_request_target) or from the pushed or
+     5	# dispatched commit itself. A pull request candidate is fetched only as Git
+     6	# objects and is never checked out or executed.
+     7	on:
+     8	  pull_request_target:
+     9	  push:
+    10	    branches:
+    11	      - main
+    12	  workflow_dispatch:
+    13	
+    14	permissions:
+    15	  contents: read
+    16	
+    17	jobs:
+    18	  verify-b2r16-freeze:
+    19	  
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && echo '=== 885307 workflow ===' && git show 885307429ec8b1aa0fe173169a8c2918714c06b0:.github/workflows/000b2-public-b2r16-freeze.yml && echo '=== base 8d52a45 workflow ===' && git show 8d52a4579a0b1c6555cbe8443027c1950493b326:.github/workflows/000b2-public-b2r16-freeze.yml
+=== 885307 workflow ===
+name: 000B2 Public Corpus B2R16 Freeze
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-b2r16-freeze:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      TASK: B2R16
+      EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+
+    steps:
+      - name: Checkout exact B2R16 revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.EXACT_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact B2R16 
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && echo '=== 885307 verify_b2r16.py ===' && git show 885307429ec8b1aa0fe173169a8c2918714c06b0:research/000b2-public/verify_b2r16.py | head -250
+=== 885307 verify_b2r16.py ===
+#!/usr/bin/env python3
+"""Verify the bounded B2R16 ATTEMPT-003 pre-primary freeze."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[2]
+PUBLIC = ROOT / "research" / "000b2-public"
+READINESS = PUBLIC / "recovery-attempt-003-readiness.json"
+CURRENT = ROOT / "specs" / "CURRENT.md"
+CURRENT_STATE = ROOT / "docs" / "canonical" / "CURRENT_STATE.md"
+PRESTATE = PUBLIC / "b2r16-preexecution-state.json"
+MANIFEST = PUBLIC / "b2r16-attemp
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_head && ls research/000b2-public | head -100 && echo '--- specs ---' && ls specs docs/canonical 2>/dev/null | head -50
+archive-materialization.json
+attempt-001-invalidation.json
+attempt-002-invalidation.json
+attempt-002-manifest.json
+attempt-002-preexecution-state.json
+attempt-manifest.json
+b2e01-moonshine-compact-duplicate-run-33928583817.json
+b2e01-moonshine-compact.json
+b2e01-provenance.json
+b2e02-moonshine-balanced-duplicate-run-33963021322.json
+b2e02-moonshine-balanced.json
+b2e02-provenance.json
+b2r02-moonshine-streaming-qualification.json
+b2r03-preexecution-rebinding.json
+b2r05-moonshine-compact.json
+b2r05-provenance.json
+b2r06-moonshine-balanced.json
+b2r06-provenance.json
+b2r07-provenance.json
+b2r07-whi
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_head && find research -iname '*b2r16*' -o -iname '*test*' | head -100 && echo '---' && grep -ril "verify_b2r16" . --exclude-dir=.git | head -50
+research/000b2-public/b2r16-attempt-003-manifest.json
+research/000b2-public/b2r16-preexecution-state.json
+research/000b2-public/test_b2r16_preservation.py
+research/000b2-public/verify_b2r16.py
+research/000b2-public/verify_b2r16_preservation.py
+---
+./.github/workflows/000b2-public-b2r16-freeze.yml
+./CONSTITUTION.md
+./research/000b2-public/recovery-attempt-003-readiness.json
+./research/000b2-public/test_b2r16_preservation.py
+./research/000b2-public/verify_b2r16.py
+./research/000b2-public/verify_b2r16_preservation.py
+
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_head && sha256sum .github/workflows/000b2-public-b2r16-freeze.yml research/000b2-public/verify_b2r16_preservation.py research/000b2-public/test_b2r16_preservation.py && python - <<'PY'
+import hashlib, re
+from pathlib import Path
+wf = Path('.github/workflows/000b2-public-b2r16-freeze.yml').read_bytes()
+m = re.search(rb'CHECKER_SHA256: ([0-9a-f]{64})', wf)
+print('checker literal', m.group(1).decode())
+norm = wf[:m.start(1)] + b'0'*64 + wf[m.end(1):]
+print('normalized', hashlib.sha256(norm).hexdigest())
+print('template constant', '5815b4ecb61aa5e2ccb5f148dd5085ab3c6f717003d9451afa92e1adf44bce02')
+PY
+c60955b8969eeb58b01a932bceaf35f7e697143a70f7ea36b79c07972b66435c *.github/workflows/000b2-public-b2r16-freeze.yml
+1770952607572c42bb6d58bc9fd990a4059b32a7091574ec931c862d9565b373 *research/000b2-public/verify_b2r16_preservation.py
+9d524363117ef2c0da0f94b9e0d96ae51cc8daf2ad653e37bf12170e498c4482 *research/000b2-public/test_b2r16_preservation.py
+checker literal 1770952607572c42bb6d58bc9fd990a4059b32a7091574ec931c862d9565b373
+normalized 5815b4ecb61aa5e2ccb5f148dd5085ab3c6f717003d9451afa92e1adf44bce02
+template constant 5815b4ecb61aa5e2ccb5f148dd5085ab3c6f717003d9451afa92e1adf44bce02
+
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && git fetch --no-tags --quiet origin a97d596bfc9a027bc6c71747b11d94de14f3e838 2>&1; git cat-file -t a97d596bfc9a027bc6c71747b11d94de14f3e838 2>&1; git show a97d596bfc9a027bc6c71747b11d94de14f3e838:research/000b2-public/verify_b2r16_preservation.py 2>&1 | head -60; echo '=== hashes at a97d596 ==='; git show a97d596bfc9a027bc6c71747b11d94de14f3e838:research/000b2-public/verify_b2r16_preservation.py | sha256sum; git show a97d596bfc9a027bc6c71747b11d94de14f3e838:research/000b2-public/test_b2r16_preservation.py | sha256sum
+commit
+#!/usr/bin/env python3
+"""Preserve the historical B2R16 proof and reject changed frozen Git objects.
+
+Ordinary fail-closed applicability correction, not Constitution XVI authority.
+The original verifier and evidence stay unchanged. Only the workflow has an
+explicit two-identity migration: original or this reviewed replacement.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+
+ROOT = Path(__file__).resolve().parents[2]
+QUALIFIED_HEAD = "ac9f7ce993aec33e6c6436cce
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && for c in ac9f7ce993aec33e6c6436cce4efd85394a97f35 0fd4e2252e485b887af33d404ac589354fdb05ee edacdf7504302cc91ff7138bc6ac2d391e4df1f4 885307429ec8b1aa0fe173169a8c2918714c06b0; do echo -n "$c "; git cat-file -t $c 2>&1; done; echo '--- ancestry ---'; for c in 885307429ec8b1aa0fe173169a8c2918714c06b0 0fd4e2252e485b887af33d404ac589354fdb05ee edacdf7504302cc91ff7138bc6ac2d391e4df1f4 ac9f7ce993aec33e6c6436cce4efd85394a97f35; do git merge-base --is-ancestor $c 8d52a4579a0b1c6555cbe8443027c1950493b326 && echo "$c ancestor-of-base" || echo "$c NOT-ancestor"; done
+ac9f7ce993aec33e6c6436cce4efd85394a97f35 commit
+0fd4e2252e485b887af33d404ac589354fdb05ee commit
+edacdf7504302cc91ff7138bc6ac2d391e4df1f4 commit
+885307429ec8b1aa0fe173169a8c2918714c06b0 commit
+--- ancestry ---
+885307429ec8b1aa0fe173169a8c2918714c06b0 ancestor-of-base
+0fd4e2252e485b887af33d404ac589354fdb05ee ancestor-of-base
+edacdf7504302cc91ff7138bc6ac2d391e4df1f4 ancestor-of-base
+ac9f7ce993aec33e6c6436cce4efd85394a97f35 ancestor-of-base
+
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_head && python -I research/000b2-public/verify_b2r16_preservation.py --candidate de095ea3260698a84332ffd6cf708e336c645d51 2>&1 | tail -30; echo "EXIT=$?"
+B2R16_ATTEMPT_003_FREEZE=PASS
+B2R16_FREEZE_DIGEST=b92d0a88bb50ebde517f560878a26d0ef796abdaf931278f5bc43e372ff1ac8d
+ATTEMPT_003_FROZEN_EVIDENCE=YES
+ATTEMPT_003_CANDIDATE_DECODING_STARTED_AT_FREEZE=NO
+ATTEMPT_003_PRIMARY_DECODING_STARTED_AT_FREEZE=NO
+ATTEMPT_003_SCORING_PERFORMED_AT_FREEZE=NO
+HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT
+B2R16_FROZEN_OBJECT_PRESERVATION=PASS
+EXIT=0
+
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_head && python -I - <<'PY'
+import importlib.util, subprocess, sys
+from pathlib import Path
+spec = importlib.util.spec_from_file_location("t", Path("research/000b2-public/test_b2r16_preservation.py"))
+t = importlib.util.module_from_spec(spec); spec.loader.exec_module(t)
+CHECK = t.CHECK
+orig = CHECK.git(CHECK.ROOT, "show", "885307429ec8b1aa0fe173169a8c2918714c06b0:" + CHECK.WORKFLOW)
+cand = t.candidate_with(CHECK.WORKFLOW, payload=orig)
+print("candidate", cand)
+try:
+    recs = CHECK.verify_candidate(CHECK.ROOT, cand)
+    print("RESULT: ACCEPTED (downgrade passes)")
+    print([r for r in recs if r["path"] == CHECK.WORKFLOW])
+except Exception as e:
+    print("RESULT: REJECTED", type(e).__name__, e)
+PY
+candidate 2a84d35cd52fa4ed1fc7c4c403d05d929b4b1739
+RESULT: ACCEPTED (downgrade passes)
+[{'path': '.github/workflows/000b2-public-b2r16-freeze.yml', 'historical_blob': 'c22eeb07a99d691a1016743028b027fa96e000df', 'candidate_blob': 'c22eeb07a99d691a1016743028b027fa96e000df'}]
+
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_head && python -I research/000b2-public/test_b2r16_preservation.py 2>&1 | tail -60; echo "EXIT=${PIPESTATUS[0]}"
+test_candidate_defined_trigger_rejected (__main__.PreservationTests.test_candidate_defined_trigger_rejected) ... ok
+test_candidate_identity_rejects_refs_and_options (__main__.PreservationTests.test_candidate_identity_rejects_refs_and_options) ... ok
+test_delete_mode_and_symlink_rejected (__main__.PreservationTests.test_delete_mode_and_symlink_rejected) ... ok
+test_every_frozen_path_rejects_byte_change (__main__.PreservationTests.test_every_frozen_path_rejects_byte_change) ... ok
+test_exact_replacement_workflow_and_its_tampering (__main__.PreservationTests.test_exact_replacement_workflow_an
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && git show 885307429ec8b1aa0fe173169a8c2918714c06b0:research/000b2-public/verify_b2r16.py | grep -nE 'ROOT /|PUBLIC /|read_text|load_json|sha256_file|git_blob|Path\(' | head -100
+13:ROOT = Path(__file__).resolve().parents[2]
+14:PUBLIC = ROOT / "research" / "000b2-public"
+15:READINESS = PUBLIC / "recovery-attempt-003-readiness.json"
+16:CURRENT = ROOT / "specs" / "CURRENT.md"
+17:CURRENT_STATE = ROOT / "docs" / "canonical" / "CURRENT_STATE.md"
+18:PRESTATE = PUBLIC / "b2r16-preexecution-state.json"
+19:MANIFEST = PUBLIC / "b2r16-attempt-003-manifest.json"
+20:PREPROCESSING_REBIND = PUBLIC / "b2r15-preprocessing-rebinding.json"
+21:ENVIRONMENT_REBIND = PUBLIC / "b2r15-environment-rebinding.json"
+22:B2R15_PROVENANCE = PUBLIC / "b2r15-provenance.json"
+23:B2R14_HARNESS = PUBLIC /
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_head && python -I - <<'PY'
+import importlib.util
+from pathlib import Path
+spec = importlib.util.spec_from_file_location("p", Path("research/000b2-public/verify_b2r16_preservation.py"))
+p = importlib.util.module_from_spec(spec); spec.loader.exec_module(p)
+import subprocess
+for f in p.FROZEN_PATHS:
+    a = subprocess.run(["git","-C",str(p.ROOT),"ls-tree","885307429ec8b1aa0fe173169a8c2918714c06b0","--",f],capture_output=True).stdout.decode().strip()
+    b = subprocess.run(["git","-C",str(p.ROOT),"ls-tree","de095ea3260698a84332ffd6cf708e336c645d51","--",f],capture_output=True).stdout.decode().strip()
+    print(("SAME " if a==b else "DIFF "), f, a, "|", b)
+PY
+DIFF  .github/workflows/000b2-public-b2r16-freeze.yml 100644 blob c22eeb07a99d691a1016743028b027fa96e000df	.github/workflows/000b2-public-b2r16-freeze.yml | 100644 blob df201cd8b26deef34928e05cb19fe3f032de1c1a	.github/workflows/000b2-public-b2r16-freeze.yml
+SAME  research/000b2-public/verify_b2r16.py 100644 blob c11714b64e66e0301be1a8a07c6513ad54b65807	research/000b2-public/verify_b2r16.py | 100644 blob c11714b64e66e0301be1a8a07c6513ad54b65807	research/000b2-public/verify_b2r16.py
+SAME  research/000b2-public/b2r16-preexecution-state.json 100644 blob dd872ef1c96fcc7d2357fb69975508e15f7142b4	r
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && git show 885307429ec8b1aa0fe173169a8c2918714c06b0:research/000b2-public/verify_b2r16.py | sed -n '250,360p'
+    require(isinstance(scoring, dict), "scoring identity block missing")
+    require(scoring.get("core_scorer_git_blob_sha1") == IDENTITIES["core_scorer"]["blob"] and scoring.get("core_scorer_sha256") == IDENTITIES["core_scorer"]["sha256"], "core scorer drift")
+    require(scoring.get("core_config_git_blob_sha1") == IDENTITIES["core_config"]["blob"] and scoring.get("core_config_sha256") == IDENTITIES["core_config"]["sha256"], "core config drift")
+    require(scoring.get("public_wer_adapter_git_blob_sha1") == IDENTITIES["public_wer"]["blob"] and scoring.get("public_wer_adapter_sha256") == IDENT
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && git show 885307429ec8b1aa0fe173169a8c2918714c06b0:research/000b2-public/verify_b2r16.py | sed -n '1,20p'; echo '--- readiness at 885307 ---'; git show 885307429ec8b1aa0fe173169a8c2918714c06b0:research/000b2-public/recovery-attempt-003-readiness.json | head -20; echo '--- readiness at head ---'; git show de095ea3260698a84332ffd6cf708e336c645d51:research/000b2-public/recovery-attempt-003-readiness.json | head -20
+#!/usr/bin/env python3
+"""Verify the bounded B2R16 ATTEMPT-003 pre-primary freeze."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[2]
+PUBLIC = ROOT / "research" / "000b2-public"
+READINESS = PUBLIC / "recovery-attempt-003-readiness.json"
+CURRENT = ROOT / "specs" / "CURRENT.md"
+CURRENT_STATE = ROOT / "docs" / "canonical" / "CURRENT_STATE.md"
+PRESTATE = PUBLIC / "b2r16-preexecution-state.json"
+MANIFEST = PUBLIC / "b2r16-attempt-003-manifest.json"
+PREPROCESS
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && gh run list --repo TheHalfMoon/Wispral --workflow '000B2 Public Corpus B2R16 Freeze' --limit 20 --json databaseId,headSha,headBranch,event,status,conclusion,createdAt 2>&1 | python -c "import sys,json; [print(x) for x in json.load(sys.stdin)]"
+{'conclusion': 'failure', 'createdAt': '2026-11-08T02:41:22Z', 'databaseId': 42439591508, 'event': 'pull_request', 'headBranch': 'planning/wispral-world-class-master-plan-20261108', 'headSha': '138bbea7336b1daa5b09869e929bd48c1d5bd9a0', 'status': 'completed'}
+{'conclusion': 'success', 'createdAt': '2026-11-08T02:31:13Z', 'databaseId': 42438889737, 'event': 'workflow_dispatch', 'headBranch': 'governance/c1-b2r16-freeze-correction', 'headSha': 'de095ea3260698a84332ffd6cf708e336c645d51', 'status': 'completed'}
+{'conclusion': 'success', 'createdAt': '2026-11-08T02:19:50Z', 'databaseId': 42438065
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && for r in 42435277046 42438889737 42438065785; do echo "=== run $r ==="; gh run view $r --repo TheHalfMoon/Wispral --json databaseId,headSha,headBranch,event,status,conclusion,workflowName,createdAt,jobs 2>&1 | python -c "import sys,json; d=json.load(sys.stdin); print({k:d.get(k) for k in ['databaseId','headSha','headBranch','event','status','conclusion','workflowName','createdAt']}); [print(' job', j.get('name'), j.get('status'), j.get('conclusion')) for j in d.get('jobs',[])]" 2>&1; done
+=== run 42435277046 ===
+{'databaseId': 42435277046, 'headSha': '7d546d58872a005e324214df5dd444014d23799a', 'headBranch': 'governance/constitution-0-3-0-principle-xvii', 'event': 'pull_request', 'status': 'completed', 'conclusion': 'failure', 'workflowName': '000B2 Public Corpus B2R16 Freeze', 'createdAt': '2026-11-08T01:40:40Z'}
+ job verify-b2r16-freeze completed failure
+=== run 42438889737 ===
+{'databaseId': 42438889737, 'headSha': 'de095ea3260698a84332ffd6cf708e336c645d51', 'headBranch': 'governance/c1-b2r16-freeze-correction', 'event': 'workflow_dispatch', 'status': 'completed', 'conclusi
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && gh run view 42438889737 --repo TheHalfMoon/Wispral --log 2>&1 | grep -E 'B2R16|Ran |OK|FAIL|PASS|##\[error\]' | head -80
+verify-b2r16-freeze	Set up job	2026-11-08T02:40:02.1104797Z ##[group]GITHUB_TOKEN Permissions
+verify-b2r16-freeze	Checkout trusted B2R16 preservation code	﻿2026-11-08T02:40:02.6683988Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+verify-b2r16-freeze	Checkout trusted B2R16 preservation code	2026-11-08T02:40:02.6685087Z with:
+verify-b2r16-freeze	Checkout trusted B2R16 preservation code	2026-11-08T02:40:02.6685983Z   ref: de095ea3260698a84332ffd6cf708e336c645d51
+verify-b2r16-freeze	Checkout trusted B2R16 preservation code	2026-11-08T02:40:02.6686674Z   fetch-depth: 0
+ver
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && gh run view 42435277046 --repo TheHalfMoon/Wispral --log 2>&1 | grep -E 'B2R16|FAIL|PASS|Run |##\[error\]' | head -60
+verify-b2r16-freeze	Checkout exact B2R16 revision	﻿2026-11-08T01:54:07.5467996Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+verify-b2r16-freeze	Checkout exact B2R16 revision	2026-11-08T01:54:07.5469067Z with:
+verify-b2r16-freeze	Checkout exact B2R16 revision	2026-11-08T01:54:07.5469591Z   ref: 7d546d58872a005e324214df5dd444014d23799a
+verify-b2r16-freeze	Checkout exact B2R16 revision	2026-11-08T01:54:07.5470193Z   fetch-depth: 0
+verify-b2r16-freeze	Checkout exact B2R16 revision	2026-11-08T01:54:07.5470674Z   persist-credentials: false
+verify-b2r16-freeze	Checkout exac
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && gh run view 42435277046 --repo TheHalfMoon/Wispral --json jobs 2>&1 | python -c "import sys,json; d=json.load(sys.stdin); [print(j['databaseId'], j['name']) for j in d['jobs']]" && echo '--- success run jobs ---' && gh run view 42438889737 --repo TheHalfMoon/Wispral --json jobs 2>&1 | python -c "import sys,json; d=json.load(sys.stdin); [print(j['databaseId'], j['name']) for j in d['jobs']]"
+128592662515 verify-b2r16-freeze
+--- success run jobs ---
+128603650594 verify-b2r16-freeze
+
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && gh run view --repo TheHalfMoon/Wispral --job 128603650594 --log 2>&1 | grep -E 'Verify historical|Prove frozen|B2R16_ATTEMPT|B2R16_FROZEN|Ran |OK|##\[error\]|FAIL|PASS' | tail -40
+verify-b2r16-freeze	Verify historical B2R16 proof and frozen object preservation	2026-11-08T02:40:04.1402758Z env:
+verify-b2r16-freeze	Verify historical B2R16 proof and frozen object preservation	2026-11-08T02:40:04.1403601Z   TASK: B2R16
+verify-b2r16-freeze	Verify historical B2R16 proof and frozen object preservation	2026-11-08T02:40:04.1404739Z   TRUSTED_REVISION: de095ea3260698a84332ffd6cf708e336c645d51
+verify-b2r16-freeze	Verify historical B2R16 proof and frozen object preservation	2026-11-08T02:40:04.1406500Z   CANDIDATE_REVISION: de095ea3260698a84332ffd6cf708e336c645d51
+verify-b2r16-free
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && gh run view --repo TheHalfMoon/Wispral --job 128592662515 --log 2>&1 | grep -E 'Verify B2R16|B2R16_ATTEMPT|B2R16 actual|##\[error\]|FAIL|PASS' | tail -30
+verify-b2r16-freeze	Verify B2R16 ATTEMPT-003 pre-primary freeze	﻿2026-11-08T01:54:08.6776810Z ##[group]Run set -euo pipefail
+verify-b2r16-freeze	Verify B2R16 ATTEMPT-003 pre-primary freeze	2026-11-08T01:54:08.6777387Z ^[[36;1mset -euo pipefail^[[0m
+verify-b2r16-freeze	Verify B2R16 ATTEMPT-003 pre-primary freeze	2026-11-08T01:54:08.6778092Z ^[[36;1mPYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r16.py --require-git^[[0m
+verify-b2r16-freeze	Verify B2R16 ATTEMPT-003 pre-primary freeze	2026-11-08T01:54:08.6798517Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+verify-b
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && gh pr list --repo TheHalfMoon/Wispral --state all --limit 20 --json number,headRepositoryOwner,headRefOid,state 2>&1 | python -c "import sys,json; [print(x) for x in json.load(sys.stdin)]"
+{'headRefOid': 'de095ea3260698a84332ffd6cf708e336c645d51', 'headRepositoryOwner': {'id': 'U_kgDOEP4lsg', 'name': '<owner display name>', 'login': 'TheHalfMoon'}, 'number': 130, 'state': 'OPEN'}
+{'headRefOid': '447d7da42edc3f719e94deae7de9d5c20d7f719c', 'headRepositoryOwner': {'id': 'U_kgDOEP4lsg', 'name': '<owner display name>', 'login': 'TheHalfMoon'}, 'number': 129, 'state': 'MERGED'}
+{'headRefOid': '138bbea7336b1daa5b09869e929bd48c1d5bd9a0', 'headRepositoryOwner': {'id': 'U_kgDOEP4lsg', 'name': '<owner display name>', 'login': 'TheHalfMoon'}, 'number': 128, 'state': 'OPEN'}
+{'headRefOid': '
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && git ls-remote origin 'refs/pull/130/head' 'refs/pull/120/head' 2>&1 | head
+85fe810267eda7ce1be8b76fd4cd769d3a39003d	refs/pull/120/head
+de095ea3260698a84332ffd6cf708e336c645d51	refs/pull/130/head
+
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && git ls-remote origin 2>&1 | grep -c 'refs/pull/' ; git ls-remote origin 2>&1 | grep 'refs/pull/130/' | head
+138
+de095ea3260698a84332ffd6cf708e336c645d51	refs/pull/130/head
+fc138bd8783994288c70c0e2619e4d3a6bf3ece6	refs/pull/130/merge
+
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && git fetch --no-tags --quiet origin 138bbea7336b1daa5b09869e929bd48c1d5bd9a0 2>&1; git ls-tree -r --name-only 138bbea7336b1daa5b09869e929bd48c1d5bd9a0 -- research/wispral-world-class/evidence/governance/c1 2>&1 | head -100
+research/wispral-world-class/evidence/governance/c1/README.md
+research/wispral-world-class/evidence/governance/c1/base-8d52a45/recovery_base.txt
+research/wispral-world-class/evidence/governance/c1/base-8d52a45/recovery_c1-neutralized.txt
+research/wispral-world-class/evidence/governance/c1/base-8d52a45/recovery_c1.txt
+research/wispral-world-class/evidence/governance/c1/base-8d52a45/recovery_pr120.txt
+research/wispral-world-class/evidence/governance/c1/base-8d52a45/recovery_pr120c1.txt
+research/wispral-world-class/evidence/governance/c1/base-8d52a45/trusted-pr_base.txt
+research/wispral-world-cla
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && git show 138bbea7336b1daa5b09869e929bd48c1d5bd9a0:research/wispral-world-class/evidence/governance/c1/README.md 2>&1 | head -80
+# C1 Principle XVII item 5 evidence
+
+Evidence for correction C1 (B2R16 freeze preservation from a base-defined job). It covers the two B2 trusted scope gates that fail on C1 and are preserved under Constitution Principle XVII item 5.
+
+- **Gate definitions:** `main` at `edacdf7504302cc91ff7138bc6ac2d391e4df1f4` (`.github/workflows/000b2-public-attempt-003-trusted-pr.yml`, job `verify-successor-pr-from-canonical-base`; `.github/workflows/000b2-public-attempt-003-recovery.yml`, job `verify-successor-recovery`). C1 changes neither file.
+- **Harness:** [`run_gate_steps.py`](run_gate_steps.py) (succ
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && git show 138bbea7336b1daa5b09869e929bd48c1d5bd9a0:research/wispral-world-class/evidence/governance/c1/base-8d52a45/trusted-pr_c1.txt 2>&1 | tail -60; echo '=== recovery c1 ==='; git show 138bbea7336b1daa5b09869e929bd48c1d5bd9a0:research/wispral-world-class/evidence/governance/c1/base-8d52a45/recovery_c1.txt 2>&1 | tail -60
+## DEFINITION 8d52a4579a0b1c6555cbe8443027c1950493b326:.github/workflows/000b2-public-attempt-003-trusted-pr.yml job=verify-successor-pr-from-canonical-base
+## CANDIDATE HEAD de095ea3260698a84332ffd6cf708e336c645d51
+## STEP 1 Checkout untrusted candidate data only: uses actions/checkout@11d5960a326750d5838078e36cf38b85af677262 (performed by harness setup)
+## STEP 2 Verify trusted-base event and immutable control boundary: exit 1
+   8d52a4579a0b1c6555cbe8443027c1950493b326
+   TRUSTED_PR_GATE=FAIL: B2R17 candidate path scope violation
+## STEP 3 Verify candidate with exact authority-base common v
+
+$ cd <home>/AppData/Local/Temp/opencode/wispral_review && git show 138bbea7336b1daa5b09869e929bd48c1d5bd9a0:research/wispral-world-class/evidence/governance/c1/run_gate_steps.py 2>&1 | head -120; echo '=== driver ==='; git show 138bbea7336b1daa5b09869e929bd48c1d5bd9a0:research/wispral-world-class/evidence/governance/c1/c1_gate_evidence.sh 2>&1 | head -120
+"""Run every `run:` step of one workflow job, as defined at a fixed Git ref, against a candidate checkout.
+
+Successor of run_inline_gate.py for Constitution Principle XVII item 5 evidence. Each step runs
+separately under `bash --noprofile --norc -eo pipefail` (the GitHub `shell: bash` contract), so a
+failing step does not stop later steps (non-concealment). `uses:` steps are performed by the caller
+(the candidate checkout) and are listed, not executed. `--patch STEP::OLD::NEW` replaces one exact
+substring in one step for within-step evidence; every patch is printed. Expression-valued env
+entri
+

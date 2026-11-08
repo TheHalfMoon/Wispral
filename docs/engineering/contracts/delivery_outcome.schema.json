@@ -1,0 +1,421 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://wispral.invalid/contracts/v1/delivery_outcome.schema.json",
+ "title": "WisprSide text delivery outcome (CANDIDATE v1, revised after Core and WisprSide audits)",
+ "description": "Exactly one outcome per delivery attempt, owned by the WisprSide delivery transaction and written to history after delivery (text delivery is not an effect_intent: most targets have no read-back probe). Partial deliveries are never auto-retried. The clipboard is restored only if Wispral still owns it. Cross-field bounds and epoch equality are checked by the runtime runner. Digests use the canonicalization rules in README.md.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "delivery_id",
+  "request_id",
+  "epoch",
+  "epoch_at_activation",
+  "target",
+  "outcome",
+  "chars_total",
+  "chars_delivered",
+  "clipboard"
+ ],
+ "properties": {
+  "delivery_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "intent_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "request_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "epoch": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "epoch_at_activation": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "target": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "captured_at_activation",
+    "window_handle",
+    "process_instance",
+    "image_path_digest"
+   ],
+   "properties": {
+    "captured_at_activation": {
+     "const": true
+    },
+    "window_handle": {
+     "type": "string",
+     "pattern": "^0x[0-9A-Fa-f]{1,16}$"
+    },
+    "focus_handle": {
+     "type": "string",
+     "pattern": "^0x[0-9A-Fa-f]{1,16}$"
+    },
+    "process_instance": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "pid",
+      "start_generation"
+     ],
+     "properties": {
+      "pid": {
+       "type": "integer",
+       "minimum": 1
+      },
+      "start_generation": {
+       "type": "string",
+       "pattern": "^[0-9]{1,20}$",
+       "description": "Unsigned 64-bit value encoded as a decimal string so JavaScript hops never round it (FILETIME values exceed 2^53)."
+      }
+     }
+    },
+    "image_path_digest": {
+     "type": "string",
+     "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "app_display_name": {
+     "type": "string",
+     "maxLength": 128
+    },
+    "integrity_level": {
+     "enum": [
+      "low",
+      "medium",
+      "high",
+      "system",
+      "unknown"
+     ]
+    },
+    "hosted_process_instance": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "pid",
+      "start_generation",
+      "image_path_digest"
+     ],
+     "description": "For UWP/WinUI apps hosted by ApplicationFrameHost.exe: the real app process behind the frame window.",
+     "properties": {
+      "pid": {
+       "type": "integer",
+       "minimum": 1
+      },
+      "start_generation": {
+       "type": "string",
+       "pattern": "^[0-9]{1,20}$",
+       "description": "Unsigned 64-bit value encoded as a decimal string so JavaScript hops never round it (FILETIME values exceed 2^53)."
+      },
+      "image_path_digest": {
+       "type": "string",
+       "pattern": "^sha256:[0-9a-f]{64}$"
+      }
+     }
+    },
+    "focus_element": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "runtime_id_digest",
+      "control_type",
+      "is_password",
+      "is_read_only"
+     ],
+     "description": "UI Automation focused element captured at activation (distinguishes fields inside one Chromium/Electron HWND). Captured on a dedicated thread with timeouts of 100 ms or less; a timeout yields identity_unreadable. Required for every delivering outcome, and revalidated immediately before delivery.",
+     "properties": {
+      "runtime_id_digest": {
+       "type": "string",
+       "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "control_type": {
+       "type": "string",
+       "pattern": "^[A-Za-z]{1,32}$"
+      },
+      "is_password": {
+       "type": "boolean"
+      },
+      "is_read_only": {
+       "type": "boolean"
+      }
+     }
+    }
+   }
+  },
+  "revalidated_before_delivery": {
+   "type": "boolean"
+  },
+  "outcome": {
+   "enum": [
+    "delivered_confirmed",
+    "posted_unconfirmed",
+    "refused",
+    "partial",
+    "failed",
+    "unknown"
+   ]
+  },
+  "refusal_reason": {
+   "enum": [
+    "target_changed",
+    "target_gone",
+    "pid_reused",
+    "focus_lost",
+    "focus_moved",
+    "os_session_changed",
+    "secure_desktop",
+    "elevated_target",
+    "password_field",
+    "not_editable",
+    "identity_unreadable",
+    "stale_epoch",
+    "binding_expired",
+    "policy_denied",
+    "user_cancelled"
+   ]
+  },
+  "method": {
+   "enum": [
+    "clipboard_paste",
+    "send_input_unicode",
+    "uia_value_pattern",
+    "none"
+   ]
+  },
+  "chars_total": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "chars_delivered": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "clipboard": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "used",
+    "restored"
+   ],
+   "properties": {
+    "used": {
+     "type": "boolean"
+    },
+    "restored": {
+     "type": "boolean"
+    },
+    "history_excluded": {
+     "type": "boolean",
+     "description": "The three Microsoft clipboard-history/cloud exclusion formats were set."
+    },
+    "skipped_reason": {
+     "enum": [
+      "user_changed_clipboard",
+      "not_used",
+      "restore_failed"
+     ]
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "used": {
+        "const": false
+       }
+      },
+      "required": [
+       "used"
+      ]
+     },
+     "then": {
+      "required": [
+       "skipped_reason"
+      ],
+      "properties": {
+       "restored": {
+        "const": false
+       },
+       "skipped_reason": {
+        "const": "not_used"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "used": {
+        "const": true
+       }
+      },
+      "required": [
+       "used"
+      ]
+     },
+     "then": {
+      "required": [
+       "history_excluded"
+      ],
+      "properties": {
+       "history_excluded": {
+        "const": true
+       }
+      }
+     }
+    }
+   ]
+  },
+  "focus_revalidated_before_delivery": {
+   "type": "boolean",
+   "description": "The focused element at delivery equals focus_element captured at activation (same runtime id, not a password or read-only field)."
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "outcome": {
+      "const": "refused"
+     }
+    },
+    "required": [
+     "outcome"
+    ]
+   },
+   "then": {
+    "required": [
+     "refusal_reason",
+     "method"
+    ],
+    "properties": {
+     "chars_delivered": {
+      "const": 0
+     },
+     "method": {
+      "const": "none"
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "required": [
+     "refusal_reason"
+    ]
+   },
+   "then": {
+    "properties": {
+     "outcome": {
+      "const": "refused"
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "outcome": {
+      "enum": [
+       "delivered_confirmed",
+       "posted_unconfirmed",
+       "partial"
+      ]
+     }
+    },
+    "required": [
+     "outcome"
+    ]
+   },
+   "then": {
+    "required": [
+     "revalidated_before_delivery",
+     "method"
+    ],
+    "properties": {
+     "revalidated_before_delivery": {
+      "const": true
+     },
+     "method": {
+      "enum": [
+       "clipboard_paste",
+       "send_input_unicode",
+       "uia_value_pattern"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "outcome": {
+      "const": "partial"
+     }
+    },
+    "required": [
+     "outcome"
+    ]
+   },
+   "then": {
+    "properties": {
+     "chars_delivered": {
+      "minimum": 1
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "outcome": {
+      "enum": [
+       "delivered_confirmed",
+       "posted_unconfirmed",
+       "partial"
+      ]
+     }
+    },
+    "required": [
+     "outcome"
+    ]
+   },
+   "then": {
+    "required": [
+     "focus_revalidated_before_delivery"
+    ],
+    "properties": {
+     "focus_revalidated_before_delivery": {
+      "const": true
+     },
+     "target": {
+      "required": [
+       "focus_element"
+      ],
+      "properties": {
+       "focus_element": {
+        "properties": {
+         "is_password": {
+          "const": false
+         },
+         "is_read_only": {
+          "const": false
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ ]
+}

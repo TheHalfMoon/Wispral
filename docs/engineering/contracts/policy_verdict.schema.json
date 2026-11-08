@@ -1,0 +1,428 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://wispral.invalid/contracts/v1/policy_verdict.schema.json",
+ "title": "Deterministic policy verdict (CANDIDATE v1, revised after Core audit)",
+ "description": "Adapted from the Sentrdel narrowing lattice. The candidate decision may be UNDECIDABLE; the enforced decision never is. An ASK becomes an enforced ALLOW only with a confirmation from an operator or a step-up-verified account holder; conversation text never confirms. UNDECIDABLE resolves to ASK (Sentrdel default) where a human is present, and to DENY where none is (unattended Klaint, telephony). Any enforced ALLOW for a non-read action must cite a deterministic rule; evidence alone never allows. Monotone narrowing across layers (ALLOW < ASK < DENY; empty list = UNDECIDABLE) is checked by the policy runner.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "verdict_id",
+  "request_id",
+  "epoch",
+  "candidate_decision",
+  "enforced_decision",
+  "action_class",
+  "rule_ids",
+  "layers",
+  "policy_version",
+  "inputs_digest",
+  "principal_scope_ref",
+  "human_present"
+ ],
+ "properties": {
+  "verdict_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "request_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "epoch": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "consent_epoch": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "candidate_decision": {
+   "enum": [
+    "ALLOW",
+    "ASK",
+    "DENY",
+    "UNDECIDABLE"
+   ]
+  },
+  "enforced_decision": {
+   "enum": [
+    "ALLOW",
+    "ASK",
+    "DENY"
+   ]
+  },
+  "undecidable_resolution": {
+   "enum": [
+    "ASK",
+    "DENY"
+   ]
+  },
+  "human_present": {
+   "type": "boolean"
+  },
+  "action_class": {
+   "enum": [
+    "read",
+    "reversible_write",
+    "irreversible_write",
+    "money",
+    "credential_use",
+    "publication",
+    "text_delivery",
+    "voice_render",
+    "file_export"
+   ]
+  },
+  "rule_ids": {
+   "type": "array",
+   "uniqueItems": true,
+   "items": {
+    "type": "string",
+    "minLength": 1,
+    "maxLength": 128
+   }
+  },
+  "kernel_floor_ids": {
+   "type": "array",
+   "uniqueItems": true,
+   "items": {
+    "type": "string",
+    "minLength": 1,
+    "maxLength": 128
+   }
+  },
+  "layers": {
+   "type": "array",
+   "maxItems": 16,
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "source",
+     "decision"
+    ],
+    "properties": {
+     "source": {
+      "enum": [
+       "base",
+       "product",
+       "tenant",
+       "repository",
+       "user"
+      ]
+     },
+     "decision": {
+      "enum": [
+       "ALLOW",
+       "ASK",
+       "DENY",
+       "UNDECIDABLE"
+      ]
+     }
+    }
+   }
+  },
+  "policy_version": {
+   "type": "string",
+   "pattern": "^(sha256:[0-9a-f]{64}|[a-z][a-z0-9-]{0,63}@[0-9]+\\.[0-9]+\\.[0-9]+)$"
+  },
+  "inputs_digest": {
+   "type": "string",
+   "pattern": "^sha256:[0-9a-f]{64}$"
+  },
+  "principal_scope_ref": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 128
+  },
+  "evidence": {
+   "type": "array",
+   "maxItems": 32,
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "kind",
+     "ref"
+    ],
+    "properties": {
+     "kind": {
+      "enum": [
+       "model_confidence",
+       "scanner_finding",
+       "retrieved_document",
+       "user_confirmation",
+       "consent_record",
+       "target_binding"
+      ]
+     },
+     "ref": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+     }
+    }
+   }
+  },
+  "reason": {
+   "type": "string",
+   "maxLength": 512
+  },
+  "stock_voice_catalog_id": {
+   "type": "string",
+   "pattern": "^catalog:[A-Za-z0-9._:-]{1,120}$",
+   "description": "voice_render only: a licensed stock voice listed in an admitted model manifest catalog; never self-asserted."
+  },
+  "consent_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "voice_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "confirmation": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "confirmer_kind",
+    "verification_ref",
+    "confirmed_at"
+   ],
+   "description": "Resolution of an ASK. Text typed in the conversation is never a confirmation.",
+   "properties": {
+    "confirmer_kind": {
+     "enum": [
+      "operator",
+      "step_up_verified_holder"
+     ]
+    },
+    "verification_ref": {
+     "type": "string",
+     "minLength": 8,
+     "maxLength": 256,
+     "description": "Operator identity or the out-of-band step-up verification record."
+    },
+    "confirmed_at": {
+     "type": "string",
+     "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$"
+    }
+   }
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "candidate_decision": {
+      "const": "UNDECIDABLE"
+     }
+    },
+    "required": [
+     "candidate_decision"
+    ]
+   },
+   "then": {
+    "required": [
+     "undecidable_resolution"
+    ],
+    "properties": {
+     "enforced_decision": {
+      "enum": [
+       "ASK",
+       "DENY"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "candidate_decision": {
+      "const": "UNDECIDABLE"
+     },
+     "human_present": {
+      "const": false
+     }
+    },
+    "required": [
+     "candidate_decision",
+     "human_present"
+    ]
+   },
+   "then": {
+    "properties": {
+     "undecidable_resolution": {
+      "const": "DENY"
+     },
+     "enforced_decision": {
+      "const": "DENY"
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "enforced_decision": {
+      "const": "ALLOW"
+     }
+    },
+    "required": [
+     "enforced_decision"
+    ]
+   },
+   "then": {
+    "anyOf": [
+     {
+      "properties": {
+       "candidate_decision": {
+        "const": "ALLOW"
+       }
+      }
+     },
+     {
+      "properties": {
+       "candidate_decision": {
+        "const": "ASK"
+       }
+      },
+      "required": [
+       "confirmation"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "enforced_decision": {
+      "const": "ALLOW"
+     },
+     "action_class": {
+      "not": {
+       "const": "read"
+      }
+     }
+    },
+    "required": [
+     "enforced_decision",
+     "action_class"
+    ]
+   },
+   "then": {
+    "properties": {
+     "rule_ids": {
+      "minItems": 1
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "enforced_decision": {
+      "const": "ALLOW"
+     },
+     "action_class": {
+      "const": "voice_render"
+     }
+    },
+    "required": [
+     "enforced_decision",
+     "action_class"
+    ]
+   },
+   "then": {
+    "anyOf": [
+     {
+      "required": [
+       "stock_voice_catalog_id"
+      ]
+     },
+     {
+      "required": [
+       "evidence",
+       "consent_epoch",
+       "consent_id",
+       "voice_id"
+      ],
+      "properties": {
+       "evidence": {
+        "contains": {
+         "properties": {
+          "kind": {
+           "const": "consent_record"
+          }
+         }
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "enforced_decision": {
+      "const": "ALLOW"
+     },
+     "action_class": {
+      "const": "text_delivery"
+     }
+    },
+    "required": [
+     "enforced_decision",
+     "action_class"
+    ]
+   },
+   "then": {
+    "required": [
+     "evidence"
+    ],
+    "properties": {
+     "evidence": {
+      "contains": {
+       "properties": {
+        "kind": {
+         "const": "target_binding"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "required": [
+     "confirmation"
+    ],
+    "properties": {
+     "action_class": {
+      "enum": [
+       "money",
+       "credential_use",
+       "irreversible_write",
+       "publication"
+      ]
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "human_present": {
+      "const": true
+     }
+    }
+   }
+  }
+ ]
+}
