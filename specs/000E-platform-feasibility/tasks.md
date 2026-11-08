@@ -11,21 +11,21 @@ This file tracks Grain progression. Pins, acceptance and evidence paths are in `
 
 ## Fork decision (founder, 2026-11-09)
 
-The founder chose **private forks**.
+The founder first chose **private forks**. Later the same day the founder instructed "make the repo public" and confirmed that it applies to **both forks**. Both are now **public**.
 
-GitHub does not allow a private fork of a public repository. Each fork is therefore a new private repository holding the donor's history up to the pinned commit, unchanged. The donor's own LICENSE and notices are kept in the tree.
+Each fork was created as a new repository (not a GitHub fork) holding the donor's history up to the pinned commit, unchanged. Before the visibility change, each was verified to hold only the three refs below at the pin, with no releases, secrets or issues. The pinned commits are themselves public upstream, so the change published nothing that was not already public. The donor's own LICENSE and notices are kept in the tree.
 
 | Grain | Fork | Donor and pin | Pushed refs |
 | --- | --- | --- | --- |
-| `SD-M0` | `TheHalfMoon/wisprside` (private) | `cjpais/Handy@73cc8579cff74e97e08de9d86035a92e4335ff7f` (931 commits) | `main` and `upstream/pin` at the pin; tag `upstream-73cc857` |
-| `ST-D00` | `TheHalfMoon/wisprstudio` (private) | `debpalash/VoiceStudio@200286ccff6f28faaf51bb08b2a5b54c460b39f4` (6,603 commits) | `main` and `upstream/pin` at the pin; tag `upstream-200286c` |
+| `SD-M0` | `TheHalfMoon/wisprside` (public) | `cjpais/Handy@73cc8579cff74e97e08de9d86035a92e4335ff7f` (931 commits) | `main` and `upstream/pin` at the pin; tag `upstream-73cc857` |
+| `ST-D00` | `TheHalfMoon/wisprstudio` (public) | `debpalash/VoiceStudio@200286ccff6f28faaf51bb08b2a5b54c460b39f4` (6,603 commits) | `main` and `upstream/pin` at the pin; tag `upstream-200286c` |
 
 **GitHub Actions is disabled** in both forks. It was disabled before any code was pushed, and both forks show zero workflow runs. The donors' workflows (9 and 30) are present in the trees but cannot run.
 
 **Before a baseline run:**
 
 - the donor's release, signing and updater workflows are disabled on a baseline branch;
-- the Actions-minutes budget for private runners is agreed with the founder. Windows minutes count double, and paid minutes are never used without authorization.
+- the runner plan is agreed with the founder. Hosted Actions minutes are free for public repositories; paid runners or services are never used without authorization.
 
 Nothing is published as a release.
 
