@@ -2,7 +2,7 @@
 
 **Status:** CANDIDATE PLAN, revised after independent security and testability review (see [INDEPENDENT_REVIEW.md](../../research/wispral-world-class/INDEPENDENT_REVIEW.md)). This document authorizes nothing. It proposes the smallest legitimate sequence by which the founder can make the platform plan executable without weakening, bypassing, disabling, relabeling or suppressing any check. Full evidence: [governance and CI research report](../../research/wispral-world-class/evidence/research-reports/GOVERNANCE_CI_RESEARCH.md), with reproduction scripts and outputs in [evidence/governance/](../../research/wispral-world-class/evidence/governance/trigger_matrix.txt). It refines PR #124's [amendment proposal](WISPRAL_GOVERNANCE_AMENDMENT_PROPOSAL.md) and PR #125's finding M1, and absorbs #126's control work.
 
-Canonical base for every statement: `main` = `edacdf7504302cc91ff7138bc6ac2d391e4df1f4`, unchanged since 2026-09-10 (`RUNTIME_OBSERVED` 2026-11-08). Branch protection: none (classic protection 404, rulesets `[]`). **Missing protection is not permission**; repository governance still binds, and every merge that carries a preserved red check is recorded as an explicit owner act.
+**Live state (2026-11-08):** `main` = `5879c43c7a389bd460955f2e181e8bd70f0ecee5`. G1 merged as `8d52a45` (#129) and C1 as `5879c43` (#130). Sections 1, 3 and 4.1 keep the pre-G1 analysis (base `edacdf7504302cc91ff7138bc6ac2d391e4df1f4`) as history. Sections 2, 4.2, 5, 7 and 8 are the live sequence. Branch protection: none (classic protection 404, rulesets `[]`). **Missing protection is not permission**; repository governance still binds, and every merge that carries a preserved red check is recorded as an explicit owner act.
 
 ---
 
@@ -18,31 +18,56 @@ Canonical base for every statement: `main` = `edacdf7504302cc91ff7138bc6ac2d391e
 | B-6 | **No qualifying independent reviewer is configured** | `recovery-v2.md:187`; Constitution XVI.7 | Defined in §5 below; founder must name one |
 | B-7 | **Trusted coverage gap:** `research/000b2-entry/**`, `research/000b1/**` and `000b2-entry-*.yml` are guarded only by candidate-controlled `pull_request` workflows, not by a base-defined gate | Security review finding 1/3 (`SOURCE_VERIFIED` path filters) | Strengthening needed in C2 |
 
-## 2. Recommended sequence (lane first)
+**Status of each blocker on 2026-11-08:**
+
+| Blocker | Status |
+| --- | --- |
+| B-1 | Open until G2 |
+| B-2 | **Resolved by C1** (`5879c43`). The freeze is base-defined, and its `push` run on `main` passes ([run 42446197959](https://github.com/TheHalfMoon/Wispral/actions/runs/42446197959)) |
+| B-3 | Open until C2. It now also shows as a red recovery `push` run on `main` ([run 42446198003](https://github.com/TheHalfMoon/Wispral/actions/runs/42446198003)), a preserved failure |
+| B-4 | Open until R |
+| B-5 | Legitimate; opened only by 000G |
+| B-6 | **Resolved in practice:** a different-vendor reviewer route (DeepSeek V4.1 Flash via OpenCode, cost 0) qualified #130 |
+| B-7 | Open until C2 |
+
+## 2. Live sequence (lane first)
 
 ```mermaid
 flowchart LR
-  G1["G1 · Constitution 0.3.0<br/>Principle XVII + transitional clause"] --> C1["C1 · freeze preservation<br/>(base-defined job)"]
-  C1 --> C2["C2 · non-successor class<br/>+ trusted coverage extension"]
-  C2 --> R["R · ledger record<br/>C1, C2, #118"]
-  R --> P["PLAN · this package"]
+  G1["G1 · 0.3.0<br/>MERGED 8d52a45"] --> C1["C1 · freeze correction<br/>MERGED 5879c43"]
+  C1 --> P["PLAN · this package"]
+  C1 --> A["A040 · 0.4.0 (#133)<br/>XVII hardening"]
+  A --> C2["C2 · non-successor class<br/>+ trusted coverage"]
+  C2 --> R["R · combined reconciliation<br/>G1 waivers, C1, C2, #118"]
+  R --> N["NOOP · empty-PR confirmation"]
   R --> G2["G2 · Constitution 1.0.0<br/>platform thesis"]
   P --> G2
   G2 --> F["F · frontier reconciliation<br/>opens 000E/000F Grains"]
+  C2 --> F
   F --> D["D0G · 000G decision"]
   R -. founder decision recorded .-> B2["B2-R17 requalification<br/>(independent lane)"]
 ```
 
-| Step | Paths | Expected red checks | Status of each red | Review class | Rollback |
+| Step | Status | Paths | Expected red checks | Review class | Rollback |
 | --- | --- | --- | --- | --- | --- |
-| **G1** | `CONSTITUTION.md` only | `verify-b2r16-freeze` only | Preserved under G1's transitional clause (§3) — an explicit owner act | Constitution-required | Governed revert |
-| **C1** | `.github/workflows/000b2-public-b2r16-freeze.yml`; `research/000b2-public/verify_b2r16_preservation.py`; `research/000b2-public/test_b2r16_preservation.py`; `research/control-repairs/2026-11-*/**` | The freeze job does not run on C1 (the base defines it on `pull_request`, C1 on `pull_request_target`), so G1 condition (iii)(c) requires a `workflow_dispatch` run on C1's exact head instead; `verify-successor-recovery`, `verify-successor-pr-from-canonical-base` (scope; preserved under XVII item 5 only with cause and non-concealment proof) | Owner act per merge | Constitution-required | Governed revert restores the original workflow; evidence stays |
-| **C2** | `.github/workflows/000b2-public-attempt-003-recovery.yml`; `.github/workflows/000b2-public-attempt-003-trusted-pr.yml`; `research/000b2-public/verify_attempt_002_invalidation.py`; `research/control-repairs/2026-11-*/**` | `verify-successor-recovery`, `verify-successor-pr-from-canonical-base` (declared control bytes; XVII counterfactual proof) | Owner act per merge | Constitution-required | Governed revert |
-| **R** | `docs/canonical/TRUSTED_CONTROL_REPAIRS.md` (or `CONTROL_CORRECTIONS.md` designated by G1); `AGENTS.md` (reading-order line only) | None | — | Ordinary | Revert |
-| **PLAN** | This package (docs and research only) | None after C1 (before C1: `verify-b2r16-freeze`, like every PR) | Must **not** merge before C1 | Ordinary | Revert (no runtime effect) |
-| **G2** | `CONSTITUTION.md`, `AGENTS.md`, `ARCHITECTURE_INVARIANTS.md`, `PROGRAM_ROADMAP.md`, `specs/000-founding-research/{spec,plan}.md` | None (`REPRODUCED` trigger set: only the freeze workflow, which C1 corrects) | — | Constitution-required | Governed major revert |
-| **F** | `specs/CURRENT.md`, `docs/canonical/CURRENT_STATE.md` (allowlisted sections only, §4.2), `specs/000-founding-research/tasks.md`, new `specs/000E-platform-feasibility/{spec,plan,tasks}.md`, new `specs/000F-provenance-intake/{spec,plan,tasks}.md` | None (passes the non-successor class) | — | Ordinary | Revert |
-| **D0G** | 000G closeout + selected Grain specs | Per touched paths; none expected | — | Constitution-required | Revert |
+| **G1** | **MERGED** `8d52a45` (#129). The owner waived the qualifying review; recorded on #129 | `CONSTITUTION.md` | (was) `verify-b2r16-freeze`, preserved under the transitional clause | Constitution-required (waived; A040 ratifies) | Governed revert |
+| **C1** | **MERGED** `5879c43` (#130). DeepSeek review: round 1 REQUEST_CHANGES (4 blocking), round 2 APPROVE (0 blocking) | freeze workflow, preservation checker and tests | (was) the two B2 scope gates, preserved under XVII item 5; the freeze job absent and replaced by a dispatch run | Constitution-required | Governed revert restores the original workflow (its PR shows a red freeze check by design) |
+| **PLAN** | Open (#128). Needs its qualifying review | this package (docs and research only) | **None** (the freeze is base-defined since C1) | Ordinary plus qualifying review | Revert |
+| **A040** | Open (#133, drafted by another session on the owner's account) | `CONSTITUTION.md` | **None** | Constitution-required, qualifying review not waivable | Governed revert |
+| **C2** | Not started. **Needs A040**: under 0.3.0 its immutable-control boundary failure cannot be preserved (audit A3) | recovery and trusted-pr workflows, `verify_attempt_002_invalidation.py` | the two scope gates and the immutable-control boundary, preserved under amended item 5 | Constitution-required | Governed revert |
+| **R** | Not started | `docs/canonical/TRUSTED_CONTROL_REPAIRS.md` (outside every B2 path filter); `AGENTS.md` reading-order line | None | Qualifying review (amended item 10) | Revert |
+| **NOOP** | Not started | none (empty commit, throwaway PR) | None, and all `main` push runs green | Ordinary | Close the PR |
+| **G2** | Not started | `CONSTITUTION.md`, `AGENTS.md`, `ARCHITECTURE_INVARIANTS.md`, `PROGRAM_ROADMAP.md`, `specs/000-founding-research/{spec,plan}.md` | None | Constitution-required | Governed major revert |
+| **F** | Not started | `specs/CURRENT.md`, `docs/canonical/CURRENT_STATE.md` (allowlisted sections only, §4.2), `specs/000-founding-research/tasks.md`, new `specs/000E-platform-feasibility/{spec,plan,tasks}.md`, new `specs/000F-provenance-intake/{spec,plan,tasks}.md` | None (passes the non-successor class) | Ordinary | Revert |
+| **D0G** | Not started | 000G closeout and the selected Grain specs | Per touched paths; none expected | Constitution-required | Revert |
+
+**If A040 is rejected or delayed.**
+
+- Under 0.3.0 item 10, a C1-only reconciliation (R1, same path, records only) must precede C2.
+- C2 remains blocked, because 0.3.0 cannot preserve its immutable-boundary failure.
+- An amendment equivalent to A040's A3 text is the only legitimate exit.
+
+**Superseded sequences.** The V3 execution sequence on #124's branch (#131 and #134) is superseded by this table. Draft #127 is superseded by #129.
 
 **After C2:** the founder is advised to enable a repository ruleset with exactly one required check — a base-defined aggregator job that always runs and fails if any applicable check is red, absent, skipped, pending or cancelled. Path-filtered checks must not be made *required* individually, or they deadlock as "absent".
 
@@ -51,6 +76,8 @@ flowchart LR
 **Rejected alternatives** (research report §7): amendment first (red checks with no authority); one combined amendment (couples CI integrity to the platform pivot; second choice); path-filtering the freeze workflow alone (itself a control change, weaker, leaves the frontier locked); relocating the frontier (path-dodging); waiting for B2 (the lock is permanent).
 
 ## 3. Proposed text for G1 (Constitution 0.2.1 → 0.3.0)
+
+> **Historical. Adopted with revisions** as #129 (merge `8d52a45`, revision 3). The canonical text is `CONSTITUTION.md` on `main`. The quotation below is the proposal as last synced, kept as history. #133 (A040) proposes 0.4.0.
 
 > **Principle XVII — Correcting an over-applied benchmark control is explicit, narrow and proven.**
 >
@@ -82,7 +109,17 @@ flowchart LR
 
 ## 4. Corrections C1 and C2 — required content
 
-### 4.1 C1 — freeze preservation from a base-defined job
+### 4.1 C1 — freeze preservation from a base-defined job (MERGED `5879c43`)
+
+Done as #130. The qualifying review led to five additions beyond the requirements below:
+
+- candidates from before the freeze merge are judged by the frozen original verifier;
+- an exact restore of the original workflow is rejected;
+- there is a negative fixture for every rejecting branch (20 tests);
+- a freeze-gate non-concealment run was added;
+- the task-content guards skipped by the neutralization were run separately.
+
+Evidence: [`evidence/governance/c1/`](../../research/wispral-world-class/evidence/governance/c1/README.md).
 
 1. Keep `verify_b2r16.py` and all frozen payloads unchanged. Verify the 16 frozen path identities against canonical merge `885307429ec8b1aa0fe173169a8c2918714c06b0`; run the unchanged verifier at qualified head `ac9f7ce993aec33e6c6436cce4efd85394a97f35` and preserve its PASS output; reject byte, deletion, mode and symlink tampering, forged checker or test scripts, and import shadowing (#126's seven-group suite).
 2. **Run the preservation checker from a base-defined `pull_request_target` job** with `python -I`, reading the candidate only as data. Candidate-controlled workflows are no longer the trust root for the freeze.
@@ -99,6 +136,15 @@ flowchart LR
    - **Everything outside the allowlisted regions is B2-owned** and must be byte-identical to the authority base, including the title, the metadata block before the first `## ` heading (so the `**Status:**` line of `specs/CURRENT.md` keeps describing the B2 lane; platform status lives in the appended Platform frontier section) and the order of all existing headings. Text is NFC-normalized before comparison; duplicate headings and headings that differ from an allowlisted heading only by Unicode confusables are rejected.
 3. **B2 markers:** the exact strings `Active successor recovery unit`, `ATTEMPT-003 primary decode entry open`, `ATTEMPT-003 frozen`, `production_stt_selected`, `product_code_authorized` and `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE`. Their count and positions in B2-owned regions must equal the authority base (they occur several times on `main` today, which is accepted), and **none may appear inside an allowlisted region or an appended Platform frontier section**. This closes the marker-injection path in `verify_attempt_002_invalidation.py:694-711`, which only checks that a marker appears somewhere.
 4. **Trusted coverage extension:** the base-defined gate also runs for `research/000b2-entry/**`, `research/000b1/**` and `.github/workflows/000b2-entry-*.yml`, so their changes are no longer guarded only by candidate-controlled workflows.
+6. **Since C1 and A040:**
+   - The immutable-control boundary failure is preserved only as A040 allows: the declared annexed byte change is its only cause, reverting that blob makes the boundary pass, and the immutable list is unchanged.
+   - Apply every C1 lesson:
+     - an in-class corpus with recorded historical verdicts;
+     - a negative fixture for every rejecting branch;
+     - the non-concealment diff pinned by commit SHA;
+     - checks skipped by a neutralization run separately;
+     - the correction's own verifier and tests equal to the trusted revision's bytes (#130 assisting finding B6).
+   - C2's push run must turn the recovery gate on `main` green.
 5. **Tests:** positive — `main` itself (as a no-op candidate for the section checker), PR #120 for both gates, F's literal planned diff, a terminal-state (`active_recovery_unit: null`) non-successor candidate; negative — any B2 path, readiness change, `.github/**` change, edit outside the allowlist, reordered heading, confusable or duplicated heading, a marker added inside an allowlisted region, a marker removed or moved in a B2-owned region, extra-path, missing-path and deleted task candidates. All executed from base-pinned code, with counterfactual and non-concealment evidence per Principle XVII item 5.
 
 ## 5. Blocking-gate register (summary)
@@ -107,31 +153,37 @@ The full register with authority lines, failure text, reproduction commands, tes
 
 | Gate | Authority | Failure | Applies? | Correction | Position |
 | --- | --- | --- | --- | --- | --- |
-| GATE-1 `verify-b2r16-freeze` | `000b2-public-b2r16-freeze.yml:3-5`; `verify_b2r16.py:123-140,271-273` | `B2R16 actual candidate range scope drift` | No (B2R16-task verifier applied to everything; masks later checks) | G1 transitional clause, then C1 | G1, C1 → fixed by C1 |
+| GATE-1 `verify-b2r16-freeze` | `000b2-public-b2r16-freeze.yml:3-5`; `verify_b2r16.py:123-140,271-273` | `B2R16 actual candidate range scope drift` | No (B2R16-task verifier applied to everything; masks later checks) | G1 transitional clause, then C1 | **Fixed by C1** (`5879c43`) |
 | GATE-2 `verify-successor-recovery` | `000b2-public-attempt-003-recovery.yml:133-162` | `B2R17 task-candidate path scope violation` | On C1/C2: yes (preserved with counterfactual). On F before C2: no | C2 non-successor class | Preserved on C1/C2; passes on F |
 | GATE-3 `verify-successor-pr-from-canonical-base` | `000b2-public-attempt-003-trusted-pr.yml:83-160` | `B2R17 candidate path scope violation` / immutable control changed | Same | Same | Same |
 | GATE-4 common verifier | `verify_attempt_002_invalidation.py:370-423,694-711` | exact canonical task path set | Same | Same + marker uniqueness | C2 |
-| GATE-5 qualifying review | Proposed Governance item 7 | — | G1, C1, C2, G2, D0G, B2-R17 | **Founder names reviewers** | Before each of those merges |
-| GATE-6 guarded merge + exercise | XVI.8–9 / XVII.8–9 | — | C1, C2 | `workflow_dispatch` on merge SHA | After C1 and C2 |
+| GATE-5 qualifying review | Governance item 7 (in force) | — | PLAN, A040, C2, R, G2, D0G, B2-R17 | Different-vendor route proven on C1 (DeepSeek via OpenCode); the founder or a named human also qualifies | Before each of those merges |
+| GATE-6 guarded merge + exercise | XVI.8–9 / XVII.8–9 | — | C1 (done: push run 42446197959), C2 | `push` run on the merge SHA | After C2 |
 | GATE-7 product-code gate | `CURRENT_STATE.md`; `specs/CURRENT.md` | — | Any product code | G2 → F → D0G | After F |
 | GATE-8 #118 record | Constitution Governance 2 (no hidden exceptions) | run 34416457849 | Debt | R records it as an exception (§7.5) | R |
 
 ## 6. What this planning PR is and is not
 
 - Research and planning only: `docs/strategy/`, `docs/design/`, `docs/engineering/`, `docs/adr/`, `research/rea/`, `research/reviews/`, `research/wispral-world-class/`. It carries PRs #123, #124 and #125 by merge ancestry.
-- **Before C1 merges**, its only red check is `verify-b2r16-freeze`, the same failure `main` has; it is reported as **FAIL**. **After C1 and C2**, no red check is expected. It must not merge before C1.
+- Since C1 merged, the freeze is base-defined, and no red check is expected on this PR. It needs its own qualifying review (Governance item 7) and the owner's merge approval.
 - It edits no constitution, `AGENTS.md`, canonical document, `specs/`, workflow, trusted verifier or B2 artifact. Proposed amendment text appears only inside this document.
 
 ## 7. Founder-only decisions (in order)
 
-1. Ratify G1 as drafted or revised, including the transitional clause and Governance item 7.
-2. Name the qualifying reviewers for G1, C1, C2, G2, D0G and B2-R17. Zero-cost options: the founder's own review of the exact range, or a different-vendor model reviewer the founder already has access to, with its identity recorded.
-3. Authorize each guarded merge (recorded as owner acts where a red is preserved); record live branch settings at merge time.
-4. After C2: decide whether to enable the single-aggregator ruleset.
-5. **#118:** decide on fresh evidence, not by relabeling. Recommended evidence: run the trusted B2R16 preservation checker on the #118 merge and obtain a qualifying retrospective review of #118's range. R then records #118 as "merged with a red required verifier and no approving review — exception recorded on [date] with this evidence", and the founder states whether the B2R17 frontier stands.
-6. Ratify G2 after reviewing this plan.
-7. Open PRs: #120 requalify after C2; #121 independent; #123–#125 carried by PLAN (close as superseded after PLAN merges); #126 superseded by C1.
+1. **A040 (#133).** Obtain its qualifying review (not waivable), then merge it. This also ratifies the #129 waivers. Before review, #133's text needs one update: #130 has merged under 0.3.0, so its "must meet before merge" clause becomes a C2 obligation.
+2. **PLAN (#128).** Authorize its merge after its qualifying review.
+3. **C2.** Authorize drafting after A040; later its guarded merge.
+4. **R.** Authorize the combined reconciliation after C2.
+5. **#118.** Decide on fresh evidence, not by relabeling. Recommended evidence: run the trusted B2R16 preservation checker on the #118 merge, and obtain a qualifying retrospective review of #118's range. R then records #118 as "merged with a red required verifier and no approving review — exception recorded on [date] with this evidence", and the founder states whether the B2R17 frontier stands.
+6. **Ruleset.** After C2, decide whether to enable the single-aggregator ruleset.
+7. **G2.** Ratify it after reviewing this plan.
+8. **Open PRs:**
+   - #120: requalify after C2;
+   - #121: independent;
+   - #123 and #124: close as carried after PLAN merges;
+   - #127: close as superseded by #129;
+   - #126: closed.
 
 ## 8. What the engineering agent can do once authorized
 
-Draft G1's PR text; prepare C1 and C2 with all fixtures and counterfactual runs; run every local positive and negative test and the gate harness at the exact heads; open draft PRs with full XVI.3-style descriptions; capture run IDs; dispatch post-merge exercises with permission; draft R, G2 and F; prepare #120's requalification. None of this starts without the founder's go-ahead for that specific PR.
+(G1 and C1 are done.) Prepare C2 with all fixtures and counterfactual runs; run every local positive and negative test and the gate harness at the exact heads; open draft PRs with full XVI.3-style descriptions; capture run IDs; dispatch post-merge exercises with permission; draft R, G2 and F; prepare #120's requalification. None of this starts without the founder's go-ahead for that specific PR.

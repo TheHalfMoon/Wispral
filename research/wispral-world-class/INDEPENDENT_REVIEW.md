@@ -96,3 +96,13 @@
 ## Second-round check
 
 A focused re-check judged all seven blocker fixes partially resolved and named the remaining gaps; every gap was then fixed. Details: [PLAN_VALIDATION.md](PLAN_VALIDATION.md#second-round-blocker-check). A third round was not run; the governance text still requires a qualifying review before ratification.
+
+## Qualifying review (Governance item 7(c))
+
+The earlier rounds were same-vendor reviews and do not qualify.
+
+- **Reviewer.** The plan's qualifying review uses the different-vendor route proven on C1: DeepSeek V4.1 Flash through OpenCode, model id `opencode/deepseek-v4.1-flash-free`, read-only `plan` agent.
+- **Record.** The model identity, prompts and complete outputs are recorded in comments on #128, bound to the exact reviewed head. Recording the review does not change the head.
+- **Blocking findings.** Any blocking finding is fixed in a new head, which is re-reviewed before merge.
+
+For C1 itself, the qualifying review record is in [`evidence/governance/c1/review/`](evidence/governance/c1/review/README.md).

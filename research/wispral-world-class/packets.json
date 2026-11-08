@@ -71,14 +71,14 @@
  "first_ten": [
   "G1",
   "C1",
+  "PLAN",
+  "A040",
   "C2",
   "R",
-  "PLAN",
+  "NOOP",
   "G2",
   "F",
-  "CORE-00",
-  "SD-M0",
-  "KT-01"
+  "CORE-00"
  ],
  "validated_documents": [
   "docs/strategy/WISPRAL_WORLD_CLASS_MASTER_PLAN.md",
@@ -143,8 +143,15 @@
    "rollback": "Governed revert PR",
    "definition_of_done": "Merged with founder ratification and the owner act recorded",
    "estimate": "0.5 d drafting + review latency",
-   "status": "DRAFT",
+   "status": "MERGED",
    "ready": false,
+   "merged": {
+    "pr": 129,
+    "head": "447d7da42edc3f719e94deae7de9d5c20d7f719c",
+    "merge": "8d52a4579a0b1c6555cbe8443027c1950493b326",
+    "date": "2026-11-08",
+    "note": "Owner act on 'skip review and go ahead'; qualifying review and transitional condition (iii) reviewer reproduction waived and recorded on #129; to be ratified by A040"
+   },
    "execution": [
     "hosted-ci",
     "manual:HW-A (founder laptop, Windows 11 Home, medium-integrity user session), evidence recorded under research/wispral-world-class/evidence/"
@@ -189,8 +196,15 @@
    "rollback": "Governed revert restores the original workflow; preserved evidence remains",
    "definition_of_done": "Merged; post-merge workflow_dispatch exercise on the merge SHA recorded",
    "estimate": "1 d + review latency",
-   "status": "DRAFT",
+   "status": "MERGED",
    "ready": false,
+   "merged": {
+    "pr": 130,
+    "head": "cabf4e5d96ab03d38a74ee4e5986be17a26f5e74",
+    "merge": "5879c43c7a389bd460955f2e181e8bd70f0ecee5",
+    "date": "2026-11-08",
+    "note": "Qualifying different-vendor review (DeepSeek V4.1 Flash via OpenCode) APPROVE with 0 blocking after one REQUEST_CHANGES round; freeze push run 42446197959 PASS; recovery push run 42446198003 FAIL as the declared preserved scope failure"
+   },
    "donor": {
     "repo": "TheHalfMoon/Wispral",
     "sha": "a97d596bfc9a027bc6c71747b11d94de14f3e838",
@@ -206,13 +220,56 @@
    ]
   },
   {
+   "id": "A040",
+   "phase": "P0",
+   "product": "governance",
+   "subsystem": "constitution",
+   "title": "Constitution 0.4.0 (#133): harden Principle XVII after the post-merge audit (A1-A4) and ratify the waived #129 review",
+   "depends_on": [
+    "C1"
+   ],
+   "decision": "GOVERNANCE",
+   "readiness_authority": "FOUNDER_RATIFICATION",
+   "affected": [
+    "CONSTITUTION.md"
+   ],
+   "acceptance": [
+    "Item 3a: every non-classification invariant stays enforced on every later candidate, including the correction's own verifier and test files",
+    "Item 10: the reconciliation changes records only, proven by a deterministic field diff, with a qualifying review; Frontier sections designated only by constitutional amendment",
+    "A3: an immutable-boundary failure whose only cause is the declared annexed byte change may be preserved, with the immutable list unchanged",
+    "A4: corrections in one closed, owner-confirmed lane share one combined reconciliation",
+    "Text updated for #130 having merged under 0.3.0 (its 'must meet before merge' clause becomes a C2 obligation)",
+    "Only CONSTITUTION.md changes; every applicable check green (the freeze is base-defined since C1)"
+   ],
+   "tests": [
+    "Trigger matrix for CONSTITUTION.md-only changes",
+    "Exact-head checks all green"
+   ],
+   "ci_gates": [
+    "Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act",
+    "Qualifying independent review (proposed Governance item 7)",
+    "Founder approval of the merge"
+   ],
+   "security_risks": [
+    "Lane loosening beyond A3/A4 (mitigated by deterministic proof conditions)"
+   ],
+   "rollback": "Governed revert PR",
+   "definition_of_done": "Merged with a recorded qualifying review and owner merge act",
+   "estimate": "Review latency only (drafted in #133)",
+   "status": "DRAFT",
+   "ready": false,
+   "execution": [
+    "hosted-ci"
+   ]
+  },
+  {
    "id": "C2",
    "phase": "P0",
    "product": "governance",
    "subsystem": "trusted controls",
    "title": "XVII correction 2: non-successor class with exact section allowlist, marker uniqueness and trusted-coverage extension",
    "depends_on": [
-    "C1"
+    "A040"
    ],
    "decision": "GOVERNANCE",
    "readiness_authority": "XVII_CORRECTION",
@@ -225,7 +282,9 @@
    "acceptance": [
     "Rules exactly as in reconciliation section 4.2 (allowlisted headings; appended Platform frontier sections; NFC; confusables; B2 markers exactly once in B2-owned sections)",
     "PR #120 still passes both gates; F's literal planned diff passes",
-    "Trusted base-defined gate also covers research/000b2-entry/**, research/000b1/** and 000b2-entry-*.yml"
+    "Trusted base-defined gate also covers research/000b2-entry/**, research/000b1/** and 000b2-entry-*.yml",
+    "Immutable-control boundary failure preserved only as A040 allows (declared annexed byte change only; immutable list unchanged)",
+    "C1 lessons: in-class corpus with recorded historical verdicts; a negative fixture for every rejecting branch; non-concealment diff pinned by commit SHA; every check skipped by a neutralization run separately; the correction's own verifier and tests equal the trusted revision's bytes"
    ],
    "tests": [
     "Positive: #120, F diff, terminal-state non-successor",
@@ -255,22 +314,25 @@
    "phase": "P0",
    "product": "governance",
    "subsystem": "ledger",
-   "title": "Ledger reconciliation: record C1, C2 and #118 as an exception with fresh evidence",
+   "title": "Combined lane reconciliation (XVII item 10, A040 A4): record the G1 waivers, C1, C2 and #118 as an exception with fresh evidence",
    "depends_on": [
     "C2"
    ],
    "decision": "GOVERNANCE",
    "readiness_authority": "GOVERNANCE_REVIEW",
    "affected": [
-    "docs/canonical/TRUSTED_CONTROL_REPAIRS.md (or CONTROL_CORRECTIONS.md designated by G1)",
+    "docs/canonical/TRUSTED_CONTROL_REPAIRS.md (outside every B2 path filter, so no scope gate triggers)",
     "AGENTS.md (reading-order line only)"
    ],
    "acceptance": [
-    "C1 and C2 identities, preserved reds, counterfactuals, reviews and ancestry recorded",
+    "Records only: no authority, freeze, decode, scoring, readiness, task-scope or completion field changes, proven by a deterministic field diff against the pre-correction base",
+    "G1 waivers (no qualifying review; condition (iii) reviewer reproduction) and their A040 ratification recorded",
+    "C1 and C2 identities, preserved reds (including the recovery push failures on main after C1 and their end after C2), counterfactuals, reviews and ancestry recorded",
     "#118 recorded as merged with a red required verifier and no approving review, with the trusted checker run on its merge and a qualifying retrospective review; founder decision on the B2R17 frontier recorded"
    ],
    "tests": [
-    "No B2 workflow triggers for these paths (precedent #116)"
+    "No B2 workflow triggers for these paths (precedent #116)",
+    "Field-diff script output attached"
    ],
    "ci_gates": [
     "Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act",
@@ -281,8 +343,43 @@
     "Mis-recording history"
    ],
    "rollback": "Revert",
-   "definition_of_done": "Merged; canonical reread confirms state",
+   "definition_of_done": "Merged with a qualifying review; canonical reread confirms state",
    "estimate": "0.5 d",
+   "status": "DRAFT",
+   "ready": false
+  },
+  {
+   "id": "NOOP",
+   "phase": "P0",
+   "product": "governance",
+   "subsystem": "confirmation",
+   "title": "No-op confirmation: an empty-diff pull request against main passes every applicable check, and a push to main is green",
+   "depends_on": [
+    "R"
+   ],
+   "decision": "GOVERNANCE",
+   "readiness_authority": "GOVERNANCE_REVIEW",
+   "affected": [
+    "none (empty commit on a throwaway branch)"
+   ],
+   "acceptance": [
+    "Every applicable check green on the empty PR, including the base-defined freeze",
+    "Latest push runs on main all green (recovery gate green after C2)"
+   ],
+   "tests": [
+    "Exact-head check inventory"
+   ],
+   "ci_gates": [
+    "Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act",
+    "Qualifying independent review (proposed Governance item 7)",
+    "Founder approval of the merge"
+   ],
+   "security_risks": [
+    "None"
+   ],
+   "rollback": "Close the throwaway PR",
+   "definition_of_done": "Recorded in the R follow-up note; the throwaway PR is closed unmerged",
+   "estimate": "0.1 d",
    "status": "DRAFT",
    "ready": false
   },
@@ -291,9 +388,9 @@
    "phase": "P0",
    "product": "governance",
    "subsystem": "planning",
-   "title": "Merge this candidate planning package (research and docs only), after C1",
+   "title": "Merge this candidate planning package (research and docs only) after its qualifying review",
    "depends_on": [
-    "R"
+    "C1"
    ],
    "decision": "GOVERNANCE",
    "readiness_authority": "GOVERNANCE_REVIEW",
@@ -308,7 +405,8 @@
    ],
    "acceptance": [
     "validate_plan.mjs, check_contrast.mjs and run_conformance.py PASS at the exact head",
-    "No red check (freeze passes after C1)"
+    "Every applicable check green (the freeze is base-defined since C1)",
+    "Qualifying different-vendor review APPROVE with 0 blocking findings, recorded with the exact head"
    ],
    "tests": [
     "validate_plan.mjs",

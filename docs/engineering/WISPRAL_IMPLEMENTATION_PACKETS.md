@@ -31,14 +31,14 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | --- | --- | --- | --- |
 | 1 | **G1** Constitution 0.3.0: Principle XVII (narrow over-application correction), transitional clause, Governance item 7 (qualifying review) | — | `FOUNDER_RATIFICATION` |
 | 2 | **C1** XVII correction 1: B2R16 freeze preservation run from a base-defined pull_request_target job | G1 | `XVII_CORRECTION` |
-| 3 | **C2** XVII correction 2: non-successor class with exact section allowlist, marker uniqueness and trusted-coverage extension | C1 | `XVII_CORRECTION` |
-| 4 | **R** Ledger reconciliation: record C1, C2 and #118 as an exception with fresh evidence | C2 | `GOVERNANCE_REVIEW` |
-| 5 | **PLAN** Merge this candidate planning package (research and docs only), after C1 | R | `GOVERNANCE_REVIEW` |
-| 6 | **G2** Constitution 1.0.0: platform thesis (WisprSide, WisprStudio, Klaint), anti-roadmap and A12 dispositions, 000C-000G re-scope | R, PLAN | `FOUNDER_RATIFICATION` |
-| 7 | **F** Frontier reconciliation: open the 000E and 000F research Grains; product code stays closed | G2, C2 | `GOVERNANCE_REVIEW` |
-| 8 | **CORE-00** Re-pins, rights register and licence-decision gate | F | `RESEARCH_000F` |
-| 9 | **SD-M0** Handy fork baseline at 73cc857: build and run the donor's own suites | F | `RESEARCH_000E` |
-| 10 | **KT-01** Parlant v4.0.2 compatibility spike (fallback v3.3.2) with a deterministic fake LLM backend | CORE-00 | `RESEARCH_000E` |
+| 3 | **PLAN** Merge this candidate planning package (research and docs only) after its qualifying review | C1 | `GOVERNANCE_REVIEW` |
+| 4 | **A040** Constitution 0.4.0 (#133): harden Principle XVII after the post-merge audit (A1-A4) and ratify the waived #129 review | C1 | `FOUNDER_RATIFICATION` |
+| 5 | **C2** XVII correction 2: non-successor class with exact section allowlist, marker uniqueness and trusted-coverage extension | A040 | `XVII_CORRECTION` |
+| 6 | **R** Combined lane reconciliation (XVII item 10, A040 A4): record the G1 waivers, C1, C2 and #118 as an exception with fresh evidence | C2 | `GOVERNANCE_REVIEW` |
+| 7 | **NOOP** No-op confirmation: an empty-diff pull request against main passes every applicable check, and a push to main is green | R | `GOVERNANCE_REVIEW` |
+| 8 | **G2** Constitution 1.0.0: platform thesis (WisprSide, WisprStudio, Klaint), anti-roadmap and A12 dispositions, 000C-000G re-scope | R, PLAN | `FOUNDER_RATIFICATION` |
+| 9 | **F** Frontier reconciliation: open the 000E and 000F research Grains; product code stays closed | G2, C2 | `GOVERNANCE_REVIEW` |
+| 10 | **CORE-00** Re-pins, rights register and licence-decision gate | F | `RESEARCH_000F` |
 
 ## P0 — Authority and CI reconciliation
 
@@ -84,16 +84,36 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Tier | foundation / governance |
 | Execution context | hosted-ci<br>manual:HW-A (founder laptop, Windows 11 Home, medium-integrity user session), evidence recorded under research/wispral-world-class/evidence/ |
 
+### A040 — Constitution 0.4.0 (#133): harden Principle XVII after the post-merge audit (A1-A4) and ratify the waived #129 review
+
+| Field | Value |
+| --- | --- |
+| Product / subsystem | governance / constitution |
+| Depends on | C1 |
+| Decision | `GOVERNANCE` |
+| Donor (pinned) | none (governance, research or build-new) |
+| Files / interfaces | CONSTITUTION.md |
+| Acceptance | Item 3a: every non-classification invariant stays enforced on every later candidate, including the correction's own verifier and test files<br>Item 10: the reconciliation changes records only, proven by a deterministic field diff, with a qualifying review; Frontier sections designated only by constitutional amendment<br>A3: an immutable-boundary failure whose only cause is the declared annexed byte change may be preserved, with the immutable list unchanged<br>A4: corrections in one closed, owner-confirmed lane share one combined reconciliation<br>Text updated for #130 having merged under 0.3.0 (its 'must meet before merge' clause becomes a C2 obligation)<br>Only CONSTITUTION.md changes; every applicable check green (the freeze is base-defined since C1) |
+| Tests | Trigger matrix for CONSTITUTION.md-only changes<br>Exact-head checks all green |
+| CI gates | Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act<br>Qualifying independent review (proposed Governance item 7)<br>Founder approval of the merge |
+| Security risks | Lane loosening beyond A3/A4 (mitigated by deterministic proof conditions) |
+| Rollback | Governed revert PR |
+| Readiness authority | `FOUNDER_RATIFICATION` |
+| Definition of done | Merged with a recorded qualifying review and owner merge act |
+| Estimate | Review latency only (drafted in #133) |
+| Tier | foundation / governance |
+| Execution context | hosted-ci |
+
 ### C2 — XVII correction 2: non-successor class with exact section allowlist, marker uniqueness and trusted-coverage extension
 
 | Field | Value |
 | --- | --- |
 | Product / subsystem | governance / trusted controls |
-| Depends on | C1 |
+| Depends on | A040 |
 | Decision | `GOVERNANCE` |
 | Donor (pinned) | none (governance, research or build-new) |
 | Files / interfaces | .github/workflows/000b2-public-attempt-003-recovery.yml<br>.github/workflows/000b2-public-attempt-003-trusted-pr.yml<br>research/000b2-public/verify_attempt_002_invalidation.py<br>research/control-repairs/2026-11-*/** |
-| Acceptance | Rules exactly as in reconciliation section 4.2 (allowlisted headings; appended Platform frontier sections; NFC; confusables; B2 markers exactly once in B2-owned sections)<br>PR #120 still passes both gates; F's literal planned diff passes<br>Trusted base-defined gate also covers research/000b2-entry/**, research/000b1/** and 000b2-entry-*.yml |
+| Acceptance | Rules exactly as in reconciliation section 4.2 (allowlisted headings; appended Platform frontier sections; NFC; confusables; B2 markers exactly once in B2-owned sections)<br>PR #120 still passes both gates; F's literal planned diff passes<br>Trusted base-defined gate also covers research/000b2-entry/**, research/000b1/** and 000b2-entry-*.yml<br>Immutable-control boundary failure preserved only as A040 allows (declared annexed byte change only; immutable list unchanged)<br>C1 lessons: in-class corpus with recorded historical verdicts; a negative fixture for every rejecting branch; non-concealment diff pinned by commit SHA; every check skipped by a neutralization run separately; the correction's own verifier and tests equal the trusted revision's bytes |
 | Tests | Positive: #120, F diff, terminal-state non-successor<br>Negative: B2 path, readiness change, .github change, non-allowlisted section edit, reordered or confusable or duplicated heading, injected marker, extra/missing/deleted task paths<br>Counterfactual runs for preserved reds |
 | CI gates | Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act<br>Qualifying independent review (proposed Governance item 7)<br>Founder approval of the merge |
 | Security risks | Weakening B2 scope enforcement by mistake (mitigated by the negative corpus run from base-pinned code) |
@@ -104,7 +124,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Tier | foundation / governance |
 | Execution context | hosted-ci<br>manual:HW-A (founder laptop, Windows 11 Home, medium-integrity user session), evidence recorded under research/wispral-world-class/evidence/ |
 
-### R — Ledger reconciliation: record C1, C2 and #118 as an exception with fresh evidence
+### R — Combined lane reconciliation (XVII item 10, A040 A4): record the G1 waivers, C1, C2 and #118 as an exception with fresh evidence
 
 | Field | Value |
 | --- | --- |
@@ -112,28 +132,48 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Depends on | C2 |
 | Decision | `GOVERNANCE` |
 | Donor (pinned) | none (governance, research or build-new) |
-| Files / interfaces | docs/canonical/TRUSTED_CONTROL_REPAIRS.md (or CONTROL_CORRECTIONS.md designated by G1)<br>AGENTS.md (reading-order line only) |
-| Acceptance | C1 and C2 identities, preserved reds, counterfactuals, reviews and ancestry recorded<br>#118 recorded as merged with a red required verifier and no approving review, with the trusted checker run on its merge and a qualifying retrospective review; founder decision on the B2R17 frontier recorded |
-| Tests | No B2 workflow triggers for these paths (precedent #116) |
+| Files / interfaces | docs/canonical/TRUSTED_CONTROL_REPAIRS.md (outside every B2 path filter, so no scope gate triggers)<br>AGENTS.md (reading-order line only) |
+| Acceptance | Records only: no authority, freeze, decode, scoring, readiness, task-scope or completion field changes, proven by a deterministic field diff against the pre-correction base<br>G1 waivers (no qualifying review; condition (iii) reviewer reproduction) and their A040 ratification recorded<br>C1 and C2 identities, preserved reds (including the recovery push failures on main after C1 and their end after C2), counterfactuals, reviews and ancestry recorded<br>#118 recorded as merged with a red required verifier and no approving review, with the trusted checker run on its merge and a qualifying retrospective review; founder decision on the B2R17 frontier recorded |
+| Tests | No B2 workflow triggers for these paths (precedent #116)<br>Field-diff script output attached |
 | CI gates | Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act<br>Qualifying independent review (proposed Governance item 7)<br>Founder approval of the merge |
 | Security risks | Mis-recording history |
 | Rollback | Revert |
 | Readiness authority | `GOVERNANCE_REVIEW` |
-| Definition of done | Merged; canonical reread confirms state |
+| Definition of done | Merged with a qualifying review; canonical reread confirms state |
 | Estimate | 0.5 d |
 | Tier | foundation / governance |
 | Execution context | not applicable |
 
-### PLAN — Merge this candidate planning package (research and docs only), after C1
+### NOOP — No-op confirmation: an empty-diff pull request against main passes every applicable check, and a push to main is green
+
+| Field | Value |
+| --- | --- |
+| Product / subsystem | governance / confirmation |
+| Depends on | R |
+| Decision | `GOVERNANCE` |
+| Donor (pinned) | none (governance, research or build-new) |
+| Files / interfaces | none (empty commit on a throwaway branch) |
+| Acceptance | Every applicable check green on the empty PR, including the base-defined freeze<br>Latest push runs on main all green (recovery gate green after C2) |
+| Tests | Exact-head check inventory |
+| CI gates | Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act<br>Qualifying independent review (proposed Governance item 7)<br>Founder approval of the merge |
+| Security risks | None |
+| Rollback | Close the throwaway PR |
+| Readiness authority | `GOVERNANCE_REVIEW` |
+| Definition of done | Recorded in the R follow-up note; the throwaway PR is closed unmerged |
+| Estimate | 0.1 d |
+| Tier | foundation / governance |
+| Execution context | not applicable |
+
+### PLAN — Merge this candidate planning package (research and docs only) after its qualifying review
 
 | Field | Value |
 | --- | --- |
 | Product / subsystem | governance / planning |
-| Depends on | R |
+| Depends on | C1 |
 | Decision | `GOVERNANCE` |
 | Donor (pinned) | none (governance, research or build-new) |
 | Files / interfaces | docs/strategy/**<br>docs/design/**<br>docs/engineering/**<br>docs/adr/**<br>research/rea/**<br>research/reviews/**<br>research/wispral-world-class/** |
-| Acceptance | validate_plan.mjs, check_contrast.mjs and run_conformance.py PASS at the exact head<br>No red check (freeze passes after C1) |
+| Acceptance | validate_plan.mjs, check_contrast.mjs and run_conformance.py PASS at the exact head<br>Every applicable check green (the freeze is base-defined since C1)<br>Qualifying different-vendor review APPROVE with 0 blocking findings, recorded with the exact head |
 | Tests | validate_plan.mjs<br>check_contrast.mjs<br>run_conformance.py<br>build_packets.py regeneration diff empty |
 | CI gates | Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act<br>Qualifying independent review (proposed Governance item 7)<br>Founder approval of the merge |
 | Security risks | Plan content mistaken for ratified governance |

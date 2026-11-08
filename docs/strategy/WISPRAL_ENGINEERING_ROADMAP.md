@@ -22,7 +22,7 @@ flowchart LR
 
 | Phase | Goal | Packets | Estimate (engineering days) |
 | --- | --- | --- | --- |
-| **P0** | Make execution legitimate | G1, C1, C2, R, PLAN, G2, F; B2-R17 (independent lane) | 4–8 + founder and review latency |
+| **P0** | Make execution legitimate | G1 and C1 (**merged**), PLAN, A040, C2, R, NOOP, G2, F; B2-R17 (independent lane) | 3–6 remaining + founder and review latency |
 | **P1** | Prove the donors build and test as they are; decide Parlant v4 or v3 | CORE-00, SD-M0, ST-D00, ST-D00b, KT-01, then D0G | 6–10 |
 | **P2** | Foundations the MVPs actually consume | CORE-01, CORE-07, DS-01, BM-00, BM-01, BM-02, BM-03 | 7–12 |
 | **P3** | WisprSide Windows MVP (R1) | SD-M1, M2, M3, M4, M5, M6, M8, M9, M10, M11, DS-05 | 15–25 |
@@ -46,7 +46,7 @@ flowchart LR
 
 ## 3. Critical path
 
-G1 → C1 → C2 → R → PLAN → G2 → F → SD-M0 → (D0G, after CORE-00, ST-D00, ST-D00b, KT-01) → BM-02 → SD-M9 → SD-M3 → SD-M4 → SD-M5 → SD-M6 (needs CORE-01) → DS-05 → **R1 WisprSide internal alpha**.
+G1 ✓ → C1 ✓ → A040 → C2 → R → G2 (needs PLAN) → F → SD-M0 → (D0G, after CORE-00, ST-D00, ST-D00b, KT-01) → BM-02 → SD-M9 → SD-M3 → SD-M4 → SD-M5 → SD-M6 (needs CORE-01) → DS-05 → **R1 WisprSide internal alpha**.
 
 Parallel after F: CORE-00, SD-M0, ST-D00, ST-D00b, then KT-01 (after CORE-00). Parallel after D0G: CORE-01, CORE-07, DS-01, BM-00 → BM-03, BM-01 (after CORE-07), SD-M2, SD-M11.
 

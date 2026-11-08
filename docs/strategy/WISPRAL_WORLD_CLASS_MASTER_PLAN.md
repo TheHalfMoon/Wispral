@@ -1,7 +1,7 @@
 # Wispral World-Class Master Plan
 
 **Status:** CANDIDATE MASTER PLAN — the one authoritative *candidate* plan for Wispral, WisprStudio, WisprSide and Klaint. It is **not ratified governance** and authorizes no implementation, release or publication. It becomes binding only through the governance sequence in [WISPRAL_GOVERNANCE_RECONCILIATION.md](WISPRAL_GOVERNANCE_RECONCILIATION.md).
-**Date:** 2026-11-08 · **Canonical base:** `main` = `edacdf7504302cc91ff7138bc6ac2d391e4df1f4` · **Supersedes for planning:** PR #124's [Master Plan V3](WISPRAL_MASTER_PLAN_REBUILT.md) and [architecture replan](WISPRAL_PLATFORM_ARCHITECTURE_REPLAN.md) (kept unchanged as history and evidence).
+**Date:** 2026-11-08 · **Canonical base:** `main` = `5879c43c7a389bd460955f2e181e8bd70f0ecee5` (after G1 `8d52a45` and C1 `5879c43`; the plan was first written on `edacdf7`) · **Supersedes for planning:** PR #124's [Master Plan V3](WISPRAL_MASTER_PLAN_REBUILT.md) and [architecture replan](WISPRAL_PLATFORM_ARCHITECTURE_REPLAN.md) (kept unchanged as history and evidence).
 
 > **Copy first. Design exceptionally. Build deliberately. Verify everything. Do not publish.**
 
@@ -9,7 +9,12 @@
 
 ## 1. The plan in one page
 
-1. **Unblock legitimately first (P0).** Today every PR fails a historical B2 check, and two B2 trusted gates permanently lock the frontier files. Fixing only the freeze check is not enough. The smallest legitimate path is a narrow constitutional lane for correcting over-applied benchmark controls (G1, Principle XVII, which explicitly excludes security, consent, tenancy, egress and release controls), two control corrections (C1 freeze preservation from a base-defined job; C2 an exact section allowlist for non-B2 edits), a ledger record (R), then the platform amendment (G2) and the frontier update (F). The B2 benchmark stays frozen and resumable in its own lane.
+1. **Unblock legitimately first (P0). Done so far:**
+   - G1 (Principle XVII) and C1 are merged.
+   - The historical freeze check now passes on `main` and on every PR.
+   - The two B2 trusted gates still lock the frontier files. That is C2's job, after the A040 hardening.
+
+   The original reasoning follows. Every PR failed a historical B2 check, and two B2 trusted gates permanently lock the frontier files. Fixing only the freeze check is not enough. The smallest legitimate path is a narrow constitutional lane for correcting over-applied benchmark controls (G1, Principle XVII, which explicitly excludes security, consent, tenancy, egress and release controls), two control corrections (C1 freeze preservation from a base-defined job; C2 an exact section allowlist for non-B2 edits), a ledger record (R), then the platform amendment (G2) and the frontier update (F). The B2 benchmark stays frozen and resumable in its own lane.
 2. **Fork, don't rebuild.** WisprSide forks **Handy** (`73cc8579`), and WisprStudio forks **VoiceStudio** (`200286cc`; packet ST-D00b first compares it with Voicebox). Klaint's MVP is **one hardened Parlant process** (v4.0.2 if spike KT-01 passes, else v3.3.2) with the broker as the sole tool executor. Wispral Core is **eight language-neutral contracts with fixtures**; Rust crates wait for a second Rust consumer. There is no daemon.
 3. **Build only the trust boundaries the donors lack.** Fail-closed, target-bound text delivery on Windows. Consent enforcement on every Studio synthesis path. A deterministic Klaint broker that is the sole executor of consequential tools, with an outcome ledger and commitments only from receipts. Each item is justified in the [build-new register](WISPRAL_COPY_FIRST_STRATEGY.md#4-build-new-register).
 4. **Strip what the donors do silently.** Handy checks for updates by default. VoiceStudio checks for updates, races a third-party model mirror, offers cloud sync, ships an analytics key and defaults to a **non-commercial** TTS model. Parlant v4 defaults to allow-all and runs an unauthenticated local tool server.
@@ -98,29 +103,33 @@ These still need F, the relevant research or product Grain, and a recorded Wispr
 
 ## 8. First ten packets in dependency order
 
-| # | Packet | Why first |
-| --- | --- | --- |
-| 1 | **G1** Constitution 0.3.0 — Principle XVII lane | Without it no legitimate first merge exists |
-| 2 | **C1** Freeze preservation from a base-defined job | Removes the over-applied freeze failure without weakening the freeze |
-| 3 | **C2** Non-successor class with an exact section allowlist | Lets F edit only named frontier sections; B2 untouched |
-| 4 | **R** Ledger record (C1, C2 and #118 as an exception) | Canonical truth before dependent work |
-| 5 | **PLAN** Merge this planning package (after C1) | Makes the plan durable research authority |
-| 6 | **G2** Constitution 1.0.0 — platform thesis | Ends the mission contradiction |
-| 7 | **F** Frontier reconciliation | Opens the 000E/000F research Grains |
-| 8 | **CORE-00** Re-pins, rights register, licence gate | Nothing is copied before the Wispral licence is recorded |
-| 9 | **SD-M0** Handy fork baseline | Proves the WisprSide base builds and tests |
-| 10 | **KT-01** Parlant v4 compatibility spike | Decides v4 versus v3.3.2; proves the plugin port is closed |
+| # | Packet | Status | Why here |
+| --- | --- | --- | --- |
+| 1 | **G1** Constitution 0.3.0 — Principle XVII lane | **MERGED** `8d52a45` | Created the only legitimate correction lane |
+| 2 | **C1** Freeze preservation from a base-defined job | **MERGED** `5879c43` | Removed the over-applied freeze failure without weakening the freeze |
+| 3 | **PLAN** Merge this planning package | Open (#128) | Makes the plan durable research authority; no red check since C1 |
+| 4 | **A040** Constitution 0.4.0 (#133) | Open | Fixes the audit's A1–A4; without A3, C2 cannot close the lane |
+| 5 | **C2** Non-successor class with an exact section allowlist | Next after A040 | Lets F edit only named frontier sections; B2 untouched |
+| 6 | **R** Combined reconciliation (G1 waivers, C1, C2, #118) | After C2 | Canonical truth before dependent work |
+| 7 | **NOOP** Empty-PR confirmation | After R | Proves the repository is fully green |
+| 8 | **G2** Constitution 1.0.0 — platform thesis | After R and PLAN | Ends the mission contradiction |
+| 9 | **F** Frontier reconciliation | After G2 and C2 | Opens the 000E/000F research Grains |
+| 10 | **CORE-00** Re-pins, rights register, licence gate | After F | Nothing is copied before the Wispral licence is recorded |
 
-Then ST-D00 and ST-D00b (Studio baselines) and **D0G** (000G decision) open the first product Grains. The first product-code packets follow in dependency order: CORE-01 → BM-02 → SD-M9 → SD-M3 → SD-M4 → SD-M5 → SD-M6 → SD-M1 (after BM-01) → SD-M2 → DS-05.
+Then, in order:
+
+1. SD-M0 (Handy baseline), KT-01 (Parlant v4 spike), ST-D00 and ST-D00b (Studio baselines);
+2. **D0G** (000G decision), which opens the first product Grains;
+3. the first product-code packets, in dependency order: CORE-01 → BM-02 → SD-M9 → SD-M3 → SD-M4 → SD-M5 → SD-M6 → SD-M1 (after BM-01) → SD-M2 → DS-05.
 
 ## 9. Remaining genuine blockers
 
 | Blocker | Who resolves it |
 | --- | --- |
-| Ratify G1 and accept its transitional preserved red; later ratify G2 | Founder |
-| Name qualifying reviewers (Governance item 7: the founder, a founder-named human, or a different-vendor reviewer with recorded identity); same-family agents and `d1-local` cannot approve | Founder |
+| A040 (#133): its text updated now that #130 has merged, its qualifying review, and its merge | Founder (the review can use the different-vendor route proven on C1) |
+| Authorize C2, R and the PLAN merge; decide #118 on fresh evidence; later ratify G2 | Founder |
+| Coordinate parallel sessions: one canonical sequence (this plan) and one owner of each open governance PR | Founder |
 | Choose Wispral's outbound license | Founder |
-| Decide whether the B2R17 frontier stands given #118's unrecorded red check | Founder |
 | Code-signing route and budget; Apple Developer membership later | Founder |
 | Consent program for the Arabic/English speech panel; legal review of privacy obligations | Founder |
 | GPU cells for Studio and Klaint quality benchmarks | Founder (free tiers only; no purchase assumed) |
@@ -129,8 +138,19 @@ Then ST-D00 and ST-D00b (Studio baselines) and **D0G** (000G decision) open the 
 
 ## 10. Verdict
 
-**PLAN READY** — for founder review and the Phase 0 decisions. Evidence:
+**PLAN READY FOR IMPLEMENTATION, executed through the governance sequence in §8.** Its qualifying different-vendor review (Governance item 7(c)) is recorded in the review comments on #128, against the exact head under review.
 
-- **Ready:** canonical state verified live (2026-11-08); PRs #123–#125 reconciled and preserved by ancestry, #126 absorbed into correction C1; every donor re-pinned with source evidence; architecture, design, model, security, benchmark, platform and release plans complete; 73 packets with dependencies, tests, gates, rollback and execution contexts; contracts (94 cases, 10 sequences, 4 bundles), tokens (94 contrast + 40 hue checks) and the plan validator all `PASS`; six fresh-context reviews (7 blockers, 37 must-fix) addressed, and a second-round check of the blockers whose remaining gaps were also fixed ([INDEPENDENT_REVIEW.md](../../research/wispral-world-class/INDEPENDENT_REVIEW.md), [PLAN_VALIDATION.md](../../research/wispral-world-class/PLAN_VALIDATION.md)).
-- **Conditions:** the proposed constitutional text (G1, Principle XVII, Governance item 7) and corrections C1/C2 still need a **qualifying** independent review before ratification; all reviews so far were same-model-family reviews. No third review round was run after the second-round fixes.
-- **Not ready (by design):** implementation. Every packet is `ready: false` until the founder completes the Phase 0 steps. Before C1 merges, this draft PR fails `verify-b2r16-freeze` exactly as `main` does; that failure is reported as **FAIL**, never as passing.
+- **What is ready:**
+  - live state verified on 2026-11-08 (`main` = `5879c43`; G1 and C1 merged);
+  - PRs #123–#125 carried by ancestry, and #126 absorbed into C1;
+  - every donor re-pinned with source evidence;
+  - architecture, design, model, security, benchmark, platform and release plans;
+  - 75 packets, each with dependencies, acceptance criteria, tests, CI gates, rollback, readiness authority and definition of done;
+  - contracts (94 cases, 10 sequences, 4 bundles), tokens (94 contrast and 40 hue checks) and the plan validator, all `PASS`.
+- **What "ready" means.** The next executable steps are concrete and unblocked:
+  - A040 (#133): update its #130 clause, then qualifying review and merge;
+  - PLAN (#128): merge after its qualifying review;
+  - C2: draft after A040, with every C1 lesson.
+
+  Each packet still carries `ready: false` until its named authority marks it READY. This plan does not authorize itself.
+- **Not ready, by design.** Product code stays closed until D0G. Nothing is published, released or announced without the founder's green light.

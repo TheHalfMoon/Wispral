@@ -5,6 +5,10 @@
 | ID | Risk | L | I | Early signal | Mitigation | Owner |
 | --- | --- | :-: | :-: | --- | --- | --- |
 | R-01 | **Governance deadlock:** every PR fails the historical `verify-b2r16-freeze`; the platform thesis contradicts the active constitution; no legitimate lane to repair a fail-closed over-applied control | 5 | 5 | Planning PRs stay red indefinitely | Executable sequence in [governance reconciliation](../../docs/strategy/WISPRAL_GOVERNANCE_RECONCILIATION.md): founder-ratified amendment adding a narrow applicability-correction lane, then the #126-style repair under it, then the platform amendment | FOUNDER + ENG |
+| R-29 | **Parallel sessions on the owner's account act on the same governance sequence** (#127/#129, #133/#130, V3 vs. this plan) | 4 | 4 | Two open PRs edit the same text or sequence | One canonical sequence (D-29); re-read open PRs and comments before every merge; owner names one owner per governance PR | Founder |
+| R-30 | **Red recovery push run on `main` until C2**, which could be mistaken for a regression or rerun to green | 4 | 2 | Someone reruns or relabels run 42446198003 | Declared as preserved in #130; R records it; C2's push run must turn it green | ENG |
+| R-31 | **The C1 checker and tests are bound by digest only** (#130 assisting finding B6): an edit without new literals fails only after merge | 2 | 3 | Freeze digest-step failure on `main` | C2 or A040 item 3a adds an equality check against the trusted revision | ENG |
+| R-32 | **Free different-vendor reviewer availability and quality** (free tier, rate limits, model churn) | 3 | 3 | Review truncated, refused or shallow | Record the identity per review; add bounded tool budgets; the founder or a named human remains a fallback | Founder |
 | R-02 | B2 benchmark lane and product lanes block each other | 4 | 4 | Product packets waiting on B2R17 | Keep B2 frozen and resumable; only speech-route packets depend on speech evidence; non-STT packets proceed after their own READY | ENG |
 | R-03 | **Name similarity:** "WisprSide" and "Wispral" resemble "Wispr" / "Wispr Flow" (an existing dictation product) | 4 | 4 | Clearance search hits | Trademark/domain clearance review before any public use (gate G-LEGAL); names are founder-final for internal work; clearance is a separate launch check | FOUNDER |
 | R-04 | Copyleft obligations: VoiceStudio is AGPL-3.0 and some narrow donors are GPL | 3 | 4 | Distribution or network-service plans | Founder confirms private grants cover the specific reuse; record per-file grant scope without requesting documents; keep notices; isolate any third-party sub-component not covered | FOUNDER (scope) + ENG (records) |
@@ -40,6 +44,7 @@
 | Founder ratification of the governance amendment(s) | Every product packet | Pending (FOUNDER) |
 | Independent reviewer availability (human or agent of a different lineage) | Every gated merge | To be named by the founder |
 | Founder decision on code-signing path and budget | R2 (private beta) | Pending |
+| A040 (#133) merged with a qualifying review | C2, R | Pending |
 | Consent program for the Arabic/English speech panel (forms, volunteers, storage) | WB-AR claims, WB-TTS cloning tests | Pending |
 | Trademark clearance | R3/R4 | Pending |
 | Donor repositories remain accessible at pinned SHAs | All fork packets | Verified on 2026-11-08 for the pins listed in the [source decision matrix](SOURCE_DECISION_MATRIX.md) |

@@ -2,7 +2,8 @@
 
 Usage (from repository root):  python -I research/wispral-world-class/build_packets.py
 Writes research/wispral-world-class/packets.json and docs/engineering/WISPRAL_IMPLEMENTATION_PACKETS.md.
-Every packet is a CANDIDATE: status DRAFT, ready=false. Readiness comes only from the named authority.
+Every open packet is a CANDIDATE: status DRAFT, ready=false. Readiness comes only from the named authority.
+Packets already merged on canonical main carry status MERGED and a merged record; ready stays false.
 """
 
 import json
@@ -82,14 +83,17 @@ PACKETS = []
 
 
 def P(id, phase, product, subsystem, title, depends_on, decision, authority, affected, acceptance, tests, risks, rollback, dod,
-      donor=None, ci=None, estimate="Not estimated (baseline-dependent)", bnj=None, tier=None, register=None, execution=None):
+      donor=None, ci=None, estimate="Not estimated (baseline-dependent)", bnj=None, tier=None, register=None, execution=None,
+      status="DRAFT", merged=None):
     pk = {
         "id": id, "phase": phase, "product": product, "subsystem": subsystem, "title": title, "depends_on": depends_on,
         "decision": decision, "readiness_authority": authority, "affected": affected, "acceptance": acceptance, "tests": tests,
         "ci_gates": ci or PRODUCT_CI,
         "security_risks": risks, "rollback": rollback, "definition_of_done": dod, "estimate": estimate,
-        "status": "DRAFT", "ready": False,
+        "status": status, "ready": False,
     }
+    if merged:
+        pk["merged"] = merged
     if donor:
         pk["donor"] = donor
     if bnj:
@@ -110,26 +114,37 @@ HW_A = "manual:HW-A (founder laptop, Windows 11 Home, medium-integrity user sess
 # ---------------- P0 governance
 P("G1", "P0", "governance", "constitution", "Constitution 0.3.0: Principle XVII (narrow over-application correction), transitional clause, Governance item 7 (qualifying review)", [], "GOVERNANCE", "FOUNDER_RATIFICATION",
   ["CONSTITUTION.md"], ["Text as in WISPRAL_GOVERNANCE_RECONCILIATION.md section 3, or a reviewed revision", "Only CONSTITUTION.md changes", "The only red check is verify-b2r16-freeze; every other applicable check succeeds", "Transitional-clause condition (iii): base-pinned preservation checker PASS on the G1 head, run recorded"],
-  ["Trigger matrix for this path class (REPRODUCED in evidence/governance)", "Preservation checker from a97d596 with SHA-256 verified, python -I"], ["A broadly worded lane could become a bypass (mitigated by scope exclusions and counterfactual proof)"], "Governed revert PR", "Merged with founder ratification and the owner act recorded", ci=GOV_CI, estimate="0.5 d drafting + review latency", execution=["hosted-ci", HW_A])
+  ["Trigger matrix for this path class (REPRODUCED in evidence/governance)", "Preservation checker from a97d596 with SHA-256 verified, python -I"], ["A broadly worded lane could become a bypass (mitigated by scope exclusions and counterfactual proof)"], "Governed revert PR", "Merged with founder ratification and the owner act recorded", ci=GOV_CI, estimate="0.5 d drafting + review latency", execution=["hosted-ci", HW_A],
+  status="MERGED", merged={"pr": 129, "head": "447d7da42edc3f719e94deae7de9d5c20d7f719c", "merge": "8d52a4579a0b1c6555cbe8443027c1950493b326", "date": "2026-11-08",
+                           "note": "Owner act on 'skip review and go ahead'; qualifying review and transitional condition (iii) reviewer reproduction waived and recorded on #129; to be ratified by A040"})
 P("C1", "P0", "governance", "trusted controls", "XVII correction 1: B2R16 freeze preservation run from a base-defined pull_request_target job", ["G1"], "GOVERNANCE", "XVII_CORRECTION",
   [".github/workflows/000b2-public-b2r16-freeze.yml", "research/000b2-public/verify_b2r16_preservation.py", "research/000b2-public/test_b2r16_preservation.py", "research/control-repairs/2026-11-*/**"],
   ["#126 checker with fixes (test pin reachable from main, dispatch exercise, XVII framing)", "G1 condition (iii) on C1: every other frozen path keeps its blob and mode from 885307429ec8; C1 checker and tests pass on its head; workflow_dispatch run on C1's exact head succeeds", "Historical B2R16 PASS output at ac9f7ce byte-identical", "Each preserved red has a counterfactual run (control bytes reverted) in which it disappears and nothing else changes"],
   ["#126 seven-group suite from base-pinned code", "Counterfactual runs", "Gate harness from evidence/governance"], ["Candidate-controlled checker (removed: base-defined job)"],
   "Governed revert restores the original workflow; preserved evidence remains", "Merged; post-merge workflow_dispatch exercise on the merge SHA recorded",
-  donor=D("pr126", ".github/workflows/000b2-public-b2r16-freeze.yml", "research/000b2-public/verify_b2r16_preservation.py", "research/000b2-public/test_b2r16_preservation.py"), ci=GOV_CI, estimate="1 d + review latency", execution=["hosted-ci", HW_A])
-P("C2", "P0", "governance", "trusted controls", "XVII correction 2: non-successor class with exact section allowlist, marker uniqueness and trusted-coverage extension", ["C1"], "GOVERNANCE", "XVII_CORRECTION",
+  donor=D("pr126", ".github/workflows/000b2-public-b2r16-freeze.yml", "research/000b2-public/verify_b2r16_preservation.py", "research/000b2-public/test_b2r16_preservation.py"), ci=GOV_CI, estimate="1 d + review latency", execution=["hosted-ci", HW_A],
+  status="MERGED", merged={"pr": 130, "head": "cabf4e5d96ab03d38a74ee4e5986be17a26f5e74", "merge": "5879c43c7a389bd460955f2e181e8bd70f0ecee5", "date": "2026-11-08",
+                           "note": "Qualifying different-vendor review (DeepSeek V4.1 Flash via OpenCode) APPROVE with 0 blocking after one REQUEST_CHANGES round; freeze push run 42446197959 PASS; recovery push run 42446198003 FAIL as the declared preserved scope failure"})
+P("A040", "P0", "governance", "constitution", "Constitution 0.4.0 (#133): harden Principle XVII after the post-merge audit (A1-A4) and ratify the waived #129 review", ["C1"], "GOVERNANCE", "FOUNDER_RATIFICATION",
+  ["CONSTITUTION.md"],
+  ["Item 3a: every non-classification invariant stays enforced on every later candidate, including the correction's own verifier and test files", "Item 10: the reconciliation changes records only, proven by a deterministic field diff, with a qualifying review; Frontier sections designated only by constitutional amendment", "A3: an immutable-boundary failure whose only cause is the declared annexed byte change may be preserved, with the immutable list unchanged", "A4: corrections in one closed, owner-confirmed lane share one combined reconciliation", "Text updated for #130 having merged under 0.3.0 (its 'must meet before merge' clause becomes a C2 obligation)", "Only CONSTITUTION.md changes; every applicable check green (the freeze is base-defined since C1)"],
+  ["Trigger matrix for CONSTITUTION.md-only changes", "Exact-head checks all green"], ["Lane loosening beyond A3/A4 (mitigated by deterministic proof conditions)"], "Governed revert PR", "Merged with a recorded qualifying review and owner merge act", ci=GOV_CI, estimate="Review latency only (drafted in #133)", execution=["hosted-ci"])
+P("C2", "P0", "governance", "trusted controls", "XVII correction 2: non-successor class with exact section allowlist, marker uniqueness and trusted-coverage extension", ["A040"], "GOVERNANCE", "XVII_CORRECTION",
   [".github/workflows/000b2-public-attempt-003-recovery.yml", ".github/workflows/000b2-public-attempt-003-trusted-pr.yml", "research/000b2-public/verify_attempt_002_invalidation.py", "research/control-repairs/2026-11-*/**"],
-  ["Rules exactly as in reconciliation section 4.2 (allowlisted headings; appended Platform frontier sections; NFC; confusables; B2 markers exactly once in B2-owned sections)", "PR #120 still passes both gates; F's literal planned diff passes", "Trusted base-defined gate also covers research/000b2-entry/**, research/000b1/** and 000b2-entry-*.yml"],
+  ["Rules exactly as in reconciliation section 4.2 (allowlisted headings; appended Platform frontier sections; NFC; confusables; B2 markers exactly once in B2-owned sections)", "PR #120 still passes both gates; F's literal planned diff passes", "Trusted base-defined gate also covers research/000b2-entry/**, research/000b1/** and 000b2-entry-*.yml", "Immutable-control boundary failure preserved only as A040 allows (declared annexed byte change only; immutable list unchanged)", "C1 lessons: in-class corpus with recorded historical verdicts; a negative fixture for every rejecting branch; non-concealment diff pinned by commit SHA; every check skipped by a neutralization run separately; the correction's own verifier and tests equal the trusted revision's bytes"],
   ["Positive: #120, F diff, terminal-state non-successor", "Negative: B2 path, readiness change, .github change, non-allowlisted section edit, reordered or confusable or duplicated heading, injected marker, extra/missing/deleted task paths", "Counterfactual runs for preserved reds"],
   ["Weakening B2 scope enforcement by mistake (mitigated by the negative corpus run from base-pinned code)"], "Governed revert restores the original controls", "Merged; post-merge exercise recorded",
   ci=GOV_CI, estimate="1-2 d + review latency", execution=["hosted-ci", HW_A])
-P("R", "P0", "governance", "ledger", "Ledger reconciliation: record C1, C2 and #118 as an exception with fresh evidence", ["C2"], "GOVERNANCE", "GOVERNANCE_REVIEW",
-  ["docs/canonical/TRUSTED_CONTROL_REPAIRS.md (or CONTROL_CORRECTIONS.md designated by G1)", "AGENTS.md (reading-order line only)"],
-  ["C1 and C2 identities, preserved reds, counterfactuals, reviews and ancestry recorded", "#118 recorded as merged with a red required verifier and no approving review, with the trusted checker run on its merge and a qualifying retrospective review; founder decision on the B2R17 frontier recorded"],
-  ["No B2 workflow triggers for these paths (precedent #116)"], ["Mis-recording history"], "Revert", "Merged; canonical reread confirms state", ci=GOV_CI, estimate="0.5 d")
-P("PLAN", "P0", "governance", "planning", "Merge this candidate planning package (research and docs only), after C1", ["R"], "GOVERNANCE", "GOVERNANCE_REVIEW",
+P("R", "P0", "governance", "ledger", "Combined lane reconciliation (XVII item 10, A040 A4): record the G1 waivers, C1, C2 and #118 as an exception with fresh evidence", ["C2"], "GOVERNANCE", "GOVERNANCE_REVIEW",
+  ["docs/canonical/TRUSTED_CONTROL_REPAIRS.md (outside every B2 path filter, so no scope gate triggers)", "AGENTS.md (reading-order line only)"],
+  ["Records only: no authority, freeze, decode, scoring, readiness, task-scope or completion field changes, proven by a deterministic field diff against the pre-correction base", "G1 waivers (no qualifying review; condition (iii) reviewer reproduction) and their A040 ratification recorded", "C1 and C2 identities, preserved reds (including the recovery push failures on main after C1 and their end after C2), counterfactuals, reviews and ancestry recorded", "#118 recorded as merged with a red required verifier and no approving review, with the trusted checker run on its merge and a qualifying retrospective review; founder decision on the B2R17 frontier recorded"],
+  ["No B2 workflow triggers for these paths (precedent #116)", "Field-diff script output attached"], ["Mis-recording history"], "Revert", "Merged with a qualifying review; canonical reread confirms state", ci=GOV_CI, estimate="0.5 d")
+P("NOOP", "P0", "governance", "confirmation", "No-op confirmation: an empty-diff pull request against main passes every applicable check, and a push to main is green", ["R"], "GOVERNANCE", "GOVERNANCE_REVIEW",
+  ["none (empty commit on a throwaway branch)"], ["Every applicable check green on the empty PR, including the base-defined freeze", "Latest push runs on main all green (recovery gate green after C2)"],
+  ["Exact-head check inventory"], ["None"], "Close the throwaway PR", "Recorded in the R follow-up note; the throwaway PR is closed unmerged", ci=GOV_CI, estimate="0.1 d")
+P("PLAN", "P0", "governance", "planning", "Merge this candidate planning package (research and docs only) after its qualifying review", ["C1"], "GOVERNANCE", "GOVERNANCE_REVIEW",
   ["docs/strategy/**", "docs/design/**", "docs/engineering/**", "docs/adr/**", "research/rea/**", "research/reviews/**", "research/wispral-world-class/**"],
-  ["validate_plan.mjs, check_contrast.mjs and run_conformance.py PASS at the exact head", "No red check (freeze passes after C1)"], ["validate_plan.mjs", "check_contrast.mjs", "run_conformance.py", "build_packets.py regeneration diff empty"],
+  ["validate_plan.mjs, check_contrast.mjs and run_conformance.py PASS at the exact head", "Every applicable check green (the freeze is base-defined since C1)", "Qualifying different-vendor review APPROVE with 0 blocking findings, recorded with the exact head"], ["validate_plan.mjs", "check_contrast.mjs", "run_conformance.py", "build_packets.py regeneration diff empty"],
   ["Plan content mistaken for ratified governance"], "Revert (no runtime effect)", "Merged; content remains CANDIDATE until G2 and F", ci=GOV_CI, estimate="Review latency only")
 P("G2", "P0", "governance", "constitution", "Constitution 1.0.0: platform thesis (WisprSide, WisprStudio, Klaint), anti-roadmap and A12 dispositions, 000C-000G re-scope", ["R", "PLAN"], "GOVERNANCE", "FOUNDER_RATIFICATION",
   ["CONSTITUTION.md", "AGENTS.md", "docs/canonical/ARCHITECTURE_INVARIANTS.md", "docs/canonical/PROGRAM_ROADMAP.md", "specs/000-founding-research/spec.md", "specs/000-founding-research/plan.md"],
@@ -380,7 +395,7 @@ P("PL-SDK", "P8", "platform", "sdk", "TypeScript and Python SDKs over authentica
 P("PF-02", "P8", "platform", "cross-platform", "macOS (notarized) and Linux (X11, GNOME/KDE portals) cells for WisprSide", ["SD-R6", "PF-01"], "FORK_DELTA", "LATER_HORIZON",
   ["platform adapters"], ["Per-cell clean-install journeys pass"], ["Platform fixtures"], ["TCC and portal differences"], "Do not claim the cell", "Cell evidence", donor=D("handy", "src-tauri/src/clipboard.rs"), tier="L", execution=["manual:platform hardware"])
 
-FIRST_TEN = ["G1", "C1", "C2", "R", "PLAN", "G2", "F", "CORE-00", "SD-M0", "KT-01"]
+FIRST_TEN = ["G1", "C1", "PLAN", "A040", "C2", "R", "NOOP", "G2", "F", "CORE-00"]
 
 VALIDATED_DOCS = [
     "docs/strategy/WISPRAL_WORLD_CLASS_MASTER_PLAN.md", "docs/strategy/WISPRAL_PRODUCT_VISION.md", "docs/strategy/WISPRAL_PRODUCT_ARCHITECTURE.md",

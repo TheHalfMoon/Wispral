@@ -21,9 +21,9 @@ node research/wispral-world-class/validate_plan.mjs         # packet graph, link
 | ID | Question | Why it is the founder's call | Recommended answer |
 | --- | --- | --- | --- |
 | Q-01 | Which outbound license for the Wispral repository? | Ownership and distribution terms; AGPL-derived Studio code and founder grants interact with it | Decide before CORE-00 closes; keep per-product licensing possible |
-| Q-02 | Ratify G1 (Principle XVII) and accept its one transitional preserved red check? | Constitutional authority act | Yes, as drafted or revised after review |
+| Q-02 | ~~Ratify G1~~: merged as `8d52a45` (owner act, review waived). Ratify the waiver through A040 (#133)? | Constitutional authority act | Yes: obtain A040's qualifying review and merge it before C2 |
 | Q-03 | May non-B2 governance PRs edit the allowlisted sections of `specs/CURRENT.md` and `CURRENT_STATE.md`? | Changes who controls the frontier | Yes, exactly the allowlist in correction C2; everything else byte-identical |
-| Q-04 | Who are the qualifying reviewers for G1, C1, C2, G2, D0G and #120? | Proposed Governance item 7: same-family agents and `d1-local` cannot qualify | The founder reviews personally, or names a human, or uses a different-vendor reviewer with its identity recorded |
+| Q-04 | Who are the qualifying reviewers for PLAN, A040, C2, R, G2, D0G and #120? | Governance item 7 (in force): same-vendor agents and `d1-local` cannot qualify | Default: the different-vendor route proven on C1 (DeepSeek via OpenCode), with identity, prompts and outputs recorded; the founder or a named human also qualifies |
 | Q-05 | Does the B2R17 frontier stand despite #118 merging with a red required verifier and no approving review? | Governance debt disposition | Decide on fresh evidence (trusted checker run on the #118 merge plus a qualifying retrospective review); R records it as an exception either way |
 | Q-06 | Ratify G2 (platform thesis, version 1.0.0)? | Mission change | Yes, after reviewing this plan |
 | Q-07 | Which code-signing route and budget (Artifact Signing eligibility depends on the legal entity's region)? | Cost and legal entity | Decide before R2 |
@@ -31,7 +31,8 @@ node research/wispral-world-class/validate_plan.mjs         # packet graph, link
 | Q-09 | Accept gated model terms (pyannote, Cohere Arabic transcribe, Pocket TTS) for evaluation? | Terms acceptance binds the founder | Only when the benchmark Grain needs them |
 | Q-10 | For VoiceStudio (AGPL) code and narrow GPL concepts, confirm the private grant covers the specific files the fork keeps? | Only the founder knows the grant's scope; documents stay private | Record a per-file grant-scope flag; never request documents |
 | Q-11 | Trademark clearance for Wispral / WisprSide (similarity to Wispr / Wispr Flow) before any public use? | Legal and brand | Run clearance before R3 |
-| Q-12 | Dispositions for open PRs #121, #123, #124, #125, #126 after this package merges | Repository owner | Close #123–#125 as carried; supersede #126 with C1; #121 independent |
+| Q-12 | Dispositions for open PRs after this package merges | Repository owner | Close #123 and #124 as carried, and #127 as superseded by #129 (#126 is already closed); #121 independent; #120 requalifies after C2 |
+| Q-13 | Which session owns each open governance PR (#133 and C2)? | Parallel sessions acted on the same sequence on 2026-11-08 | Name one owner per PR; this plan's §2 sequence is canonical |
 
 ## 4. Questions engineering can settle with tests (no founder needed)
 

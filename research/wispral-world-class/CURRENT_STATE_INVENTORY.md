@@ -6,28 +6,33 @@ All facts `RUNTIME_OBSERVED` through the GitHub API or `REPRODUCED` locally on 2
 
 | Item | State |
 | --- | --- |
-| `main` | `edacdf7504302cc91ff7138bc6ac2d391e4df1f4` — "docs(000b2): reconcile B2R16 to B2R17 (#118)", 2026-09-10. Unchanged since. |
-| Constitution | v0.2.1 (amended 2026-09-09). Mission: voice-native control plane for AI coding agents; "not a dictation application" (`AGENTS.md:3`) |
+| `main` | `5879c43c7a389bd460955f2e181e8bd70f0ecee5`: the C1 merge (#130), 2026-11-08. Before it: `8d52a45` (G1, #129), then `edacdf7` (#118, 2026-09-10) |
+| Constitution | **v0.3.0**: Principle XVII (over-application correction lane) and Governance item 7 (qualifying independent review). Mission text unchanged: voice-native control plane for AI coding agents; "not a dictation application" (`AGENTS.md:3`) |
+| Freeze control | Base-defined since C1 (`pull_request_target`, `push`, `workflow_dispatch`); `push` run on `5879c43` PASS (run 42446197959) |
+| Red check on `main` | `000B2 Public Corpus ATTEMPT-003 Recovery` push run on `5879c43` FAIL (run 42446198003): the preserved B2 scope-classification failure, until C2 |
 | Product-code gate | Closed until Specification 000 synthesis reaches 000G and selects a bounded first Grain |
 | Executable frontier | `specs/CURRENT.md`: B2R17 is the sole active successor unit; ATTEMPT-003 frozen; primary decode entry open for B2R17 only; scoring closed; `production_stt_selected=false`; `product_code_authorized=false` |
 | Founding children | 000A verified (ACP `PARTIAL`/`MODERATE`); 000B open (B2 at B2R17; B3/B4 coarse); 000C–000G coarse, not started |
-| Branch protection | None: classic protection 404 "Branch not protected"; rulesets `[]` |
-| License | **None** (`gh api` license = none) |
-| Workflows | 27 under `.github/workflows`; inventory in [governance report §2](evidence/research-reports/GOVERNANCE_CI_RESEARCH.md#2-task-1-workflow-inventory-on-main) |
+| Branch protection | None (classic protection "Branch not protected"; no rulesets). Missing protection is not permission |
+| License | **None** |
+| Workflows | 27 under `.github/workflows` |
 
-## Open pull requests and issue
+## Pull requests and issue (2026-11-08)
 
-| # | State | Head | Content | Checks (relevant) | Disposition proposed |
-| --- | --- | --- | --- | --- | --- |
-| [#120](https://github.com/TheHalfMoon/Wispral/pull/120) | open | `85fe8102` | B2R17 Moonshine-compact capture (209/240 decoded, 31 harness-bound failures, unscored); owner comment "MUST NOT MERGE" | B2 gates pass; `verify-b2r16-freeze` fails | Requalify after correction C (B2-R17 lane) |
-| [#121](https://github.com/TheHalfMoon/Wispral/pull/121) | open | `61cdfc5e` | Graft context tooling (`AGENTS.md`) | freeze fails | Independent of this plan |
-| [#123](https://github.com/TheHalfMoon/Wispral/pull/123) | draft | `34263e99` | Founder source-rights and product-identity record | freeze fails | Carried by this PR's ancestry |
-| [#124](https://github.com/TheHalfMoon/Wispral/pull/124) | draft | `e7064c78` | Copy-First Master Plan V3 + REA bundle (56 files), Opus-repaired | freeze fails | Carried by ancestry; strategy docs superseded for planning by this package |
-| [#125](https://github.com/TheHalfMoon/Wispral/pull/125) | draft | `3de63649` | Independent Opus review of #124 (REVISE; M1–M5, S1–S8) | freeze fails | Carried by ancestry |
-| [#126](https://github.com/TheHalfMoon/Wispral/pull/126) | draft | `a97d596b` | B2R16 freeze preservation repair | freeze passes on its own definition; both B2 trusted gates fail (scope) | Absorbed by correction C with four fixes |
-| [#122](https://github.com/TheHalfMoon/Wispral/issues/122) | open issue | — | Founder mission: deep source audit, REA, copy-first replanning | — | Addressed by this package |
-
-No PR, issue or comment changed after 2026-10-21 (`RUNTIME_OBSERVED`).
+| # | State | Content | Disposition |
+| --- | --- | --- | --- |
+| [#129](https://github.com/TheHalfMoon/Wispral/pull/129) | **merged** `8d52a45` | G1: Constitution 0.3.0 | Done. Waivers recorded on the PR; A040 ratifies them |
+| [#130](https://github.com/TheHalfMoon/Wispral/pull/130) | **merged** `5879c43` | C1: base-defined freeze correction | Done. Qualifying review recorded |
+| [#133](https://github.com/TheHalfMoon/Wispral/pull/133) | open | A040: Constitution 0.4.0 (another session on the owner's account) | Next governance step; update its #130 clause; qualifying review |
+| [#128](https://github.com/TheHalfMoon/Wispral/pull/128) | draft | This planning package (PLAN) | Qualifying review, then owner merge |
+| [#127](https://github.com/TheHalfMoon/Wispral/pull/127) | draft | Alternative 0.3.0 draft | Superseded by #129; close |
+| [#126](https://github.com/TheHalfMoon/Wispral/pull/126) | closed | B2R16 freeze repair | Absorbed by C1 |
+| [#120](https://github.com/TheHalfMoon/Wispral/pull/120) | open | B2R17 Moonshine-compact capture; owner comment "MUST NOT MERGE" | Requalify after C2 (B2-R17 lane) |
+| [#121](https://github.com/TheHalfMoon/Wispral/pull/121) | open | Graft context tooling | Independent |
+| [#123](https://github.com/TheHalfMoon/Wispral/pull/123) | draft | Founder source-rights and product-identity record | Carried by this PR's ancestry |
+| [#124](https://github.com/TheHalfMoon/Wispral/pull/124) | draft | Copy-First Master Plan V3 + REA bundle, plus #131/#132/#134 (V3 sequence alignment, audit, W0 pointer) | Carried up to #125 by ancestry. Its execution sequence is superseded by this plan's §2 sequence; the audit is used as input |
+| [#125](https://github.com/TheHalfMoon/Wispral/pull/125) | merged into #124's branch | Opus review of #124 | Carried |
+| [#122](https://github.com/TheHalfMoon/Wispral/issues/122) | open issue | Founder mission | Addressed by this package |
 
 ## Prior evidence re-validated on this branch
 
