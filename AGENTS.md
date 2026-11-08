@@ -9,7 +9,7 @@ Before changing the repository, read in this order:
 1. `AGENTS.md`
 2. `CONSTITUTION.md`
 3. `docs/canonical/CURRENT_STATE.md`
-4. `docs/canonical/TRUSTED_CONTROL_REPAIRS.md`
+4. `docs/canonical/TRUSTED_CONTROL_REPAIRS.md` (Principle XVI repairs, Principle XVII lane reconciliations and recorded exceptions)
 5. `docs/canonical/ARCHITECTURE_INVARIANTS.md`
 6. `docs/canonical/PROGRAM_ROADMAP.md`
 7. `specs/CURRENT.md`
