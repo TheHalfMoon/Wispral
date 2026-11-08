@@ -401,7 +401,7 @@ data = {
     "status": "CANDIDATE. No packet is READY. Readiness comes only from the named authority after the governance sequence.",
     "authorities": AUTHORITIES, "phases": PHASES, "first_ten": FIRST_TEN, "validated_documents": VALIDATED_DOCS, "packets": PACKETS,
 }
-(ROOT / "research/wispral-world-class/packets.json").write_text(json.dumps(data, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+(ROOT / "research/wispral-world-class/packets.json").write_text(json.dumps(data, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
 
 
 def cell(v):
@@ -464,5 +464,5 @@ for ph in PHASES:
             lines.append(f"| Build-new register | {pk.get('build_new_register_id', 'MISSING')} |")
             lines.append(f"| Build-new justification | Inspected: {j['inspected']}. Why insufficient: {j['why_insufficient']}. Smallest missing capability: {j['smallest_missing_capability']}. Confined to: {j['adapter_confinement']}. Cost: {j['test_and_maintenance_cost']}. |")
         lines.append("")
-(ROOT / "docs/engineering/WISPRAL_IMPLEMENTATION_PACKETS.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+(ROOT / "docs/engineering/WISPRAL_IMPLEMENTATION_PACKETS.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 print(f"wrote {len(PACKETS)} packets")
