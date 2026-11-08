@@ -428,6 +428,7 @@ Wispral does NOT currently claim:
 - full-duplex audio or acoustic echo cancellation;
 - production security, accessibility, privacy, platform, or release qualification;
 - any GitHub growth outcome.
+<!--NOOP-probe:allowlisted-section-only;not-for-merge-->
 
 ## Product-code gate
 
