@@ -6,9 +6,10 @@
  "authorities": {
   "FOUNDER_RATIFICATION": "Repository owner ratifies a constitutional amendment after independent review of the exact range (Constitution Governance 1-4).",
   "XVII_CORRECTION": "Principle XVII control-correction lane created by G1 (preserved red results, tamper-negative proof, independent review, guarded merge, canonical exercise, ledger).",
-  "GOVERNANCE_REVIEW": "Ordinary governance or reconciliation PR with review; only after C so no unlawful red check remains.",
+  "GOVERNANCE_REVIEW": "Ordinary governance PR: fresh-context review plus the owner's merge approval (Governance item 7, last sentence).",
+  "QUALIFYING_GOVERNANCE_REVIEW": "Governance PR that needs a qualifying independent review (Governance item 7) recorded with the exact head, plus the owner's merge act: XVII reconciliations, this planning package, and any PR the Constitution names.",
   "B2_RECOVERY_V2": "Existing specs/000B2-public-corpus-bakeoff/recovery-v2.md authority for B2 successor tasks; unchanged by this plan.",
-  "RESEARCH_000E": "Research Grain opened by F under 000E (platform and native feasibility). Disposable baselines only; no product, installer or release authority.",
+  "RESEARCH_000E": "Research Grain opened by F under 000E (platform and native feasibility). Disposable baselines only; no product, installer or release authority; no code is copied into a Wispral repository before CORE-00 records the licence decision.",
   "RESEARCH_000F": "Research Grain opened by F under 000F (dependency, license and provenance intake). Records only.",
   "DECISION_000G": "The 000G decision PR that selects capability-specific Grains from canonical evidence: GRAIN_CORE, GRAIN_DESIGN, GRAIN_BENCH and at most two product Grains at once (GRAIN_SIDE plus GRAIN_STUDIO or GRAIN_KLAINT_TEXT).",
   "GRAIN_CORE": "Product Grain for shared contracts and the policy library, selected by the 000G decision.",
@@ -280,9 +281,10 @@
     "research/control-repairs/2026-11-*/**"
    ],
    "acceptance": [
-    "Rules exactly as in reconciliation section 4.2 (allowlisted headings; appended Platform frontier sections; NFC; confusables; B2 markers exactly once in B2-owned sections)",
+    "Rules exactly as in reconciliation section 4.2 (allowlisted headings; appended Platform frontier sections; NFC; confusables; B2 marker count and positions in B2-owned regions equal the authority base, and no marker inside an allowlisted region or appended Platform frontier section)",
     "PR #120 still passes both gates; F's literal planned diff passes",
     "Trusted base-defined gate also covers research/000b2-entry/**, research/000b1/** and 000b2-entry-*.yml",
+    "The allowlist is exactly the set of headings designated by constitutional amendment (G2, or A040 if it designates them); no non-B2 frontier edit merges before that designation",
     "Immutable-control boundary failure preserved only as A040 allows (declared annexed byte change only; immutable list unchanged)",
     "C1 lessons: in-class corpus with recorded historical verdicts; a negative fixture for every rejecting branch; non-concealment diff pinned by commit SHA; every check skipped by a neutralization run separately; the correction's own verifier and tests equal the trusted revision's bytes"
    ],
@@ -319,7 +321,7 @@
     "C2"
    ],
    "decision": "GOVERNANCE",
-   "readiness_authority": "GOVERNANCE_REVIEW",
+   "readiness_authority": "QUALIFYING_GOVERNANCE_REVIEW",
    "affected": [
     "docs/canonical/TRUSTED_CONTROL_REPAIRS.md (outside every B2 path filter, so no scope gate triggers)",
     "AGENTS.md (reading-order line only)"
@@ -353,18 +355,20 @@
    "phase": "P0",
    "product": "governance",
    "subsystem": "confirmation",
-   "title": "No-op confirmation: an empty-diff pull request against main passes every applicable check, and a push to main is green",
+   "title": "Green confirmation: every workflow's latest push run on main is green, and filter-exercising probe PRs pass the B2 gates as non-successor candidates",
    "depends_on": [
     "R"
    ],
    "decision": "GOVERNANCE",
    "readiness_authority": "GOVERNANCE_REVIEW",
    "affected": [
-    "none (empty commit on a throwaway branch)"
+    "none merged: throwaway probe PRs only (an empty commit, and a whitespace-free comment-only change inside an allowlisted frontier section)"
    ],
    "acceptance": [
-    "Every applicable check green on the empty PR, including the base-defined freeze",
-    "Latest push runs on main all green (recovery gate green after C2)"
+    "The latest push run of every workflow on main is green, including the recovery gate that C1 left red",
+    "An empty probe PR passes the base-defined freeze",
+    "A probe PR touching an allowlisted frontier section triggers both B2 path-filtered gates and passes them as a non-successor candidate",
+    "Recommendation recorded on whether to enable the single-aggregator ruleset"
    ],
    "tests": [
     "Exact-head check inventory"
@@ -393,7 +397,7 @@
     "C1"
    ],
    "decision": "GOVERNANCE",
-   "readiness_authority": "GOVERNANCE_REVIEW",
+   "readiness_authority": "QUALIFYING_GOVERNANCE_REVIEW",
    "affected": [
     "docs/strategy/**",
     "docs/design/**",
@@ -451,6 +455,7 @@
    "acceptance": [
     "Every contradiction row from PR #124's amendment proposal has a KEEP/REPLACE/RE-SCOPE disposition",
     "New principles: voice-asset consent, tenant and action authority, copy-first",
+    "Designates the frontier sections by exact heading (the reconciliation section 4.2 allowlist) under the Frontier sections clause, so the designation holds whether that clause reads 'an adopted correction' (0.3.0) or 'a constitutional amendment' (A040)",
     "States that readiness claim_guards.product_code_authorized=false scopes the B2 lane only"
    ],
    "tests": [
@@ -618,7 +623,8 @@
    "subsystem": "fork baseline",
    "title": "Handy fork baseline at 73cc857: build and run the donor's own suites",
    "depends_on": [
-    "F"
+    "F",
+    "CORE-00"
    ],
    "decision": "FORK",
    "readiness_authority": "RESEARCH_000E",
@@ -629,7 +635,7 @@
    ],
    "acceptance": [
     "Unmodified cargo test --locked on hosted Linux and on HW-A (Windows), bun lint, test:keyboard, Playwright: collected/pass/fail/ignored counts recorded",
-    "Unsigned NSIS and MSI built on HW-A",
+    "Debug and release binaries built on HW-A; installer packaging (NSIS/MSI) deferred to the RC packets because research authority has no installer authority",
     "Bundled DLL list recorded"
    ],
    "tests": [
@@ -668,7 +674,8 @@
    "subsystem": "fork baseline",
    "title": "VoiceStudio fork baseline at 200286c with the fake _echo engine",
    "depends_on": [
-    "F"
+    "F",
+    "CORE-00"
    ],
    "decision": "FORK",
    "readiness_authority": "RESEARCH_000E",
@@ -717,7 +724,8 @@
    "subsystem": "donor comparison",
    "title": "Voicebox versus VoiceStudio on MVP-tier capabilities, required fork deltas and dependency size",
    "depends_on": [
-    "F"
+    "F",
+    "CORE-00"
    ],
    "decision": "RESEARCH",
    "readiness_authority": "RESEARCH_000E",
@@ -865,7 +873,7 @@
     "contracts/README.md (canonicalization: RFC 8785 JCS, NFC, path normalization)"
    ],
    "acceptance": [
-    "run_conformance.py PASS (94 cases, 10 sequences, 4 bundles today)",
+    "run_conformance.py PASS (114 cases, 10 sequences, 6 bundles today)",
     "The Core audit gap probes are committed as fixtures with their IDs and each yields its intended verdict"
    ],
    "tests": [
@@ -1329,11 +1337,13 @@
     "Binding captured every session; no field text stored; unreadable fields recorded as unknown",
     "UIA runs on a dedicated thread with timeouts of 100 ms or less; a timeout yields identity_unreadable",
     "UWP targets bind the hosted process behind ApplicationFrameHost",
+    "The focused UIA element (runtime id digest, control type, password and read-only flags) is required for any delivering outcome and is revalidated immediately before delivery; a same-window focus move (for example from a chat box to a password field inside one browser HWND) is refused as focus_moved",
     "p95 activation latency with capture measured on HW-A"
    ],
    "tests": [
     "Pure snapshot tests on Linux CI",
-    "Windows fixtures from BM-02"
+    "Windows fixtures from BM-02, including same-HWND focus moves to a password field and to a read-only field",
+    "delivery_outcome contract fixtures"
    ],
    "ci_gates": [
     "All applicable checks green at the exact head; no preserved red checks",
@@ -2359,6 +2369,8 @@
    "acceptance": [
     "100% correct on the matrix 4 clone paths x {none, valid, revoked, reference-hash mismatch}",
     "Consent binds the reference-audio digest and a speaker match",
+    "Every consent record carries an Ed25519 attestation from a trusted issuer key (studio operator or consent service) over the bound-fields digest (subject, voice, purposes, products, reference audio, validity, epoch, nonce), an identity check method, and an operator-confirmed match of the versioned consent script; a speaker match alone never admits a voice",
+    "Forged signature, unknown issuer key, fields changed after signing, spliced or synthesized statement (script mismatch) and a missing operator confirmation are each refused",
     "Stock voices only from manifest catalog entries",
     "Revocation cancels queued work; late outputs dropped"
    ],
@@ -2689,7 +2701,8 @@
    ],
    "acceptance": [
     "Consequential tools registered only through the in-process ToolService; plugin server disabled",
-    "Principal from Parlant's session store plus a per-call token bound to the authenticated session; a forged customer_id yields zero effects and zero data from read tools",
+    "Principal from Parlant's session store plus a per-call capability issued and verified by the broker: Ed25519-signed, bound to the authenticated session, the exact tool and the RFC 8785 canonical-argument digest, valid for at most 60 seconds, single use (nonce consumed on first use); a forged customer_id yields zero effects and zero data from read tools",
+    "Forged, replayed, expired, tool-substituted and argument-substituted capabilities each yield zero effects",
     "Idempotency key = H(tenant, conversation, tool, canonical arguments); dispatch refused while a non-terminal intent with that key exists",
     "Timeout-after-commit: unknown, then reconciled, never re-dispatched",
     "Verdict class and principal must match the intent",
@@ -2698,7 +2711,8 @@
    "tests": [
     "Fault-injection suite with a fake CRM (1,000 runs)",
     "Ported test_tool_runner.py",
-    "Contract bundle fixtures"
+    "Contract bundle fixtures, including capability replay and substitution",
+    "Capability forgery, replay, expiry and substitution tests driven by a prompt-injected conversation"
    ],
    "ci_gates": [
     "All applicable checks green at the exact head; no preserved red checks",

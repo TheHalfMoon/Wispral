@@ -6,14 +6,14 @@ All results `REPRODUCED` locally on 2026-11-08 (Windows 11, Node 24.19.0, Python
 | --- | --- | --- |
 | PR #124 REA bundle integrity | `node research/rea/2026-10-21/validate_research.mjs` | `PASS` — 54 files, 132 catalog rows, 75 transplant rows, 0 failures |
 | Design tokens: WCAG 2.2 contrast + accent/state hue separation | `node docs/design/tokens/check_contrast.mjs` | `PASS` — 94 contrast pairs (light and dark; canvas, surface, sunken, selected) and 40 hue checks; 0 failures |
-| Core contracts: shape, runtime, sequence, cross-record bundles | `python -I docs/engineering/contracts/run_conformance.py` | `PASS` — 8 schemas, 94 cases (88 shape + 6 runtime), 10 sequences, 4 bundles |
+| Core contracts: shape, runtime, sequence, cross-record bundles | `python -I docs/engineering/contracts/run_conformance.py` | `PASS` — 8 schemas, 114 cases (88 shape + 6 runtime), 10 sequences, 6 bundles |
 | Fixture generator determinism | `build_cases.py` twice | Identical output (sha256 prefix `8dc9513a356b2f54`) |
 | Packet generator determinism | `build_packets.py` twice | Identical `packets.json` and packets document |
 | Plan validator | `node research/wispral-world-class/validate_plan.mjs` | See below |
 
 ## Plan validator checks
 
-`validate_plan.mjs` enforces, over 73 packets and 27 planning documents:
+`validate_plan.mjs` enforces, over 75 packets and 27 planning documents:
 
 1. Every packet has all required fields; `ready` is `false` for every packet.
 2. Unique IDs; every dependency exists; the dependency graph is acyclic (topological order emitted).
@@ -42,4 +42,4 @@ A fresh-context reviewer (same model family as the author, so not a qualifying r
 | B6 plugin server | Security doc still allowed a socket variant; read-tool leakage untested; architecture implied port 8818 was live; tier S omitted it | Plugin tool server disabled in every Klaint process (socket variant rejected); forged-customer fixtures require zero effects **and zero data**; architecture and KT-02 updated |
 | B7 keyboard recovery | Quick-panel key map not updated; no last-outcome shortcut row; Esc contradiction; error actions had no persistence route | Full key map with "Insert into the original target" as Enter (re-validated, never "current app"); last-outcome shortcut row; Esc captured only during capture; error actions listed under Needs attention |
 
-Tool status at the time of the second-round check: contracts `PASS`, tokens `PASS`, plan validator `FAIL` on the then-missing anchor. After the fixes above, all three pass (table at the top of this file), with 73 packets.
+Tool status at the time of the second-round check: contracts `PASS`, tokens `PASS`, plan validator `FAIL` on the then-missing anchor. After the fixes above, all three pass (table at the top of this file), with 75 packets.

@@ -8,7 +8,7 @@ Every important claim in the planning package traces to one of these artifacts. 
 | --- | --- | --- | --- |
 | PR #124 REA bundle integrity on the consolidated branch | REPRODUCED | `research/rea/2026-10-21/validate_research.mjs` | PASS (54 files, 132 + 75 rows) |
 | Design-token contrast (WCAG 2.2 AA, light + dark, canvas/surface/sunken) | REPRODUCED | [check_contrast.mjs](../../docs/design/tokens/check_contrast.mjs) | PASS: 94 contrast pairs + 40 hue-separation checks (after three forward fixes, all recorded) |
-| Core contract conformance (shape, runtime, sequence) | REPRODUCED | [run_conformance.py](../../docs/engineering/contracts/run_conformance.py) | PASS: 8 schemas, 94 cases, 10 sequences, 4 cross-record bundles |
+| Core contract conformance (shape, runtime, sequence) | REPRODUCED | [run_conformance.py](../../docs/engineering/contracts/run_conformance.py) | PASS: 8 schemas, 114 cases, 10 sequences, 4 cross-record bundles |
 | Plan validator (packet graph, build-new justifications, links/anchors, names, claims) | REPRODUCED | [validate_plan.mjs](validate_plan.mjs) | See [PLAN_VALIDATION.md](PLAN_VALIDATION.md) |
 | B2R16 verifier on four heads | REPRODUCED | [verify_b2r16_repro.txt](evidence/governance/verify_b2r16_repro.txt) | FAIL (range drift) everywhere |
 | Workflow trigger and gate simulation | REPRODUCED | [trigger_matrix.txt](evidence/governance/trigger_matrix.txt), [scope_gate_sim.txt](evidence/governance/scope_gate_sim.txt), [run_inline_gate.py](evidence/governance/run_inline_gate.py) | Matches CI on #126 and #120 |

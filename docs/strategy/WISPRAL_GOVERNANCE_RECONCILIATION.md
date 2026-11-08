@@ -53,10 +53,10 @@ flowchart LR
 | **G1** | **MERGED** `8d52a45` (#129). The owner waived the qualifying review; recorded on #129 | `CONSTITUTION.md` | (was) `verify-b2r16-freeze`, preserved under the transitional clause | Constitution-required (waived; A040 ratifies) | Governed revert |
 | **C1** | **MERGED** `5879c43` (#130). DeepSeek review: round 1 REQUEST_CHANGES (4 blocking), round 2 APPROVE (0 blocking) | freeze workflow, preservation checker and tests | (was) the two B2 scope gates, preserved under XVII item 5; the freeze job absent and replaced by a dispatch run | Constitution-required | Governed revert restores the original workflow (its PR shows a red freeze check by design) |
 | **PLAN** | Open (#128). Needs its qualifying review | this package (docs and research only) | **None** (the freeze is base-defined since C1) | Ordinary plus qualifying review | Revert |
-| **A040** | Open (#133, drafted by another session on the owner's account) | `CONSTITUTION.md` | **None** | Constitution-required, qualifying review not waivable | Governed revert |
+| **A040** | Open (#133, drafted by another session on the owner's account) | `CONSTITUTION.md` | **None after its next push.** Its only red run (42444655346) predates C1 and used the old candidate-defined freeze. Any new push, such as the required #130 text update, triggers the base-defined freeze, which passes on `CONSTITUTION.md`-only changes | Constitution-required, qualifying review not waivable | Governed revert |
 | **C2** | Not started. **Needs A040**: under 0.3.0 its immutable-control boundary failure cannot be preserved (audit A3) | recovery and trusted-pr workflows, `verify_attempt_002_invalidation.py` | the two scope gates and the immutable-control boundary, preserved under amended item 5 | Constitution-required | Governed revert |
 | **R** | Not started | `docs/canonical/TRUSTED_CONTROL_REPAIRS.md` (outside every B2 path filter); `AGENTS.md` reading-order line | None | Qualifying review (amended item 10) | Revert |
-| **NOOP** | Not started | none (empty commit, throwaway PR) | None, and all `main` push runs green | Ordinary | Close the PR |
+| **NOOP** | Not started | throwaway probe PRs only (empty; one allowlisted-section probe) | None. Every workflow's latest `main` push run green | Ordinary | Close the probes |
 | **G2** | Not started | `CONSTITUTION.md`, `AGENTS.md`, `ARCHITECTURE_INVARIANTS.md`, `PROGRAM_ROADMAP.md`, `specs/000-founding-research/{spec,plan}.md` | None | Constitution-required | Governed major revert |
 | **F** | Not started | `specs/CURRENT.md`, `docs/canonical/CURRENT_STATE.md` (allowlisted sections only, §4.2), `specs/000-founding-research/tasks.md`, new `specs/000E-platform-feasibility/{spec,plan,tasks}.md`, new `specs/000F-provenance-intake/{spec,plan,tasks}.md` | None (passes the non-successor class) | Ordinary | Revert |
 | **D0G** | Not started | 000G closeout and the selected Grain specs | Per touched paths; none expected | Constitution-required | Revert |
@@ -129,7 +129,7 @@ Evidence: [`evidence/governance/c1/`](../../research/wispral-world-class/evidenc
 ### 4.2 C2 — non-successor class with exact section rules
 
 1. **Recognized only when all hold:** the readiness JSON blob equals the authority base; no changed path lies under `.github/**`, `research/000b1/**`, `research/000b2-entry/**`, `research/000b2-public/**`, `specs/000B*/**` or `fixtures/**`; and every frontier-file edit is within the allowlist below.
-2. **Allowlisted regions** (a section runs from its `## ` heading line to the line before the next `## ` heading, or to end of file):
+2. **Allowlisted regions.** A section runs from its `## ` heading line to the line before the next `## ` heading, or to end of file. **Designation authority:** G2, a constitutional amendment, designates exactly these headings under the "Frontier sections" clause. The designation then holds whether that clause reads "an adopted correction" (0.3.0) or "a constitutional amendment" (A040, #133). C2 implements the check, and no non-B2 frontier edit merges before the designation (F depends on G2).
    - `docs/canonical/CURRENT_STATE.md`: the sections headed exactly `## Current product thesis`, `## Current architecture posture`, `## Explicit non-claims`, `## Product-code gate`.
    - `specs/CURRENT.md`: the sections headed exactly `## Remaining founding children`, `## Product-code gate`.
    - Either file: new sections appended after the last existing section, each headed with a line beginning `## Platform frontier`.
@@ -170,7 +170,11 @@ The full register with authority lines, failure text, reproduction commands, tes
 
 ## 7. Founder-only decisions (in order)
 
-1. **A040 (#133).** Obtain its qualifying review (not waivable), then merge it. This also ratifies the #129 waivers. Before review, #133's text needs one update: #130 has merged under 0.3.0, so its "must meet before merge" clause becomes a C2 obligation.
+1. **A040 (#133).** Obtain its qualifying review (not waivable), then merge it. This also ratifies the #129 waivers. Before review, #133's text needs two updates:
+   - #130 has merged under 0.3.0, so its "must meet before merge" clause becomes a C2 obligation.
+   - Its "Frontier sections" change (designation only by constitutional amendment) is compatible with this plan only because G2 designates the headings. Alternatively, A040 can designate the §4.2 headings itself.
+
+   The push that carries these updates re-runs the base-defined freeze check, which replaces its stale red run.
 2. **PLAN (#128).** Authorize its merge after its qualifying review.
 3. **C2.** Authorize drafting after A040; later its guarded merge.
 4. **R.** Authorize the combined reconciliation after C2.

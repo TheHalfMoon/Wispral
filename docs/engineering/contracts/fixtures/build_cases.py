@@ -7,6 +7,7 @@ Each tamper case names the invariant it attacks; G-* IDs refer to the Core audit
 """
 
 import copy
+import hashlib
 import json
 import pathlib
 
@@ -27,6 +28,26 @@ def mutate(base, path, value):
 
 
 DELETE = object()
+
+BOUND_CONSENT_FIELDS = ("subject_ref", "voice_id", "purposes", "products", "reference_artifact_digest", "valid_from", "valid_until", "consent_epoch")
+
+
+def bound_digest(record):
+    """SHA-256 of the canonical JSON of the attested consent fields (absent fields as null) plus the nonce."""
+    fields = {k: record.get(k) for k in BOUND_CONSENT_FIELDS}
+    fields["nonce"] = record["attestation"]["nonce"]
+    return "sha256:" + hashlib.sha256(json.dumps(fields, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
+
+
+def attest(record):
+    """Re-sign (in fixture terms: re-bind) a consent record after its bound fields change."""
+    if "attestation" in record:
+        record = copy.deepcopy(record)
+        record["attestation"]["bound_fields_digest"] = bound_digest(record)
+    return record
+
+
+SIGNATURE = {"alg": "ed25519", "key_id": "op-key:studio-001", "value": "A" * 86}
 
 ENVELOPE = {
     "schema_version": 1, "request_id": "req-00000001", "session_id": "ses-00000001", "turn_id": "t1",
@@ -57,7 +78,11 @@ CONSENT = {
     "principal_scope_ref": "local-user", "purposes": ["personal"], "products": ["wisprstudio"],
     "valid_from": "2026-11-08T00:00:00Z", "evidence_digest": H, "status": "active", "consent_epoch": 1, "watermark_required": True,
     "reference_artifact_digest": "sha256:" + "e" * 64, "speaker_match": {"method": "speaker_verification_model", "result": "match", "evidence_digest": H},
+    "attestation": {"issuer": {"kind": "studio_operator", "key_id": "op-key:studio-001"}, "identity_check": "in_person_id_check",
+                    "statement": {"script_id": "voice-consent@1", "transcript_match": "match", "operator_confirmed": True, "live_capture": True, "challenge_digest": H},
+                    "bound_fields_digest": H, "nonce": "c0nsentN0nce_0123456789", "issued_at": "2026-11-08T00:00:00Z", "signature": SIGNATURE},
 }
+CONSENT = attest(CONSENT)
 VERDICT = {
     "verdict_id": "verdict-0001", "request_id": "req-00000001", "epoch": 3, "candidate_decision": "ASK", "enforced_decision": "ASK",
     "action_class": "money", "rule_ids": ["refund_over_threshold"], "layers": [{"source": "base", "decision": "ALLOW"}, {"source": "tenant", "decision": "ASK"}],
@@ -68,21 +93,28 @@ PROV = {
     "kind": "raw_hypothesis", "content_digest": H, "model": {"model_id": "example-local-asr", "revision": "r1", "artifact_sha256": HX},
     "actor": "speech_worker", "retention": "bounded_days", "retention_days": 7, "principal_scope_ref": "local-user", "policy_version": "side-policy@1.0.0",
 }
-TARGET = {"captured_at_activation": True, "window_handle": "0x00A1B2", "process_instance": {"pid": 4242, "start_generation": "133700000000000000"}, "focus_element": {"runtime_id_digest": H, "control_type": "Edit"}, "image_path_digest": H, "app_display_name": "Notepad", "integrity_level": "medium"}
+TARGET = {"captured_at_activation": True, "window_handle": "0x00A1B2", "process_instance": {"pid": 4242, "start_generation": "133700000000000000"}, "focus_element": {"runtime_id_digest": H, "control_type": "Edit", "is_password": False, "is_read_only": False}, "image_path_digest": H, "app_display_name": "Notepad", "integrity_level": "medium"}
 DELIVERY = {
     "delivery_id": "del-0000001", "intent_id": "int-0000001", "request_id": "req-00000001", "epoch": 3, "epoch_at_activation": 3,
-    "target": TARGET, "revalidated_before_delivery": True, "outcome": "delivered_confirmed", "method": "uia_value_pattern",
+    "target": TARGET, "revalidated_before_delivery": True, "focus_revalidated_before_delivery": True, "outcome": "delivered_confirmed", "method": "uia_value_pattern",
     "chars_total": 120, "chars_delivered": 120, "clipboard": {"used": False, "restored": False, "skipped_reason": "not_used"},
 }
 INTENT = {
     "intent_id": "int-0000002", "idempotency_key": "acme:refund:order-4821:v1", "owner": "klaint_broker", "action_class": "money",
     "state": "dispatched", "verdict_id": "verdict-0002", "principal_scope_ref": "tenant:acme", "epoch": 3,
+    "dispatch": {"tool": "refunds.create", "args_digest": H},
+    "capability": {"token_id": "cap-00000001", "issuer": "klaint_broker", "session_ref": "ses-00000001", "tool": "refunds.create", "args_digest": H,
+                   "nonce": "capN0nce_0123456789abcd", "issued_at": "2026-11-08T10:00:00Z", "expires_at": "2026-11-08T10:00:30Z", "single_use": True,
+                   "signature": {"alg": "ed25519", "key_id": "broker-key:acme-1", "value": "B" * 86}},
 }
+STUDIO_INTENT = {k: v for k, v in INTENT.items() if k not in ("dispatch", "capability")}
 
 cases = []
 
 
-def add(schema, name, expect, inst, invariant=None, layer="shape"):
+def add(schema, name, expect, inst, invariant=None, layer="shape", keep_attestation=False):
+    if schema == "consent_record" and not keep_attestation:
+        inst = attest(inst)
     case = {"schema": schema, "name": name, "expect": expect, "layer": layer, "instance": inst}
     if invariant:
         case["invariant"] = invariant
@@ -183,8 +215,8 @@ add("effect_intent", "valid_reconciled", "valid", {**INTENT, "state": "reconcile
 add("effect_intent", "invalid_unknown_without_probe", "invalid", {**INTENT, "state": "unknown"}, "unknown outcomes need a reconcile probe")
 add("effect_intent", "invalid_result_without_reconciled", "invalid", {**INTENT, "reconciled_result": "effect_absent", "reconcile_probe": "x"}, "a reconcile result implies the reconciled state")
 add("effect_intent", "invalid_text_delivery_not_an_intent", "invalid", {**INTENT, "action_class": "text_delivery"}, "text delivery is a delivery_outcome, not an effect intent")
-add("effect_intent", "valid_studio_export", "valid", {**INTENT, "owner": "studio_export_commit", "action_class": "file_export", "idempotency_key": "project-42:export:chapter-3:v7"})
-add("effect_intent", "invalid_studio_money", "invalid", {**INTENT, "owner": "studio_export_commit", "action_class": "money"}, "the export owner only commits files")
+add("effect_intent", "valid_studio_export", "valid", {**STUDIO_INTENT, "owner": "studio_export_commit", "action_class": "file_export", "idempotency_key": "project-42:export:chapter-3:v7"})
+add("effect_intent", "invalid_studio_money", "invalid", {**STUDIO_INTENT, "owner": "studio_export_commit", "action_class": "money"}, "the export owner only commits files")
 add("effect_intent", "invalid_short_idempotency_key", "invalid", mutate(INTENT, ["idempotency_key"], "k1"), "idempotency keys have enough entropy")
 
 
@@ -202,12 +234,38 @@ add("cancellation", "invalid_numeric_start_generation", "invalid", mutate(CANCEL
 add("envelope", "valid_typed_delivery_payload", "valid", {**ENVELOPE, "event": "DeliveryOutcome", "source": {"product": "wisprside", "component": "delivery_owner"}, "payload": DELIVERY})
 add("envelope", "invalid_untyped_delivery_payload", "invalid", {**ENVELOPE, "event": "DeliveryOutcome", "source": {"product": "wisprside", "component": "delivery_owner"}, "payload": {"outcome": "delivered"}}, "contract-bearing events carry their contract payload")
 
+# ---- plan review round 1 (#128): focus binding, consent attestation, broker capability
+add("delivery_outcome", "invalid_delivered_without_focus_element", "invalid", mutate(DELIVERY, ["target", "focus_element"], DELETE), "delivery binds the focused element")
+add("delivery_outcome", "invalid_delivered_into_password_field", "invalid", mutate(DELIVERY, ["target", "focus_element", "is_password"], True), "never deliver into a password field")
+add("delivery_outcome", "invalid_delivered_into_read_only_field", "invalid", mutate(DELIVERY, ["target", "focus_element", "is_read_only"], True), "never deliver into a read-only field")
+add("delivery_outcome", "invalid_delivered_focus_not_revalidated", "invalid", {**DELIVERY, "focus_revalidated_before_delivery": False}, "same-window focus moves are caught before delivery")
+add("delivery_outcome", "valid_refused_focus_moved", "valid", {**DELIVERY, "outcome": "refused", "refusal_reason": "focus_moved", "method": "none", "chars_delivered": 0, "focus_revalidated_before_delivery": False})
+add("delivery_outcome", "valid_refused_identity_unreadable_without_focus", "valid", {**mutate(DELIVERY, ["target", "focus_element"], DELETE), "outcome": "refused", "refusal_reason": "identity_unreadable", "method": "none", "chars_delivered": 0})
+add("consent_record", "invalid_missing_attestation", "invalid", mutate(CONSENT, ["attestation"], DELETE), "consent is authenticated, not self-asserted")
+add("consent_record", "invalid_active_statement_mismatch", "invalid", mutate(CONSENT, ["attestation", "statement", "transcript_match"], "mismatch"), "the statement must say the consent script")
+add("consent_record", "invalid_active_operator_not_confirmed", "invalid", mutate(CONSENT, ["attestation", "statement", "operator_confirmed"], False), "a human operator confirms the statement")
+add("consent_record", "invalid_statement_imported_not_live", "invalid", mutate(CONSENT, ["attestation", "statement", "live_capture"], False), "consent statements are captured live")
+add("consent_record", "invalid_statement_without_challenge", "invalid", mutate(CONSENT, ["attestation", "statement", "challenge_digest"], DELETE), "a capture-time challenge defeats replayed or spliced statements")
+add("consent_record", "invalid_attestation_wrong_alg", "invalid", mutate(CONSENT, ["attestation", "signature", "alg"], "none"), "attestations are Ed25519-signed")
+add("consent_record", "invalid_purposes_widened_after_attestation", "invalid", {**CONSENT, "purposes": ["personal", "commercial"]}, "attested fields cannot change after signing", layer="runtime", keep_attestation=True)
+add("consent_record", "invalid_reference_swapped_after_attestation", "invalid", {**CONSENT, "reference_artifact_digest": "sha256:" + "f" * 64}, "the attested reference audio cannot be swapped", layer="runtime", keep_attestation=True)
+add("effect_intent", "invalid_broker_intent_without_capability", "invalid", mutate(INTENT, ["capability"], DELETE), "consequential broker calls need a capability")
+add("effect_intent", "invalid_capability_reusable", "invalid", mutate(INTENT, ["capability", "single_use"], False), "capabilities are single-use")
+add("effect_intent", "invalid_capability_tool_substituted", "invalid", mutate(INTENT, ["dispatch", "tool"], "refunds.void"), "the capability binds the exact tool", layer="runtime")
+add("effect_intent", "invalid_capability_args_substituted", "invalid", mutate(INTENT, ["dispatch", "args_digest"], "sha256:" + "9" * 64), "the capability binds the exact arguments", layer="runtime")
+add("effect_intent", "invalid_capability_ttl_over_60s", "invalid", mutate(INTENT, ["capability", "expires_at"], "2026-11-08T10:05:00Z"), "capabilities live at most 60 seconds", layer="runtime")
+add("effect_intent", "invalid_capability_expires_before_issue", "invalid", mutate(INTENT, ["capability", "expires_at"], "2026-11-08T09:59:00Z"), "expiry follows issue", layer="runtime")
+
 ALLOW_MONEY = {**VERDICT, "verdict_id": "verdict-0002", "candidate_decision": "ALLOW", "enforced_decision": "ALLOW", "layers": [{"source": "base", "decision": "ALLOW"}]}
 BUNDLES = [
     {"name": "valid_intent_bound_to_allow_verdict", "expect": "valid", "intents": [INTENT], "verdicts": [ALLOW_MONEY]},
     {"name": "invalid_duplicate_open_intent_same_key", "expect": "invalid", "intents": [INTENT, {**INTENT, "intent_id": "int-0000003"}], "verdicts": [ALLOW_MONEY], "invariant": "one non-terminal intent per (principal, owner, key)"},
     {"name": "invalid_intent_verdict_class_mismatch", "expect": "invalid", "intents": [INTENT], "verdicts": [{**ALLOW_MONEY, "action_class": "read", "rule_ids": []}], "invariant": "verdict class must match the intent"},
     {"name": "invalid_intent_on_ask_verdict", "expect": "invalid", "intents": [INTENT], "verdicts": [{**VERDICT, "verdict_id": "verdict-0002"}], "invariant": "dispatch needs an enforced ALLOW"},
+    {"name": "valid_two_intents_distinct_capabilities", "expect": "valid", "verdicts": [ALLOW_MONEY],
+     "intents": [INTENT, mutate(mutate({**INTENT, "intent_id": "int-0000004", "idempotency_key": "acme:refund:order-4822:v1"}, ["capability", "nonce"], "capN0nce_zyxwvutsrq9876"), ["capability", "token_id"], "cap-00000002")]},
+    {"name": "invalid_capability_nonce_replayed", "expect": "invalid", "verdicts": [ALLOW_MONEY], "invariant": "a capability nonce is consumed on first use",
+     "intents": [INTENT, {**INTENT, "intent_id": "int-0000004", "idempotency_key": "acme:refund:order-4822:v1"}]},
 ]
 
 SEQUENCES = [
@@ -224,5 +282,5 @@ SEQUENCES = [
 ]
 
 out = pathlib.Path(__file__).resolve().parent / "cases.json"
-out.write_text(json.dumps({"description": __doc__.strip().splitlines()[0], "cases": cases, "sequences": SEQUENCES, "bundles": BUNDLES}, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+out.write_text(json.dumps({"description": __doc__.strip().splitlines()[0], "cases": cases, "sequences": SEQUENCES, "bundles": BUNDLES}, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
 print(f"wrote {len(cases)} cases and {len(SEQUENCES)} sequences to {out.name}")

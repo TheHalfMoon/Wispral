@@ -1338,6 +1338,28 @@
      "method": "speaker_verification_model",
      "result": "match",
      "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
     }
    }
   },
@@ -1369,6 +1391,28 @@
      "result": "match",
      "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:a0d3f0dda2a6cbe6cf51211d348ee19d9f8f430332bb3db1c0d1650c09a27f54",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    },
     "revoked_at": "2026-11-08T10:00:00Z"
    }
   },
@@ -1399,6 +1443,28 @@
      "method": "speaker_verification_model",
      "result": "match",
      "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
     }
    },
    "invariant": "revocation is timestamped"
@@ -1431,6 +1497,28 @@
      "result": "match",
      "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    },
     "revoked_at": "2026-11-08T10:00:00Z"
    },
    "invariant": "revoked consent is never active"
@@ -1461,6 +1549,28 @@
      "method": "speaker_verification_model",
      "result": "match",
      "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
     }
    },
    "invariant": "evidence digest required"
@@ -1492,6 +1602,28 @@
      "method": "speaker_verification_model",
      "result": "match",
      "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:7d63a8dc87c2ec42026cbb50a0d0a8e09cc3fda160ed2d773398ac2fed27304a",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
     }
    },
    "invariant": "dates are RFC 3339 UTC"
@@ -1523,6 +1655,28 @@
      "method": "speaker_verification_model",
      "result": "match",
      "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
     }
    },
    "invariant": "expiry needs valid_until"
@@ -1555,6 +1709,28 @@
      "result": "match",
      "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    },
     "display_name": "Jane Doe"
    },
    "invariant": "no personal display data in the contract"
@@ -1586,6 +1762,28 @@
      "method": "speaker_verification_model",
      "result": "match",
      "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
     }
    },
    "invariant": "third-party voices are watermarked"
@@ -1617,6 +1815,28 @@
      "method": "speaker_verification_model",
      "result": "match",
      "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:3e2432fc0c2ad96c4383f13441822e9055bf5f89b34c4fe37a1c102cd09afa80",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
     },
     "valid_until": "2026-01-01T00:00:00Z"
    },
@@ -2142,13 +2362,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
     "outcome": "delivered_confirmed",
     "method": "uia_value_pattern",
     "chars_total": 120,
@@ -2180,13 +2403,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
     "outcome": "refused",
     "method": "none",
     "chars_total": 120,
@@ -2219,13 +2445,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
     "outcome": "partial",
     "method": "send_input_unicode",
     "chars_total": 120,
@@ -2257,13 +2486,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": false,
+    "focus_revalidated_before_delivery": true,
     "outcome": "delivered_confirmed",
     "method": "uia_value_pattern",
     "chars_total": 120,
@@ -2296,13 +2528,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
     "outcome": "delivered_confirmed",
     "method": "uia_value_pattern",
     "chars_total": 120,
@@ -2335,13 +2570,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
     "outcome": "refused",
     "method": "none",
     "chars_total": 120,
@@ -2375,13 +2613,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
     "outcome": "partial",
     "method": "send_input_unicode",
     "chars_total": 120,
@@ -2414,13 +2655,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
     "outcome": "delivered_confirmed",
     "method": "uia_value_pattern",
     "chars_total": 120,
@@ -2452,13 +2696,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
     "outcome": "delivered_confirmed",
     "method": "uia_value_pattern",
     "chars_total": 120,
@@ -2491,13 +2738,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
     "outcome": "delivered_confirmed",
     "method": "uia_value_pattern",
     "chars_total": 120,
@@ -2530,13 +2780,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
     "outcome": "delivered_confirmed",
     "method": "uia_value_pattern",
     "chars_total": 120,
@@ -2569,13 +2822,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
     "outcome": "delivered_confirmed",
     "method": "uia_value_pattern",
     "chars_total": 120,
@@ -2608,13 +2864,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
     "outcome": "delivered_confirmed",
     "method": "uia_value_pattern",
     "chars_total": 120,
@@ -2647,13 +2906,16 @@
      },
      "focus_element": {
       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "control_type": "Edit"
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
      },
      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
      "app_display_name": "Notepad",
      "integrity_level": "medium"
     },
     "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
     "outcome": "refused",
     "method": "none",
     "chars_total": 120,
@@ -2679,7 +2941,27 @@
     "state": "dispatched",
     "verdict_id": "verdict-0002",
     "principal_scope_ref": "tenant:acme",
-    "epoch": 3
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
    }
   },
   {
@@ -2696,6 +2978,26 @@
     "verdict_id": "verdict-0002",
     "principal_scope_ref": "tenant:acme",
     "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    },
     "reconcile_probe": "GET /refunds?idempotency_key=...",
     "reconciled_result": "effect_present"
    }
@@ -2713,7 +3015,27 @@
     "state": "unknown",
     "verdict_id": "verdict-0002",
     "principal_scope_ref": "tenant:acme",
-    "epoch": 3
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
    },
    "invariant": "unknown outcomes need a reconcile probe"
   },
@@ -2731,6 +3053,26 @@
     "verdict_id": "verdict-0002",
     "principal_scope_ref": "tenant:acme",
     "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    },
     "reconciled_result": "effect_absent",
     "reconcile_probe": "x"
    },
@@ -2749,7 +3091,27 @@
     "state": "dispatched",
     "verdict_id": "verdict-0002",
     "principal_scope_ref": "tenant:acme",
-    "epoch": 3
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
    },
    "invariant": "text delivery is a delivery_outcome, not an effect intent"
   },
@@ -2799,7 +3161,27 @@
     "state": "dispatched",
     "verdict_id": "verdict-0002",
     "principal_scope_ref": "tenant:acme",
-    "epoch": 3
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
    },
    "invariant": "idempotency keys have enough entropy"
   },
@@ -2829,6 +3211,28 @@
     "speaker_match": {
      "method": "human_review",
      "result": "not_checked"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
     }
    },
    "invariant": "active personal consent requires a speaker match"
@@ -2859,6 +3263,28 @@
      "method": "speaker_verification_model",
      "result": "match",
      "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:c3ead25a3412e1446e5544414a21fe567a92495c71cca6bd7c0e1fbc3e8e67ef",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
     }
    },
    "invariant": "consent binds the exact reference audio"
@@ -3248,13 +3674,16 @@
       },
       "focus_element": {
        "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-       "control_type": "Edit"
+       "control_type": "Edit",
+       "is_password": false,
+       "is_read_only": false
       },
       "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "app_display_name": "Notepad",
       "integrity_level": "medium"
      },
      "revalidated_before_delivery": true,
+     "focus_revalidated_before_delivery": true,
      "outcome": "delivered_confirmed",
      "method": "uia_value_pattern",
      "chars_total": 120,
@@ -3295,6 +3724,854 @@
     }
    },
    "invariant": "contract-bearing events carry their contract payload"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_delivered_without_focus_element",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "delivery binds the focused element"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_delivered_into_password_field",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": true,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "never deliver into a password field"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_delivered_into_read_only_field",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": true
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "never deliver into a read-only field"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_delivered_focus_not_revalidated",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": false,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "same-window focus moves are caught before delivery"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "valid_refused_focus_moved",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": false,
+    "outcome": "refused",
+    "method": "none",
+    "chars_total": 120,
+    "chars_delivered": 0,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    },
+    "refusal_reason": "focus_moved"
+   }
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "valid_refused_identity_unreadable_without_focus",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "refused",
+    "method": "none",
+    "chars_total": 120,
+    "chars_delivered": 0,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    },
+    "refusal_reason": "identity_unreadable"
+   }
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_missing_attestation",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+   },
+   "invariant": "consent is authenticated, not self-asserted"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_active_statement_mismatch",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "mismatch",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "the statement must say the consent script"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_active_operator_not_confirmed",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": false,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "a human operator confirms the statement"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_statement_imported_not_live",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": false,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "consent statements are captured live"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_statement_without_challenge",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "a capture-time challenge defeats replayed or spliced statements"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_attestation_wrong_alg",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "none",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "attestations are Ed25519-signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_purposes_widened_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal",
+     "commercial"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "attested fields cannot change after signing"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_reference_swapped_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "the attested reference audio cannot be swapped"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_broker_intent_without_capability",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+   },
+   "invariant": "consequential broker calls need a capability"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_capability_reusable",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": false,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "capabilities are single-use"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_capability_tool_substituted",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.void",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "the capability binds the exact tool"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_capability_args_substituted",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "the capability binds the exact arguments"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_capability_ttl_over_60s",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:05:00Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "capabilities live at most 60 seconds"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_capability_expires_before_issue",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T09:59:00Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "expiry follows issue"
   }
  ],
  "sequences": [
@@ -3413,7 +4690,27 @@
      "state": "dispatched",
      "verdict_id": "verdict-0002",
      "principal_scope_ref": "tenant:acme",
-     "epoch": 3
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
     }
    ],
    "verdicts": [
@@ -3452,7 +4749,27 @@
      "state": "dispatched",
      "verdict_id": "verdict-0002",
      "principal_scope_ref": "tenant:acme",
-     "epoch": 3
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
     },
     {
      "intent_id": "int-0000003",
@@ -3462,7 +4779,27 @@
      "state": "dispatched",
      "verdict_id": "verdict-0002",
      "principal_scope_ref": "tenant:acme",
-     "epoch": 3
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
     }
    ],
    "verdicts": [
@@ -3502,7 +4839,27 @@
      "state": "dispatched",
      "verdict_id": "verdict-0002",
      "principal_scope_ref": "tenant:acme",
-     "epoch": 3
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
     }
    ],
    "verdicts": [
@@ -3540,7 +4897,27 @@
      "state": "dispatched",
      "verdict_id": "verdict-0002",
      "principal_scope_ref": "tenant:acme",
-     "epoch": 3
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
     }
    ],
    "verdicts": [
@@ -3571,6 +4948,185 @@
     }
    ],
    "invariant": "dispatch needs an enforced ALLOW"
+  },
+  {
+   "name": "valid_two_intents_distinct_capabilities",
+   "expect": "valid",
+   "verdicts": [
+    {
+     "verdict_id": "verdict-0002",
+     "request_id": "req-00000001",
+     "epoch": 3,
+     "candidate_decision": "ALLOW",
+     "enforced_decision": "ALLOW",
+     "action_class": "money",
+     "rule_ids": [
+      "refund_over_threshold"
+     ],
+     "layers": [
+      {
+       "source": "base",
+       "decision": "ALLOW"
+      }
+     ],
+     "policy_version": "klaint-acme@12.0.0",
+     "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "principal_scope_ref": "tenant:acme",
+     "human_present": true
+    }
+   ],
+   "intents": [
+    {
+     "intent_id": "int-0000002",
+     "idempotency_key": "acme:refund:order-4821:v1",
+     "owner": "klaint_broker",
+     "action_class": "money",
+     "state": "dispatched",
+     "verdict_id": "verdict-0002",
+     "principal_scope_ref": "tenant:acme",
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
+    },
+    {
+     "intent_id": "int-0000004",
+     "idempotency_key": "acme:refund:order-4822:v1",
+     "owner": "klaint_broker",
+     "action_class": "money",
+     "state": "dispatched",
+     "verdict_id": "verdict-0002",
+     "principal_scope_ref": "tenant:acme",
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000002",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_zyxwvutsrq9876",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "invalid_capability_nonce_replayed",
+   "expect": "invalid",
+   "verdicts": [
+    {
+     "verdict_id": "verdict-0002",
+     "request_id": "req-00000001",
+     "epoch": 3,
+     "candidate_decision": "ALLOW",
+     "enforced_decision": "ALLOW",
+     "action_class": "money",
+     "rule_ids": [
+      "refund_over_threshold"
+     ],
+     "layers": [
+      {
+       "source": "base",
+       "decision": "ALLOW"
+      }
+     ],
+     "policy_version": "klaint-acme@12.0.0",
+     "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "principal_scope_ref": "tenant:acme",
+     "human_present": true
+    }
+   ],
+   "invariant": "a capability nonce is consumed on first use",
+   "intents": [
+    {
+     "intent_id": "int-0000002",
+     "idempotency_key": "acme:refund:order-4821:v1",
+     "owner": "klaint_broker",
+     "action_class": "money",
+     "state": "dispatched",
+     "verdict_id": "verdict-0002",
+     "principal_scope_ref": "tenant:acme",
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
+    },
+    {
+     "intent_id": "int-0000004",
+     "idempotency_key": "acme:refund:order-4822:v1",
+     "owner": "klaint_broker",
+     "action_class": "money",
+     "state": "dispatched",
+     "verdict_id": "verdict-0002",
+     "principal_scope_ref": "tenant:acme",
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
+    }
+   ]
   }
  ]
 }

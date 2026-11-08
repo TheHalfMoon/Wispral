@@ -10,9 +10,10 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | --- | --- |
 | `FOUNDER_RATIFICATION` | Repository owner ratifies a constitutional amendment after independent review of the exact range (Constitution Governance 1-4). |
 | `XVII_CORRECTION` | Principle XVII control-correction lane created by G1 (preserved red results, tamper-negative proof, independent review, guarded merge, canonical exercise, ledger). |
-| `GOVERNANCE_REVIEW` | Ordinary governance or reconciliation PR with review; only after C so no unlawful red check remains. |
+| `GOVERNANCE_REVIEW` | Ordinary governance PR: fresh-context review plus the owner's merge approval (Governance item 7, last sentence). |
+| `QUALIFYING_GOVERNANCE_REVIEW` | Governance PR that needs a qualifying independent review (Governance item 7) recorded with the exact head, plus the owner's merge act: XVII reconciliations, this planning package, and any PR the Constitution names. |
 | `B2_RECOVERY_V2` | Existing specs/000B2-public-corpus-bakeoff/recovery-v2.md authority for B2 successor tasks; unchanged by this plan. |
-| `RESEARCH_000E` | Research Grain opened by F under 000E (platform and native feasibility). Disposable baselines only; no product, installer or release authority. |
+| `RESEARCH_000E` | Research Grain opened by F under 000E (platform and native feasibility). Disposable baselines only; no product, installer or release authority; no code is copied into a Wispral repository before CORE-00 records the licence decision. |
 | `RESEARCH_000F` | Research Grain opened by F under 000F (dependency, license and provenance intake). Records only. |
 | `DECISION_000G` | The 000G decision PR that selects capability-specific Grains from canonical evidence: GRAIN_CORE, GRAIN_DESIGN, GRAIN_BENCH and at most two product Grains at once (GRAIN_SIDE plus GRAIN_STUDIO or GRAIN_KLAINT_TEXT). |
 | `GRAIN_CORE` | Product Grain for shared contracts and the policy library, selected by the 000G decision. |
@@ -31,11 +32,11 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | --- | --- | --- | --- |
 | 1 | **G1** Constitution 0.3.0: Principle XVII (narrow over-application correction), transitional clause, Governance item 7 (qualifying review) | — | `FOUNDER_RATIFICATION` |
 | 2 | **C1** XVII correction 1: B2R16 freeze preservation run from a base-defined pull_request_target job | G1 | `XVII_CORRECTION` |
-| 3 | **PLAN** Merge this candidate planning package (research and docs only) after its qualifying review | C1 | `GOVERNANCE_REVIEW` |
+| 3 | **PLAN** Merge this candidate planning package (research and docs only) after its qualifying review | C1 | `QUALIFYING_GOVERNANCE_REVIEW` |
 | 4 | **A040** Constitution 0.4.0 (#133): harden Principle XVII after the post-merge audit (A1-A4) and ratify the waived #129 review | C1 | `FOUNDER_RATIFICATION` |
 | 5 | **C2** XVII correction 2: non-successor class with exact section allowlist, marker uniqueness and trusted-coverage extension | A040 | `XVII_CORRECTION` |
-| 6 | **R** Combined lane reconciliation (XVII item 10, A040 A4): record the G1 waivers, C1, C2 and #118 as an exception with fresh evidence | C2 | `GOVERNANCE_REVIEW` |
-| 7 | **NOOP** No-op confirmation: an empty-diff pull request against main passes every applicable check, and a push to main is green | R | `GOVERNANCE_REVIEW` |
+| 6 | **R** Combined lane reconciliation (XVII item 10, A040 A4): record the G1 waivers, C1, C2 and #118 as an exception with fresh evidence | C2 | `QUALIFYING_GOVERNANCE_REVIEW` |
+| 7 | **NOOP** Green confirmation: every workflow's latest push run on main is green, and filter-exercising probe PRs pass the B2 gates as non-successor candidates | R | `GOVERNANCE_REVIEW` |
 | 8 | **G2** Constitution 1.0.0: platform thesis (WisprSide, WisprStudio, Klaint), anti-roadmap and A12 dispositions, 000C-000G re-scope | R, PLAN | `FOUNDER_RATIFICATION` |
 | 9 | **F** Frontier reconciliation: open the 000E and 000F research Grains; product code stays closed | G2, C2 | `GOVERNANCE_REVIEW` |
 | 10 | **CORE-00** Re-pins, rights register and licence-decision gate | F | `RESEARCH_000F` |
@@ -113,7 +114,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Decision | `GOVERNANCE` |
 | Donor (pinned) | none (governance, research or build-new) |
 | Files / interfaces | .github/workflows/000b2-public-attempt-003-recovery.yml<br>.github/workflows/000b2-public-attempt-003-trusted-pr.yml<br>research/000b2-public/verify_attempt_002_invalidation.py<br>research/control-repairs/2026-11-*/** |
-| Acceptance | Rules exactly as in reconciliation section 4.2 (allowlisted headings; appended Platform frontier sections; NFC; confusables; B2 markers exactly once in B2-owned sections)<br>PR #120 still passes both gates; F's literal planned diff passes<br>Trusted base-defined gate also covers research/000b2-entry/**, research/000b1/** and 000b2-entry-*.yml<br>Immutable-control boundary failure preserved only as A040 allows (declared annexed byte change only; immutable list unchanged)<br>C1 lessons: in-class corpus with recorded historical verdicts; a negative fixture for every rejecting branch; non-concealment diff pinned by commit SHA; every check skipped by a neutralization run separately; the correction's own verifier and tests equal the trusted revision's bytes |
+| Acceptance | Rules exactly as in reconciliation section 4.2 (allowlisted headings; appended Platform frontier sections; NFC; confusables; B2 marker count and positions in B2-owned regions equal the authority base, and no marker inside an allowlisted region or appended Platform frontier section)<br>PR #120 still passes both gates; F's literal planned diff passes<br>Trusted base-defined gate also covers research/000b2-entry/**, research/000b1/** and 000b2-entry-*.yml<br>The allowlist is exactly the set of headings designated by constitutional amendment (G2, or A040 if it designates them); no non-B2 frontier edit merges before that designation<br>Immutable-control boundary failure preserved only as A040 allows (declared annexed byte change only; immutable list unchanged)<br>C1 lessons: in-class corpus with recorded historical verdicts; a negative fixture for every rejecting branch; non-concealment diff pinned by commit SHA; every check skipped by a neutralization run separately; the correction's own verifier and tests equal the trusted revision's bytes |
 | Tests | Positive: #120, F diff, terminal-state non-successor<br>Negative: B2 path, readiness change, .github change, non-allowlisted section edit, reordered or confusable or duplicated heading, injected marker, extra/missing/deleted task paths<br>Counterfactual runs for preserved reds |
 | CI gates | Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act<br>Qualifying independent review (proposed Governance item 7)<br>Founder approval of the merge |
 | Security risks | Weakening B2 scope enforcement by mistake (mitigated by the negative corpus run from base-pinned code) |
@@ -138,13 +139,13 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | CI gates | Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act<br>Qualifying independent review (proposed Governance item 7)<br>Founder approval of the merge |
 | Security risks | Mis-recording history |
 | Rollback | Revert |
-| Readiness authority | `GOVERNANCE_REVIEW` |
+| Readiness authority | `QUALIFYING_GOVERNANCE_REVIEW` |
 | Definition of done | Merged with a qualifying review; canonical reread confirms state |
 | Estimate | 0.5 d |
 | Tier | foundation / governance |
 | Execution context | not applicable |
 
-### NOOP — No-op confirmation: an empty-diff pull request against main passes every applicable check, and a push to main is green
+### NOOP — Green confirmation: every workflow's latest push run on main is green, and filter-exercising probe PRs pass the B2 gates as non-successor candidates
 
 | Field | Value |
 | --- | --- |
@@ -152,8 +153,8 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Depends on | R |
 | Decision | `GOVERNANCE` |
 | Donor (pinned) | none (governance, research or build-new) |
-| Files / interfaces | none (empty commit on a throwaway branch) |
-| Acceptance | Every applicable check green on the empty PR, including the base-defined freeze<br>Latest push runs on main all green (recovery gate green after C2) |
+| Files / interfaces | none merged: throwaway probe PRs only (an empty commit, and a whitespace-free comment-only change inside an allowlisted frontier section) |
+| Acceptance | The latest push run of every workflow on main is green, including the recovery gate that C1 left red<br>An empty probe PR passes the base-defined freeze<br>A probe PR touching an allowlisted frontier section triggers both B2 path-filtered gates and passes them as a non-successor candidate<br>Recommendation recorded on whether to enable the single-aggregator ruleset |
 | Tests | Exact-head check inventory |
 | CI gates | Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act<br>Qualifying independent review (proposed Governance item 7)<br>Founder approval of the merge |
 | Security risks | None |
@@ -178,7 +179,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | CI gates | Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act<br>Qualifying independent review (proposed Governance item 7)<br>Founder approval of the merge |
 | Security risks | Plan content mistaken for ratified governance |
 | Rollback | Revert (no runtime effect) |
-| Readiness authority | `GOVERNANCE_REVIEW` |
+| Readiness authority | `QUALIFYING_GOVERNANCE_REVIEW` |
 | Definition of done | Merged; content remains CANDIDATE until G2 and F |
 | Estimate | Review latency only |
 | Tier | foundation / governance |
@@ -193,7 +194,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Decision | `GOVERNANCE` |
 | Donor (pinned) | none (governance, research or build-new) |
 | Files / interfaces | CONSTITUTION.md<br>AGENTS.md<br>docs/canonical/ARCHITECTURE_INVARIANTS.md<br>docs/canonical/PROGRAM_ROADMAP.md<br>specs/000-founding-research/spec.md<br>specs/000-founding-research/plan.md |
-| Acceptance | Every contradiction row from PR #124's amendment proposal has a KEEP/REPLACE/RE-SCOPE disposition<br>New principles: voice-asset consent, tenant and action authority, copy-first<br>States that readiness claim_guards.product_code_authorized=false scopes the B2 lane only |
+| Acceptance | Every contradiction row from PR #124's amendment proposal has a KEEP/REPLACE/RE-SCOPE disposition<br>New principles: voice-asset consent, tenant and action authority, copy-first<br>Designates the frontier sections by exact heading (the reconciliation section 4.2 allowlist) under the Frontier sections clause, so the designation holds whether that clause reads 'an adopted correction' (0.3.0) or 'a constitutional amendment' (A040)<br>States that readiness claim_guards.product_code_authorized=false scopes the B2 lane only |
 | Tests | Contradiction checklist reviewed semantically (grep is discovery only) |
 | CI gates | Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act<br>Qualifying independent review (proposed Governance item 7)<br>Founder approval of the merge |
 | Security risks | Silent scope expansion |
@@ -274,11 +275,11 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Field | Value |
 | --- | --- |
 | Product / subsystem | wisprside / fork baseline |
-| Depends on | F |
+| Depends on | F, CORE-00 |
 | Decision | `FORK` |
 | Donor (pinned) | `cjpais/Handy@73cc8579cff7`: `src-tauri/`, `src/`, `.github/workflows/` |
 | Files / interfaces | fork repository TheHalfMoon/wisprside (visibility is a founder decision: private Windows Actions minutes count double)<br>upstream release, signing and updater workflows disabled in the fork<br>research/wispral-world-class/evidence/baselines/handy-73cc857/ |
-| Acceptance | Unmodified cargo test --locked on hosted Linux and on HW-A (Windows), bun lint, test:keyboard, Playwright: collected/pass/fail/ignored counts recorded<br>Unsigned NSIS and MSI built on HW-A<br>Bundled DLL list recorded |
+| Acceptance | Unmodified cargo test --locked on hosted Linux and on HW-A (Windows), bun lint, test:keyboard, Playwright: collected/pass/fail/ignored counts recorded<br>Debug and release binaries built on HW-A; installer packaging (NSIS/MSI) deferred to the RC packets because research authority has no installer authority<br>Bundled DLL list recorded |
 | Tests | Donor suites as is; failures recorded, not fixed |
 | CI gates | All applicable checks green at the exact head; no preserved red checks<br>Fresh-context review plus founder merge approval (qualifying review where Governance item 7 requires it) |
 | Security risks | Native toolchain supply chain (Vulkan SDK, LLVM, ggml); 4 git-sourced crates |
@@ -294,7 +295,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Field | Value |
 | --- | --- |
 | Product / subsystem | wisprstudio / fork baseline |
-| Depends on | F |
+| Depends on | F, CORE-00 |
 | Decision | `FORK` |
 | Donor (pinned) | `debpalash/VoiceStudio@200286ccff6f`: `backend/`, `electron/`, `tests/` |
 | Files / interfaces | fork repository TheHalfMoon/wisprstudio<br>research/wispral-world-class/evidence/baselines/voicestudio-200286c/<br>NOTICE and per-file grant flags |
@@ -314,7 +315,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Field | Value |
 | --- | --- |
 | Product / subsystem | wisprstudio / donor comparison |
-| Depends on | F |
+| Depends on | F, CORE-00 |
 | Decision | `RESEARCH` |
 | Donor (pinned) | `jamiepine/voicebox@8af7efe62fab`: `backend/`, `README.md` |
 | Files / interfaces | research/wispral-world-class/evidence/baselines/studio-lead-comparison.md |
@@ -383,7 +384,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Decision | `ADAPT` |
 | Donor (pinned) | `TheHalfMoon/Ascout@48902389ec37`: `src/assurance/contracts/engine-descriptor.ts`<br>`TheHalfMoon/Sentrdel@f5747319a508`: `crates/sentrdel-policy/src/lib.rs`<br>`TheHalfMoon/Orcel@f0b78e6544cf`: `crates/orcel-journal/src/lib.rs` |
 | Files / interfaces | contracts/v1/*.schema.json<br>contracts/v1/transitions/*.json<br>contracts/v1/fixtures/**<br>contracts/VERSION (semver)<br>contracts/README.md (canonicalization: RFC 8785 JCS, NFC, path normalization) |
-| Acceptance | run_conformance.py PASS (94 cases, 10 sequences, 4 bundles today)<br>The Core audit gap probes are committed as fixtures with their IDs and each yields its intended verdict |
+| Acceptance | run_conformance.py PASS (114 cases, 10 sequences, 6 bundles today)<br>The Core audit gap probes are committed as fixtures with their IDs and each yields its intended verdict |
 | Tests | run_conformance.py<br>build_cases.py regeneration diff empty |
 | CI gates | All applicable checks green at the exact head; no preserved red checks<br>Fresh-context review plus founder merge approval (qualifying review where Governance item 7 requires it) |
 | Security risks | Over-constraint breaks adapters |
@@ -588,8 +589,8 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Decision | `BUILD_NEW` |
 | Donor (pinned) | `zachlatta/freeflow@37786464bb24`: `Sources/AppTextInsertionTarget.swift`<br>`OpenWhispr/openwhispr@cb08c411dd00`: `resources/windows-fast-paste.c`, `resources/windows-text-monitor.c`<br>`TheHalfMoon/Orcel@f0b78e6544cf`: `crates/orcel-platform/src/process.rs` |
 | Files / interfaces | src-tauri/src/paste_tx/target.rs (new, pure)<br>src-tauri/src/paste_tx/target_windows.rs (new)<br>src-tauri/src/actions.rs |
-| Acceptance | Binding captured every session; no field text stored; unreadable fields recorded as unknown<br>UIA runs on a dedicated thread with timeouts of 100 ms or less; a timeout yields identity_unreadable<br>UWP targets bind the hosted process behind ApplicationFrameHost<br>p95 activation latency with capture measured on HW-A |
-| Tests | Pure snapshot tests on Linux CI<br>Windows fixtures from BM-02 |
+| Acceptance | Binding captured every session; no field text stored; unreadable fields recorded as unknown<br>UIA runs on a dedicated thread with timeouts of 100 ms or less; a timeout yields identity_unreadable<br>UWP targets bind the hosted process behind ApplicationFrameHost<br>The focused UIA element (runtime id digest, control type, password and read-only flags) is required for any delivering outcome and is revalidated immediately before delivery; a same-window focus move (for example from a chat box to a password field inside one browser HWND) is refused as focus_moved<br>p95 activation latency with capture measured on HW-A |
+| Tests | Pure snapshot tests on Linux CI<br>Windows fixtures from BM-02, including same-HWND focus moves to a password field and to a read-only field<br>delivery_outcome contract fixtures |
 | CI gates | All applicable checks green at the exact head; no preserved red checks<br>Fresh-context review plus founder merge approval (qualifying review where Governance item 7 requires it) |
 | Security risks | UIA calls can block on hung targets |
 | Rollback | Feature flag off = copy-only delivery |
@@ -1028,7 +1029,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Decision | `BUILD_NEW` |
 | Donor (pinned) | `debpalash/VoiceStudio@200286ccff6f`: `backend/api/routers/profiles.py` |
 | Files / interfaces | backend/services/consent_ledger.py (new)<br>backend/api/routers/profiles.py<br>generation, dub_generate, voice_conversion, speaker_clone, MCP and OpenAI-compatible routes |
-| Acceptance | 100% correct on the matrix 4 clone paths x {none, valid, revoked, reference-hash mismatch}<br>Consent binds the reference-audio digest and a speaker match<br>Stock voices only from manifest catalog entries<br>Revocation cancels queued work; late outputs dropped |
+| Acceptance | 100% correct on the matrix 4 clone paths x {none, valid, revoked, reference-hash mismatch}<br>Consent binds the reference-audio digest and a speaker match<br>Every consent record carries an Ed25519 attestation from a trusted issuer key (studio operator or consent service) over the bound-fields digest (subject, voice, purposes, products, reference audio, validity, epoch, nonce), an identity check method, and an operator-confirmed match of the versioned consent script; a speaker match alone never admits a voice<br>Forged signature, unknown issuer key, fields changed after signing, spliced or synthesized statement (script mismatch) and a missing operator confirmation are each refused<br>Stock voices only from manifest catalog entries<br>Revocation cancels queued work; late outputs dropped |
 | Tests | About 40 fixture tests<br>WB-CONSENT |
 | CI gates | All applicable checks green at the exact head; no preserved red checks<br>Fresh-context review plus founder merge approval (qualifying review where Governance item 7 requires it) |
 | Security risks | Bypass via an uncovered route |
@@ -1175,8 +1176,8 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Decision | `BUILD_NEW` |
 | Donor (pinned) | `emcie-co/parlant@2a463ccd10ea`: `src/parlant/core/tools.py`, `src/parlant/sdk.py` |
 | Files / interfaces | services/klaint-dialogue/broker/{service,ledger,policy,reconcile}.py |
-| Acceptance | Consequential tools registered only through the in-process ToolService; plugin server disabled<br>Principal from Parlant's session store plus a per-call token bound to the authenticated session; a forged customer_id yields zero effects and zero data from read tools<br>Idempotency key = H(tenant, conversation, tool, canonical arguments); dispatch refused while a non-terminal intent with that key exists<br>Timeout-after-commit: unknown, then reconciled, never re-dispatched<br>Verdict class and principal must match the intent<br>ASK needs operator or step-up confirmation; conversation text never confirms |
-| Tests | Fault-injection suite with a fake CRM (1,000 runs)<br>Ported test_tool_runner.py<br>Contract bundle fixtures |
+| Acceptance | Consequential tools registered only through the in-process ToolService; plugin server disabled<br>Principal from Parlant's session store plus a per-call capability issued and verified by the broker: Ed25519-signed, bound to the authenticated session, the exact tool and the RFC 8785 canonical-argument digest, valid for at most 60 seconds, single use (nonce consumed on first use); a forged customer_id yields zero effects and zero data from read tools<br>Forged, replayed, expired, tool-substituted and argument-substituted capabilities each yield zero effects<br>Idempotency key = H(tenant, conversation, tool, canonical arguments); dispatch refused while a non-terminal intent with that key exists<br>Timeout-after-commit: unknown, then reconciled, never re-dispatched<br>Verdict class and principal must match the intent<br>ASK needs operator or step-up confirmation; conversation text never confirms |
+| Tests | Fault-injection suite with a fake CRM (1,000 runs)<br>Ported test_tool_runner.py<br>Contract bundle fixtures, including capability replay and substitution<br>Capability forgery, replay, expiry and substitution tests driven by a prompt-injected conversation |
 | CI gates | All applicable checks green at the exact head; no preserved red checks<br>Fresh-context review plus founder merge approval (qualifying review where Governance item 7 requires it) |
 | Security risks | Connector reconciliation not always possible |
 | Rollback | Deny all mutations; text answers stay available |

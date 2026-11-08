@@ -83,6 +83,104 @@
    "minLength": 8,
    "maxLength": 128,
    "description": "Optional pointer to the product record that details the effect (for example the Studio export record)."
+  },
+  "dispatch": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "tool",
+    "args_digest"
+   ],
+   "description": "What the broker actually dispatches: the tool and the SHA-256 of its RFC 8785 canonical arguments.",
+   "properties": {
+    "tool": {
+     "type": "string",
+     "pattern": "^[a-z][a-z0-9_.]{1,63}$"
+    },
+    "args_digest": {
+     "type": "string",
+     "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+   }
+  },
+  "capability": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "token_id",
+    "issuer",
+    "session_ref",
+    "tool",
+    "args_digest",
+    "nonce",
+    "issued_at",
+    "expires_at",
+    "single_use",
+    "signature"
+   ],
+   "description": "Broker-issued capability for exactly one consequential call. Signed over its own canonical fields; bound to the authenticated session, the tool and the canonical-argument digest; valid for at most 60 seconds; its nonce is consumed on first use, so a replay, a different tool or different arguments are refused.",
+   "properties": {
+    "token_id": {
+     "type": "string",
+     "pattern": "^cap-[A-Za-z0-9_-]{8,64}$"
+    },
+    "issuer": {
+     "const": "klaint_broker"
+    },
+    "session_ref": {
+     "type": "string",
+     "pattern": "^ses-[A-Za-z0-9_-]{8,64}$"
+    },
+    "tool": {
+     "type": "string",
+     "pattern": "^[a-z][a-z0-9_.]{1,63}$"
+    },
+    "args_digest": {
+     "type": "string",
+     "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "nonce": {
+     "type": "string",
+     "pattern": "^[A-Za-z0-9_-]{22,64}$",
+     "description": "At least 128 bits of randomness, base64url."
+    },
+    "issued_at": {
+     "type": "string",
+     "format": "date-time",
+     "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?Z$"
+    },
+    "expires_at": {
+     "type": "string",
+     "format": "date-time",
+     "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?Z$"
+    },
+    "single_use": {
+     "const": true
+    },
+    "signature": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "alg",
+      "key_id",
+      "value"
+     ],
+     "properties": {
+      "alg": {
+       "const": "ed25519"
+      },
+      "key_id": {
+       "type": "string",
+       "pattern": "^[A-Za-z0-9:._-]{3,64}$"
+      },
+      "value": {
+       "type": "string",
+       "pattern": "^[A-Za-z0-9_-]{86}$",
+       "description": "Detached Ed25519 signature, base64url without padding."
+      }
+     }
+    }
+   }
   }
  },
  "allOf": [
@@ -175,6 +273,24 @@
       }
      }
     }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "owner": {
+      "const": "klaint_broker"
+     }
+    },
+    "required": [
+     "owner"
+    ]
+   },
+   "then": {
+    "required": [
+     "capability",
+     "dispatch"
+    ]
    }
   }
  ]

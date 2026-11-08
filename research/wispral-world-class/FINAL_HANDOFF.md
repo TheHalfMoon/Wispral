@@ -11,7 +11,7 @@ A single candidate planning package on branch `planning/wispral-world-class-mast
 ```text
 node research/rea/2026-10-21/validate_research.mjs          # PR #124 bundle integrity
 node docs/design/tokens/check_contrast.mjs                  # 94 contrast pairs + 40 hue-separation checks
-python -I docs/engineering/contracts/run_conformance.py     # 8 contracts, 94 cases, 10 sequences, 4 bundles
+python -I docs/engineering/contracts/run_conformance.py     # 8 contracts, 114 cases, 10 sequences, 6 bundles
 python -I research/wispral-world-class/build_packets.py     # regenerate packets (diff must be empty)
 node research/wispral-world-class/validate_plan.mjs         # packet graph, links, anchors, names, claims
 ```
@@ -52,6 +52,8 @@ node research/wispral-world-class/validate_plan.mjs         # packet graph, link
 - No donor was built or run; no audio, model, GPU, native insertion or competitor trial was executed. All such results are `NOT_RUN` and mapped to packets.
 - The WisprSide competitor refresh for 2026-11-08 was incomplete; WisprSide competitor cells rely on PR #124's 2026-10-21 observations.
 - Several model weight licenses and gated terms remain to be read (listed in the [model strategy](../../docs/engineering/WISPRAL_MODEL_STRATEGY.md#4-initial-candidates-to-benchmark-not-selections)).
+- The validators run manually today. No workflow runs `validate_plan.mjs`, `check_contrast.mjs` or `run_conformance.py`. A follow-up PR adds that CI job; this planning-only PR edits no workflow.
+- `validate_plan.mjs` rejects `ready: true` by design. When an authority marks a packet READY, the record goes in that authority's PR, not in `packets.json`. The validator gains a `readiness_record` rule in the same follow-up.
 - The six review passes were fresh-context agents of the same model family as the author, so they are **not** qualifying independent reviews under the proposed Governance item 7. Every BLOCKER and MUST FIX they raised was addressed ([INDEPENDENT_REVIEW.md](INDEPENDENT_REVIEW.md)); governance-required qualifying reviews remain to be done.
 
 ## 6. Do not

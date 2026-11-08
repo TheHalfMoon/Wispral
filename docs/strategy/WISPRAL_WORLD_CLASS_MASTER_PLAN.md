@@ -11,14 +11,14 @@
 
 1. **Unblock legitimately first (P0). Done so far:**
    - G1 (Principle XVII) and C1 are merged.
-   - The historical freeze check now passes on `main` and on every PR.
+   - The historical freeze check is base-defined. It passes on `main` and on every PR pushed after C1; #133's red run predates C1.
    - The two B2 trusted gates still lock the frontier files. That is C2's job, after the A040 hardening.
 
    The original reasoning follows. Every PR failed a historical B2 check, and two B2 trusted gates permanently lock the frontier files. Fixing only the freeze check is not enough. The smallest legitimate path is a narrow constitutional lane for correcting over-applied benchmark controls (G1, Principle XVII, which explicitly excludes security, consent, tenancy, egress and release controls), two control corrections (C1 freeze preservation from a base-defined job; C2 an exact section allowlist for non-B2 edits), a ledger record (R), then the platform amendment (G2) and the frontier update (F). The B2 benchmark stays frozen and resumable in its own lane.
 2. **Fork, don't rebuild.** WisprSide forks **Handy** (`73cc8579`), and WisprStudio forks **VoiceStudio** (`200286cc`; packet ST-D00b first compares it with Voicebox). Klaint's MVP is **one hardened Parlant process** (v4.0.2 if spike KT-01 passes, else v3.3.2) with the broker as the sole tool executor. Wispral Core is **eight language-neutral contracts with fixtures**; Rust crates wait for a second Rust consumer. There is no daemon.
 3. **Build only the trust boundaries the donors lack.** Fail-closed, target-bound text delivery on Windows. Consent enforcement on every Studio synthesis path. A deterministic Klaint broker that is the sole executor of consequential tools, with an outcome ledger and commitments only from receipts. Each item is justified in the [build-new register](WISPRAL_COPY_FIRST_STRATEGY.md#4-build-new-register).
 4. **Strip what the donors do silently.** Handy checks for updates by default. VoiceStudio checks for updates, races a third-party model mirror, offers cloud sync, ships an analytics key and defaults to a **non-commercial** TTS model. Parlant v4 defaults to allow-all and runs an unauthenticated local tool server.
-5. **Design is a first-class requirement.** "Quiet Signal" tokens are verified for contrast (76/76 pairs). The three UX specs center the moments that carry risk: live capture, where text went, voice consent and agent authority.
+5. **Design is a first-class requirement.** "Quiet Signal" tokens are verified for contrast (94/94 pairs). The three UX specs center the moments that carry risk: live capture, where text went, voice consent and agent authority.
 6. **Arabic is measured, not claimed.** 2026 brought new permissively licensed Arabic ASR models, but most dialect datasets are non-commercial. A consented Wispral panel is the only path to a Gulf/code-switch claim.
 7. **Order:** P0 → P1 baselines (Parlant spike moved here) → 000G decision → P2 foundations the MVPs consume → P3 WisprSide MVP → P4 WisprSide RC; P5 Studio and P6 Klaint are alternatives alongside WisprSide (Klaint text recommended first). Phases are labels: packets start when their own dependencies are met. Nothing is published without the founder's green light.
 
@@ -48,7 +48,7 @@
 ## 3. Final architectural recommendation
 
 - **Three independently installable products and a thin shared layer.** No central runtime; each product owns its processes, cancellation, inventory, identity and side effects ([owner table](WISPRAL_PRODUCT_ARCHITECTURE.md#2-one-owner-per-responsibility)).
-- **Eight versioned contracts** (envelope with typed payloads, cancellation, model manifest, consent, policy verdict, provenance, delivery outcome, effect intent) with shape, runtime, sequence and cross-record bundle fixtures that already pass (94 cases, 10 sequences, 4 bundles). Digests are canonicalized (RFC 8785, NFC, path rules) so any future Rust, Python or TypeScript implementation produces identical results.
+- **Eight versioned contracts** (envelope with typed payloads, cancellation, model manifest, consent, policy verdict, provenance, delivery outcome, effect intent) with shape, runtime, sequence and cross-record bundle fixtures that already pass (114 cases, 10 sequences, 6 bundles). Digests are canonicalized (RFC 8785, NFC, path rules) so any future Rust, Python or TypeScript implementation produces identical results.
 - **Deterministic authority everywhere it matters.** Policy verdicts from the adapted Sentrdel lattice; effect intents and reconciliation adopted from orcel-journal; probabilistic outputs are evidence only (`authority_ceiling: evidence_only`).
 - **Local-first by default.** No hidden network, no hidden cloud fallback, no automatic paid inference, no telemetry. Each product proves this on its shipped binary with a packet-capture test.
 
@@ -107,7 +107,7 @@ These still need F, the relevant research or product Grain, and a recorded Wispr
 | --- | --- | --- | --- |
 | 1 | **G1** Constitution 0.3.0 — Principle XVII lane | **MERGED** `8d52a45` | Created the only legitimate correction lane |
 | 2 | **C1** Freeze preservation from a base-defined job | **MERGED** `5879c43` | Removed the over-applied freeze failure without weakening the freeze |
-| 3 | **PLAN** Merge this planning package | Open (#128) | Makes the plan durable research authority; no red check since C1 |
+| 3 | **PLAN** Merge this planning package | Open (#128) | Makes the plan durable research authority. This PR is green since C1; `main` still shows the preserved recovery push failure until C2 |
 | 4 | **A040** Constitution 0.4.0 (#133) | Open | Fixes the audit's A1–A4; without A3, C2 cannot close the lane |
 | 5 | **C2** Non-successor class with an exact section allowlist | Next after A040 | Lets F edit only named frontier sections; B2 untouched |
 | 6 | **R** Combined reconciliation (G1 waivers, C1, C2, #118) | After C2 | Canonical truth before dependent work |
@@ -138,7 +138,7 @@ Then, in order:
 
 ## 10. Verdict
 
-**PLAN READY FOR IMPLEMENTATION, executed through the governance sequence in §8.** Its qualifying different-vendor review (Governance item 7(c)) is recorded in the review comments on #128, against the exact head under review.
+**PLAN READY FOR IMPLEMENTATION, executed through the governance sequence in §8.** Merging it requires a qualifying different-vendor review (Governance item 7(c)) of the exact final head, recorded on #128 with model identity, prompt and output. This document cannot attest that review; its record lives only on the PR.
 
 - **What is ready:**
   - live state verified on 2026-11-08 (`main` = `5879c43`; G1 and C1 merged);
@@ -146,7 +146,7 @@ Then, in order:
   - every donor re-pinned with source evidence;
   - architecture, design, model, security, benchmark, platform and release plans;
   - 75 packets, each with dependencies, acceptance criteria, tests, CI gates, rollback, readiness authority and definition of done;
-  - contracts (94 cases, 10 sequences, 4 bundles), tokens (94 contrast and 40 hue checks) and the plan validator, all `PASS`.
+  - contracts (114 cases, 10 sequences, 6 bundles), tokens (94 contrast pairs and 40 hue checks) and the plan validator, all `PASS`.
 - **What "ready" means.** The next executable steps are concrete and unblocked:
   - A040 (#133): update its #130 clause, then qualifying review and merge;
   - PLAN (#128): merge after its qualifying review;

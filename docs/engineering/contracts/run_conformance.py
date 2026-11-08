@@ -11,9 +11,11 @@ Requires `jsonschema` (Draft 2020-12). Three layers:
 Exit code 0 means every case matched. Scope: contract conformance only; not runtime, security or product evidence.
 """
 
+import hashlib
 import json
 import pathlib
 import sys
+from datetime import datetime
 
 from jsonschema import Draft202012Validator
 from referencing import Registry, Resource
@@ -22,6 +24,18 @@ HERE = pathlib.Path(__file__).resolve().parent
 NAMES = ["envelope", "cancellation", "model_manifest", "consent_record", "policy_verdict", "provenance_event", "delivery_outcome", "effect_intent"]
 TERMINAL_INTENT = {"settled", "abandoned", "reconciled"}
 ORDER = {"ALLOW": 0, "ASK": 1, "DENY": 2}
+BOUND_CONSENT_FIELDS = ("subject_ref", "voice_id", "purposes", "products", "reference_artifact_digest", "valid_from", "valid_until", "consent_epoch")
+CAPABILITY_MAX_SECONDS = 60
+
+
+def ts(value):
+    return datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
+def bound_digest(record):
+    fields = {k: record.get(k) for k in BOUND_CONSENT_FIELDS}
+    fields["nonce"] = record["attestation"]["nonce"]
+    return "sha256:" + hashlib.sha256(json.dumps(fields, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
 
 
 def compose(layers):
@@ -50,6 +64,15 @@ def runtime_errors(schema, inst):
     elif schema == "consent_record":
         if "valid_until" in inst and inst["valid_until"] <= inst["valid_from"]:
             errors.append("valid_until must follow valid_from")
+        if inst["attestation"]["bound_fields_digest"] != bound_digest(inst):
+            errors.append("attested fields changed after attestation (bound_fields_digest mismatch)")
+    elif schema == "effect_intent" and "capability" in inst:
+        cap, dispatch = inst["capability"], inst.get("dispatch", {})
+        if cap["tool"] != dispatch.get("tool") or cap["args_digest"] != dispatch.get("args_digest"):
+            errors.append("dispatched tool or arguments differ from the capability")
+        lifetime = (ts(cap["expires_at"]) - ts(cap["issued_at"])).total_seconds()
+        if not 0 < lifetime <= CAPABILITY_MAX_SECONDS:
+            errors.append("capability lifetime must be within (0, 60] seconds")
     elif schema == "model_manifest":
         keys = [(row["code"], row.get("variety")) for row in inst["languages"]]
         if len(keys) != len(set(keys)):
@@ -121,6 +144,11 @@ def main() -> int:
                     errors.append("verdict principal does not match the intent")
                 if v["enforced_decision"] != "ALLOW":
                     errors.append("intent dispatched without an enforced ALLOW")
+        nonces = [i["capability"]["nonce"] for i in b["intents"] if "capability" in i]
+        if len(nonces) != len(set(nonces)):
+            errors.append("a capability nonce is used more than once")
+        for i in b["intents"]:
+            errors += runtime_errors("effect_intent", i)
         if any(n > 1 for n in open_keys.values()):
             errors.append("more than one non-terminal intent for the same (principal, owner, key)")
         actual = "valid" if not errors else "invalid"

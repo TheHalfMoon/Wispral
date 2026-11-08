@@ -127,9 +127,11 @@
      "additionalProperties": false,
      "required": [
       "runtime_id_digest",
-      "control_type"
+      "control_type",
+      "is_password",
+      "is_read_only"
      ],
-     "description": "UI Automation focused element (distinguishes fields inside one Chromium/Electron HWND). Captured on a dedicated thread with timeouts of 100 ms or less; a timeout yields identity_unreadable.",
+     "description": "UI Automation focused element captured at activation (distinguishes fields inside one Chromium/Electron HWND). Captured on a dedicated thread with timeouts of 100 ms or less; a timeout yields identity_unreadable. Required for every delivering outcome, and revalidated immediately before delivery.",
      "properties": {
       "runtime_id_digest": {
        "type": "string",
@@ -138,6 +140,12 @@
       "control_type": {
        "type": "string",
        "pattern": "^[A-Za-z]{1,32}$"
+      },
+      "is_password": {
+       "type": "boolean"
+      },
+      "is_read_only": {
+       "type": "boolean"
       }
      }
     }
@@ -162,6 +170,7 @@
     "target_gone",
     "pid_reused",
     "focus_lost",
+    "focus_moved",
     "os_session_changed",
     "secure_desktop",
     "elevated_target",
@@ -265,6 +274,10 @@
      }
     }
    ]
+  },
+  "focus_revalidated_before_delivery": {
+   "type": "boolean",
+   "description": "The focused element at delivery equals focus_element captured at activation (same runtime id, not a password or read-only field)."
   }
  },
  "allOf": [
@@ -357,6 +370,49 @@
     "properties": {
      "chars_delivered": {
       "minimum": 1
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "outcome": {
+      "enum": [
+       "delivered_confirmed",
+       "posted_unconfirmed",
+       "partial"
+      ]
+     }
+    },
+    "required": [
+     "outcome"
+    ]
+   },
+   "then": {
+    "required": [
+     "focus_revalidated_before_delivery"
+    ],
+    "properties": {
+     "focus_revalidated_before_delivery": {
+      "const": true
+     },
+     "target": {
+      "required": [
+       "focus_element"
+      ],
+      "properties": {
+       "focus_element": {
+        "properties": {
+         "is_password": {
+          "const": false
+         },
+         "is_read_only": {
+          "const": false
+         }
+        }
+       }
+      }
      }
     }
    }
