@@ -6,6 +6,8 @@
 
 **Open rights item:** the Wispral repository itself has **no LICENSE file** (`gh api` license = none, `SOURCE_VERIFIED`). The founder must choose Wispral's outbound license before any code is copied into it (decision Q-01 in the [handoff](FINAL_HANDOFF.md)).
 
+**CORE-00 (2026-11-08):** every anchor below was re-verified at its pin (`ANCHORS=57 PASS=57`). The per-donor rights, reference-only files and the closed licence gate are in [`RIGHTS_REGISTER.md`](RIGHTS_REGISTER.md); corrections to earlier records, including full SHAs for the short pins below, are in [`CATALOG_ERRATA.md`](CATALOG_ERRATA.md).
+
 ## Summary of lead decisions
 
 | Product | Lead donor and pin | Mode | Previous pin | Why re-pinned |
@@ -40,7 +42,7 @@
 | ST-SRC-03 | Pronunciation lexicon | `VoiceStudio@200286c:backend/services/pronunciation.py:113` | AGPL-3.0 / grant | ADAPT (+ Arabic proclitic-aware matching) | `REPRODUCED`: misses `ومحمد`, `بالرياض` | |
 | ST-SRC-04 | Consent flags and profiles | `VoiceStudio@200286c:backend/api/routers/profiles.py:1212-1360` | AGPL-3.0 / grant | FORK_DELTA + new ledger | `SOURCE_VERIFIED`: synthesis, dubbing and clone paths **never check consent** (`profiles.py:1215-1216` comment + grep) | BN-03 |
 | ST-SRC-05 | Cancellation and containment | `backend/services/{inference_cancellation,subprocess_backend}.py`, `backend/core/contained_subprocess.py` | AGPL-3.0 / grant | FORK_DELTA (map to contract states) | `SOURCE_VERIFIED` | |
-| ST-SRC-06 | Chatterbox Multilingual (Arabic-listed TTS) | `resemble-ai/chatterbox@5de7a54a:src/chatterbox/mtl_tts.py` | MIT code; weights per model card | WRAP as a new subprocess engine | `SOURCE_VERIFIED` | Not a native VoiceStudio engine on Windows/Linux; upstream README says Multilingual V3 was retired in August 2026 (models report) — maintenance risk R-05 |
+| ST-SRC-06 | Chatterbox Multilingual (Arabic-listed TTS) | `resemble-ai/chatterbox@5de7a54aa4e5e2baadb0182dde554908b48b85c2:src/chatterbox/mtl_tts.py` | MIT code; weights per model card | WRAP as a new subprocess engine | `SOURCE_VERIFIED` | Not a native VoiceStudio engine on Windows/Linux; upstream README says Multilingual V3 was retired in August 2026 (models report) — maintenance risk R-05 |
 | ST-SRC-07 | Default TTS engine | OmniVoice (VoiceStudio default, `core/prefs.py:9`) | **Non-commercial weights** | **REJECTED as default** | `SOURCE_VERIFIED` (`model_licenses.json`) | Default must change to a permissively licensed engine with a verified card (packet ST-D02) |
 | ST-SRC-08 | Generation fallback / zero-volume export regression | `jamiepine/voicebox@8af7efe62fab8d33e2a5dfbedabaa45f68a5184f` | MIT | REFERENCE | No drift since old pin | |
 | ST-SRC-09 | Watermark | VoiceStudio `services/watermark.py:327-348,485-509`; Resemble PerTh | PerTh MIT; AudioSeal weight license unrecorded | FORK_DELTA (force on cloned output) | `SOURCE_VERIFIED` | AudioSeal license must be resolved before release |
@@ -54,8 +56,8 @@
 | KL-SRC-03 | Approved-response control | `parlant@2a463cc` `on_message_generated` BAIL in BLOCK mode (`hooks.py:149-150`); `docs/canned-responses.md:286-316,457-461` | Apache-2.0 | ADAPT (commitment guard) | `SOURCE_VERIFIED`: "The model always writes the final text itself" in v4 | Works only for non-streamed replies; streaming voice needs a separate guard (KV-02) |
 | KL-SRC-04 | Retrieval | `parlant@2a463cc:sdk.py:1747-1790` | Apache-2.0 | WRAP | `SOURCE_VERIFIED` | Tenant index fixed per process |
 | KL-SRC-05 | Human inbox and takeover | `chatwoot/chatwoot@caab07a8f00032d5205b5a5d7e2eb0ba2f3d2d82` (v4.19.1) via Agent Bot API | MIT outside `enterprise/` | API_INTEGRATION (unmodified) | `SOURCE_VERIFIED`: bot tokens are account-wide; webhooks at-least-once; `bot_handoff!` not race-safe; one bot provider per inbox | One Chatwoot account and bot per tenant; Klaint-side ownership epoch and delivery dedupe |
-| KL-SRC-06 | Webhook signatures | `standard-webhooks/standard-webhooks@ab68441` (`webhooks.py:54-160`) | Apache-2.0 | ADAPT | `SOURCE_VERIFIED` | Rejects future/NaN/stale timestamps; replay cache |
-| KL-SRC-07 | Simulation and deterministic scoring | `sierra-research/tau2-bench@033bf08` (`src/tau2/evaluator/evaluator_env.py:17-126`) | MIT | ADOPT as test dependency | `SOURCE_VERIFIED` | Replaces the removed Parlant evaluations API; LLM judges advisory only |
+| KL-SRC-06 | Webhook signatures | `standard-webhooks/standard-webhooks@ab6844147ce9cdb0d2dbf2e60d1ea85001fd2554` (`webhooks.py:54-160`) | Apache-2.0 | ADAPT | `SOURCE_VERIFIED` | Rejects future/NaN/stale timestamps; replay cache |
+| KL-SRC-07 | Simulation and deterministic scoring | `sierra-research/tau2-bench@033bf082f48e4a3c6a1256208e93cf2ce9c3bb6f` (`src/tau2/evaluator/evaluator_env.py:17-126`) | MIT | ADOPT as test dependency | `SOURCE_VERIFIED` | Replaces the removed Parlant evaluations API; LLM judges advisory only |
 | KL-SRC-08 | Voice pipeline (later) | `pipecat-ai/pipecat@fda1d5e0cde9625c8dcef7b653ed731c2ce63672` (v1.15.0) | BSD-2-Clause | ADAPT inside the same tenant process | `SOURCE_VERIFIED`: barge-in cancels in-flight function calls by default | **No mutating tools inside Pipecat**; Kokoro auto-download disabled |
 | KL-SRC-09 | Connector schemas | `botpress/botpress@956bcdef7a8f6499519e28ec5dda6e3ed3c96ad8` | MIT | REFERENCE | `SOURCE_VERIFIED` | Thin Python connectors are new |
 | — | Rejected | Rasa (maintenance mode), LangGraph, OpenAI Agents SDK, Letta, Temporal, llm-guard (archived), Zammad/FreeScout (AGPL), DeepEval, NeMo-Guardrails, LiveKit Agents (reference only) | — | REJECTED / REFERENCE | Klaint and Core reports | Avoids a second dialogue engine or runtime |
@@ -70,7 +72,7 @@
 | CO-SRC-04 | Same-user local IPC identity | `Orcel@f0b78e65:crates/orcel-platform/src/{peer.rs:68,113;acl.rs}` | Apache-2.0 | ADAPT | `SOURCE_VERIFIED`. **`orceld/src/app_api.rs` and two `orcel-approval` files are FSL-1.1-MIT third-party: REFERENCE ONLY** |
 | CO-SRC-05 | Model descriptor | `TheHalfMoon/Ascout@48902389ec37019845fd67c8b8c53c5f499ffc85:src/assurance/contracts/engine-descriptor.ts:45` | Apache-2.0 | ADAPT → `model_manifest` | Bytes identical at HEAD `32d02a02` |
 | CO-SRC-06 | Local HTTP auth profile | `TheHalfMoon/Ninerr@616bafaa26a58476bb2e3ee876b28e13ac1348f3:packages/studio-host/src/server.ts:86-88,445-468` | Apache-2.0 | ADAPT (pattern) | `SOURCE_VERIFIED` |
-| CO-SRC-07 | Network policy for connectors | `Ninerr@8cba15c4:packages/network-policy/src/policy.ts` | Apache-2.0 | REFERENCE now; Python port later (deferred) | Unchanged since pin |
+| CO-SRC-07 | Network policy for connectors | `Ninerr@8cba15c4e4af40b12476433a49e20a1696cfc0f8:packages/network-policy/src/policy.ts` | Apache-2.0 | REFERENCE now; Python port later (deferred) | Unchanged since pin |
 | CO-SRC-08 | Agent Client Protocol | `agentclientprotocol/rust-sdk@050cd94c081056ace37a7b89abfed7f6220b47eb` (5.0.0) | Apache-2.0 | WRAP (later developer-agent module) | Old anchors stale (`capabilities.rs` removed); ACP HTTP transport has no auth, so stdio only |
 | — | Rejected | Yamakan (now GPL-3.0 combined, reference only), Hala (model training), Gomrey, paradigm, Zain (renamed WePLD), and other private founder repositories screened without a Wispral-relevant module (names withheld from this public repository) | — | REJECTED / REFERENCE | Core report §5 |
 
