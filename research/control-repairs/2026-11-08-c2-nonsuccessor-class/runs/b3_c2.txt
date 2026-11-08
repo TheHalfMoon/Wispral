@@ -1,0 +1,24 @@
+CANDIDATE=d5bb5bea53fe7c20bfaba705040443a8154cfa69 BASE=76fe651a41eaf73e12f6ac85d7f159427ada1447 ACTIVE=B2R17
+CLASSIFICATION required verifier research/000b2-public/verify_b2r17.py in changed paths: False
+--- .github/workflows/000b2-public-attempt-003-recovery.yml
+  PASS not deleted
+  CLASSIFICATION active-task binding token B2R17 present: True
+  FAIL no future successor tokens ['B2R18', 'B2R19', 'B2R20', 'B2R21', 'B2R22', 'B2R23', 'B2R24']
+  FAIL no positive authority publication ['comparative_result_available', 'production_stt_selected', 'product_code_authorized', 'primary_decode_entry_open']
+--- .github/workflows/000b2-public-attempt-003-trusted-pr.yml
+  PASS not deleted
+  CLASSIFICATION active-task binding token B2R17 present: False
+  PASS no future successor tokens []
+  PASS no positive authority publication []
+--- research/000b2-public/verify_attempt_002_invalidation.py
+  PASS not deleted
+  CLASSIFICATION active-task binding token B2R17 present: True
+  FAIL no future successor tokens ['B2R18', 'B2R19', 'B2R20', 'B2R21', 'B2R22', 'B2R23', 'B2R24']
+  PASS no positive authority publication []
+  PASS no forbidden decode-runtime calls [] (policy primary_decode_allowed=True)
+  PASS no forbidden scoring calls [] (policy scoring_allowed=False)
+B3_GENERIC_TASK_CONTENT_GUARDS=FAIL failures=3
+--- guard results on BASE bytes vs C2 HEAD bytes (identical means C2 introduced none of them)
+.github/workflows/000b2-public-attempt-003-recovery.yml: base=(['B2R18', 'B2R19', 'B2R20', 'B2R21', 'B2R22', 'B2R23', 'B2R24'], ['comparative_result_available', 'primary_decode_entry_open', 'product_code_authorized', 'production_stt_selected']) head=(['B2R18', 'B2R19', 'B2R20', 'B2R21', 'B2R22', 'B2R23', 'B2R24'], ['comparative_result_available', 'primary_decode_entry_open', 'product_code_authorized', 'production_stt_selected']) identical=True
+.github/workflows/000b2-public-attempt-003-trusted-pr.yml: base=([], []) head=([], []) identical=True
+research/000b2-public/verify_attempt_002_invalidation.py: base=(['B2R18', 'B2R19', 'B2R20', 'B2R21', 'B2R22', 'B2R23', 'B2R24'], []) head=(['B2R18', 'B2R19', 'B2R20', 'B2R21', 'B2R22', 'B2R23', 'B2R24'], []) identical=True

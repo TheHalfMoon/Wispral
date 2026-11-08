@@ -1,0 +1,48 @@
+## DEFINITION 76fe651a41eaf73e12f6ac85d7f159427ada1447:.github/workflows/000b2-public-attempt-003-trusted-pr.yml job=verify-successor-pr-from-canonical-base
+## CANDIDATE HEAD d5bb5bea53fe7c20bfaba705040443a8154cfa69
+## STEP 1 Checkout untrusted candidate data only: uses actions/checkout@11d5960a326750d5838078e36cf38b85af677262 (performed by harness setup)
+## PATCH Verify trusted-base event and immutable control boundary: 'raise SystemExit(f"TRUSTED_PR_GATE=FAIL: immutable execution control changed: {path}")' -> 'print(f"TRUSTED_PR_GATE_NEUTRALIZED=immutable execution control changed: {path}")'
+## PATCH Verify trusted-base event and immutable control boundary: 'raise SystemExit(f"TRUSTED_PR_GATE=FAIL: {active} candidate path scope violation")' -> 'print(f"TRUSTED_PR_GATE_NEUTRALIZED={active} candidate path scope violation")'
+## PATCH Verify trusted-base event and immutable control boundary: 'raise SystemExit("TRUSTED_PR_GATE=FAIL: common verifier is not exact authority-base bytes")' -> 'print("TRUSTED_PR_GATE_NEUTRALIZED=common verifier is not exact authority-base bytes")'
+## STEP 2 Verify trusted-base event and immutable control boundary: exit 0
+   76fe651a41eaf73e12f6ac85d7f159427ada1447
+   TRUSTED_PR_GATE_NEUTRALIZED=immutable execution control changed: .github/workflows/000b2-public-attempt-003-recovery.yml
+   TRUSTED_PR_GATE_NEUTRALIZED=immutable execution control changed: .github/workflows/000b2-public-attempt-003-trusted-pr.yml
+   TRUSTED_PR_GATE_NEUTRALIZED=immutable execution control changed: research/000b2-public/verify_attempt_002_invalidation.py
+   TRUSTED_PR_GATE_NEUTRALIZED=B2R17 candidate path scope violation
+   TRUSTED_PR_GATE_NEUTRALIZED=common verifier is not exact authority-base bytes
+   TRUSTED_PR_GATE_EVENT=pull_request_target
+   TRUSTED_PR_GATE_AUTHORITY_BASE=76fe651a41eaf73e12f6ac85d7f159427ada1447
+   TRUSTED_PR_GATE_CANDIDATE_HEAD=d5bb5bea53fe7c20bfaba705040443a8154cfa69
+   TRUSTED_PR_GATE_DELTA=0
+   TRUSTED_PR_GATE_CONTROL_BYTES=PASS
+## PATCH Verify candidate with exact authority-base common verifier bytes: 'test "$(git rev-parse "${AUTHORITY_BASE_REVISION}:research/000b2-public/verify_attempt_002_invalidation.py")" = \\\n     "$(git rev-parse "${EXACT_REVISION}:research/000b2-public/verify_attempt_002_invalidation.py")"' -> 'echo TRUSTED_PR_GATE_NEUTRALIZED=common verifier byte-equality test'
+## STEP 3 Verify candidate with exact authority-base common verifier bytes: exit 0
+   TRUSTED_PR_GATE_NEUTRALIZED=common verifier byte-equality test
+   SHERPA_PINNED_API=NOT_RUN_STATIC_ONLY
+   ATTEMPT_002_INVALIDATION=PASS
+   ATTEMPT_002_HISTORICAL_BYTES=PASS
+   ACTIVE_SUCCESSOR_RECOVERY_UNIT=B2R17
+   ATTEMPT_003_PRIMARY_DECODE_AUTHORIZED=YES
+   COMPARATIVE_RESULT_AVAILABLE=NO
+   PRODUCTION_STT_SELECTED=NO
+   PRODUCT_CODE_AUTHORIZED=NO
+   HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT
+## STEP 4 Fetch exact pinned sherpa-onnx source: exit 0
+   Initialized empty Git repository in <local>/rt/sherpa-onnx/.git/
+   From https://github.com/k2-fsa/sherpa-onnx
+    * branch            917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e -> FETCH_HEAD
+   HEAD is now at 917bed9 Release v1.13.7 (#3909)
+## PATCH Verify pinned runtime contract with trusted common verifier: 'test "$(git rev-parse "${AUTHORITY_BASE_REVISION}:research/000b2-public/verify_attempt_002_invalidation.py")" = \\\n     "$(git rev-parse "${EXACT_REVISION}:research/000b2-public/verify_attempt_002_invalidation.py")"' -> 'echo TRUSTED_PR_GATE_NEUTRALIZED=common verifier byte-equality test'
+## STEP 5 Verify pinned runtime contract with trusted common verifier: exit 0
+   TRUSTED_PR_GATE_NEUTRALIZED=common verifier byte-equality test
+   SHERPA_PINNED_API=PASS
+   ATTEMPT_002_INVALIDATION=PASS
+   ATTEMPT_002_HISTORICAL_BYTES=PASS
+   ACTIVE_SUCCESSOR_RECOVERY_UNIT=B2R17
+   ATTEMPT_003_PRIMARY_DECODE_AUTHORIZED=YES
+   COMPARATIVE_RESULT_AVAILABLE=NO
+   PRODUCTION_STT_SELECTED=NO
+   PRODUCT_CODE_AUTHORIZED=NO
+   HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT
+   TRUSTED_PR_GATE=PASS

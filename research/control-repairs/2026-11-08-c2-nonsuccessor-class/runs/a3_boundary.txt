@@ -1,0 +1,7 @@
+.github/workflows/000b2-public-attempt-003-trusted-pr.yml: base (71, 71) head (72, 87) -> INSIDE step 'Verify trusted-base event and immutable control boundary' (base 40-172, head 40-189)
+.github/workflows/000b2-public-attempt-003-trusted-pr.yml: base (158, 158) head (174, 175) -> INSIDE step 'Verify trusted-base event and immutable control boundary' (base 40-172, head 40-189)
+.github/workflows/000b2-public-attempt-003-recovery.yml: base (94, 94) head (95, 110) -> INSIDE step 'Trusted pre-candidate execution boundary' (base 75-321, head 75-338)
+.github/workflows/000b2-public-attempt-003-recovery.yml: base (162, 162) head (178, 179) -> INSIDE step 'Trusted pre-candidate execution boundary' (base 75-321, head 75-338)
+research/000b2-public/verify_attempt_002_invalidation.py: base (362, 362) head (363, 449) -> INSIDE annexed functions ['nonsuccessor_violations', 'verify_active_task_candidate_content'] (head spans [(363, 449), (450, 565)])
+research/000b2-public/verify_attempt_002_invalidation.py: base (405, 405) head (493, 496) -> INSIDE annexed functions ['nonsuccessor_violations', 'verify_active_task_candidate_content'] (head spans [(363, 449), (450, 565)])
+A3_BOUNDARY=PASS

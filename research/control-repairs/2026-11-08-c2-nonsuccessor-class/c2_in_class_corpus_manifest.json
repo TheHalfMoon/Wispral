@@ -1,0 +1,1201 @@
+{
+ "c2_head": "d5bb5bea53fe7c20bfaba705040443a8154cfa69",
+ "main": "76fe651a41eaf73e12f6ac85d7f159427ada1447",
+ "candidates": [
+  {
+   "head": "033fa13a58f6be0c47d32d3989c7ffdbbd525fe9",
+   "merge_base": "033fa13a58f6be0c47d32d3989c7ffdbbd525fe9",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:cancelled"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "049e2e9b7fa32e296968df24436eb601a0749ad5",
+   "merge_base": "049e2e9b7fa32e296968df24436eb601a0749ad5",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "0a494d98adf04fb7d76169afc951eac967ec9fb6",
+   "merge_base": "0a494d98adf04fb7d76169afc951eac967ec9fb6",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "0b8c70a922cafd759da3d5b8d26e996e2daec929",
+   "merge_base": "0b8c70a922cafd759da3d5b8d26e996e2daec929",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "0fd4e2252e485b887af33d404ac589354fdb05ee",
+   "merge_base": "0fd4e2252e485b887af33d404ac589354fdb05ee",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "11dacb2d9965d2f851c79dd8346e38c2d56a0edd",
+   "merge_base": "11dacb2d9965d2f851c79dd8346e38c2d56a0edd",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "128638a68cbc278284c9312c195bcf49478bd991",
+   "merge_base": "885307429ec8b1aa0fe173169a8c2918714c06b0",
+   "changed_paths": 1,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: .github/workflows/000b2-public-b2r16-freeze.yml"
+  },
+  {
+   "head": "13672f3f5c99f2eaa4de151a88bbf7d006123771",
+   "merge_base": "13672f3f5c99f2eaa4de151a88bbf7d006123771",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "1410cb81b59de07bdecee6b78e41fdc825f4a55d",
+   "merge_base": "1410cb81b59de07bdecee6b78e41fdc825f4a55d",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "1687057a56399e5892dee540704b949b868ed94d",
+   "merge_base": "1687057a56399e5892dee540704b949b868ed94d",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "17b526448bd3534968c459cc27f80f2fab6775d8",
+   "merge_base": "17b526448bd3534968c459cc27f80f2fab6775d8",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "1871507db642718df7f1e113e1cd57dc7c521595",
+   "merge_base": "1871507db642718df7f1e113e1cd57dc7c521595",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "18fc9496bad4078f3ac1295319072ca8b0ff3683",
+   "merge_base": "2f4212228f24e40fbd03cfc59ab4774df94c0cc3",
+   "changed_paths": 4,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: research/000b2-public/recovery-attempt-003-readiness.json"
+  },
+  {
+   "head": "1a27ba8468aba4e77b548a04c4c2d5ea5de957fe",
+   "merge_base": "1a27ba8468aba4e77b548a04c4c2d5ea5de957fe",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "1d9c92ad77be312667de141b88e386a8576abfdc",
+   "merge_base": "51891f584be26639e3cda427e4f61d46fe524b1a",
+   "changed_paths": 2,
+   "historical": [
+    "pr:skipped",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: .github/workflows/trusted-control-repair-51891-evidence.yml"
+  },
+  {
+   "head": "1f5a1d0461624842159bc43a26a03a51b02ec878",
+   "merge_base": "1f5a1d0461624842159bc43a26a03a51b02ec878",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "226297a9600e95b9db1d51ba0ca277bd1024eabc",
+   "merge_base": "226297a9600e95b9db1d51ba0ca277bd1024eabc",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "241a8ff0da6702a23a16a466b1f0aeda300e9db1",
+   "merge_base": "241a8ff0da6702a23a16a466b1f0aeda300e9db1",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "29407da418885bd89f41de032fb3faa2eb1e7346",
+   "merge_base": "e4152b019dbf597b4df56eb58554f94418f556fd",
+   "changed_paths": 2,
+   "historical": [
+    "pr:skipped",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: .github/workflows/trusted-control-repair-e415-evidence.yml"
+  },
+  {
+   "head": "2aace7ec675dfa062c0412b2c87da332460b9a88",
+   "merge_base": "2aace7ec675dfa062c0412b2c87da332460b9a88",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "2cbf43e169cbf1625f276d45f276cbcdb8bc0a7c",
+   "merge_base": "2cbf43e169cbf1625f276d45f276cbcdb8bc0a7c",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "2ccde0322b784052be1d8d9fa1bcd23babfe4bbb",
+   "merge_base": "2ccde0322b784052be1d8d9fa1bcd23babfe4bbb",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "2f0ee17d35eb578cdebaf78615169db6128a90da",
+   "merge_base": "628f5494d7a4fccb324b48f731c62e238d6971de",
+   "changed_paths": 8,
+   "historical": [
+    "pr:skipped",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: .github/workflows/trusted-control-repair-reconciliation-evidence.yml"
+  },
+  {
+   "head": "2f1e0fb5b5d29fa5749cb265b263909ad10313f4",
+   "merge_base": "2f1e0fb5b5d29fa5749cb265b263909ad10313f4",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "318307815090532f057388e32e870e292ccf7257",
+   "merge_base": "318307815090532f057388e32e870e292ccf7257",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "325ef7819551db8820e91aef9639ea379247d106",
+   "merge_base": "325ef7819551db8820e91aef9639ea379247d106",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "35e2af52b0d172bed1e0d60c8be6ea6c1cd199f6",
+   "merge_base": "35e2af52b0d172bed1e0d60c8be6ea6c1cd199f6",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "3bdce2a3fa651212ad96d19c6ee57adb8abb2bd8",
+   "merge_base": "3bdce2a3fa651212ad96d19c6ee57adb8abb2bd8",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "3e9d14cf76e97c758cac4c4ce1c646545384328b",
+   "merge_base": "ae349f7ef28e8ffd08ee8f54d1727ef80684a31a",
+   "changed_paths": 5,
+   "historical": [
+    "pr:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: .github/workflows/000b2-public-b2r15-rebinding.yml"
+  },
+  {
+   "head": "4313ceb3ace7d5f2f793cea5b7baa1a00abd2cdb",
+   "merge_base": "4313ceb3ace7d5f2f793cea5b7baa1a00abd2cdb",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "43f9d5bcb4465bd6467a7a5880f274fe4600134e",
+   "merge_base": "43f9d5bcb4465bd6467a7a5880f274fe4600134e",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "44570a1a15fc55a775042d8c3a8c76bf3dc0610f",
+   "merge_base": "44570a1a15fc55a775042d8c3a8c76bf3dc0610f",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:cancelled"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "4a076aec5aeca2a122fb93705f54fac078b19619",
+   "merge_base": "4a076aec5aeca2a122fb93705f54fac078b19619",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "4af888530793d82461417491695d8fbd08531ce8",
+   "merge_base": "4af888530793d82461417491695d8fbd08531ce8",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "4c930a88ef862920d9f73280af34503c5c966bc3",
+   "merge_base": "4c930a88ef862920d9f73280af34503c5c966bc3",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "51891f584be26639e3cda427e4f61d46fe524b1a",
+   "merge_base": "51891f584be26639e3cda427e4f61d46fe524b1a",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "550f5560f1221b5fc476778d72e9bdd7f6f1393f",
+   "merge_base": "550f5560f1221b5fc476778d72e9bdd7f6f1393f",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:cancelled"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "594555648c7e98923a36340548b022d2b6875d7e",
+   "merge_base": "594555648c7e98923a36340548b022d2b6875d7e",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "59cc9b469076e2c241ea6e70e9b2006017ac9d12",
+   "merge_base": "59cc9b469076e2c241ea6e70e9b2006017ac9d12",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "5d21fe96bb0d8eccb69ade4dd46229870ecd8206",
+   "merge_base": "5d21fe96bb0d8eccb69ade4dd46229870ecd8206",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "5ee105203535117bbdbef5325b1b48bcbea21495",
+   "merge_base": "5ee105203535117bbdbef5325b1b48bcbea21495",
+   "changed_paths": 0,
+   "historical": [
+    "pr:cancelled",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "628f5494d7a4fccb324b48f731c62e238d6971de",
+   "merge_base": "628f5494d7a4fccb324b48f731c62e238d6971de",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "62f6d0bf12c74047f532b4641fe478278dbda33e",
+   "merge_base": "60108c02df8397eda854d31c51eb37ee2e3fbe45",
+   "changed_paths": 4,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: research/000b2-public/recovery-attempt-003-readiness.json"
+  },
+  {
+   "head": "63a8a81d31840b7baefa4c7e6e968c232a78272a",
+   "merge_base": "63a8a81d31840b7baefa4c7e6e968c232a78272a",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "644abbeca7bbd1825ee6f59656a8495d84f38e79",
+   "merge_base": "644abbeca7bbd1825ee6f59656a8495d84f38e79",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "69f9df815945a2147ad8918bab5fdef99ae09125",
+   "merge_base": "e07e9bf7b7bdff3fdb41cc421140a9d6bdd8b3ca",
+   "changed_paths": 4,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: research/000b2-public/recovery-attempt-003-readiness.json"
+  },
+  {
+   "head": "6d092915ac9ddbf032ccf33b7a50e657994db29f",
+   "merge_base": "6d092915ac9ddbf032ccf33b7a50e657994db29f",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:cancelled"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "708e9a24c4f72b27fb0aad12f7867bdf76cb54c4",
+   "merge_base": "708e9a24c4f72b27fb0aad12f7867bdf76cb54c4",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "70aa5e91d9f1b3e1cab7e97b32e61d9a7d3107a5",
+   "merge_base": "70aa5e91d9f1b3e1cab7e97b32e61d9a7d3107a5",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "70eaac7e51879fc99532652620db30aa5e718bae",
+   "merge_base": "70eaac7e51879fc99532652620db30aa5e718bae",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "7351c113955d3db5eee3e54071f8e54952516bfc",
+   "merge_base": "7351c113955d3db5eee3e54071f8e54952516bfc",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "74c22e90d17c5d827b95fe22dd55be04cc8836cf",
+   "merge_base": "74c22e90d17c5d827b95fe22dd55be04cc8836cf",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "77ce0a8ef94e8392060483590ad7a58ec146502e",
+   "merge_base": "e4152b019dbf597b4df56eb58554f94418f556fd",
+   "changed_paths": 2,
+   "historical": [
+    "pr:skipped",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: .github/workflows/trusted-control-repair-70aa-evidence.yml"
+  },
+  {
+   "head": "7b188565b9caabc6e8042639e467f3c05d4714f8",
+   "merge_base": "7b188565b9caabc6e8042639e467f3c05d4714f8",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "7c9874b9618c2d552153723632e662b67f9861f6",
+   "merge_base": "7c9874b9618c2d552153723632e662b67f9861f6",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "7db0ffbbc9245bbf7271f6827f55380d03d8946a",
+   "merge_base": "7db0ffbbc9245bbf7271f6827f55380d03d8946a",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "814f052e8a4b720edaf180ee0a1b8795533cf7ae",
+   "merge_base": "814f052e8a4b720edaf180ee0a1b8795533cf7ae",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "819c477f29dbe6e82950f9b05526f8e010912777",
+   "merge_base": "819c477f29dbe6e82950f9b05526f8e010912777",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "83d7ba654b5bb88ee967b7a22e72ff0d0d929c8c",
+   "merge_base": "628f5494d7a4fccb324b48f731c62e238d6971de",
+   "changed_paths": 8,
+   "historical": [
+    "pr:skipped",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: .github/workflows/trusted-control-repair-reconciliation-evidence.yml"
+  },
+  {
+   "head": "840b71deb9d03e350ba83f46d6017fcfed5bd4d2",
+   "merge_base": "840b71deb9d03e350ba83f46d6017fcfed5bd4d2",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:cancelled"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "859fa7eb52bf6dfe0a14ada74c9f0d6234f5f64b",
+   "merge_base": "60108c02df8397eda854d31c51eb37ee2e3fbe45",
+   "changed_paths": 4,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: research/000b2-public/recovery-attempt-003-readiness.json"
+  },
+  {
+   "head": "85fe810267eda7ce1be8b76fd4cd769d3a39003d",
+   "merge_base": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+   "changed_paths": 5,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: .github/workflows/000b2-public-b2r17-moonshine-compact.yml"
+  },
+  {
+   "head": "93c97715627d6e0e88abf213dc4114d99d15d864",
+   "merge_base": "93c97715627d6e0e88abf213dc4114d99d15d864",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "94e3d084f025dbf6d52e49709f62ce55a9a10123",
+   "merge_base": "94e3d084f025dbf6d52e49709f62ce55a9a10123",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:cancelled"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "97816c41c43e9d3b302bdafa3cc5cb50497557ed",
+   "merge_base": "97816c41c43e9d3b302bdafa3cc5cb50497557ed",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "9a477c1c4431d4108c5e7f88f2de6048d0234a01",
+   "merge_base": "003ed3a44b89779ff51df45cd1d015ef6da98370",
+   "changed_paths": 2,
+   "historical": [
+    "pr:skipped",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: .github/workflows/trusted-control-repair-003ed-canonical-evidence.yml"
+  },
+  {
+   "head": "9a89bbda5b4acfe5f44543ea14243fbc10cd508e",
+   "merge_base": "9a89bbda5b4acfe5f44543ea14243fbc10cd508e",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "9b20be39bee71f16d4ed6202261dd4ae5277fd95",
+   "merge_base": "9b20be39bee71f16d4ed6202261dd4ae5277fd95",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "9bc863e652215919723b577b7a5807159031a003",
+   "merge_base": "9bc863e652215919723b577b7a5807159031a003",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "9c58993f2718165beede4b690e721012809dce5c",
+   "merge_base": "60108c02df8397eda854d31c51eb37ee2e3fbe45",
+   "changed_paths": 2,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: research/000b2-public/recovery-attempt-003-readiness.json"
+  },
+  {
+   "head": "9c5d475e9c86c1df2b1650e4fb4370cdecf73a77",
+   "merge_base": "9c5d475e9c86c1df2b1650e4fb4370cdecf73a77",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "9d7baecfb235a78f9c1035ca1844137b3c83be6b",
+   "merge_base": "9d7baecfb235a78f9c1035ca1844137b3c83be6b",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "9f22813af150cab11786fa8ff9dbf0c550c4f839",
+   "merge_base": "9f22813af150cab11786fa8ff9dbf0c550c4f839",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "a15d03cbbf39fdddf43fbc3b9d3ec66334d3b5a6",
+   "merge_base": "a15d03cbbf39fdddf43fbc3b9d3ec66334d3b5a6",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "a20d52d1b91e994c8f5f90aee66e90a673dd6453",
+   "merge_base": "a20d52d1b91e994c8f5f90aee66e90a673dd6453",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "a21be1494dd3954146bdae6eae0cbb5f2c297a46",
+   "merge_base": "a21be1494dd3954146bdae6eae0cbb5f2c297a46",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "a396486778fd8dbfd20d02f2c8fd2c66973f1e34",
+   "merge_base": "a396486778fd8dbfd20d02f2c8fd2c66973f1e34",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "a3d0e98465a9ae4fbd10d4ee89474edc3a3b6b15",
+   "merge_base": "a3d0e98465a9ae4fbd10d4ee89474edc3a3b6b15",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "a7ba265519d8d539e695a242466faeda0eeb10b2",
+   "merge_base": "a7ba265519d8d539e695a242466faeda0eeb10b2",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "a909024a49b746fa19b5654a01288cd460d544ae",
+   "merge_base": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+   "changed_paths": 3,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: .github/workflows/000b2-public-b2r16-freeze.yml"
+  },
+  {
+   "head": "a97d596bfc9a027bc6c71747b11d94de14f3e838",
+   "merge_base": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+   "changed_paths": 7,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: .github/workflows/000b2-public-b2r16-freeze.yml"
+  },
+  {
+   "head": "ac9f7ce993aec33e6c6436cce4efd85394a97f35",
+   "merge_base": "ac9f7ce993aec33e6c6436cce4efd85394a97f35",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "adbc6f996179acadac31ba64986950d004855427",
+   "merge_base": "adbc6f996179acadac31ba64986950d004855427",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "af9286c7bf7d18599a254e84266ac3296b67db38",
+   "merge_base": "af9286c7bf7d18599a254e84266ac3296b67db38",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "b29d66099ce99a88e0cb5278d0f09261217943e9",
+   "merge_base": "b29d66099ce99a88e0cb5278d0f09261217943e9",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "b7824b353594857b1700442584fa7734ad1b1c70",
+   "merge_base": "b7824b353594857b1700442584fa7734ad1b1c70",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "bd4f069a2412576dfc5a8776a0abaad9b512effc",
+   "merge_base": "bd4f069a2412576dfc5a8776a0abaad9b512effc",
+   "changed_paths": 0,
+   "historical": [
+    "pr:cancelled",
+    "recovery:cancelled"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "bfed253b47c76113d3a4fb50c2da73a12d8af091",
+   "merge_base": "bfed253b47c76113d3a4fb50c2da73a12d8af091",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "c60751c43a2523879814d691011d5dd6d3d1e119",
+   "merge_base": "c60751c43a2523879814d691011d5dd6d3d1e119",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "c63647426bb6a99dcf5289ffef12778673286a16",
+   "merge_base": "c63647426bb6a99dcf5289ffef12778673286a16",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "cabf4e5d96ab03d38a74ee4e5986be17a26f5e74",
+   "merge_base": "cabf4e5d96ab03d38a74ee4e5986be17a26f5e74",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "cba9bda1a580fe2b1dee9fb87f383e868a04c004",
+   "merge_base": "cba9bda1a580fe2b1dee9fb87f383e868a04c004",
+   "changed_paths": 0,
+   "historical": [
+    "pr:cancelled",
+    "recovery:cancelled"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "cd15c844dc143903423279950c44b9af1c82be3c",
+   "merge_base": "cd15c844dc143903423279950c44b9af1c82be3c",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "ce7de6326ff6d06f58bec1252e76ab481ee1e2db",
+   "merge_base": "51891f584be26639e3cda427e4f61d46fe524b1a",
+   "changed_paths": 2,
+   "historical": [
+    "pr:skipped",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: .github/workflows/trusted-control-repair-51891-evidence.yml"
+  },
+  {
+   "head": "cf651850208543b49d5c1a1a1532fc445aa0c8ec",
+   "merge_base": "cf651850208543b49d5c1a1a1532fc445aa0c8ec",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "d45b5b8301ea508c9c1ee416cf0afa92b96132b2",
+   "merge_base": "d45b5b8301ea508c9c1ee416cf0afa92b96132b2",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "d9528e3a6abfbe589593a332b4ec48d2686e4144",
+   "merge_base": "d9528e3a6abfbe589593a332b4ec48d2686e4144",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "d9b76c52e4907e8bb0156652f7aa18945c9a0e19",
+   "merge_base": "d9b76c52e4907e8bb0156652f7aa18945c9a0e19",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "da837cfacc2b877eee202ad23a333d7208ed4845",
+   "merge_base": "da837cfacc2b877eee202ad23a333d7208ed4845",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "dcaad3b72147adec106e4abf8ba1ae3045941f95",
+   "merge_base": "dcaad3b72147adec106e4abf8ba1ae3045941f95",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "de095ea3260698a84332ffd6cf708e336c645d51",
+   "merge_base": "de095ea3260698a84332ffd6cf708e336c645d51",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "e1525036e619fb49863a1c2f707d5ed29ff3289b",
+   "merge_base": "e1525036e619fb49863a1c2f707d5ed29ff3289b",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "e3073598910d73aa2ca869fc9ed3a8245b8e599d",
+   "merge_base": "e3073598910d73aa2ca869fc9ed3a8245b8e599d",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "e36bd899a2d7715766314726e9ec15fb12950514",
+   "merge_base": "e36bd899a2d7715766314726e9ec15fb12950514",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "e4152b019dbf597b4df56eb58554f94418f556fd",
+   "merge_base": "e4152b019dbf597b4df56eb58554f94418f556fd",
+   "changed_paths": 0,
+   "historical": [
+    "pr:failure",
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "e5ba852ebb72bee2eda744e32d6820133871d49c",
+   "merge_base": "e5ba852ebb72bee2eda744e32d6820133871d49c",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "e667f2ea2ec6460e5dc21ce8bfbe390d4e2ff46b",
+   "merge_base": "e667f2ea2ec6460e5dc21ce8bfbe390d4e2ff46b",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "ecc4530d2ea8f6dc184e6a6dd3c3cdc8cc8f1e5a",
+   "merge_base": "ecc4530d2ea8f6dc184e6a6dd3c3cdc8cc8f1e5a",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "edec6fe34657c69c9150266d3c09eb7d1b8298f9",
+   "merge_base": "edec6fe34657c69c9150266d3c09eb7d1b8298f9",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "ee3b419bc2b5c32bc72ced1c777a07ebfc6f85f4",
+   "merge_base": "ee3b419bc2b5c32bc72ced1c777a07ebfc6f85f4",
+   "changed_paths": 0,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "f2d2a4f11211b66274de2c6e271ed03eac31bddb",
+   "merge_base": "ae349f7ef28e8ffd08ee8f54d1727ef80684a31a",
+   "changed_paths": 5,
+   "historical": [
+    "pr:success",
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "B2-owned path changed: .github/workflows/000b2-public-b2r15-rebinding.yml"
+  },
+  {
+   "head": "f9b61c51b67b1d8039bdc0df042f206a43ef0ab5",
+   "merge_base": "f9b61c51b67b1d8039bdc0df042f206a43ef0ab5",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "fa5e6f90411e8bf0013c37886db20fef94de6c1d",
+   "merge_base": "fa5e6f90411e8bf0013c37886db20fef94de6c1d",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:success"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  },
+  {
+   "head": "fd1586e10b655c792700c92174c307968439e396",
+   "merge_base": "fd1586e10b655c792700c92174c307968439e396",
+   "changed_paths": 0,
+   "historical": [
+    "recovery:failure"
+   ],
+   "nonsuccessor": false,
+   "first_violation": "non-successor candidate must change at least one path"
+  }
+ ],
+ "rule": "C2 changes a verdict only when nonsuccessor_violations(...) is empty; every candidate below with nonsuccessor=false keeps its pre-C2 verdict."
+}
