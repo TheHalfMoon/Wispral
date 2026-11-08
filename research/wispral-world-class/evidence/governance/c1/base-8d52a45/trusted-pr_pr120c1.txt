@@ -1,0 +1,15 @@
+## DEFINITION 8d52a4579a0b1c6555cbe8443027c1950493b326:.github/workflows/000b2-public-attempt-003-trusted-pr.yml job=verify-successor-pr-from-canonical-base
+## CANDIDATE HEAD 0141ef59c402e6961c2d7a58fcef533eee8d763b
+## STEP 1 Checkout untrusted candidate data only: uses actions/checkout@11d5960a326750d5838078e36cf38b85af677262 (performed by harness setup)
+## STEP 2 Verify trusted-base event and immutable control boundary: exit 1
+   8d52a4579a0b1c6555cbe8443027c1950493b326
+   TRUSTED_PR_GATE=FAIL: B2R17 candidate path scope violation
+## STEP 3 Verify candidate with exact authority-base common verifier bytes: exit 1
+   ATTEMPT_002_INVALIDATION=FAIL: B2R17 candidate must match the exact canonical task path set
+## STEP 4 Fetch exact pinned sherpa-onnx source: exit 0
+   Initialized empty Git repository in $RUNNER_TEMP/sherpa-onnx/.git/
+   From https://github.com/k2-fsa/sherpa-onnx
+    * branch            917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e -> FETCH_HEAD
+   HEAD is now at 917bed9 Release v1.13.7 (#3909)
+## STEP 5 Verify pinned runtime contract with trusted common verifier: exit 1
+   ATTEMPT_002_INVALIDATION=FAIL: B2R17 candidate must match the exact canonical task path set

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # C1 Principle XVII item 5 evidence: cause (counterfactual) and non-concealment runs of the two
-# base-defined B2 gates (definitions at edacdf7), executed by run_gate_steps.py.
+# base-defined B2 gates (definitions at $BASE, default edacdf7), executed by run_gate_steps.py.
 set -uo pipefail
 cd "$(dirname "$0")"
 H=$PWD
-BASE=edacdf7504302cc91ff7138bc6ac2d391e4df1f4
+BASE=${BASE:-edacdf7504302cc91ff7138bc6ac2d391e4df1f4}
 TP=.github/workflows/000b2-public-attempt-003-trusted-pr.yml
 RC=.github/workflows/000b2-public-attempt-003-recovery.yml
 GHT=$(gh auth token)
-OUT=$H/evidence
+OUT=${OUT:-$H/evidence}
 mkdir -p "$OUT"
 
 trusted() { # name workdir extra-args...
