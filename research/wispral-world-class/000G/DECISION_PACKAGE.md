@@ -5,6 +5,8 @@
 - **Authority.** Specification 000 (`specs/000-founding-research/spec.md`): 000G "selects exactly one bounded first product Grain, or records that evidence is insufficient to implement product code". Constitution 1.0.0, Governance item 8: product code is authorized only when a 000G decision selects a bounded Grain and that Grain satisfies readiness. Governance item 7: a 000G decision needs a qualifying review.
 - **Canonical base:** `main` = `04d12e2134dc19df7635dd0ffc1df5a2ca07443d`.
 
+> **Correction (2026-11-09, after the merge of #145 and #146).** This package said that the contract Grain could become GO after Q-01 alone. That was wrong. In `research/wispral-world-class/packets.json`, `CORE-01` depends on `D0G`, and `D0G` depends on `F`, `CORE-00`, `SD-M0`, `ST-D00`, `ST-D00b` and `KT-01`. The contract Grain therefore also waits for the three 000E Grains that have not run. Q-01 has since been decided: Apache-2.0 (#146, `53d32b5`). The lines below are corrected; the NO-GO recommendation is unchanged.
+
 ## Recommendation
 
 **NO-GO on any product Grain today.** The evidence is insufficient. This package records that, as Specification 000 requires, and names the shortest path to a GO.
@@ -58,11 +60,11 @@ Criteria from `specs/000-founding-research/plan.md`. The ratings are this packag
 | STT dependency | none | none (TTS only) | none | **yes** |
 | Code that would land | `ADAPT` / `COPY` from founder donors | the fork plus deltas | a `WRAP` of Parlant plus a broker | the fork plus deltas |
 | **Evidence still missing** | the outbound licence (Q-01) | Q-01; the `ST-D00` baseline; `ST-D02` default-engine change; consent ledger | Q-01; the `KT-01` spike (v4 vs v3.3.2 decision) | Q-01; the `SD-M0` baseline; STT evidence or an explicit insufficient-evidence synthesis |
-| **Could become GO after** | Q-01 alone | Q-01 + `ST-D00` | Q-01 + `KT-01` | Q-01 + `SD-M0` + a 000B disposition |
+| **Could become GO after** | Q-01 + a `D0G` decision, which needs `SD-M0`, `ST-D00` and `KT-01` | Q-01 + `ST-D00` + `D0G` | Q-01 + `KT-01` + `D0G` | Q-01 + `SD-M0` + a 000B disposition + `D0G` |
 
 **Provisional order for the next 000G review.** This is not a selection: 000G still selects exactly one Grain, from the evidence available at that time.
 
-1. **Pure non-STT contract Grain.** It is the only candidate with no outstanding 000E dependency. It is gated by Q-01 alone, and it has the narrowest blast radius and the most measurable acceptance.
+1. **Pure non-STT contract Grain.** Its own work has no 000E dependency, but it is selected through `D0G`, which depends on all six P1 research Grains. It has the narrowest blast radius and the most measurable acceptance.
 2. **WisprStudio** or **Klaint text-only**, whichever baseline (`ST-D00` or `KT-01`) qualifies first.
 3. **WisprSide.** It has the highest thesis value, but it also has the most open dependencies, including STT.
 
