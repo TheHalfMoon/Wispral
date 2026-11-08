@@ -1,0 +1,47 @@
+2026-11-07T23:50:27Z
+HEAD=a97d596bfc9a027bc6c71747b11d94de14f3e838
+$ python -I research/000b2-public/verify_b2r16_preservation.py --candidate a97d596bfc9a027bc6c71747b11d94de14f3e838
+B2R16_ATTEMPT_003_FREEZE=PASS
+B2R16_FREEZE_DIGEST=b92d0a88bb50ebde517f560878a26d0ef796abdaf931278f5bc43e372ff1ac8d
+ATTEMPT_003_FROZEN_EVIDENCE=YES
+ATTEMPT_003_CANDIDATE_DECODING_STARTED_AT_FREEZE=NO
+ATTEMPT_003_PRIMARY_DECODING_STARTED_AT_FREEZE=NO
+ATTEMPT_003_SCORING_PERFORMED_AT_FREEZE=NO
+HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT
+B2R16_FROZEN_OBJECT_PRESERVATION=PASS
+EXIT=0
+$ python -I research/000b2-public/verify_b2r16_preservation.py --candidate edacdf7504302cc91ff7138bc6ac2d391e4df1f4
+B2R16_ATTEMPT_003_FREEZE=PASS
+B2R16_FREEZE_DIGEST=b92d0a88bb50ebde517f560878a26d0ef796abdaf931278f5bc43e372ff1ac8d
+ATTEMPT_003_FROZEN_EVIDENCE=YES
+ATTEMPT_003_CANDIDATE_DECODING_STARTED_AT_FREEZE=NO
+ATTEMPT_003_PRIMARY_DECODING_STARTED_AT_FREEZE=NO
+ATTEMPT_003_SCORING_PERFORMED_AT_FREEZE=NO
+HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT
+B2R16_FROZEN_OBJECT_PRESERVATION=PASS
+EXIT=0
+$ python -I research/000b2-public/verify_b2r16_preservation.py --candidate e7064c785ac4cf8a667526fa20feb0734f8afe45 (pr124 head)
+B2R16_ATTEMPT_003_FREEZE=PASS
+B2R16_FREEZE_DIGEST=b92d0a88bb50ebde517f560878a26d0ef796abdaf931278f5bc43e372ff1ac8d
+ATTEMPT_003_FROZEN_EVIDENCE=YES
+ATTEMPT_003_CANDIDATE_DECODING_STARTED_AT_FREEZE=NO
+ATTEMPT_003_PRIMARY_DECODING_STARTED_AT_FREEZE=NO
+ATTEMPT_003_SCORING_PERFORMED_AT_FREEZE=NO
+HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT
+B2R16_FROZEN_OBJECT_PRESERVATION=PASS
+EXIT=0
+$ python -I research/000b2-public/test_b2r16_preservation.py
+test_candidate_identity_rejects_refs_and_options (__main__.PreservationTests.test_candidate_identity_rejects_refs_and_options) ... ok
+test_delete_mode_and_symlink_rejected (__main__.PreservationTests.test_delete_mode_and_symlink_rejected) ... ok
+test_every_frozen_path_rejects_byte_change (__main__.PreservationTests.test_every_frozen_path_rejects_byte_change) ... ok
+test_exact_replacement_workflow_and_its_tampering (__main__.PreservationTests.test_exact_replacement_workflow_and_its_tampering) ... ok
+test_historical_stdout_unchanged (__main__.PreservationTests.test_historical_stdout_unchanged) ... ok
+test_mutable_checker_and_tests_cannot_bypass_unchanged_workflow (__main__.PreservationTests.test_mutable_checker_and_tests_cannot_bypass_unchanged_workflow) ... ok
+test_unchanged_main_and_original_plan (__main__.PreservationTests.test_unchanged_main_and_original_plan) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 366.292s
+
+OK
+EXIT=0
+ELAPSED_S=368

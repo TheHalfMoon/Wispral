@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wispral.invalid/contracts/v1/provenance_event.schema.json",
+  "title": "Provenance and audit event (CANDIDATE v1, revised after Core audit)",
+  "description": "Append-only (written through an fsync'd journal such as orcel-journal; the journal records, it never authorizes). Keeps raw, normalized, edited, interpreted and dispatched representations separable. Media and secrets are referenced by digest, never embedded.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "request_id", "session_id", "epoch", "sequence", "journal_seq", "kind", "content_digest", "actor", "retention", "principal_scope_ref", "policy_version"],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "request_id": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "session_id": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "epoch": { "type": "integer", "minimum": 0 },
+    "sequence": { "type": "integer", "minimum": 0 },
+    "journal_seq": { "type": "integer", "minimum": 0 },
+    "kind": { "enum": ["audio_metadata", "audio_not_persisted", "raw_hypothesis", "normalized_text", "user_edit", "rewrite_suggestion", "interpretation", "policy_verdict", "dispatch", "outcome", "ownership_change", "consent_granted", "consent_revoked", "consent_check"] },
+    "content_digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "prev_digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$", "description": "Optional hash chain for tamper evidence." },
+    "parent_event_id": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "model": {
+      "type": "object", "additionalProperties": false, "required": ["model_id", "revision", "artifact_sha256"],
+      "properties": {
+        "model_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "revision": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "artifact_sha256": { "oneOf": [ { "type": "string", "pattern": "^[0-9a-f]{64}$" }, { "const": "PROVIDER_MANAGED_DIGEST_UNAVAILABLE" } ] }
+      }
+    },
+    "components": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "prompt_digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "thresholds_digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "intent_state": { "enum": ["pending", "dispatched", "settled", "abandoned", "unknown", "reconciled"] },
+    "actor": { "enum": ["user", "speech_worker", "rewrite_worker", "policy", "delivery_owner", "render_owner", "broker", "human_operator", "dialogue_engine"] },
+    "retention": { "enum": ["session_only", "bounded_days", "user_controlled", "audit_tombstone"] },
+    "retention_days": { "type": "integer", "minimum": 1, "maximum": 3650 },
+    "principal_scope_ref": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "policy_version": { "type": "string", "pattern": "^(sha256:[0-9a-f]{64}|[a-z][a-z0-9-]{0,63}@[0-9]+\\.[0-9]+\\.[0-9]+)$" }
+  },
+  "allOf": [
+    { "if": { "properties": { "kind": { "enum": ["normalized_text", "user_edit", "rewrite_suggestion", "interpretation", "dispatch", "outcome", "policy_verdict"] } }, "required": ["kind"] }, "then": { "required": ["parent_event_id"] } },
+    { "if": { "properties": { "kind": { "enum": ["raw_hypothesis", "rewrite_suggestion", "interpretation"] } }, "required": ["kind"] }, "then": { "required": ["model"] } },
+    { "if": { "properties": { "kind": { "enum": ["rewrite_suggestion", "interpretation"] } }, "required": ["kind"] }, "then": { "required": ["components"] } },
+    { "if": { "properties": { "kind": { "enum": ["dispatch", "outcome"] } }, "required": ["kind"] }, "then": { "required": ["intent_state"] } },
+    { "if": { "properties": { "retention": { "const": "bounded_days" } }, "required": ["retention"] }, "then": { "required": ["retention_days"] } }
+  ]
+}

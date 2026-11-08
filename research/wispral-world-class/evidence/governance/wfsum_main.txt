@@ -1,0 +1,730 @@
+================================================================================
+000a-acp-probe.yml | name: 000A ACP Qualification
+ON: {"pull_request": {"paths": [".github/workflows/000a-acp-probe.yml", "research/000a/**", "fixtures/acp-probe/**", "docs/research/acp/**", "specs/000A-acp-qualification/**"]}, "workflow_dispatch": null}
+PERMS: {"contents": "read"}
+  JOB evidence-verifier name='Committed evidence verifier' if=None needs=None runs-on='ubuntu-latest'
+     - 'Checkout exact candidate' uses=actions/checkout@v4
+     - 'Set up Python' uses=actions/setup-python@v5 with={"python-version": "3.12"}
+     - 'Validate verifier syntax'
+         $ python -m py_compile research/000a/verify_evidence.py
+     - 'Cross-check matrix and committed raw evidence'
+         $ python research/000a/verify_evidence.py
+  JOB protocol-probe name='ACP v1 probe (${{ matrix.agent.id }})' if=None needs=None runs-on='ubuntu-latest'
+     - 'Checkout exact candidate' uses=actions/checkout@v4
+     - 'Set up Node.js' uses=actions/setup-node@v4 with={"node-version": "22"}
+     - 'Set up Python' uses=actions/setup-python@v5 with={"python-version": "3.12"}
+     - 'Validate research probe syntax'
+         $ python -m py_compile research/000a/acp_probe.py
+     - 'Record environment and pinned package metadata'
+         $ echo "python=$(python --version 2>&1)"
+     - 'Run unauthenticated ACP probe'
+         $ python research/000a/acp_probe.py \
+     - 'Validate structured probe artifact'
+         $ python - <<'PY'
+     - 'Upload exact evidence' if='always()' uses=actions/upload-artifact@v4 with={"name": "000a-acp-${{ matrix.agent.id }}", "path": "artifacts/000a/${{ matrix.agent.id }}", "if-no-files-found": "error", "retention-days": 30}
+     - 'Enforce initialize qualification' if='always()'
+================================================================================
+000b1-preregistration.yml | name: 000B1 Preregistration
+ON: {"push": {"branches": ["research/000b1-benchmark-candidate-qualification", "research/000b1-canonical-closeout", "docs/000b-parent-reconciliation"], "paths": ["docs/research/stt/000b1-*", "docs/canonical/CURRENT_STATE.md", "research/000b1/**", "specs/CURRENT.md", "specs/000-founding-research/tasks.md", "specs/000B-stt-entity-bakeoff/tasks.md", "specs/000B1-benchmark-candidate-qualification/**", ".github/workflows/000b1-preregistration.yml"]}, "pull_request": {"paths": ["docs/research/stt/000b1-*", "docs/canonical/CURRENT_STATE.md", "research/000b1/**", "specs/CURRENT.md", "specs/000-founding-research/tasks.md", "specs/000B-stt-entity-bakeoff/tasks.md", "specs/000B1-benchmark-candidate-qualification/**", ".github/workflows/000b1-preregistration.yml"]}}
+PERMS: {"contents": "read"}
+  JOB verify-preregistration name=None if=None needs=None runs-on='ubuntu-latest'
+     - None uses=actions/checkout@v4
+     - None uses=actions/setup-python@v5 with={"python-version": "3.12"}
+     - 'Verify 000B1 machine-readable preregistration evidence'
+         $ python research/000b1/verify_preregistration.py
+     - 'Verify frozen candidate and schema contract semantics'
+         $ python research/000b1/verify_frozen_contracts.py
+     - 'Verify 000B2 frozen registry readiness gate'
+         $ python research/000b1/verify_b2_registry_gate.py
+     - 'Verify entity annotation semantic invariants'
+         $ python research/000b1/verify_entity_annotation_gate.py
+     - 'Verify 000B1 cross-document authority alignment'
+         $ python research/000b1/verify_documents.py
+     - 'Verify canonical closeout when present'
+         $ python research/000b1/verify_closeout.py
+         $ python research/000b1/verify_closeout_regressions.py
+     - 'Verify 000B parent and founding frontier reconciliation'
+         $ python research/000b1/verify_parent_reconciliation.py
+================================================================================
+000b2-corpus-manifest-format.yml | name: 000B2 Corpus Manifest Format
+ON: {"pull_request": {"paths": ["research/000b2-entry/corpus/**", ".github/workflows/000b2-corpus-manifest-format.yml"]}, "push": {"branches": ["main"], "paths": ["research/000b2-entry/corpus/**", ".github/workflows/000b2-corpus-manifest-format.yml"]}}
+PERMS: {"contents": "read"}
+  JOB verify-corpus-manifest-format name=None if=None needs=None runs-on='ubuntu-24.04'
+     - 'Checkout exact workflow subject' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}", "persist-credentials": false}
+     - 'Verify exact PR head when applicable' if="github.event_name == 'pull_request'"
+         $ HEAD_SHA="$(git rev-parse HEAD)"
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Compile corpus verifier'
+         $ python -m py_compile research/000b2-entry/corpus/verify_corpus_manifest.py
+     - 'Exercise deterministic synthetic structural self-test'
+         $ python research/000b2-entry/corpus/verify_corpus_manifest.py --self-test
+     - 'Prove canonical empty template remains blocked'
+         $ OUTPUT="$(python research/000b2-entry/corpus/verify_corpus_manifest.py \
+         $ if python research/000b2-entry/corpus/verify_corpus_manifest.py \
+     - 'Verify workflow action pins and non-claim markers'
+         $ python - <<'PY'
+================================================================================
+000b2-entry-contracts.yml | name: 000B2 Entry Contracts
+ON: {"push": {"branches": ["main", "research/000b2-entry-preparation"], "paths": ["research/000b2-entry/scorer.py", "research/000b2-entry/scorer-config.json", "research/000b2-entry/verify_scorer.py", "research/000b2-entry/prepare_attempt_manifest.py", "research/000b2-entry/validate_entry_manifest.py", "research/000b2-entry/operational-smoke-evidence.json", "research/000b2-entry/verify_operational_smoke.py", "research/000b2-entry/readiness.json", "research/000b2-entry/canonical-closeout.json", "research/000b2-entry/verify_closeout.py", "research/000b2-entry/verify_readiness.py", "research/000b2-entry/authority/**", "research/000b2-entry/preprocessing/**", "research/000b2-entry/environment/**", "specs/CURRENT.md", "specs/000B-stt-entity-bakeoff/tasks.md", "docs/canonical/CURRENT_STATE.md", ".github/workflows/000b2-entry-contracts.yml"]}, "pull_request": {"paths": ["research/000b2-entry/scorer.py", "research/000b2-entry/scorer-config.json", "research/000b2-entry/verify_scorer.py", "research/000b2-entry/prepare_attempt_manifest.py", "research/000b2-entry/validate_entry_manifest.py", "research/000b2-entry/operational-smoke-evidence.json", "research/000b2-entry/verify_operational_smoke.py", "research/000b2-entry/readiness.json", "research/000b2-entry/canonical-closeout.json", "research/000b2-entry/verify_closeout.py", "research/000b2-entry/verify_readiness.py", "research/000b2-entry/authority/**", "research/000b2-entry/preprocessing/**", "research/000b2-entry/environment/**", "specs/CURRENT.md", "specs/000B-stt-entity-bakeoff/tasks.md", "docs/canonical/CURRENT_STATE.md", ".github/workflows/000b2-entry-contracts.yml"]}}
+PERMS: {"contents": "read"}
+  JOB verify-entry-contracts name=None if=None needs=None runs-on='ubuntu-latest'
+     - 'Checkout exact workflow subject' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}", "persist-credentials": false}
+     - 'Verify exact PR head when applicable' if="github.event_name == 'pull_request'"
+         $ HEAD_SHA="$(git rev-parse HEAD)"
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Verify deterministic B2 scorer'
+         $ python research/000b2-entry/verify_scorer.py
+     - 'Verify durable six-cell operational smoke evidence'
+         $ python research/000b2-entry/verify_operational_smoke.py
+     - 'Verify human authority contract remains fail-closed'
+         $ python research/000b2-entry/authority/verify_authority.py --self-test
+         $ python research/000b2-entry/authority/verify_readiness_binding.py
+         $ OUTPUT="$(python research/000b2-entry/authority/verify_authority.py research/000b2-entry/authority/authority-package.json)"
+         $ if python research/000b2-entry/authority/verify_authority.py \
+     - 'Verify consent record format remains non-authorizing'
+         $ python research/000b2-entry/authority/verify_consent_records.py --self-test
+         $ OUTPUT="$(python research/000b2-entry/authority/verify_consent_records.py \
+         $ if python research/000b2-entry/authority/verify_consent_records.py \
+         $ if python research/000b2-entry/authority/verify_consent_records.py \
+     - 'Verify external authority runbook remains non-authorizing'
+         $ python research/000b2-entry/authority/print_authority_policy_sha256.py --self-test
+     - 'Verify frozen owner-controlled participant policy remains non-authorizing'
+         $ OUTPUT="$(python research/000b2-entry/authority/verify_authority_policy_freeze.py)"
+     - 'Verify preprocessing capture boundary'
+         $ python research/000b2-entry/preprocessing/verify_capture.py
+         $ python -O research/000b2-entry/preprocessing/verify_capture.py
+     - 'Verify execution-environment capture boundary'
+         $ python research/000b2-entry/environment/verify_capture.py
+         $ python -O research/000b2-entry/environment/verify_capture.py
+     - 'Generate amendment-aware non-frozen B2 entry draft'
+         $ git fetch --no-tags --depth=1 origin main
+         $ CANONICAL_REVISION="$(git rev-parse FETCH_HEAD)"
+         $ python research/000b2-entry/prepare_attempt_manifest.py \
+         $ python - <<'PY'
+     - 'Prove B2 entry draft validates but canonical frontier remains blocked'
+         $ OUTPUT="$(python research/000b2-entry/validate_entry_manifest.py "$RUNNER_TEMP/000b2-entry-draft.json")"
+     - 'Verify current B2 readiness and closeout records'
+         $ python research/000b2-entry/verify_closeout.py
+         $ python research/000b2-entry/verify_readiness.py
+================================================================================
+000b2-entry-materialization.yml | name: 000B2 Entry Materialization
+ON: {"push": {"branches": ["research/000b2-entry-preparation"], "paths": ["research/000b2-entry/materialize_artifacts.py", "research/000b2-entry/artifact-size-amendment.json", "research/000b2-entry/materialized-artifacts.json", "research/000b2-entry/verify_materialization.py", "research/000b1/qualified-candidates.json", ".github/workflows/000b2-entry-materialization.yml"]}, "pull_request": {"paths": ["research/000b2-entry/materialize_artifacts.py", "research/000b2-entry/artifact-size-amendment.json", "research/000b2-entry/materialized-artifacts.json", "research/000b2-entry/verify_materialization.py", "research/000b1/qualified-candidates.json", ".github/workflows/000b2-entry-materialization.yml"]}}
+PERMS: {"contents": "read"}
+  JOB materialize-pending-artifacts name=None if=None needs=None runs-on='ubuntu-latest'
+     - None uses=actions/checkout@v4
+     - None uses=actions/setup-python@v5 with={"python-version": "3.12"}
+     - 'Verify committed materialization authority'
+         $ python research/000b2-entry/verify_materialization.py
+     - 'Materialize pending B2 artifact SHA-256 values'
+         $ python research/000b2-entry/materialize_artifacts.py \
+     - 'Compare live materialization with committed evidence'
+         $ python research/000b2-entry/verify_materialization.py --live-report "$RUNNER_TEMP/000b2-materialization.json"
+     - 'Upload live materialization report only' uses=actions/upload-artifact@v4 with={"name": "000b2-materialization-${{ github.sha }}", "path": "${{ runner.temp }}/000b2-materialization.json", "if-no-files-found": "error", "retention-days": 14}
+================================================================================
+000b2-operational-smoke.yml | name: 000B2 Operational Smoke
+ON: {"push": {"branches": ["research/000b2-entry-preparation"], "paths": ["research/000b2-entry/operational_smoke.py", "research/000b2-entry/operational_smoke_entry.py", "research/000b2-entry/aggregate_operational_smoke.py", "research/000b2-entry/verify_operational_smoke.py", "research/000b2-entry/materialized-artifacts.json", "research/000b2-entry/artifact-size-amendment.json", "research/000b1/qualified-candidates.json", ".github/workflows/000b2-operational-smoke.yml"]}, "pull_request": {"paths": ["research/000b2-entry/operational_smoke.py", "research/000b2-entry/operational_smoke_entry.py", "research/000b2-entry/aggregate_operational_smoke.py", "research/000b2-entry/verify_operational_smoke.py", "research/000b2-entry/materialized-artifacts.json", "research/000b2-entry/artifact-size-amendment.json", "research/000b1/qualified-candidates.json", ".github/workflows/000b2-operational-smoke.yml"]}, "workflow_dispatch": null}
+PERMS: {"contents": "read"}
+  JOB moonshine name='Moonshine non-primary smoke' if=None needs=None runs-on='ubuntu-24.04'
+     - None uses=actions/checkout@v4
+     - None uses=actions/setup-python@v5 with={"python-version": "3.11"}
+     - 'Install exact Moonshine release'
+         $ python -m pip install --disable-pip-version-check --no-input 'moonshine-voice==0.1.5'
+         $ python - <<'PY'
+     - 'Run compact smoke'
+         $ python research/000b2-entry/operational_smoke_entry.py moonshine \
+     - 'Run balanced smoke'
+         $ python research/000b2-entry/operational_smoke_entry.py moonshine \
+     - 'Upload Moonshine evidence only' uses=actions/upload-artifact@v4 with={"name": "smoke-moonshine-${{ github.run_id }}-${{ github.run_attempt }}", "path": "${{ runner.temp }}/smoke/moonshine/*.json", "if-no-files-found": "error", "retention-days": 14}
+  JOB whisper name='whisper.cpp non-primary smoke' if=None needs=None runs-on='ubuntu-24.04'
+     - None uses=actions/checkout@v4
+     - None uses=actions/setup-python@v5 with={"python-version": "3.11"}
+     - 'Fetch exact whisper.cpp source and build CPU CLI'
+         $ git init "$SRC"
+         $ git -C "$SRC" remote add origin https://github.com/ggml-org/whisper.cpp.git
+         $ git -C "$SRC" fetch --depth=1 origin "$WHISPER_REV"
+         $ git -C "$SRC" checkout --detach FETCH_HEAD
+         $ test "$(git -C "$SRC" rev-parse HEAD)" = "$WHISPER_REV"
+         $ git -C "$SRC" diff --quiet HEAD --
+         $ test "$(git -C "$SRC" diff --name-only HEAD --)" = "bindings/javascript/package.json"
+         $ git -C "$SRC" checkout -- bindings/javascript/package.json
+         $ git -C "$SRC" diff --quiet HEAD --
+         $ git -C "$SRC" diff --quiet HEAD --
+         $ python - <<'PY'
+     - 'Download exact pinned whisper model cells'
+     - 'Run compact and balanced smoke'
+         $ python research/000b2-entry/operational_smoke_entry.py whisper \
+         $ python research/000b2-entry/operational_smoke_entry.py whisper \
+     - 'Upload whisper.cpp evidence only' uses=actions/upload-artifact@v4 with={"name": "smoke-whisper-${{ github.run_id }}-${{ github.run_attempt }}", "path": "${{ runner.temp }}/smoke/whisper/*.json", "if-no-files-found": "error", "retention-days": 14}
+  JOB sherpa name='sherpa-onnx non-primary smoke' if=None needs=None runs-on='ubuntu-24.04'
+     - None uses=actions/checkout@v4
+     - None uses=actions/setup-python@v5 with={"python-version": "3.11"}
+     - 'Install exact sherpa-onnx release'
+         $ python -m pip install --disable-pip-version-check --no-input 'sherpa-onnx==1.13.7' numpy
+         $ python - <<'PY'
+     - 'Download exact pinned sherpa model cells'
+     - 'Run compact and balanced smoke'
+         $ python research/000b2-entry/operational_smoke_entry.py sherpa \
+         $ python research/000b2-entry/operational_smoke_entry.py sherpa \
+     - 'Upload sherpa evidence only' uses=actions/upload-artifact@v4 with={"name": "smoke-sherpa-${{ github.run_id }}-${{ github.run_attempt }}", "path": "${{ runner.temp }}/smoke/sherpa/*.json", "if-no-files-found": "error", "retention-days": 14}
+  JOB aggregate name='Aggregate fail-closed smoke evidence' if=None needs=['moonshine', 'whisper', 'sherpa'] runs-on='ubuntu-24.04'
+     - None uses=actions/checkout@v4
+     - None uses=actions/setup-python@v5 with={"python-version": "3.11"}
+     - None uses=actions/download-artifact@v4 with={"pattern": "smoke-*", "path": "${{ runner.temp }}/smoke-cells"}
+     - 'Aggregate exact six-cell evidence'
+         $ python research/000b2-entry/aggregate_operational_smoke.py \
+     - 'Verify fresh aggregate before publication'
+         $ python research/000b2-entry/verify_operational_smoke.py \
+     - 'Upload aggregate evidence only' uses=actions/upload-artifact@v4 with={"name": "000b2-operational-smoke-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}", "path": "${{ runner.temp }}/000b2-operational-smoke.json", "if-no-files-found": "error", "retention
+================================================================================
+000b2-preprocessing-toolchain.yml | name: 000B2 Preprocessing Toolchain
+ON: {"push": {"branches": ["research/000b2-entry-preparation"], "paths": ["research/000b2-entry/preprocessing/**", ".github/workflows/000b2-preprocessing-toolchain.yml"]}, "pull_request": {"paths": ["research/000b2-entry/preprocessing/**", ".github/workflows/000b2-preprocessing-toolchain.yml"]}, "workflow_dispatch": null}
+PERMS: {"contents": "read"}
+  JOB qualify-ffmpeg name=None if=None needs=None runs-on='ubuntu-24.04'
+     - None uses=actions/checkout@v4
+     - None uses=actions/setup-python@v5 with={"python-version": "3.12"}
+     - 'Fetch exact FFmpeg release tag and source revision'
+         $ git init "$SRC"
+         $ git -C "$SRC" remote add origin https://github.com/FFmpeg/FFmpeg.git
+         $ git -C "$SRC" fetch --depth=1 origin "refs/tags/$FFMPEG_TAG:refs/tags/$FFMPEG_TAG"
+         $ test "$(git -C "$SRC" rev-list -n1 "$FFMPEG_TAG")" = "$FFMPEG_REV"
+         $ git -C "$SRC" checkout --detach "$FFMPEG_REV"
+         $ test "$(git -C "$SRC" rev-parse HEAD)" = "$FFMPEG_REV"
+         $ test "$(git -C "$SRC" describe --tags --always)" = "$FFMPEG_TAG"
+     - 'Build bounded exact FFmpeg binary'
+     - 'Capture exact preprocessing qualification identity'
+         $ python research/000b2-entry/preprocessing/capture.py \
+     - 'Prove qualification is not attempt-time resolution'
+         $ python - <<'PY'
+     - 'Upload toolchain identity evidence only' uses=actions/upload-artifact@v4 with={"name": "000b2-ffmpeg-toolchain-${{ github.sha }}-${{ github.run_attempt }}", "path": "${{ runner.temp }}/000b2-ffmpeg-toolchain.json", "if-no-files-found": "error", "retention-days": 14}
+================================================================================
+000b2-public-attempt-003-recovery.yml | name: 000B2 Public Corpus ATTEMPT-003 Recovery
+ON: {"pull_request": {"paths": [".github/workflows/000b2-public-*.yml", "research/000b1/frozen-methodology.json", "research/000b2-public/**", "specs/000B2-public-corpus-bakeoff/**", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md"]}, "push": {"branches": ["main"], "paths": [".github/workflows/000b2-public-*.yml", "research/000b1/frozen-methodology.json", "research/000b2-public/**", "specs/000B2-public-corpus-bakeoff/**", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md"]}, "workflow_dispatch": null}
+PERMS: {"actions": "read", "contents": "read"}
+CONC: {"group": "000b2-attempt-003-recovery-${{ github.workflow }}-${{ github.ref }}", "cancel-in-progress": true}
+  JOB verify-successor-recovery name=None if=None needs=None runs-on='ubuntu-24.04'
+     - 'Checkout exact revision' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ env.EXACT_REVISION }}", "fetch-depth": 0, "persist-credentials": false}
+     - 'Verify exact revision and authority base'
+         $ test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+         $ git rev-parse --verify "${DISCOVERY_MAIN}^{commit}"
+         $ git rev-parse --verify "${AUTHORITY_BASE_REVISION}^{commit}"
+     - 'Fetch exact pinned sherpa-onnx source before candidate boundary'
+         $ git init "$SRC"
+         $ git -C "$SRC" remote add origin https://github.com/k2-fsa/sherpa-onnx.git
+         $ git -C "$SRC" fetch --depth=1 origin "$SHERPA_REVISION"
+         $ git -C "$SRC" checkout --detach FETCH_HEAD
+         $ test "$(git -C "$SRC" rev-parse HEAD)" = "$SHERPA_REVISION"
+         $ test "$(git -C "$SRC" rev-parse HEAD:sherpa-onnx/python/sherpa_onnx/online_recognizer.py)" = "18b49aaf40dc6e43606c63c9633762e8f573876b"
+         $ git -C "$SRC" diff --quiet HEAD --
+     - 'Trusted pre-candidate execution boundary'
+         $ python - <<'PY'
+         $ trusted = state.get("trusted_control_paths")
+         $ if not isinstance(activation_scope, list) or not isinstance(trusted, list):
+         $ raise SystemExit("TRUSTED_BOUNDARY=FAIL: activation/trusted scope missing")
+         $ untrusted = changed - set(trusted)
+         $ if untrusted != set(scopes["B2R13"]):
+         $ raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R13 trusted/candidate scope split drift")
+         $ if state.get("trusted_control_paths") != base_state.get("trusted_control_paths"):
+         $ raise SystemExit("TRUSTED_BOUNDARY=FAIL: trusted control path set drift")
+         $ executable_suffixes = (".py", ".sh", ".yml", ".yaml", ".ps1", ".js", ".ts")
+         $ harness = root / "research/000b2-public/b2r14-sherpa-result-harness.py"
+         $ source_path = source_root / "sherpa-onnx/python/sherpa_onnx/online_recognizer.py"
+         $ ["git", "-C", str(source_root), "rev-parse", "HEAD:sherpa-onnx/python/sherpa_onnx/online_recognizer.py"],
+         $ fixture = tmpdir / "trusted-zero-s16le.pcm"
+         $ text = "trusted-synthetic-result"
+         $ raise RuntimeError("trusted fixture bytes not delivered to pinned recognizer contract")
+         $ if type(result) is not str or result != "trusted-synthetic-result":
+     - 'Verify current successor frontier without external source access'
+         $ python -m py_compile \
+         $ research/000b2-public/verify_attempt_002_invalidation.py \
+         $ research/000b2-public/verify_b2r13_activation.py
+         $ ACTIVE_UNIT="$(python - <<'PY'
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r13_activation.py --static-only
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py --static-only
+     - 'Verify material drift against exact pinned sherpa-onnx API'
+         $ ACTIVE_UNIT="$(python - <<'PY'
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r13_activation.py \
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py \
+     - 'Preserve fail-closed recovery boundary and canonical transition proofs'
+         $ python - <<'PY'
+================================================================================
+000b2-public-attempt-003-trusted-pr.yml | name: 000B2 Public Corpus ATTEMPT-003 Trusted PR Gate
+ON: {"pull_request_target": {"paths": [".github/workflows/000b2-public-*.yml", "research/000b1/frozen-methodology.json", "research/000b2-public/**", "specs/000B2-public-corpus-bakeoff/**", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md"]}}
+PERMS: {"actions": "read", "contents": "read"}
+CONC: {"group": "000b2-attempt-003-trusted-pr-${{ github.event.pull_request.number }}", "cancel-in-progress": true}
+  JOB verify-successor-pr-from-canonical-base name=None if="github.event.pull_request.base.ref == 'main'" needs=None runs-on='ubuntu-24.04'
+     - 'Checkout untrusted candidate data only' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ env.EXACT_REVISION }}", "fetch-depth": 0, "persist-credentials": false}
+     - 'Verify trusted-base event and immutable control boundary'
+         $ test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+         $ git rev-parse --verify "${AUTHORITY_BASE_REVISION}^{commit}"
+         $ python - <<'PY'
+         $ raise SystemExit(f"TRUSTED_PR_GATE=FAIL: git {' '.join(args)}: {result.stderr.strip()}")
+         $ "trusted_control_paths",
+         $ "successor_pr_gate_workflow": ".github/workflows/000b2-public-attempt-003-trusted-pr.yml",
+         $ raise SystemExit(f"TRUSTED_PR_GATE=FAIL: trusted PR gate policy drift: {key}")
+         $ common_verifier = "research/000b2-public/verify_attempt_002_invalidation.py"
+     - 'Verify candidate with exact authority-base common verifier bytes'
+         $ test "$(git rev-parse "${AUTHORITY_BASE_REVISION}:research/000b2-public/verify_attempt_002_invalidation.py")" = \
+         $ "$(git rev-parse "${EXACT_REVISION}:research/000b2-public/verify_attempt_002_invalidation.py")"
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py --static-only
+     - 'Fetch exact pinned sherpa-onnx source'
+         $ git init "$SRC"
+         $ git -C "$SRC" remote add origin https://github.com/k2-fsa/sherpa-onnx.git
+         $ git -C "$SRC" fetch --depth=1 origin "$SHERPA_REVISION"
+         $ git -C "$SRC" checkout --detach FETCH_HEAD
+         $ test "$(git -C "$SRC" rev-parse HEAD)" = "$SHERPA_REVISION"
+         $ test "$(git -C "$SRC" rev-parse HEAD:sherpa-onnx/python/sherpa_onnx/online_recognizer.py)" = "18b49aaf40dc6e43606c63c9633762e8f573876b"
+         $ git -C "$SRC" diff --quiet HEAD --
+     - 'Verify pinned runtime contract with trusted common verifier'
+         $ test "$(git rev-parse "${AUTHORITY_BASE_REVISION}:research/000b2-public/verify_attempt_002_invalidation.py")" = \
+         $ "$(git rev-parse "${EXACT_REVISION}:research/000b2-public/verify_attempt_002_invalidation.py")"
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_002_invalidation.py \
+================================================================================
+000b2-public-attempt-freeze.yml | name: 000B2 Public Corpus Attempt Freeze
+ON: {"pull_request": {"paths": ["research/000b2-public/attempt-manifest.json", "research/000b2-public/freeze_attempt_manifest.py", "research/000b2-public/verify_attempt_manifest.py", "research/000b2-public/score_public_wer.py", "research/000b2-public/verify_public_wer.py", "research/000b2-public/predecode-attempt-state.json", "research/000b2-public/subset-manifest.json", "research/000b2-public/candidate-revalidation.json", "research/000b2-public/preprocessing-capture.json", "research/000b2-public/execution-environment.json", "research/000b2-public/readiness.json", "research/000b1/qualified-candidates.json", "research/000b1/frozen-methodology.json", "research/000b2-entry/scorer.py", "research/000b2-entry/scorer-config.json", "specs/000B2-public-corpus-bakeoff/tasks.md", "specs/CURRENT.md", ".github/workflows/000b2-public-attempt-freeze.yml"]}, "push": {"branches": ["main"], "paths": ["research/000b2-public/attempt-manifest.json", "research/000b2-public/freeze_attempt_manifest.py", "research/000b2-public/verify_attempt_manifest.py", "research/000b2-public/score_public_wer.py", "research/000b2-public/verify_public_wer.py", "research/000b2-public/predecode-attempt-state.json", "research/000b2-public/subset-manifest.json", "research/000b2-public/candidate-revalidation.json", "research/000b2-public/preprocessing-capture.json", "research/000b2-public/execution-environment.json", "research/000b2-public/readiness.json", "research/000b1/qualified-candidates.json", "research/000b1/frozen-methodology.json", "research/000b2-entry/scorer.py", "research/000b2-entry/scorer-config.json", "specs/000B2-public-corpus-bakeoff/tasks.md", "specs/CURRENT.md", ".github/workflows/000b2-public-attempt-freeze.yml"]}}
+PERMS: {"contents": "read"}
+CONC: {"group": "b2p08-attempt-freeze-${{ github.event.pull_request.number || github.ref }}", "cancel-in-progress": true}
+  JOB verify-b2p08-attempt-freeze name=None if=None needs=None runs-on='ubuntu-latest'
+     - 'Checkout exact revision' uses=actions/checkout@v4 with={"ref": "${{ env.B2P08_REVISION }}", "fetch-depth": 0, "persist-credentials": false}
+     - 'Set up pinned Python' uses=actions/setup-python@v5 with={"python-version": "3.12"}
+     - 'Verify exact revision identity'
+         $ test "$(git rev-parse HEAD)" = "$B2P08_REVISION"
+         $ test "$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')" = "3.12"
+     - 'Compile bounded B2P08 Python surfaces'
+         $ python -m py_compile \
+         $ research/000b2-public/freeze_attempt_manifest.py \
+         $ research/000b2-public/verify_attempt_manifest.py \
+         $ research/000b2-public/score_public_wer.py \
+         $ research/000b2-public/verify_public_wer.py
+     - 'Verify frozen public WER adapter'
+         $ python research/000b2-public/verify_public_wer.py
+     - 'Verify committed B2P08 attempt freeze'
+         $ python research/000b2-public/verify_attempt_manifest.py
+     - 'Reproduce exact manifest bytes'
+         $ python research/000b2-public/freeze_attempt_manifest.py \
+     - 'Check complete event-range diff whitespace'
+         $ git diff --check "$base" "$B2P08_REVISION"
+================================================================================
+000b2-public-attempt-recovery.yml | name: 000B2 Public Corpus Attempt Recovery
+ON: {"pull_request": {"paths": [".github/workflows/000b2-public-attempt-recovery.yml", "research/000b1/frozen-methodology.json", "research/000b2-public/**", "specs/000B2-public-corpus-bakeoff/**", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md"]}, "push": {"branches": ["main"], "paths": [".github/workflows/000b2-public-attempt-recovery.yml", "research/000b1/frozen-methodology.json", "research/000b2-public/**", "specs/000B2-public-corpus-bakeoff/**", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md"]}}
+PERMS: {"actions": "read", "contents": "read"}
+CONC: {"group": "000b2-attempt-recovery-${{ github.workflow }}-${{ github.ref }}", "cancel-in-progress": true}
+  JOB verify-legacy-recovery-boundary name=None if=None needs=None runs-on='ubuntu-24.04'
+     - 'Checkout exact revision' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ env.EXACT_REVISION }}", "fetch-depth": 0, "persist-credentials": false}
+     - 'Verify exact revision identity'
+         $ test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+         $ git rev-parse --verify "${DISCOVERY_MAIN}^{commit}"
+     - 'Preserve ATTEMPT-002 legacy recovery authority as history'
+         $ python - <<'PY'
+         $ 'research/000b2-public/verify_attempt_001_invalidation.py': 'f4c3bd7380f6faaf37ca73b2f7f05a6114ecab85',
+         $ python -m py_compile research/000b2-public/verify_attempt_001_invalidation.py
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_attempt_001_invalidation.py --static-only --canonical-main-ref refs/remotes/origin/main
+     - 'Preserve historical evidence boundary'
+================================================================================
+000b2-public-b2e01.yml | name: 000B2 Public Corpus B2E01 Evidence
+ON: {"pull_request": {"paths": [".github/workflows/000b2-public-b2e01.yml", "research/000b2-public/decode_b2e01.py", "research/000b2-public/verify_b2e01.py", "research/000b2-public/b2e01-moonshine-compact.json", "research/000b2-public/b2e01-moonshine-compact-duplicate-run-33928583817.json", "research/000b2-public/b2e01-provenance.json", "research/000b2-public/attempt-manifest.json", "research/000b2-public/preprocessing-capture.json", "research/000b2-public/readiness.json", "specs/CURRENT.md", "specs/000B2-public-corpus-bakeoff/tasks.md"]}, "push": {"branches": ["main"], "paths": [".github/workflows/000b2-public-b2e01.yml", "research/000b2-public/decode_b2e01.py", "research/000b2-public/verify_b2e01.py", "research/000b2-public/b2e01-moonshine-compact.json", "research/000b2-public/b2e01-moonshine-compact-duplicate-run-33928583817.json", "research/000b2-public/b2e01-provenance.json", "research/000b2-public/attempt-manifest.json", "research/000b2-public/preprocessing-capture.json", "research/000b2-public/readiness.json", "specs/CURRENT.md", "specs/000B2-public-corpus-bakeoff/tasks.md"]}}
+PERMS: {"contents": "read"}
+CONC: {"group": "000b2-b2e01-${{ github.workflow }}-${{ github.ref }}", "cancel-in-progress": true}
+  JOB verify-b2e01-evidence name=None if=None needs=None runs-on='ubuntu-24.04'
+     - 'Checkout exact revision' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ env.EXACT_REVISION }}", "fetch-depth": 0, "persist-credentials": false}
+     - 'Verify exact revision identity'
+         $ test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+     - 'Compile B2E01 execution and verifier sources'
+         $ python -m py_compile \
+         $ research/000b2-public/decode_b2e01.py \
+         $ research/000b2-public/verify_b2e01.py
+     - 'Verify invalid attempt freeze digest fails closed'
+         $ MODE="$mode" python - <<'PY'
+         $ output=$(PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2e01.py \
+     - 'Verify sealed and reconciled B2E01 execution evidence'
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e01.py
+     - 'Preserve raw-data boundary'
+================================================================================
+000b2-public-b2e02.yml | name: 000B2 Public Corpus B2E02 Evidence
+ON: {"pull_request": {"paths": [".github/workflows/000b2-public-b2e02.yml", "research/000b2-public/decode_b2e02.py", "research/000b2-public/verify_b2e02.py", "research/000b2-public/b2e02-moonshine-balanced.json", "research/000b2-public/b2e02-moonshine-balanced-duplicate-run-33963021322.json", "research/000b2-public/b2e02-provenance.json", "research/000b2-public/attempt-manifest.json", "research/000b2-public/preprocessing-capture.json", "research/000b2-public/readiness.json", "specs/CURRENT.md", "specs/000B2-public-corpus-bakeoff/tasks.md"]}, "push": {"branches": ["main"], "paths": [".github/workflows/000b2-public-b2e02.yml", "research/000b2-public/decode_b2e02.py", "research/000b2-public/verify_b2e02.py", "research/000b2-public/b2e02-moonshine-balanced.json", "research/000b2-public/b2e02-moonshine-balanced-duplicate-run-33963021322.json", "research/000b2-public/b2e02-provenance.json", "research/000b2-public/attempt-manifest.json", "research/000b2-public/preprocessing-capture.json", "research/000b2-public/readiness.json", "specs/CURRENT.md", "specs/000B2-public-corpus-bakeoff/tasks.md"]}}
+PERMS: {"contents": "read"}
+CONC: {"group": "000b2-b2e02-${{ github.workflow }}-${{ github.ref }}", "cancel-in-progress": true}
+  JOB verify-b2e02-evidence name=None if=None needs=None runs-on='ubuntu-24.04'
+     - 'Checkout exact revision' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ env.EXACT_REVISION }}", "fetch-depth": 0, "persist-credentials": false}
+     - 'Verify exact revision identity'
+         $ test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+     - 'Compile B2E02 execution and verifier sources'
+         $ python -m py_compile \
+         $ research/000b2-public/decode_b2e02.py \
+         $ research/000b2-public/verify_b2e02.py
+     - 'Verify repository-root revision lookup'
+         $ PYTHONDONTWRITEBYTECODE=1 python - <<'PY'
+         $ module_path = Path("research/000b2-public/decode_b2e02.py").resolve()
+     - 'Verify short candidate list fails closed'
+         $ python - <<'PY'
+         $ output=$(PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2e02.py \
+     - 'Verify invalid attempt freeze digest fails closed'
+         $ MODE="$mode" python - <<'PY'
+         $ output=$(PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/decode_b2e02.py \
+     - 'Verify sealed and reconciled B2E02 execution evidence'
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2e02.py
+     - 'Preserve raw-data boundary'
+================================================================================
+000b2-public-b2r14-harness.yml | name: 000B2 Public Corpus B2R14 Harness Qualification
+ON: {"workflow_dispatch": null}
+PERMS: {"contents": "read"}
+  JOB qualify-b2r14-harness name=None if=None needs=None runs-on='ubuntu-24.04'
+     - 'Checkout exact requested B2R14 revision' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.sha }}", "fetch-depth": 1, "persist-credentials": false}
+     - 'Verify exact requested B2R14 revision'
+         $ test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+     - 'Fetch exact pinned sherpa-onnx source'
+         $ git init "$SRC"
+         $ git -C "$SRC" remote add origin https://github.com/k2-fsa/sherpa-onnx.git
+         $ git -C "$SRC" fetch --depth=1 origin "$SHERPA_REVISION"
+         $ git -C "$SRC" checkout --detach FETCH_HEAD
+         $ test "$(git -C "$SRC" rev-parse HEAD)" = "$SHERPA_REVISION"
+     - 'Verify B2R14 corrective qualification and pinned source contract'
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r14.py --sherpa-source "$RUNNER_TEMP/sherpa-onnx"
+================================================================================
+000b2-public-b2r15-rebinding.yml | name: 000B2 Public Corpus B2R15 Rebinding
+ON: {"pull_request": {"paths": [".github/workflows/000b2-public-b2r15-rebinding.yml", "research/000b2-public/b2r15-preprocessing-rebinding.json", "research/000b2-public/b2r15-environment-rebinding.json", "research/000b2-public/b2r15-provenance.json", "research/000b2-public/verify_b2r15.py"]}, "workflow_dispatch": null}
+PERMS: {"contents": "read"}
+  JOB verify-b2r15-rebinding name=None if=None needs=None runs-on='ubuntu-24.04'
+     - 'Checkout exact B2R15 revision' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ env.EXACT_REVISION }}", "fetch-depth": 1, "persist-credentials": false}
+     - 'Verify exact B2R15 revision'
+         $ test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+     - 'Verify B2R15 cryptographic evidence rebinding'
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r15.py --require-git
+================================================================================
+000b2-public-b2r16-freeze.yml | name: 000B2 Public Corpus B2R16 Freeze
+ON: {"pull_request": null, "workflow_dispatch": null}
+PERMS: {"contents": "read"}
+  JOB verify-b2r16-freeze name=None if=None needs=None runs-on='ubuntu-24.04'
+     - 'Checkout exact B2R16 revision' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ env.EXACT_REVISION }}", "fetch-depth": 0, "persist-credentials": false}
+     - 'Verify exact B2R16 revision'
+         $ test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+     - 'Verify B2R16 ATTEMPT-003 pre-primary freeze'
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r16.py --require-git
+================================================================================
+000b2-public-candidate-revalidation.yml | name: 000B2 Public Corpus Candidate Revalidation
+ON: {"pull_request": {"paths": [".github/workflows/000b2-public-candidate-revalidation.yml", ".github/trusted/verify_000b2_materialization.py", "research/000b1/qualified-candidates.json", "research/000b2-entry/artifact-size-amendment.json", "research/000b2-entry/materialized-artifacts.json", "research/000b2-public/candidate-revalidation.json", "research/000b2-public/readiness.json", "research/000b2-public/verify_candidate_revalidation.py"]}, "push": {"branches": ["main"]}}
+PERMS: {"contents": "read"}
+  JOB static-candidate-revalidation name=None if=None needs=None runs-on='ubuntu-24.04'
+     - 'Checkout independent canonical base authority' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ env.CANONICAL_BASE_SHA }}", "path": "trusted-base", "persist-credentials": false}
+     - 'Checkout exact candidate revision' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ env.EXPECTED_SHA }}", "path": "candidate", "persist-credentials": false}
+     - 'Set up pinned Python' uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Verify exact trust boundary'
+         $ test "$(git -C trusted-base rev-parse HEAD)" = "${CANONICAL_BASE_SHA}"
+         $ test "$(git -C candidate rev-parse HEAD)" = "${EXPECTED_SHA}"
+     - 'Compile B2P05 verifier'
+         $ python -m py_compile candidate/research/000b2-public/verify_candidate_revalidation.py
+     - 'Verify B2P05 static authority and closed later gates'
+         $ python candidate/research/000b2-public/verify_candidate_revalidation.py --trusted-base-root trusted-base
+     - 'Reverify current public methodology and frozen subset'
+         $ PYTHONDONTWRITEBYTECODE=1 python candidate/research/000b2-public/verify_methodology.py
+         $ PYTHONDONTWRITEBYTECODE=1 python candidate/research/000b2-public/verify_subset_freeze.py
+  JOB live-candidate-revalidation name=None if=None needs='static-candidate-revalidation' runs-on='ubuntu-24.04'
+     - 'Checkout independent canonical base authority' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ env.CANONICAL_BASE_SHA }}", "path": "trusted-base", "persist-credentials": false}
+     - 'Checkout exact candidate revision' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ env.EXPECTED_SHA }}", "path": "candidate", "persist-credentials": false}
+     - 'Set up pinned Python' uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Verify exact trust boundary'
+         $ test "$(git -C trusted-base rev-parse HEAD)" = "${CANONICAL_BASE_SHA}"
+         $ test "$(git -C candidate rev-parse HEAD)" = "${EXPECTED_SHA}"
+     - 'Reproduce pending artifact identities from canonical trusted authority'
+         $ PYTHONDONTWRITEBYTECODE=1 python trusted-base/.github/trusted/verify_000b2_materialization.py \
+         $ --base-root trusted-base \
+     - 'Revalidate runtime and pre-pinned model identities live'
+         $ PYTHONDONTWRITEBYTECODE=1 python candidate/research/000b2-public/verify_candidate_revalidation.py \
+         $ --trusted-base-root trusted-base \
+================================================================================
+000b2-public-environment.yml | name: 000B2 Public Corpus Environment Evidence
+ON: {"pull_request": {"paths": [".github/workflows/000b2-public-environment.yml", "research/000b2-public/capture_environment.py", "research/000b2-public/verify_environment_capture.py", "research/000b2-public/execution-environment.json", "research/000b2-public/predecode-attempt-state.json", "research/000b2-public/preprocessing-capture.json", "research/000b2-public/readiness.json", "research/000b2-entry/environment/contract.json", "research/000b2-entry/environment/capture.py", "research/000b2-entry/environment/verify_capture.py"]}, "push": {"branches": ["main"], "paths": [".github/workflows/000b2-public-environment.yml", "research/000b2-public/capture_environment.py", "research/000b2-public/verify_environment_capture.py", "research/000b2-public/execution-environment.json", "research/000b2-public/predecode-attempt-state.json", "research/000b2-public/preprocessing-capture.json", "research/000b2-public/readiness.json", "research/000b2-entry/environment/contract.json", "research/000b2-entry/environment/capture.py", "research/000b2-entry/environment/verify_capture.py"]}}
+PERMS: {"contents": "read"}
+CONC: {"group": "b2p07-environment-${{ github.event.pull_request.number || github.ref }}", "cancel-in-progress": true}
+  JOB verify-public-corpus-environment name=None if=None needs=None runs-on='ubuntu-24.04'
+     - 'Checkout exact revision with capture history' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ env.B2P07_REVISION }}", "fetch-depth": 0, "persist-credentials": false}
+     - 'Set up pinned Python' uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Verify exact revision identity'
+         $ test "$(git rev-parse HEAD)" = "$B2P07_REVISION"
+     - 'Compile B2P07 verifier surfaces'
+         $ PYTHONPYCACHEPREFIX="$RUNNER_TEMP/b2p07-pycache" python -m py_compile \
+         $ research/000b2-public/capture_environment.py \
+         $ research/000b2-public/verify_environment_capture.py \
+         $ research/000b2-entry/environment/capture.py \
+         $ research/000b2-entry/environment/verify_capture.py
+     - 'Reverify historical environment primitive'
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-entry/environment/verify_capture.py
+     - 'Verify committed B2P07 environment evidence'
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_environment_capture.py
+     - 'Verify clean verifier execution'
+         $ git diff --check
+         $ test -z "$(git status --porcelain)"
+================================================================================
+000b2-public-materialization.yml | name: 000B2 Public Corpus Archive Materialization
+ON: {"pull_request": {"paths": ["research/000b2-public/corpus-source.json", "research/000b2-public/readiness.json", "research/000b2-public/archive-materialization.json", "research/000b2-public/materialize_archives.py", "research/000b2-public/verify_methodology.py", "research/000b2-public/verify_workflow_contracts.py", "specs/000B2-public-corpus-bakeoff/tasks.md", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md", ".github/workflows/000b2-public-methodology.yml", ".github/workflows/000b2-public-materialization.yml"]}, "push": {"branches": ["main"], "paths": ["research/000b2-public/corpus-source.json", "research/000b2-public/readiness.json", "research/000b2-public/archive-materialization.json", "research/000b2-public/materialize_archives.py", "research/000b2-public/verify_methodology.py", "research/000b2-public/verify_workflow_contracts.py", "specs/000B2-public-corpus-bakeoff/tasks.md", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md", ".github/workflows/000b2-public-methodology.yml", ".github/workflows/000b2-public-materialization.yml"]}}
+PERMS: {"contents": "read"}
+  JOB materialize-official-archives name=None if=None needs=None runs-on='ubuntu-latest'
+     - 'Checkout exact revision' uses=actions/checkout@v4 with={"ref": "${{ env.B2P02_REVISION }}"}
+     - 'Verify exact revision identity'
+         $ test "$(git rev-parse HEAD)" = "$B2P02_REVISION"
+     - 'Verify workflow contracts'
+         $ python research/000b2-public/verify_workflow_contracts.py
+     - 'Reverify official OpenSLR archive bytes'
+         $ python research/000b2-public/materialize_archives.py \
+     - 'Upload bounded materialization observation' uses=actions/upload-artifact@v4 with={"name": "b2p02-archive-materialization-${{ env.B2P02_REVISION }}", "path": "${{ runner.temp }}/b2p02/archive-materialization.json", "if-no-files-found": "error", "retention-days": 7}
+================================================================================
+000b2-public-methodology.yml | name: 000B2 Public Corpus Methodology
+ON: {"pull_request": {"paths": ["specs/000B-stt-entity-bakeoff/**", "specs/000B2-public-corpus-bakeoff/**", "specs/000-founding-research/tasks.md", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md", "research/000b2-public/**", ".github/workflows/000b2-public-methodology.yml", ".github/workflows/000b2-public-materialization.yml"]}, "push": {"branches": ["main"], "paths": ["specs/000B-stt-entity-bakeoff/**", "specs/000B2-public-corpus-bakeoff/**", "specs/000-founding-research/tasks.md", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md", "research/000b2-public/**", ".github/workflows/000b2-public-methodology.yml", ".github/workflows/000b2-public-materialization.yml"]}}
+PERMS: {"contents": "read"}
+  JOB verify-public-corpus-methodology name=None if=None needs=None runs-on='ubuntu-latest'
+     - 'Checkout exact revision' uses=actions/checkout@v4 with={"ref": "${{ env.EXACT_REVISION }}"}
+     - 'Verify exact revision identity'
+         $ test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+     - 'Verify workflow contracts'
+         $ python research/000b2-public/verify_workflow_contracts.py
+     - 'Verify methodology contract'
+         $ python research/000b2-public/verify_methodology.py
+================================================================================
+000b2-public-preprocessing.yml | name: 000B2 Public Corpus Preprocessing Capture
+ON: {"pull_request": {"paths": [".github/workflows/000b2-public-preprocessing.yml", "research/000b2-public/predecode-attempt-state.json", "research/000b2-public/preprocess_subset.py", "research/000b2-public/verify_preprocessing_capture.py", "research/000b2-public/preprocessing-capture.json", "research/000b2-public/subset-manifest.json", "research/000b2-public/freeze_subset_manifest.py", "research/000b2-public/corpus-source.json", "research/000b2-public/materialize_archives.py", "research/000b2-entry/preprocessing/contract.json", "research/000b2-entry/preprocessing/capture.py"]}, "push": {"branches": ["main"], "paths": [".github/workflows/000b2-public-preprocessing.yml", "research/000b2-public/predecode-attempt-state.json", "research/000b2-public/preprocess_subset.py", "research/000b2-public/verify_preprocessing_capture.py", "research/000b2-public/preprocessing-capture.json", "research/000b2-public/subset-manifest.json", "research/000b2-public/freeze_subset_manifest.py", "research/000b2-public/corpus-source.json", "research/000b2-public/materialize_archives.py", "research/000b2-entry/preprocessing/contract.json", "research/000b2-entry/preprocessing/capture.py"]}}
+PERMS: {"contents": "read"}
+CONC: {"group": "b2p06-preprocessing-${{ github.event.pull_request.number || github.ref }}", "cancel-in-progress": true}
+  JOB capture-public-corpus-preprocessing name=None if=None needs=None runs-on='ubuntu-24.04'
+     - 'Checkout exact revision' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ env.B2P06_REVISION }}", "persist-credentials": false}
+     - 'Pull exact immutable B2P06 toolchain container'
+     - 'Verify exact revision and static B2P06 frontier inside immutable container'
+         $ test "$(git rev-parse HEAD)" = "$B2P06_REVISION"
+         $ bash -lc '
+         $ test "$(git rev-parse HEAD)" = "$B2P06_REVISION"
+         $ test "$(python -c '"'"'import platform; print(platform.python_version())'"'"')" = "3.12.11"
+         $ PYTHONPYCACHEPREFIX=/evidence/pycache python -m py_compile \
+         $ research/000b2-public/preprocess_subset.py \
+         $ research/000b2-public/verify_preprocessing_capture.py
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py --static-only
+     - 'Fetch exact FFmpeg release inside immutable container'
+         $ bash -lc '
+         $ git init "$SRC"
+         $ git -C "$SRC" remote add origin https://github.com/FFmpeg/FFmpeg.git
+         $ git -C "$SRC" fetch --depth=1 origin "refs/tags/$FFMPEG_TAG:refs/tags/$FFMPEG_TAG"
+         $ test "$(git -C "$SRC" rev-list -n1 "$FFMPEG_TAG")" = "$FFMPEG_REV"
+         $ git -C "$SRC" checkout --detach "$FFMPEG_REV"
+         $ test "$(git -C "$SRC" rev-parse HEAD)" = "$FFMPEG_REV"
+         $ test "$(git -C "$SRC" describe --tags --always)" = "$FFMPEG_TAG"
+     - 'Build bounded exact FFmpeg with network disabled'
+         $ bash -lc '
+     - 'Execute exact B2P06 preprocessing capture inside immutable container'
+         $ bash -lc '
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/preprocess_subset.py \
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py \
+     - 'Upload bounded B2P06 evidence candidate' if='always()' uses=actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 with={"name": "b2p06-preprocessing-${{ env.B2P06_REVISION }}", "path": "${{ runner.temp }}/b2p06/preprocessing-capture.json", "if-no-files-found": "warn", "retention-days": 14}
+     - 'Require byte-identical committed B2P06 evidence'
+         $ bash -lc '
+         $ PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_preprocessing_capture.py \
+     - 'Remove transient corpus, preprocessed audio, and FFmpeg build' if='always()'
+================================================================================
+000b2-public-subset-freeze.yml | name: 000B2 Public Corpus Subset Freeze
+ON: {"pull_request": {"paths": ["research/000b2-public/freeze_subset_manifest.py", "research/000b2-public/verify_subset_freeze.py", "research/000b2-public/verify_subset_freeze_root_metadata.py", "research/000b2-public/subset-manifest.json", "research/000b2-public/subset-selection-policy.json", "research/000b2-public/select_subset.py", "research/000b2-public/corpus-source.json", "research/000b2-public/archive-materialization.json", "research/000b2-public/readiness.json", "specs/000B2-public-corpus-bakeoff/tasks.md", "specs/CURRENT.md", ".github/workflows/000b2-public-subset-freeze.yml"]}, "push": {"branches": ["main"], "paths": ["research/000b2-public/freeze_subset_manifest.py", "research/000b2-public/verify_subset_freeze.py", "research/000b2-public/verify_subset_freeze_root_metadata.py", "research/000b2-public/subset-manifest.json", "research/000b2-public/subset-selection-policy.json", "research/000b2-public/select_subset.py", "research/000b2-public/corpus-source.json", "research/000b2-public/archive-materialization.json", "research/000b2-public/readiness.json", "specs/000B2-public-corpus-bakeoff/tasks.md", "specs/CURRENT.md", ".github/workflows/000b2-public-subset-freeze.yml"]}}
+PERMS: {"contents": "read"}
+CONC: {"group": "b2p04-subset-freeze-${{ github.event.pull_request.number || github.ref }}", "cancel-in-progress": true}
+  JOB freeze-public-corpus-subset name=None if=None needs=None runs-on='ubuntu-latest'
+     - 'Checkout exact revision' uses=actions/checkout@v4 with={"ref": "${{ env.B2P04_REVISION }}", "persist-credentials": false}
+     - 'Set up pinned Python' uses=actions/setup-python@v5 with={"python-version": "3.12"}
+     - 'Verify exact revision identity'
+         $ test "$(git rev-parse HEAD)" = "$B2P04_REVISION"
+         $ test "$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')" = "3.12"
+     - 'Verify offline freeze boundaries'
+         $ python research/000b2-public/verify_subset_freeze.py
+     - 'Verify root metadata extraction boundary'
+         $ python research/000b2-public/verify_subset_freeze_root_metadata.py
+     - 'Reproduce exact B2P04 subset freeze'
+         $ python research/000b2-public/freeze_subset_manifest.py \
+     - 'Upload bounded subset-freeze candidate' if='always()' uses=actions/upload-artifact@v4 with={"name": "b2p04-subset-freeze-${{ env.B2P04_REVISION }}", "path": "${{ runner.temp }}/b2p04/subset-manifest-candidate.json", "if-no-files-found": "warn", "retention-days": 7}
+================================================================================
+000b2-public-subset-selection.yml | name: 000B2 Public Corpus Subset Selection
+ON: {"pull_request": {"paths": ["research/000b2-public/subset-selection-policy.json", "research/000b2-public/select_subset.py", "research/000b2-public/verify_subset_selection.py", "research/000b2-public/readiness.json", "specs/000B2-public-corpus-bakeoff/tasks.md", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md", ".github/workflows/000b2-public-subset-selection.yml"]}, "push": {"branches": ["main"], "paths": ["research/000b2-public/subset-selection-policy.json", "research/000b2-public/select_subset.py", "research/000b2-public/verify_subset_selection.py", "research/000b2-public/readiness.json", "specs/000B2-public-corpus-bakeoff/tasks.md", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md", ".github/workflows/000b2-public-subset-selection.yml"]}}
+PERMS: {"contents": "read"}
+  JOB verify-public-corpus-subset-selection name=None if=None needs=None runs-on='ubuntu-latest'
+     - 'Checkout exact revision' uses=actions/checkout@v4 with={"ref": "${{ env.EXACT_REVISION }}", "persist-credentials": false}
+     - 'Verify exact revision identity'
+         $ test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+     - 'Verify deterministic subset selection'
+         $ python research/000b2-public/verify_subset_selection.py
+     - 'Verify addition after snapshot is rejected'
+         $ python - <<'PY'
+         $ import verify_subset_selection as verifier_module
+     - 'Verify deletion during snapshot enumeration is rejected'
+         $ python - <<'PY'
+         $ import verify_subset_selection as verifier_module
+================================================================================
+000b2-trusted-human-authority.yml | name: 000B2 Trusted Human Authority Structure
+ON: {"pull_request": {"paths": [".github/trusted/verify_000b2_human_authority.py", ".github/workflows/000b2-trusted-human-authority.yml", "research/000b2-entry/authority/**", "research/000b2-entry/readiness.json", "research/000b2-entry/validate_entry_manifest.py", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md"]}, "pull_request_target": {"types": ["opened", "synchronize", "reopened", "edited"], "paths": [".github/trusted/verify_000b2_human_authority.py", ".github/workflows/000b2-trusted-human-authority.yml", "research/000b2-entry/authority/**", "research/000b2-entry/readiness.json", "research/000b2-entry/validate_entry_manifest.py", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md"]}, "push": {"branches": ["main"]}}
+PERMS: {"contents": "read", "pull-requests": "read"}
+  JOB bootstrap-self-test name=None if="github.event_name == 'pull_request'" needs=None runs-on='ubuntu-24.04'
+     - 'Checkout exact PR head for bootstrap qualification' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.event.pull_request.head.sha }}", "persist-credentials": false}
+     - 'Verify bootstrap checkout matches exact PR head'
+         $ CHECKED_OUT_SHA="$(git rev-parse HEAD)"
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Compile trusted authority verifier candidates'
+         $ python -m py_compile research/000b2-entry/authority/verify_authority.py
+         $ python -m py_compile .github/trusted/verify_000b2_human_authority.py
+     - 'Exercise fail-closed authority contract self-test'
+         $ python research/000b2-entry/authority/verify_authority.py --self-test
+     - 'Exercise trusted structural verifier on current blocked state'
+         $ python .github/trusted/verify_000b2_human_authority.py \
+     - 'Exercise immutable remote candidate-data path'
+         $ python .github/trusted/verify_000b2_human_authority.py \
+     - 'Verify trusted workflow bootstrap invariants'
+         $ python - <<'PY'
+         $ path = Path('.github/workflows/000b2-trusted-human-authority.yml')
+         $ 'trusted-base/.github/trusted/verify_000b2_human_authority.py',
+         $ '--reverify-open-prs',
+         $ 'actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065',
+         $ raise SystemExit(f'trusted authority workflow bootstrap drift: {missing}')
+         $ raise SystemExit('trusted authority workflow has no action uses entries')
+         $ raise SystemExit(f'trusted authority workflow has non-pinned action uses: {bad}')
+  JOB verify-candidate-structure-from-live-base name=None if="github.event_name == 'pull_request_target' && github.event.pull_request.base.ref == 'main'" needs=None runs-on='ubuntu-24.04'
+     - 'Checkout live canonical base authority' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.event.pull_request.base.ref }}", "path": "trusted-base", "persist-credentials": false}
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Resolve exact trust boundary'
+         $ BASE_SHA="$(git -C trusted-base rev-parse HEAD)"
+     - 'Verify exact candidate data with live canonical verifier'
+         $ python trusted-base/.github/trusted/verify_000b2_human_authority.py \
+         $ --base-root trusted-base \
+  JOB verify-canonical-and-open-prs-after-base-push name=None if="github.event_name == 'push'" needs=None runs-on='ubuntu-24.04'
+     - None uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.sha }}", "path": "trusted-base", "persist-credentials": false}
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Verify new canonical base remains blocked'
+         $ python trusted-base/.github/trusted/verify_000b2_human_authority.py \
+         $ --base-root trusted-base \
+         $ --candidate-root trusted-base
+     - 'Reverify every open main-targeting PR against the new canonical base'
+         $ python trusted-base/.github/trusted/verify_000b2_human_authority.py \
+         $ --base-root trusted-base \
+         $ --reverify-open-prs
+================================================================================
+000b2-trusted-materialization-authority.yml | name: 000B2 Trusted Materialization Authority
+ON: {"pull_request": {"paths": [".github/trusted/verify_000b2_materialization.py", ".github/workflows/000b2-trusted-materialization-authority.yml"]}, "pull_request_target": {"types": ["opened", "synchronize", "reopened", "edited"]}, "push": {"branches": ["main"]}}
+PERMS: {"contents": "read", "pull-requests": "read"}
+  JOB bootstrap-self-test name=None if="github.event_name == 'pull_request'" needs=None runs-on='ubuntu-24.04'
+     - None uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"persist-credentials": false}
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Compile trusted verifier'
+         $ python -m py_compile .github/trusted/verify_000b2_materialization.py
+     - 'Exercise fail-closed local self-test'
+         $ python .github/trusted/verify_000b2_materialization.py --self-test
+     - 'Prove PR refresh resolves the live base ref'
+         $ python - <<'PY'
+         $ path = Path('.github/workflows/000b2-trusted-materialization-authority.yml')
+         $ 'git -C trusted-base rev-parse HEAD',
+         $ 'git -C candidate rev-parse HEAD',
+         $ raise SystemExit(f'live-base refresh regression: missing {missing}')
+  JOB verify-pr-head-artifact-identity name=None if="github.event_name == 'pull_request_target' && github.event.pull_request.number == 10 && github.event.pull_request.base.ref == 'main'" needs=None runs-on='ubuntu-24.04'
+     - 'Checkout live canonical base authority' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.event.pull_request.base.ref }}", "path": "trusted-base", "persist-credentials": false}
+     - 'Checkout untrusted PR head as data only' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"repository": "${{ github.event.pull_request.head.repo.full_name }}", "ref": "${{ github.event.pull_request.head.sha }}", "path": "candidate", "persist-credentials": false}
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Resolve and validate exact trust boundary'
+         $ BASE_SHA="$(git -C trusted-base rev-parse HEAD)"
+         $ HEAD_SHA="$(git -C candidate rev-parse HEAD)"
+     - 'Reproduce exact pending artifact identities from live canonical authority'
+         $ python trusted-base/.github/trusted/verify_000b2_materialization.py \
+         $ --base-root trusted-base \
+  JOB resolve-active-b2-head name=None if="github.event_name == 'push'" needs=None runs-on='ubuntu-24.04'
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Resolve current PR'
+         $ python - <<'PY'
+         $ "User-Agent": "Wispral-trusted-artifact-identity/1",
+  JOB reverify-active-b2-after-base-push name=None if="github.event_name == 'push' && needs.resolve-active-b2-head.outputs.active == 'true'" needs='resolve-active-b2-head' runs-on='ubuntu-24.04'
+     - 'Checkout new canonical base authority' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.sha }}", "path": "trusted-base", "persist-credentials": false}
+     - 'Checkout exact active B2 PR head as data only' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ needs.resolve-active-b2-head.outputs.head_sha }}", "path": "candidate", "persist-credentials": false}
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Record refreshed trust boundary'
+     - 'Reproduce exact pending artifact identities against new canonical base'
+         $ python trusted-base/.github/trusted/verify_000b2_materialization.py \
+         $ --base-root trusted-base \
+================================================================================
+000b2-trusted-participant-materials.yml | name: 000B2 Trusted Participant Materials
+ON: {"pull_request": {"paths": [".github/trusted/verify_000b2_participant_materials.py", ".github/workflows/000b2-trusted-participant-materials.yml", "research/000b2-entry/authority/participant-information-consent.template.md", "research/000b2-entry/authority/recording-entry-checklist.template.md", "research/000b2-entry/authority/participant-materials-freeze.json", "research/000b2-entry/authority/authority-package.json", "research/000b2-entry/authority/authority-policy-freeze.json", "research/000b2-entry/readiness.json", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md"]}, "pull_request_target": {"types": ["opened", "synchronize", "reopened", "edited"], "paths": [".github/trusted/verify_000b2_participant_materials.py", ".github/workflows/000b2-trusted-participant-materials.yml", "research/000b2-entry/authority/participant-information-consent.template.md", "research/000b2-entry/authority/recording-entry-checklist.template.md", "research/000b2-entry/authority/participant-materials-freeze.json", "research/000b2-entry/authority/authority-package.json", "research/000b2-entry/authority/authority-policy-freeze.json", "research/000b2-entry/readiness.json", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md"]}, "push": {"branches": ["main"]}}
+PERMS: {"contents": "read", "pull-requests": "read"}
+  JOB candidate-self-test name=None if="github.event_name == 'pull_request'" needs=None runs-on='ubuntu-24.04'
+     - 'Checkout exact PR head for participant-material verifier self-test' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.event.pull_request.head.sha }}", "persist-credentials": false}
+     - 'Verify self-test checkout matches exact PR head'
+         $ CHECKED_OUT_SHA="$(git rev-parse HEAD)"
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Compile participant-material verification chain'
+         $ python -m py_compile .github/trusted/verify_000b2_participant_materials.py
+         $ python -m py_compile .github/trusted/verify_000b2_participant_policy.py
+         $ python -m py_compile research/000b2-entry/authority/verify_authority.py
+         $ python -m py_compile research/000b2-entry/authority/verify_consent_records.py
+     - 'Exercise participant-material self-test'
+         $ python .github/trusted/verify_000b2_participant_materials.py \
+     - 'Verify exact candidate remains non-authorizing'
+         $ OUTPUT="$(python .github/trusted/verify_000b2_participant_materials.py \
+     - 'Verify workflow action pins and trusted-boundary markers'
+         $ python - <<'PY'
+         $ path = Path('.github/workflows/000b2-trusted-participant-materials.yml')
+         $ 'trusted-base/.github/trusted/verify_000b2_participant_materials.py',
+         $ '--reverify-open-prs',
+         $ 'actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065',
+         $ raise SystemExit(f'trusted participant-material workflow drift: {missing}')
+         $ raise SystemExit('trusted participant-material workflow has no action uses entries')
+         $ raise SystemExit(f'trusted participant-material workflow has non-pinned action uses: {bad}')
+  JOB verify-candidate-materials-from-live-base name=None if="github.event_name == 'pull_request_target' && github.event.pull_request.base.ref == 'main'" needs=None runs-on='ubuntu-24.04'
+     - 'Checkout live canonical base participant-material authority' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.event.pull_request.base.ref }}", "path": "trusted-base", "persist-credentials": false}
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Resolve exact trusted participant-material boundary'
+         $ BASE_SHA="$(git -C trusted-base rev-parse HEAD)"
+     - 'Verify exact candidate participant materials with live canonical verifier'
+         $ python trusted-base/.github/trusted/verify_000b2_participant_materials.py \
+         $ --base-root trusted-base \
+  JOB verify-canonical-and-open-prs-after-base-push name=None if="github.event_name == 'push'" needs=None runs-on='ubuntu-24.04'
+     - None uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.sha }}", "path": "trusted-base", "persist-credentials": false}
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Verify new canonical participant-material base remains fail-closed'
+         $ python trusted-base/.github/trusted/verify_000b2_participant_materials.py \
+         $ --base-root trusted-base \
+         $ --candidate-root trusted-base
+     - 'Reverify every open main-targeting PR against canonical participant-material authority'
+         $ python trusted-base/.github/trusted/verify_000b2_participant_materials.py \
+         $ --base-root trusted-base \
+         $ --reverify-open-prs
+================================================================================
+000b2-trusted-participant-policy.yml | name: 000B2 Trusted Participant Policy
+ON: {"pull_request": {"paths": [".github/trusted/verify_000b2_participant_policy.py", ".github/workflows/000b2-trusted-participant-policy.yml", "research/000b2-entry/authority/authority-package.json", "research/000b2-entry/authority/authority-policy-freeze.json", "research/000b2-entry/readiness.json", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md"]}, "pull_request_target": {"types": ["opened", "synchronize", "reopened", "edited"], "paths": [".github/trusted/verify_000b2_participant_policy.py", ".github/workflows/000b2-trusted-participant-policy.yml", "research/000b2-entry/authority/authority-package.json", "research/000b2-entry/authority/authority-policy-freeze.json", "research/000b2-entry/readiness.json", "specs/CURRENT.md", "docs/canonical/CURRENT_STATE.md"]}, "push": {"branches": ["main"]}}
+PERMS: {"contents": "read", "pull-requests": "read"}
+  JOB bootstrap-self-test name=None if="github.event_name == 'pull_request'" needs=None runs-on='ubuntu-24.04'
+     - 'Checkout exact PR head for trusted-policy bootstrap' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.event.pull_request.head.sha }}", "persist-credentials": false}
+     - 'Verify bootstrap checkout matches exact PR head'
+         $ CHECKED_OUT_SHA="$(git rev-parse HEAD)"
+         $ echo "trusted-policy bootstrap exact-head mismatch: event=$EVENT_HEAD_SHA checkout=$CHECKED_OUT_SHA" >&2
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Compile trusted participant-policy verifier'
+         $ python -m py_compile .github/trusted/verify_000b2_participant_policy.py
+         $ python -m py_compile research/000b2-entry/authority/verify_authority.py
+         $ python -m py_compile research/000b2-entry/authority/verify_consent_records.py
+     - 'Exercise trusted participant-policy self-test'
+         $ python .github/trusted/verify_000b2_participant_policy.py \
+     - 'Verify current canonical policy state remains non-authorizing'
+         $ OUTPUT="$(python .github/trusted/verify_000b2_participant_policy.py \
+     - 'Verify trusted workflow bootstrap invariants'
+         $ python - <<'PY'
+         $ path = Path('.github/workflows/000b2-trusted-participant-policy.yml')
+         $ 'Checkout exact PR head for trusted-policy bootstrap',
+         $ 'trusted-base/.github/trusted/verify_000b2_participant_policy.py',
+         $ '--reverify-open-prs',
+         $ 'actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065',
+         $ raise SystemExit(f'trusted participant-policy workflow bootstrap drift: {missing}')
+         $ raise SystemExit('trusted participant-policy workflow has no action uses entries')
+         $ raise SystemExit(f'trusted participant-policy workflow has non-pinned action uses: {bad}')
+  JOB verify-candidate-policy-from-live-base name=None if="github.event_name == 'pull_request_target' && github.event.pull_request.base.ref == 'main'" needs=None runs-on='ubuntu-24.04'
+     - 'Checkout live canonical base participant-policy authority' uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.event.pull_request.base.ref }}", "path": "trusted-base", "persist-credentials": false}
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Resolve exact trusted policy boundary'
+         $ BASE_SHA="$(git -C trusted-base rev-parse HEAD)"
+     - 'Verify exact candidate policy data with live canonical verifier'
+         $ python trusted-base/.github/trusted/verify_000b2_participant_policy.py \
+         $ --base-root trusted-base \
+  JOB verify-canonical-and-open-prs-after-base-push name=None if="github.event_name == 'push'" needs=None runs-on='ubuntu-24.04'
+     - None uses=actions/checkout@11d5960a326750d5838078e36cf38b85af677262 with={"ref": "${{ github.sha }}", "path": "trusted-base", "persist-credentials": false}
+     - None uses=actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 with={"python-version": "3.12"}
+     - 'Verify new canonical participant-policy base remains fail-closed'
+         $ python trusted-base/.github/trusted/verify_000b2_participant_policy.py \
+         $ --base-root trusted-base \
+         $ --candidate-root trusted-base
+     - 'Reverify every open main-targeting PR against canonical participant-policy authority'
+         $ python trusted-base/.github/trusted/verify_000b2_participant_policy.py \
+         $ --base-root trusted-base \
+         $ --reverify-open-prs

@@ -1,0 +1,28 @@
+=== main HEAD=edacdf7504302cc91ff7138bc6ac2d391e4df1f4
+$ python -I research/000b2-public/verify_b2r16.py --require-git
+B2R16_ATTEMPT_003_FREEZE=FAIL: B2R16 actual candidate range scope drift
+EXIT=1
+$ python -I research/000b2-public/verify_b2r16.py   (no --require-git)
+B2R16_ATTEMPT_003_FREEZE=FAIL: canonical recovery prefix drift
+EXIT=1
+=== pr124 HEAD=e7064c785ac4cf8a667526fa20feb0734f8afe45
+$ python -I research/000b2-public/verify_b2r16.py --require-git
+B2R16_ATTEMPT_003_FREEZE=FAIL: B2R16 actual candidate range scope drift
+EXIT=1
+$ python -I research/000b2-public/verify_b2r16.py   (no --require-git)
+B2R16_ATTEMPT_003_FREEZE=FAIL: canonical recovery prefix drift
+EXIT=1
+=== pr126 HEAD=a97d596bfc9a027bc6c71747b11d94de14f3e838
+$ python -I research/000b2-public/verify_b2r16.py --require-git
+B2R16_ATTEMPT_003_FREEZE=FAIL: B2R16 actual candidate range scope drift
+EXIT=1
+$ python -I research/000b2-public/verify_b2r16.py   (no --require-git)
+B2R16_ATTEMPT_003_FREEZE=FAIL: canonical recovery prefix drift
+EXIT=1
+=== pr120 HEAD=85fe810267eda7ce1be8b76fd4cd769d3a39003d
+$ python -I research/000b2-public/verify_b2r16.py --require-git
+B2R16_ATTEMPT_003_FREEZE=FAIL: B2R16 actual candidate range scope drift
+EXIT=1
+$ python -I research/000b2-public/verify_b2r16.py   (no --require-git)
+B2R16_ATTEMPT_003_FREEZE=FAIL: canonical recovery prefix drift
+EXIT=1

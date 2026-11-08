@@ -1,0 +1,340 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://wispral.invalid/contracts/v1/envelope.schema.json",
+ "title": "Wispral operation envelope (CANDIDATE v1, revised after Core audit)",
+ "description": "Wraps every cross-component event. Ordering authority is (session_id, epoch, sequence); timestamps are diagnostic only. Identifiers inside payloads never select principal or credentials. A bounded-input preflight (depth, node count, string bytes, total frame bytes) runs BEFORE schema validation; a schema cannot bound bytes.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "schema_version",
+  "request_id",
+  "session_id",
+  "epoch",
+  "sequence",
+  "principal_scope",
+  "source",
+  "policy_version",
+  "event",
+  "payload"
+ ],
+ "properties": {
+  "schema_version": {
+   "const": 1
+  },
+  "request_id": {
+   "type": "string",
+   "pattern": "^[A-Za-z0-9._:-]{8,128}$"
+  },
+  "session_id": {
+   "type": "string",
+   "pattern": "^[A-Za-z0-9._:-]{8,128}$"
+  },
+  "turn_id": {
+   "type": "string",
+   "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+  },
+  "epoch": {
+   "type": "integer",
+   "minimum": 0,
+   "description": "Advances on cancel, takeover or consent change; output from a stale epoch is discarded."
+  },
+  "sequence": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "principal_scope": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "kind",
+    "ref"
+   ],
+   "properties": {
+    "kind": {
+     "enum": [
+      "desktop_user",
+      "tenant"
+     ]
+    },
+    "ref": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 128
+    },
+    "os_session": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 64
+    },
+    "account_ref": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 128
+    },
+    "channel": {
+     "enum": [
+      "web_chat",
+      "inbox",
+      "voice_webrtc",
+      "telephony",
+      "api"
+     ]
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "kind": {
+        "const": "desktop_user"
+       }
+      },
+      "required": [
+       "kind"
+      ]
+     },
+     "then": {
+      "required": [
+       "os_session"
+      ],
+      "not": {
+       "anyOf": [
+        {
+         "required": [
+          "account_ref"
+         ]
+        },
+        {
+         "required": [
+          "channel"
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "kind": {
+        "const": "tenant"
+       }
+      },
+      "required": [
+       "kind"
+      ]
+     },
+     "then": {
+      "required": [
+       "account_ref",
+       "channel"
+      ],
+      "not": {
+       "required": [
+        "os_session"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "source": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "product",
+    "component"
+   ],
+   "properties": {
+    "product": {
+     "enum": [
+      "wisprside",
+      "wisprstudio",
+      "klaint",
+      "core"
+     ]
+    },
+    "component": {
+     "type": "string",
+     "pattern": "^[a-z][a-z0-9_]{0,63}$"
+    },
+    "artifact_digest": {
+     "type": "string",
+     "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+   },
+   "if": {
+    "properties": {
+     "component": {
+      "pattern": "_worker$"
+     }
+    },
+    "required": [
+     "component"
+    ]
+   },
+   "then": {
+    "required": [
+     "artifact_digest"
+    ]
+   }
+  },
+  "policy_version": {
+   "type": "string",
+   "pattern": "^(sha256:[0-9a-f]{64}|[a-z][a-z0-9-]{0,63}@[0-9]+\\.[0-9]+\\.[0-9]+)$"
+  },
+  "consent_epoch": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "event": {
+   "enum": [
+    "CaptureStarted",
+    "CaptureStopped",
+    "TranscriptPartial",
+    "TranscriptFinal",
+    "TextEdited",
+    "DeliveryRequested",
+    "DeliveryOutcome",
+    "RenderRequested",
+    "RenderOutcome",
+    "ToolProposed",
+    "PolicyVerdict",
+    "ToolOutcome",
+    "EffectIntentRecorded",
+    "EffectIntentSettled",
+    "CancelRequested",
+    "CancelState",
+    "OwnershipChanged",
+    "ProviderUnavailable"
+   ]
+  },
+  "payload": {
+   "type": "object",
+   "maxProperties": 64,
+   "description": "Typed by event: contract-bearing events reference their contract schema; other events stay bounded objects until their contract exists."
+  },
+  "observed_at": {
+   "type": "string",
+   "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$",
+   "description": "UTC RFC 3339. Diagnostic only; never used for authority ordering."
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "event": {
+      "enum": [
+       "RenderRequested",
+       "RenderOutcome"
+      ]
+     }
+    },
+    "required": [
+     "event"
+    ]
+   },
+   "then": {
+    "required": [
+     "consent_epoch"
+    ]
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "event": {
+      "const": "DeliveryOutcome"
+     }
+    },
+    "required": [
+     "event"
+    ]
+   },
+   "then": {
+    "properties": {
+     "payload": {
+      "$ref": "https://wispral.invalid/contracts/v1/delivery_outcome.schema.json"
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "event": {
+      "const": "PolicyVerdict"
+     }
+    },
+    "required": [
+     "event"
+    ]
+   },
+   "then": {
+    "properties": {
+     "payload": {
+      "$ref": "https://wispral.invalid/contracts/v1/policy_verdict.schema.json"
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "event": {
+      "const": "CancelState"
+     }
+    },
+    "required": [
+     "event"
+    ]
+   },
+   "then": {
+    "properties": {
+     "payload": {
+      "$ref": "https://wispral.invalid/contracts/v1/cancellation.schema.json"
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "event": {
+      "const": "EffectIntentRecorded"
+     }
+    },
+    "required": [
+     "event"
+    ]
+   },
+   "then": {
+    "properties": {
+     "payload": {
+      "$ref": "https://wispral.invalid/contracts/v1/effect_intent.schema.json"
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "event": {
+      "const": "EffectIntentSettled"
+     }
+    },
+    "required": [
+     "event"
+    ]
+   },
+   "then": {
+    "properties": {
+     "payload": {
+      "$ref": "https://wispral.invalid/contracts/v1/effect_intent.schema.json"
+     }
+    }
+   }
+  }
+ ]
+}

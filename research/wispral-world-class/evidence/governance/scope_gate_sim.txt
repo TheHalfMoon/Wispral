@@ -1,0 +1,46 @@
+######## candidate sim-a (478c771b78877a19687f12b124e286ae64356121)
+-- trusted-pr gate (main@edacdf7 definition), step 'Verify trusted-base event and immutable control boundary'
+TRUSTED_PR_GATE=FAIL: B2R17 candidate path scope violation
+INLINE_EXIT=1
+-- attempt-003 recovery, step 'Trusted pre-candidate execution boundary'
+TRUSTED_BOUNDARY=FAIL: B2R17 task-candidate path scope violation
+INLINE_EXIT=1
+######## candidate sim-b (d88023d611253842deebdce6f9de0549c224ced3)
+-- trusted-pr gate (main@edacdf7 definition), step 'Verify trusted-base event and immutable control boundary'
+TRUSTED_PR_GATE=FAIL: B2R17 candidate path scope violation
+INLINE_EXIT=1
+-- attempt-003 recovery, step 'Trusted pre-candidate execution boundary'
+TRUSTED_BOUNDARY=FAIL: B2R17 task-candidate path scope violation
+INLINE_EXIT=1
+######## candidate sim-bmin (8420cc632ff0a75b0638fa29355c899ee89a4d5b)
+-- trusted-pr gate (main@edacdf7 definition), step 'Verify trusted-base event and immutable control boundary'
+TRUSTED_PR_GATE=FAIL: B2R17 candidate path scope violation
+INLINE_EXIT=1
+-- attempt-003 recovery, step 'Trusted pre-candidate execution boundary'
+TRUSTED_BOUNDARY=FAIL: B2R17 task-candidate path scope violation
+INLINE_EXIT=1
+######## candidate a97d596bfc9a027bc6c71747b11d94de14f3e838 (a97d596bfc9a027bc6c71747b11d94de14f3e838)
+-- trusted-pr gate (main@edacdf7 definition), step 'Verify trusted-base event and immutable control boundary'
+TRUSTED_PR_GATE=FAIL: B2R17 candidate path scope violation
+INLINE_EXIT=1
+-- attempt-003 recovery, step 'Trusted pre-candidate execution boundary'
+TRUSTED_BOUNDARY=FAIL: B2R17 task-candidate path scope violation
+INLINE_EXIT=1
+######## candidate 85fe810267eda7ce1be8b76fd4cd769d3a39003d (85fe810267eda7ce1be8b76fd4cd769d3a39003d)
+-- trusted-pr gate (main@edacdf7 definition), step 'Verify trusted-base event and immutable control boundary'
+TRUSTED_PR_GATE_EVENT=pull_request_target
+TRUSTED_PR_GATE_AUTHORITY_BASE=edacdf7504302cc91ff7138bc6ac2d391e4df1f4
+TRUSTED_PR_GATE_CANDIDATE_HEAD=85fe810267eda7ce1be8b76fd4cd769d3a39003d
+TRUSTED_PR_GATE_DELTA=0
+TRUSTED_PR_GATE_CONTROL_BYTES=PASS
+INLINE_EXIT=0
+-- attempt-003 recovery, step 'Trusted pre-candidate execution boundary'
+TRUSTED_PRE_CANDIDATE_BOUNDARY=PASS
+INLINE_EXIT=0
+######## candidate edacdf7504302cc91ff7138bc6ac2d391e4df1f4 (edacdf7504302cc91ff7138bc6ac2d391e4df1f4)
+-- trusted-pr gate (main@edacdf7 definition), step 'Verify trusted-base event and immutable control boundary'
+TRUSTED_PR_GATE=FAIL: empty successor candidate
+INLINE_EXIT=1
+-- attempt-003 recovery, step 'Trusted pre-candidate execution boundary'
+TRUSTED_PRE_CANDIDATE_BOUNDARY=PASS
+INLINE_EXIT=0

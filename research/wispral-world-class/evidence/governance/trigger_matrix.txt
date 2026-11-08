@@ -1,0 +1,71 @@
+######## sim-a
+CHANGED ["docs/design/SIM_DESIGN.md", "docs/engineering/SIM_ENGINEERING.md", "docs/strategy/SIM_PLATFORM_PLAN.md", "research/wispral-world-class/SIM_RESEARCH.md"]
+TRIGGER pull_request         000b2-public-b2r16-freeze.yml                        job=verify-b2r16-freeze                              if=None hits=no filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=bootstrap-self-test                              if="github.event_name == 'pull_request'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=verify-pr-head-artifact-identity                 if="github.event_name == 'pull_request_target' && github.event.pull_request.number == 10 && github.event.pull_request.base.ref == 'main'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=resolve-active-b2-head                           if="github.event_name == 'push'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=reverify-active-b2-after-base-push               if="github.event_name == 'push' && needs.resolve-active-b2-head.outputs.active == 'true'" hits=no path filter
+######## sim-b
+CHANGED ["AGENTS.md", "CONSTITUTION.md", "docs/canonical/ARCHITECTURE_INVARIANTS.md", "docs/canonical/CURRENT_STATE.md", "docs/canonical/PROGRAM_ROADMAP.md", "docs/canonical/TRUSTED_CONTROL_REPAIRS.md", "specs/000-founding-research/plan.md", "specs/000-founding-research/spec.md", "specs/000-founding-research/tasks.md", "specs/CURRENT.md"]
+TRIGGER pull_request         000b1-preregistration.yml                            job=verify-preregistration                           if=None hits=3
+TRIGGER pull_request         000b2-entry-contracts.yml                            job=verify-entry-contracts                           if=None hits=2
+TRIGGER pull_request         000b2-public-attempt-003-recovery.yml                job=verify-successor-recovery                        if=None hits=2
+TRIGGER pull_request_target  000b2-public-attempt-003-trusted-pr.yml              job=verify-successor-pr-from-canonical-base          if="github.event.pull_request.base.ref == 'main'" hits=2
+TRIGGER pull_request         000b2-public-attempt-freeze.yml                      job=verify-b2p08-attempt-freeze                      if=None hits=1
+TRIGGER pull_request         000b2-public-attempt-recovery.yml                    job=verify-legacy-recovery-boundary                  if=None hits=2
+TRIGGER pull_request         000b2-public-b2e01.yml                               job=verify-b2e01-evidence                            if=None hits=1
+TRIGGER pull_request         000b2-public-b2e02.yml                               job=verify-b2e02-evidence                            if=None hits=1
+TRIGGER pull_request         000b2-public-b2r16-freeze.yml                        job=verify-b2r16-freeze                              if=None hits=no filter
+TRIGGER pull_request         000b2-public-materialization.yml                     job=materialize-official-archives                    if=None hits=2
+TRIGGER pull_request         000b2-public-methodology.yml                         job=verify-public-corpus-methodology                 if=None hits=3
+TRIGGER pull_request         000b2-public-subset-freeze.yml                       job=freeze-public-corpus-subset                      if=None hits=1
+TRIGGER pull_request         000b2-public-subset-selection.yml                    job=verify-public-corpus-subset-selection            if=None hits=2
+TRIGGER pull_request         000b2-trusted-human-authority.yml                    job=bootstrap-self-test                              if="github.event_name == 'pull_request'" hits=2
+TRIGGER pull_request         000b2-trusted-human-authority.yml                    job=verify-candidate-structure-from-live-base        if="github.event_name == 'pull_request_target' && github.event.pull_request.base.ref == 'main'" hits=2
+TRIGGER pull_request         000b2-trusted-human-authority.yml                    job=verify-canonical-and-open-prs-after-base-push    if="github.event_name == 'push'" hits=2
+TRIGGER pull_request_target  000b2-trusted-human-authority.yml                    job=bootstrap-self-test                              if="github.event_name == 'pull_request'" hits=2
+TRIGGER pull_request_target  000b2-trusted-human-authority.yml                    job=verify-candidate-structure-from-live-base        if="github.event_name == 'pull_request_target' && github.event.pull_request.base.ref == 'main'" hits=2
+TRIGGER pull_request_target  000b2-trusted-human-authority.yml                    job=verify-canonical-and-open-prs-after-base-push    if="github.event_name == 'push'" hits=2
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=bootstrap-self-test                              if="github.event_name == 'pull_request'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=verify-pr-head-artifact-identity                 if="github.event_name == 'pull_request_target' && github.event.pull_request.number == 10 && github.event.pull_request.base.ref == 'main'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=resolve-active-b2-head                           if="github.event_name == 'push'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=reverify-active-b2-after-base-push               if="github.event_name == 'push' && needs.resolve-active-b2-head.outputs.active == 'true'" hits=no path filter
+TRIGGER pull_request         000b2-trusted-participant-materials.yml              job=candidate-self-test                              if="github.event_name == 'pull_request'" hits=2
+TRIGGER pull_request         000b2-trusted-participant-materials.yml              job=verify-candidate-materials-from-live-base        if="github.event_name == 'pull_request_target' && github.event.pull_request.base.ref == 'main'" hits=2
+TRIGGER pull_request         000b2-trusted-participant-materials.yml              job=verify-canonical-and-open-prs-after-base-push    if="github.event_name == 'push'" hits=2
+TRIGGER pull_request_target  000b2-trusted-participant-materials.yml              job=candidate-self-test                              if="github.event_name == 'pull_request'" hits=2
+TRIGGER pull_request_target  000b2-trusted-participant-materials.yml              job=verify-candidate-materials-from-live-base        if="github.event_name == 'pull_request_target' && github.event.pull_request.base.ref == 'main'" hits=2
+TRIGGER pull_request_target  000b2-trusted-participant-materials.yml              job=verify-canonical-and-open-prs-after-base-push    if="github.event_name == 'push'" hits=2
+TRIGGER pull_request         000b2-trusted-participant-policy.yml                 job=bootstrap-self-test                              if="github.event_name == 'pull_request'" hits=2
+TRIGGER pull_request         000b2-trusted-participant-policy.yml                 job=verify-candidate-policy-from-live-base           if="github.event_name == 'pull_request_target' && github.event.pull_request.base.ref == 'main'" hits=2
+TRIGGER pull_request         000b2-trusted-participant-policy.yml                 job=verify-canonical-and-open-prs-after-base-push    if="github.event_name == 'push'" hits=2
+TRIGGER pull_request_target  000b2-trusted-participant-policy.yml                 job=bootstrap-self-test                              if="github.event_name == 'pull_request'" hits=2
+TRIGGER pull_request_target  000b2-trusted-participant-policy.yml                 job=verify-candidate-policy-from-live-base           if="github.event_name == 'pull_request_target' && github.event.pull_request.base.ref == 'main'" hits=2
+TRIGGER pull_request_target  000b2-trusted-participant-policy.yml                 job=verify-canonical-and-open-prs-after-base-push    if="github.event_name == 'push'" hits=2
+######## sim-bmin
+CHANGED ["AGENTS.md", "CONSTITUTION.md", "docs/canonical/ARCHITECTURE_INVARIANTS.md", "docs/canonical/PROGRAM_ROADMAP.md", "docs/canonical/TRUSTED_CONTROL_REPAIRS.md", "specs/000-founding-research/plan.md", "specs/000-founding-research/spec.md"]
+TRIGGER pull_request         000b2-public-b2r16-freeze.yml                        job=verify-b2r16-freeze                              if=None hits=no filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=bootstrap-self-test                              if="github.event_name == 'pull_request'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=verify-pr-head-artifact-identity                 if="github.event_name == 'pull_request_target' && github.event.pull_request.number == 10 && github.event.pull_request.base.ref == 'main'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=resolve-active-b2-head                           if="github.event_name == 'push'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=reverify-active-b2-after-base-push               if="github.event_name == 'push' && needs.resolve-active-b2-head.outputs.active == 'true'" hits=no path filter
+CHANGED [".github/workflows/000b2-public-b2r16-freeze.yml", "research/000b2-public/test_b2r16_preservation.py", "research/000b2-public/verify_b2r16_preservation.py", "research/control-repairs/2026-10-21-b2r16-preservation/PATCH_REVIEW.md", "research/control-repairs/2026-10-21-b2r16-preservation/REPAIR.md", "research/control-repairs/2026-10-21-b2r16-preservation/local-results.json", "research/control-repairs/2026-10-21-b2r16-preservation/settings-access.json"]
+TRIGGER pull_request         000b2-public-attempt-003-recovery.yml                job=verify-successor-recovery                        if=None hits=3
+TRIGGER pull_request_target  000b2-public-attempt-003-trusted-pr.yml              job=verify-successor-pr-from-canonical-base          if="github.event.pull_request.base.ref == 'main'" hits=3
+TRIGGER pull_request         000b2-public-attempt-recovery.yml                    job=verify-legacy-recovery-boundary                  if=None hits=2
+TRIGGER pull_request         000b2-public-b2r16-freeze.yml                        job=verify-b2r16-freeze                              if=None hits=no filter
+TRIGGER pull_request         000b2-public-methodology.yml                         job=verify-public-corpus-methodology                 if=None hits=2
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=bootstrap-self-test                              if="github.event_name == 'pull_request'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=verify-pr-head-artifact-identity                 if="github.event_name == 'pull_request_target' && github.event.pull_request.number == 10 && github.event.pull_request.base.ref == 'main'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=resolve-active-b2-head                           if="github.event_name == 'push'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=reverify-active-b2-after-base-push               if="github.event_name == 'push' && needs.resolve-active-b2-head.outputs.active == 'true'" hits=no path filter
+CHANGED [".github/workflows/000b2-public-b2r17-moonshine-compact.yml", "research/000b2-public/b2r17-moonshine-compact.json", "research/000b2-public/b2r17-provenance.json", "research/000b2-public/decode_b2r17.py", "research/000b2-public/verify_b2r17.py"]
+TRIGGER pull_request         000b2-public-attempt-003-recovery.yml                job=verify-successor-recovery                        if=None hits=5
+TRIGGER pull_request_target  000b2-public-attempt-003-trusted-pr.yml              job=verify-successor-pr-from-canonical-base          if="github.event.pull_request.base.ref == 'main'" hits=5
+TRIGGER pull_request         000b2-public-attempt-recovery.yml                    job=verify-legacy-recovery-boundary                  if=None hits=4
+TRIGGER pull_request         000b2-public-b2r16-freeze.yml                        job=verify-b2r16-freeze                              if=None hits=no filter
+TRIGGER pull_request         000b2-public-methodology.yml                         job=verify-public-corpus-methodology                 if=None hits=4
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=bootstrap-self-test                              if="github.event_name == 'pull_request'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=verify-pr-head-artifact-identity                 if="github.event_name == 'pull_request_target' && github.event.pull_request.number == 10 && github.event.pull_request.base.ref == 'main'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=resolve-active-b2-head                           if="github.event_name == 'push'" hits=no path filter
+TRIGGER pull_request_target  000b2-trusted-materialization-authority.yml          job=reverify-active-b2-after-base-push               if="github.event_name == 'push' && needs.resolve-active-b2-head.outputs.active == 'true'" hits=no path filter

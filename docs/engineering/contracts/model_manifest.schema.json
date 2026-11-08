@@ -1,0 +1,488 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://wispral.invalid/contracts/v1/model_manifest.schema.json",
+ "title": "Model capability manifest and rights record (CANDIDATE v1, revised after Core audit)",
+ "description": "One row per model bundle, adapted from Ascout EngineDescriptorV1 (exact keys, effect classes, authority ceiling, admission state). Language support distinguishes documented claims from measured cells. Weight license is separate from code license. Automatic download is not representable. (code, variety) uniqueness is checked by the runtime runner.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "model_id",
+  "revision",
+  "source_url",
+  "source_revision",
+  "modality",
+  "artifact",
+  "languages",
+  "runtime",
+  "offline_capable",
+  "network_hosts",
+  "acquisition",
+  "code_license",
+  "weight_license",
+  "commercial_use",
+  "requires_consent",
+  "effect_classes",
+  "authority_ceiling",
+  "requirements",
+  "admission_state",
+  "serialization",
+  "trust_remote_code"
+ ],
+ "properties": {
+  "model_id": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 128
+  },
+  "revision": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 128
+  },
+  "source_url": {
+   "type": "string",
+   "pattern": "^https://"
+  },
+  "source_revision": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 128,
+   "description": "Git commit or model-hub revision."
+  },
+  "modality": {
+   "enum": [
+    "stt",
+    "tts",
+    "voice_conversion",
+    "vad",
+    "turn_detection",
+    "diarization",
+    "enhancement",
+    "translation",
+    "alignment",
+    "llm",
+    "language_id"
+   ]
+  },
+  "artifact": {
+   "oneOf": [
+    {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "files",
+      "bundle_sha256"
+     ],
+     "properties": {
+      "files": {
+       "type": "array",
+       "minItems": 1,
+       "maxItems": 64,
+       "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+         "path",
+         "sha256",
+         "size_bytes"
+        ],
+        "properties": {
+         "path": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._/-]{1,255}$",
+          "not": {
+           "pattern": "(^/|\\.\\.)"
+          }
+         },
+         "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+         },
+         "size_bytes": {
+          "type": "integer",
+          "minimum": 1
+         }
+        }
+       }
+      },
+      "bundle_sha256": {
+       "type": "string",
+       "pattern": "^[0-9a-f]{64}$",
+       "description": "Digest over the canonical sorted (path, sha256) list."
+      },
+      "config_sha256": {
+       "type": "string",
+       "pattern": "^[0-9a-f]{64}$"
+      }
+     }
+    },
+    {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "provider_managed_digest_unavailable",
+      "provider"
+     ],
+     "properties": {
+      "provider_managed_digest_unavailable": {
+       "const": true
+      },
+      "provider": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 128
+      }
+     }
+    }
+   ]
+  },
+  "languages": {
+   "type": "array",
+   "minItems": 1,
+   "maxItems": 256,
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "code",
+     "support"
+    ],
+    "properties": {
+     "code": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+     },
+     "variety": {
+      "type": "string",
+      "maxLength": 64
+     },
+     "support": {
+      "enum": [
+       "documented",
+       "measured",
+       "unsupported"
+      ]
+     },
+     "evidence": {
+      "type": "string",
+      "maxLength": 512
+     }
+    },
+    "if": {
+     "properties": {
+      "support": {
+       "const": "measured"
+      }
+     },
+     "required": [
+      "support"
+     ]
+    },
+    "then": {
+     "required": [
+      "evidence"
+     ]
+    }
+   }
+  },
+  "runtime": {
+   "enum": [
+    "ggml",
+    "onnx",
+    "pytorch",
+    "ctranslate2",
+    "mlx",
+    "provider_api",
+    "other"
+   ]
+  },
+  "offline_capable": {
+   "type": "boolean"
+  },
+  "network_hosts": {
+   "type": "array",
+   "maxItems": 16,
+   "items": {
+    "type": "string",
+    "pattern": "^[a-z0-9.-]{1,253}$"
+   }
+  },
+  "acquisition": {
+   "enum": [
+    "bundled",
+    "pre_staged",
+    "user_imported",
+    "user_initiated_download"
+   ]
+  },
+  "code_license": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 64
+  },
+  "weight_license": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 64
+  },
+  "commercial_use": {
+   "enum": [
+    "allowed",
+    "prohibited",
+    "unknown",
+    "conditional"
+   ]
+  },
+  "commercial_conditions": {
+   "type": "string",
+   "maxLength": 512
+  },
+  "requires_consent": {
+   "type": "boolean"
+  },
+  "effect_classes": {
+   "type": "array",
+   "minItems": 1,
+   "uniqueItems": true,
+   "items": {
+    "enum": [
+     "text_hypothesis",
+     "audio_artifact",
+     "voice_embedding",
+     "segment_labels",
+     "text_suggestion",
+     "structured_proposal",
+     "language_label"
+    ]
+   }
+  },
+  "authority_ceiling": {
+   "const": "evidence_only",
+   "description": "A model never confers delivery, tool, spending or credential authority."
+  },
+  "requirements": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "process_isolation",
+    "network_required",
+    "accelerator"
+   ],
+   "properties": {
+    "process_isolation": {
+     "enum": [
+      "in_process",
+      "subprocess",
+      "container"
+     ]
+    },
+    "network_required": {
+     "type": "boolean"
+    },
+    "accelerator": {
+     "enum": [
+      "none",
+      "optional_gpu",
+      "gpu_required",
+      "apple_silicon_only"
+     ]
+    },
+    "min_ram_mb": {
+     "type": "integer",
+     "minimum": 0
+    }
+   }
+  },
+  "admission_state": {
+   "enum": [
+    "pending",
+    "admitted",
+    "rejected",
+    "revoked"
+   ]
+  },
+  "qualification_evidence_refs": {
+   "type": "array",
+   "items": {
+    "type": "string",
+    "maxLength": 256
+   }
+  },
+  "known_limitations": {
+   "type": "array",
+   "items": {
+    "type": "string",
+    "maxLength": 512
+   }
+  },
+  "serialization": {
+   "enum": [
+    "gguf",
+    "onnx",
+    "safetensors",
+    "ctranslate2",
+    "pickle",
+    "provider_managed",
+    "other"
+   ]
+  },
+  "trust_remote_code": {
+   "type": "boolean"
+  },
+  "provenance_ref": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 512
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "offline_capable": {
+      "const": true
+     }
+    },
+    "required": [
+     "offline_capable"
+    ]
+   },
+   "then": {
+    "properties": {
+     "network_hosts": {
+      "maxItems": 0
+     },
+     "requirements": {
+      "properties": {
+       "network_required": {
+        "const": false
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "runtime": {
+      "const": "provider_api"
+     }
+    },
+    "required": [
+     "runtime"
+    ]
+   },
+   "then": {
+    "properties": {
+     "offline_capable": {
+      "const": false
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "artifact": {
+      "required": [
+       "provider_managed_digest_unavailable"
+      ]
+     }
+    },
+    "required": [
+     "artifact"
+    ]
+   },
+   "then": {
+    "properties": {
+     "offline_capable": {
+      "const": false
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "commercial_use": {
+      "const": "conditional"
+     }
+    },
+    "required": [
+     "commercial_use"
+    ]
+   },
+   "then": {
+    "required": [
+     "commercial_conditions"
+    ]
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "admission_state": {
+      "const": "admitted"
+     }
+    },
+    "required": [
+     "admission_state"
+    ]
+   },
+   "then": {
+    "properties": {
+     "commercial_use": {
+      "not": {
+       "const": "unknown"
+      }
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "admission_state": {
+      "const": "admitted"
+     }
+    },
+    "required": [
+     "admission_state"
+    ]
+   },
+   "then": {
+    "properties": {
+     "serialization": {
+      "not": {
+       "enum": [
+        "pickle",
+        "other"
+       ]
+      }
+     },
+     "trust_remote_code": {
+      "const": false
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "acquisition": {
+      "const": "user_imported"
+     }
+    },
+    "required": [
+     "acquisition"
+    ]
+   },
+   "then": {
+    "required": [
+     "provenance_ref"
+    ]
+   }
+  }
+ ]
+}

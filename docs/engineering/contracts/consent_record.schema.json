@@ -1,0 +1,253 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://wispral.invalid/contracts/v1/consent_record.schema.json",
+ "title": "Voice-asset consent record (CANDIDATE v1, revised after Core audit)",
+ "description": "A projection over append-only consent_granted / consent_revoked provenance events: revocation is a new event, never an in-place edit. Binds a personal voice reference to an opaque subject, purpose, scope and validity. No personal display data is stored here. Revocation blocks new, queued, resumed and cached work; it cannot recall past exports. valid_until > valid_from and strictly increasing consent_epoch are checked by the runtime runner.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "consent_id",
+  "voice_id",
+  "subject_ref",
+  "relationship",
+  "principal_scope_ref",
+  "purposes",
+  "products",
+  "valid_from",
+  "evidence_digest",
+  "status",
+  "consent_epoch",
+  "watermark_required",
+  "reference_artifact_digest",
+  "speaker_match"
+ ],
+ "properties": {
+  "consent_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "voice_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "subject_ref": {
+   "type": "string",
+   "pattern": "^subj-[A-Za-z0-9_-]{6,64}$",
+   "description": "Opaque reference; names and contact details live only in the product's local store."
+  },
+  "relationship": {
+   "enum": [
+    "self",
+    "consenting_third_party",
+    "licensed_voice_actor"
+   ]
+  },
+  "principal_scope_ref": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 128,
+   "description": "Studio project owner or Klaint tenant."
+  },
+  "purposes": {
+   "type": "array",
+   "minItems": 1,
+   "uniqueItems": true,
+   "items": {
+    "enum": [
+     "personal",
+     "commercial",
+     "internal_evaluation"
+    ]
+   }
+  },
+  "products": {
+   "type": "array",
+   "minItems": 1,
+   "uniqueItems": true,
+   "items": {
+    "enum": [
+     "wisprstudio",
+     "klaint"
+    ]
+   }
+  },
+  "allowed_engines": {
+   "type": "array",
+   "uniqueItems": true,
+   "items": {
+    "type": "string",
+    "minLength": 1,
+    "maxLength": 128
+   }
+  },
+  "scope_note": {
+   "type": "string",
+   "maxLength": 512
+  },
+  "valid_from": {
+   "type": "string",
+   "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$"
+  },
+  "valid_until": {
+   "type": "string",
+   "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$"
+  },
+  "evidence_digest": {
+   "type": "string",
+   "pattern": "^sha256:[0-9a-f]{64}$",
+   "description": "Digest of the consent statement recording or document."
+  },
+  "status": {
+   "enum": [
+    "active",
+    "revoked",
+    "expired"
+   ]
+  },
+  "revoked_at": {
+   "type": "string",
+   "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$"
+  },
+  "consent_epoch": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "watermark_required": {
+   "type": "boolean"
+  },
+  "reference_artifact_digest": {
+   "type": "string",
+   "pattern": "^sha256:[0-9a-f]{64}$",
+   "description": "Digest of the exact reference audio the consent covers; a mismatching reference is refused."
+  },
+  "speaker_match": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "method",
+    "result"
+   ],
+   "properties": {
+    "method": {
+     "enum": [
+      "speaker_verification_model",
+      "human_review"
+     ]
+    },
+    "result": {
+     "enum": [
+      "match",
+      "no_match",
+      "not_checked"
+     ]
+    },
+    "evidence_digest": {
+     "type": "string",
+     "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+   },
+   "description": "Whether the speaker of the consent statement matches the reference audio."
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "status": {
+      "const": "revoked"
+     }
+    },
+    "required": [
+     "status"
+    ]
+   },
+   "then": {
+    "required": [
+     "revoked_at"
+    ]
+   }
+  },
+  {
+   "if": {
+    "required": [
+     "revoked_at"
+    ]
+   },
+   "then": {
+    "properties": {
+     "status": {
+      "const": "revoked"
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "status": {
+      "const": "expired"
+     }
+    },
+    "required": [
+     "status"
+    ]
+   },
+   "then": {
+    "required": [
+     "valid_until"
+    ]
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "relationship": {
+      "const": "consenting_third_party"
+     }
+    },
+    "required": [
+     "relationship"
+    ]
+   },
+   "then": {
+    "properties": {
+     "watermark_required": {
+      "const": true
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "status": {
+      "const": "active"
+     },
+     "relationship": {
+      "enum": [
+       "self",
+       "consenting_third_party"
+      ]
+     }
+    },
+    "required": [
+     "status",
+     "relationship"
+    ]
+   },
+   "then": {
+    "properties": {
+     "speaker_match": {
+      "properties": {
+       "result": {
+        "const": "match"
+       }
+      }
+     }
+    }
+   }
+  }
+ ]
+}

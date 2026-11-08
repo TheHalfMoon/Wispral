@@ -1,0 +1,236 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://wispral.invalid/contracts/v1/cancellation.schema.json",
+ "title": "Cancellation state record (CANDIDATE v1, revised after Core audit)",
+ "description": "An acknowledgement is not proof of stop. Leases are released only after an observed stop, a completion that preceded the cancel, or an owner-observed process exit. Every cancelled request still receives exactly one response (ACP rust-sdk 5.0 rule). Allowed state transitions are in transitions/cancellation.json and are enforced by the runtime runner. Escalation is mandatory: a stop not observed by the deadline escalates to a kill of the exact (pid, start_generation) instance and waits for exit; in-process work without a measured cooperative abort bound must run in a subprocess.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "operation_id",
+  "epoch",
+  "cancel_epoch",
+  "state",
+  "owner",
+  "observation",
+  "effect_state",
+  "response",
+  "lease_released"
+ ],
+ "properties": {
+  "operation_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "epoch": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "cancel_epoch": {
+   "type": "integer",
+   "minimum": 0,
+   "description": "The epoch the cancel advanced the session to."
+  },
+  "state": {
+   "enum": [
+    "requested",
+    "acknowledged",
+    "observed_stopped",
+    "completed_before_cancel",
+    "stopped_unconfirmed",
+    "failed"
+   ]
+  },
+  "owner": {
+   "type": "string",
+   "pattern": "^[a-z][a-z0-9_]{0,63}$",
+   "description": "The single runtime owner that performs stop and escalation."
+  },
+  "process_instance": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "pid",
+    "start_generation"
+   ],
+   "properties": {
+    "pid": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "start_generation": {
+     "type": "string",
+     "pattern": "^[0-9]{1,20}$",
+     "description": "Unsigned 64-bit value encoded as a decimal string so JavaScript hops never round it (FILETIME values exceed 2^53)."
+    }
+   }
+  },
+  "observation": {
+   "enum": [
+    "none",
+    "process_exit",
+    "worker_idle_report",
+    "native_completion",
+    "deadline_expired"
+   ]
+  },
+  "effect_state": {
+   "enum": [
+    "none",
+    "committed",
+    "unknown"
+   ],
+   "description": "Whether an external effect committed before the cancel took effect. 'unknown' must name the reconcile intent."
+  },
+  "reconcile_intent_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "response": {
+   "enum": [
+    "pending",
+    "cancelled_result",
+    "error_request_cancelled",
+    "completed_result"
+   ]
+  },
+  "lease_released": {
+   "type": "boolean"
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "lease_released": {
+      "const": true
+     }
+    },
+    "required": [
+     "lease_released"
+    ]
+   },
+   "then": {
+    "anyOf": [
+     {
+      "properties": {
+       "state": {
+        "enum": [
+         "observed_stopped",
+         "completed_before_cancel"
+        ]
+       }
+      }
+     },
+     {
+      "properties": {
+       "state": {
+        "const": "failed"
+       },
+       "observation": {
+        "const": "process_exit"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "state": {
+      "const": "observed_stopped"
+     }
+    },
+    "required": [
+     "state"
+    ]
+   },
+   "then": {
+    "properties": {
+     "observation": {
+      "enum": [
+       "process_exit",
+       "worker_idle_report",
+       "native_completion"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "state": {
+      "enum": [
+       "requested",
+       "acknowledged"
+      ]
+     }
+    },
+    "required": [
+     "state"
+    ]
+   },
+   "then": {
+    "properties": {
+     "observation": {
+      "const": "none"
+     },
+     "response": {
+      "const": "pending"
+     },
+     "lease_released": {
+      "const": false
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "state": {
+      "enum": [
+       "observed_stopped",
+       "completed_before_cancel",
+       "stopped_unconfirmed",
+       "failed"
+      ]
+     }
+    },
+    "required": [
+     "state"
+    ]
+   },
+   "then": {
+    "properties": {
+     "response": {
+      "enum": [
+       "cancelled_result",
+       "error_request_cancelled",
+       "completed_result"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "effect_state": {
+      "const": "unknown"
+     }
+    },
+    "required": [
+     "effect_state"
+    ]
+   },
+   "then": {
+    "required": [
+     "reconcile_intent_id"
+    ]
+   }
+  }
+ ]
+}

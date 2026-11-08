@@ -1,0 +1,50 @@
+edacdf7 | methodology: verify_workflow_contracts.py     | rc=0 | B2R03_WORKFLOW_GATE=NOT_APPLICABLE active_recovery_unit='B2R10'
+edacdf7 | methodology: verify_methodology.py            | rc=0 | PRODUCT_CODE_AUTHORIZED=NO
+edacdf7 | preregistration: verify_preregistration.py    | rc=0 | B2_READY=NO
+edacdf7 | preregistration: verify_frozen_contracts.py   | rc=0 | SCHEMA_SEMANTICS=PINNED
+edacdf7 | preregistration: verify_b2_registry_gate.py   | rc=0 | B2_READY=NO
+edacdf7 | preregistration: verify_entity_annotation_gate.py  | rc=0 | VERIFY_ENTITY_ANNOTATION_GATE=PASS
+edacdf7 | preregistration: verify_documents.py          | rc=0 | B2_READY=NO
+edacdf7 | preregistration: verify_closeout.py           | rc=0 | COMPARATIVE_RANKING=NO
+edacdf7 | preregistration: verify_closeout_regressions.py  | rc=1 | ModuleNotFoundError: No module named 'verify_closeout'
+edacdf7 | preregistration: verify_parent_reconciliation.py  | rc=0 | B2_PRIMARY_EXECUTION=NO
+edacdf7 | entry-contracts: verify_closeout.py           | rc=0 | PRIMARY_TEST_DECODING_AUTHORIZED=NO
+edacdf7 | entry-contracts: verify_readiness.py          | rc=0 | HUMAN_SPEECH_ENTRY_PREPARATION=NO
+edacdf7 | entry-contracts: verify_scorer.py             | rc=0 | PRIMARY_TEST_DECODING=NO
+edacdf7 | recovery/trusted-pr: verify_attempt_002_invalidation.py --static-only | rc=1 | ATTEMPT_002_INVALIDATION=FAIL: B2R17 candidate must not be empty
+edacdf7 | legacy-recovery: verify_attempt_001_invalidation.py --static-only --canonical-main-ref refs/remotes/origin/main | rc=1 | B2R01_ATTEMPT_001_INVALIDATION=FAIL: CURRENT_STATE missing canonical recovery marker: **Canonical recovery predecessor:** `B2R09`
+edacdf7 | b2e01: verify_b2e01.py                        | rc=0 | B2E02_AUTHORIZED=NO
+edacdf7 | b2e02: verify_b2e02.py                        | rc=0 | B2E03_AUTHORIZED=NO
+edacdf7 | attempt-freeze: verify_public_wer.py          | rc=0 | B2P08_PUBLIC_WER_CORE_SCORER_IDENTITY=BOUND
+edacdf7 | attempt-freeze: verify_attempt_manifest.py    | rc=0 | B2P08_B2R04_B2R05_B2R06_B2R07_B2R08_AND_B2R09_ATTEMPT_VERIFIER=PASS
+edacdf7 | subset-selection: verify_subset_selection.py  | rc=1 | ModuleNotFoundError: No module named 'select_subset'
+edacdf7 | subset-freeze: verify_subset_freeze.py        | rc=1 | ModuleNotFoundError: No module named 'freeze_subset_manifest'
+edacdf7 | subset-freeze: verify_subset_freeze_root_metadata.py  | rc=1 | ModuleNotFoundError: No module named 'freeze_subset_manifest'
+edacdf7 | trusted-human: verify_000b2_human_authority.py --base-root . --candidate-root . | rc=0 | PRIMARY_MEDIA_ACCEPTANCE=NO
+edacdf7 | trusted-materials: verify_000b2_participant_materials.py --base-root . --candidate-root . | rc=0 | B2_READY=NO
+edacdf7 | trusted-policy: verify_000b2_participant_policy.py --base-root . --candidate-root . | rc=0 | MODEL_TRAINING_AUTHORIZED=NO
+d88023d | methodology: verify_workflow_contracts.py     | rc=0 | B2R03_WORKFLOW_GATE=NOT_APPLICABLE active_recovery_unit='B2R10'
+d88023d | methodology: verify_methodology.py            | rc=0 | PRODUCT_CODE_AUTHORIZED=NO
+d88023d | preregistration: verify_preregistration.py    | rc=0 | B2_READY=NO
+d88023d | preregistration: verify_frozen_contracts.py   | rc=0 | SCHEMA_SEMANTICS=PINNED
+d88023d | preregistration: verify_b2_registry_gate.py   | rc=0 | B2_READY=NO
+d88023d | preregistration: verify_entity_annotation_gate.py  | rc=0 | VERIFY_ENTITY_ANNOTATION_GATE=PASS
+d88023d | preregistration: verify_documents.py          | rc=0 | B2_READY=NO
+d88023d | preregistration: verify_closeout.py           | rc=0 | COMPARATIVE_RANKING=NO
+d88023d | preregistration: verify_closeout_regressions.py  | rc=1 | ModuleNotFoundError: No module named 'verify_closeout'
+d88023d | preregistration: verify_parent_reconciliation.py  | rc=0 | B2_PRIMARY_EXECUTION=NO
+d88023d | entry-contracts: verify_closeout.py           | rc=0 | PRIMARY_TEST_DECODING_AUTHORIZED=NO
+d88023d | entry-contracts: verify_readiness.py          | rc=0 | HUMAN_SPEECH_ENTRY_PREPARATION=NO
+d88023d | entry-contracts: verify_scorer.py             | rc=0 | PRIMARY_TEST_DECODING=NO
+d88023d | recovery/trusted-pr: verify_attempt_002_invalidation.py --static-only | rc=1 | ATTEMPT_002_INVALIDATION=FAIL: B2R17 candidate must match the exact canonical task path set
+d88023d | legacy-recovery: verify_attempt_001_invalidation.py --static-only --canonical-main-ref refs/remotes/origin/main | rc=1 | B2R01_ATTEMPT_001_INVALIDATION=FAIL: CURRENT_STATE missing canonical recovery marker: **Canonical recovery predecessor:** `B2R09`
+d88023d | b2e01: verify_b2e01.py                        | rc=0 | B2E02_AUTHORIZED=NO
+d88023d | b2e02: verify_b2e02.py                        | rc=0 | B2E03_AUTHORIZED=NO
+d88023d | attempt-freeze: verify_public_wer.py          | rc=0 | B2P08_PUBLIC_WER_CORE_SCORER_IDENTITY=BOUND
+d88023d | attempt-freeze: verify_attempt_manifest.py    | rc=0 | B2P08_B2R04_B2R05_B2R06_B2R07_B2R08_AND_B2R09_ATTEMPT_VERIFIER=PASS
+d88023d | subset-selection: verify_subset_selection.py  | rc=1 | ModuleNotFoundError: No module named 'select_subset'
+d88023d | subset-freeze: verify_subset_freeze.py        | rc=1 | ModuleNotFoundError: No module named 'freeze_subset_manifest'
+d88023d | subset-freeze: verify_subset_freeze_root_metadata.py  | rc=1 | ModuleNotFoundError: No module named 'freeze_subset_manifest'
+d88023d | trusted-human: verify_000b2_human_authority.py --base-root . --candidate-root . | rc=0 | PRIMARY_MEDIA_ACCEPTANCE=NO
+d88023d | trusted-materials: verify_000b2_participant_materials.py --base-root . --candidate-root . | rc=0 | B2_READY=NO
+d88023d | trusted-policy: verify_000b2_participant_policy.py --base-root . --candidate-root . | rc=0 | MODEL_TRAINING_AUTHORIZED=NO

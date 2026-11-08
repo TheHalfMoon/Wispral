@@ -1,0 +1,122 @@
+######## RUN 39605446875
+2026-10-21T13:23:43.2191459Z ^[[36;1m    raise SystemExit("TRUSTED_PR_GATE=FAIL: candidate rewrites prior transition proofs")^[[0m
+2026-10-21T13:23:43.2191717Z ^[[36;1m^[[0m
+2026-10-21T13:23:43.2192028Z ^[[36;1mdelta = len(completed) - len(base_completed)^[[0m
+2026-10-21T13:23:43.2192232Z ^[[36;1mif delta not in {0, 1}:^[[0m
+2026-10-21T13:23:43.2192495Z ^[[36;1m    raise SystemExit("TRUSTED_PR_GATE=FAIL: candidate advances more than one recovery task")^[[0m
+2026-10-21T13:23:43.2192916Z ^[[36;1m^[[0m
+2026-10-21T13:23:43.2193053Z ^[[36;1mchanged = {^[[0m
+2026-10-21T13:23:43.2193318Z ^[[36;1m    line for line in git("diff", "--name-only", "--diff-filter=ACDMRTUXB", base, head, "--").splitlines()^[[0m
+2026-10-21T13:23:43.2193618Z ^[[36;1m    if line^[[0m
+2026-10-21T13:23:43.2193760Z ^[[36;1m}^[[0m
+2026-10-21T13:23:43.2193900Z ^[[36;1mif not changed:^[[0m
+2026-10-21T13:23:43.2194124Z ^[[36;1m    raise SystemExit("TRUSTED_PR_GATE=FAIL: empty successor candidate")^[[0m
+2026-10-21T13:23:43.2194352Z ^[[36;1m^[[0m
+2026-10-21T13:23:43.2194488Z ^[[36;1mif delta == 1:^[[0m
+2026-10-21T13:23:43.2194671Z ^[[36;1m    if not changed <= set(reconciliation_scope):^[[0m
+2026-10-21T13:23:43.2194964Z ^[[36;1m        raise SystemExit("TRUSTED_PR_GATE=FAIL: reconciliation changed non-authority paths")^[[0m
+2026-10-21T13:23:43.2195228Z ^[[36;1melse:^[[0m
+2026-10-21T13:23:43.2195403Z ^[[36;1m    active = authority.get("active_recovery_unit")^[[0m
+2026-10-21T13:23:43.2195641Z ^[[36;1m    if candidate.get("active_recovery_unit") != active:^[[0m
+2026-10-21T13:23:43.2195955Z ^[[36;1m        raise SystemExit("TRUSTED_PR_GATE=FAIL: non-reconciliation candidate changed active task")^[[0m
+2026-10-21T13:23:43.2196241Z ^[[36;1m    allowed = scopes.get(active)^[[0m
+2026-10-21T13:23:43.2196475Z ^[[36;1m    if not isinstance(allowed, list) or not changed <= set(allowed):^[[0m
+2026-10-21T13:23:43.2196790Z ^[[36;1m        raise SystemExit(f"TRUSTED_PR_GATE=FAIL: {active} candidate path scope violation")^[[0m
+2026-10-21T13:23:43.2197058Z ^[[36;1m    if proofs != base_proofs:^[[0m
+2026-10-21T13:23:43.2197321Z ^[[36;1m        raise SystemExit("TRUSTED_PR_GATE=FAIL: task candidate changed transition proofs")^[[0m
+2026-10-21T13:23:43.2197576Z ^[[36;1m^[[0m
+2026-10-21T13:23:43.2197792Z ^[[36;1mcommon_verifier = "research/000b2-public/verify_attempt_002_invalidation.py"^[[0m
+2026-10-21T13:23:43.2198148Z ^[[36;1mif git("rev-parse", f"{base}:{common_verifier}") != git("rev-parse", f"{head}:{common_verifier}"):^[[0m
+2026-10-21T13:23:43.2198524Z ^[[36;1m    raise SystemExit("TRUSTED_PR_GATE=FAIL: common verifier is not exact authority-base bytes")^[[0m
+2026-10-21T13:23:43.2198793Z ^[[36;1m^[[0m
+2026-10-21T13:23:43.2198969Z ^[[36;1mprint("TRUSTED_PR_GATE_EVENT=pull_request_target")^[[0m
+2026-10-21T13:23:43.2199206Z ^[[36;1mprint(f"TRUSTED_PR_GATE_AUTHORITY_BASE={base}")^[[0m
+2026-10-21T13:23:43.2199434Z ^[[36;1mprint(f"TRUSTED_PR_GATE_CANDIDATE_HEAD={head}")^[[0m
+2026-10-21T13:23:43.2199652Z ^[[36;1mprint(f"TRUSTED_PR_GATE_DELTA={delta}")^[[0m
+2026-10-21T13:23:43.2199867Z ^[[36;1mprint("TRUSTED_PR_GATE_CONTROL_BYTES=PASS")^[[0m
+2026-10-21T13:23:43.2200052Z ^[[36;1mPY^[[0m
+2026-10-21T13:23:43.2349295Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-21T13:23:43.2349558Z env:
+2026-10-21T13:23:43.2349756Z   EXACT_REVISION: a97d596bfc9a027bc6c71747b11d94de14f3e838
+2026-10-21T13:23:43.2350033Z   AUTHORITY_BASE_REVISION: edacdf7504302cc91ff7138bc6ac2d391e4df1f4
+2026-10-21T13:23:43.2350300Z   DISCOVERY_MAIN: dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff
+2026-10-21T13:23:43.2350553Z   SHERPA_REVISION: 917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e
+2026-10-21T13:23:43.2350764Z ##[endgroup]
+2026-10-21T13:23:43.2457779Z edacdf7504302cc91ff7138bc6ac2d391e4df1f4
+2026-10-21T13:23:43.2802792Z TRUSTED_PR_GATE=FAIL: B2R17 candidate path scope violation
+2026-10-21T13:23:43.2856499Z ##[error]Process completed with exit code 1.
+2026-10-21T13:23:43.2959683Z Post job cleanup.
+2026-10-21T13:23:43.3583961Z [command]/usr/bin/git version
+2026-10-21T13:23:43.3613175Z git version 2.55.0
+2026-10-21T13:23:43.3639324Z Temporarily overriding HOME='/home/runner/work/_temp/e0d1dce7-ebf7-45a4-adc5-f4df3cde6b1f' before making global git config changes
+2026-10-21T13:23:43.3640252Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-21T13:23:43.3643277Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Wispral/Wispral
+2026-10-21T13:23:43.3682545Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-21T13:23:43.3717123Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-21T13:23:43.3934901Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-21T13:23:43.3973329Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-21T13:23:43.4189379Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-21T13:23:43.4226944Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-21T13:23:43.4545474Z Cleaning up orphan processes
+2026-10-21T13:23:43.4752261Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+######## RUN 39605446769
+2026-10-21T13:15:05.9372928Z ^[[36;1m    if spec is None or spec.loader is None:^[[0m
+2026-10-21T13:15:05.9373175Z ^[[36;1m        raise SystemExit("TRUSTED_BOUNDARY=FAIL: B2R14 pinned recognizer loader unavailable")^[[0m
+2026-10-21T13:15:05.9373455Z ^[[36;1m    pinned = importlib.util.module_from_spec(spec)^[[0m
+2026-10-21T13:15:05.9373636Z ^[[36;1m    spec.loader.exec_module(pinned)^[[0m
+2026-10-21T13:15:05.9373776Z ^[[36;1m^[[0m
+2026-10-21T13:15:05.9373905Z ^[[36;1m    with tempfile.TemporaryDirectory() as tmp:^[[0m
+2026-10-21T13:15:05.9374071Z ^[[36;1m        tmpdir = Path(tmp)^[[0m
+2026-10-21T13:15:05.9374235Z ^[[36;1m        fixture = tmpdir / "trusted-zero-s16le.pcm"^[[0m
+2026-10-21T13:15:05.9374426Z ^[[36;1m        fixture.write_bytes(b"\x00" * (16000 * 2))^[[0m
+2026-10-21T13:15:05.9374603Z ^[[36;1m        fixture_bytes = fixture.read_bytes()^[[0m
+2026-10-21T13:15:05.9374787Z ^[[36;1m        digest = hashlib.sha256(fixture_bytes).hexdigest()^[[0m
+2026-10-21T13:15:05.9375005Z ^[[36;1m        if len(fixture_bytes) != 32000 or digest != expected_digest:^[[0m
+2026-10-21T13:15:05.9375280Z ^[[36;1m            raise SystemExit("TRUSTED_BOUNDARY=FAIL: generated B2R14 fixture identity mismatch")^[[0m
+2026-10-21T13:15:05.9375504Z ^[[36;1m^[[0m
+2026-10-21T13:15:05.9375608Z ^[[36;1m        class TrustedStream:^[[0m
+2026-10-21T13:15:05.9375758Z ^[[36;1m            def __init__(self, payload):^[[0m
+2026-10-21T13:15:05.9375924Z ^[[36;1m                self.fixture_bytes = payload^[[0m
+2026-10-21T13:15:05.9376066Z ^[[36;1m^[[0m
+2026-10-21T13:15:05.9376177Z ^[[36;1m        class TrustedNativeResult:^[[0m
+2026-10-21T13:15:05.9376342Z ^[[36;1m            text = "trusted-synthetic-result"^[[0m
+2026-10-21T13:15:05.9376489Z ^[[36;1m^[[0m
+2026-10-21T13:15:05.9376760Z ^[[36;1m        class TrustedNativeRecognizer:^[[0m
+2026-10-21T13:15:05.9376926Z ^[[36;1m            def get_result(self, stream):^[[0m
+2026-10-21T13:15:05.9377147Z ^[[36;1m                if hashlib.sha256(stream.fixture_bytes).hexdigest() != expected_digest:^[[0m
+2026-10-21T13:15:05.9377463Z ^[[36;1m                    raise RuntimeError("trusted fixture bytes not delivered to pinned recognizer contract")^[[0m
+2026-10-21T13:15:05.9377722Z ^[[36;1m                return TrustedNativeResult()^[[0m
+2026-10-21T13:15:05.9377867Z ^[[36;1m^[[0m
+2026-10-21T13:15:05.9378008Z ^[[36;1m        recognizer = object.__new__(pinned.OnlineRecognizer)^[[0m
+2026-10-21T13:15:05.9378224Z ^[[36;1m        recognizer.recognizer = TrustedNativeRecognizer()^[[0m
+2026-10-21T13:15:05.9378635Z ^[[36;1m        result = pinned.OnlineRecognizer.get_result(recognizer, TrustedStream(fixture_bytes))^[[0m
+2026-10-21T13:15:05.9378927Z ^[[36;1m        if type(result) is not str or result != "trusted-synthetic-result":^[[0m
+2026-10-21T13:15:05.9379266Z ^[[36;1m            raise SystemExit("TRUSTED_BOUNDARY=FAIL: pinned OnlineRecognizer.get_result is not an exact plain string")^[[0m
+2026-10-21T13:15:05.9379535Z ^[[36;1m^[[0m
+2026-10-21T13:15:05.9379689Z ^[[36;1m    print("B2R14_TRUSTED_PINNED_RESULT_CONTRACT=PASS")^[[0m
+2026-10-21T13:15:05.9379855Z ^[[36;1m^[[0m
+2026-10-21T13:15:05.9379977Z ^[[36;1mprint("TRUSTED_PRE_CANDIDATE_BOUNDARY=PASS")^[[0m
+2026-10-21T13:15:05.9380131Z ^[[36;1mPY^[[0m
+2026-10-21T13:15:05.9422046Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-21T13:15:05.9422225Z env:
+2026-10-21T13:15:05.9422374Z   EXACT_REVISION: a97d596bfc9a027bc6c71747b11d94de14f3e838
+2026-10-21T13:15:05.9422589Z   AUTHORITY_BASE_REVISION: edacdf7504302cc91ff7138bc6ac2d391e4df1f4
+2026-10-21T13:15:05.9422809Z   DISCOVERY_MAIN: dc70fac9eddb6cda2dc4cabc4aec2df5f0beb9ff
+2026-10-21T13:15:05.9423013Z   SHERPA_REVISION: 917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e
+2026-10-21T13:15:05.9423191Z ##[endgroup]
+2026-10-21T13:15:05.9740865Z TRUSTED_BOUNDARY=FAIL: B2R17 task-candidate path scope violation
+2026-10-21T13:15:05.9789022Z ##[error]Process completed with exit code 1.
+2026-10-21T13:15:06.0050957Z Post job cleanup.
+2026-10-21T13:15:06.0592649Z [command]/usr/bin/git version
+2026-10-21T13:15:06.0621984Z git version 2.55.0
+2026-10-21T13:15:06.0653698Z Temporarily overriding HOME='/home/runner/work/_temp/0b0b5b08-6ec4-42be-b3d1-327753813a0f' before making global git config changes
+2026-10-21T13:15:06.0654440Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-21T13:15:06.0657253Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Wispral/Wispral
+2026-10-21T13:15:06.0859192Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-21T13:15:06.0891192Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-21T13:15:06.1086672Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-21T13:15:06.1126969Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-21T13:15:06.1315102Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-21T13:15:06.1347568Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-21T13:15:06.1635914Z Cleaning up orphan processes
+2026-10-21T13:15:06.1819313Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

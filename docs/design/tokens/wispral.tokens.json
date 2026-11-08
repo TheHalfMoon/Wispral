@@ -1,0 +1,705 @@
+{
+ "$description": "Wispral 'Quiet Signal' design tokens — CANDIDATE. W3C Design Tokens Community Group format. Primitive -> semantic -> component. Verified only by check_contrast.mjs; no rendered UI exists.",
+ "primitive": {
+  "color": {
+   "paper": {
+    "0": {
+     "$type": "color",
+     "$value": "#FBFAF8"
+    },
+    "50": {
+     "$type": "color",
+     "$value": "#F6F5F2"
+    },
+    "100": {
+     "$type": "color",
+     "$value": "#EEECE8"
+    },
+    "200": {
+     "$type": "color",
+     "$value": "#E3E0DA"
+    }
+   },
+   "graphite": {
+    "300": {
+     "$type": "color",
+     "$value": "#C9C5BE"
+    },
+    "400": {
+     "$type": "color",
+     "$value": "#A19D96"
+    },
+    "500": {
+     "$type": "color",
+     "$value": "#67635D"
+    },
+    "600": {
+     "$type": "color",
+     "$value": "#57534E"
+    },
+    "700": {
+     "$type": "color",
+     "$value": "#44413D"
+    },
+    "800": {
+     "$type": "color",
+     "$value": "#2E2C29"
+    },
+    "850": {
+     "$type": "color",
+     "$value": "#242320"
+    },
+    "900": {
+     "$type": "color",
+     "$value": "#1C1B19"
+    },
+    "950": {
+     "$type": "color",
+     "$value": "#131312"
+    }
+   },
+   "coral": {
+    "500": {
+     "$type": "color",
+     "$value": "#E5484D"
+    },
+    "700": {
+     "$type": "color",
+     "$value": "#B3262C"
+    },
+    "300": {
+     "$type": "color",
+     "$value": "#FF7A7F"
+    }
+   },
+   "red": {
+    "500": {
+     "$type": "color",
+     "$value": "#CE2C31"
+    },
+    "700": {
+     "$type": "color",
+     "$value": "#A61E24"
+    },
+    "300": {
+     "$type": "color",
+     "$value": "#FF8589"
+    }
+   },
+   "green": {
+    "500": {
+     "$type": "color",
+     "$value": "#2B9A66"
+    },
+    "700": {
+     "$type": "color",
+     "$value": "#1B6E48"
+    },
+    "300": {
+     "$type": "color",
+     "$value": "#4ADE9B"
+    }
+   },
+   "amber": {
+    "500": {
+     "$type": "color",
+     "$value": "#C46A05"
+    },
+    "700": {
+     "$type": "color",
+     "$value": "#8F4C00"
+    },
+    "300": {
+     "$type": "color",
+     "$value": "#FFC14D"
+    }
+   },
+   "lagoon": {
+    "500": {
+     "$type": "color",
+     "$value": "#0E9384"
+    },
+    "700": {
+     "$type": "color",
+     "$value": "#0B6E64"
+    },
+    "300": {
+     "$type": "color",
+     "$value": "#3FD0BA"
+    }
+   },
+   "indigo": {
+    "500": {
+     "$type": "color",
+     "$value": "#3E4BC9"
+    },
+    "300": {
+     "$type": "color",
+     "$value": "#8F9BFF"
+    },
+    "50": {
+     "$type": "color",
+     "$value": "#E8EAFB"
+    },
+    "900": {
+     "$type": "color",
+     "$value": "#262C5C"
+    }
+   },
+   "tape": {
+    "500": {
+     "$type": "color",
+     "$value": "#E09B3D"
+    },
+    "700": {
+     "$type": "color",
+     "$value": "#8F5A12"
+    }
+   },
+   "ledger": {
+    "500": {
+     "$type": "color",
+     "$value": "#1A64D6"
+    },
+    "300": {
+     "$type": "color",
+     "$value": "#6EA8FF"
+    }
+   },
+   "wisp": {
+    "500": {
+     "$type": "color",
+     "$value": "#0B6E6D"
+    },
+    "300": {
+     "$type": "color",
+     "$value": "#4FC3C1"
+    }
+   },
+   "plum": {
+    "300": {
+     "$type": "color",
+     "$value": "#A98BFF"
+    },
+    "700": {
+     "$type": "color",
+     "$value": "#6340D0"
+    }
+   },
+   "orchid": {
+    "500": {
+     "$type": "color",
+     "$value": "#A3317B"
+    },
+    "300": {
+     "$type": "color",
+     "$value": "#F07CC0"
+    }
+   }
+  },
+  "space": {
+   "1": {
+    "$type": "dimension",
+    "$value": "4px"
+   },
+   "2": {
+    "$type": "dimension",
+    "$value": "8px"
+   },
+   "3": {
+    "$type": "dimension",
+    "$value": "12px"
+   },
+   "4": {
+    "$type": "dimension",
+    "$value": "16px"
+   },
+   "5": {
+    "$type": "dimension",
+    "$value": "20px"
+   },
+   "6": {
+    "$type": "dimension",
+    "$value": "24px"
+   },
+   "7": {
+    "$type": "dimension",
+    "$value": "32px"
+   },
+   "8": {
+    "$type": "dimension",
+    "$value": "40px"
+   },
+   "9": {
+    "$type": "dimension",
+    "$value": "48px"
+   },
+   "10": {
+    "$type": "dimension",
+    "$value": "64px"
+   },
+   "11": {
+    "$type": "dimension",
+    "$value": "80px"
+   },
+   "12": {
+    "$type": "dimension",
+    "$value": "96px"
+   }
+  },
+  "radius": {
+   "input": {
+    "$type": "dimension",
+    "$value": "4px"
+   },
+   "button": {
+    "$type": "dimension",
+    "$value": "6px"
+   },
+   "panel": {
+    "$type": "dimension",
+    "$value": "10px"
+   },
+   "pill": {
+    "$type": "dimension",
+    "$value": "999px"
+   }
+  },
+  "duration": {
+   "instant": {
+    "$type": "duration",
+    "$value": "0ms"
+   },
+   "quick": {
+    "$type": "duration",
+    "$value": "120ms"
+   },
+   "exit": {
+    "$type": "duration",
+    "$value": "150ms"
+   },
+   "standard": {
+    "$type": "duration",
+    "$value": "200ms"
+   },
+   "emphasis": {
+    "$type": "duration",
+    "$value": "320ms"
+   }
+  },
+  "easing": {
+   "enter": {
+    "$type": "cubicBezier",
+    "$value": [
+     0.2,
+     0,
+     0,
+     1
+    ]
+   },
+   "exit": {
+    "$type": "cubicBezier",
+    "$value": [
+     0.4,
+     0,
+     1,
+     1
+    ]
+   },
+   "emphasis": {
+    "$type": "cubicBezier",
+    "$value": [
+     0.3,
+     0,
+     0,
+     1.2
+    ]
+   }
+  },
+  "font": {
+   "sans": {
+    "$type": "fontFamily",
+    "$value": [
+     "IBM Plex Sans",
+     "IBM Plex Sans Arabic",
+     "Segoe UI Variable",
+     "Segoe UI",
+     "system-ui",
+     "sans-serif"
+    ]
+   },
+   "arabicReading": {
+    "$type": "fontFamily",
+    "$value": [
+     "Noto Naskh Arabic",
+     "IBM Plex Sans Arabic",
+     "serif"
+    ]
+   },
+   "mono": {
+    "$type": "fontFamily",
+    "$value": [
+     "IBM Plex Mono",
+     "Cascadia Mono",
+     "IBM Plex Sans Arabic",
+     "Segoe UI",
+     "ui-monospace",
+     "monospace"
+    ]
+   }
+  }
+ },
+ "semantic": {
+  "light": {
+   "bg.canvas": "{primitive.color.paper.0}",
+   "bg.surface": "{primitive.color.paper.50}",
+   "bg.sunken": "{primitive.color.paper.100}",
+   "border.default": "{primitive.color.paper.200}",
+   "border.strong": "{primitive.color.graphite.500}",
+   "text.primary": "{primitive.color.graphite.900}",
+   "text.secondary": "{primitive.color.graphite.600}",
+   "text.tertiary": "{primitive.color.graphite.500}",
+   "state.live.solid": "{primitive.color.coral.500}",
+   "state.live.fg": "{primitive.color.coral.700}",
+   "state.working.solid": "{primitive.color.lagoon.500}",
+   "state.working.fg": "{primitive.color.lagoon.700}",
+   "state.success.solid": "{primitive.color.green.500}",
+   "state.success.fg": "{primitive.color.green.700}",
+   "state.attention.solid": "{primitive.color.amber.500}",
+   "state.attention.fg": "{primitive.color.amber.700}",
+   "state.danger.solid": "{primitive.color.red.500}",
+   "state.danger.fg": "{primitive.color.red.700}",
+   "accent.wisp": "{primitive.color.orchid.500}",
+   "accent.side": "{primitive.color.indigo.500}",
+   "accent.klaint": "{primitive.color.ledger.500}",
+   "accent.studio.fg": "{primitive.color.plum.700}",
+   "border.focus": "{primitive.color.graphite.900}",
+   "focus.ring": "{primitive.color.graphite.900}",
+   "bg.selected": "{primitive.color.indigo.50}",
+   "text.disabled": "{primitive.color.graphite.400}",
+   "border.input": "{primitive.color.graphite.500}"
+  },
+  "dark": {
+   "bg.canvas": "{primitive.color.graphite.950}",
+   "bg.surface": "{primitive.color.graphite.900}",
+   "bg.sunken": "{primitive.color.graphite.850}",
+   "border.default": "{primitive.color.graphite.800}",
+   "border.strong": "{primitive.color.graphite.400}",
+   "text.primary": "{primitive.color.paper.50}",
+   "text.secondary": "{primitive.color.graphite.300}",
+   "text.tertiary": "{primitive.color.graphite.400}",
+   "state.live.solid": "{primitive.color.coral.300}",
+   "state.live.fg": "{primitive.color.coral.300}",
+   "state.working.solid": "{primitive.color.lagoon.300}",
+   "state.working.fg": "{primitive.color.lagoon.300}",
+   "state.success.solid": "{primitive.color.green.300}",
+   "state.success.fg": "{primitive.color.green.300}",
+   "state.attention.solid": "{primitive.color.amber.300}",
+   "state.attention.fg": "{primitive.color.amber.300}",
+   "state.danger.solid": "{primitive.color.red.300}",
+   "state.danger.fg": "{primitive.color.red.300}",
+   "accent.wisp": "{primitive.color.orchid.300}",
+   "accent.side": "{primitive.color.indigo.300}",
+   "accent.klaint": "{primitive.color.ledger.300}",
+   "accent.studio.fg": "{primitive.color.plum.300}",
+   "border.focus": "{primitive.color.paper.0}",
+   "focus.ring": "{primitive.color.paper.0}",
+   "bg.selected": "{primitive.color.indigo.900}",
+   "text.disabled": "{primitive.color.graphite.500}",
+   "border.input": "{primitive.color.graphite.400}"
+  },
+  "highContrast": {
+   "$description": "Under forced-colors every semantic token maps to a CSS system colour. Colour cannot distinguish states here, so every state also carries its own glyph, label and announcement (live = level meter, danger = stop glyph, attention = shield glyph, success = check). Focus and live never share a mapping.",
+   "bg.canvas": "Canvas",
+   "bg.surface": "Canvas",
+   "bg.sunken": "Canvas",
+   "bg.selected": "SelectedItem",
+   "text.primary": "CanvasText",
+   "text.secondary": "CanvasText",
+   "text.tertiary": "CanvasText",
+   "text.disabled": "GrayText",
+   "border.default": "CanvasText",
+   "border.strong": "CanvasText",
+   "border.input": "ButtonBorder",
+   "focus.ring": "Highlight",
+   "border.focus": "Highlight",
+   "state.live.solid": "ActiveText",
+   "state.live.fg": "ActiveText",
+   "state.working.solid": "CanvasText",
+   "state.working.fg": "CanvasText",
+   "state.success.solid": "CanvasText",
+   "state.success.fg": "CanvasText",
+   "state.attention.solid": "Mark",
+   "state.attention.fg": "MarkText",
+   "state.danger.solid": "Mark",
+   "state.danger.fg": "MarkText",
+   "accent.wisp": "LinkText",
+   "accent.side": "LinkText",
+   "accent.klaint": "LinkText",
+   "accent.studio.fg": "LinkText"
+  }
+ },
+ "contrastRequirements": {
+  "$description": "Pairs checked by check_contrast.mjs. 'text' requires 4.5:1 (WCAG 2.2 SC 1.4.3); 'ui' requires 3:1 (SC 1.4.11) for icons, borders and non-text indicators.",
+  "pairs": [
+   [
+    "text.primary",
+    "bg.canvas",
+    "text"
+   ],
+   [
+    "text.primary",
+    "bg.surface",
+    "text"
+   ],
+   [
+    "text.secondary",
+    "bg.canvas",
+    "text"
+   ],
+   [
+    "text.secondary",
+    "bg.surface",
+    "text"
+   ],
+   [
+    "text.tertiary",
+    "bg.canvas",
+    "text"
+   ],
+   [
+    "state.live.fg",
+    "bg.canvas",
+    "text"
+   ],
+   [
+    "state.working.fg",
+    "bg.canvas",
+    "text"
+   ],
+   [
+    "state.success.fg",
+    "bg.canvas",
+    "text"
+   ],
+   [
+    "state.attention.fg",
+    "bg.canvas",
+    "text"
+   ],
+   [
+    "state.danger.fg",
+    "bg.canvas",
+    "text"
+   ],
+   [
+    "state.danger.fg",
+    "bg.surface",
+    "text"
+   ],
+   [
+    "state.live.solid",
+    "bg.canvas",
+    "ui"
+   ],
+   [
+    "state.working.solid",
+    "bg.canvas",
+    "ui"
+   ],
+   [
+    "state.success.solid",
+    "bg.canvas",
+    "ui"
+   ],
+   [
+    "state.attention.solid",
+    "bg.canvas",
+    "ui"
+   ],
+   [
+    "state.danger.solid",
+    "bg.canvas",
+    "ui"
+   ],
+   [
+    "border.focus",
+    "bg.canvas",
+    "ui"
+   ],
+   [
+    "border.strong",
+    "bg.canvas",
+    "ui"
+   ],
+   [
+    "accent.wisp",
+    "bg.canvas",
+    "text"
+   ],
+   [
+    "accent.side",
+    "bg.canvas",
+    "text"
+   ],
+   [
+    "accent.klaint",
+    "bg.canvas",
+    "text"
+   ],
+   [
+    "accent.studio.fg",
+    "bg.canvas",
+    "text"
+   ],
+   [
+    "text.primary",
+    "bg.sunken",
+    "text"
+   ],
+   [
+    "text.secondary",
+    "bg.sunken",
+    "text"
+   ],
+   [
+    "text.tertiary",
+    "bg.sunken",
+    "text"
+   ],
+   [
+    "state.danger.fg",
+    "bg.sunken",
+    "text"
+   ],
+   [
+    "state.attention.fg",
+    "bg.sunken",
+    "text"
+   ],
+   [
+    "accent.wisp",
+    "bg.sunken",
+    "text"
+   ],
+   [
+    "accent.side",
+    "bg.sunken",
+    "text"
+   ],
+   [
+    "accent.klaint",
+    "bg.sunken",
+    "text"
+   ],
+   [
+    "accent.studio.fg",
+    "bg.sunken",
+    "text"
+   ],
+   [
+    "border.strong",
+    "bg.sunken",
+    "ui"
+   ],
+   [
+    "border.focus",
+    "bg.sunken",
+    "ui"
+   ],
+   [
+    "text.tertiary",
+    "bg.surface",
+    "text"
+   ],
+   [
+    "state.live.solid",
+    "bg.surface",
+    "ui"
+   ],
+   [
+    "state.working.fg",
+    "bg.surface",
+    "text"
+   ],
+   [
+    "state.success.fg",
+    "bg.surface",
+    "text"
+   ],
+   [
+    "state.attention.fg",
+    "bg.surface",
+    "text"
+   ],
+   [
+    "focus.ring",
+    "bg.canvas",
+    "ui"
+   ],
+   [
+    "focus.ring",
+    "bg.surface",
+    "ui"
+   ],
+   [
+    "focus.ring",
+    "bg.sunken",
+    "ui"
+   ],
+   [
+    "border.input",
+    "bg.canvas",
+    "ui"
+   ],
+   [
+    "border.input",
+    "bg.surface",
+    "ui"
+   ],
+   [
+    "text.primary",
+    "bg.selected",
+    "text"
+   ],
+   [
+    "text.secondary",
+    "bg.selected",
+    "text"
+   ],
+   [
+    "accent.wisp",
+    "bg.surface",
+    "text"
+   ],
+   [
+    "accent.studio.fg",
+    "bg.surface",
+    "text"
+   ]
+  ]
+ },
+ "focusIndicator": {
+  "$description": "Every focusable control: 2px solid focus.ring outline with a 2px bg.canvas gap (outline-offset: 2px). The ring must reach 3:1 against canvas, surface and sunken (checked). It never reuses an accent, so focus is never confused with selection.",
+  "width": "2px",
+  "gap": "2px",
+  "color": "{semantic.focus.ring}"
+ },
+ "hueSeparation": {
+  "$description": "Lint: product accents must not resemble state colours (a selected clip must never read as a warning). Minimum circular hue distance in degrees between each accent and each state solid, per theme.",
+  "minDegrees": 30,
+  "accents": [
+   "accent.wisp",
+   "accent.side",
+   "accent.klaint",
+   "accent.studio.fg"
+  ],
+  "states": [
+   "state.live.solid",
+   "state.working.solid",
+   "state.success.solid",
+   "state.attention.solid",
+   "state.danger.solid"
+  ]
+ }
+}
