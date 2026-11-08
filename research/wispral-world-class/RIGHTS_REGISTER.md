@@ -21,8 +21,16 @@
 | Gate | State | Rule |
 | --- | --- | --- |
 | Wispral outbound licence | **CLOSED**. `TheHalfMoon/Wispral` has no LICENSE file: `gh api repos/TheHalfMoon/Wispral/license` returned HTTP 404 on 2026-11-08. | No `COPY` or `ADAPT` packet may land code in a Wispral repository until the founder's outbound-licence decision is recorded in this register. Research, reference reading and baselines of unmodified donors in their own forks are not blocked. |
+| Wispral outbound licence: **decision recorded 2026-11-09** | **OPEN**. The founder chose **Apache-2.0** (instruction, verbatim: "Apache-2.0"). `LICENSE` at the repository root is the Apache License 2.0 text from apache.org, SHA-256 `cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30`. | Opening the gate makes no packet `READY`. A `COPY` or `ADAPT` packet may land code only when it is otherwise ready, including through a 000G decision for product code (Constitution 1.0.0, Governance item 8), and only under the conditions below. |
 
-**Inputs the founder's decision has to fit.** These are facts, not advice:
+**Conditions for landing adopted code under Apache-2.0.** These are recorded rules, not a legal opinion:
+
+- **Permissive donors (MIT, Apache-2.0, BSD-2-Clause).** Keep each file's upstream copyright and licence notice, and record the file's provenance (Principle XX). Apache-2.0 donors' NOTICE content is carried forward where they have one.
+- **VoiceStudio (AGPL-3.0).** Code copied into a Wispral repository relies on the founder's confirmed grant, recorded per copied file in this register before the file lands. The research fork `TheHalfMoon/wisprstudio` stays under its upstream AGPL-3.0.
+- **Reference-only sources (§3) stay reference-only:** the Orcel FSL-1.1-MIT files, Yamakan, VoiceInk, and Chatwoot's `enterprise/`.
+- **Model, tokenizer, dataset and voice rights** are separate, and are still recorded per artifact before use (Principle XVIII). Apache-2.0 covers Wispral's own code only.
+
+**Inputs the founder's decision had to fit** (kept as recorded on 2026-11-08):
 
 - The WisprStudio lead donor is AGPL-3.0. Its use in Wispral rests on the founder's confirmed grant, recorded per copied file.
 - Every other lead donor is permissive: MIT, Apache-2.0 or BSD-2-Clause.
