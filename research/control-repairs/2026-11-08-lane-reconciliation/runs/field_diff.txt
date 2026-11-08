@@ -1,0 +1,23 @@
+PRE_CORRECTION_BASE=8d52a4579a0b1c6555cbe8443027c1950493b326
+PRE_RECONCILIATION_BASE=d78ecb540d97ff07b6788339177e9d63ed4dfca3
+RECONCILIATION_HEAD=8034edcf5c1620262111e5b59510bf20582e7fc9
+SAME docs/canonical/CURRENT_STATE.md 3c0b99a28401c0d113bf9507fa2de0f0d2ecb6b6
+SAME specs/CURRENT.md 70fda39f33c42452d9c48ea26c352d1c25dc2fe1
+SAME research/000b2-public/recovery-attempt-003-readiness.json baf626867ca7e04670a273740d5873354e01dd0b
+SAME research/000b2-public/b2r16-preexecution-state.json dd872ef1c96fcc7d2357fb69975508e15f7142b4
+SAME research/000b2-public/b2r16-attempt-003-manifest.json 2a08112625c2acd380ec0d461a846f5a32e92a68
+SAME research/000b1/frozen-methodology.json 0eee1c15b5e3fc98edd09f1aae0547afd3c078b5
+SAME specs/000B2-public-corpus-bakeoff ded710a4e9541b9433e4f2856ae3c1a5a93a57ca
+SAME research/000b2-entry 4c8ffc43f6a3574e6e524147fe764585fd688d63
+SAME research/000b1 5c4401a258e8d847312ab988b45680e8e9dcaa35
+READINESS_FIELDS_COMPARED=19
+RECORD AGENTS.md
+RECORD docs/canonical/TRUSTED_CONTROL_REPAIRS.md
+RECORD research/control-repairs/2026-11-08-lane-reconciliation/README.md
+RECORD research/control-repairs/2026-11-08-lane-reconciliation/r_field_diff.py
+RECORD research/control-repairs/2026-11-08-lane-reconciliation/review-118/OUTPUT.md
+RECORD research/control-repairs/2026-11-08-lane-reconciliation/review-118/PROMPT.md
+RECORD research/control-repairs/2026-11-08-lane-reconciliation/runs/pr118_trusted_checker.txt
+RECORD research/control-repairs/2026-11-08-lane-reconciliation/runs/recovery_dispatch_42508548479.txt
+LEDGER_APPEND_ONLY=PASS
+RECORDS_ONLY_FIELD_DIFF=PASS
