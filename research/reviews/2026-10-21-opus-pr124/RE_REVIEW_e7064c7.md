@@ -106,3 +106,13 @@ The proposed order is:
 
 - The #126 local test suite.
 - Donor builds, fork baselines, and all audio, native, provider, tenant and telephony tests.
+
+## Plan completion (follow-up commit)
+
+The plan now carries, for N1:
+
+- the exact proposed amendment text for the preferred lane, in [PROPOSED_AMENDMENT_CONTROL_DEADLOCK_LANE.md](../../../docs/strategy/PROPOSED_AMENDMENT_CONTROL_DEADLOCK_LANE.md), as an unratified Principle XVII draft;
+- a nine-step execution sequence in master plan W0, running from the founder's N1 decision to the first VERIFIED unit of work (recommended: Q-02, then F-SIDE-0);
+- an updated G-00 work packet.
+
+With these additions, every packet from today to the first unit of work has a named authority, an exit criterion and an artifact. The remaining actions are governance decisions and reviews, not planning gaps.
