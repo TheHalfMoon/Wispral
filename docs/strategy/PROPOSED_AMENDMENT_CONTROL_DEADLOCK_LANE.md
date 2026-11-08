@@ -1,6 +1,8 @@
 # Proposed constitutional amendment: fail-closed control deadlock lane
 
-**Status: PROPOSED DRAFT — NOT RATIFIED.** This is the exact text for the preferred N1 option in the [governance proposal](WISPRAL_GOVERNANCE_AMENDMENT_PROPOSAL.md#control-lane-deadlock-opus-re-review-n1). Adopting it requires a dedicated amendment PR and the founder's explicit decision.
+**Status: SUPERSEDED — NOT ADOPTED.** Canonical `main` adopted a different Principle XVII through #129 (merge `8d52a45`). Draft PR #127 was returned to draft. This file is retained as review history only.
+
+**Original status: PROPOSED DRAFT — NOT RATIFIED.** This is the exact text for the preferred N1 option in the [governance proposal](WISPRAL_GOVERNANCE_AMENDMENT_PROPOSAL.md#control-lane-deadlock-opus-re-review-n1). Adopting it requires a dedicated amendment PR and the founder's explicit decision.
 
 Nothing in this file changes `CONSTITUTION.md`.
 

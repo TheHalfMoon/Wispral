@@ -204,18 +204,18 @@
     },
     {
       "path": "docs/strategy/WISPRAL_COPY_FIRST_WORK_PACKETS.md",
-      "bytes": 14222,
-      "sha256": "95f69fdaac78526318bd6174ca368dda3687e1f68f986ac297732fd713ad7d45"
+      "bytes": 14199,
+      "sha256": "ebe79592d3924b8718c11c94e48fe6f32f0ce4392e98aea02d9cd3a516e82124"
     },
     {
       "path": "docs/strategy/WISPRAL_GOVERNANCE_AMENDMENT_PROPOSAL.md",
-      "bytes": 18290,
-      "sha256": "1bbe90f3432c75147d5b5e09271cd7cd33747124775697164faad2922ce12a89"
+      "bytes": 18544,
+      "sha256": "35bc26340e1ea97579d88c7fe28ddbaa2a7d4017b090b7936c518064800ea501"
     },
     {
       "path": "docs/strategy/WISPRAL_MASTER_PLAN_REBUILT.md",
-      "bytes": 16808,
-      "sha256": "67536df3bbe053472d0fd8080d114cf13939f6e33d9ae65d55b3601bc26751af"
+      "bytes": 17342,
+      "sha256": "28908228e1bcaa0541ea8dacb66dd88856df9d0af1c24ac1592b2a24691db031"
     },
     {
       "path": "docs/strategy/WISPRAL_MODEL_ROUTING_CONTRACTS.md",

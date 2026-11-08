@@ -75,6 +75,8 @@ M1 is an ordinary **fail-closed over-application** repair, not a Principle XVI f
 
 ### Control-lane deadlock (Opus re-review N1)
 
+> **Status, 2026-11-08:** resolved in canonical authority by #129 (Constitution 0.3.0, Principle XVII, merge `8d52a45`). That text supersedes the options below. The first correction under it is #130. This section is retained as the historical analysis.
+
 These observations were read from GitHub on 2026-11-08. They show that the ordinary lane cannot currently admit any of the three relevant PRs:
 
 | PR | Failing gate | Observed result | Cause |

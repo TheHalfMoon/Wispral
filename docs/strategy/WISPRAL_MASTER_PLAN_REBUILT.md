@@ -19,7 +19,7 @@ The [four deep dives](../../research/rea/2026-10-21/README.md), [source transpla
 
 M1 is reproduced on canonical main as well as #124; it is fail-closed over-application, not a Principle XVI fail-open repair. The separate B2R16 preservation PR retains the old verifier/payloads and historical PASS, adds frozen-object mutation checks and changes only the declared control workflow. Earlier API 403 was historical. Current API reports main protected=false, classic protection 404 and no rulesets; governance-required checks remain binding; preserve #118's red-check merge as fact, not permission. No merge is authorized here.
 
-**The control lanes are currently deadlocked (N1).** Three facts combine into a cycle:
+**The control lanes were deadlocked (N1); `main` has since adopted a resolution lane (#129).** Three facts combine into a cycle:
 
 - #120 (B2R17, the sole authorized unit) fails `verify-b2r16-freeze`.
 - #126 fails the ATTEMPT-003 Trusted PR Gate and Recovery boundary with "B2R17 candidate path scope violation".
@@ -40,18 +40,17 @@ Merging with red gates is not an option.
 
 Each step starts only after the previous step's exit criterion holds on canonical `main`. "Founder" means the repository owner's explicit recorded decision.
 
-1. **Founder decision on N1.**
-   - Do: choose the [deadlock-lane amendment](PROPOSED_AMENDMENT_CONTROL_DEADLOCK_LANE.md) (preferred) or the second-candidate fallback.
-   - Exit: the decision is recorded on #124 or #126.
-2. **Lane amendment PR.**
-   - Do: open a `CONSTITUTION.md`-only PR with the proposed Principle XVII text.
-   - Exit: an independent review is complete and a guarded merge is done. The red `verify-b2r16-freeze` result is preserved as conflict evidence.
-3. **#126 under the new lane.**
-   - Do: preserve the listed red results and get all other applicable gates green.
-   - Exit: an independent review and a guarded merge. On the canonical state, a no-op PR passes `verify-b2r16-freeze`.
-4. **Canonical reconciliation of the repair.**
-   - Do: record the #118 red merge, the #126 merge and post-merge verification.
-   - Exit: the reconciliation passes the repaired controls.
+1. **Adopt the over-application correction lane.** DONE on `main`.
+   - What happened: #129 merged Constitution 0.3.0, Principle XVII ("Correcting an over-applied benchmark control is explicit, narrow, and proven"), as merge `8d52a45`. Its pre-merge qualifying review was waived by the owner. Draft #127 and [PROPOSED_AMENDMENT_CONTROL_DEADLOCK_LANE.md](PROPOSED_AMENDMENT_CONTROL_DEADLOCK_LANE.md) are superseded.
+   - Remaining exit: record an independent post-merge audit of the adopted text, and apply any patch amendment it finds necessary.
+2. **First freeze correction (C1) under Principle XVII.**
+   - Do: #130 corrects the B2R16 freeze control, using the transitional preservation clause, and supersedes #126.
+   - Exit: every item of XVII is satisfied, including cause and non-concealment proofs for each preserved failure, a qualifying independent review, and a guarded owner merge. A `workflow_dispatch` run of the corrected workflow succeeds on the merged state.
+3. **Canonical reconciliation (XVII item 10).**
+   - Do: record the correction, the post-merge verification, the waived #129 review and the #118 red-check merge. Use only the sections designated under the XVII "Frontier sections" clause.
+   - Exit: the reconciliation passes the corrected controls.
+4. **No-op confirmation.**
+   - Exit: an empty pull request against the new `main` passes `verify-b2r16-freeze`.
 5. **#120 / B2R17.**
    - Do: re-run, review, guarded merge and B2R17 reconciliation, under the unchanged B2 discipline.
    - Exit: canonical `main` names the next B-chain disposition. No STT winner is inferred.
