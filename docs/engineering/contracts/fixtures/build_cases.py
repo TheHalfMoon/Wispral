@@ -29,13 +29,16 @@ def mutate(base, path, value):
 
 DELETE = object()
 
-BOUND_CONSENT_FIELDS = ("subject_ref", "voice_id", "purposes", "products", "reference_artifact_digest", "valid_from", "valid_until", "consent_epoch")
+UNSIGNED_CONSENT_FIELDS = ("status", "revoked_at", "scope_note")
 
 
 def bound_digest(record):
-    """SHA-256 of the canonical JSON of the attested consent fields (absent fields as null) plus the nonce."""
-    fields = {k: record.get(k) for k in BOUND_CONSENT_FIELDS}
-    fields["nonce"] = record["attestation"]["nonce"]
+    """SHA-256 of the canonical JSON of every signed consent field: the record minus its lifecycle fields,
+    plus the attestation minus bound_fields_digest and signature (absent optional fields as null)."""
+    fields = {k: record.get(k) for k in ("subject_ref", "voice_id", "relationship", "principal_scope_ref", "purposes", "products", "allowed_engines",
+                                         "valid_from", "valid_until", "evidence_digest", "consent_epoch", "watermark_required",
+                                         "reference_artifact_digest", "speaker_match")}
+    fields["attestation"] = {k: v for k, v in record["attestation"].items() if k not in ("bound_fields_digest", "signature")}
     return "sha256:" + hashlib.sha256(json.dumps(fields, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
 
 
@@ -161,7 +164,7 @@ add("model_manifest", "G-MM-2_duplicate_language_rows", "invalid", mutate(MANIFE
 
 # ---- consent record
 add("consent_record", "valid_active_self", "valid", CONSENT)
-add("consent_record", "valid_revoked", "valid", {**CONSENT, "relationship": "consenting_third_party", "status": "revoked", "revoked_at": "2026-11-08T10:00:00Z", "consent_epoch": 2})
+add("consent_record", "valid_revoked", "valid", mutate({**CONSENT, "relationship": "consenting_third_party", "status": "revoked", "revoked_at": "2026-11-08T10:00:00Z", "consent_epoch": 2}, ["attestation", "issuer"], {"kind": "consent_service", "key_id": "consent-svc:key-1"}) | {"attestation": {**CONSENT["attestation"], "issuer": {"kind": "consent_service", "key_id": "consent-svc:key-1"}, "signature": {**SIGNATURE, "key_id": "consent-svc:key-1"}}})
 add("consent_record", "invalid_revoked_without_time", "invalid", {**CONSENT, "status": "revoked"}, "revocation is timestamped")
 add("consent_record", "invalid_active_with_revoked_at", "invalid", {**CONSENT, "revoked_at": "2026-11-08T10:00:00Z"}, "revoked consent is never active")
 add("consent_record", "invalid_no_evidence", "invalid", mutate(CONSENT, ["evidence_digest"], DELETE), "evidence digest required")
@@ -246,8 +249,21 @@ add("consent_record", "invalid_active_statement_mismatch", "invalid", mutate(CON
 add("consent_record", "invalid_active_operator_not_confirmed", "invalid", mutate(CONSENT, ["attestation", "statement", "operator_confirmed"], False), "a human operator confirms the statement")
 add("consent_record", "invalid_statement_imported_not_live", "invalid", mutate(CONSENT, ["attestation", "statement", "live_capture"], False), "consent statements are captured live")
 add("consent_record", "invalid_statement_without_challenge", "invalid", mutate(CONSENT, ["attestation", "statement", "challenge_digest"], DELETE), "a capture-time challenge defeats replayed or spliced statements")
+COMMERCIAL = {**CONSENT, "purposes": ["commercial"], "attestation": {**CONSENT["attestation"], "issuer": {"kind": "consent_service", "key_id": "consent-svc:key-1"}, "signature": {**SIGNATURE, "key_id": "consent-svc:key-1"}}}
+add("consent_record", "valid_commercial_consent_service", "valid", COMMERCIAL)
+add("consent_record", "invalid_commercial_operator_key", "invalid", mutate(COMMERCIAL, ["attestation", "issuer", "kind"], "studio_operator"), "commercial consent needs the consent-service key")
+add("consent_record", "invalid_commercial_without_watermark", "invalid", {**COMMERCIAL, "watermark_required": False}, "commercial voices are watermarked")
+add("consent_record", "invalid_written_consent_method", "invalid", mutate(CONSENT, ["attestation", "identity_check"], "signed_written_consent"), "only live identity checks with a live statement")
+for label, path, value in (("evidence_swapped", ["evidence_digest"], "sha256:" + "7" * 64),
+                           ("speaker_evidence_swapped", ["speaker_match", "evidence_digest"], "sha256:" + "8" * 64),
+                           ("identity_check_relabelled", ["attestation", "identity_check"], "live_video_id_check"),
+                           ("script_swapped", ["attestation", "statement", "script_id"], "voice-consent@2"),
+                           ("challenge_swapped", ["attestation", "statement", "challenge_digest"], "sha256:" + "6" * 64),
+                           ("issued_at_moved", ["attestation", "issued_at"], "2026-11-07T00:00:00Z")):
+    add("consent_record", f"invalid_{label}_after_attestation", "invalid", mutate(CONSENT, path, value), "every attested field is signed", layer="runtime", keep_attestation=True)
+add("consent_record", "invalid_signature_key_differs_from_issuer", "invalid", mutate(CONSENT, ["attestation", "signature", "key_id"], "op-key:other-007"), "the signing key is the issuer key", layer="runtime")
 add("consent_record", "invalid_attestation_wrong_alg", "invalid", mutate(CONSENT, ["attestation", "signature", "alg"], "none"), "attestations are Ed25519-signed")
-add("consent_record", "invalid_purposes_widened_after_attestation", "invalid", {**CONSENT, "purposes": ["personal", "commercial"]}, "attested fields cannot change after signing", layer="runtime", keep_attestation=True)
+add("consent_record", "invalid_purposes_widened_after_attestation", "invalid", {**CONSENT, "purposes": ["personal", "internal_evaluation"]}, "attested fields cannot change after signing", layer="runtime", keep_attestation=True)
 add("consent_record", "invalid_reference_swapped_after_attestation", "invalid", {**CONSENT, "reference_artifact_digest": "sha256:" + "f" * 64}, "the attested reference audio cannot be swapped", layer="runtime", keep_attestation=True)
 add("effect_intent", "invalid_broker_intent_without_capability", "invalid", mutate(INTENT, ["capability"], DELETE), "consequential broker calls need a capability")
 add("effect_intent", "invalid_capability_reusable", "invalid", mutate(INTENT, ["capability", "single_use"], False), "capabilities are single-use")

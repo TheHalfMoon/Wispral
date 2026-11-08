@@ -24,7 +24,6 @@ HERE = pathlib.Path(__file__).resolve().parent
 NAMES = ["envelope", "cancellation", "model_manifest", "consent_record", "policy_verdict", "provenance_event", "delivery_outcome", "effect_intent"]
 TERMINAL_INTENT = {"settled", "abandoned", "reconciled"}
 ORDER = {"ALLOW": 0, "ASK": 1, "DENY": 2}
-BOUND_CONSENT_FIELDS = ("subject_ref", "voice_id", "purposes", "products", "reference_artifact_digest", "valid_from", "valid_until", "consent_epoch")
 CAPABILITY_MAX_SECONDS = 60
 
 
@@ -33,8 +32,12 @@ def ts(value):
 
 
 def bound_digest(record):
-    fields = {k: record.get(k) for k in BOUND_CONSENT_FIELDS}
-    fields["nonce"] = record["attestation"]["nonce"]
+    """SHA-256 of the canonical JSON of every signed consent field: the record minus its lifecycle fields,
+    plus the attestation minus bound_fields_digest and signature (absent optional fields as null)."""
+    fields = {k: record.get(k) for k in ("subject_ref", "voice_id", "relationship", "principal_scope_ref", "purposes", "products", "allowed_engines",
+                                         "valid_from", "valid_until", "evidence_digest", "consent_epoch", "watermark_required",
+                                         "reference_artifact_digest", "speaker_match")}
+    fields["attestation"] = {k: v for k, v in record["attestation"].items() if k not in ("bound_fields_digest", "signature")}
     return "sha256:" + hashlib.sha256(json.dumps(fields, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
 
 
@@ -66,6 +69,8 @@ def runtime_errors(schema, inst):
             errors.append("valid_until must follow valid_from")
         if inst["attestation"]["bound_fields_digest"] != bound_digest(inst):
             errors.append("attested fields changed after attestation (bound_fields_digest mismatch)")
+        if inst["attestation"]["signature"]["key_id"] != inst["attestation"]["issuer"]["key_id"]:
+            errors.append("the signature key is not the issuer key")
     elif schema == "effect_intent" and "capability" in inst:
         cap, dispatch = inst["capability"], inst.get("dispatch", {})
         if cap["tool"] != dispatch.get("tool") or cap["args_digest"] != dispatch.get("args_digest"):

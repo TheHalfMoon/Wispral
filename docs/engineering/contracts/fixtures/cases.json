@@ -1352,7 +1352,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -1393,8 +1393,8 @@
     },
     "attestation": {
      "issuer": {
-      "kind": "studio_operator",
-      "key_id": "op-key:studio-001"
+      "kind": "consent_service",
+      "key_id": "consent-svc:key-1"
      },
      "identity_check": "in_person_id_check",
      "statement": {
@@ -1404,12 +1404,12 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:a0d3f0dda2a6cbe6cf51211d348ee19d9f8f430332bb3db1c0d1650c09a27f54",
+     "bound_fields_digest": "sha256:44aacd7749c418ae13a061f485b9642e04c547203e4f5c558621d3f5c26c627f",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
       "alg": "ed25519",
-      "key_id": "op-key:studio-001",
+      "key_id": "consent-svc:key-1",
       "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
      }
     },
@@ -1457,7 +1457,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -1510,7 +1510,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -1563,7 +1563,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:fd32392b226ae73ae89a40e634bb9cae3c476ffdad99b09d772d1a50dce90a1f",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -1616,7 +1616,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:7d63a8dc87c2ec42026cbb50a0d0a8e09cc3fda160ed2d773398ac2fed27304a",
+     "bound_fields_digest": "sha256:bc904bae1a867afe4acf132c306a07208de0070b0cce06a315be92128fe459d0",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -1669,7 +1669,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -1722,7 +1722,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -1776,7 +1776,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:21d839026b960e754e5368b22286d46c7db346afe03893cdc0a5ab5e3cccf8a5",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -1829,7 +1829,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:3e2432fc0c2ad96c4383f13441822e9055bf5f89b34c4fe37a1c102cd09afa80",
+     "bound_fields_digest": "sha256:85801d4d30d606a8499e62d0d18ef6009ac907899ed47434426b99bb769b3cd7",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -3225,7 +3225,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:1d9a1003ea14615610d0a7a3fa0ab7187a7a1bb50584fce0d6466790d8ddf5ec",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -3277,7 +3277,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:c3ead25a3412e1446e5544414a21fe567a92495c71cca6bd7c0e1fbc3e8e67ef",
+     "bound_fields_digest": "sha256:7fb75b1f57050e34ace5a406ffa5e37327bfde860e86569879b84af7a05fbb8c",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -4037,7 +4037,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:1789f01e44929f22eae03892619695f02b253f728de8b59424a30798b0fc05b3",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -4090,7 +4090,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:decdef7d4552dab95de333d247a64b27bd27b4a83639ee1f2a40ff3ac7a797b7",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -4143,7 +4143,7 @@
       "live_capture": false,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:283b8977dbf1cb2ed415d74f9b412777ab8e8ff6c0bfe2b21aa984ce78314523",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -4195,7 +4195,7 @@
       "operator_confirmed": true,
       "live_capture": true
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:c7fbb865d579a3aa8004a1940be6b3849952d5ddaa06108a4dce132f106bdf80",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -4206,6 +4206,588 @@
     }
    },
    "invariant": "a capture-time challenge defeats replayed or spliced statements"
+  },
+  {
+   "schema": "consent_record",
+   "name": "valid_commercial_consent_service",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "commercial"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "consent_service",
+      "key_id": "consent-svc:key-1"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:4b793898985b126dd6136f5e41bbe95ecd8311a206f940d96f9916fb3ceab425",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "consent-svc:key-1",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   }
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_commercial_operator_key",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "commercial"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "consent-svc:key-1"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:c6558d0ce5f430abc3b3abc218d2364b566ac139b89ea97c6fc228cdb169e44c",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "consent-svc:key-1",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "commercial consent needs the consent-service key"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_commercial_without_watermark",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "commercial"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": false,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "consent_service",
+      "key_id": "consent-svc:key-1"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40ef2e43cf6bfae1d5af7e8c34b40b774afc475603d3b16469913472ce49059b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "consent-svc:key-1",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "commercial voices are watermarked"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_written_consent_method",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "signed_written_consent",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:760d61746fd20a3137e94f4b11015156f6712507745d75e397926275881c9bee",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "only live identity checks with a live statement"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_evidence_swapped_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "every attested field is signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_speaker_evidence_swapped_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "every attested field is signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_identity_check_relabelled_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "live_video_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "every attested field is signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_script_swapped_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@2",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "every attested field is signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_challenge_swapped_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666"
+     },
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "every attested field is signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_issued_at_moved_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-07T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "every attested field is signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_signature_key_differs_from_issuer",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:other-007",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "the signing key is the issuer key"
   },
   {
    "schema": "consent_record",
@@ -4248,7 +4830,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -4273,7 +4855,7 @@
     "principal_scope_ref": "local-user",
     "purposes": [
      "personal",
-     "commercial"
+     "internal_evaluation"
     ],
     "products": [
      "wisprstudio"
@@ -4302,7 +4884,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {
@@ -4355,7 +4937,7 @@
       "live_capture": true,
       "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
      },
-     "bound_fields_digest": "sha256:db19417d0bf752bf230c610c86af98ecfce4adb2f9ccd386fd754dd1a9b4b7e6",
+     "bound_fields_digest": "sha256:ab537753b39183126aaae9397409ad26a121a933dcadf06e90880a13e51af115",
      "nonce": "c0nsentN0nce_0123456789",
      "issued_at": "2026-11-08T00:00:00Z",
      "signature": {

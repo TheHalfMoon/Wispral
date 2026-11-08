@@ -26,7 +26,7 @@ python -I docs/engineering/contracts/fixtures/build_cases.py   # regenerate fixt
 python -I docs/engineering/contracts/run_conformance.py
 ```
 
-Result on 2026-11-08 after the independent architecture and security reviews (Python 3.14.7, jsonschema 4.26.0): `PASS` — 8 schemas, 114 cases (88 shape, 6 runtime), 10 state-machine sequences and 4 cross-record bundles (intent uniqueness and verdict binding); every case matched its expected verdict (`REPRODUCED`). This proves contract conformance only. Whether products *behave* this way (revalidation actually happening, leases actually released only on observed stop) needs product conformance fixtures (packets `CORE-09`, `SD-M3..M6`, `ST-D03`, `KT-03`).
+Result on 2026-11-08 after the independent architecture and security reviews (Python 3.14.7, jsonschema 4.26.0): `PASS` — 8 schemas, 125 cases (88 shape, 6 runtime), 10 state-machine sequences and 4 cross-record bundles (intent uniqueness and verdict binding); every case matched its expected verdict (`REPRODUCED`). This proves contract conformance only. Whether products *behave* this way (revalidation actually happening, leases actually released only on observed stop) needs product conformance fixtures (packets `CORE-09`, `SD-M3..M6`, `ST-D03`, `KT-03`).
 
 **Known simplification:** `compose()` in the runner is a simplified narrowing composition. Exact Sentrdel semantics, including `UndecidableResolution` and the kernel floor, are ported with the donor's exhaustive test vectors in packet `CORE-03`, and the Rust and Python implementations must then produce identical verdict JSON for every fixture.
 

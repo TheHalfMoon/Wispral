@@ -284,7 +284,7 @@
     "Rules exactly as in reconciliation section 4.2 (allowlisted headings; appended Platform frontier sections; NFC; confusables; B2 marker count and positions in B2-owned regions equal the authority base, and no marker inside an allowlisted region or appended Platform frontier section)",
     "PR #120 still passes both gates; F's literal planned diff passes",
     "Trusted base-defined gate also covers research/000b2-entry/**, research/000b1/** and 000b2-entry-*.yml",
-    "The allowlist is exactly the set of headings designated by constitutional amendment (G2, or A040 if it designates them); no non-B2 frontier edit merges before that designation",
+    "The allowlist encodes exactly the reconciliation section 4.2 headings, which G2 (or A040, if it designates them) designates by constitutional amendment; until that designation merges, the allowlist confers no edit authority, and F, the first frontier edit, depends on G2",
     "Immutable-control boundary failure preserved only as A040 allows (declared annexed byte change only; immutable list unchanged)",
     "C1 lessons: in-class corpus with recorded historical verdicts; a negative fixture for every rejecting branch; non-concealment diff pinned by commit SHA; every check skipped by a neutralization run separately; the correction's own verifier and tests equal the trusted revision's bytes"
    ],
@@ -873,7 +873,7 @@
     "contracts/README.md (canonicalization: RFC 8785 JCS, NFC, path normalization)"
    ],
    "acceptance": [
-    "run_conformance.py PASS (114 cases, 10 sequences, 6 bundles today)",
+    "run_conformance.py PASS (125 cases, 10 sequences, 6 bundles today)",
     "The Core audit gap probes are committed as fixtures with their IDs and each yields its intended verdict"
    ],
    "tests": [
@@ -2369,8 +2369,8 @@
    "acceptance": [
     "100% correct on the matrix 4 clone paths x {none, valid, revoked, reference-hash mismatch}",
     "Consent binds the reference-audio digest and a speaker match",
-    "Every consent record carries an Ed25519 attestation from a trusted issuer key (studio operator or consent service) over the bound-fields digest (subject, voice, purposes, products, reference audio, validity, epoch, nonce), an identity check method, and an operator-confirmed match of the versioned consent script; a speaker match alone never admits a voice",
-    "Forged signature, unknown issuer key, fields changed after signing, spliced or synthesized statement (script mismatch) and a missing operator confirmation are each refused",
+    "Every consent record carries an Ed25519 attestation over the whole record (every consent field except lifecycle status, plus issuer, live identity check, statement, nonce and issue time), signed by the issuer key it names; commercial and third-party consent use the consent-service key and are watermarked; the statement is captured live with a capture-time challenge and an operator-confirmed match of the versioned consent script; a speaker match alone never admits a voice",
+    "Forged signature, unknown issuer key, issuer/signing-key mismatch, any signed field changed after signing, spliced or synthesized statement (script or challenge mismatch), a missing operator confirmation, and commercial consent under the operator key are each refused",
     "Stock voices only from manifest catalog entries",
     "Revocation cancels queued work; late outputs dropped"
    ],

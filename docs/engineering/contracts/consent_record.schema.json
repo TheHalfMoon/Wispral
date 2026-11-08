@@ -163,7 +163,7 @@
     "issued_at",
     "signature"
    ],
-   "description": "Authenticated consent. The issuer signs bound_fields_digest, the SHA-256 of the canonical JSON (sorted keys, no spaces) of {subject_ref, voice_id, purposes, products, reference_artifact_digest, valid_from, valid_until, consent_epoch, nonce}. Verifiers recompute the digest from the record and verify the signature against a trusted issuer key; a speaker match alone never establishes consent.",
+   "description": "Authenticated consent. The issuer signs bound_fields_digest: the SHA-256 of the canonical JSON (sorted keys, no spaces, absent fields as null) of every record field except status, revoked_at, scope_note and display data, together with every attestation field except bound_fields_digest and signature. The covered fields are subject_ref, voice_id, relationship, principal_scope_ref, purposes, products, allowed_engines, valid_from, valid_until, evidence_digest, consent_epoch, watermark_required, reference_artifact_digest, speaker_match, and the attestation's issuer, identity_check, statement, nonce and issued_at. Verifiers recompute the digest and verify the signature with the key named by issuer.key_id, which must equal signature.key_id. A speaker match alone never establishes consent.",
    "properties": {
     "issuer": {
      "type": "object",
@@ -188,9 +188,9 @@
     "identity_check": {
      "enum": [
       "in_person_id_check",
-      "live_video_id_check",
-      "signed_written_consent"
-     ]
+      "live_video_id_check"
+     ],
+     "description": "Live identity checks only; the statement is captured in the same live session."
     },
     "statement": {
      "type": "object",
@@ -388,6 +388,52 @@
          },
          "operator_confirmed": {
           "const": true
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "anyOf": [
+     {
+      "properties": {
+       "purposes": {
+        "contains": {
+         "const": "commercial"
+        }
+       }
+      },
+      "required": [
+       "purposes"
+      ]
+     },
+     {
+      "properties": {
+       "relationship": {
+        "const": "consenting_third_party"
+       }
+      },
+      "required": [
+       "relationship"
+      ]
+     }
+    ]
+   },
+   "then": {
+    "properties": {
+     "watermark_required": {
+      "const": true
+     },
+     "attestation": {
+      "properties": {
+       "issuer": {
+        "properties": {
+         "kind": {
+          "const": "consent_service"
          }
         }
        }
