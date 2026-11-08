@@ -1,0 +1,7 @@
+{
+ "description": "Conformance-only pinned trusted-key registry: key_id -> issuer kind. The product ships a signed, versioned registry; keys are never trusted by label or namespace alone.",
+ "keys": {
+  "op-key:studio-001": "studio_operator",
+  "consent-svc:key-1": "consent_service"
+ }
+}

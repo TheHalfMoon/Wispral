@@ -2,7 +2,7 @@
  "$schema": "https://json-schema.org/draft/2020-12/schema",
  "$id": "https://wispral.invalid/contracts/v1/consent_record.schema.json",
  "title": "Voice-asset consent record (CANDIDATE v1, revised after Core audit)",
- "description": "A projection over append-only consent_granted / consent_revoked provenance events: revocation is a new event, never an in-place edit. Binds a personal voice reference to an opaque subject, purpose, scope and validity. No personal display data is stored here. Revocation blocks new, queued, resumed and cached work; it cannot recall past exports. valid_until > valid_from and strictly increasing consent_epoch are checked by the runtime runner.",
+ "description": "A projection over append-only consent_granted / consent_revoked provenance events: revocation is a new event, never an in-place edit. Binds a personal voice reference to an opaque subject, purpose, scope and validity. No personal display data is stored here. Revocation blocks new, queued, resumed and cached work; it cannot recall past exports. valid_until > valid_from is checked by the runtime runner; strictly increasing consent_epoch is enforced by the signed append-only consent ledger (packet ST-D03). Lifecycle fields (status, revoked_at) are an unsigned projection: every gate derives the current state from the latest signed ledger event for (consent_id, consent_epoch) and refuses any record whose projection disagrees with it.",
  "type": "object",
  "additionalProperties": false,
  "required": [
@@ -163,7 +163,7 @@
     "issued_at",
     "signature"
    ],
-   "description": "Authenticated consent. The issuer signs bound_fields_digest: the SHA-256 of the canonical JSON (sorted keys, no spaces, absent fields as null) of every record field except status, revoked_at, scope_note and display data, together with every attestation field except bound_fields_digest and signature. The covered fields are subject_ref, voice_id, relationship, principal_scope_ref, purposes, products, allowed_engines, valid_from, valid_until, evidence_digest, consent_epoch, watermark_required, reference_artifact_digest, speaker_match, and the attestation's issuer, identity_check, statement, nonce and issued_at. Verifiers recompute the digest and verify the signature with the key named by issuer.key_id, which must equal signature.key_id. A speaker match alone never establishes consent.",
+   "description": "Authenticated consent. The issuer signs bound_fields_digest: the SHA-256 of the canonical JSON (sorted keys, no spaces, absent fields as null) of every record field except status, revoked_at, scope_note and display data, together with every attestation field except bound_fields_digest and signature. The covered fields are consent_id, subject_ref, voice_id, relationship, principal_scope_ref, purposes, products, allowed_engines, valid_from, valid_until, evidence_digest, consent_epoch, watermark_required, reference_artifact_digest, speaker_match, and the attestation's issuer, identity_check, statement, nonce and issued_at. Verifiers recompute the digest and verify the signature with the key named by issuer.key_id, which must equal signature.key_id. A speaker match alone never establishes consent.",
    "properties": {
     "issuer": {
      "type": "object",
@@ -183,7 +183,8 @@
        "type": "string",
        "pattern": "^[A-Za-z0-9:._-]{3,64}$"
       }
-     }
+     },
+     "description": "Issuer identity. The key_id must be listed in the pinned trusted-key registry (fixtures/trusted_keys.json for conformance; a signed, versioned registry in the product) with this exact kind. Operator keys use the op-key: namespace and consent-service keys the consent-svc: namespace; a label alone never authenticates an issuer."
     },
     "identity_check": {
      "enum": [
@@ -414,7 +415,10 @@
      {
       "properties": {
        "relationship": {
-        "const": "consenting_third_party"
+        "enum": [
+         "consenting_third_party",
+         "licensed_voice_actor"
+        ]
        }
       },
       "required": [
@@ -434,6 +438,76 @@
         "properties": {
          "kind": {
           "const": "consent_service"
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "attestation": {
+      "properties": {
+       "issuer": {
+        "properties": {
+         "kind": {
+          "const": "consent_service"
+         }
+        }
+       }
+      }
+     }
+    },
+    "required": [
+     "attestation"
+    ]
+   },
+   "then": {
+    "properties": {
+     "attestation": {
+      "properties": {
+       "issuer": {
+        "properties": {
+         "key_id": {
+          "pattern": "^consent-svc:[A-Za-z0-9._-]{1,48}$"
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "attestation": {
+      "properties": {
+       "issuer": {
+        "properties": {
+         "kind": {
+          "const": "studio_operator"
+         }
+        }
+       }
+      }
+     }
+    },
+    "required": [
+     "attestation"
+    ]
+   },
+   "then": {
+    "properties": {
+     "attestation": {
+      "properties": {
+       "issuer": {
+        "properties": {
+         "key_id": {
+          "pattern": "^op-key:[A-Za-z0-9._-]{1,48}$"
          }
         }
        }

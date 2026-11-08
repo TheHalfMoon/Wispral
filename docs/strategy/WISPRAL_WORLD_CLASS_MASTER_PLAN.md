@@ -48,7 +48,7 @@
 ## 3. Final architectural recommendation
 
 - **Three independently installable products and a thin shared layer.** No central runtime; each product owns its processes, cancellation, inventory, identity and side effects ([owner table](WISPRAL_PRODUCT_ARCHITECTURE.md#2-one-owner-per-responsibility)).
-- **Eight versioned contracts** (envelope with typed payloads, cancellation, model manifest, consent, policy verdict, provenance, delivery outcome, effect intent) with shape, runtime, sequence and cross-record bundle fixtures that already pass (125 cases, 10 sequences, 6 bundles). Digests are canonicalized (RFC 8785, NFC, path rules) so any future Rust, Python or TypeScript implementation produces identical results.
+- **Eight versioned contracts** (envelope with typed payloads, cancellation, model manifest, consent, policy verdict, provenance, delivery outcome, effect intent) with shape, runtime, sequence and cross-record bundle fixtures that already pass (131 cases, 10 sequences, 6 bundles). Digests are canonicalized (RFC 8785, NFC, path rules) so any future Rust, Python or TypeScript implementation produces identical results.
 - **Deterministic authority everywhere it matters.** Policy verdicts from the adapted Sentrdel lattice; effect intents and reconciliation adopted from orcel-journal; probabilistic outputs are evidence only (`authority_ceiling: evidence_only`).
 - **Local-first by default.** No hidden network, no hidden cloud fallback, no automatic paid inference, no telemetry. Each product proves this on its shipped binary with a packet-capture test.
 
@@ -146,7 +146,7 @@ Then, in order:
   - every donor re-pinned with source evidence;
   - architecture, design, model, security, benchmark, platform and release plans;
   - 75 packets, each with dependencies, acceptance criteria, tests, CI gates, rollback, readiness authority and definition of done;
-  - contracts (125 cases, 10 sequences, 6 bundles), tokens (94 contrast pairs and 40 hue checks) and the plan validator, all `PASS`.
+  - contracts (131 cases, 10 sequences, 6 bundles), tokens (94 contrast pairs and 40 hue checks) and the plan validator, all `PASS`.
 - **What "ready" means.** The next executable steps are concrete and unblocked:
   - A040 (#133): update its #130 clause, then qualifying review and merge;
   - PLAN (#128): merge after its qualifying review;

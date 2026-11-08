@@ -35,7 +35,7 @@ UNSIGNED_CONSENT_FIELDS = ("status", "revoked_at", "scope_note")
 def bound_digest(record):
     """SHA-256 of the canonical JSON of every signed consent field: the record minus its lifecycle fields,
     plus the attestation minus bound_fields_digest and signature (absent optional fields as null)."""
-    fields = {k: record.get(k) for k in ("subject_ref", "voice_id", "relationship", "principal_scope_ref", "purposes", "products", "allowed_engines",
+    fields = {k: record.get(k) for k in ("consent_id", "subject_ref", "voice_id", "relationship", "principal_scope_ref", "purposes", "products", "allowed_engines",
                                          "valid_from", "valid_until", "evidence_digest", "consent_epoch", "watermark_required",
                                          "reference_artifact_digest", "speaker_match")}
     fields["attestation"] = {k: v for k, v in record["attestation"].items() if k not in ("bound_fields_digest", "signature")}
@@ -253,6 +253,12 @@ COMMERCIAL = {**CONSENT, "purposes": ["commercial"], "attestation": {**CONSENT["
 add("consent_record", "valid_commercial_consent_service", "valid", COMMERCIAL)
 add("consent_record", "invalid_commercial_operator_key", "invalid", mutate(COMMERCIAL, ["attestation", "issuer", "kind"], "studio_operator"), "commercial consent needs the consent-service key")
 add("consent_record", "invalid_commercial_without_watermark", "invalid", {**COMMERCIAL, "watermark_required": False}, "commercial voices are watermarked")
+add("consent_record", "invalid_operator_key_labelled_consent_service", "invalid", mutate(mutate(COMMERCIAL, ["attestation", "issuer", "key_id"], "op-key:studio-001"), ["attestation", "signature", "key_id"], "op-key:studio-001"), "a consent-service label on an operator key is refused")
+add("consent_record", "invalid_unregistered_consent_service_key", "invalid", mutate(mutate(COMMERCIAL, ["attestation", "issuer", "key_id"], "consent-svc:rogue-9"), ["attestation", "signature", "key_id"], "consent-svc:rogue-9"), "issuer keys come from the pinned registry", layer="runtime")
+add("consent_record", "invalid_licensed_actor_operator_key", "invalid", {**CONSENT, "relationship": "licensed_voice_actor"}, "licensed voice actors use the consent-service key")
+add("consent_record", "invalid_licensed_actor_without_watermark", "invalid", {**COMMERCIAL, "relationship": "licensed_voice_actor", "watermark_required": False}, "licensed voices are watermarked")
+add("consent_record", "valid_licensed_actor_consent_service", "valid", {**COMMERCIAL, "relationship": "licensed_voice_actor"})
+add("consent_record", "invalid_consent_id_relabelled_after_attestation", "invalid", mutate(CONSENT, ["consent_id"], "consent-9999"), "the consent id is signed", layer="runtime", keep_attestation=True)
 add("consent_record", "invalid_written_consent_method", "invalid", mutate(CONSENT, ["attestation", "identity_check"], "signed_written_consent"), "only live identity checks with a live statement")
 for label, path, value in (("evidence_swapped", ["evidence_digest"], "sha256:" + "7" * 64),
                            ("speaker_evidence_swapped", ["speaker_match", "evidence_digest"], "sha256:" + "8" * 64),

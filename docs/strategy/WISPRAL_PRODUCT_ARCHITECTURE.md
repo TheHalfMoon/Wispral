@@ -63,7 +63,7 @@ Every lifecycle, inventory, identity and side effect has exactly one owner per r
 
 | Artifact | Content | Status |
 | --- | --- | --- |
-| [Contracts](../engineering/contracts/README.md) | Envelope (typed payloads per event), cancellation, model manifest, consent record, policy verdict, provenance event, delivery outcome, effect intent — JSON Schema 2020-12, canonicalized with RFC 8785, NFC and documented path rules | Drafted; `PASS` 125 cases, 10 sequences, 4 cross-record bundles (`REPRODUCED`) |
+| [Contracts](../engineering/contracts/README.md) | Envelope (typed payloads per event), cancellation, model manifest, consent record, policy verdict, provenance event, delivery outcome, effect intent — JSON Schema 2020-12, canonicalized with RFC 8785, NFC and documented path rules | Drafted; `PASS` 131 cases, 10 sequences, 4 cross-record bundles (`REPRODUCED`) |
 | `wispral-policy` crate | Monotonic narrowing lattice and bounded JSON input, adapted from Sentrdel | Deferred until a second Rust consumer exists (CORE-R1); Klaint's policy is a Python module inside its broker (KT-03) |
 | `wispral-journal` crate | orcel-journal copied unchanged | Deferred with CORE-R1; Klaint uses a database ledger with the same state table |
 | Fixture corpus | Shape, runtime, sequence and bundle fixtures; product behavior fixtures live in each product's packets | Packet CORE-01 |

@@ -11,7 +11,7 @@ A single candidate planning package on branch `planning/wispral-world-class-mast
 ```text
 node research/rea/2026-10-21/validate_research.mjs          # PR #124 bundle integrity
 node docs/design/tokens/check_contrast.mjs                  # 94 contrast pairs + 40 hue-separation checks
-python -I docs/engineering/contracts/run_conformance.py     # 8 contracts, 125 cases, 10 sequences, 6 bundles
+python -I docs/engineering/contracts/run_conformance.py     # 8 contracts, 131 cases, 10 sequences, 6 bundles
 python -I research/wispral-world-class/build_packets.py     # regenerate packets (diff must be empty)
 node research/wispral-world-class/validate_plan.mjs         # packet graph, links, anchors, names, claims
 ```

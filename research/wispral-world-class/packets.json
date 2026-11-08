@@ -873,7 +873,7 @@
     "contracts/README.md (canonicalization: RFC 8785 JCS, NFC, path normalization)"
    ],
    "acceptance": [
-    "run_conformance.py PASS (125 cases, 10 sequences, 6 bundles today)",
+    "run_conformance.py PASS (131 cases, 10 sequences, 6 bundles today)",
     "The Core audit gap probes are committed as fixtures with their IDs and each yields its intended verdict"
    ],
    "tests": [
@@ -2369,8 +2369,8 @@
    "acceptance": [
     "100% correct on the matrix 4 clone paths x {none, valid, revoked, reference-hash mismatch}",
     "Consent binds the reference-audio digest and a speaker match",
-    "Every consent record carries an Ed25519 attestation over the whole record (every consent field except lifecycle status, plus issuer, live identity check, statement, nonce and issue time), signed by the issuer key it names; commercial and third-party consent use the consent-service key and are watermarked; the statement is captured live with a capture-time challenge and an operator-confirmed match of the versioned consent script; a speaker match alone never admits a voice",
-    "Forged signature, unknown issuer key, issuer/signing-key mismatch, any signed field changed after signing, spliced or synthesized statement (script or challenge mismatch), a missing operator confirmation, and commercial consent under the operator key are each refused",
+    "Every consent record carries an Ed25519 attestation over the whole record (every consent field except lifecycle status, plus issuer, live identity check, statement, nonce and issue time), signed by the issuer key it names, which must be registered for that issuer kind in a pinned signed trusted-key registry; commercial, third-party and licensed-voice-actor consent use a registered consent-service key and are watermarked; status and revocation come from the latest signed ledger event for (consent_id, consent_epoch), never from the unsigned projection; the statement is captured live with a capture-time challenge and an operator-confirmed match of the versioned consent script; a speaker match alone never admits a voice",
+    "Forged signature, unknown issuer key, issuer/signing-key mismatch, any signed field changed after signing, spliced or synthesized statement (script or challenge mismatch), a missing operator confirmation, commercial consent under an operator key or an unregistered key, and a revoked record re-projected as active are each refused",
     "Stock voices only from manifest catalog entries",
     "Revocation cancels queued work; late outputs dropped"
    ],

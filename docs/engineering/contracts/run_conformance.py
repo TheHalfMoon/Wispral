@@ -25,6 +25,7 @@ NAMES = ["envelope", "cancellation", "model_manifest", "consent_record", "policy
 TERMINAL_INTENT = {"settled", "abandoned", "reconciled"}
 ORDER = {"ALLOW": 0, "ASK": 1, "DENY": 2}
 CAPABILITY_MAX_SECONDS = 60
+TRUSTED_KEYS = json.loads((HERE / "fixtures" / "trusted_keys.json").read_text(encoding="utf-8"))["keys"]
 
 
 def ts(value):
@@ -34,7 +35,7 @@ def ts(value):
 def bound_digest(record):
     """SHA-256 of the canonical JSON of every signed consent field: the record minus its lifecycle fields,
     plus the attestation minus bound_fields_digest and signature (absent optional fields as null)."""
-    fields = {k: record.get(k) for k in ("subject_ref", "voice_id", "relationship", "principal_scope_ref", "purposes", "products", "allowed_engines",
+    fields = {k: record.get(k) for k in ("consent_id", "subject_ref", "voice_id", "relationship", "principal_scope_ref", "purposes", "products", "allowed_engines",
                                          "valid_from", "valid_until", "evidence_digest", "consent_epoch", "watermark_required",
                                          "reference_artifact_digest", "speaker_match")}
     fields["attestation"] = {k: v for k, v in record["attestation"].items() if k not in ("bound_fields_digest", "signature")}
@@ -71,6 +72,9 @@ def runtime_errors(schema, inst):
             errors.append("attested fields changed after attestation (bound_fields_digest mismatch)")
         if inst["attestation"]["signature"]["key_id"] != inst["attestation"]["issuer"]["key_id"]:
             errors.append("the signature key is not the issuer key")
+        issuer = inst["attestation"]["issuer"]
+        if TRUSTED_KEYS.get(issuer["key_id"]) != issuer["kind"]:
+            errors.append("issuer key is not registered for this issuer kind in the pinned trusted-key registry")
     elif schema == "effect_intent" and "capability" in inst:
         cap, dispatch = inst["capability"], inst.get("dispatch", {})
         if cap["tool"] != dispatch.get("tool") or cap["args_digest"] != dispatch.get("args_digest"):
