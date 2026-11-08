@@ -1,0 +1,13 @@
+## DEFINITION 76fe651a41eaf73e12f6ac85d7f159427ada1447:.github/workflows/000b2-public-attempt-003-trusted-pr.yml job=verify-successor-pr-from-canonical-base
+## CANDIDATE HEAD e9f368b5f75bb19b4a38ce67e363165c960a05cd
+## STEP 1 Checkout untrusted candidate data only: uses actions/checkout@11d5960a326750d5838078e36cf38b85af677262 (performed by harness setup)
+## STEP 2 Verify trusted-base event and immutable control boundary: exit 1
+   76fe651a41eaf73e12f6ac85d7f159427ada1447
+   TRUSTED_PR_GATE=FAIL: immutable execution control changed: .github/workflows/000b2-public-attempt-003-recovery.yml
+## STEP 3 Verify candidate with exact authority-base common verifier bytes: exit 1
+## STEP 4 Fetch exact pinned sherpa-onnx source: exit 0
+   Initialized empty Git repository in <local>/rt/sherpa-onnx/.git/
+   From https://github.com/k2-fsa/sherpa-onnx
+    * branch            917bed95c8e5c7c18aa4d69fea42e9ef8ef0a60e -> FETCH_HEAD
+   HEAD is now at 917bed9 Release v1.13.7 (#3909)
+## STEP 5 Verify pinned runtime contract with trusted common verifier: exit 1

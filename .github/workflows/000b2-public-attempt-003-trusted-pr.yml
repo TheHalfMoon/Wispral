@@ -69,6 +69,22 @@ jobs:
                   raise SystemExit(f"TRUSTED_PR_GATE=FAIL: git {' '.join(args)}: {result.stderr.strip()}")
               return result.stdout.strip()
 
+          def trusted_nonsuccessor_violations(base_rev: str, head_rev: str, paths: list[str]) -> list[str]:
+              # Classification code comes from the authority-base bytes only, never from the candidate.
+              import types
+              relative = "research/000b2-public/verify_attempt_002_invalidation.py"
+              loaded = subprocess.run(["git", "show", f"{base_rev}:{relative}"], cwd=Path.cwd(), check=False,
+                                      stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+              if loaded.returncode != 0:
+                  return ["authority-base common verifier unavailable"]
+              module = types.ModuleType("trusted_authority_base_verifier")
+              module.__file__ = str(Path.cwd() / relative)
+              exec(compile(loaded.stdout.decode("utf-8"), module.__file__, "exec"), module.__dict__)
+              check = getattr(module, "nonsuccessor_violations", None)
+              if check is None:
+                  return ["authority base has no non-successor classification"]
+              return check(base_rev, head_rev, paths, Path.cwd())
+
           try:
               candidate = json.loads((root / readiness_path).read_text(encoding="utf-8"))
               authority = json.loads(git("show", f"{base}:{readiness_path}"))
@@ -155,7 +171,8 @@ jobs:
                   raise SystemExit("TRUSTED_PR_GATE=FAIL: non-reconciliation candidate changed active task")
               allowed = scopes.get(active)
               if not isinstance(allowed, list) or not changed <= set(allowed):
-                  raise SystemExit(f"TRUSTED_PR_GATE=FAIL: {active} candidate path scope violation")
+                  if trusted_nonsuccessor_violations(base, head, sorted(changed)):
+                      raise SystemExit(f"TRUSTED_PR_GATE=FAIL: {active} candidate path scope violation")
               if proofs != base_proofs:
                   raise SystemExit("TRUSTED_PR_GATE=FAIL: task candidate changed transition proofs")
 

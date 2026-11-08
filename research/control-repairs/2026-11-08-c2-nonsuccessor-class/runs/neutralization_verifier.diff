@@ -1,0 +1,12 @@
+diff --git a/research/000b2-public/verify_attempt_002_invalidation.py b/research/000b2-public/verify_attempt_002_invalidation.py
+index 0d7d063..f604653 100644
+--- a/research/000b2-public/verify_attempt_002_invalidation.py
++++ b/research/000b2-public/verify_attempt_002_invalidation.py
+@@ -490,6 +490,7 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str
+         return
+     if delta != 0:
+         return
++    return  # XVII.5(b) neutralization: not a task candidate
+     if not changed_paths:
+         return  # canonical state itself (dispatch or no-op push), not a task candidate
+     if not nonsuccessor_violations(authority_base, "HEAD", changed_paths):

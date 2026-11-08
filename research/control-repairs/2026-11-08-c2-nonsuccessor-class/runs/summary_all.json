@@ -1,0 +1,105 @@
+{
+ "main": "76fe651a41eaf73e12f6ac85d7f159427ada1447",
+ "c2": "d5bb5bea53fe7c20bfaba705040443a8154cfa69",
+ "post": {
+  "ns_ok": {
+   "trusted": "2:0 3:0 4:0 5:0",
+   "recovery": "2:0 3:0 4:0 5:0 6:0 7:0"
+  },
+  "neg_b2_path": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  },
+  "neg_github_path": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  },
+  "neg_readiness": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  },
+  "neg_outside_allowlist": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  },
+  "neg_reordered": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  },
+  "neg_duplicate_heading": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  },
+  "neg_confusable_heading": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  },
+  "neg_marker_in_allowlisted": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  },
+  "neg_marker_in_appended": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  },
+  "neg_preamble": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  },
+  "neg_c1_checker": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  },
+  "task_pr120": {
+   "trusted": "2:0 3:0 4:0 5:0",
+   "recovery": "2:0 3:0 4:0 5:0 6:0 7:0"
+  },
+  "neg_task_extra_path": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  },
+  "canonical_self_check": {
+   "recovery": "2:0 3:0 4:0 5:0 6:0 7:0"
+  }
+ },
+ "pre": {
+  "c2": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  },
+  "base": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:0 5:1 6:1 7:0"
+  },
+  "pr120": {
+   "trusted": "2:0 3:0 4:0 5:0",
+   "recovery": "2:0 3:0 4:0 5:0 6:0 7:0"
+  },
+  "pr120c2": {
+   "trusted": "2:1 3:1 4:0 5:1",
+   "recovery": "2:0 3:0 4:1 5:1 6:1 7:0"
+  }
+ },
+ "post_candidates": {
+  "ns_ok": "b52912fb5a795f970f74fdc9072287187d7c942a",
+  "neg_b2_path": "f91492a77163e1994766aa5d2bca05159dfc9dae",
+  "neg_github_path": "a896364b87cb47c6b61b2a30b095deb173ddefff",
+  "neg_readiness": "7e5174b180094c6eb991e7a369cf462c25f9a9ea",
+  "neg_outside_allowlist": "aeb41f204df6c6856524ad0421084d2912bead2c",
+  "neg_reordered": "cdb6d480d6b247610165823abbf6fc129716987a",
+  "neg_duplicate_heading": "ede37dee58850f47c5d98fd82f3ebffc43d61044",
+  "neg_confusable_heading": "fef150676e25a9a0aae10536a04d73864be369a3",
+  "neg_marker_in_allowlisted": "f93085e5ba3204f5b604068fc8f61b0c79512441",
+  "neg_marker_in_appended": "f373bb48c4aa975804eab8b35ac9912ba5294416",
+  "neg_preamble": "26dc8264471cf8bd74cd209532cb013aee7b85db",
+  "neg_c1_checker": "4bccb4fb34b21ae417a7933b0293791fcd55a67b",
+  "task_pr120": "517a0ae46cbdef7ebe330bb79d0858f79129e150",
+  "neg_task_extra_path": "7cece77b3ff51d73211e88c97b08d32016a2924e"
+ },
+ "pre_candidates": {
+  "c2": "d5bb5bea53fe7c20bfaba705040443a8154cfa69",
+  "base": "76fe651a41eaf73e12f6ac85d7f159427ada1447",
+  "pr120": "78f5366c8b97adb496e8c0d8c28550510fbb2baa",
+  "pr120c2": "e9f368b5f75bb19b4a38ce67e363165c960a05cd"
+ }
+}
