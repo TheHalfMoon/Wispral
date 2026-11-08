@@ -2,8 +2,9 @@ name: 000B2 Public Corpus B2R16 Freeze
 
 # Constitution Principle XVII correction C1. The job definition and the code it
 # runs come from the base branch (pull_request_target) or from the pushed or
-# dispatched commit itself. A pull request candidate is fetched only as Git
-# objects and is never checked out or executed.
+# dispatched commit itself; a dispatch trusts the ref that a maintainer chose.
+# A pull request candidate is fetched only as Git objects and is never checked
+# out or executed.
 on:
   pull_request_target:
   push:
@@ -22,8 +23,8 @@ jobs:
       TASK: B2R16
       TRUSTED_REVISION: ${{ github.sha }}
       CANDIDATE_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
-      CHECKER_SHA256: 1770952607572c42bb6d58bc9fd990a4059b32a7091574ec931c862d9565b373
-      TEST_SHA256: 9d524363117ef2c0da0f94b9e0d96ae51cc8daf2ad653e37bf12170e498c4482
+      CHECKER_SHA256: fb7b75c840692c563e2455fd74c1e3363c45389c903d1d494c573871699bdd50
+      TEST_SHA256: 823bc1793068fc716146e36202e365b7cc16e8c51fc43e5f0ade83e038110df4
 
     steps:
       - name: Checkout trusted B2R16 preservation code
