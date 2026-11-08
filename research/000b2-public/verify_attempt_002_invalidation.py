@@ -360,6 +360,93 @@ def verify_b2r14_non_primary_candidate(readiness: dict[str, Any]) -> None:
                     "B2R14 workflow must bind exact canonical fixture digest")
 
 
+def nonsuccessor_violations(base: str, head: str, changed: list[str], cwd: Path = ROOT) -> list[str]:
+    """Return why a candidate is NOT a non-successor candidate (empty list: it is one).
+
+    A non-successor candidate claims no B2 task. It changes no B2-owned path, leaves the
+    successor readiness blob identical to the authority base, and edits the frontier files
+    only inside the allowlisted sections (designated by constitutional amendment) or in
+    appended "## Platform frontier" sections. Every other byte of those files, including
+    every B2 marker, stays identical to the base, and no B2 marker appears in an allowlisted
+    or appended section. It carries no execution, decode, scoring or completion authority.
+    Self-contained (Constitution XVII item 5): no module-level state outside this function.
+    """
+    import unicodedata
+
+    b2_prefixes = (".github/", "fixtures/", "research/000b1/", "research/000b2-entry/", "research/000b2-public/", "specs/000B")
+    frontier_sections = {
+        "docs/canonical/CURRENT_STATE.md": (
+            "## Current product thesis", "## Current architecture posture", "## Explicit non-claims", "## Product-code gate",
+        ),
+        "specs/CURRENT.md": ("## Remaining founding children", "## Product-code gate"),
+    }
+    appended_prefix = "## Platform frontier"
+    b2_markers = (
+        "Active successor recovery unit", "ATTEMPT-003 primary decode entry open", "ATTEMPT-003 frozen",
+        "production_stt_selected", "product_code_authorized", "HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE",
+    )
+    readiness = "research/000b2-public/recovery-attempt-003-readiness.json"
+
+    def show(revision: str, path: str) -> str | None:
+        completed = subprocess.run(["git", "show", f"{revision}:{path}"], cwd=cwd, check=False,
+                                   stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        return completed.stdout.decode("utf-8") if completed.returncode == 0 else None
+
+    def sections(text: str) -> tuple[str, list[tuple[str, str]]]:
+        preamble: list[str] = []
+        found: list[tuple[str, list[str]]] = []
+        for line in text.splitlines(keepends=True):
+            if line.startswith("## "):
+                found.append((line.rstrip("\r\n"), [line]))
+            elif found:
+                found[-1][1].append(line)
+            else:
+                preamble.append(line)
+        return "".join(preamble), [(heading, "".join(body)) for heading, body in found]
+
+    def fold(heading: str) -> str:
+        return "".join(unicodedata.normalize("NFKC", heading).casefold().split())
+
+    errors: list[str] = []
+    if not changed:
+        errors.append("non-successor candidate must change at least one path")
+    for path in changed:
+        if path.startswith(b2_prefixes):
+            errors.append(f"B2-owned path changed: {path}")
+    if show(base, readiness) != show(head, readiness):
+        errors.append("successor readiness differs from the authority base")
+    for path, allowed in frontier_sections.items():
+        if path not in changed:
+            continue
+        base_text, head_text = show(base, path), show(head, path)
+        if base_text is None or head_text is None:
+            errors.append(f"frontier file missing: {path}")
+            continue
+        base_pre, base_secs = sections(unicodedata.normalize("NFC", base_text))
+        head_pre, head_secs = sections(unicodedata.normalize("NFC", head_text))
+        if head_pre != base_pre:
+            errors.append(f"{path}: text before the first section changed")
+        head_headings = [heading for heading, _ in head_secs]
+        if len(set(head_headings)) != len(head_headings):
+            errors.append(f"{path}: duplicate section heading")
+        if head_headings[:len(base_secs)] != [heading for heading, _ in base_secs]:
+            errors.append(f"{path}: existing sections removed, renamed or reordered")
+            continue
+        folded_allowed = {fold(heading) for heading in allowed}
+        for (heading, base_body), (_, head_body) in zip(base_secs, head_secs):
+            if heading in allowed:
+                if any(marker in head_body for marker in b2_markers):
+                    errors.append(f"{path}: B2 marker inside allowlisted section {heading}")
+            elif head_body.rstrip("\n") != base_body.rstrip("\n"):  # trailing blank lines carry no content
+                errors.append(f"{path}: B2-owned section changed: {heading}")
+        for heading, body in head_secs[len(base_secs):]:
+            if not heading.startswith(appended_prefix):
+                errors.append(f"{path}: appended section is not a Platform frontier section: {heading}")
+            if fold(heading) in folded_allowed:
+                errors.append(f"{path}: confusable or duplicate allowlisted heading: {heading}")
+            if any(marker in body for marker in b2_markers):
+                errors.append(f"{path}: B2 marker inside appended section {heading}")
+    return errors
 def verify_active_task_candidate_content(readiness: dict[str, Any], active: str | None, completed: list[str]) -> None:
     """Validate the exact active-task or one-step reconciliation candidate boundary."""
     if active is None:
@@ -403,6 +490,10 @@ def verify_active_task_candidate_content(readiness: dict[str, Any], active: str 
         return
     if delta != 0:
         return
+    if not changed_paths:
+        return  # canonical state itself (dispatch or no-op push), not a task candidate
+    if not nonsuccessor_violations(authority_base, "HEAD", changed_paths):
+        return  # non-successor candidate: claims no task and carries no execution authority
     if active == "B2R14":
         verify_b2r14_non_primary_candidate(readiness)
 

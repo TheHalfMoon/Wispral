@@ -92,6 +92,22 @@ jobs:
           root = Path.cwd()
           base = os.environ["AUTHORITY_BASE_REVISION"]
           discovery = os.environ["DISCOVERY_MAIN"]
+          def trusted_nonsuccessor_violations(base_rev: str, head_rev: str, paths: list[str]) -> list[str]:
+              # Classification code comes from the authority-base bytes only, never from the candidate.
+              import types
+              relative = "research/000b2-public/verify_attempt_002_invalidation.py"
+              loaded = subprocess.run(["git", "show", f"{base_rev}:{relative}"], cwd=Path.cwd(), check=False,
+                                      stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+              if loaded.returncode != 0:
+                  return ["authority-base common verifier unavailable"]
+              module = types.ModuleType("trusted_authority_base_verifier")
+              module.__file__ = str(Path.cwd() / relative)
+              exec(compile(loaded.stdout.decode("utf-8"), module.__file__, "exec"), module.__dict__)
+              check = getattr(module, "nonsuccessor_violations", None)
+              if check is None:
+                  return ["authority base has no non-successor classification"]
+              return check(base_rev, head_rev, paths, Path.cwd())
+
           readiness_path = root / "research/000b2-public/recovery-attempt-003-readiness.json"
           state = json.loads(readiness_path.read_text(encoding="utf-8"))
           active = state.get("active_recovery_unit")
@@ -159,7 +175,8 @@ jobs:
               elif active and changed:
                   allowed = set(scopes.get(active, []))
                   if not changed <= allowed:
-                      raise SystemExit(f"TRUSTED_BOUNDARY=FAIL: {active} task-candidate path scope violation")
+                      if trusted_nonsuccessor_violations(base, "HEAD", sorted(changed)):
+                          raise SystemExit(f"TRUSTED_BOUNDARY=FAIL: {active} task-candidate path scope violation")
 
           if active == "B2R13":
               candidate_paths = set(scopes["B2R13"])
