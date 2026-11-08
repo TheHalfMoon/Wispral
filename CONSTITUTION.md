@@ -1,6 +1,6 @@
 # Wispral Constitution
 
-**Version:** 0.4.0
+**Version:** 1.0.0
 **Status:** Active  
 **Ratified:** 2026-09-01  
 **Amended:** 2026-11-08  
@@ -8,15 +8,23 @@
 
 ## Preamble
 
-Wispral exists to make speaking to AI coding agents a trustworthy control interface rather than a transcription shortcut. The product should let a developer speak, think aloud, interrupt, steer, inspect, approve, and recover while preserving the authority boundaries of the underlying agent and repository.
+Wispral makes voice a trustworthy interface for writing, audio production, and interaction with independent agents. It is one platform with three products that share one authority, provenance, and resource core:
+
+- **WisprSide**: cross-application dictation, spoken writing and editing, and optional control of independent developer agents;
+- **WisprStudio**: voice production, including authorized voice cloning, synthesis, editing, and dubbing;
+- **Klaint**: customer dialogue agents with bounded tools, channels, and human handoff.
+
+These names are final founder selections; trademark, domain, and store clearance is not asserted. Each product should let a person speak, think aloud, interrupt, steer, inspect, correct, approve, and recover while preserving the authority boundaries of the systems it acts on.
 
 The project optimizes for durable usefulness, interoperability, trust, speed, and open evidence. Popularity is a desired consequence of exceptional utility, not a substitute for it.
 
-## Principle I — Control plane, not another agent
+## Principle I — Platform and control plane, not compulsory proprietary intelligence
 
-Wispral MUST remain primarily an interface and control plane around independent agents. It MUST NOT require users to adopt a Wispral-owned foundation model, coding agent, IDE, or hosted reasoning service for the core product to work.
+Wispral MUST remain a modular platform around replaceable speech, model, dialogue, and agent implementations. A useful local core MUST NOT require a Wispral-owned foundation model, coding agent, IDE, or hosted reasoning service.
 
-Agent-specific adapters MAY improve compatibility but MUST remain outside the portable core contract.
+Control of independent coding agents remains a supported direction of WisprSide, as an optional capability; it is neither removed nor required by any product.
+
+Product-, agent-, engine-, and vendor-specific adapters MAY improve compatibility but MUST remain outside the portable core contracts.
 
 ## Principle II — Speech is evidence, not authority by default
 
@@ -36,11 +44,11 @@ Wispral MUST support the product distinction between speech intended to cause ac
 
 The project MAY evolve the exact interaction mechanism, but it MUST NOT assume that every spoken utterance is an executable command.
 
-## Principle V — Repository-aware meaning outranks generic dictation
+## Principle V — Bounded domain context improves meaning
 
-Wispral SHOULD use bounded repository context to improve interpretation of paths, symbols, package names, flags, branches, tests, and other developer entities.
+Wispral SHOULD use bounded, explicitly scoped context to improve interpretation. Repository context (paths, symbols, package names, flags, branches, tests, and other developer entities) is one domain; the target application, script or project metadata, and tenant-authorized knowledge are others. Each domain is scoped and authorized separately.
 
-Context resolution MUST remain inspectable, confidence-aware, bounded, and reversible. A low-confidence entity binding MUST NOT be hidden behind polished text.
+Raw text, selected context, and interpretation MUST remain distinct. Context resolution MUST remain inspectable, confidence-aware, bounded, and reversible, and MUST NOT become a hidden exfiltration channel. A low-confidence binding MUST NOT be hidden behind polished text.
 
 ## Principle VI — Agent and protocol neutrality
 
@@ -53,6 +61,8 @@ Open protocols SHOULD be preferred when they provide the required semantics. Com
 A useful core path MUST be possible without a Wispral account or mandatory Wispral-hosted service.
 
 Cloud speech, model, synchronization, or enterprise services MAY be supported as optional adapters. Their failure MUST NOT silently weaken privacy, authorization, or evidence guarantees.
+
+Local dictation and local project workflows MUST have useful account-free paths. Enterprise channels and cloud services are optional, separately declared deployments; this principle does not imply that telephone, messaging, or CRM channels can operate offline, and no hidden fallback between deployments is permitted.
 
 ## Principle VIII — Deterministic trust boundaries
 
@@ -149,7 +159,7 @@ A correction of an over-applied annexed control is authorized only through a ded
 7. a qualifying independent substantive review (Governance item 7) MUST cover the exact final range and resolve all blocking findings before merge;
 8. the correction MUST use a guarded normal merge bound to the exact reviewed head, recorded as an explicit owner act;
 9. after merge, the actual canonical merge SHA and ancestry MUST be verified, and the corrected control MUST be exercised against that exact canonical state by a deterministic verifier or a dispatched canonical workflow;
-10. a separate canonical reconciliation MUST record the correction before dependent work other than a later correction in the same declared lane relies on it. The reconciliation changes only records of the correction (merge SHA, preserved failures, and verifier outputs) and MUST NOT change any authority, freeze, decode, scoring, readiness, task-scope, or completion field, proven by a deterministic diff of those fields against the pre-correction base. It requires a qualifying review. Reconciliations of corrections in one declared lane MAY be combined into a single reconciliation after the lane's last correction. Until that reconciliation merges, no work other than a later correction in the same declared lane and that reconciliation itself may rely on any of those corrections. A declared lane is a closed list of correction pull requests and their annexed paths, stated by number in the first correction's description and confirmed by the owner on that pull request, or declared by a constitutional amendment. This amendment declares the B2R16/ATTEMPT-003 lane: #130, which merged under 0.3.0 as `5879c43` and corrected annex item 1, and at most one further correction covering annex items 3 and 4, whose number the owner confirms on that pull request. Extending a lane requires a constitutional amendment.
+10. a separate canonical reconciliation MUST record the correction before dependent work other than a later correction in the same declared lane relies on it. The reconciliation changes only records of the correction (merge SHA, preserved failures, and verifier outputs) and MUST NOT change any authority, freeze, decode, scoring, readiness, task-scope, or completion field, proven by a deterministic diff of those fields against the pre-correction base. It requires a qualifying review. Reconciliations of corrections in one declared lane MAY be combined into a single reconciliation after the lane's last correction. Until that reconciliation merges, no work other than a later correction in the same declared lane and that reconciliation itself may rely on any of those corrections. A declared lane is a closed list of correction pull requests and their annexed paths, stated by number in the first correction's description and confirmed by the owner on that pull request, or declared by a constitutional amendment. Constitution 0.4.0 declared the B2R16/ATTEMPT-003 lane: #130, which merged under 0.3.0 as `5879c43` and corrected annex item 1, and one further correction covering annex items 3 and 4, which the owner confirmed as #135 (merged as `d78ecb5`). That lane is complete and was reconciled as Reconciliation 002 (`bedf376`). Extending a lane or declaring a new one requires a constitutional amendment.
 
 This correction authority MUST NOT be used as a substitute for an ordinary required gate. If preservation, cause, non-concealment, or strict non-broadening cannot be demonstrated, the project remains blocked.
 
@@ -163,7 +173,35 @@ The first freeze correction is pull request #130. It merged as `5879c43c7a389bd4
 
 **Frontier sections.** Non-B2 governance pull requests MAY edit only those sections of `specs/CURRENT.md` and `docs/canonical/CURRENT_STATE.md` that a constitutional amendment designates by exact heading as non-B2 sections, plus newly appended sections whose headings that amendment designates; all other bytes of those files remain under benchmark-lane authority, both while ATTEMPT-003 is active and after it completes.
 
+**Designation (1.0.0).** This amendment designates exactly these non-B2 sections:
+
+- in `docs/canonical/CURRENT_STATE.md`, the sections headed exactly `## Current product thesis`, `## Current architecture posture`, `## Explicit non-claims`, and `## Product-code gate`;
+- in `specs/CURRENT.md`, the sections headed exactly `## Remaining founding children` and `## Product-code gate`;
+- in either file, new sections appended after the last existing section whose heading line begins `## Platform frontier`.
+
+A section runs from its `## ` heading line to the line before the next `## ` heading, or to the end of the file. Text before the first heading, the order of existing headings, and every other section remain under benchmark-lane authority. A designated section MUST NOT contain the B2 lane markers that the B2 scope gates reject there. Designation lets non-B2 governance pull requests edit these sections; it grants no authority beyond what this constitution and the active specification grant. In particular, editing a `## Product-code gate` section cannot open product code, which requires a founding-synthesis (000G) decision.
+
 **Ratification of 0.3.0.** The 0.3.0 adoption of this principle merged with its qualifying review waived by the owner. The qualifying review of the 0.4.0 amendment covers the full text of this principle as amended, together with the transitional checker and test bytes named above, and ratifies them. That review MUST be recorded on the exact merged head before merge and MUST NOT be waived. #130 merged under 0.3.0 before this amendment, with its own qualifying review recorded on #130, and is not reopened. Item 3a applies to the B2R16 freeze checker and tests that #130 introduced from the merge of this amendment, and the lane's further correction MUST bring them under it.
+
+## Principle XVIII — Voice and asset consent is bound, visible, and revocable
+
+Personal voice recordings, voice references, and cloned or synthesized voices MUST be bound to a subject, a purpose, the artifacts produced, and a revocation state. Work queued under a consent that has since been revoked or has expired MUST NOT run. Recording and retention MUST be visible to the subject.
+
+Rights in models, tokenizers, datasets, and voice or media assets are qualified separately from source-code grants; a code grant never implies them. Wispral MUST NOT promise that outputs already delivered to third parties can be recalled after revocation.
+
+The founder's confidential source-code grants remain confirmed and private; no confidential document upload is required by this principle.
+
+## Principle XIX — Tenant and action authority is server-derived and deterministic
+
+Customer, tenant, account, channel, and credential authority MUST derive from authenticated server context and deterministic policy, never from identifiers supplied by a model or by customer text.
+
+External side effects MUST use scoped credentials and idempotency, and an action whose outcome is unknown MUST be reconciled explicitly rather than blindly retried. Guidelines, model confidence, and scanners are evidence, not authority (Principle VIII).
+
+## Principle XX — Copy first, qualify always
+
+Qualified reuse of authorized source precedes new implementation. Every adopted source MUST record its immutable provenance (upstream, revision, and paths), its actual dependency closure, its required notices and attribution, its mismatches with Wispral contracts, and its tests. Smaller modules or services are preferred to duplicating complete applications, and a decision to build something new MUST be justified against the qualified donor options.
+
+Reuse MUST NOT weaken any correctness, security, consent, tenant, or rights gate, and renaming adopted code never removes original authorship or notices.
 
 ## Governance
 
@@ -174,3 +212,4 @@ The first freeze correction is pull request #130. It merged as `5879c43c7a389bd4
 5. ADRs govern durable architectural decisions. Specs govern bounded outcomes. Tasks govern execution order. Evidence governs verified state.
 6. When these authorities conflict, the conflict must be resolved explicitly before dependent work proceeds.
 7. A review is a qualifying independent review only when the reviewer did not author the change, the review is substantive (it examines the exact final range and states any blocking findings), every blocking finding is resolved before merge, and the review is recorded on the pull request with the exact reviewed head SHA. Qualifying reviewers are: (a) the repository owner personally; (b) a human the owner names for that pull request; or (c) an automated reviewer whose model comes from a different vendor than the model that authored the change, with its model identity, prompt, and output recorded. Local classifiers and reviewers from the author's model vendor may assist but never qualify. Reviews required by Principles XVI and XVII, constitutional amendments, founding-synthesis (000G) decisions, and benchmark-lane merges require a qualifying review; other pull requests require a fresh-context review and the owner's merge approval.
+8. The `claim_guards` of the B2 benchmark lane's readiness file, including `product_code_authorized=false`, are claims of that lane only. They neither grant nor withhold product-code authority outside that lane. Product-code authority is governed by the product-code gate and the founding synthesis (000G): until a 000G decision selects a bounded implementation Grain and that Grain satisfies readiness, no product code is authorized.

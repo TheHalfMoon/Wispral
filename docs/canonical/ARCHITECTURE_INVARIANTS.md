@@ -1,7 +1,7 @@
 # Wispral Architecture Invariants
 
 **Status:** Founding candidate  
-**Authority:** subordinate only to `CONSTITUTION.md`
+**Authority:** subordinate only to `CONSTITUTION.md` (1.0.0)
 
 These invariants constrain architecture without prematurely selecting every implementation detail. A durable architectural decision that changes an invariant requires an explicit ADR and, when necessary, a constitution amendment.
 
@@ -21,13 +21,18 @@ The conceptual event families include:
 - permission requests;
 - cancellation and steering;
 - user confirmation/denial;
+- generation, rendering, and playback jobs;
+- target and context snapshots;
+- consent state and revocation;
+- tenant, account, and channel sessions;
+- external actions and their observed outcomes;
 - evidence and diagnostic events.
 
 Exact schemas are deferred until evidence selects them.
 
 ## A2. Audio and agent execution must be independently cancellable
 
-Microphone capture, STT, TTS, agent requests, agent streaming, and UI rendering must not share one irreversible task lifecycle.
+Microphone capture, STT, TTS, playback, generation workers, agent requests, agent streaming, external actions, and UI rendering must not share one irreversible task lifecycle. A cancellation reports one of: stopped, completed before cancel, or stopped-unconfirmed.
 
 A user interruption must be able to stop audible output and request agent cancellation without waiting for final transcription of the interrupting utterance.
 
@@ -38,11 +43,11 @@ The architecture must keep separable representations for:
 1. source audio metadata or an explicit non-persistence marker;
 2. raw transcript;
 3. normalized transcript;
-4. repository entity candidates;
+4. domain entity candidates (repository, application, project, or tenant-authorized knowledge);
 5. selected entity bindings and confidence/evidence;
 6. utterance semantic class;
-7. final agent instruction/context payload;
-8. authorization decision.
+7. final instruction, generation request, or action payload, with its target;
+8. authorization decision, including the consent and tenant authority it relied on.
 
 A polished prompt must never be the only surviving representation of what the user said.
 
@@ -62,13 +67,15 @@ PTY integration is a compatibility boundary, not the semantic source of truth fo
 
 ## A6. Protocol adapters do not own product policy
 
-Agent-specific adapters may translate capabilities and events. They must not independently decide:
+Agent-, engine-, and channel-specific adapters may translate capabilities and events. They must not independently decide:
 
 - whether an utterance is authorized;
 - whether a risky action is approved;
 - whether a transcript is sufficiently confident;
 - whether telemetry is emitted;
 - whether persistent recording is allowed;
+- whether voice or asset consent is valid;
+- which tenant, account, or credential applies;
 - whether an action may bypass the user.
 
 Those decisions belong to deterministic Wispral policy.
@@ -79,9 +86,9 @@ No STT, VAD, TTS, wake-word, noise suppression, AEC, or speech provider may beco
 
 The architecture must permit controlled bakeoffs and per-platform backends without changing agent semantics.
 
-## A8. Repository context is bounded and inspectable
+## A8. Context is bounded and inspectable
 
-Context collection must expose why data was selected and must observe explicit budgets. A future context engine may use Git, file paths, symbol indexes, LSP, tree-sitter, build metadata, recent agent events, shell output, or user dictionaries, but must not silently ingest unbounded repository content.
+Context collection must expose why data was selected and must observe explicit budgets. A repository context engine may use Git, file paths, symbol indexes, LSP, tree-sitter, build metadata, recent agent events, shell output, or user dictionaries, but must not silently ingest unbounded repository content. Application, project, and tenant-knowledge context follow the same rule, each within its own authorized scope.
 
 Context must improve interpretation without becoming an implicit data-exfiltration channel.
 
@@ -111,13 +118,13 @@ Rust is the preferred home for:
 - benchmark harness control;
 - configuration and provenance records.
 
-Native speech libraries or other-language tooling may sit behind bounded interfaces when justified by evidence.
+Native speech libraries or other-language tooling may sit behind bounded interfaces when justified by evidence. Isolated donor-native or Python workers, such as speech engines or a dialogue service, may own their own processes when their exact dependency closure and resource and stop behavior are evidenced. Rust-first is a justified boundary, not a mandate to rewrite them.
 
-## A12. The first product surface is terminal-native
+## A12. Each product surface is qualified on its own; core diagnostics stay text-accessible
 
-Wispral begins as a CLI/TUI control surface. It must not require an Electron application, custom IDE, web dashboard, avatar environment, or proprietary desktop shell to prove the core product thesis.
+Core contracts and diagnostics retain CLI/text accessibility. WisprSide may retain its donor's desktop surface; WisprStudio may retain its donor's desktop production surface; Klaint uses its service and an optional, unmodified inbox through its API. Each surface requires its own authority and accessibility evidence, and graphical surfaces consume the same core contracts.
 
-Future graphical surfaces may consume the same core contracts.
+No new core daemon, custom IDE, avatar environment, or compulsory heavyweight shell is required. This replaces the earlier rule that the first product surface is terminal-native; it is an explicit change, not a reinterpretation.
 
 ## A13. Push-to-talk is the reliability baseline
 
@@ -127,7 +134,7 @@ Hands-free capture, semantic endpointing, TTS, barge-in over speakers, and acous
 
 ## A14. Accessibility cannot depend on voice alone
 
-Every consequential control path must have a non-voice fallback. The terminal must expose visible state for listening, interpreting, waiting, acting, asking permission, cancelling, and failure.
+Every consequential control path must have a non-voice fallback. Every product surface must expose visible state for listening, interpreting, waiting, acting, asking permission, cancelling, and failure.
 
 ## A15. Benchmark instrumentation is part of architecture
 
@@ -140,6 +147,7 @@ The runtime must eventually expose timestamps and typed diagnostic events suffic
 - instruction dispatch;
 - agent acknowledgement/first update;
 - cancellation request;
-- TTS stop where applicable.
+- TTS, playback, or worker stop where applicable;
+- external action outcome where applicable.
 
 Performance claims must be derivable from instrumented events rather than screen recordings or manual stopwatch estimates.

@@ -7,6 +7,22 @@
 
 Produce enough reproducible technical, security, platform, licensing, and benchmark evidence to select Wispral's first bounded product implementation Grain without relying on unverified market assumptions or preferred technologies.
 
+Under Constitution 1.0.0 that Grain may belong to WisprSide, WisprStudio, or Klaint, or be a pure contract or policy Grain shared by them. The selection remains exactly one bounded Grain.
+
+## Platform re-scope under Constitution 1.0.0
+
+Each founding child keeps its evidence. None is retroactively marked complete:
+
+| Child | Disposition | Evidence still required |
+| --- | --- | --- |
+| 000A | Preserved: ACP is `PARTIAL`/`MODERATE`. Compatibility is not inflated. | Authenticated lifecycle, permission, and cancellation fixtures before developer-agent support |
+| 000B | Preserved: ATTEMPT-003 stays frozen and unscored. The B2 lane completes its qualified sequence or explicitly records insufficient STT evidence; there is no silent winner. | Speech-bearing Grains require canonically accepted backend evidence. Pure policy, fit, and fake-worker contract Grains have no STT dependency, but still require a scoped 000G decision. |
+| 000C | Split into 000C-AGENT (optional developer-agent steering) and 000C-VOICE (later hands-free and duplex dialogue). Explicit push-to-talk does not wait for semantic endpointing. | Agent interruption observations; voice and playback stop and late-frame tests. Neither is automatically verified. |
+| 000D | Blocks only optional developer-agent compatibility. A structured-only agent Grain explicitly excludes PTY rather than implying fallback support. | A canonical decision to exclude PTY, or qualified PTY fixtures. WisprStudio and text-only Klaint do not depend on it. |
+| 000E | Platform feasibility across the products: microphone permission, device, hotkey, target, session, and egress observations, using a disposable source baseline. | A named 000E research Grain. No release, permanent integration, or installer authority follows from it. |
+| 000F | Provenance intake: existing source, rights, and reuse records become evidence inputs to 000F, not a parallel completed program. | The actual retained fork and engine closure, notices and grant-scope flags, native and model artifacts, and distribution and maintenance. Catalog presence is not completion. |
+| 000G | Selects exactly one bounded next Grain per canonical synthesis. Capability-specific decisions (pure non-STT contract, WisprSide, WisprStudio, text-only Klaint) are candidates; packets are not opened en masse. | Each decision cites its required 000F evidence and its capability-specific 000B to 000E dispositions. Missing child evidence means no dependent product Grain becomes ready. |
+
 ## Canonical progress after 000A
 
 Specification `000A-acp-qualification` is `VERIFIED` at canonical merge `354695c9f4d406147cbdc425d8f59e841a2f96a3`.
