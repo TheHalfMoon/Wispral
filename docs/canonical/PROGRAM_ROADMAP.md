@@ -5,9 +5,9 @@
 
 ## Mission
 
-Make voice a trustworthy, low-friction control surface for independent AI coding agents.
+Make voice a trustworthy, low-friction interface for writing, audio production, and agent interaction, through WisprSide, WisprStudio, and Klaint on one shared authority and provenance core (Constitution 1.0.0).
 
-A successful Wispral experience should eventually let a developer:
+For WisprSide's optional developer-agent control, a successful experience should eventually let a developer:
 
 - start or attach to an agent session;
 - speak developer-specific instructions naturally;
@@ -70,6 +70,16 @@ Core rules:
 - tool/skill/server/provider identity must be capable of invalidating stale approval when material identity or capability changes;
 - exact code/dependency adoption requires provenance and license/NOTICE qualification;
 - security-provider failure must remain visible as failure/unavailability/inconclusive evidence rather than an implicit pass.
+
+## Platform re-scope (Constitution 1.0.0)
+
+Horizons H0 to H15 below are preserved as the historical coding-agent scope. They are no longer the future ordering of the program. Future ordering is per product and intentionally coarse:
+
+1. **Founding research completes.** The frontier reconciliation opens the 000E platform-feasibility and 000F provenance-intake research Grains; 000C and 000D are re-scoped as specified in `specs/000-founding-research/plan.md`.
+2. **Founding synthesis.** 000G selects exactly one bounded next Grain, citing its required 000F evidence and the applicable 000B to 000E dispositions. It does not open several product packets at once.
+3. **Product horizons.** WisprSide, WisprStudio, and Klaint each advance through their own qualified Grains. They stay coarse until evidence and completed dependencies justify refinement.
+
+Only `specs/CURRENT.md` authorizes executable work.
 
 ## Horizon model
 
@@ -340,22 +350,22 @@ These are strategic ambitions, not engineering acceptance gates.
 
 ## Anti-roadmap
 
-The following are explicitly not justified by the founding thesis and require separate evidence before entering the roadmap:
+The following are explicitly not justified by the platform thesis and require separate evidence, and where stated a constitutional amendment, before entering the roadmap. Each item records its Constitution 1.0.0 disposition:
 
-- a Wispral foundation model;
-- a custom coding agent replacing existing agents;
-- an Electron IDE;
-- a multi-agent office/fleet visualizer;
-- avatars or animated agent personas;
-- a proprietary cloud account requirement;
-- a hosted vector-memory platform;
-- a generic project-management suite;
-- a social network;
-- mobile clients before the terminal control plane is proven;
-- enterprise dashboards before core user value is established;
-- a mandatory hosted security scanner;
-- an LLM-based security verdict as direct execution authority;
-- a generic plugin marketplace before an extension trust/admission contract is justified.
+- **KEEP:** a Wispral foundation model; no model training is planned for the first release;
+- **KEEP:** a custom coding agent replacing existing agents; ACP stays an optional integration;
+- **RE-SCOPE:** a custom Electron IDE remains excluded. A pinned desktop application for audio production (WisprStudio) is a separately qualified product surface, not an IDE, and implies no coding-IDE authority;
+- **KEEP:** a multi-agent office/fleet visualizer;
+- **KEEP:** avatars or animated agent personas;
+- **KEEP:** a proprietary cloud account requirement for useful local workflows;
+- **KEEP:** a hosted vector-memory platform; tenant-scoped retrieval reuses the dialogue donor's existing extension and storage interfaces;
+- **KEEP:** a generic project-management suite;
+- **KEEP:** a social network;
+- **RE-SCOPE:** mobile remains deferred until its product's desktop or core contract and separate platform research qualify it; no universal terminal milestone substitutes for mobile permission evidence;
+- **RE-SCOPE:** the core has no generic enterprise dashboard. Klaint may expose the minimum operational inbox, QA, and tenant controls that a separately qualified customer workflow requires, using existing APIs;
+- **KEEP:** a mandatory hosted security scanner;
+- **KEEP:** an LLM-based security verdict as direct execution authority;
+- **KEEP:** a generic plugin marketplace before an extension trust/admission contract is justified.
 
 ## Refinement rule
 

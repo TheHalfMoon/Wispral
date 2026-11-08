@@ -33,23 +33,31 @@ Use the event boundaries learned from 000A and timing instrumentation assumption
 
 Define how to measure thinking pauses, endpointing, barge-in, cancellation request, acknowledgement, and stale output.
 
+Under Constitution 1.0.0, 000C splits into 000C-AGENT (optional developer-agent steering, using agent interruption observations) and 000C-VOICE (later hands-free and duplex dialogue, using voice and playback stop and late-frame tests). Explicit push-to-talk does not wait for semantic endpointing.
+
 ### 000D — PTY compatibility boundary
 
 Refine after ACP gaps are known. Determine whether PTY fallback can add meaningful agent breadth without pretending to provide structured semantics that are not observable.
 
-### 000E — Platform audio/privacy feasibility
+Under Constitution 1.0.0, 000D blocks only optional developer-agent compatibility. A structured-only agent Grain explicitly excludes PTY instead of implying fallback support. WisprStudio and text-only Klaint do not depend on 000D.
 
-Qualify the first proposed platform set, including microphone permissions, device selection, capture behavior, process permissions, and local model/runtime constraints.
+### 000E — Platform feasibility
+
+Qualify the first proposed platform set, including microphone permissions, device selection, hotkeys, target and session identity, capture behavior, process permissions, network egress, and local model/runtime constraints.
+
+Under Constitution 1.0.0, 000E covers the platform's products and may use a bounded, disposable source baseline of a qualified donor. A named 000E research Grain is required; it confers no release, permanent integration, or installer authority.
 
 ### 000F — Dependency/license/provenance decision inputs
 
 Synthesize actual dependencies selected by evidence. Evaluate maintenance, portability, licenses, patent terms where relevant, native build burden, binary size, supply-chain surface, and update cadence.
 
+Under Constitution 1.0.0 (Principle XX), existing source, rights, and reuse records are intake evidence for 000F, not a parallel completed program. 000F resolves the actual retained fork and engine closure, notices and grant-scope flags, native and model artifacts, and distribution and maintenance.
+
 ### 000G — Founding synthesis and first product Grain selection
 
 Produce a decision matrix using evidence from prior children.
 
-The result must select one first product Grain or explicitly conclude that no implementation is yet justified.
+The result must select one first product Grain or explicitly conclude that no implementation is yet justified. Under Constitution 1.0.0 the candidates are capability-specific (a pure non-STT contract, WisprSide, WisprStudio, or text-only Klaint); each cites its required 000F evidence and the applicable 000B to 000E dispositions, and exactly one is selected.
 
 ## Decision criteria for the first product Grain
 
@@ -71,6 +79,8 @@ Do not choose a unit merely because it produces the most impressive demo.
 Only 000A is task-refined by the founding authority.
 
 For 000B–000G, this plan provides expected outcomes and ordering only. Their exact specs/tasks must be shaped from canonical evidence after preceding children merge.
+
+Under Constitution 1.0.0, 000E and 000F do not depend on the completion of 000B to 000D. The frontier reconciliation may open them as research Grains; product code stays closed until 000G.
 
 ## Experiment discipline
 

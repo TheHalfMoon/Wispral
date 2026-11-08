@@ -1,6 +1,6 @@
 # Wispral Repository Instructions
 
-Wispral is a voice-native control plane for AI coding agents. It is not a dictation application, a proprietary agent, an IDE, or a thin wrapper around one vendor's CLI.
+Wispral is a modular voice platform. WisprSide provides dictation and optional developer-agent control; WisprStudio provides voice production; Klaint provides customer dialogue. Shared contracts preserve authority and provenance. No compulsory proprietary agent, IDE, model, or hosted account is required for the useful local core.
 
 ## 1. Canonical reading order
 
