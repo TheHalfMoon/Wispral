@@ -298,7 +298,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Decision | `WRAP` |
 | Donor (pinned) | `emcie-co/parlant@2a463ccd10ea`: `src/parlant/sdk.py`, `src/parlant/core/engines/compass/hooks.py`, `src/parlant/core/engines/compass/loop/base_loop.py` |
 | Files / interfaces | research/klaint-spike/ (research path, not a product path) |
-| Acceptance | Hooks on_reviewing_tool_calls, on_calling_tools and on_message_generated fire in order<br>A BAIL in on_message_generated emits a replacement<br>Plugin tool server disabled or unbound; a loopback call with a forged customer_id has no effect<br>LLM calls per turn, p95 turn latency (fake backend and one pinned local CPU model) and idle RSS measured on HW-A<br>Decision v4 versus v3.3.2 recorded |
+| Acceptance | Hooks on_reviewing_tool_calls, on_calling_tools and on_message_generated fire in order<br>A BAIL in on_message_generated emits a replacement<br>Plugin tool server disabled; a loopback call with a forged customer_id has no effect and returns no data<br>LLM calls per turn, p95 turn latency (fake backend and one pinned local CPU model) and idle RSS measured on HW-A<br>Decision v4 versus v3.3.2 recorded |
 | Tests | Ported tests/core/stable/engines/test_hooks.py and tests/sdk/test_hook_results.py |
 | CI gates | All applicable checks green at the exact head; no preserved red checks<br>Fresh-context review plus founder merge approval (qualifying review where Governance item 7 requires it) |
 | Security risks | Hook semantics differ from docs |
@@ -710,6 +710,46 @@ Packet contract (applies to every row): name the exact capability and changed pa
 
 **Exit:** R3 gates: profiles, guarded rewrite, selected-text edits, accessibility, signing, measured Arabic/English cells.
 
+### SE-01 — Speech-evaluation Grain decision: opens new speech cells (WB-AR, panel) without touching the frozen B2 experiment
+
+| Field | Value |
+| --- | --- |
+| Product / subsystem | governance / speech evidence |
+| Depends on | D0G, BM-03 |
+| Decision | `GOVERNANCE` |
+| Donor (pinned) | none (governance, research or build-new) |
+| Files / interfaces | specs/CURRENT.md (allowlisted sections)<br>new speech-evaluation Grain spec |
+| Acceptance | States which speech-bearing packets it opens (SD-R9, BM-04) and that B2 ATTEMPT-003 is unchanged<br>Cites the BM-03 pilot and its preregistration |
+| Tests | Reviewer confirms no B2 artifact changes |
+| CI gates | Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act<br>Qualifying independent review (proposed Governance item 7)<br>Founder approval of the merge |
+| Security risks | Reinterpreting frozen B2 results |
+| Rollback | Revert |
+| Readiness authority | `DECISION_000G` |
+| Definition of done | Merged; speech cells READY |
+| Estimate | 0.5 d + review |
+| Tier | foundation / governance |
+| Execution context | not applicable |
+
+### D1G — Second product decision: opens whichever of GRAIN_STUDIO or GRAIN_KLAINT_TEXT the 000G decision did not
+
+| Field | Value |
+| --- | --- |
+| Product / subsystem | governance / 000G successor |
+| Depends on | D0G, SD-M6 |
+| Decision | `GOVERNANCE` |
+| Donor (pinned) | none (governance, research or build-new) |
+| Files / interfaces | specs/CURRENT.md (allowlisted sections)<br>Grain spec |
+| Acceptance | Opens the second product Grain only when WisprSide's MVP delivery core (SD-M6) is verified and capacity exists; respects the two-product concurrency rule |
+| Tests | Reviewer confirms evidence |
+| CI gates | Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act<br>Qualifying independent review (proposed Governance item 7)<br>Founder approval of the merge |
+| Security risks | Opening both at once without capacity |
+| Rollback | Revert |
+| Readiness authority | `DECISION_000G` |
+| Definition of done | Merged; second product Grain READY |
+| Estimate | 0.5 d + review |
+| Tier | foundation / governance |
+| Execution context | not applicable |
+
 ### SD-R1 — App-aware profiles from exe and class only (no screenshots)
 
 | Field | Value |
@@ -859,7 +899,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Field | Value |
 | --- | --- |
 | Product / subsystem | wisprside / language |
-| Depends on | SD-R7, BM-03 |
+| Depends on | SD-R7, BM-03, SE-01 |
 | Decision | `RESEARCH` |
 | Donor (pinned) | none (governance, research or build-new) |
 | Files / interfaces | benchmarks/wb-ar/ |
@@ -1095,7 +1135,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Decision | `BUILD_NEW` |
 | Donor (pinned) | `emcie-co/parlant@2a463ccd10ea`: `src/parlant/core/tools.py`, `src/parlant/sdk.py` |
 | Files / interfaces | services/klaint-dialogue/broker/{service,ledger,policy,reconcile}.py |
-| Acceptance | Consequential tools registered only through the in-process ToolService; plugin server disabled<br>Principal from Parlant's session store plus a per-call token bound to the authenticated session; forged customer_id on loopback yields zero effects<br>Idempotency key = H(tenant, conversation, tool, canonical arguments); dispatch refused while a non-terminal intent with that key exists<br>Timeout-after-commit: unknown, then reconciled, never re-dispatched<br>Verdict class and principal must match the intent<br>ASK needs operator or step-up confirmation; conversation text never confirms |
+| Acceptance | Consequential tools registered only through the in-process ToolService; plugin server disabled<br>Principal from Parlant's session store plus a per-call token bound to the authenticated session; a forged customer_id yields zero effects and zero data from read tools<br>Idempotency key = H(tenant, conversation, tool, canonical arguments); dispatch refused while a non-terminal intent with that key exists<br>Timeout-after-commit: unknown, then reconciled, never re-dispatched<br>Verdict class and principal must match the intent<br>ASK needs operator or step-up confirmation; conversation text never confirms |
 | Tests | Fault-injection suite with a fake CRM (1,000 runs)<br>Ported test_tool_runner.py<br>Contract bundle fixtures |
 | CI gates | All applicable checks green at the exact head; no preserved red checks<br>Fresh-context review plus founder merge approval (qualifying review where Governance item 7 requires it) |
 | Security risks | Connector reconciliation not always possible |
@@ -1238,7 +1278,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Field | Value |
 | --- | --- |
 | Product / subsystem | benchmark / consented panel |
-| Depends on | BM-03 |
+| Depends on | BM-03, SE-01 |
 | Decision | `RESEARCH` |
 | Donor (pinned) | none (governance, research or build-new) |
 | Files / interfaces | benchmarks/panel/ (metadata only) |
@@ -1302,7 +1342,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Decision | `ADAPT` |
 | Donor (pinned) | `emcie-co/parlant@2a463ccd10ea`: `src/parlant/api/authentication.py` |
 | Files / interfaces | services/klaint-dialogue/host/{supervisor,gateway,tenant_config}.py |
-| Acceptance | Gateway and shared Chatwoot are owned components with routing tests<br>Cross-tenant fuzz: zero leaks |
+| Acceptance | Gateway and shared Chatwoot are owned components with routing tests<br>Plugin tool server off in every tenant process<br>Cross-tenant and same-tenant forged-customer fuzz: zero leaks |
 | Tests | Isolation fixtures |
 | CI gates | All applicable checks green at the exact head; no preserved red checks<br>Fresh-context review plus founder merge approval (qualifying review where Governance item 7 requires it) |
 | Security risks | Memory per tenant |

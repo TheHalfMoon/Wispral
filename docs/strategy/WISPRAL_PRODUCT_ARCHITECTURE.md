@@ -109,7 +109,7 @@ Script blocks → job specs (engine, model revision, voice, consent epoch) → j
 
 ### 4.3 Klaint conversation turn
 
-Channel message → the tenant's Parlant process → rule and policy matching → tool inference → `on_reviewing_tool_calls` gate (BAIL anything the broker pre-denies) → **broker as the sole executor of consequential tools**: it resolves tenant and credentials from authenticated context, evaluates the deterministic policy (verdict), records an `effect_intent` before dispatch, assigns an idempotency key, calls the connector and records the outcome → reply generation → commitment guard in `on_message_generated` (BLOCK mode: a commitment without a committed receipt is replaced by an approved template or a handoff) → channel. Takeover advances the ownership epoch; an in-flight AI message with a stale epoch is discarded. Parlant v4 has no tenant concept and an unauthenticated local tool server on port 8818, so each tenant runs its own Parlant process with that port unreachable from other tenants.
+Channel message → the tenant's Parlant process → rule and policy matching → tool inference → `on_reviewing_tool_calls` gate (BAIL anything the broker pre-denies) → **broker as the sole executor of consequential tools**: it resolves tenant and credentials from authenticated context, evaluates the deterministic policy (verdict), records an `effect_intent` before dispatch, assigns an idempotency key, calls the connector and records the outcome → reply generation → commitment guard in `on_message_generated` (BLOCK mode: a commitment without a committed receipt is replaced by an approved template or a handoff) → channel. Takeover advances the ownership epoch; an in-flight AI message with a stale epoch is discarded. Parlant v4 has no tenant concept and ships an unauthenticated local tool server on port 8818 that trusts caller-supplied customer ids, so that server is disabled in every Klaint process; consequential and data-reading tools exist only in the in-process ToolService behind the broker.
 
 ## 5. Deployment topology
 
@@ -117,7 +117,7 @@ Channel message → the tenant's Parlant process → rule and policy matching �
 | --- | --- | --- |
 | WisprSide | Per-user Windows install (signed installer), local models in the user profile, no server | macOS (notarized), Linux (X11 first, Wayland via portals), managed enterprise deployment |
 | WisprStudio | Desktop install; Python engine environments created by the app's existing per-engine mechanism; optional GPU | Shared render workers on a LAN; local authenticated API |
-| Klaint | MVP: one hardened Parlant process (production mode, loopback only, dashboard and plugin tool server off), broker, local inference server, database, optional Chatwoot; webhooks acknowledged immediately and processed from a queue | Tier S: gateway + one Parlant process per tenant + shared Chatwoot (one account and bot per tenant); shared multi-tenant Parlant only after isolation fixtures pass |
+| Klaint | MVP: one hardened Parlant process (production mode, loopback only, dashboard and plugin tool server off), broker, local inference server, database, optional Chatwoot; webhooks acknowledged immediately and processed from a queue | Tier S: gateway + one Parlant process per tenant (plugin tool server off in every process) + shared Chatwoot (one account and bot per tenant); shared multi-tenant Parlant only after isolation fixtures pass |
 
 ## 6. Failure behavior
 

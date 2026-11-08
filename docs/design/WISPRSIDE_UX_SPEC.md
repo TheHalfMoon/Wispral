@@ -46,8 +46,8 @@ Rules:
 ### 2.1 Expanded capsule and keyboard recovery
 
 - **Expanded layout:** 360 × 88 px at 100% scale with up to three buttons, each at least 24 × 24 px (WCAG 2.2 SC 2.5.8), placed above the collapsed position.
-- **The capsule still never takes focus.** Keyboard and screen-reader users act through a global **last-outcome shortcut** (configurable; validated by SD-UX-01) that opens the quick panel focused on the pending item, where Enter, Esc and Tab behave normally. Enter and Esc are never intercepted from the target application.
-- Every pending outcome also appears in the tray menu under **Needs attention** and in the quick panel's Needs-attention section until the user handles or dismisses it. This is the recovery buffer; it survives an app restart and respects history-retention settings.
+- **The capsule still never takes focus.** Keyboard and screen-reader users act through the global **last-outcome shortcut** (§3), which opens the quick panel focused on the pending item; the key map in §5 applies there. Apart from the temporary cancel key during capture (§3), Wispral never intercepts Enter or Esc from the target application.
+- Every pending outcome **and every error state with an action** (Choose microphone, Open privacy settings, Resume, Choose model) also appears in the tray menu under **Needs attention** and in the quick panel's Needs-attention section until the user handles or dismisses it. This is the recovery buffer; it survives an app restart and respects history-retention settings.
 
 ## 3. Interaction model
 
@@ -55,7 +55,8 @@ Rules:
 | --- | --- | --- |
 | Push-to-talk | Keep the donor's `HoldOrToggle` activation model and its default chord unless SD-UX-01 finds a conflict | Never default to a `Win`-key chord (`Win`+`H` is Windows voice typing). Toggle via `RegisterHotKey` is the robust baseline; hold-to-talk needs a low-level hook, scoped narrowly. Onboarding detects conflicts |
 | Toggle | Double-tap the PTT chord, or a separate shortcut | — |
-| Cancel | `Esc` while capsule is active | Never sends text |
+| Cancel | `Esc` **while capture or transcription is in progress** (a temporary hotkey registered only for that time, as in the donor) | Never sends text; once capture has ended Wispral never intercepts Esc or Enter |
+| Last-outcome shortcut | Assigned in SD-UX-01 after conflict checks (never a `Win`-key chord) | Opens the quick panel focused on the most recent pending or delivered item; its name is spoken in every refusal announcement and shown in onboarding |
 | Re-insert last | Shortcut (configurable) | Re-binds to the *current* target only after showing which app will receive it |
 | Open quick panel | Shortcut (configurable) | — |
 | Edit selection by voice (SD-14, S tier) | Separate shortcut while text is selected | The preview opens in the quick panel, which takes focus explicitly; Enter applies there and Esc discards, so no key reaches the target app |
@@ -75,7 +76,7 @@ Spoken commands inside dictation (S tier): "new line", "new paragraph", "scratch
 ## 5. Quick panel
 
 - Opens centered, 640 px wide, list-first. Each entry: time, target app icon, first line, language badge (AR / EN / Mixed), delivery outcome icon.
-- Enter = copy; `Ctrl+Enter` = insert into the current target (after a confirmation line naming it); `Ctrl+R` toggles raw/formatted (Tab keeps normal focus movement); `Delete` removes an entry only when the list has focus and shows an **Undo** toast; shortcuts bind by physical key code so they work on Arabic keyboard layouts.
+- **Key map (list focus):** `Enter` = the item's primary action (for a pending item: **Insert into the original target**, which re-validates the captured target and is refused again if it no longer matches; for a delivered item: copy); `Ctrl+C` = copy; `Ctrl+Shift+C` = copy the remaining text of a partial delivery; `Ctrl+Z` = **Undo insert** when the original insertion is verifiably reversible; `Ctrl+L` = show where it went; `Delete` = discard (with an **Undo** toast); `Ctrl+R` toggles raw/formatted; Tab and Shift+Tab move focus normally. There is no "insert into whatever app is current": re-insertion only ever targets the original captured target. All shortcuts bind by physical key code so they work on Arabic keyboard layouts and are listed in the panel's help (`F1`).
 - Header: current model and language with a one-key switcher; offline/online badge.
 - Mixed Arabic/English entries render each entry in its own isolated direction (`dir="auto"`).
 

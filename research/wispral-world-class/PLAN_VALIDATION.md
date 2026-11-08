@@ -13,7 +13,7 @@ All results `REPRODUCED` locally on 2026-11-08 (Windows 11, Node 24.19.0, Python
 
 ## Plan validator checks
 
-`validate_plan.mjs` enforces, over 71 packets and 27 planning documents:
+`validate_plan.mjs` enforces, over 73 packets and 27 planning documents:
 
 1. Every packet has all required fields; `ready` is `false` for every packet.
 2. Unique IDs; every dependency exists; the dependency graph is acyclic (topological order emitted).
@@ -30,4 +30,16 @@ The validator caught real defects during this work and they were fixed rather th
 
 ## Second-round blocker check
 
-**Status:** running — a focused re-check of the seven blocker fixes by a fresh-context reviewer. Its verdicts are recorded here when it completes.
+A fresh-context reviewer (same model family as the author, so not a qualifying review) re-checked the seven blocker fixes on 2026-11-08. It judged every one **partially resolved** and named the remaining gaps. All were fixed in this branch:
+
+| Blocker | Remaining gap found | Fix |
+| --- | --- | --- |
+| B1 transitional clause | Condition (ii) contradicted C1's expected scope reds; no checker hash; G1 not limited to `CONSTITUTION.md`; XVI.5 absent/skipped wording missing | (ii) excepts only the XVII-preserved scope reds on C1 and adopts XVI.5 wording; checker and test SHA-256 pinned (`b4ad0f3e…`, `3b144f15…`) and the checker bytes are part of G1's qualifying review; G1 limited to `CONSTITUTION.md`; C1 limited to its declared paths |
+| B2 Principle XVII | Counterfactual could pass vacuously (gates absent); masking not addressed; purpose-based scope arguable; lowercase "must"; XVI.9 ancestry missing | Counterfactual runs the base-defined gate programs through the harness so the gate is evaluated in both runs; non-concealment requires every later step to run separately and pass; scope is an explicit annex with security steps (immutable-control boundary) kept unchanged in effect; MUST wording; ancestry verification added |
+| B3 section rules | "Markers exactly once" already false on `main`; B2-owned undefined; Platform frontier ambiguous; stale Status line | Everything outside the allowlist is B2-owned and byte-identical; marker count and positions must equal the base and no marker may appear in allowlisted or Platform frontier sections; `main` itself is a positive fixture; the Status line deliberately stays B2's and platform status lives in the appended section |
+| B4 qualifying review | "Substantive" and "resolve blocking findings" missing; owner/human reviews not recorded; "lineage" undefined | Governance item 7 requires a substantive review recorded on the PR with the head SHA and all blocking findings resolved; "different vendor" replaces "lineage" |
+| B5 authority paths | Validator failed on a missing anchor; the second product Grain and speech packets had no opening packet | This section supplies the anchor; new packets D1G (second product decision) and SE-01 (speech-evaluation decision); the validator now also requires SPEECH_EVIDENCE, LATER_HORIZON and RELEASE packets to reach D0G |
+| B6 plugin server | Security doc still allowed a socket variant; read-tool leakage untested; architecture implied port 8818 was live; tier S omitted it | Plugin tool server disabled in every Klaint process (socket variant rejected); forged-customer fixtures require zero effects **and zero data**; architecture and KT-02 updated |
+| B7 keyboard recovery | Quick-panel key map not updated; no last-outcome shortcut row; Esc contradiction; error actions had no persistence route | Full key map with "Insert into the original target" as Enter (re-validated, never "current app"); last-outcome shortcut row; Esc captured only during capture; error actions listed under Needs attention |
+
+Tool status at the time of the second-round check: contracts `PASS`, tokens `PASS`, plan validator `FAIL` on the then-missing anchor. After the fixes above, all three pass (table at the top of this file), with 73 packets.

@@ -95,4 +95,4 @@
 
 ## Second-round check
 
-A focused re-check of the blocker fixes is recorded in [PLAN_VALIDATION.md](PLAN_VALIDATION.md#second-round-blocker-check).
+A focused re-check judged all seven blocker fixes partially resolved and named the remaining gaps; every gap was then fixed. Details: [PLAN_VALIDATION.md](PLAN_VALIDATION.md#second-round-blocker-check). A third round was not run; the governance text still requires a qualifying review before ratification.

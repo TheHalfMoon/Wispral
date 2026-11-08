@@ -29,7 +29,7 @@
 | F | Model integration architecture and routing | [WISPRAL_MODEL_STRATEGY.md](../engineering/WISPRAL_MODEL_STRATEGY.md) |
 | G | Security and privacy, threat models per product | [WISPRAL_SECURITY_ARCHITECTURE.md](../engineering/WISPRAL_SECURITY_ARCHITECTURE.md) |
 | H | Benchmark framework (WispralBench v2 candidate) | [WISPRAL_BENCHMARKS.md](../engineering/WISPRAL_BENCHMARKS.md) |
-| I | Engineering work packets (71, machine-checked for graph, authority reachability, tiers and build-new register) | [WISPRAL_IMPLEMENTATION_PACKETS.md](../engineering/WISPRAL_IMPLEMENTATION_PACKETS.md), [packets.json](../../research/wispral-world-class/packets.json) |
+| I | Engineering work packets (73, machine-checked for graph, authority reachability, tiers and build-new register) | [WISPRAL_IMPLEMENTATION_PACKETS.md](../engineering/WISPRAL_IMPLEMENTATION_PACKETS.md), [packets.json](../../research/wispral-world-class/packets.json) |
 | J | Milestone plan | [WISPRAL_ENGINEERING_ROADMAP.md](WISPRAL_ENGINEERING_ROADMAP.md) |
 | K | Release quality gates | [WISPRAL_RELEASE_QUALITY.md](WISPRAL_RELEASE_QUALITY.md) |
 | L | Risk and dependency register | [RISK_REGISTER.md](../../research/wispral-world-class/RISK_REGISTER.md) |
@@ -129,7 +129,8 @@ Then ST-D00 and ST-D00b (Studio baselines) and **D0G** (000G decision) open the 
 
 ## 10. Verdict
 
-**PLAN READY** — as a planning and governance package, with explicit conditions:
+**PLAN READY** — for founder review and the Phase 0 decisions. Evidence:
 
-- **Ready:** canonical state verified; prior Codex and Opus work reconciled and preserved by ancestry; donors re-pinned with source evidence; architecture, design, model, security, benchmark and release plans complete; 71 packets with dependencies, tests, gates and rollback; executable contracts and tokens passing; independent review findings addressed or explicitly retained ([INDEPENDENT_REVIEW.md](../../research/wispral-world-class/INDEPENDENT_REVIEW.md)).
-- **Not ready (by design):** implementation. Every packet is `ready: false` until the founder completes the P0 governance steps. This draft PR fails `verify-b2r16-freeze` exactly as `main` does; that failure is reported as **FAIL**, never as passing.
+- **Ready:** canonical state verified live (2026-11-08); PRs #123–#125 reconciled and preserved by ancestry, #126 absorbed into correction C1; every donor re-pinned with source evidence; architecture, design, model, security, benchmark, platform and release plans complete; 73 packets with dependencies, tests, gates, rollback and execution contexts; contracts (94 cases, 10 sequences, 4 bundles), tokens (94 contrast + 40 hue checks) and the plan validator all `PASS`; six fresh-context reviews (7 blockers, 37 must-fix) addressed, and a second-round check of the blockers whose remaining gaps were also fixed ([INDEPENDENT_REVIEW.md](../../research/wispral-world-class/INDEPENDENT_REVIEW.md), [PLAN_VALIDATION.md](../../research/wispral-world-class/PLAN_VALIDATION.md)).
+- **Conditions:** the proposed constitutional text (G1, Principle XVII, Governance item 7) and corrections C1/C2 still need a **qualifying** independent review before ratification; all reviews so far were same-model-family reviews. No third review round was run after the second-round fixes.
+- **Not ready (by design):** implementation. Every packet is `ready: false` until the founder completes the Phase 0 steps. Before C1 merges, this draft PR fails `verify-b2r16-freeze` exactly as `main` does; that failure is reported as **FAIL**, never as passing.

@@ -71,7 +71,7 @@ function reaches(id, target, seen = new Set()) {
   return ids.get(id).depends_on.some((d) => reaches(d, target, seen));
 }
 for (const p of data.packets) {
-  if (p.readiness_authority.startsWith("GRAIN_") && !reaches(p.id, "D0G")) fail(`${p.id}: ${p.readiness_authority} packet has no dependency path to D0G`);
+  if ((p.readiness_authority.startsWith("GRAIN_") || ["SPEECH_EVIDENCE", "LATER_HORIZON", "RELEASE_GREEN_LIGHT"].includes(p.readiness_authority)) && !reaches(p.id, "D0G")) fail(`${p.id}: ${p.readiness_authority} packet has no dependency path to D0G`);
   if (p.readiness_authority.startsWith("RESEARCH_000") && !reaches(p.id, "F")) fail(`${p.id}: research Grain packet has no dependency path to F`);
 }
 

@@ -673,7 +673,7 @@
    "acceptance": [
     "Hooks on_reviewing_tool_calls, on_calling_tools and on_message_generated fire in order",
     "A BAIL in on_message_generated emits a replacement",
-    "Plugin tool server disabled or unbound; a loopback call with a forged customer_id has no effect",
+    "Plugin tool server disabled; a loopback call with a forged customer_id has no effect and returns no data",
     "LLM calls per turn, p95 turn latency (fake backend and one pinned local CPU model) and idle RSS measured on HW-A",
     "Decision v4 versus v3.3.2 recorded"
    ],
@@ -1646,6 +1646,79 @@
    ]
   },
   {
+   "id": "SE-01",
+   "phase": "P4",
+   "product": "governance",
+   "subsystem": "speech evidence",
+   "title": "Speech-evaluation Grain decision: opens new speech cells (WB-AR, panel) without touching the frozen B2 experiment",
+   "depends_on": [
+    "D0G",
+    "BM-03"
+   ],
+   "decision": "GOVERNANCE",
+   "readiness_authority": "DECISION_000G",
+   "affected": [
+    "specs/CURRENT.md (allowlisted sections)",
+    "new speech-evaluation Grain spec"
+   ],
+   "acceptance": [
+    "States which speech-bearing packets it opens (SD-R9, BM-04) and that B2 ATTEMPT-003 is unchanged",
+    "Cites the BM-03 pilot and its preregistration"
+   ],
+   "tests": [
+    "Reviewer confirms no B2 artifact changes"
+   ],
+   "ci_gates": [
+    "Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act",
+    "Qualifying independent review (proposed Governance item 7)",
+    "Founder approval of the merge"
+   ],
+   "security_risks": [
+    "Reinterpreting frozen B2 results"
+   ],
+   "rollback": "Revert",
+   "definition_of_done": "Merged; speech cells READY",
+   "estimate": "0.5 d + review",
+   "status": "DRAFT",
+   "ready": false
+  },
+  {
+   "id": "D1G",
+   "phase": "P4",
+   "product": "governance",
+   "subsystem": "000G successor",
+   "title": "Second product decision: opens whichever of GRAIN_STUDIO or GRAIN_KLAINT_TEXT the 000G decision did not",
+   "depends_on": [
+    "D0G",
+    "SD-M6"
+   ],
+   "decision": "GOVERNANCE",
+   "readiness_authority": "DECISION_000G",
+   "affected": [
+    "specs/CURRENT.md (allowlisted sections)",
+    "Grain spec"
+   ],
+   "acceptance": [
+    "Opens the second product Grain only when WisprSide's MVP delivery core (SD-M6) is verified and capacity exists; respects the two-product concurrency rule"
+   ],
+   "tests": [
+    "Reviewer confirms evidence"
+   ],
+   "ci_gates": [
+    "Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act",
+    "Qualifying independent review (proposed Governance item 7)",
+    "Founder approval of the merge"
+   ],
+   "security_risks": [
+    "Opening both at once without capacity"
+   ],
+   "rollback": "Revert",
+   "definition_of_done": "Merged; second product Grain READY",
+   "estimate": "0.5 d + review",
+   "status": "DRAFT",
+   "ready": false
+  },
+  {
    "id": "SD-R1",
    "phase": "P4",
    "product": "wisprside",
@@ -1985,7 +2058,8 @@
    "title": "Measure Arabic/Gulf/code-switch and English cells for shipped routes (WB-AR)",
    "depends_on": [
     "SD-R7",
-    "BM-03"
+    "BM-03",
+    "SE-01"
    ],
    "decision": "RESEARCH",
    "readiness_authority": "SPEECH_EVIDENCE",
@@ -2516,7 +2590,7 @@
    ],
    "acceptance": [
     "Consequential tools registered only through the in-process ToolService; plugin server disabled",
-    "Principal from Parlant's session store plus a per-call token bound to the authenticated session; forged customer_id on loopback yields zero effects",
+    "Principal from Parlant's session store plus a per-call token bound to the authenticated session; a forged customer_id yields zero effects and zero data from read tools",
     "Idempotency key = H(tenant, conversation, tool, canonical arguments); dispatch refused while a non-terminal intent with that key exists",
     "Timeout-after-commit: unknown, then reconciled, never re-dispatched",
     "Verdict class and principal must match the intent",
@@ -2855,7 +2929,8 @@
    "subsystem": "consented panel",
    "title": "Consented Arabic/English speech panel (forms, volunteers, storage, withdrawal)",
    "depends_on": [
-    "BM-03"
+    "BM-03",
+    "SE-01"
    ],
    "decision": "RESEARCH",
    "readiness_authority": "SPEECH_EVIDENCE",
@@ -2992,7 +3067,8 @@
    ],
    "acceptance": [
     "Gateway and shared Chatwoot are owned components with routing tests",
-    "Cross-tenant fuzz: zero leaks"
+    "Plugin tool server off in every tenant process",
+    "Cross-tenant and same-tenant forged-customer fuzz: zero leaks"
    ],
    "tests": [
     "Isolation fixtures"
