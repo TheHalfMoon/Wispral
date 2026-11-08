@@ -87,3 +87,35 @@ Step exit codes (step:exit):
 | `c1`, classification neutralized | 2:0 3:0 4:0 5:0 (`TRUSTED_PR_GATE=PASS`) | 2:0 3:0 4:0 5:0 6:0 7:0 |
 
 The failure texts are the same as on `edacdf7`, and the reading above holds unchanged on the final base.
+
+## Final head `cabf4e5` (after the qualifying review's blocking findings)
+
+The different-vendor review of `de095ea` returned four blocking findings. Commit `cabf4e5d96ab03d38a74ee4e5986be17a26f5e74` resolves them. Because the three declared blobs changed, the whole item 5 run set was repeated on base `8d52a45` (outputs in [`head-cabf4e5/`](head-cabf4e5/)).
+
+| Name | Commit |
+| --- | --- |
+| `c1` | `cabf4e5d96ab03d38a74ee4e5986be17a26f5e74` |
+| `pr120c1` | `c0eac928db00c1af30ff998b15ef7dc49e1a694c`: `pr120` (`1705b4f`) plus exactly the three `cabf4e5` blobs; same fixed fixture identity and message as before |
+
+The exit-code pattern is identical to the `de095ea` and `edacdf7` runs in both gates: `pr120` passes every step; `pr120c1` and `c1` fail only at the classification steps; with the classification neutralized, `c1` passes every step.
+
+### Pre-correction freeze gate (review finding 4)
+
+[`freeze_gate_evidence.sh`](freeze_gate_evidence.sh) ran the freeze gate as defined at `8d52a45` (`verify_b2r16.py --require-git` from the candidate checkout) on `cabf4e5` and on `8d52a45`. Outputs are in [`freeze-gate-cabf4e5/`](freeze-gate-cabf4e5/).
+
+| Run | C1 `cabf4e5` | base `8d52a45` |
+| --- | --- | --- |
+| plain | `FAIL: B2R16 actual candidate range scope drift` | the same |
+| range classification neutralized | `FAIL: canonical recovery prefix drift` | the same |
+| range and B2R16 task-time authority neutralized | `B2R16_ATTEMPT_003_FREEZE=PASS` | the same |
+
+- **Cause.** The failure is the defect's own reproduction. It occurs without C1, and the transitional clause preserves it on C1.
+- **Non-concealment.** The checks it masked pass on C1: frozen source identities, preexecution state, manifest, and primary-output surface.
+
+### Harness and driver digests (SHA-256)
+
+| File | SHA-256 |
+| --- | --- |
+| `run_gate_steps.py` | `4198c25becfd81d98086bb4ac85566bad81276c7c7ac5e2216be47c42e661a6f` |
+| `c1_gate_evidence.sh` | `a5825c17106b77aa31bc95f5ac18fa42e67604a229573644d4629523eca52413` |
+| `freeze_gate_evidence.sh` | `136939c0fa1be2ffcd75aa8afaf16996beb07863d82620e041d63b18d554ea40` |

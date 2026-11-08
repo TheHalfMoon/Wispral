@@ -1,0 +1,6 @@
+## DEFINITION 8d52a4579a0b1c6555cbe8443027c1950493b326:.github/workflows/000b2-public-b2r16-freeze.yml job=verify-b2r16-freeze
+## CANDIDATE HEAD cabf4e5d96ab03d38a74ee4e5986be17a26f5e74
+## STEP 1 Checkout exact B2R16 revision: uses actions/checkout@11d5960a326750d5838078e36cf38b85af677262 (performed by harness setup)
+## STEP 2 Verify exact B2R16 revision: exit 0
+## STEP 3 Verify B2R16 ATTEMPT-003 pre-primary freeze: exit 1
+   B2R16_ATTEMPT_003_FREEZE=FAIL: B2R16 actual candidate range scope drift
