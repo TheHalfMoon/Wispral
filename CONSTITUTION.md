@@ -1,9 +1,9 @@
 # Wispral Constitution
 
-**Version:** 0.2.1
+**Version:** 0.3.0
 **Status:** Active  
 **Ratified:** 2026-09-01  
-**Amended:** 2026-09-09  
+**Amended:** 2026-11-08  
 **Canonical ratification merge:** `3cbe212bf7202c37ec322f114c0e5486e5218d9b`
 
 ## Preamble
@@ -124,6 +124,44 @@ A trusted-control repair is authorized only through a dedicated governance-contr
 
 This repair authority MUST NOT be used as a substitute for an ordinary required gate. If strict strengthening cannot be demonstrated under these conditions, the project remains blocked.
 
+## Principle XVII — Correcting an over-applied benchmark control is explicit, narrow, and proven
+
+**Scope.** This principle applies only to the controls listed in the annex below. Adding a control to the annex requires a constitutional amendment. It never applies to a control, or to any step of a control, whose purpose is security, consent, tenant isolation, network egress, credential handling, release, or signing; such a control or step changes only through an ordinary reviewed change that strengthens it, or through Principle XVI. Where an annexed file also contains such a step, that step MUST remain unchanged in effect, proven by its existing negative fixtures.
+
+**Annex.** The initial annexed controls are:
+
+1. `.github/workflows/000b2-public-b2r16-freeze.yml`;
+2. `research/000b2-public/verify_b2r16.py`;
+3. the scope-classification steps of `.github/workflows/000b2-public-attempt-003-recovery.yml` and `.github/workflows/000b2-public-attempt-003-trusted-pr.yml` (the immutable-control-blob boundary of the latter is not annexed);
+4. the scope-classification functions of `research/000b2-public/verify_attempt_002_invalidation.py`.
+
+**Defect.** An annexed control is over-applied only when (a) canonical authority text assigns it to a named candidate class, and (b) reproduction on canonical `main` or on a minimal synthetic candidate outside that class shows that it rejects candidates outside that class, or `main` itself. Argument alone is not evidence.
+
+A correction of an over-applied annexed control is authorized only through a dedicated control-correction pull request that satisfies all of the following:
+
+1. the pull request MUST describe the defect, the exact canonical authority base, the exact changed paths, the expected conflict with the pre-correction controls, the compatibility impact, the security and privacy impact, and the affected specifications;
+2. the correction MUST change only the exact annexed control paths required, any new verifier or test files those controls invoke, and its evidence directory;
+3. deterministic evidence executed from trusted code (base-pinned, hash-verified, run under an isolated interpreter) MUST show that detection on the authorized class is preserved in full: identical verdicts on an in-class corpus that includes every previously rejected malformed candidate, plus at least one negative fixture for every rejecting branch of the corrected control;
+4. the correction MUST NOT broaden task scope, reconciliation scope, execution authority, evidence authority, decode authority, scoring authority, comparative-claim authority, product authority, or completion state, and a newly accepted candidate class carries no execution authority;
+5. each pre-correction gate failure MUST be preserved as conflict evidence and MUST NOT be relabeled, suppressed, or rerun-to-green. For each preserved failure the correction MUST prove (a) cause: a deterministic harness evaluates the gate's base-defined program on the candidate and on the same candidate with the declared control bytes reverted, the failure occurs on the former and not on the latter, and the gate is actually evaluated in both runs, because an absent or untriggered gate proves nothing; and (b) non-concealment: because a failing gate stops at its first failing check, every later step of that gate is executed separately from base-pinned code on the candidate and either concludes successfully or fails only with a failure that is itself preserved and proven under this item, and every failing step is executed again on the candidate with only the over-applied classification neutralized by a declared minimal change, and then concludes successfully. Each preserved failure MUST be individually evidenced and MUST occur before any dependent candidate execution or state transition. A preserved failure that recurs on the post-merge run of the same gate on canonical `main` remains preserved conflict evidence and MUST be recorded by the reconciliation in item 10;
+6. every exact-head gate required by canonical repository authority and applicable to the correction candidate MUST conclude successfully on the exact final head; a required gate that is absent, skipped, pending, cancelled, or failed is not satisfied, except the failures preserved under item 5;
+7. a qualifying independent substantive review (Governance item 7) MUST cover the exact final range and resolve all blocking findings before merge;
+8. the correction MUST use a guarded normal merge bound to the exact reviewed head, recorded as an explicit owner act;
+9. after merge, the actual canonical merge SHA and ancestry MUST be verified, and the corrected control MUST be exercised against that exact canonical state by a deterministic verifier or a dispatched canonical workflow;
+10. a separate canonical reconciliation MUST record the correction before dependent work relies on it.
+
+This correction authority MUST NOT be used as a substitute for an ordinary required gate. If preservation, cause, non-concealment, or strict non-broadening cannot be demonstrated, the project remains blocked.
+
+**Transitional preservation.** Until the first correction of the B2R16 freeze control under this principle merges, the failure `B2R16_ATTEMPT_003_FREEZE=FAIL: B2R16 actual candidate range scope drift`, reproduced on canonical `edacdf7504302cc91ff7138bc6ac2d391e4df1f4`, MAY be preserved as evidence on exactly two pull requests: the amendment that adopts this principle, and that first freeze correction. Conditions:
+
+1. the amendment changes only `CONSTITUTION.md`, and the freeze correction changes only its declared annexed paths, its new verifier and test files, and its evidence directory;
+2. every other applicable check on that pull request concludes successfully; a check that is absent, skipped, pending, cancelled, or failed is not satisfied, except, on the freeze correction only, scope-gate failures preserved under item 5 above;
+3. on the amendment, the B2R16 preservation checker `research/000b2-public/verify_b2r16_preservation.py` with SHA-256 `b4ad0f3ef02394e28c982100acb68a719acde0d9a137b62be662871756eefe16`, as published at `a97d596bfc9a027bc6c71747b11d94de14f3e838`, reports `B2R16_FROZEN_OBJECT_PRESERVATION=PASS` on the amendment's head under an isolated interpreter, and its test suite `research/000b2-public/test_b2r16_preservation.py` with SHA-256 `3b144f15d9870877e891d7847384aa058acd73a5c1fc1ab648bb6d1c04c4aae2`, as published at the same commit, passes there; the checker and test bytes are part of this amendment's qualifying review. On the freeze correction: (a) every path that this pinned checker lists as frozen, other than `.github/workflows/000b2-public-b2r16-freeze.yml`, has the same blob and mode as at canonical merge `885307429ec8b1aa0fe173169a8c2918714c06b0`; (b) the preservation checker and test suite that the correction introduces, whose bytes are part of the correction's qualifying review, report `B2R16_FROZEN_OBJECT_PRESERVATION=PASS` and pass on the correction's head under an isolated interpreter; and (c) a `workflow_dispatch` run of the corrected workflow on the correction's exact head concludes successfully, since a trigger defined by the base branch does not run on the correction itself. The qualifying reviewer of each pull request runs or reproduces its checks.
+
+This transitional preservation expires when that first freeze correction merges.
+
+**Frontier sections.** Non-B2 governance pull requests MAY edit only those sections of `specs/CURRENT.md` and `docs/canonical/CURRENT_STATE.md` that an adopted correction under this principle designates by exact heading as non-B2 sections, plus newly appended sections whose headings that correction designates; all other bytes of those files remain under benchmark-lane authority, both while ATTEMPT-003 is active and after it completes.
+
 ## Governance
 
 1. This constitution is the highest product-governance document in the repository.
@@ -132,3 +170,4 @@ This repair authority MUST NOT be used as a substitute for an ordinary required 
 4. Semantic versioning applies to this constitution: major for incompatible principle changes, minor for new or materially stronger principles, patch for clarification.
 5. ADRs govern durable architectural decisions. Specs govern bounded outcomes. Tasks govern execution order. Evidence governs verified state.
 6. When these authorities conflict, the conflict must be resolved explicitly before dependent work proceeds.
+7. A review is a qualifying independent review only when the reviewer did not author the change, the review is substantive (it examines the exact final range and states any blocking findings), every blocking finding is resolved before merge, and the review is recorded on the pull request with the exact reviewed head SHA. Qualifying reviewers are: (a) the repository owner personally; (b) a human the owner names for that pull request; or (c) an automated reviewer whose model comes from a different vendor than the model that authored the change, with its model identity, prompt, and output recorded. Local classifiers and reviewers from the author's model vendor may assist but never qualify. Reviews required by Principles XVI and XVII, constitutional amendments, founding-synthesis (000G) decisions, and benchmark-lane merges require a qualifying review; other pull requests require a fresh-context review and the owner's merge approval.
