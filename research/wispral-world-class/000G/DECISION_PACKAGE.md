@@ -45,7 +45,7 @@ Four blocking reasons, each verified on `main`:
 
 Criteria from `specs/000-founding-research/plan.md`. The ratings are this package's judgement from the evidence above; they are not measurements.
 
-| Criterion | Pure non-STT contract Grain (e.g. `CORE-01` / `CORE-02`) | WisprStudio first Grain | Klaint text-only first Grain | WisprSide first Grain |
+| Criterion | Pure non-STT contract Grain (e.g. `CORE-01`, which `packets.json` makes depend on this 000G decision; `CORE-R1` and `CORE-08` follow it) | WisprStudio first Grain | Klaint text-only first Grain | WisprSide first Grain |
 | --- | --- | --- | --- | --- |
 | Direct proof of the thesis | low | medium | medium | high |
 | User-visible value | low | high | medium | high |
