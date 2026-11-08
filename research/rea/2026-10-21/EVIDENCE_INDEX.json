@@ -209,13 +209,13 @@
     },
     {
       "path": "docs/strategy/WISPRAL_GOVERNANCE_AMENDMENT_PROPOSAL.md",
-      "bytes": 15340,
-      "sha256": "b673cb8e763f0c3f90027a6a5a339abc875fe79e14a09c27cddb5fbcd3990a4f"
+      "bytes": 18290,
+      "sha256": "1bbe90f3432c75147d5b5e09271cd7cd33747124775697164faad2922ce12a89"
     },
     {
       "path": "docs/strategy/WISPRAL_MASTER_PLAN_REBUILT.md",
-      "bytes": 13549,
-      "sha256": "9544617ff993d56666264052901151437b283c31acbc6c181a0db36b4f725fe2"
+      "bytes": 14327,
+      "sha256": "1b9105ba3b36ce31160d49861d3d0ab026c2f0697e2729bf634c1c34ebda1e46"
     },
     {
       "path": "docs/strategy/WISPRAL_MODEL_ROUTING_CONTRACTS.md",

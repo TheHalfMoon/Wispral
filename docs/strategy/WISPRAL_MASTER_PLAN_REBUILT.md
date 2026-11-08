@@ -19,6 +19,23 @@ The [four deep dives](../../research/rea/2026-10-21/README.md), [source transpla
 
 M1 is reproduced on canonical main as well as #124; it is fail-closed over-application, not a Principle XVI fail-open repair. The separate B2R16 preservation PR retains the old verifier/payloads and historical PASS, adds frozen-object mutation checks and changes only the declared control workflow. Earlier API 403 was historical. Current API reports main protected=false, classic protection 404 and no rulesets; governance-required checks remain binding; preserve #118's red-check merge as fact, not permission. No merge is authorized here.
 
+**The control lanes are currently deadlocked (N1).** Three facts combine into a cycle:
+
+- #120 (B2R17, the sole authorized unit) fails `verify-b2r16-freeze`.
+- #126 fails the ATTEMPT-003 Trusted PR Gate and Recovery boundary with "B2R17 candidate path scope violation".
+- Any canonical readiness PR would hit the same gates.
+
+No ordinary lane can break this cycle. The first W0 step is therefore a founder governance decision on the narrow **fail-closed over-application deadlock lane** described in the [governance proposal](WISPRAL_GOVERNANCE_AMENDMENT_PROPOSAL.md#control-lane-deadlock-opus-re-review-n1).
+
+The proposed order is:
+
+1. Deadlock-lane amendment.
+2. #126.
+3. #120 re-run and reconciliation.
+4. Scope amendment and #124.
+
+Merging with red gates is not an option.
+
 G-01 must explicitly reconcile B2R17, 000C, 000D, 000E, 000F and 000G using the [amendment graph](WISPRAL_GOVERNANCE_AMENDMENT_PROPOSAL.md) and [packet authorities](../../research/rea/2026-10-21/packet-authorities.json). The REA bundle is 000F input, not completed licensing/supply-chain qualification. Native Side work supplies 000E evidence; 000C/000D apply to optional agent/duplex capabilities. Pure non-STT Q-01/Q-02/Q-03 do not wait on B2 only **after** legitimate re-scope/000G selection; speech I-01 still requires its canonical B-chain disposition. Current main has not adopted this.
 
 Resolve the exact AGENTS mission negation, every anti-roadmap item and per-product A12 surface rule through the dedicated amendment, not hidden exceptions. All product packets remain DRAFT. Governance preparation effort is 1–3 engineer-days **only for drafting**, with unestimated independent review/CI/owner-setting and canonical reconciliation latency; it is not time-to-implementation.
