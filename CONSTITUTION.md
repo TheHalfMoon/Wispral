@@ -153,7 +153,7 @@ A correction of an over-applied annexed control is authorized only through a ded
 
 This correction authority MUST NOT be used as a substitute for an ordinary required gate. If preservation, cause, non-concealment, or strict non-broadening cannot be demonstrated, the project remains blocked.
 
-**Transitional preservation.** Until the first correction of the B2R16 freeze control under this principle merges, the failure `B2R16_ATTEMPT_003_FREEZE=FAIL: B2R16 actual candidate range scope drift`, reproduced on canonical `edacdf7504302cc91ff7138bc6ac2d391e4df1f4`, MAY be preserved as evidence on exactly two pull requests: the amendment that adopts this principle, and that first freeze correction. Conditions:
+**Transitional preservation.** Until the first correction of the B2R16 freeze control under this principle merges, the failure `B2R16_ATTEMPT_003_FREEZE=FAIL: B2R16 actual candidate range scope drift`, reproduced on canonical `edacdf7504302cc91ff7138bc6ac2d391e4df1f4`, MAY be preserved as evidence on exactly three pull requests: the amendment that adopts this principle, the 0.4.0 amendment of this principle, and that first freeze correction. On the 0.4.0 amendment, the conditions stated for "the amendment" apply unchanged. Conditions:
 
 1. the amendment changes only `CONSTITUTION.md`, and the freeze correction changes only its declared annexed paths, its new verifier and test files, and its evidence directory;
 2. every other applicable check on that pull request concludes successfully; a check that is absent, skipped, pending, cancelled, or failed is not satisfied, except, on the freeze correction only, scope-gate failures preserved under item 5 above;
