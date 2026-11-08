@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Preserve the historical B2R16 proof and reject changed frozen Git objects.
 
-Ordinary fail-closed applicability correction, not Constitution XVI authority.
-The original verifier and evidence stay unchanged. Only the workflow has an
-explicit two-identity migration: original or this reviewed replacement.
+Constitution Principle XVII correction C1 (absorbs #126), not Principle XVI
+authority. The original verifier and evidence stay unchanged. Only the workflow
+has an explicit two-identity migration: original or this reviewed, base-defined
+replacement. The candidate is read only as Git objects and never executed.
 """
 from __future__ import annotations
 
@@ -22,7 +23,7 @@ QUALIFIED_HEAD = "ac9f7ce993aec33e6c6436cce4efd85394a97f35"
 FROZEN_MERGE = "885307429ec8b1aa0fe173169a8c2918714c06b0"
 WORKFLOW = ".github/workflows/000b2-public-b2r16-freeze.yml"
 # Filled from the exact reviewed replacement workflow, not candidate input.
-REPLACEMENT_WORKFLOW_TEMPLATE_SHA256 = "39f38a21887ec275b7882285a4e479aa4663f6860a891c66a2329449adce546d"
+REPLACEMENT_WORKFLOW_TEMPLATE_SHA256 = "5815b4ecb61aa5e2ccb5f148dd5085ab3c6f717003d9451afa92e1adf44bce02"
 FROZEN_PATHS = (
     WORKFLOW,
     "research/000b2-public/verify_b2r16.py",

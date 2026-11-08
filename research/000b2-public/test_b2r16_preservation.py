@@ -12,7 +12,7 @@ CHECK = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(CHECK)
 
 
-def candidate_with(file, mode="modify", base=None):
+def candidate_with(file, mode="modify", base=None, payload=None):
     root = CHECK.ROOT
     base = base or CHECK.git(root, "rev-parse", "HEAD").decode().strip()
     original = CHECK.git(root, "show", f"{base}:{file}")
@@ -30,7 +30,8 @@ def candidate_with(file, mode="modify", base=None):
         if mode == "delete":
             run("update-index", "--force-remove", "--", file)
         else:
-            payload = (CHECK.ROOT / file).read_bytes() if mode == "replacement" else original if mode in ("symlink", "mode") else original + b"\n"
+            if payload is None:
+                payload = (CHECK.ROOT / file).read_bytes() if mode == "replacement" else original if mode in ("symlink", "mode") else original + b"\n"
             blob = run("hash-object", "-w", "--stdin", data=payload)
             run("update-index", "--add", "--cacheinfo", "120000" if mode == "symlink" else "100755" if mode == "mode" else "100644", blob, file)
         tree = run("write-tree")
@@ -73,8 +74,25 @@ class PreservationTests(unittest.TestCase):
         with self.assertRaises(CHECK.PreservationError):
             CHECK.verify_candidate(CHECK.ROOT, candidate_with(CHECK.WORKFLOW, base=candidate))
 
-    def test_unchanged_main_and_original_plan(self):
-        for candidate in ["edacdf7504302cc91ff7138bc6ac2d391e4df1f4", "f36338138f4b4a872b05393b5cab03856dd7bf8e"]:
+    def test_workflow_trust_root_is_base_defined(self):
+        workflow = (CHECK.ROOT / CHECK.WORKFLOW).read_text(encoding="utf-8")
+        self.assertIn("\n  pull_request_target:\n", workflow)
+        self.assertNotIn("\n  pull_request:\n", workflow)
+        self.assertEqual(workflow.count("ref: "), 1)
+        self.assertIn("ref: ${{ env.TRUSTED_REVISION }}\n", workflow)
+        self.assertIn("persist-credentials: false\n", workflow)
+
+    def test_candidate_defined_trigger_rejected(self):
+        workflow = (CHECK.ROOT / CHECK.WORKFLOW).read_bytes()
+        downgraded = workflow.replace(b"\n  pull_request_target:\n", b"\n  pull_request:\n", 1)
+        self.assertNotEqual(downgraded, workflow)
+        with self.assertRaises(CHECK.PreservationError):
+            CHECK.verify_candidate(CHECK.ROOT, candidate_with(CHECK.WORKFLOW, payload=downgraded))
+
+    def test_unchanged_main_history(self):
+        # Commits reachable from canonical main after the B2R16 freeze merge.
+        for candidate in ["885307429ec8b1aa0fe173169a8c2918714c06b0", "0fd4e2252e485b887af33d404ac589354fdb05ee",
+                          "edacdf7504302cc91ff7138bc6ac2d391e4df1f4"]:
             with self.subTest(candidate=candidate):
                 CHECK.verify_candidate(CHECK.ROOT, candidate)
 
@@ -96,7 +114,7 @@ class PreservationTests(unittest.TestCase):
                         CHECK.verify_candidate(CHECK.ROOT, candidate_with(file, mode))
 
     def test_candidate_identity_rejects_refs_and_options(self):
-        for value in ["HEAD", "--help", "0" * 40, "f363381", "f36338138f4b4a872b05393b5cab03856dd7bf8e\n"]:
+        for value in ["HEAD", "--help", "0" * 40, "edacdf7", "edacdf7504302cc91ff7138bc6ac2d391e4df1f4\n"]:
             with self.subTest(value=value):
                 with self.assertRaises(CHECK.PreservationError):
                     CHECK.verify_candidate(CHECK.ROOT, value)
