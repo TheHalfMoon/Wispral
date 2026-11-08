@@ -169,6 +169,7 @@
    ],
    "acceptance": [
     "#126 checker with fixes (test pin reachable from main, dispatch exercise, XVII framing)",
+    "G1 condition (iii) on C1: every other frozen path keeps its blob and mode from 885307429ec8; C1 checker and tests pass on its head; workflow_dispatch run on C1's exact head succeeds",
     "Historical B2R16 PASS output at ac9f7ce byte-identical",
     "Each preserved red has a counterfactual run (control bytes reverted) in which it disappears and nothing else changes"
    ],

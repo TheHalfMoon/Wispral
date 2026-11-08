@@ -73,7 +73,7 @@ Packet contract (applies to every row): name the exact capability and changed pa
 | Decision | `GOVERNANCE` |
 | Donor (pinned) | `TheHalfMoon/Wispral@a97d596bfc9a`: `.github/workflows/000b2-public-b2r16-freeze.yml`, `research/000b2-public/verify_b2r16_preservation.py`, `research/000b2-public/test_b2r16_preservation.py` |
 | Files / interfaces | .github/workflows/000b2-public-b2r16-freeze.yml<br>research/000b2-public/verify_b2r16_preservation.py<br>research/000b2-public/test_b2r16_preservation.py<br>research/control-repairs/2026-11-*/** |
-| Acceptance | #126 checker with fixes (test pin reachable from main, dispatch exercise, XVII framing)<br>Historical B2R16 PASS output at ac9f7ce byte-identical<br>Each preserved red has a counterfactual run (control bytes reverted) in which it disappears and nothing else changes |
+| Acceptance | #126 checker with fixes (test pin reachable from main, dispatch exercise, XVII framing)<br>G1 condition (iii) on C1: every other frozen path keeps its blob and mode from 885307429ec8; C1 checker and tests pass on its head; workflow_dispatch run on C1's exact head succeeds<br>Historical B2R16 PASS output at ac9f7ce byte-identical<br>Each preserved red has a counterfactual run (control bytes reverted) in which it disappears and nothing else changes |
 | Tests | #126 seven-group suite from base-pinned code<br>Counterfactual runs<br>Gate harness from evidence/governance |
 | CI gates | Exact-head workflows; the only permitted red checks are those its governing authority preserves, each recorded as an owner act<br>Qualifying independent review (proposed Governance item 7)<br>Founder approval of the merge |
 | Security risks | Candidate-controlled checker (removed: base-defined job) |
