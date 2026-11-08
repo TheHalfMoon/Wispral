@@ -1,0 +1,34 @@
+CANDIDATE=1705b4f2ba4d7261bb6df32c5bf431e60181ef1e BASE=8d52a4579a0b1c6555cbe8443027c1950493b326 ACTIVE=B2R17
+CLASSIFICATION required verifier research/000b2-public/verify_b2r17.py in changed paths: True
+--- .github/workflows/000b2-public-b2r17-moonshine-compact.yml
+  PASS not deleted
+  CLASSIFICATION active-task binding token B2R17 present: True
+  PASS no future successor tokens []
+  PASS no positive authority publication []
+--- research/000b2-public/b2r17-moonshine-compact.json
+  PASS not deleted
+  CLASSIFICATION active-task binding token B2R17 present: True
+  PASS no future successor tokens []
+  PASS no positive authority publication []
+  CLASSIFICATION JSON task binding == B2R17: True
+--- research/000b2-public/b2r17-provenance.json
+  PASS not deleted
+  CLASSIFICATION active-task binding token B2R17 present: True
+  PASS no future successor tokens []
+  PASS no positive authority publication []
+  CLASSIFICATION JSON task binding == B2R17: True
+--- research/000b2-public/decode_b2r17.py
+  PASS not deleted
+  CLASSIFICATION active-task binding token B2R17 present: True
+  PASS no future successor tokens []
+  PASS no positive authority publication []
+  PASS no forbidden decode-runtime calls [] (policy primary_decode_allowed=True)
+  PASS no forbidden scoring calls [] (policy scoring_allowed=False)
+--- research/000b2-public/verify_b2r17.py
+  PASS not deleted
+  CLASSIFICATION active-task binding token B2R17 present: True
+  PASS no future successor tokens []
+  PASS no positive authority publication []
+  PASS no forbidden decode-runtime calls [] (policy primary_decode_allowed=True)
+  PASS no forbidden scoring calls [] (policy scoring_allowed=False)
+B3_GENERIC_TASK_CONTENT_GUARDS=PASS failures=0

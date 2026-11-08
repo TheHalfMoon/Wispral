@@ -1,0 +1,22 @@
+CANDIDATE=cabf4e5d96ab03d38a74ee4e5986be17a26f5e74 BASE=8d52a4579a0b1c6555cbe8443027c1950493b326 ACTIVE=B2R17
+CLASSIFICATION required verifier research/000b2-public/verify_b2r17.py in changed paths: False
+--- .github/workflows/000b2-public-b2r16-freeze.yml
+  PASS not deleted
+  CLASSIFICATION active-task binding token B2R17 present: False
+  PASS no future successor tokens []
+  PASS no positive authority publication []
+--- research/000b2-public/test_b2r16_preservation.py
+  PASS not deleted
+  CLASSIFICATION active-task binding token B2R17 present: False
+  PASS no future successor tokens []
+  PASS no positive authority publication []
+  PASS no forbidden decode-runtime calls [] (policy primary_decode_allowed=True)
+  PASS no forbidden scoring calls [] (policy scoring_allowed=False)
+--- research/000b2-public/verify_b2r16_preservation.py
+  PASS not deleted
+  CLASSIFICATION active-task binding token B2R17 present: False
+  PASS no future successor tokens []
+  PASS no positive authority publication []
+  PASS no forbidden decode-runtime calls [] (policy primary_decode_allowed=True)
+  PASS no forbidden scoring calls [] (policy scoring_allowed=False)
+B3_GENERIC_TASK_CONTENT_GUARDS=PASS failures=0
