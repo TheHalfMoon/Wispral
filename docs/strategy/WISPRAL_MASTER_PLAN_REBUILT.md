@@ -43,7 +43,7 @@ Each step starts only after the previous step's exit criterion holds on canonica
 1. **Adopt the over-application correction lane.** DONE on `main`.
    - What happened: #129 merged Constitution 0.3.0, Principle XVII ("Correcting an over-applied benchmark control is explicit, narrow, and proven"), as merge `8d52a45`. Its pre-merge qualifying review was waived by the owner. Draft #127 and [PROPOSED_AMENDMENT_CONTROL_DEADLOCK_LANE.md](PROPOSED_AMENDMENT_CONTROL_DEADLOCK_LANE.md) are superseded.
    - Post-merge audit: recorded, non-qualifying, in [AUDIT.md](../../research/reviews/2026-11-08-principle-xvii-audit/AUDIT.md). Verdict: needs a patch amendment.
-   - Remaining exit: a 0.3.1 patch amendment fixing audit findings A1–A4 and ratifying the waived #129 review, merged with a qualifying review (owner, a named human, or a different-vendor reviewer).
+   - Remaining exit: #133 (Constitution 0.4.0) merges. It fixes audit findings A1–A4 and the six blocking findings of its own assisting review, and ratifies the waived #129 review. It needs a qualifying review from the owner, a named human, or a different-vendor reviewer, and an owner merge act under Governance item 6. Its transitional evidence is on #133.
 2. **First freeze correction (C1) under Principle XVII.**
    - Do: #130 corrects the B2R16 freeze control, using the transitional preservation clause, and supersedes #126.
    - Open audit blockers: B1–B4 in the audit (qualifying review, item 3 corpus and fixtures, scoped non-concealment, pinned evidence).
