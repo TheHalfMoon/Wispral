@@ -4,7 +4,7 @@ This file tracks Grain progression. Pins, acceptance and evidence paths are in `
 
 ## Grains
 
-- [ ] `CORE-00`: re-pins, rights register and licence-decision gate. State `GRAIN`. Its only dependency is F. It is the first research Grain to take through readiness.
+- [ ] `CORE-00`: re-pins, rights register and licence-decision gate. Its readiness is recorded in `research/wispral-world-class/evidence/core-00/README.md`, and it was executed in the same pull request: 57 of 57 anchors pass, the rights register and errata are written, and the licence gate is recorded as **CLOSED**. It becomes `VERIFIED` after merge and a canonical reread.
 
 ## Closeout
 
