@@ -1,0 +1,6031 @@
+{
+ "description": "Generate fixtures/cases.json for the CANDIDATE Wispral contracts.",
+ "cases": [
+  {
+   "schema": "envelope",
+   "name": "valid_desktop_transcript_final",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "desktop_user",
+     "ref": "local-user",
+     "os_session": "1"
+    },
+    "source": {
+     "product": "wisprside",
+     "component": "speech_worker",
+     "artifact_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "TranscriptFinal",
+    "payload": {}
+   }
+  },
+  {
+   "schema": "envelope",
+   "name": "valid_tenant_tool_proposed",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "tenant",
+     "ref": "acme",
+     "account_ref": "acct-1",
+     "channel": "web_chat"
+    },
+    "source": {
+     "product": "klaint",
+     "component": "broker"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "ToolProposed",
+    "payload": {}
+   }
+  },
+  {
+   "schema": "envelope",
+   "name": "invalid_unknown_principal_kind",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "admin_from_chat",
+     "ref": "local-user",
+     "os_session": "1"
+    },
+    "source": {
+     "product": "wisprside",
+     "component": "speech_worker",
+     "artifact_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "TranscriptFinal",
+    "payload": {}
+   },
+   "invariant": "closed principal kinds"
+  },
+  {
+   "schema": "envelope",
+   "name": "invalid_extra_field_credentials",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "desktop_user",
+     "ref": "local-user",
+     "os_session": "1"
+    },
+    "source": {
+     "product": "wisprside",
+     "component": "speech_worker",
+     "artifact_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "TranscriptFinal",
+    "payload": {},
+    "credential": "secret"
+   },
+   "invariant": "no extra top-level fields"
+  },
+  {
+   "schema": "envelope",
+   "name": "invalid_negative_epoch",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": -1,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "desktop_user",
+     "ref": "local-user",
+     "os_session": "1"
+    },
+    "source": {
+     "product": "wisprside",
+     "component": "speech_worker",
+     "artifact_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "TranscriptFinal",
+    "payload": {}
+   },
+   "invariant": "epoch is non-negative"
+  },
+  {
+   "schema": "envelope",
+   "name": "G-ENV-1_desktop_without_os_session",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "desktop_user",
+     "ref": "u"
+    },
+    "source": {
+     "product": "wisprside",
+     "component": "speech_worker",
+     "artifact_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "TranscriptFinal",
+    "payload": {}
+   },
+   "invariant": "desktop principal binds the OS session"
+  },
+  {
+   "schema": "envelope",
+   "name": "G-ENV-2_tenant_without_channel",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "tenant",
+     "ref": "acme"
+    },
+    "source": {
+     "product": "klaint",
+     "component": "broker"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "TranscriptFinal",
+    "payload": {}
+   },
+   "invariant": "tenant principal binds account and channel"
+  },
+  {
+   "schema": "envelope",
+   "name": "G-ENV-3_unbounded_payload",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "desktop_user",
+     "ref": "local-user",
+     "os_session": "1"
+    },
+    "source": {
+     "product": "wisprside",
+     "component": "speech_worker",
+     "artifact_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "TranscriptFinal",
+    "payload": {
+     "k0": 0,
+     "k1": 1,
+     "k2": 2,
+     "k3": 3,
+     "k4": 4,
+     "k5": 5,
+     "k6": 6,
+     "k7": 7,
+     "k8": 8,
+     "k9": 9,
+     "k10": 10,
+     "k11": 11,
+     "k12": 12,
+     "k13": 13,
+     "k14": 14,
+     "k15": 15,
+     "k16": 16,
+     "k17": 17,
+     "k18": 18,
+     "k19": 19,
+     "k20": 20,
+     "k21": 21,
+     "k22": 22,
+     "k23": 23,
+     "k24": 24,
+     "k25": 25,
+     "k26": 26,
+     "k27": 27,
+     "k28": 28,
+     "k29": 29,
+     "k30": 30,
+     "k31": 31,
+     "k32": 32,
+     "k33": 33,
+     "k34": 34,
+     "k35": 35,
+     "k36": 36,
+     "k37": 37,
+     "k38": 38,
+     "k39": 39,
+     "k40": 40,
+     "k41": 41,
+     "k42": 42,
+     "k43": 43,
+     "k44": 44,
+     "k45": 45,
+     "k46": 46,
+     "k47": 47,
+     "k48": 48,
+     "k49": 49,
+     "k50": 50,
+     "k51": 51,
+     "k52": 52,
+     "k53": 53,
+     "k54": 54,
+     "k55": 55,
+     "k56": 56,
+     "k57": 57,
+     "k58": 58,
+     "k59": 59,
+     "k60": 60,
+     "k61": 61,
+     "k62": 62,
+     "k63": 63,
+     "k64": 64
+    }
+   },
+   "invariant": "payload property count is bounded"
+  },
+  {
+   "schema": "envelope",
+   "name": "G-ENV-4_render_without_consent_epoch",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "desktop_user",
+     "ref": "local-user",
+     "os_session": "1"
+    },
+    "source": {
+     "product": "wisprstudio",
+     "component": "render_owner"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "RenderRequested",
+    "payload": {}
+   },
+   "invariant": "render events carry the consent epoch"
+  },
+  {
+   "schema": "envelope",
+   "name": "G-ENV-5_worker_without_digest",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "desktop_user",
+     "ref": "local-user",
+     "os_session": "1"
+    },
+    "source": {
+     "product": "wisprside",
+     "component": "speech_worker"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "TranscriptFinal",
+    "payload": {}
+   },
+   "invariant": "worker events carry the artifact digest"
+  },
+  {
+   "schema": "envelope",
+   "name": "invalid_free_text_policy_version",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "desktop_user",
+     "ref": "local-user",
+     "os_session": "1"
+    },
+    "source": {
+     "product": "wisprside",
+     "component": "speech_worker",
+     "artifact_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "policy_version": "latest",
+    "event": "TranscriptFinal",
+    "payload": {}
+   },
+   "invariant": "policy version is a digest or name@semver"
+  },
+  {
+   "schema": "cancellation",
+   "name": "valid_observed_stop_release",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "operation_id": "op-0000001",
+    "epoch": 4,
+    "cancel_epoch": 5,
+    "state": "observed_stopped",
+    "owner": "handy_engine_supervisor",
+    "process_instance": {
+     "pid": 4242,
+     "start_generation": "133700000000000000"
+    },
+    "observation": "process_exit",
+    "effect_state": "none",
+    "response": "cancelled_result",
+    "lease_released": true
+   }
+  },
+  {
+   "schema": "cancellation",
+   "name": "valid_unconfirmed_keeps_lease",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "operation_id": "op-0000001",
+    "epoch": 4,
+    "cancel_epoch": 5,
+    "state": "stopped_unconfirmed",
+    "owner": "handy_engine_supervisor",
+    "process_instance": {
+     "pid": 4242,
+     "start_generation": "133700000000000000"
+    },
+    "observation": "deadline_expired",
+    "effect_state": "none",
+    "response": "cancelled_result",
+    "lease_released": false
+   }
+  },
+  {
+   "schema": "cancellation",
+   "name": "G-CAN-1b_crash_exit_releases_lease",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "operation_id": "op-0000001",
+    "epoch": 4,
+    "cancel_epoch": 5,
+    "state": "failed",
+    "owner": "handy_engine_supervisor",
+    "process_instance": {
+     "pid": 4242,
+     "start_generation": "133700000000000000"
+    },
+    "observation": "process_exit",
+    "effect_state": "none",
+    "response": "error_request_cancelled",
+    "lease_released": true
+   },
+   "invariant": "owner-observed exit after a crash releases the lease"
+  },
+  {
+   "schema": "cancellation",
+   "name": "valid_acknowledged_pending",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "operation_id": "op-0000001",
+    "epoch": 4,
+    "cancel_epoch": 5,
+    "state": "acknowledged",
+    "owner": "handy_engine_supervisor",
+    "process_instance": {
+     "pid": 4242,
+     "start_generation": "133700000000000000"
+    },
+    "observation": "none",
+    "effect_state": "none",
+    "response": "pending",
+    "lease_released": false
+   }
+  },
+  {
+   "schema": "cancellation",
+   "name": "invalid_release_on_ack",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "operation_id": "op-0000001",
+    "epoch": 4,
+    "cancel_epoch": 5,
+    "state": "acknowledged",
+    "owner": "handy_engine_supervisor",
+    "process_instance": {
+     "pid": 4242,
+     "start_generation": "133700000000000000"
+    },
+    "observation": "none",
+    "effect_state": "none",
+    "response": "pending",
+    "lease_released": true
+   },
+   "invariant": "no lease release on acknowledgement"
+  },
+  {
+   "schema": "cancellation",
+   "name": "invalid_observed_stop_by_deadline",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "operation_id": "op-0000001",
+    "epoch": 4,
+    "cancel_epoch": 5,
+    "state": "observed_stopped",
+    "owner": "handy_engine_supervisor",
+    "process_instance": {
+     "pid": 4242,
+     "start_generation": "133700000000000000"
+    },
+    "observation": "deadline_expired",
+    "effect_state": "none",
+    "response": "cancelled_result",
+    "lease_released": false
+   },
+   "invariant": "a deadline expiry is not an observed stop"
+  },
+  {
+   "schema": "cancellation",
+   "name": "G-CAN-2_ack_with_observation",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "operation_id": "op-0000001",
+    "epoch": 4,
+    "cancel_epoch": 5,
+    "state": "acknowledged",
+    "owner": "handy_engine_supervisor",
+    "process_instance": {
+     "pid": 4242,
+     "start_generation": "133700000000000000"
+    },
+    "observation": "process_exit",
+    "effect_state": "none",
+    "response": "pending",
+    "lease_released": false
+   },
+   "invariant": "acknowledged carries no stop observation"
+  },
+  {
+   "schema": "cancellation",
+   "name": "G-CAN-3_unknown_effect_without_intent",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "operation_id": "op-0000001",
+    "epoch": 4,
+    "cancel_epoch": 5,
+    "state": "observed_stopped",
+    "owner": "handy_engine_supervisor",
+    "process_instance": {
+     "pid": 4242,
+     "start_generation": "133700000000000000"
+    },
+    "observation": "process_exit",
+    "effect_state": "unknown",
+    "response": "cancelled_result",
+    "lease_released": true
+   },
+   "invariant": "an unknown effect names its reconcile intent"
+  },
+  {
+   "schema": "cancellation",
+   "name": "invalid_terminal_without_response",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "operation_id": "op-0000001",
+    "epoch": 4,
+    "cancel_epoch": 5,
+    "state": "observed_stopped",
+    "owner": "handy_engine_supervisor",
+    "process_instance": {
+     "pid": 4242,
+     "start_generation": "133700000000000000"
+    },
+    "observation": "process_exit",
+    "effect_state": "none",
+    "response": "pending",
+    "lease_released": true
+   },
+   "invariant": "every cancelled request gets exactly one response"
+  },
+  {
+   "schema": "model_manifest",
+   "name": "valid_local_stt_bundle",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "model.gguf",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "gguf",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "user_initiated_download",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   }
+  },
+  {
+   "schema": "model_manifest",
+   "name": "valid_provider_llm",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "provider-llm",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "llm",
+    "artifact": {
+     "provider_managed_digest_unavailable": true,
+     "provider": "user-configured"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "provider_api",
+    "serialization": "provider_managed",
+    "trust_remote_code": false,
+    "offline_capable": false,
+    "network_hosts": [
+     "api.example.invalid"
+    ],
+    "acquisition": "pre_staged",
+    "code_license": "n/a",
+    "weight_license": "proprietary",
+    "commercial_use": "conditional",
+    "requires_consent": false,
+    "effect_classes": [
+     "structured_proposal"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": true,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted",
+    "commercial_conditions": "Tenant's own provider contract"
+   }
+  },
+  {
+   "schema": "model_manifest",
+   "name": "invalid_offline_with_hosts",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "model.gguf",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "gguf",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [
+     "telemetry.example.invalid"
+    ],
+    "acquisition": "user_initiated_download",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   },
+   "invariant": "offline artifacts declare no hosts"
+  },
+  {
+   "schema": "model_manifest",
+   "name": "invalid_measured_without_evidence",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "model.gguf",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "ar",
+      "variety": "Gulf",
+      "support": "measured"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "gguf",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "user_initiated_download",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   },
+   "invariant": "measured language cells cite evidence"
+  },
+  {
+   "schema": "model_manifest",
+   "name": "invalid_missing_weight_license",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "model.gguf",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "gguf",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "user_initiated_download",
+    "code_license": "MIT",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   },
+   "invariant": "weight license is mandatory"
+  },
+  {
+   "schema": "model_manifest",
+   "name": "invalid_provider_api_offline",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "model.gguf",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "provider_api",
+    "serialization": "gguf",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "user_initiated_download",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   },
+   "invariant": "provider APIs are never offline"
+  },
+  {
+   "schema": "model_manifest",
+   "name": "G-MM-1_provider_managed_digest_offline",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "provider_managed_digest_unavailable": true,
+     "provider": "p"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "gguf",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "user_initiated_download",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   },
+   "invariant": "no digest means not offline"
+  },
+  {
+   "schema": "model_manifest",
+   "name": "G-MM-3_authority_above_evidence",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "model.gguf",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "gguf",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "user_initiated_download",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "may_deliver_text",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   },
+   "invariant": "models are evidence only"
+  },
+  {
+   "schema": "model_manifest",
+   "name": "invalid_auto_download",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "model.gguf",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "gguf",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "automatic_download",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   },
+   "invariant": "automatic download is not representable"
+  },
+  {
+   "schema": "model_manifest",
+   "name": "invalid_admitted_unknown_commercial",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "model.gguf",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "gguf",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "user_initiated_download",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "unknown",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   },
+   "invariant": "an admitted model has a resolved commercial status"
+  },
+  {
+   "schema": "model_manifest",
+   "name": "invalid_path_traversal",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "../evil.bin",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "gguf",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "user_initiated_download",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   },
+   "invariant": "bundle paths cannot escape"
+  },
+  {
+   "schema": "model_manifest",
+   "name": "G-MM-2_duplicate_language_rows",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "model.gguf",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "gguf",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "user_initiated_download",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   },
+   "invariant": "(code, variety) is unique"
+  },
+  {
+   "schema": "consent_record",
+   "name": "valid_active_self",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   }
+  },
+  {
+   "schema": "consent_record",
+   "name": "valid_revoked",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "consenting_third_party",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "revoked",
+    "consent_epoch": 2,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "consent_service",
+      "key_id": "consent-svc:key-1"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40b5b4568ba67809802c8007893dbc3ca92736d411520068b16a8ce966f47705",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "consent-svc:key-1",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    },
+    "revoked_at": "2026-11-08T10:00:00Z"
+   }
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_revoked_without_time",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "revoked",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "revocation is timestamped"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_active_with_revoked_at",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    },
+    "revoked_at": "2026-11-08T10:00:00Z"
+   },
+   "invariant": "revoked consent is never active"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_no_evidence",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:7ddd805cf0692f26579b2a49419120af8afe9e11080eb6610030dd843fa5f75e",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "evidence digest required"
+  },
+  {
+   "schema": "consent_record",
+   "name": "G-CON-1_non_date",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "not-a-date-at-all",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:a8140db0d4ec2237c146d22e5d7a305ae38905a4bef1a6645dc4460d33b5525b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "dates are RFC 3339 UTC"
+  },
+  {
+   "schema": "consent_record",
+   "name": "G-CON-2_expired_without_valid_until",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "expired",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "expiry needs valid_until"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_personal_display_name",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    },
+    "display_name": "Jane Doe"
+   },
+   "invariant": "no personal display data in the contract"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_third_party_without_watermark",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "consenting_third_party",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": false,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:9f2d1a43ed00305ce7c67f9c22ee81732bc7c7b4bc94d24af5dd14b77ada9133",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "third-party voices are watermarked"
+  },
+  {
+   "schema": "consent_record",
+   "name": "G-CON-3_valid_until_before_from",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:e7bef2be6f977bf46917a55096c3a283ef767dc63f4dcc0c90c7928fe73a4c04",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    },
+    "valid_until": "2026-01-01T00:00:00Z"
+   },
+   "invariant": "valid_until follows valid_from"
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "valid_ask_money",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "ASK",
+    "enforced_decision": "ASK",
+    "action_class": "money",
+    "rule_ids": [
+     "refund_over_threshold"
+    ],
+    "layers": [
+     {
+      "source": "base",
+      "decision": "ALLOW"
+     },
+     {
+      "source": "tenant",
+      "decision": "ASK"
+     }
+    ],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": true
+   }
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "valid_allow_read_without_rule",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "ALLOW",
+    "enforced_decision": "ALLOW",
+    "action_class": "read",
+    "rule_ids": [],
+    "layers": [
+     {
+      "source": "base",
+      "decision": "ALLOW"
+     }
+    ],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": true
+   }
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "valid_undecidable_unattended_deny",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "UNDECIDABLE",
+    "enforced_decision": "DENY",
+    "action_class": "money",
+    "rule_ids": [
+     "refund_over_threshold"
+    ],
+    "layers": [],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": false,
+    "undecidable_resolution": "DENY"
+   }
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "invalid_allow_money_without_rule",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "ALLOW",
+    "enforced_decision": "ALLOW",
+    "action_class": "money",
+    "rule_ids": [],
+    "layers": [
+     {
+      "source": "base",
+      "decision": "ALLOW"
+     }
+    ],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": true,
+    "evidence": [
+     {
+      "kind": "model_confidence",
+      "ref": "0.99"
+     }
+    ]
+   },
+   "invariant": "high-risk ALLOW cites a rule"
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "invalid_llm_decision_value",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "ASK",
+    "enforced_decision": "APPROVED_BY_MODEL",
+    "action_class": "money",
+    "rule_ids": [
+     "refund_over_threshold"
+    ],
+    "layers": [
+     {
+      "source": "base",
+      "decision": "ALLOW"
+     },
+     {
+      "source": "tenant",
+      "decision": "ASK"
+     }
+    ],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": true
+   },
+   "invariant": "closed decision vocabulary"
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "G-POL-3_undecidable_enforced",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "UNDECIDABLE",
+    "enforced_decision": "UNDECIDABLE",
+    "action_class": "money",
+    "rule_ids": [
+     "refund_over_threshold"
+    ],
+    "layers": [],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": true
+   },
+   "invariant": "UNDECIDABLE is never the enforced decision"
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "invalid_undecidable_unattended_ask",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "UNDECIDABLE",
+    "enforced_decision": "ASK",
+    "action_class": "money",
+    "rule_ids": [
+     "refund_over_threshold"
+    ],
+    "layers": [],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": false,
+    "undecidable_resolution": "ASK"
+   },
+   "invariant": "unattended UNDECIDABLE resolves to DENY"
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "invalid_enforced_allow_widens_candidate",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "ASK",
+    "enforced_decision": "ALLOW",
+    "action_class": "money",
+    "rule_ids": [
+     "refund_over_threshold"
+    ],
+    "layers": [
+     {
+      "source": "base",
+      "decision": "ALLOW"
+     },
+     {
+      "source": "tenant",
+      "decision": "ASK"
+     }
+    ],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": true
+   },
+   "invariant": "enforcement never widens the candidate"
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "G-POL-1_voice_render_without_consent",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "ALLOW",
+    "enforced_decision": "ALLOW",
+    "action_class": "voice_render",
+    "rule_ids": [
+     "project_voice"
+    ],
+    "layers": [
+     {
+      "source": "base",
+      "decision": "ALLOW"
+     }
+    ],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": true
+   },
+   "invariant": "personal voice render cites consent"
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "G-POL-2_text_delivery_confidence_only",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "ALLOW",
+    "enforced_decision": "ALLOW",
+    "action_class": "text_delivery",
+    "rule_ids": [],
+    "layers": [
+     {
+      "source": "base",
+      "decision": "ALLOW"
+     }
+    ],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": true,
+    "evidence": [
+     {
+      "kind": "model_confidence",
+      "ref": "0.97"
+     }
+    ]
+   },
+   "invariant": "text delivery needs a rule and a target binding"
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "invalid_layer_widening",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "ASK",
+    "enforced_decision": "ASK",
+    "action_class": "money",
+    "rule_ids": [
+     "refund_over_threshold"
+    ],
+    "layers": [
+     {
+      "source": "base",
+      "decision": "DENY"
+     },
+     {
+      "source": "tenant",
+      "decision": "ASK"
+     }
+    ],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": true
+   },
+   "invariant": "layers only narrow and compose to the candidate"
+  },
+  {
+   "schema": "provenance_event",
+   "name": "valid_raw_hypothesis",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "event_id": "evt-0000001",
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "epoch": 3,
+    "sequence": 12,
+    "journal_seq": 40,
+    "kind": "raw_hypothesis",
+    "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": {
+     "model_id": "example-local-asr",
+     "revision": "r1",
+     "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "actor": "speech_worker",
+    "retention": "bounded_days",
+    "retention_days": 7,
+    "principal_scope_ref": "local-user",
+    "policy_version": "side-policy@1.0.0"
+   }
+  },
+  {
+   "schema": "provenance_event",
+   "name": "invalid_rewrite_without_parent",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "event_id": "evt-0000001",
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "epoch": 3,
+    "sequence": 12,
+    "journal_seq": 40,
+    "kind": "rewrite_suggestion",
+    "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": {
+     "model_id": "example-local-asr",
+     "revision": "r1",
+     "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "actor": "speech_worker",
+    "retention": "bounded_days",
+    "retention_days": 7,
+    "principal_scope_ref": "local-user",
+    "policy_version": "side-policy@1.0.0",
+    "components": {
+     "prompt_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+   },
+   "invariant": "derived text points at its parent"
+  },
+  {
+   "schema": "provenance_event",
+   "name": "invalid_raw_without_model",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "event_id": "evt-0000001",
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "epoch": 3,
+    "sequence": 12,
+    "journal_seq": 40,
+    "kind": "raw_hypothesis",
+    "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "actor": "speech_worker",
+    "retention": "bounded_days",
+    "retention_days": 7,
+    "principal_scope_ref": "local-user",
+    "policy_version": "side-policy@1.0.0"
+   },
+   "invariant": "raw hypotheses name their model"
+  },
+  {
+   "schema": "provenance_event",
+   "name": "invalid_embedded_media",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "event_id": "evt-0000001",
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "epoch": 3,
+    "sequence": 12,
+    "journal_seq": 40,
+    "kind": "raw_hypothesis",
+    "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": {
+     "model_id": "example-local-asr",
+     "revision": "r1",
+     "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "actor": "speech_worker",
+    "retention": "bounded_days",
+    "retention_days": 7,
+    "principal_scope_ref": "local-user",
+    "policy_version": "side-policy@1.0.0",
+    "audio_base64": "UklGRg=="
+   },
+   "invariant": "media is never embedded"
+  },
+  {
+   "schema": "provenance_event",
+   "name": "G-PROV-1_model_without_digest",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "event_id": "evt-0000001",
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "epoch": 3,
+    "sequence": 12,
+    "journal_seq": 40,
+    "kind": "raw_hypothesis",
+    "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": {
+     "model_id": "m",
+     "revision": "r1"
+    },
+    "actor": "speech_worker",
+    "retention": "bounded_days",
+    "retention_days": 7,
+    "principal_scope_ref": "local-user",
+    "policy_version": "side-policy@1.0.0"
+   },
+   "invariant": "model digest required"
+  },
+  {
+   "schema": "provenance_event",
+   "name": "G-PROV-2_outcome_without_parent",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "event_id": "evt-0000001",
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "epoch": 3,
+    "sequence": 12,
+    "journal_seq": 40,
+    "kind": "outcome",
+    "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": {
+     "model_id": "example-local-asr",
+     "revision": "r1",
+     "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "actor": "speech_worker",
+    "retention": "bounded_days",
+    "retention_days": 7,
+    "principal_scope_ref": "local-user",
+    "policy_version": "side-policy@1.0.0",
+    "intent_state": "settled"
+   },
+   "invariant": "outcomes point at their dispatch"
+  },
+  {
+   "schema": "provenance_event",
+   "name": "G-PROV-3_bounded_days_without_days",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "event_id": "evt-0000001",
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "epoch": 3,
+    "sequence": 12,
+    "journal_seq": 40,
+    "kind": "raw_hypothesis",
+    "content_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": {
+     "model_id": "example-local-asr",
+     "revision": "r1",
+     "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "actor": "speech_worker",
+    "retention": "bounded_days",
+    "principal_scope_ref": "local-user",
+    "policy_version": "side-policy@1.0.0"
+   },
+   "invariant": "bounded retention states its days"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "valid_delivered",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   }
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "valid_refused_target_changed",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "refused",
+    "method": "none",
+    "chars_total": 120,
+    "chars_delivered": 0,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    },
+    "refusal_reason": "target_changed"
+   }
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "valid_partial_clipboard",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "partial",
+    "method": "send_input_unicode",
+    "chars_total": 120,
+    "chars_delivered": 40,
+    "clipboard": {
+     "used": true,
+     "restored": true,
+     "history_excluded": true
+    }
+   }
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_delivered_without_revalidation",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": false,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "revalidate before delivery"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_foreground_fallback_target",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": false,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "no current-foreground fallback"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_refused_with_chars",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "refused",
+    "method": "none",
+    "chars_total": 120,
+    "chars_delivered": 4,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    },
+    "refusal_reason": "elevated_target"
+   },
+   "invariant": "a refusal delivers nothing"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_partial_zero",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "partial",
+    "method": "send_input_unicode",
+    "chars_total": 120,
+    "chars_delivered": 0,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "partial delivers at least one character"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "G-DEL-3_restored_unused_clipboard",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": true
+    }
+   },
+   "invariant": "an unused clipboard is not restored"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "G-DEL-4_free_text_start_time",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "yesterday"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "process identity is numeric"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_clipboard_without_history_exclusion",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": true,
+     "restored": true,
+     "history_excluded": false
+    }
+   },
+   "invariant": "clipboard writes exclude history"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "G-DEL-1_delivered_exceeds_total",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 130,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "chars_delivered <= chars_total"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "G-DEL-2_confirmed_but_short",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 100,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "confirmed means complete"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_stale_epoch_delivered",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 2,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "a stale activation epoch must be refused"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "valid_stale_epoch_refused",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 2,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "refused",
+    "method": "none",
+    "chars_total": 120,
+    "chars_delivered": 0,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    },
+    "refusal_reason": "stale_epoch"
+   }
+  },
+  {
+   "schema": "effect_intent",
+   "name": "valid_dispatched",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   }
+  },
+  {
+   "schema": "effect_intent",
+   "name": "valid_reconciled",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "reconciled",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    },
+    "reconcile_probe": "GET /refunds?idempotency_key=...",
+    "reconciled_result": "effect_present"
+   }
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_unknown_without_probe",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "unknown",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "unknown outcomes need a reconcile probe"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_result_without_reconciled",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    },
+    "reconciled_result": "effect_absent",
+    "reconcile_probe": "x"
+   },
+   "invariant": "a reconcile result implies the reconciled state"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_text_delivery_not_an_intent",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "text_delivery",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "text delivery is a delivery_outcome, not an effect intent"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "valid_studio_export",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "project-42:export:chapter-3:v7",
+    "owner": "studio_export_commit",
+    "action_class": "file_export",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3
+   }
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_studio_money",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "studio_export_commit",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3
+   },
+   "invariant": "the export owner only commits files"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_short_idempotency_key",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "k1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "idempotency keys have enough entropy"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_active_speaker_not_checked",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "human_review",
+     "result": "not_checked"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:3fbfe5664c5751a785d10e4e959600be177b73b91231c0dab45836a301356bc4",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "active personal consent requires a speaker match"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_missing_reference_digest",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:4f09681b57e6db54ff06fbdcf3df89c7471760c2831a269d84f6d90c003557a0",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "consent binds the exact reference audio"
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "valid_voice_render_stock_catalog",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "ALLOW",
+    "enforced_decision": "ALLOW",
+    "action_class": "voice_render",
+    "rule_ids": [
+     "stock_voice_licensed"
+    ],
+    "layers": [
+     {
+      "source": "base",
+      "decision": "ALLOW"
+     }
+    ],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": true,
+    "stock_voice_catalog_id": "catalog:kokoro:af_heart"
+   }
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "valid_ask_confirmed_by_operator",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "ASK",
+    "enforced_decision": "ALLOW",
+    "action_class": "money",
+    "rule_ids": [
+     "refund_over_threshold"
+    ],
+    "layers": [
+     {
+      "source": "base",
+      "decision": "ALLOW"
+     },
+     {
+      "source": "tenant",
+      "decision": "ASK"
+     }
+    ],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": true,
+    "confirmation": {
+     "confirmer_kind": "operator",
+     "verification_ref": "operator:sara-001",
+     "confirmed_at": "2026-11-08T10:00:00Z"
+    }
+   }
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "invalid_ask_confirmed_by_conversation_text",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "ASK",
+    "enforced_decision": "ALLOW",
+    "action_class": "money",
+    "rule_ids": [
+     "refund_over_threshold"
+    ],
+    "layers": [
+     {
+      "source": "base",
+      "decision": "ALLOW"
+     },
+     {
+      "source": "tenant",
+      "decision": "ASK"
+     }
+    ],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": true,
+    "confirmation": {
+     "confirmer_kind": "customer_text",
+     "verification_ref": "turn-0000009",
+     "confirmed_at": "2026-11-08T10:00:00Z"
+    }
+   },
+   "invariant": "conversation text never confirms an ASK"
+  },
+  {
+   "schema": "policy_verdict",
+   "name": "invalid_self_asserted_stock_voice",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "verdict_id": "verdict-0001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "candidate_decision": "ALLOW",
+    "enforced_decision": "ALLOW",
+    "action_class": "voice_render",
+    "rule_ids": [
+     "x"
+    ],
+    "layers": [
+     {
+      "source": "base",
+      "decision": "ALLOW"
+     }
+    ],
+    "policy_version": "klaint-acme@12.0.0",
+    "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "principal_scope_ref": "tenant:acme",
+    "human_present": true,
+    "stock_voice": true
+   },
+   "invariant": "stock voices come from a catalog, not a flag"
+  },
+  {
+   "schema": "model_manifest",
+   "name": "invalid_admitted_pickle",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "model.gguf",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "pickle",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "user_initiated_download",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   },
+   "invariant": "admitted models never use pickle"
+  },
+  {
+   "schema": "model_manifest",
+   "name": "invalid_admitted_remote_code",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "model.gguf",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "gguf",
+    "trust_remote_code": true,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "user_initiated_download",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   },
+   "invariant": "admitted models never run remote code"
+  },
+  {
+   "schema": "model_manifest",
+   "name": "invalid_imported_without_provenance",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "model.gguf",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "gguf",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "user_imported",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted"
+   },
+   "invariant": "user-imported models record provenance"
+  },
+  {
+   "schema": "cancellation",
+   "name": "invalid_numeric_start_generation",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "operation_id": "op-0000001",
+    "epoch": 4,
+    "cancel_epoch": 5,
+    "state": "observed_stopped",
+    "owner": "handy_engine_supervisor",
+    "process_instance": {
+     "pid": 4242,
+     "start_generation": 133700000000000000
+    },
+    "observation": "process_exit",
+    "effect_state": "none",
+    "response": "cancelled_result",
+    "lease_released": true
+   },
+   "invariant": "64-bit ids are decimal strings"
+  },
+  {
+   "schema": "envelope",
+   "name": "valid_typed_delivery_payload",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "desktop_user",
+     "ref": "local-user",
+     "os_session": "1"
+    },
+    "source": {
+     "product": "wisprside",
+     "component": "delivery_owner"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "DeliveryOutcome",
+    "payload": {
+     "delivery_id": "del-0000001",
+     "intent_id": "int-0000001",
+     "request_id": "req-00000001",
+     "epoch": 3,
+     "epoch_at_activation": 3,
+     "target": {
+      "captured_at_activation": true,
+      "window_handle": "0x00A1B2",
+      "process_instance": {
+       "pid": 4242,
+       "start_generation": "133700000000000000"
+      },
+      "focus_element": {
+       "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "control_type": "Edit",
+       "is_password": false,
+       "is_read_only": false
+      },
+      "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "app_display_name": "Notepad",
+      "integrity_level": "medium"
+     },
+     "revalidated_before_delivery": true,
+     "focus_revalidated_before_delivery": true,
+     "outcome": "delivered_confirmed",
+     "method": "uia_value_pattern",
+     "chars_total": 120,
+     "chars_delivered": 120,
+     "clipboard": {
+      "used": false,
+      "restored": false,
+      "skipped_reason": "not_used"
+     }
+    }
+   }
+  },
+  {
+   "schema": "envelope",
+   "name": "invalid_untyped_delivery_payload",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "desktop_user",
+     "ref": "local-user",
+     "os_session": "1"
+    },
+    "source": {
+     "product": "wisprside",
+     "component": "delivery_owner"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "DeliveryOutcome",
+    "payload": {
+     "outcome": "delivered"
+    }
+   },
+   "invariant": "contract-bearing events carry their contract payload"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_delivered_without_focus_element",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "delivery binds the focused element"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_delivered_into_password_field",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": true,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "never deliver into a password field"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_delivered_into_read_only_field",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": true
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "never deliver into a read-only field"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "invalid_delivered_focus_not_revalidated",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": false,
+    "outcome": "delivered_confirmed",
+    "method": "uia_value_pattern",
+    "chars_total": 120,
+    "chars_delivered": 120,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    }
+   },
+   "invariant": "same-window focus moves are caught before delivery"
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "valid_refused_focus_moved",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": false,
+    "outcome": "refused",
+    "method": "none",
+    "chars_total": 120,
+    "chars_delivered": 0,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    },
+    "refusal_reason": "focus_moved"
+   }
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "valid_refused_identity_unreadable_without_focus",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": true,
+    "outcome": "refused",
+    "method": "none",
+    "chars_total": 120,
+    "chars_delivered": 0,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    },
+    "refusal_reason": "identity_unreadable"
+   }
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_missing_attestation",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+   },
+   "invariant": "consent is authenticated, not self-asserted"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_active_statement_mismatch",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "mismatch",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:12c3efd5feee2ee31ed4e143b7829a7f3fa1c4d8093333a768efe6f607361c41",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "the statement must say the consent script"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_active_operator_not_confirmed",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": false,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:251a442e690fb9e7fe505b828f0d7b51ad9d3f7a16eb7155d9f83ae3b94fe6cc",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "a human operator confirms the statement"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_statement_imported_not_live",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": false,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:0fc56fdf0a484ca04f1611dbc29ea54b7d43c0fa6620b3fcd7b1c24717dd328f",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "consent statements are captured live"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_statement_without_challenge",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true
+     },
+     "bound_fields_digest": "sha256:cf3d1542017216efb1dffbca606c86c7223da2394e4728bcb77d1d3aaa0e4030",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "a capture-time challenge defeats replayed or spliced statements"
+  },
+  {
+   "schema": "consent_record",
+   "name": "valid_commercial_consent_service",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "commercial"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "consent_service",
+      "key_id": "consent-svc:key-1"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:2b59deafcc454c80154cb29dc30df87457445f2f06f53d426af0dc61e94f55d5",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "consent-svc:key-1",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   }
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_commercial_operator_key",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "commercial"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "consent-svc:key-1"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:690e20fea572b9dc82213a3d81c0f4788a9f1f6d61dbf18ec9a0058b6ae37e80",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "consent-svc:key-1",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "commercial consent needs the consent-service key"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_commercial_without_watermark",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "commercial"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": false,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "consent_service",
+      "key_id": "consent-svc:key-1"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:da322d97e0040f17a1667f89223c6cebc06d747069c767a6224ca671222f24ae",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "consent-svc:key-1",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "commercial voices are watermarked"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_operator_key_labelled_consent_service",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "commercial"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "consent_service",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:7c5096c543b837e56cb000992aa372c2e5f5ddbf3bdf7337a9edbf5e4b70859d",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "a consent-service label on an operator key is refused"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_unregistered_consent_service_key",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "commercial"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "consent_service",
+      "key_id": "consent-svc:rogue-9"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:4e38df51f66b74c69471fa4c0b06ea67e75d3ad1f4564c3e72bcce79d1a4b3f6",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "consent-svc:rogue-9",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "issuer keys come from the pinned registry"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_licensed_actor_operator_key",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "licensed_voice_actor",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:133cc33dcb0377c8a4edc073eba7d5cb5e5f4e91ee242e70869aa53243e5e0cb",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "licensed voice actors use the consent-service key"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_licensed_actor_without_watermark",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "licensed_voice_actor",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "commercial"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": false,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "consent_service",
+      "key_id": "consent-svc:key-1"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:30267e9b5500f51cf2ab98a31882365b380826ddf98ae9ada23ed3be7fd712c9",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "consent-svc:key-1",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "licensed voices are watermarked"
+  },
+  {
+   "schema": "consent_record",
+   "name": "valid_licensed_actor_consent_service",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "licensed_voice_actor",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "commercial"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "consent_service",
+      "key_id": "consent-svc:key-1"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:bb33880a9b2d4b3ad50ed34fa2594bb4f8b7a3846373841f429de9a81b77eda0",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "consent-svc:key-1",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   }
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_consent_id_relabelled_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-9999",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "the consent id is signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_written_consent_method",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "signed_written_consent",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:5773700a237086b6be3a0a2add1422372f46ae2f29528198c84da2c7dd3f9c6f",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "only live identity checks with a live statement"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_evidence_swapped_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "every attested field is signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_speaker_evidence_swapped_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "every attested field is signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_identity_check_relabelled_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "live_video_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "every attested field is signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_script_swapped_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@2",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "every attested field is signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_challenge_swapped_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "every attested field is signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_issued_at_moved_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-07T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "every attested field is signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_signature_key_differs_from_issuer",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:other-007",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "the signing key is the issuer key"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_attestation_wrong_alg",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "none",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "attestations are Ed25519-signed"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_purposes_widened_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal",
+     "internal_evaluation"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "attested fields cannot change after signing"
+  },
+  {
+   "schema": "consent_record",
+   "name": "invalid_reference_swapped_after_attestation",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "personal"
+    ],
+    "products": [
+     "wisprstudio"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "studio_operator",
+      "key_id": "op-key:studio-001"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:40388a3a3eca81af2325c2b3ee5244a444d7988bde4382f9813d57fdd77bf28b",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "op-key:studio-001",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   },
+   "invariant": "the attested reference audio cannot be swapped"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_broker_intent_without_capability",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+   },
+   "invariant": "consequential broker calls need a capability"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_capability_reusable",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": false,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "capabilities are single-use"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_capability_tool_substituted",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.void",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "the capability binds the exact tool"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_capability_args_substituted",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "the capability binds the exact arguments"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_capability_ttl_over_60s",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:05:00Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "capabilities live at most 60 seconds"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_capability_expires_before_issue",
+   "expect": "invalid",
+   "layer": "runtime",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T09:59:00Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "expiry follows issue"
+  }
+ ],
+ "sequences": [
+  {
+   "machine": "effect_intent",
+   "name": "pending_dispatched_settled",
+   "states": [
+    "pending",
+    "dispatched",
+    "settled"
+   ],
+   "expect": "valid"
+  },
+  {
+   "machine": "effect_intent",
+   "name": "crash_after_dispatch_reconciled",
+   "states": [
+    "pending",
+    "dispatched",
+    "unknown",
+    "reconciled"
+   ],
+   "expect": "valid"
+  },
+  {
+   "machine": "effect_intent",
+   "name": "download_settles_from_pending",
+   "states": [
+    "pending",
+    "settled"
+   ],
+   "expect": "valid"
+  },
+  {
+   "machine": "effect_intent",
+   "name": "abandoned_after_dispatch",
+   "states": [
+    "pending",
+    "dispatched",
+    "abandoned"
+   ],
+   "expect": "invalid"
+  },
+  {
+   "machine": "effect_intent",
+   "name": "retry_after_unknown",
+   "states": [
+    "pending",
+    "dispatched",
+    "unknown",
+    "dispatched"
+   ],
+   "expect": "invalid"
+  },
+  {
+   "machine": "effect_intent",
+   "name": "settled_reopened",
+   "states": [
+    "pending",
+    "settled",
+    "pending"
+   ],
+   "expect": "invalid"
+  },
+  {
+   "machine": "cancellation",
+   "name": "ack_then_observed",
+   "states": [
+    "requested",
+    "acknowledged",
+    "observed_stopped"
+   ],
+   "expect": "valid"
+  },
+  {
+   "machine": "cancellation",
+   "name": "unconfirmed_then_failed",
+   "states": [
+    "requested",
+    "acknowledged",
+    "stopped_unconfirmed",
+    "failed"
+   ],
+   "expect": "valid"
+  },
+  {
+   "machine": "cancellation",
+   "name": "stopped_then_reack",
+   "states": [
+    "requested",
+    "observed_stopped",
+    "acknowledged"
+   ],
+   "expect": "invalid"
+  },
+  {
+   "machine": "cancellation",
+   "name": "does_not_start_acknowledged",
+   "states": [
+    "acknowledged",
+    "observed_stopped"
+   ],
+   "expect": "invalid"
+  }
+ ],
+ "bundles": [
+  {
+   "name": "valid_intent_bound_to_allow_verdict",
+   "expect": "valid",
+   "intents": [
+    {
+     "intent_id": "int-0000002",
+     "idempotency_key": "acme:refund:order-4821:v1",
+     "owner": "klaint_broker",
+     "action_class": "money",
+     "state": "dispatched",
+     "verdict_id": "verdict-0002",
+     "principal_scope_ref": "tenant:acme",
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
+    }
+   ],
+   "verdicts": [
+    {
+     "verdict_id": "verdict-0002",
+     "request_id": "req-00000001",
+     "epoch": 3,
+     "candidate_decision": "ALLOW",
+     "enforced_decision": "ALLOW",
+     "action_class": "money",
+     "rule_ids": [
+      "refund_over_threshold"
+     ],
+     "layers": [
+      {
+       "source": "base",
+       "decision": "ALLOW"
+      }
+     ],
+     "policy_version": "klaint-acme@12.0.0",
+     "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "principal_scope_ref": "tenant:acme",
+     "human_present": true
+    }
+   ]
+  },
+  {
+   "name": "invalid_duplicate_open_intent_same_key",
+   "expect": "invalid",
+   "intents": [
+    {
+     "intent_id": "int-0000002",
+     "idempotency_key": "acme:refund:order-4821:v1",
+     "owner": "klaint_broker",
+     "action_class": "money",
+     "state": "dispatched",
+     "verdict_id": "verdict-0002",
+     "principal_scope_ref": "tenant:acme",
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
+    },
+    {
+     "intent_id": "int-0000003",
+     "idempotency_key": "acme:refund:order-4821:v1",
+     "owner": "klaint_broker",
+     "action_class": "money",
+     "state": "dispatched",
+     "verdict_id": "verdict-0002",
+     "principal_scope_ref": "tenant:acme",
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
+    }
+   ],
+   "verdicts": [
+    {
+     "verdict_id": "verdict-0002",
+     "request_id": "req-00000001",
+     "epoch": 3,
+     "candidate_decision": "ALLOW",
+     "enforced_decision": "ALLOW",
+     "action_class": "money",
+     "rule_ids": [
+      "refund_over_threshold"
+     ],
+     "layers": [
+      {
+       "source": "base",
+       "decision": "ALLOW"
+      }
+     ],
+     "policy_version": "klaint-acme@12.0.0",
+     "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "principal_scope_ref": "tenant:acme",
+     "human_present": true
+    }
+   ],
+   "invariant": "one non-terminal intent per (principal, owner, key)"
+  },
+  {
+   "name": "invalid_intent_verdict_class_mismatch",
+   "expect": "invalid",
+   "intents": [
+    {
+     "intent_id": "int-0000002",
+     "idempotency_key": "acme:refund:order-4821:v1",
+     "owner": "klaint_broker",
+     "action_class": "money",
+     "state": "dispatched",
+     "verdict_id": "verdict-0002",
+     "principal_scope_ref": "tenant:acme",
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
+    }
+   ],
+   "verdicts": [
+    {
+     "verdict_id": "verdict-0002",
+     "request_id": "req-00000001",
+     "epoch": 3,
+     "candidate_decision": "ALLOW",
+     "enforced_decision": "ALLOW",
+     "action_class": "read",
+     "rule_ids": [],
+     "layers": [
+      {
+       "source": "base",
+       "decision": "ALLOW"
+      }
+     ],
+     "policy_version": "klaint-acme@12.0.0",
+     "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "principal_scope_ref": "tenant:acme",
+     "human_present": true
+    }
+   ],
+   "invariant": "verdict class must match the intent"
+  },
+  {
+   "name": "invalid_intent_on_ask_verdict",
+   "expect": "invalid",
+   "intents": [
+    {
+     "intent_id": "int-0000002",
+     "idempotency_key": "acme:refund:order-4821:v1",
+     "owner": "klaint_broker",
+     "action_class": "money",
+     "state": "dispatched",
+     "verdict_id": "verdict-0002",
+     "principal_scope_ref": "tenant:acme",
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
+    }
+   ],
+   "verdicts": [
+    {
+     "verdict_id": "verdict-0002",
+     "request_id": "req-00000001",
+     "epoch": 3,
+     "candidate_decision": "ASK",
+     "enforced_decision": "ASK",
+     "action_class": "money",
+     "rule_ids": [
+      "refund_over_threshold"
+     ],
+     "layers": [
+      {
+       "source": "base",
+       "decision": "ALLOW"
+      },
+      {
+       "source": "tenant",
+       "decision": "ASK"
+      }
+     ],
+     "policy_version": "klaint-acme@12.0.0",
+     "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "principal_scope_ref": "tenant:acme",
+     "human_present": true
+    }
+   ],
+   "invariant": "dispatch needs an enforced ALLOW"
+  },
+  {
+   "name": "valid_two_intents_distinct_capabilities",
+   "expect": "valid",
+   "verdicts": [
+    {
+     "verdict_id": "verdict-0002",
+     "request_id": "req-00000001",
+     "epoch": 3,
+     "candidate_decision": "ALLOW",
+     "enforced_decision": "ALLOW",
+     "action_class": "money",
+     "rule_ids": [
+      "refund_over_threshold"
+     ],
+     "layers": [
+      {
+       "source": "base",
+       "decision": "ALLOW"
+      }
+     ],
+     "policy_version": "klaint-acme@12.0.0",
+     "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "principal_scope_ref": "tenant:acme",
+     "human_present": true
+    }
+   ],
+   "intents": [
+    {
+     "intent_id": "int-0000002",
+     "idempotency_key": "acme:refund:order-4821:v1",
+     "owner": "klaint_broker",
+     "action_class": "money",
+     "state": "dispatched",
+     "verdict_id": "verdict-0002",
+     "principal_scope_ref": "tenant:acme",
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
+    },
+    {
+     "intent_id": "int-0000004",
+     "idempotency_key": "acme:refund:order-4822:v1",
+     "owner": "klaint_broker",
+     "action_class": "money",
+     "state": "dispatched",
+     "verdict_id": "verdict-0002",
+     "principal_scope_ref": "tenant:acme",
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000002",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_zyxwvutsrq9876",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "invalid_capability_nonce_replayed",
+   "expect": "invalid",
+   "verdicts": [
+    {
+     "verdict_id": "verdict-0002",
+     "request_id": "req-00000001",
+     "epoch": 3,
+     "candidate_decision": "ALLOW",
+     "enforced_decision": "ALLOW",
+     "action_class": "money",
+     "rule_ids": [
+      "refund_over_threshold"
+     ],
+     "layers": [
+      {
+       "source": "base",
+       "decision": "ALLOW"
+      }
+     ],
+     "policy_version": "klaint-acme@12.0.0",
+     "inputs_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "principal_scope_ref": "tenant:acme",
+     "human_present": true
+    }
+   ],
+   "invariant": "a capability nonce is consumed on first use",
+   "intents": [
+    {
+     "intent_id": "int-0000002",
+     "idempotency_key": "acme:refund:order-4821:v1",
+     "owner": "klaint_broker",
+     "action_class": "money",
+     "state": "dispatched",
+     "verdict_id": "verdict-0002",
+     "principal_scope_ref": "tenant:acme",
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
+    },
+    {
+     "intent_id": "int-0000004",
+     "idempotency_key": "acme:refund:order-4822:v1",
+     "owner": "klaint_broker",
+     "action_class": "money",
+     "state": "dispatched",
+     "verdict_id": "verdict-0002",
+     "principal_scope_ref": "tenant:acme",
+     "epoch": 3,
+     "dispatch": {
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "capability": {
+      "token_id": "cap-00000001",
+      "issuer": "klaint_broker",
+      "session_ref": "ses-00000001",
+      "tool": "refunds.create",
+      "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonce": "capN0nce_0123456789abcd",
+      "issued_at": "2026-11-08T10:00:00Z",
+      "expires_at": "2026-11-08T10:00:30Z",
+      "single_use": true,
+      "signature": {
+       "alg": "ed25519",
+       "key_id": "broker-key:acme-1",
+       "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

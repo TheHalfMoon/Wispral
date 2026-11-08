@@ -1,0 +1,297 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://wispral.invalid/contracts/v1/effect_intent.schema.json",
+ "title": "External-effect intent record (CANDIDATE v1)",
+ "description": "One record per external side effect (WisprStudio export commit, Klaint connector mutation; WisprSide text delivery is recorded as a delivery_outcome instead). States and transitions are copied from TheHalfMoon/Orcel@f0b78e6544cf6ea9c2457a6b6f483490c7bd0f6f crates/orcel-journal/src/lib.rs IntentState::may_become (see transitions/effect_intent.json). An interrupted dispatched intent is 'unknown' and is closed only by a reconcile probe, never by blind retry. The referenced verdict must match the intent's action class and principal and have enforced_decision ALLOW (runtime check).",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "intent_id",
+  "idempotency_key",
+  "owner",
+  "action_class",
+  "state",
+  "verdict_id",
+  "principal_scope_ref",
+  "epoch"
+ ],
+ "properties": {
+  "intent_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "idempotency_key": {
+   "type": "string",
+   "pattern": "^[A-Za-z0-9._:-]{16,128}$",
+   "description": "Klaint: H(tenant, conversation, tool, canonical arguments) so a customer double-send or a superseded turn maps to the same key. Unique per (principal_scope_ref, owner, idempotency_key); dispatch is refused while a non-terminal intent with the same key exists (runtime check)."
+  },
+  "owner": {
+   "enum": [
+    "studio_export_commit",
+    "klaint_broker"
+   ]
+  },
+  "action_class": {
+   "enum": [
+    "file_export",
+    "reversible_write",
+    "irreversible_write",
+    "money",
+    "credential_use",
+    "publication"
+   ]
+  },
+  "state": {
+   "enum": [
+    "pending",
+    "dispatched",
+    "settled",
+    "abandoned",
+    "unknown",
+    "reconciled"
+   ]
+  },
+  "verdict_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "principal_scope_ref": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 128
+  },
+  "epoch": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "reconcile_probe": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 256,
+   "description": "Read-only probe that decides an unknown outcome, for example a connector GET by idempotency key."
+  },
+  "reconciled_result": {
+   "enum": [
+    "effect_present",
+    "effect_absent"
+   ]
+  },
+  "detail_ref": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128,
+   "description": "Optional pointer to the product record that details the effect (for example the Studio export record)."
+  },
+  "dispatch": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "tool",
+    "args_digest"
+   ],
+   "description": "What the broker actually dispatches: the tool and the SHA-256 of its RFC 8785 canonical arguments.",
+   "properties": {
+    "tool": {
+     "type": "string",
+     "pattern": "^[a-z][a-z0-9_.]{1,63}$"
+    },
+    "args_digest": {
+     "type": "string",
+     "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+   }
+  },
+  "capability": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "token_id",
+    "issuer",
+    "session_ref",
+    "tool",
+    "args_digest",
+    "nonce",
+    "issued_at",
+    "expires_at",
+    "single_use",
+    "signature"
+   ],
+   "description": "Broker-issued capability for exactly one consequential call. Signed over its own canonical fields; bound to the authenticated session, the tool and the canonical-argument digest; valid for at most 60 seconds; its nonce is consumed on first use, so a replay, a different tool or different arguments are refused.",
+   "properties": {
+    "token_id": {
+     "type": "string",
+     "pattern": "^cap-[A-Za-z0-9_-]{8,64}$"
+    },
+    "issuer": {
+     "const": "klaint_broker"
+    },
+    "session_ref": {
+     "type": "string",
+     "pattern": "^ses-[A-Za-z0-9_-]{8,64}$"
+    },
+    "tool": {
+     "type": "string",
+     "pattern": "^[a-z][a-z0-9_.]{1,63}$"
+    },
+    "args_digest": {
+     "type": "string",
+     "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "nonce": {
+     "type": "string",
+     "pattern": "^[A-Za-z0-9_-]{22,64}$",
+     "description": "At least 128 bits of randomness, base64url."
+    },
+    "issued_at": {
+     "type": "string",
+     "format": "date-time",
+     "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?Z$"
+    },
+    "expires_at": {
+     "type": "string",
+     "format": "date-time",
+     "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?Z$"
+    },
+    "single_use": {
+     "const": true
+    },
+    "signature": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "alg",
+      "key_id",
+      "value"
+     ],
+     "properties": {
+      "alg": {
+       "const": "ed25519"
+      },
+      "key_id": {
+       "type": "string",
+       "pattern": "^[A-Za-z0-9:._-]{3,64}$"
+      },
+      "value": {
+       "type": "string",
+       "pattern": "^[A-Za-z0-9_-]{86}$",
+       "description": "Detached Ed25519 signature, base64url without padding."
+      }
+     }
+    }
+   }
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "state": {
+      "enum": [
+       "unknown",
+       "reconciled"
+      ]
+     }
+    },
+    "required": [
+     "state"
+    ]
+   },
+   "then": {
+    "required": [
+     "reconcile_probe"
+    ]
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "state": {
+      "const": "reconciled"
+     }
+    },
+    "required": [
+     "state"
+    ]
+   },
+   "then": {
+    "required": [
+     "reconciled_result"
+    ]
+   }
+  },
+  {
+   "if": {
+    "required": [
+     "reconciled_result"
+    ]
+   },
+   "then": {
+    "properties": {
+     "state": {
+      "const": "reconciled"
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "owner": {
+      "const": "studio_export_commit"
+     }
+    },
+    "required": [
+     "owner"
+    ]
+   },
+   "then": {
+    "properties": {
+     "action_class": {
+      "const": "file_export"
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "owner": {
+      "const": "klaint_broker"
+     }
+    },
+    "required": [
+     "owner"
+    ]
+   },
+   "then": {
+    "properties": {
+     "action_class": {
+      "not": {
+       "const": "file_export"
+      }
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "owner": {
+      "const": "klaint_broker"
+     }
+    },
+    "required": [
+     "owner"
+    ]
+   },
+   "then": {
+    "required": [
+     "capability",
+     "dispatch"
+    ]
+   }
+  }
+ ]
+}

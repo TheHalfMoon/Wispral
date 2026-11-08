@@ -1,0 +1,106 @@
+{
+  "captured_at": "2026-10-21T05:31:09.526477+00:00",
+  "method": "UNCHANGED_DONOR_MODULE_EXECUTION_WITH_SYNTHETIC_NON_AUDIO_FIXTURES",
+  "status": "REPRODUCED",
+  "application_rea": false,
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "os": "Windows-11-10.0.26300-SP0",
+  "source_sha256": {
+    "fit": "0acd7c33623782cafa975f1f81cbe37362160490e8bdd34ca15f5c2b06321442",
+    "cancellation": "dc3483f68209f4f5092ec560225b1ddf7804ee6bb467e0bd610f2a0536460fcc",
+    "queue": "c08ad4dcc2e61dd6eb8d4ca55ad93a47255bc0f087ae54f9d17c56b04b360074"
+  },
+  "fit_ordinary": {
+    "segments": [
+      {
+        "index": 0,
+        "seg_id": "synthetic-1",
+        "audio_rate": 1.0,
+        "video_ratio": 1.0,
+        "new_start": 0.0,
+        "new_end": 2.0,
+        "orig_start": 0.0,
+        "orig_end": 2.0,
+        "effective_end": 2.0,
+        "status": "fits",
+        "overflow_s": 0.0
+      }
+    ],
+    "video_plan": [
+      {
+        "orig_start": 0.0,
+        "orig_end": 2.0,
+        "new_start": 0.0,
+        "new_end": 2.0,
+        "stretch_ratio": 1.0
+      }
+    ],
+    "total_duration": 2.0,
+    "orig_duration": 2.0,
+    "params": {
+      "max_audio_only_rate": 1.2,
+      "audio_rate_cap": 1.5,
+      "video_slow_cap": 2.0,
+      "gap_guard_s": 0.05,
+      "allow_video_retime": true,
+      "min_audio_rate": 0.85
+    }
+  },
+  "fit_overflow": {
+    "segments": [
+      {
+        "index": 0,
+        "seg_id": "synthetic-1",
+        "audio_rate": 1.8,
+        "video_ratio": 1.0,
+        "new_start": 0.0,
+        "new_end": 2.0,
+        "orig_start": 0.0,
+        "orig_end": 2.0,
+        "effective_end": 2.0,
+        "status": "overflow_trimmed",
+        "overflow_s": 4.6667
+      }
+    ],
+    "video_plan": [
+      {
+        "orig_start": 0.0,
+        "orig_end": 2.0,
+        "new_start": 0.0,
+        "new_end": 2.0,
+        "stretch_ratio": 1.0
+      }
+    ],
+    "total_duration": 2.0,
+    "orig_duration": 2.0,
+    "params": {
+      "max_audio_only_rate": 1.2,
+      "audio_rate_cap": 1.5,
+      "video_slow_cap": 2.0,
+      "gap_guard_s": 0.05,
+      "allow_video_retime": false,
+      "min_audio_rate": 0.85
+    }
+  },
+  "parallel_length_mismatch": "segments (1) and natural_durs_s (0) must be parallel",
+  "cancelled_scope_rejection": "Inference request was cancelled before execution",
+  "cancellation_thread_local_restored": true,
+  "queue": {
+    "queued_cancel": "queued",
+    "queued_work_executed": [],
+    "running_cancel": "running",
+    "coroutine_finally_observed": true,
+    "unknown_job": null,
+    "limitation": "No native inference thread/process or GPU was running."
+  },
+  "not_run": [
+    "TTS inference",
+    "voice cloning",
+    "model downloads",
+    "full donor test suite",
+    "native process cancellation",
+    "GPU cancellation",
+    "subjective voice quality",
+    "latency benchmark"
+  ]
+}

@@ -1,0 +1,394 @@
+{
+  "date": "2026-10-21",
+  "main": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+  "authority": "Snapshot, not a claim that open PRs are canonical",
+  "pull_requests": [
+    {
+      "number": 73,
+      "url": "https://github.com/TheHalfMoon/Wispral/pull/73",
+      "state": "open",
+      "draft": true,
+      "head": "ac32dd3e2b9bee7c39d80f9590984bfcf1094710",
+      "base": "16104eacf2d571276452d173ddb54c089faccd0e",
+      "checks": [
+        {
+          "name": "verify-pr-head-artifact-identity",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34066253122/job/101575431526"
+        },
+        {
+          "name": "bootstrap-self-test",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34066253122/job/101575412047"
+        },
+        {
+          "name": "reverify-active-b2-after-base-push",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34066253122/job/101575411897"
+        },
+        {
+          "name": "resolve-active-b2-head",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34066253122/job/101575411530"
+        },
+        {
+          "name": "bootstrap-self-test",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34066204341/job/101575298697"
+        },
+        {
+          "name": "reverify-active-b2-after-base-push",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34066204341/job/101575284869"
+        },
+        {
+          "name": "resolve-active-b2-head",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34066204341/job/101575284594"
+        },
+        {
+          "name": "verify-pr-head-artifact-identity",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34066204341/job/101575284488"
+        }
+      ]
+    },
+    {
+      "number": 120,
+      "url": "https://github.com/TheHalfMoon/Wispral/pull/120",
+      "state": "open",
+      "draft": false,
+      "head": "85fe810267eda7ce1be8b76fd4cd769d3a39003d",
+      "base": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+      "checks": [
+        {
+          "name": "verify-pr-head-artifact-identity",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423149970/job/102702744344"
+        },
+        {
+          "name": "reverify-active-b2-after-base-push",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423149970/job/102702741128"
+        },
+        {
+          "name": "bootstrap-self-test",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423149970/job/102702740347"
+        },
+        {
+          "name": "resolve-active-b2-head",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423149970/job/102702714490"
+        },
+        {
+          "name": "cubic · AI code reviewer",
+          "status": "completed",
+          "conclusion": "neutral",
+          "url": "https://github.com/TheHalfMoon/Wispral/runs/102702662996"
+        },
+        {
+          "name": "reverify-active-b2-after-base-push",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423115474/job/102702645513"
+        },
+        {
+          "name": "bootstrap-self-test",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423115474/job/102702631107"
+        },
+        {
+          "name": "verify-pr-head-artifact-identity",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423115474/job/102702612286"
+        },
+        {
+          "name": "resolve-active-b2-head",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423115474/job/102702611956"
+        },
+        {
+          "name": "verify-successor-pr-from-canonical-base",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423115482/job/102702610909"
+        },
+        {
+          "name": "verify-legacy-recovery-boundary",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423115308/job/102702610444"
+        },
+        {
+          "name": "verify-b2r16-freeze",
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423115319/job/102702610301"
+        },
+        {
+          "name": "verify-successor-recovery",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423115301/job/102702610300"
+        },
+        {
+          "name": "verify-b2r17-capture",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423115364/job/102702610282"
+        },
+        {
+          "name": "verify-public-corpus-methodology",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/34423115331/job/102702610222"
+        }
+      ]
+    },
+    {
+      "number": 121,
+      "url": "https://github.com/TheHalfMoon/Wispral/pull/121",
+      "state": "open",
+      "draft": false,
+      "head": "61cdfc5e54e7907e1dc757d0b6900ebfef565d3f",
+      "base": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+      "checks": [
+        {
+          "name": "bootstrap-self-test",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/36841861167/job/110302655863"
+        },
+        {
+          "name": "resolve-active-b2-head",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/36841861167/job/110302645401"
+        },
+        {
+          "name": "reverify-active-b2-after-base-push",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/36841861167/job/110302613336"
+        },
+        {
+          "name": "verify-pr-head-artifact-identity",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/36841861167/job/110302607752"
+        },
+        {
+          "name": "reverify-active-b2-after-base-push",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/36841842248/job/110302590815"
+        },
+        {
+          "name": "resolve-active-b2-head",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/36841842248/job/110302571637"
+        },
+        {
+          "name": "cubic · AI code reviewer",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/TheHalfMoon/Wispral/runs/110302548036"
+        },
+        {
+          "name": "bootstrap-self-test",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/36841842248/job/110302536199"
+        },
+        {
+          "name": "verify-pr-head-artifact-identity",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/36841842248/job/110302535888"
+        },
+        {
+          "name": "verify-b2r16-freeze",
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/36841841738/job/110302529545"
+        }
+      ]
+    },
+    {
+      "number": 123,
+      "url": "https://github.com/TheHalfMoon/Wispral/pull/123",
+      "state": "open",
+      "draft": true,
+      "head": "6499c66f1e2fca71762e0d4cf0d14b0a67041a5a",
+      "base": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+      "checks": [
+        {
+          "name": "bootstrap-self-test",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/39535327522/job/119010583298"
+        },
+        {
+          "name": "reverify-active-b2-after-base-push",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/39535327522/job/119010541660"
+        },
+        {
+          "name": "resolve-active-b2-head",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/39535327522/job/119010541334"
+        },
+        {
+          "name": "verify-pr-head-artifact-identity",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/39535327522/job/119010540881"
+        },
+        {
+          "name": "verify-b2r16-freeze",
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/39535255934/job/119010308607"
+        },
+        {
+          "name": "reverify-active-b2-after-base-push",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/39535254523/job/119010306699"
+        },
+        {
+          "name": "verify-pr-head-artifact-identity",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/39535254523/job/119010306602"
+        },
+        {
+          "name": "resolve-active-b2-head",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/39535254523/job/119010306210"
+        },
+        {
+          "name": "bootstrap-self-test",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/TheHalfMoon/Wispral/actions/runs/39535254523/job/119010306078"
+        }
+      ]
+    }
+  ],
+  "branch_protection": {
+    "status": "UNAVAILABLE",
+    "http": 403,
+    "reason": "Upgrade GitHub Pro or make repository public returned by API"
+  },
+  "rulesets": {
+    "status": "UNAVAILABLE",
+    "http": 403
+  },
+  "founder_inventory": {
+    "unique_repositories": 59,
+    "actual_accounts": [
+      "TheHalfMoon",
+      "wepld",
+      "AbdulazizShehri"
+    ],
+    "duplicate_saved_alias": "IamShehri resolves to TheHalfMoon",
+    "organizations_returned": [],
+    "fanatir_organization": "404, visibility not established"
+  },
+  "product_code_authorized": false,
+  "production_stt_selected": false,
+  "human_developer_speech_accuracy_evidence": "ABSENT",
+  "b2r17": {
+    "state": "OPEN_PR_NOT_CANONICAL",
+    "frozen_inputs": 240,
+    "decoded": 209,
+    "failed": 31,
+    "scoring_authorized": false,
+    "source": "https://github.com/TheHalfMoon/Wispral/pull/120"
+  },
+  "freeze_failure": {
+    "message": "B2R16_ATTEMPT_003_FREEZE=FAIL: B2R16 actual candidate range scope drift",
+    "runs": [
+      "34423115319",
+      "36841841738"
+    ],
+    "workflow_path": ".github/workflows/000b2-public-b2r16-freeze.yml",
+    "verifier": "research/000b2-public/verify_b2r16.py::verify_exact_task_range",
+    "limitation": "Observed existing failures; new research PR check outcomes must be captured separately after creation."
+  },
+  "final_recheck": {
+    "date": "2026-10-21",
+    "source": "GitHub plugin live get_pr_info",
+    "main": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+    "prs": [
+      {
+        "number": 73,
+        "state": "open",
+        "draft": true,
+        "head": "ac32dd3e2b9bee7c39d80f9590984bfcf1094710",
+        "base": "16104eacf2d571276452d173ddb54c089faccd0e",
+        "url": "https://github.com/TheHalfMoon/Wispral/pull/73",
+        "title": "docs: prepare external source adoption strategy"
+      },
+      {
+        "number": 120,
+        "state": "open",
+        "draft": false,
+        "head": "85fe810267eda7ce1be8b76fd4cd769d3a39003d",
+        "base": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+        "url": "https://github.com/TheHalfMoon/Wispral/pull/120",
+        "title": "research(000b2): preserve B2R17 moonshine compact capture"
+      },
+      {
+        "number": 121,
+        "state": "open",
+        "draft": false,
+        "head": "61cdfc5e54e7907e1dc757d0b6900ebfef565d3f",
+        "base": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+        "url": "https://github.com/TheHalfMoon/Wispral/pull/121",
+        "title": "chore: wire Graft as local context tooling"
+      },
+      {
+        "number": 123,
+        "state": "open",
+        "draft": true,
+        "head": "34263e99e98ed9894d03f8995aa565752dce2864",
+        "base": "edacdf7504302cc91ff7138bc6ac2d391e4df1f4",
+        "url": "https://github.com/TheHalfMoon/Wispral/pull/123",
+        "title": "docs: confirm Wispral, WisprStudio, WisprSide and Klaint product identity"
+      }
+    ],
+    "name_discrepancy": "Resolved by direct human reply: WisprSide, as now recorded in PR #123. Current deliverables renamed; historical sources preserved.",
+    "issue122_updated_at": "2026-10-21T06:06:40Z",
+    "user_confirmed_names": [
+      "Wispral",
+      "WisprStudio",
+      "WisprSide",
+      "Klaint"
+    ],
+    "issue122_body_sha256": "73815c14bcfe0ba914819a319c5d31fee9e3d43284017c4886f77cc6d7dc5656",
+    "original_issue122_body_sha256": "273addaa2f67641a178b97ea1d94835261f4a8ce2b871f30bd731cb663daf3d0",
+    "scope_comparison": "Main mission equivalent after new naming header/name normalization; historical old names remain historical"
+  }
+}

@@ -1,0 +1,397 @@
+{
+  "status": "PROPOSED_NOT_RATIFIED",
+  "current_authority": "B2R17 only; product gate closed",
+  "nodes": [
+    {
+      "id": "GOV",
+      "requires": [],
+      "description": "Dedicated amendment + M1 qualified control repair/settings/reconciliation, all NOT_ESTABLISHED",
+      "status": "PROPOSED_NOT_CANONICAL",
+      "ready": false
+    },
+    {
+      "id": "F_INPUT",
+      "requires": [
+        "GOV"
+      ],
+      "description": "000F canonical intake of existing REA; dependency/rights closure still scoped per capability",
+      "status": "PROPOSED_NOT_CANONICAL",
+      "ready": false
+    },
+    {
+      "id": "E_RESEARCH",
+      "requires": [
+        "GOV",
+        "F_INPUT"
+      ],
+      "description": "000E READY research baseline/native experiments only, no product release",
+      "status": "PROPOSED_NOT_CANONICAL",
+      "ready": false
+    },
+    {
+      "id": "B_SPEECH",
+      "requires": [
+        "GOV"
+      ],
+      "description": "B2R17 and applicable subsequent canonical B-chain synthesis/disposition, no frozen changes",
+      "status": "PROPOSED_NOT_CANONICAL",
+      "ready": false
+    },
+    {
+      "id": "C_AGENT_D",
+      "requires": [
+        "GOV"
+      ],
+      "description": "000C-AGENT and 000D PTY qualification or explicit exclusion",
+      "status": "PROPOSED_NOT_CANONICAL",
+      "ready": false
+    },
+    {
+      "id": "C_VOICE",
+      "requires": [
+        "GOV"
+      ],
+      "description": "000C-VOICE interrupt/playback/duplex observations",
+      "status": "PROPOSED_NOT_CANONICAL",
+      "ready": false
+    },
+    {
+      "id": "G_PURE",
+      "requires": [
+        "GOV",
+        "F_INPUT"
+      ],
+      "description": "Scoped 000G selects one pure non-STT production Grain",
+      "status": "PROPOSED_NOT_CANONICAL",
+      "ready": false
+    },
+    {
+      "id": "G_SIDE",
+      "requires": [
+        "GOV",
+        "F_INPUT",
+        "E_RESEARCH",
+        "B_SPEECH"
+      ],
+      "description": "000G Side synthesis cites actual completed 000E evidence and backend scope",
+      "status": "PROPOSED_NOT_CANONICAL",
+      "ready": false
+    },
+    {
+      "id": "G_STUDIO",
+      "requires": [
+        "GOV",
+        "F_INPUT",
+        "E_RESEARCH"
+      ],
+      "description": "000G Studio synthesis requires admitted engine/artifact/consent/compute evidence",
+      "status": "PROPOSED_NOT_CANONICAL",
+      "ready": false
+    },
+    {
+      "id": "G_KLAINT",
+      "requires": [
+        "GOV",
+        "F_INPUT"
+      ],
+      "description": "000G text/fake-tool first Grain, no implicit speech/phone authority",
+      "status": "PROPOSED_NOT_CANONICAL",
+      "ready": false
+    },
+    {
+      "id": "G_AGENT",
+      "requires": [
+        "GOV",
+        "F_INPUT",
+        "C_AGENT_D",
+        "B_SPEECH",
+        "E_RESEARCH"
+      ],
+      "description": "Scoped 000G optional developer capability",
+      "status": "PROPOSED_NOT_CANONICAL",
+      "ready": false
+    },
+    {
+      "id": "G_VOICE",
+      "requires": [
+        "G_KLAINT",
+        "C_VOICE",
+        "B_SPEECH"
+      ],
+      "description": "Scoped 000G realtime voice capability",
+      "status": "PROPOSED_NOT_CANONICAL",
+      "ready": false
+    },
+    {
+      "id": "G_RELEASE",
+      "requires": [
+        "G_SIDE"
+      ],
+      "description": "First Side-only release; later product release requires its own synthesis, not implied here",
+      "status": "PROPOSED_NOT_CANONICAL",
+      "ready": false
+    }
+  ],
+  "packets": [
+    {
+      "id": "G-00",
+      "authority": "GOV",
+      "requires": [],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "G-01",
+      "authority": "GOV",
+      "requires": [
+        "G-00"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "Q-01",
+      "authority": "G_PURE",
+      "requires": [],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "Q-02",
+      "authority": "G_PURE",
+      "requires": [
+        "F-STUDIO-0"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "Q-03",
+      "authority": "G_PURE",
+      "requires": [],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "Q-04",
+      "authority": "G_KLAINT",
+      "requires": [
+        "K-01"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "F-SIDE-0",
+      "authority": "E_RESEARCH",
+      "requires": [],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "F-STUDIO-0",
+      "authority": "E_RESEARCH",
+      "requires": [],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "Q-05",
+      "authority": "E_RESEARCH",
+      "requires": [
+        "F-SIDE-0"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "Q-06",
+      "authority": "E_RESEARCH",
+      "requires": [
+        "Q-05"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "Q-07",
+      "authority": "E_RESEARCH",
+      "requires": [
+        "F-SIDE-0",
+        "Q-03",
+        "Q-05"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "Q-08",
+      "authority": "E_RESEARCH",
+      "requires": [
+        "Q-06",
+        "Q-07"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "Q-09",
+      "authority": "G_PURE",
+      "requires": [],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "I-01",
+      "authority": "G_SIDE",
+      "requires": [
+        "Q-07",
+        "Q-09"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "I-02",
+      "authority": "G_SIDE",
+      "requires": [
+        "F-SIDE-0",
+        "Q-08",
+        "I-01"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "A-01",
+      "authority": "G_AGENT",
+      "requires": [
+        "Q-03"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "S-01",
+      "authority": "G_STUDIO",
+      "requires": [
+        "F-STUDIO-0",
+        "Q-09"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "S-02",
+      "authority": "G_STUDIO",
+      "requires": [
+        "S-01"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "S-03",
+      "authority": "G_STUDIO",
+      "requires": [
+        "S-02"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "S-04",
+      "authority": "G_STUDIO",
+      "requires": [
+        "S-03",
+        "I-01",
+        "Q-02"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "K-00",
+      "authority": "G_KLAINT",
+      "requires": [],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "K-01",
+      "authority": "G_KLAINT",
+      "requires": [
+        "K-00"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "K-02",
+      "authority": "G_KLAINT",
+      "requires": [
+        "K-01",
+        "Q-04"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "K-03",
+      "authority": "G_KLAINT",
+      "requires": [
+        "K-01",
+        "K-02"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "V-01",
+      "authority": "G_VOICE",
+      "requires": [
+        "I-01",
+        "S-01",
+        "K-03"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    },
+    {
+      "id": "P-01",
+      "authority": "G_RELEASE",
+      "requires": [
+        "I-02"
+      ],
+      "ready": false,
+      "status": "DRAFT_NOT_EXECUTABLE",
+      "note": "Authority graph is proposal only; work-packet table supplies task prerequisites; any production adoption also requires its explicit 000G selection"
+    }
+  ],
+  "acceptance": "Every packet has one named authority, all references exist, dependency graph acyclic; no product packet is READY by prose or this data."
+}

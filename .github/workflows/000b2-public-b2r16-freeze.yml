@@ -1,7 +1,15 @@
 name: 000B2 Public Corpus B2R16 Freeze
 
+# Constitution Principle XVII correction C1. The job definition and the code it
+# runs come from the base branch (pull_request_target) or from the pushed or
+# dispatched commit itself; a dispatch trusts the ref that a maintainer chose.
+# A pull request candidate is fetched only as Git objects and is never checked
+# out or executed.
 on:
-  pull_request:
+  pull_request_target:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -10,28 +18,57 @@ permissions:
 jobs:
   verify-b2r16-freeze:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     env:
       TASK: B2R16
-      EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+      TRUSTED_REVISION: ${{ github.sha }}
+      CANDIDATE_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+      CHECKER_SHA256: fb7b75c840692c563e2455fd74c1e3363c45389c903d1d494c573871699bdd50
+      TEST_SHA256: 823bc1793068fc716146e36202e365b7cc16e8c51fc43e5f0ade83e038110df4
 
     steps:
-      - name: Checkout exact B2R16 revision
+      - name: Checkout trusted B2R16 preservation code
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: ${{ env.EXACT_REVISION }}
+          ref: ${{ env.TRUSTED_REVISION }}
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Verify exact B2R16 revision
+      - name: Fetch exact candidate commit as data only
         shell: bash
         run: |
           set -euo pipefail
-          test -n "$EXACT_REVISION"
-          test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+          test -n "$TRUSTED_REVISION"
+          test -n "$CANDIDATE_REVISION"
+          test "$(git rev-parse HEAD)" = "$TRUSTED_REVISION"
+          if ! git cat-file -e "${CANDIDATE_REVISION}^{commit}" 2>/dev/null; then
+            git fetch --no-tags --quiet origin "$CANDIDATE_REVISION"
+          fi
+          git cat-file -e "${CANDIDATE_REVISION}^{commit}"
+          test "$(git rev-parse HEAD)" = "$TRUSTED_REVISION"
+          git diff --quiet HEAD --
 
-      - name: Verify B2R16 ATTEMPT-003 pre-primary freeze
+      - name: Verify checker and fixture source identities before execution
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONDONTWRITEBYTECODE=1 python research/000b2-public/verify_b2r16.py --require-git
+          python -I - <<'PY'
+          import hashlib, os
+          from pathlib import Path
+          for filename, variable in (("verify_b2r16_preservation.py", "CHECKER_SHA256"), ("test_b2r16_preservation.py", "TEST_SHA256")):
+              data = (Path("research/000b2-public") / filename).read_bytes()
+              if hashlib.sha256(data).hexdigest() != os.environ[variable]:
+                  raise SystemExit("B2R16 control source digest mismatch: " + filename)
+          PY
+
+      - name: Verify historical B2R16 proof and frozen object preservation
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -I research/000b2-public/verify_b2r16_preservation.py --candidate "$CANDIDATE_REVISION"
+
+      - name: Prove frozen-file tamper rejection
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python -I research/000b2-public/test_b2r16_preservation.py
