@@ -177,7 +177,7 @@ The first freeze correction is pull request #130. It merged as `5879c43c7a389bd4
 
 - in `docs/canonical/CURRENT_STATE.md`, the sections headed exactly `## Current product thesis`, `## Current architecture posture`, `## Explicit non-claims`, and `## Product-code gate`;
 - in `specs/CURRENT.md`, the sections headed exactly `## Remaining founding children` and `## Product-code gate`;
-- in either file, new sections appended after the last section that existed when this amendment merged, each with a heading line that begins `## Platform frontier`.
+- in either file, new sections that a pull request appends at the end of the file, after every section of its base, each with a heading line that begins `## Platform frontier`. Once merged, an appended section is an existing section: it is not editable unless an amendment designates it.
 
 A section runs from its `## ` heading line to the line before the next `## ` heading, or to the end of the file. Text before the first heading, the order of existing headings, and every other section remain under benchmark-lane authority. A designated section MUST NOT contain the B2 lane markers that the B2 scope gates reject there. Designation lets non-B2 governance pull requests edit these sections; it grants no authority beyond what this constitution and the active specification grant. In particular, editing a `## Product-code gate` section cannot open product code, which requires a founding-synthesis (000G) decision.
 
