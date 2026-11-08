@@ -4,7 +4,7 @@ This file tracks Grain progression. Pins, acceptance and evidence paths are in `
 
 ## Grains
 
-- [ ] `CORE-00`: re-pins, rights register and licence-decision gate. Its readiness is recorded in `research/wispral-world-class/evidence/core-00/README.md`, and it was executed in the same pull request: 57 of 57 anchors pass, the rights register and errata are written, and the licence gate is recorded as **CLOSED**. It becomes `VERIFIED` after merge and a canonical reread.
+- [x] `CORE-00`: re-pins, rights register and licence-decision gate. `VERIFIED`: merged as `81b2de6da0b526320c311c9a2a210f80f3b221a6` (#141). The post-merge reread on #141 reran the verifier on `main` (`ANCHORS=57 PASS=57`). The licence gate stays **CLOSED**.
 
 ## Closeout
 

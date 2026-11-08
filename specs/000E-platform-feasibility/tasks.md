@@ -4,9 +4,9 @@ This file tracks Grain progression. Pins, acceptance and evidence paths are in `
 
 ## Grains
 
-- [ ] `SD-M0`: WisprSide fork baseline. State `GRAIN`. Its dependencies are met: `CORE-00` is `VERIFIED`, and the fork exists (see Fork decision below).
-- [ ] `ST-D00`: WisprStudio fork baseline with the fake `_echo` engine. State `GRAIN`. Its dependencies are met: `CORE-00` is `VERIFIED`, and the fork exists (see Fork decision below).
-- [ ] `ST-D00b`: static comparison of the two production donors. Its dependencies are canonical (F `b6c8507`, `CORE-00` `81b2de6`), and it was executed in its own pull request: `research/wispral-world-class/evidence/baselines/studio-lead-comparison.md`. VoiceStudio stays the lead (capability 10 vs 7; delta size 17 vs 21.5). It becomes `VERIFIED` after merge and a canonical reread.
+- [ ] `SD-M0`: WisprSide fork baseline. State `GRAIN`. Its packet dependencies are canonical: F at `b6c8507` and `CORE-00` at `81b2de6`. The founder's decision on the fork's location and visibility, required by the Platform frontier rules, is recorded below.
+- [ ] `ST-D00`: WisprStudio fork baseline with the fake `_echo` engine. State `GRAIN`. Its packet dependencies are canonical: F at `b6c8507` and `CORE-00` at `81b2de6`. The founder's decision on the fork's location and visibility, required by the Platform frontier rules, is recorded below.
+- [x] `ST-D00b`: static comparison of the two production donors. `VERIFIED`: merged as `5c2663f146ac7dcb04a0da1e13d0aeb1129afb64` (#142), with a post-merge reread on #142. VoiceStudio stays the lead (capability 10 vs 7; delta size 17 vs 21.5). Evidence: `research/wispral-world-class/evidence/baselines/studio-lead-comparison.md`.
 - [ ] `KT-01`: Klaint dialogue-engine spike with a fake LLM backend. State `GRAIN`. Needs `CORE-00`.
 
 ## Fork decision (founder, 2026-11-09)
