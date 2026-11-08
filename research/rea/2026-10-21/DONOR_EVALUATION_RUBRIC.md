@@ -37,3 +37,15 @@ VoiceStudio/Voicebox are tied on the base source subtotal: choose VoiceStudio pr
 Increasing quality weight widens uncertainty and makes blanket ranking less defensible. Strict CPU budgets reopen Pocket TTS/Kokoro/Piper artifact and acoustic trials; Arabic requirements can exclude candidates regardless of a good generic score. Non-negotiable authority/tenant/consent or artifact-rights failures are qualification vetoes, not tradeoffs that a weighted average can cancel. STT has no production selection: complete its applicable governed evidence sequence instead of using this rubric to bypass frozen B2.
 
 No numerical ranking establishes superiority over proprietary competitors. Rerate integration after an actual extraction spike and replace null quality only with preregistered held-out results. Preserve this initial judgment and record revisions forward.
+
+## Maintenance and fork-closure risk after Opus
+
+Original ordinal ratings remain source-engineering judgments, not newly measured fork effort. The conditional fork decision preserves application integration, while full baseline/dependency/security qualification remains NOT_RUN. No numerical score is raised for an unrun baseline.
+
+| Donor | Snapshot maintenance signal | Consequence |
+| --- | --- | --- |
+| cjpais/Handy | archived=false; last pushed 2026-10-20T12:10:55Z; pin `93c9ee05efe294cf2a56bd534b77ea1079f21b77` | Monitor retained fork/native/model closure; last push is not proof of quality or abandonment |
+| debpalash/VoiceStudio | archived=false; last pushed 2026-10-21T04:34:14Z; pin `28bf2c7a83b8a64836297340c52a45d716684aed` | Monitor retained fork/native/model closure; last push is not proof of quality or abandonment |
+| facebookresearch/demucs | archived=true; last pushed 2024-04-24T20:25:19Z; pin `e976d93ecc3865e5757426930257e200846a520a` | Archived dependency: maintenance fallback/replacement and security ownership required |
+| hexgrad/kokoro | archived=false; last pushed 2025-08-06T22:28:53Z; pin `dfb907a02bba8152ca444717ca5d78747ccb4bec` | Monitor retained fork/native/model closure; last push is not proof of quality or abandonment |
+| QwenLM/Qwen3-TTS | archived=false; last pushed 2026-03-17T06:38:41Z; pin `022e286b98fbec7e1e916cb940cdf532cd9f488e` | Monitor retained fork/native/model closure; last push is not proof of quality or abandonment |

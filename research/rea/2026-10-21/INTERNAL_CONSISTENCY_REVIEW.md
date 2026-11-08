@@ -1,4 +1,8 @@
-# Independent planning-bundle review
+> Historical internal review of original f363381 only. Its original architecture assessment is superseded by the Opus-repaired current plan and owner table; it does not review or approve the later repair range.
+
+INDEPENDENT_REVIEW=NOT_SATISFIED_BY_THIS_FILE
+
+# Internal consistency review of the original research bundle
 
 Review date: 2026-10-21. Reviewer: a separate REA source/evidence worker. Scope: research integrity, traceability and feasibility of the proposed plan against Issue #122 and the founder's English-only steering. **This is not independent security, benchmark, merge or release approval.** This worker previously authored the additional-source review and benchmark/replay protocol; those files are referenced for consistency, not represented as independently reviewed work by a fresh author.
 

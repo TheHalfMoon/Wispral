@@ -15,12 +15,12 @@ The latest live Issue #122/PR #123 naming revision and the user's direct confirm
 
 | Decision | Lead source selection | Missing proof |
 | --- | --- | --- |
-| WisprSide | Handy native packages/coordinator/transaction, selected OpenWhispr helpers | Native permission, target delivery, actual STT/latency and clean OS support |
-| WisprStudio | Selected VoiceStudio fit/render/resume/project/dub services; isolated engine workers | Actual generation/quality/GPU, consent-backed voices, install/recovery |
-| Klaint | Parlant dialogue, brokered ToolService, optional Chatwoot, selected Botpress connectors | Real tenant/action/handoff behavior, production/phone/voice workflows |
-| Core | Rust authority with narrow Sentrdel/Ninerr/Ascout/Orcel/ACP seams | Owned native stop, actual egress enforcement and authenticated agent compatibility |
+| WisprSide | Pinned Handy fork with retained native/UI/supervisor integration; narrow helper deltas | Native permission, target delivery, actual STT/latency and clean OS support |
+| WisprStudio | Pinned VoiceStudio fork with retained fit/render/resume/project/engine paths; guard and qualified isolation deltas | Actual generation/quality/GPU, consent-backed voices, install/recovery |
+| Klaint | One Python Parlant service, canned/retrieval/evaluations, optional Chatwoot API; Botpress schemas | Real tenant/action/handoff behavior, production/phone/voice workflows |
+| Core | Shared contracts, small embedded policy library and conformance fixtures; per-runtime authority | Owned native stop, actual egress enforcement and authenticated agent compatibility |
 
-The catalog covers 132 requested source identities, including 127 resolved pins and five failed/empty accesses, plus the complete 59-repository accessible founder-account inventory (including Wispral itself). Catalog breadth is not whole-source audit coverage: deep findings are bounded to named mechanisms; secondary entries are explicitly preliminary triage. The consolidated transplant matrix has 72 proposed mechanisms; additional Pocket TTS/Aly review is separate. Zero runtime product transplants were made.
+The catalog covers 132 requested source identities, including 127 resolved pins and five failed/empty accesses, plus the complete 59-repository accessible founder-account inventory (including Wispral itself). Catalog breadth is not whole-source audit coverage: deep findings are bounded to named mechanisms; secondary entries are explicitly preliminary triage. The consolidated transplant matrix now has 75 proposed source mechanisms; additional Pocket TTS/Aly review is separate. Zero runtime product transplants were made.
 
 Actual experiments: 17 unique OpenWhispr pure unit tests, eight named synthetic non-audio Studio mechanism cases and six pure Ninerr policy fixtures. REA captured public browser observations; an ElevenLabs preview attempt did not verify audio, and Cartesia sign-in/navigation recovery did not exercise authenticated inference. No speech-quality, performance, native application, GPU or phone benchmark result exists here.
 
@@ -55,3 +55,9 @@ The first next action is authority/frontier reconciliation and a dedicated gover
 ## Reproduction
 
 Use an existing Node 24 interpreter for [Ink pure tests](reproduce_ink_pure_units.mjs), an existing Python interpreter for [Studio probes](studio_mechanism_probe.py), and authorized exact Ninerr modules for [Core policy probes](reproduce_core_policy.mjs). Helpers require caller-selected disposable paths and verify source SHA-256. They do not install packages or models. Follow tool `--help`/usage and each deep dive; run names/results are not native app verification. [Validation](VALIDATION.md) records checks of this research bundle separately from product evidence.
+
+## Final repair after external Opus review #125
+
+[Repair traceability](OPUS_REPAIR_TRACEABILITY.md) maps M1–M5/S1–S8 to exact acceptance evidence and remaining gates. [Fork comparison](FORK_BOUNDARY_COMPARISON.md), [packet authorities](packet-authorities.json), [fit boundary experiment](fit-input-boundary-results.json) and [model routing](../../../docs/strategy/WISPRAL_MODEL_ROUTING_CONTRACTS.md) refine the existing plan. Conditional leads retain Handy/VoiceStudio forks; Core is contracts/library/fixtures; Klaint is one Python service and optional Chatwoot API. Previous source and runtime evidence is preserved, no REA restarted.
+
+[Internal consistency review](INTERNAL_CONSISTENCY_REVIEW.md) is same-mission work: INDEPENDENT_REVIEW=NOT_SATISFIED_BY_THIS_FILE. The external review remains unmerged at [PR #125](https://github.com/TheHalfMoon/Wispral/pull/125), exact head 3de63649256da4004d02fa7147daf714d8b65265. No claim that it approves the later repair range.

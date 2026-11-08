@@ -1,5 +1,7 @@
 # WisprStudio: source-first generation, editing and dubbing study
 
+> V3 repair selection (Opus #125): current reuse modes/owners are in [SOURCE_TRANSPLANT_MATRIX.md](SOURCE_TRANSPLANT_MATRIX.md) and the [repair traceability](OPUS_REPAIR_TRACEABILITY.md). The original pinned source observations below remain valid; extraction-first selection/estimates are superseded where the current fork/API/contract boundary differs. No source identity or runtime result was discarded.
+
 Date: 2026-10-21. Mission: [Issue #122](https://github.com/TheHalfMoon/Wispral/issues/122). Status: **research/planning candidate; no product source has been transplanted**. Canonical product implementation remains subject to Wispral's existing governance and 000G.
 
 ## Decision

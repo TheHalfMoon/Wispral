@@ -1,5 +1,7 @@
 # Klaint: conversation control, customer actions and human handoff
 
+> V3 repair selection (Opus #125): current reuse modes/owners are in [SOURCE_TRANSPLANT_MATRIX.md](SOURCE_TRANSPLANT_MATRIX.md) and the [repair traceability](OPUS_REPAIR_TRACEABILITY.md). The original pinned source observations below remain valid; extraction-first selection/estimates are superseded where the current fork/API/contract boundary differs. No source identity or runtime result was discarded.
+
 **Mission:** [Issue #122](https://github.com/TheHalfMoon/Wispral/issues/122). **Study date:** 2026-10-21. **Disposition:** research and transplant planning; no product implementation or production selection authorization. **Machine evidence:** [klaint-source-evidence.json](klaint-source-evidence.json).
 
 The strongest qualified design candidate is **Parlant for a bounded conversation service, Chatwoot for an optional human inbox, and selected Botpress connectors for business-system adapters**. Keep one Wispral Core action-authority boundary between conversation inference and external side effects. Rasa is a useful inspectable alternative, but adopting it alongside Parlant would duplicate dialogue state and introduce an older Python/dependency envelope. These are source-based planning decisions, not measured runtime winners.
@@ -334,3 +336,9 @@ The next bounded research experiment is a pinned **brokered Parlant session with
 [r-rules]: https://github.com/RasaHQ/rasa/blob/60a3cff9c08183760355b07bd60f5223d8916d6b/rasa/core/policies/rule_policy.py
 [r-locks]: https://github.com/RasaHQ/rasa/blob/60a3cff9c08183760355b07bd60f5223d8916d6b/rasa/core/lock_store.py
 [r-processor]: https://github.com/RasaHQ/rasa/blob/60a3cff9c08183760355b07bd60f5223d8916d6b/rasa/core/processor.py
+
+## Opus S3/S4 correction: Parlant safety and quality reuse
+
+Retain one Parlant Python service, tenant-scoped brokered ToolService and restrictive Plan. Reuse CannedResponse/CannedResponseGenerator (including CANNED_STRICT), retrievers and evaluation APIs at the same ea737442 pin; exact source records K13–K15 are in opus-repair-source-evidence.json. Use approved templates for policy/price/action commitments; a success template is permitted only after the broker records the actual committed outcome. A model choosing an allowed template is not action authorization. Preregister 100 adversarial commitment prompts and deterministic outcome expectations; this runtime/model panel remains NOT_RUN. Tenant-bound retrieval returns cited versioned documents and cannot select another tenant index; injection/stale/missing knowledge leads to uncertainty/handoff. Parlant evaluations drive scenarios but do not replace deterministic action scoring.
+
+Chatwoot remains unmodified via Agent Bot API and authenticated webhooks; Klaint owns the AI epoch. K05–K07 are API references, not copied Rails. Botpress schemas inform bounded Python connectors; no Node service is selected. Pipecat is the only later realtime framework inside the same service; LiveKit Agents is REFERENCE_ONLY. Rust/Python policy equivalence needs common fixture verdicts before any binding/port is accepted. No new model training, cloud fallback or paid provider is enabled.

@@ -1,5 +1,7 @@
 # Wispral Core: source findings and proposed boundaries
 
+> V3 repair selection (Opus #125): current reuse modes/owners are in [SOURCE_TRANSPLANT_MATRIX.md](SOURCE_TRANSPLANT_MATRIX.md) and the [repair traceability](OPUS_REPAIR_TRACEABILITY.md). The original pinned source observations below remain valid; extraction-first selection/estimates are superseded where the current fork/API/contract boundary differs. No source identity or runtime result was discarded.
+
 Research date: 2026-10-21. Status: proposed source selection, not implementation authority. The exact 18 primary mechanisms, source anchors, SHA-256 values and dependency/test boundaries are in [core-source-evidence.json](core-source-evidence.json). All proposed paths below are destinations, not existing product code.
 
 Core should own deterministic policy, session/epoch identity, provenance, routing, cancellation state, worker lifetime and metadata receipts. It should reuse narrow mechanisms from founder repositories rather than import several complete security, agent or media platforms. WisprSide, WisprStudio and Klaint share these contracts; product-specific data and adapters remain outside Core.
@@ -67,3 +69,7 @@ All cloud adapters remain optional. Never silently send a failed local job to a 
 ## What Core must qualify next
 
 Use [work packets](../../../docs/strategy/WISPRAL_COPY_FIRST_WORK_PACKETS.md) and [architecture](../../../docs/strategy/WISPRAL_PLATFORM_ARCHITECTURE_REPLAN.md). First prove a fake worker's event/epoch/stop contract, a pure policy extraction and exact native capture lifecycle. No new model engine, security platform, generic agent runtime or duplicate journal is justified. Offline egress, native process absence, real agent cancellation, all speech/latency/quality and clean-install support remain **NOT_RUN**.
+
+## Opus M5/S2/S3/S5 selection correction
+
+Core now means shared schemas, a small optional embedded policy library and conformance fixtures. It is not a mandatory daemon or central process owner across desktop and tenant services. Retain Handy engine_supervisor for Side and VoiceStudio containment/backend ownership for Studio; Sentrdel ContainedChild is a reference/fallback experiment only. Model inventory has one schema with one implementation per product deployment; no duplicated global store. Pipecat is the sole selected realtime framework; LiveKit Agents is reference only. Ninerr policy fixtures remain preserved, but the first-release TypeScript-to-Rust port is deferred; prove offline behavior from the shipped Side binary using observed egress. Future networked connectors require actual DNS/socket/redirect enforcement, not just pure policy PASS.

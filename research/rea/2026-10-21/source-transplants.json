@@ -55,7 +55,9 @@
       "risks": [
         "Request-level cancellation is cooperative; v2 accepted prompt requires session/cancel for continuing work. No new authenticated agent runtime trial was run."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "WRAP",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-CANCEL",
@@ -106,7 +108,9 @@
       "risks": [
         "cancel() Ok is not transport acknowledgement or stopped state; source text explicitly warns of no-op and completion races."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "ADAPT",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-PROCESS",
@@ -121,7 +125,7 @@
         "sha256": "3ba124bedd55e8a994187e69b99851f536f4f39897c818144e0623c99e48f54d",
         "url": "https://github.com/TheHalfMoon/Sentrdel/blob/f5747319a50831ef7cee983d253c0ca5503c9a64/crates/sentrdel-engine/src/process_tree.rs#L26"
       },
-      "mode": "ADAPT",
+      "mode": "REFERENCE_ONLY",
       "destination": "crates/wispral-core/src/workers/contained_process.rs",
       "direct_dependency_boundary": "process-wrap =9.1.0 std/process-group/job-object; Unix nix =0.31.3; no shell",
       "upstream_tests": [
@@ -157,7 +161,10 @@
       "risks": [
         "Containment and kill do not prove OS sandbox or network isolation; platform absence proof must survive parent exit and PID reuse."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "integration_boundary": "Fallback pure research only; Handy and Studio retain donor process owners",
+      "decision": "REFERENCE_ONLY",
+      "owner": "Fallback pure research only; Handy and Studio retain donor process owners"
     },
     {
       "id": "CORE-POLICY",
@@ -208,7 +215,9 @@
       "risks": [
         "Existing ALLOW/ASK/DENY/UNDECIDABLE lattice is reusable; tenant, voice consent and target semantics remain domain-specific inputs."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "ADAPT",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-JSON",
@@ -259,7 +268,9 @@
       "risks": [
         "Current donor limits and SARIF contexts are not safe Wispral defaults; add frame/string/depth/resource limits before materialization."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "ADAPT",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-NETWORK",
@@ -274,7 +285,7 @@
         "sha256": "eb2e32a54229beac406efb5461190a6c9ade8ebae0407f8d64ff67753fcb1518",
         "url": "https://github.com/TheHalfMoon/Ninerr/blob/8cba15c4e4af40b12476433a49e20a1696cfc0f8/packages/network-policy/src/policy.ts#L119"
       },
-      "mode": "ADAPT",
+      "mode": "REFERENCE_ONLY",
       "destination": "crates/wispral-core/src/routing/policy.rs",
       "direct_dependency_boundary": "address.ts/errors.ts/types.ts/validation.ts; node:net isIP; dependency-free pure policy package; translate bounded logic and preserve fixtures",
       "upstream_tests": [
@@ -310,7 +321,10 @@
       "risks": [
         "Pure decisions do not enforce actual connections: pin DNS result/socket destination, recheck redirects, and exclude credentials in URLs."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "integration_boundary": "Deferred connector transport fixture source, no first-release Rust port",
+      "decision": "REFERENCE_ONLY",
+      "owner": "Deferred connector transport fixture source, no first-release Rust port"
     },
     {
       "id": "CORE-IDENTITY",
@@ -361,7 +375,9 @@
       "risks": [
         "Descriptor/source presence is not independent qualification or authority; no scanner engine is imported."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "ADAPT",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-AUDIT",
@@ -412,7 +428,9 @@
       "risks": [
         "Append+flush is not fsync/hash-chain durability; do not log raw args, voice media, tokens or make action success depend on uncommitted receipt."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "ADAPT",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-REALTIME",
@@ -428,7 +446,7 @@
         "url": "https://github.com/pipecat-ai/pipecat/blob/9b0459b47675324843ffea17d90d8d3e422eb92c/src/pipecat/pipeline/worker.py#L201"
       },
       "mode": "OUT_OF_PROCESS",
-      "destination": "services/realtime/pipecat_worker.py",
+      "destination": "services/klaint/realtime/pipecat_worker.py (inside sole Klaint Python service)",
       "direct_dependency_boundary": "Python >=3.11; frame processor/bus/workers/pydantic/aiohttp/numpy/onnxruntime and selected provider extras; preserve package boundary",
       "upstream_tests": [
         {
@@ -467,7 +485,9 @@
       "risks": [
         "pipeline/task.py is deprecated; cancellation enqueues CancelFrame and is not evidence committed external tools were undone."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "OUT_OF_PROCESS",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-WEBRTC",
@@ -482,7 +502,7 @@
         "sha256": "c6f2af07150e591866417bff5d0db5d69f36481efeef1a6705ac56f63c8ca933",
         "url": "https://github.com/livekit/agents/blob/3c6e651249bdad0ef812b7b03dfde4b7480f5c5c/livekit-agents/livekit/agents/voice/agent_session.py#L383"
       },
-      "mode": "OUT_OF_PROCESS",
+      "mode": "REFERENCE_ONLY",
       "destination": "services/realtime/livekit_adapter.py",
       "direct_dependency_boundary": "livekit-agents package and rtc/protocol/api; FFmpeg/PyAV and explicit STT/TTS/model plugins; local/self-hosted media topology still to qualify",
       "upstream_tests": [
@@ -526,7 +546,10 @@
       "risks": [
         "Use only when WebRTC/SIP topology is selected; do not run an overlapping Pipecat turn controller for the same session; recording and tracing require explicit policy."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "integration_boundary": "Pipecat is sole selected realtime framework; LiveKit transport is not LiveKit Agents",
+      "decision": "REFERENCE_ONLY",
+      "owner": "Pipecat is sole selected realtime framework; LiveKit transport is not LiveKit Agents"
     },
     {
       "id": "CORE-STT-SHERPA",
@@ -577,7 +600,9 @@
       "risks": [
         "get_result returns string, get_result_all returns object. Remains a candidate; frozen B2 identities/configurations are not changed."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "WRAP",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-STT-WHISPER",
@@ -628,7 +653,9 @@
       "risks": [
         "Example stream repeatedly runs whisper_full on windows; do not call it proven native incremental decoding or choose a quality winner."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "WRAP",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-STT-MOONSHINE",
@@ -679,7 +706,9 @@
       "risks": [
         "Updated source catalog is separate from canonical frozen benchmark pin; no new ASR decoding or scoring performed."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "WRAP",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-STT-BATCH",
@@ -730,7 +759,9 @@
       "risks": [
         "Batch/generator segments do not establish incremental recognition; keep Studio bulk job out of latency-critical capture path."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "OUT_OF_PROCESS",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-VAD",
@@ -781,7 +812,9 @@
       "risks": [
         "VADIterator supports configured 8/16 kHz path; speech activity is not semantic end-of-turn and must not authorize action."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "WRAP",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-GOVERNANCE",
@@ -832,7 +865,9 @@
       "risks": [
         "Reuse lifecycle discipline and exact readiness evidence, not a second product workflow engine."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "REFERENCE_ONLY",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-WINDOWS-OWNER",
@@ -887,7 +922,9 @@
       "risks": [
         "Useful stronger Windows isolation alternative; current donor explicitly labels POSIX unqualified; full native closure has not been tested here."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "REFERENCE_ONLY",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "CORE-SCOPE",
@@ -938,7 +975,9 @@
       "risks": [
         "Public website capture inventory is not microphone/app-context permission; avoid importing browser worker into Core."
       ],
-      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate"
+      "rights": "Founder-confirmed source authorization; preserve source notices; artifacts separate",
+      "decision": "REFERENCE_ONLY",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "ST-FIT",
@@ -952,7 +991,7 @@
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
       "decision": "COPY",
-      "destination": "packages/studio-timing/fit_planner.py",
+      "destination": "products/wisprstudio/backend/services/fit_planner.py (unchanged); adjacent input-validation boundary",
       "direct_dependency_boundary": "math; dataclasses only",
       "tests_or_required_fixtures": "tests/test_fit_planner.py; tests/fixtures/fit_planner/*.json",
       "runtime_status": "REPRODUCED_SYNTHETIC_NON_AUDIO_ONLY",
@@ -969,9 +1008,13 @@
       ],
       "deps": "math; dataclasses only",
       "acceptance": [
-        "tests/test_fit_planner.py; tests/fixtures/fit_planner/*.json"
+        "Typed rejection of NaN/Inf/negative/invalid-zero/ranges/overlap/nonfinite totals",
+        "Explicit silence and empty-total semantics",
+        "Four unchanged donor golden JSON outputs; full upstream suite still NOT_RUN"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "Retained Studio fit implementation; guard only, no duplicate duration-fit engine"
     },
     {
       "id": "ST-DURATION",
@@ -984,13 +1027,13 @@
       "sha256": "1b1741f67d1d2cb391f103a5f1aa57e881b97b0b7c53897897fa940bd5bf5d55",
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
-      "decision": "ADAPT",
-      "destination": "services/studio/duration_planner.py",
+      "decision": "FORK_DELTA",
+      "destination": "forks/wisprstudio/backend/services/duration_planner.py",
       "direct_dependency_boundary": "services.fit_planner; llm_backend; speech_rate; translator (arithmetic extraction avoids optional LLM initialization)",
       "tests_or_required_fixtures": "tests/test_duration_planner.py",
       "runtime_status": "NOT_RUN",
       "pillar": "WisprStudio",
-      "mode": "ADAPT",
+      "mode": "FORK_DELTA",
       "sources": [
         {
           "path": "backend/services/duration_planner.py",
@@ -1004,7 +1047,12 @@
       "acceptance": [
         "tests/test_duration_planner.py"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "Retain in pinned VoiceStudio fork",
+      "implementation_authorized": false,
+      "owner": "Retain in pinned VoiceStudio fork",
+      "superseded_extraction_destination": "services/studio/duration_planner.py",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "ST-RENDER",
@@ -1017,13 +1065,13 @@
       "sha256": "80d1293e23fd08f80bc5e9d14fbdd84196ce2ba02db4c962f35cc23ebb005cc4",
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
-      "decision": "ADAPT",
-      "destination": "services/studio/longform_render.py",
+      "decision": "FORK_DELTA",
+      "destination": "forks/wisprstudio/backend/services/longform_render.py",
       "direct_dependency_boundary": "stdlib; services.ffmpeg_utils.local_inputs_only; cache paths; optional torch only inside cache helpers",
       "tests_or_required_fixtures": "tests/test_longform_render.py",
       "runtime_status": "NOT_RUN",
       "pillar": "WisprStudio",
-      "mode": "ADAPT",
+      "mode": "FORK_DELTA",
       "sources": [
         {
           "path": "backend/services/longform_render.py",
@@ -1037,7 +1085,12 @@
       "acceptance": [
         "tests/test_longform_render.py"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "Retain in pinned VoiceStudio fork",
+      "implementation_authorized": false,
+      "owner": "Retain in pinned VoiceStudio fork",
+      "superseded_extraction_destination": "services/studio/longform_render.py",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "ST-RESUME",
@@ -1050,13 +1103,13 @@
       "sha256": "13a5dcb63f4e3ca36fd4b75f2ae29fb9c5ed4a98606919e4f31d835299d1cd59",
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
-      "decision": "ADAPT",
-      "destination": "services/studio/longform_resume.py",
+      "decision": "FORK_DELTA",
+      "destination": "forks/wisprstudio/backend/services/longform_resume.py",
       "direct_dependency_boundary": "core.durable_io; core.config.OUTPUTS_DIR; stdlib JSON/filesystem",
       "tests_or_required_fixtures": "tests/test_longform_render.py plus new crash/restart integration fixture",
       "runtime_status": "NOT_RUN",
       "pillar": "WisprStudio",
-      "mode": "ADAPT",
+      "mode": "FORK_DELTA",
       "sources": [
         {
           "path": "backend/services/longform_resume.py",
@@ -1070,7 +1123,12 @@
       "acceptance": [
         "tests/test_longform_render.py plus new crash/restart integration fixture"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "Retain in pinned VoiceStudio fork",
+      "implementation_authorized": false,
+      "owner": "Retain in pinned VoiceStudio fork",
+      "superseded_extraction_destination": "services/studio/longform_resume.py",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "ST-MODEL-TERMS",
@@ -1083,13 +1141,13 @@
       "sha256": "4bdcd3668654ebe1fa48a197defa4417be781335ab84a71cfdf0a90a8e9073ac",
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
-      "decision": "ADAPT",
-      "destination": "services/studio/model_acceptance.py",
+      "decision": "FORK_DELTA",
+      "destination": "forks/wisprstudio/backend/services/model_acceptance.py",
       "direct_dependency_boundary": "services.model_licenses; settings_store; registry; terms fingerprint; local persistence",
       "tests_or_required_fixtures": "tests/test_model_acceptance.py; tests/test_model_acceptance_asr.py",
       "runtime_status": "NOT_RUN",
       "pillar": "WisprStudio",
-      "mode": "ADAPT",
+      "mode": "FORK_DELTA",
       "sources": [
         {
           "path": "backend/services/model_acceptance.py",
@@ -1103,7 +1161,12 @@
       "acceptance": [
         "tests/test_model_acceptance.py; tests/test_model_acceptance_asr.py"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "Studio implementation of one common inventory schema",
+      "implementation_authorized": false,
+      "owner": "Studio implementation of one common inventory schema",
+      "superseded_extraction_destination": "services/studio/model_acceptance.py",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "ST-MODEL-LIFECYCLE",
@@ -1116,13 +1179,13 @@
       "sha256": "11d203cc6a03904d202a76ce3c75c0860284441305ec18c37aea2b7ea341d441",
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
-      "decision": "OUT_OF_PROCESS",
-      "destination": "adapters/studio/model_lifecycle",
+      "decision": "FORK_DELTA",
+      "destination": "forks/wisprstudio/backend/services/model_lifecycle.py",
       "direct_dependency_boundary": "model_manager; subprocess_backend; asr_backend; engine-memory state; optional GPU providers",
       "tests_or_required_fixtures": "backend/tests/test_model_load_shutdown.py",
       "runtime_status": "NOT_RUN",
       "pillar": "WisprStudio",
-      "mode": "OUT_OF_PROCESS",
+      "mode": "FORK_DELTA",
       "sources": [
         {
           "path": "backend/services/model_lifecycle.py",
@@ -1136,7 +1199,12 @@
       "acceptance": [
         "backend/tests/test_model_load_shutdown.py"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "Existing Studio facade, not second supervisor/inventory",
+      "implementation_authorized": false,
+      "owner": "Existing Studio facade, not second supervisor/inventory",
+      "superseded_extraction_destination": "adapters/studio/model_lifecycle",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "ST-CANCEL-SCOPE",
@@ -1149,13 +1217,13 @@
       "sha256": "dc3483f68209f4f5092ec560225b1ddf7804ee6bb467e0bd610f2a0536460fcc",
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
-      "decision": "COPY",
-      "destination": "services/studio/inference_cancellation.py",
+      "decision": "FORK_DELTA",
+      "destination": "forks/wisprstudio/backend/services/inference_cancellation.py",
       "direct_dependency_boundary": "threading; contextlib only",
       "tests_or_required_fixtures": "studio_mechanism_probe.py",
       "runtime_status": "REPRODUCED_SYNTHETIC_NON_AUDIO_ONLY",
       "pillar": "WisprStudio",
-      "mode": "COPY",
+      "mode": "FORK_DELTA",
       "sources": [
         {
           "path": "backend/services/inference_cancellation.py",
@@ -1169,7 +1237,12 @@
       "acceptance": [
         "studio_mechanism_probe.py"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "Engine-local mapping to common cancellation states",
+      "implementation_authorized": false,
+      "owner": "Engine-local mapping to common cancellation states",
+      "superseded_extraction_destination": "services/studio/inference_cancellation.py",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "ST-SIDECAR",
@@ -1182,13 +1255,13 @@
       "sha256": "796990b9721a4e7c74c2d794728e82d352e1e58a8a89c339406c9a90cda4cc5f",
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
-      "decision": "ADAPT",
-      "destination": "services/model-workers/subprocess_backend.py",
+      "decision": "FORK_DELTA",
+      "destination": "forks/wisprstudio/backend/services/subprocess_backend.py",
       "direct_dependency_boundary": "TTSBackend; core.contained_subprocess.spawn_owned; engine_env; model_manager; cancellation; GPU job accounting; process registry",
       "tests_or_required_fixtures": "backend/tests/test_subprocess_recv_timeout.py",
       "runtime_status": "NOT_RUN",
       "pillar": "WisprStudio",
-      "mode": "ADAPT",
+      "mode": "FORK_DELTA",
       "sources": [
         {
           "path": "backend/services/subprocess_backend.py",
@@ -1202,7 +1275,12 @@
       "acceptance": [
         "backend/tests/test_subprocess_recv_timeout.py"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "Retained VoiceStudio subprocess containment hierarchy",
+      "implementation_authorized": false,
+      "owner": "Retained VoiceStudio subprocess containment hierarchy",
+      "superseded_extraction_destination": "services/model-workers/subprocess_backend.py",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "ST-DUB-INGEST",
@@ -1215,13 +1293,13 @@
       "sha256": "f3fb506605ce5392095f0809e3a898255baa9f64056b4b8a38ea1c132f907ea5",
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
-      "decision": "OUT_OF_PROCESS",
-      "destination": "adapters/studio/dubbing-ingest",
+      "decision": "FORK_DELTA",
+      "destination": "forks/wisprstudio/backend/services/dub_pipeline.py",
       "direct_dependency_boundary": "FFmpeg; file/media/path checks; local job store; optional Demucs/scene detection; URL download branch excluded from first packet",
       "tests_or_required_fixtures": "backend/tests/test_dub_caption_languages.py plus local-media end-to-end fixture",
       "runtime_status": "NOT_RUN",
       "pillar": "WisprStudio",
-      "mode": "OUT_OF_PROCESS",
+      "mode": "FORK_DELTA",
       "sources": [
         {
           "path": "backend/services/dub_pipeline.py",
@@ -1235,7 +1313,12 @@
       "acceptance": [
         "backend/tests/test_dub_caption_languages.py plus local-media end-to-end fixture"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "Retain in pinned VoiceStudio fork",
+      "implementation_authorized": false,
+      "owner": "Retain in pinned VoiceStudio fork",
+      "superseded_extraction_destination": "adapters/studio/dubbing-ingest",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "ST-DUB-GENERATE",
@@ -1248,13 +1331,13 @@
       "sha256": "ca8f7916b779b9e612580b7cfaff5f28e20c6162caebdb3a34865792515526f2",
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
-      "decision": "OUT_OF_PROCESS",
-      "destination": "adapters/studio/dubbing-generation",
+      "decision": "FORK_DELTA",
+      "destination": "forks/wisprstudio/backend/api/routers/dub_generate.py",
       "direct_dependency_boundary": "FastAPI router; task/voice lease; render staging; TTS backend; per-segment cache; bounded worker; durable jobs",
       "tests_or_required_fixtures": "backend/tests/test_tts_backend_lifecycle.py plus cancellation/restart fixture",
       "runtime_status": "NOT_RUN",
       "pillar": "WisprStudio",
-      "mode": "OUT_OF_PROCESS",
+      "mode": "FORK_DELTA",
       "sources": [
         {
           "path": "backend/api/routers/dub_generate.py",
@@ -1268,7 +1351,12 @@
       "acceptance": [
         "backend/tests/test_tts_backend_lifecycle.py plus cancellation/restart fixture"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "Retain in pinned VoiceStudio fork",
+      "implementation_authorized": false,
+      "owner": "Retain in pinned VoiceStudio fork",
+      "superseded_extraction_destination": "adapters/studio/dubbing-generation",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "ST-CLONE-REF",
@@ -1281,13 +1369,13 @@
       "sha256": "2a1e301eb234a717f79eb697a16e5d7bb190aca597dedca036130567963c16b6",
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
-      "decision": "ADAPT",
-      "destination": "services/studio/speaker_reference.py",
+      "decision": "FORK_DELTA",
+      "destination": "forks/wisprstudio/backend/services/speaker_clone.py",
       "direct_dependency_boundary": "numpy; soundfile; audio I/O; safe path storage; caller-provided segment speaker labels",
       "tests_or_required_fixtures": "tests/test_profile_consent.py plus consent scope/revocation fixture",
       "runtime_status": "NOT_RUN",
       "pillar": "WisprStudio",
-      "mode": "ADAPT",
+      "mode": "FORK_DELTA",
       "sources": [
         {
           "path": "backend/services/speaker_clone.py",
@@ -1301,7 +1389,12 @@
       "acceptance": [
         "tests/test_profile_consent.py plus consent scope/revocation fixture"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "Retain in pinned VoiceStudio fork",
+      "implementation_authorized": false,
+      "owner": "Retain in pinned VoiceStudio fork",
+      "superseded_extraction_destination": "services/studio/speaker_reference.py",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "ST-CONSENT",
@@ -1314,13 +1407,13 @@
       "sha256": "25d99c0610c050fc58f2d746229a06193f057733c68577a43adff6886deaab2a",
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
-      "decision": "ADAPT",
-      "destination": "services/consent/profile_consent.py",
+      "decision": "FORK_DELTA",
+      "destination": "forks/wisprstudio/backend/api/routers/profiles.py",
       "direct_dependency_boundary": "FastAPI upload/form; SQLite; voices directory; atomic file swap; event bus; shared profile lock",
       "tests_or_required_fixtures": "tests/test_profile_consent.py; electron/src/renderer/src/features/clone/profile-consent.test.tsx",
       "runtime_status": "NOT_RUN",
       "pillar": "WisprStudio",
-      "mode": "ADAPT",
+      "mode": "FORK_DELTA",
       "sources": [
         {
           "path": "backend/api/routers/profiles.py",
@@ -1334,7 +1427,12 @@
       "acceptance": [
         "tests/test_profile_consent.py; electron/src/renderer/src/features/clone/profile-consent.test.tsx"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "Retain in pinned VoiceStudio fork",
+      "implementation_authorized": false,
+      "owner": "Retain in pinned VoiceStudio fork",
+      "superseded_extraction_destination": "services/consent/profile_consent.py",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "ST-WATERMARK",
@@ -1347,13 +1445,13 @@
       "sha256": "839c229a20d52ae3ddacba09dee23de7766fab4bcfef7f136898723c2d50f85b",
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
-      "decision": "OUT_OF_PROCESS",
-      "destination": "adapters/studio/watermark",
+      "decision": "FORK_DELTA",
+      "destination": "forks/wisprstudio/backend/services/watermark.py",
       "direct_dependency_boundary": "torch; audioseal; sample-rate conversion; generator/detector model cache; engine provenance",
       "tests_or_required_fixtures": "new generated-audio encode/decode/short-clip failure fixture; no robustness claim yet",
       "runtime_status": "NOT_RUN",
       "pillar": "WisprStudio",
-      "mode": "OUT_OF_PROCESS",
+      "mode": "FORK_DELTA",
       "sources": [
         {
           "path": "backend/services/watermark.py",
@@ -1367,7 +1465,12 @@
       "acceptance": [
         "new generated-audio encode/decode/short-clip failure fixture; no robustness claim yet"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "Retain in pinned VoiceStudio fork",
+      "implementation_authorized": false,
+      "owner": "Retain in pinned VoiceStudio fork",
+      "superseded_extraction_destination": "adapters/studio/watermark",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "ST-DRAFT",
@@ -1380,13 +1483,13 @@
       "sha256": "fd7b310b6f742eb0b62360074416d84426a4d0bed1d5be1d8531ab9476cf4c99",
       "method": "DIRECT_SOURCE_INSPECTION",
       "status": "SOURCE_VERIFIED",
-      "decision": "ADAPT",
-      "destination": "apps/studio/src/dub/restore-draft.ts",
+      "decision": "FORK_DELTA",
+      "destination": "forks/wisprstudio/electron/src/renderer/src/features/dub/dub-draft.ts",
       "direct_dependency_boundary": "restoreExportPreferences; DubSession schema; versioned local storage; no Electron API inside inspected function",
       "tests_or_required_fixtures": "electron/src/renderer/src/features/dub/dub-draft.test.ts (tree present, not fetched)",
       "runtime_status": "NOT_RUN",
       "pillar": "WisprStudio",
-      "mode": "ADAPT",
+      "mode": "FORK_DELTA",
       "sources": [
         {
           "path": "electron/src/renderer/src/features/dub/dub-draft.ts",
@@ -1400,7 +1503,12 @@
       "acceptance": [
         "electron/src/renderer/src/features/dub/dub-draft.test.ts (tree present, not fetched)"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "Retain in pinned VoiceStudio fork",
+      "implementation_authorized": false,
+      "owner": "Retain in pinned VoiceStudio fork",
+      "superseded_extraction_destination": "apps/studio/src/dub/restore-draft.ts",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "VB-PROTOCOL",
@@ -1433,7 +1541,9 @@
       "acceptance": [
         "backend/tests/test_generation_engine_resolution.py (tree present, not fetched)"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "VB-QUEUE",
@@ -1466,7 +1576,10 @@
       "acceptance": [
         "backend/tests/test_task_queue_cancellation.py"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "integration_boundary": "No second queue beside retained Studio queue",
+      "implementation_authorized": false,
+      "owner": "No second queue beside retained Studio queue"
     },
     {
       "id": "VB-EXPORT",
@@ -1499,7 +1612,9 @@
       "acceptance": [
         "backend/tests/test_story_export.py plus explicit zero-volume regression"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "VB-UI",
@@ -1532,7 +1647,9 @@
       "acceptance": [
         "new trim/mute/keyboard/timeline export equality fixtures"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "TTS-CHATTERBOX",
@@ -1565,7 +1682,9 @@
       "acceptance": [
         "upstream example_tts_nano.py is an example, not correctness coverage; add consent-backed generated-audio fixture"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "TTS-CHATTERBOX-AR",
@@ -1598,7 +1717,9 @@
       "acceptance": [
         "new held-out Arabic/English intelligibility and reference-consent fixtures"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "TTS-COSY",
@@ -1631,7 +1752,9 @@
       "acceptance": [
         "runtime example scripts; no dedicated automated suite found in acquired tree"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "TTS-QWEN",
@@ -1664,7 +1787,9 @@
       "acceptance": [
         "examples/test_model_12hz_base.py is model-running example; no no-download independent suite established"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "TTS-KOKORO",
@@ -1697,7 +1822,9 @@
       "acceptance": [
         "tests/test_custom_stft.py; JavaScript splitting/phonemization tests not executed"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "TTS-OPENVOICE",
@@ -1730,7 +1857,9 @@
       "acceptance": [
         "no dedicated automated suite found in acquired tree"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "ALIGN-WHISPERX",
@@ -1763,7 +1892,9 @@
       "acceptance": [
         "tests/test_word_timestamp_interpolation.py"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "DIARIZE-PYANNOTE",
@@ -1796,7 +1927,9 @@
       "acceptance": [
         "tests and workflow inventory present; model end-to-end suite NOT_RUN"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "STEMS-DEMUCS",
@@ -1829,7 +1962,9 @@
       "acceptance": [
         "archived upstream; representative separation quality/bleed/memory fixture required"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "F5",
@@ -1862,7 +1997,9 @@
       "acceptance": [
         "no dedicated automated suite established; default released weights noncommercial"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "PIPER",
@@ -1895,7 +2032,9 @@
       "acceptance": [
         "tests/test_piper.py; libpiper/tests/test_piper.cpp"
       ],
-      "rights": "Founder-confirmed source authorization; code/model/voice rights separate"
+      "rights": "Founder-confirmed source authorization; code/model/voice rights separate",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "INK-I1",
@@ -1917,8 +2056,8 @@
           "Stopped::is_complete"
         ]
       },
-      "mode": "WRAP",
-      "destination": "crates/wispral-core/src/audio/handy_capture.rs",
+      "mode": "FORK_DELTA",
+      "destination": "Handy retained dependency handy-recorder@1d975fe8c10f9a69d778cf16955c7e0699b4b8e1:src/lib.rs; application integration path pending baseline evidence",
       "implementation_authorized": false,
       "source_method": "SOURCE_VERIFIED",
       "runtime_status": "NOT_RUN",
@@ -1977,7 +2116,12 @@
         "No-audio/device disconnect/permission failure",
         "Close/cancel releases recorder"
       ],
-      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "integration_boundary": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "decision": "FORK_DELTA",
+      "owner": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "superseded_extraction_destination": "crates/wispral-core/src/audio/handy_capture.rs",
+      "destination_status": "DEPENDENCY_CRATE_LOCATION; not a path in the Handy application tree; pinned closure qualification pending"
     },
     {
       "id": "INK-I2",
@@ -1999,8 +2143,8 @@
           "ManagerState::process_event"
         ]
       },
-      "mode": "WRAP",
-      "destination": "crates/wispral-core/src/platform/activation.rs",
+      "mode": "FORK_DELTA",
+      "destination": "Handy retained dependency handy-keys@e7d1b8e6de8258f21ee1d60608d16f8d195157bf:src/manager.rs; application integration path pending baseline evidence",
       "implementation_authorized": false,
       "source_method": "SOURCE_VERIFIED",
       "runtime_status": "NOT_RUN",
@@ -2058,7 +2202,12 @@
         "Lock/resume/session change",
         "No blanket elevated Linux access"
       ],
-      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "integration_boundary": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "decision": "FORK_DELTA",
+      "owner": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "superseded_extraction_destination": "crates/wispral-core/src/platform/activation.rs",
+      "destination_status": "DEPENDENCY_CRATE_LOCATION; not a path in the Handy application tree; pinned closure qualification pending"
     },
     {
       "id": "INK-I3",
@@ -2080,8 +2229,8 @@
           "classify_ptt_event"
         ]
       },
-      "mode": "ADAPT",
-      "destination": "crates/wispral-core/src/audio/activation_state.rs",
+      "mode": "FORK_DELTA",
+      "destination": "forks/wisprside/src-tauri/src/transcription_coordinator.rs",
       "implementation_authorized": false,
       "source_method": "SOURCE_VERIFIED",
       "runtime_status": "NOT_RUN",
@@ -2132,7 +2281,12 @@
         "Cancel drops remembered press",
         "Autorepeat burst spanning processing drain"
       ],
-      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "integration_boundary": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "decision": "FORK_DELTA",
+      "owner": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "superseded_extraction_destination": "crates/wispral-core/src/audio/activation_state.rs",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "INK-I4",
@@ -2154,8 +2308,8 @@
           "record_receipt"
         ]
       },
-      "mode": "ADAPT",
-      "destination": "crates/wispral-core/src/insertion/transaction.rs",
+      "mode": "FORK_DELTA",
+      "destination": "forks/wisprside/src-tauri/src/paste_tx/mod.rs",
       "implementation_authorized": false,
       "source_method": "SOURCE_VERIFIED",
       "runtime_status": "NOT_RUN",
@@ -2206,7 +2360,12 @@
         "External copy/ownership loss",
         "Multiple receipts/timeout/cancel"
       ],
-      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "integration_boundary": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "decision": "FORK_DELTA",
+      "owner": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "superseded_extraction_destination": "crates/wispral-core/src/insertion/transaction.rs",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "INK-I5",
@@ -2229,8 +2388,8 @@
           "snapshot_clipboard"
         ]
       },
-      "mode": "ADAPT",
-      "destination": "crates/wispral-core/src/platform/windows/insertion.rs",
+      "mode": "FORK_DELTA",
+      "destination": "forks/wisprside/src-tauri/src/paste_tx/windows.rs",
       "implementation_authorized": false,
       "source_method": "SOURCE_VERIFIED",
       "runtime_status": "NOT_RUN",
@@ -2286,7 +2445,12 @@
         "Sequence ownership and rich clipboard cleanup",
         "No auto-submit"
       ],
-      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "integration_boundary": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "decision": "FORK_DELTA",
+      "owner": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "superseded_extraction_destination": "crates/wispral-core/src/platform/windows/insertion.rs",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "INK-I6",
@@ -2361,7 +2525,9 @@
         "Failed restore refuses injection",
         "UIPI/elevated target and non-Latin layout"
       ],
-      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "decision": "ADAPT",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "INK-I7",
@@ -2439,7 +2605,9 @@
         "Partial delivery never automatically retried",
         "AX revoke/modifier held/new focus"
       ],
-      "rights": "FOUNDER_CONFIRMED_SOURCE_GRANT; upstream LICENSE says GPLv3; notices retained"
+      "rights": "FOUNDER_CONFIRMED_SOURCE_GRANT; upstream LICENSE says GPLv3; notices retained",
+      "decision": "ADAPT",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "INK-I8",
@@ -2513,7 +2681,9 @@
         "No screen/clipboard read by default",
         "No inherited cloud route"
       ],
-      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "decision": "ADAPT",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "INK-I9",
@@ -2586,7 +2756,9 @@
         "Short container false rejection",
         "Quick intentional tap versus autorepeat"
       ],
-      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "decision": "ADAPT",
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "INK-I10",
@@ -2609,8 +2781,8 @@
           "LoadSpec"
         ]
       },
-      "mode": "ADAPT",
-      "destination": "crates/wispral-core/src/model/worker_supervisor.rs",
+      "mode": "FORK_DELTA",
+      "destination": "forks/wisprside/src-tauri/src/engine_supervisor/supervisor.rs",
       "implementation_authorized": false,
       "source_method": "SOURCE_VERIFIED",
       "runtime_status": "NOT_RUN",
@@ -2667,7 +2839,12 @@
         "No fixture skip accepted as cancellation proof",
         "Exact worker/model identity and resource budget"
       ],
-      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "integration_boundary": "Handy sole engine process owner",
+      "decision": "FORK_DELTA",
+      "owner": "Handy sole engine process owner",
+      "superseded_extraction_destination": "crates/wispral-core/src/model/worker_supervisor.rs",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "INK-I11",
@@ -2689,8 +2866,8 @@
           "Session::set_cancel_token"
         ]
       },
-      "mode": "REFERENCE_ONLY",
-      "destination": "research/qualification/transcribe-cpp/",
+      "mode": "FORK_DELTA",
+      "destination": "Handy retained dependency transcribe-cpp@f1dcd15858c4bbba87ca97862b4e448b2cf15b8f:src/cancel.rs; application integration path pending baseline evidence",
       "implementation_authorized": false,
       "source_method": "SOURCE_VERIFIED",
       "runtime_status": "NOT_RUN",
@@ -2745,7 +2922,12 @@
         "Actual abort observed, partial preserved",
         "No general support/latency claims"
       ],
-      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "integration_boundary": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "decision": "FORK_DELTA",
+      "owner": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "superseded_extraction_destination": "research/qualification/transcribe-cpp/",
+      "destination_status": "DEPENDENCY_CRATE_LOCATION; not a path in the Handy application tree; pinned closure qualification pending"
     },
     {
       "id": "INK-I12",
@@ -2767,8 +2949,8 @@
           "write_clipboard_via_wl_copy"
         ]
       },
-      "mode": "ADAPT",
-      "destination": "crates/wispral-core/src/platform/linux/insertion.rs",
+      "mode": "FORK_DELTA",
+      "destination": "forks/wisprside/src-tauri/src/clipboard.rs",
       "implementation_authorized": false,
       "source_method": "SOURCE_VERIFIED",
       "runtime_status": "NOT_RUN",
@@ -2823,7 +3005,12 @@
         "Clipboard ownership and terminal shortcut",
         "Tool absent/refused retains manual copy"
       ],
-      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "integration_boundary": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "decision": "FORK_DELTA",
+      "owner": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "superseded_extraction_destination": "crates/wispral-core/src/platform/linux/insertion.rs",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "INK-I13",
@@ -2846,8 +3033,8 @@
           "StreamTextEvent"
         ]
       },
-      "mode": "ADAPT",
-      "destination": "crates/wispral-core/src/speech/stream_semantics.rs",
+      "mode": "FORK_DELTA",
+      "destination": "forks/wisprside/src-tauri/src/managers/transcription/policy.rs",
       "implementation_authorized": false,
       "source_method": "SOURCE_VERIFIED",
       "runtime_status": "NOT_RUN",
@@ -2900,7 +3087,12 @@
         "Tentative never final authority",
         "Cancel generation blocks late delivery"
       ],
-      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate"
+      "rights": "MIT_SOURCE; provenance and notices retained; external assets separate",
+      "integration_boundary": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "decision": "FORK_DELTA",
+      "owner": "Retain in pinned Handy app; qualify a bounded delta, not extract a new app",
+      "superseded_extraction_destination": "crates/wispral-core/src/speech/stream_semantics.rs",
+      "destination_status": "PROPOSED retained donor location; no product fork created"
     },
     {
       "id": "K01",
@@ -2962,7 +3154,11 @@
         "One synthetic customer session produces ordered events with session/turn/source identity",
         "Manual mode produces no automatic response",
         "Provider timeout or process death gives visible failed outcome and preserves transcript"
-      ]
+      ],
+      "decision": "OUT_OF_PROCESS",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "K02",
@@ -3033,7 +3229,11 @@
         "Prompt injection in knowledge/tool output never changes action authority",
         "Contradictory and stale guidelines produce visible uncertainty",
         "Customer variable cache keys cannot cross tenant"
-      ]
+      ],
+      "decision": "WRAP",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "K03",
@@ -3103,7 +3303,11 @@
         "Denied, expired, substituted or cross-tenant requests execute zero external mutations",
         "Model arguments cannot override principal, account scope, tool identity, idempotency key or approval expiry",
         "Cancellation before commit prevents execution; cancellation after commit reports committed result"
-      ]
+      ],
+      "decision": "ADAPT",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "K04",
@@ -3173,14 +3377,18 @@
         "Event history keeps raw customer source separate from AI/human sources",
         "Entering manual mode stops new automatic replies and in-flight work is cancelled or reconciled separately",
         "Deletion removes applicable derived state and discloses retained audit metadata"
-      ]
+      ],
+      "decision": "WRAP",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "K05",
       "feature": "Account-scoped inbox and human assignment",
       "repo": "chatwoot/chatwoot",
       "sha": "8006117055a0d4f9e6d6340a13f7ef5c33dfeec8",
-      "mode": "OUT_OF_PROCESS",
+      "mode": "API_INTEGRATION",
       "destination": "integrations/chatwoot/account_bridge/",
       "sources": [
         {
@@ -3245,14 +3453,19 @@
         "Cross-account conversation, assignee, bot or inbox identifiers denied",
         "Human takeover clears AI ownership and prevents duplicate subsequent AI reply",
         "Two concurrent takeovers result in one acknowledged owner and recoverable history"
-      ]
+      ],
+      "integration_boundary": "Unmodified Chatwoot Agent Bot API; no Rails copy",
+      "decision": "API_INTEGRATION",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "owner": "Unmodified Chatwoot Agent Bot API; no Rails copy"
     },
     {
       "id": "K06",
       "feature": "Bot webhook, retry and failure recovery",
       "repo": "chatwoot/chatwoot",
       "sha": "8006117055a0d4f9e6d6340a13f7ef5c33dfeec8",
-      "mode": "ADAPT",
+      "mode": "API_INTEGRATION",
       "destination": "integrations/chatwoot/webhook_bridge/",
       "sources": [
         {
@@ -3318,14 +3531,19 @@
         "Replay same delivery ID without duplicate tool action",
         "Exhausted retries produce a human-visible open/recovery state without losing transcript",
         "Credentials and message bodies are absent from failure logs"
-      ]
+      ],
+      "integration_boundary": "Authenticated webhook bridge; no Rails copy",
+      "decision": "API_INTEGRATION",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "owner": "Authenticated webhook bridge; no Rails copy"
     },
     {
       "id": "K07",
       "feature": "Human handoff state and race boundary",
       "repo": "chatwoot/chatwoot",
       "sha": "8006117055a0d4f9e6d6340a13f7ef5c33dfeec8",
-      "mode": "WRAP",
+      "mode": "API_INTEGRATION",
       "destination": "integrations/chatwoot/handoff_state/",
       "sources": [
         {
@@ -3372,14 +3590,19 @@
         "Transfer to human with summary and verified context retains ownership epoch",
         "Agent resumes only after explicit human release; stale AI events cannot reopen ownership",
         "Offline human destination yields explicit fallback and queue state"
-      ]
+      ],
+      "integration_boundary": "Klaint ownership epoch plus Chatwoot API; no Rails copy",
+      "decision": "API_INTEGRATION",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "owner": "Klaint ownership epoch plus Chatwoot API; no Rails copy"
     },
     {
       "id": "K08",
       "feature": "Zendesk ticket and HITL connector",
       "repo": "botpress/botpress",
       "sha": "4dbedde32c5947f2646a03f80421cfd786b8bcd9",
-      "mode": "ADAPT",
+      "mode": "REFERENCE_ONLY",
       "destination": "adapters/connectors/zendesk/",
       "sources": [
         {
@@ -3434,14 +3657,19 @@
         "Synthetic Zendesk API verifies create/get/handoff and explicit requester ownership",
         "429, timeout-after-commit and revoked OAuth token cannot duplicate ticket",
         "Connector configured domain validated and secrets redacted"
-      ]
+      ],
+      "integration_boundary": "Vendor API/HITL schema for qualified Python adapter; no Node host",
+      "decision": "REFERENCE_ONLY",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "owner": "Vendor API/HITL schema for qualified Python adapter; no Node host"
     },
     {
       "id": "K09",
       "feature": "HubSpot signed webhook and HITL connector",
       "repo": "botpress/botpress",
       "sha": "4dbedde32c5947f2646a03f80421cfd786b8bcd9",
-      "mode": "ADAPT",
+      "mode": "REFERENCE_ONLY",
       "destination": "adapters/connectors/hubspot/",
       "sources": [
         {
@@ -3495,7 +3723,12 @@
         "Valid signature succeeds; invalid/missing/wrong-length signature rejects",
         "Stale, future-skewed, nonnumeric timestamp and replayed delivery reject",
         "Account identity comes from verified connector installation, never request body"
-      ]
+      ],
+      "integration_boundary": "Vendor webhook schema and adversarial fixtures; Python broker implementation",
+      "decision": "REFERENCE_ONLY",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "owner": "Vendor webhook schema and adversarial fixtures; Python broker implementation"
     },
     {
       "id": "K10",
@@ -3538,7 +3771,11 @@
       "acceptance": [
         "Round-trip start/stop/status and transcript with human/AI attribution",
         "Missing destination, rejected transfer and duplicate handoff events are distinct results"
-      ]
+      ],
+      "decision": "ADAPT",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "K11",
@@ -3605,7 +3842,11 @@
       ],
       "acceptance": [
         "If later proposed, first prove an unmet deterministic dialogue task and isolated runtime without parallel source of truth"
-      ]
+      ],
+      "decision": "REFERENCE_ONLY",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
     },
     {
       "id": "K12",
@@ -3666,7 +3907,98 @@
         "Unauthenticated guessed session ID and cross-tenant customer/event reads deny",
         "Development policy cannot start on exposed production listener",
         "Authorization exceptions never print auth/cookie headers"
-      ]
+      ],
+      "decision": "ADAPT",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "owner": "One owning product runtime; common contracts only"
+    },
+    {
+      "id": "K13",
+      "feature": "Canned response commitment boundary",
+      "repo": "emcie-co/parlant",
+      "sha": "ea737442b8ae65854a842542e544fbe7e6144bad",
+      "pillar": "Klaint",
+      "mode": "WRAP",
+      "decision": "WRAP",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "sources": [
+        {
+          "path": "src/parlant/core/engines/alpha/canned_response_generator.py",
+          "symbol": "class CannedResponseGenerator(",
+          "line": 504,
+          "git_blob": "591d0f185a1536dfd06fdcf3cd39250ebbeb4ef5",
+          "sha256": "908a6d10ef4ec84b307dbbe7d2951f0e978fb2d0176dbf55c5abc575311ed16a",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/core/engines/alpha/canned_response_generator.py#L504"
+        }
+      ],
+      "destination": "services/klaint-dialogue/",
+      "deps": "Existing Parlant package; tenant-scoped storage/NLPService; no additional runtime",
+      "acceptance": [
+        "Only approved commitment template or handoff",
+        "Cited tenant-scoped retrieval and deterministic action scorer"
+      ],
+      "owner": "Klaint single Python service",
+      "rights": "Founder-confirmed source authorization; preserve Apache notices; models separate"
+    },
+    {
+      "id": "K14",
+      "feature": "Tenant-scoped cited retrieval",
+      "repo": "emcie-co/parlant",
+      "sha": "ea737442b8ae65854a842542e544fbe7e6144bad",
+      "pillar": "Klaint",
+      "mode": "WRAP",
+      "decision": "WRAP",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "sources": [
+        {
+          "path": "docs/concepts/customization/retrievers.md",
+          "symbol": "# Retrievers",
+          "line": 1,
+          "git_blob": "13c27ec4e9ed04bce6508a85d2f002f10e83d0d1",
+          "sha256": "a88ddb4c63947f069c9ee22c728929adf58e35326f65f9239bb84bc2010b3d30",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/docs/concepts/customization/retrievers.md#L1"
+        }
+      ],
+      "destination": "services/klaint-dialogue/",
+      "deps": "Existing Parlant package; tenant-scoped storage/NLPService; no additional runtime",
+      "acceptance": [
+        "Only approved commitment template or handoff",
+        "Cited tenant-scoped retrieval and deterministic action scorer"
+      ],
+      "owner": "Klaint single Python service",
+      "rights": "Founder-confirmed source authorization; preserve Apache notices; models separate"
+    },
+    {
+      "id": "K15",
+      "feature": "Dialogue evaluations and deterministic outcome scorer",
+      "repo": "emcie-co/parlant",
+      "sha": "ea737442b8ae65854a842542e544fbe7e6144bad",
+      "pillar": "Klaint",
+      "mode": "WRAP",
+      "decision": "WRAP",
+      "runtime_status": "NOT_RUN",
+      "implementation_authorized": false,
+      "sources": [
+        {
+          "path": "src/parlant/api/evaluations.py",
+          "symbol": "def create_router(",
+          "line": 514,
+          "git_blob": "d4751e542114e6af4e8dee4da09adedd66907e0a",
+          "sha256": "33fa939b6de5f5e874a8ddd6f56a391e214530a0f4c4356eb703d3665885e078",
+          "url": "https://github.com/emcie-co/parlant/blob/ea737442b8ae65854a842542e544fbe7e6144bad/src/parlant/api/evaluations.py#L514"
+        }
+      ],
+      "destination": "services/klaint-dialogue/",
+      "deps": "Existing Parlant package; tenant-scoped storage/NLPService; no additional runtime",
+      "acceptance": [
+        "Only approved commitment template or handoff",
+        "Cited tenant-scoped retrieval and deterministic action scorer"
+      ],
+      "owner": "Klaint single Python service",
+      "rights": "Founder-confirmed source authorization; preserve Apache notices; models separate"
     }
   ]
 }
