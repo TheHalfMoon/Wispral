@@ -5,7 +5,7 @@
 **Ratified:** 2026-09-01  
 **Amended:** 2026-11-08  
 **Canonical ratification merge:** `3cbe212bf7202c37ec322f114c0e5486e5218d9b`  
-**Canonical 0.3.0 amendment merge:** pending; recorded in the Principle XVII item 8 reconciliation and replaced with the merge SHA by the next patch release
+**Canonical 0.3.0 amendment merge:** pending; MUST be recorded, and replaced in this header, by the Principle XVII item 8 reconciliation of the first use or, if no use has occurred, by the next constitutional amendment, whichever is earlier
 
 ## Preamble
 
@@ -127,23 +127,24 @@ This repair authority MUST NOT be used as a substitute for an ordinary required 
 
 ## Principle XVII — Fail-closed control deadlocks are resolved explicitly and narrowly
 
-A repository control is **over-applied** when it is fail-closed and its applicability predicate selects and rejects a candidate that lies outside the control's governed scope. The governed scope MUST be quoted verbatim from the canonical text that introduced the control, cited by commit SHA and path, and MUST be the complete recorded scope, not a subset. Where sources conflict, the control's own declaration controls; absent one, the introducing specification, task, or reconciliation controls. A control that rejects a candidate because the candidate lies outside an active task or candidate scope the control was chartered to enforce is applying as intended, not over-applied.
+A repository control is **over-applied** when it is fail-closed and its applicability predicate selects and rejects a candidate that lies outside the control's governed scope. The governed scope MUST be quoted verbatim from the canonical text that introduced the control, cited by commit SHA and path, and MUST be the complete recorded scope, not a subset. Where sources conflict, the following order controls: (1) the control's own in-code declaration; (2) the introducing specification; (3) the introducing task; (4) the introducing reconciliation. The repair MUST quote each source and state which one controls and why. A control that rejects a candidate because the candidate lies outside an active task or candidate scope the control was chartered to enforce is applying as intended, not over-applied; such a control is an **intended-scope control**.
 
-When one or more over-applied controls, alone or together with fail-closed controls applying as intended, make every ordinary candidate unadmittable, the controls are in **deadlock**. This includes the repair of each over-applied control and any canonical reconciliation that would authorize or record that repair. All dependent execution MUST freeze until the deadlock is resolved under this principle.
+When one or more over-applied controls, alone or together with fail-closed controls applying as intended, make every ordinary task or reconciliation candidate unadmittable through the ordinary execution lane without a governance exception, the controls are in **deadlock**. This includes the repair of each over-applied control and any canonical reconciliation that would authorize or record that repair. All dependent execution other than the review, repair, and reconciliation authorized by this principle MUST freeze until the deadlock is resolved under this principle.
 
-Principle XVI remains the sole lane for fail-open defects. This principle MUST NOT be used while any reviewer or evidence identifies an unresolved fail-open defect in a control path within the declared repair scope; such a defect MUST first be resolved under Principle XVI. This principle MUST NOT be used as a substitute for an ordinary gate that the repair candidate or its reconciliation can satisfy.
+A fail-open defect in a control within the declared repair scope MUST NOT be repaired under this principle. While any reviewer or evidence identifies such a defect, this principle MUST NOT be used; the defect MUST first be resolved through the ordinary lane or, where the control is designated immutable and Principle XVI's conditions are met, under Principle XVI. Where an over-applied control is designated immutable under Principle XVI, this principle is a second, narrow exception to that immutability, limited to fail-closed, over-applied controls and to repairs that preserve every guarantee identified in item 3. This principle MUST NOT be used as a substitute for an ordinary gate that the repair candidate or its reconciliation can satisfy.
 
 A deadlock repair is authorized only when all of the following hold:
 
 1. **Declared cycle.** Before merge, the repair pull request MUST declare the deadlock cycle. The declaration identifies:
-   - the ordered set of over-applied control identities (canonical path plus required-check context);
+   - the complete list of over-applied control identities, in the order in which their required checks execute (canonical path plus required-check context);
    - the intended-scope controls participating in the cycle;
-   - the canonical authority base.
+   - the canonical authority base;
+   - each repaired control's verification location, a directory path that MUST already exist at the authority base.
 
-   The declaration MUST be recorded in the pull request and in the item 8 reconciliation. Renaming, splitting, or relocating a control does not create a new control or a new cycle.
+   The declaration MUST include deterministic evidence that every ordinary task or reconciliation candidate is unadmittable and that the declared set of over-applied controls is complete. It MUST be recorded in the pull request and in the item 8 reconciliation. Renaming, splitting, merging, relocating, or reimplementing a control does not create a new control or a new cycle.
 2. **Exact scope.**
    - The repair MUST repair every over-applied control in the declared cycle and nothing else.
-   - Its changed paths are limited to the implementations of those controls, plus new or modified deterministic test fixtures or verifier scripts located within each repaired control's verification location.
+   - Its changed paths are limited to the implementations of those controls, plus new or modified deterministic test fixtures or verifier scripts located within each repaired control's verification location. Such files MUST be test-only, MUST NOT be wired into any required check other than the repaired control itself, and MUST NOT change any control input, expected output, frozen-object set, or runtime behavior.
    - It MUST NOT add or modify any workflow trigger, branch-protection or ruleset required-check mapping, or other control. The implementation of a repaired control is not a required-check mapping.
    - The declared changed-path scope MUST equal exactly the set of paths changed by the pull request, verified mechanically against the diff.
    - The pull request MUST enumerate every assertion it removes or weakens. No assertion may be removed or weakened for a candidate within the governed scope.
@@ -164,7 +165,7 @@ A deadlock repair is authorized only when all of the following hold:
    - still selects every candidate within its governed scope;
    - now passes on canonical main at the authority base.
 
-   That evidence MUST be generated by the original control at the authority base, or independently by a reviewer using pinned tooling. Evidence produced solely by scripts introduced in the repair is insufficient.
+   The original control's failure on canonical main at the authority base MUST be evidenced by the original control at that base. Positive and negative evidence for the repaired control MUST be produced by the repaired control and independently reproduced by a reviewer using pinned tooling, with the original control's result on the same candidates recorded for comparison. Evidence produced solely by scripts introduced in the repair is insufficient.
 5. **Preserved non-successes.** A non-success may be preserved only if its sole failing condition is one of the following:
    - (a) an over-applied control in the declared cycle rejecting the repair, with the exact failure string recorded under item 4, solely because of the declared over-application;
    - (b) an intended-scope control in the declared cycle rejecting the repair's declared paths, solely because they lie outside the active candidate scope.
@@ -177,17 +178,18 @@ A deadlock repair is authorized only when all of the following hold:
    - occur before any dependent candidate execution or state transition.
 
    It MUST NOT be relabeled, suppressed, rerun-to-green, or counted as a successful gate. No other non-success category is permitted.
-6. **All other gates.** Every other exact-head gate required by canonical repository authority and applicable to the repair candidate MUST conclude successfully on the exact final repair head. A required gate that is absent, skipped, pending, cancelled, or failed is not satisfied.
+6. **All other gates.** Every other exact-head gate required by canonical repository authority and applicable to the repair candidate MUST conclude successfully on the exact final repair head. A required gate that is absent, skipped, pending, cancelled, neutral, stale, or failed is not satisfied.
 7. **Review and merge.**
    - A fresh independent substantive review MUST cover the exact final repair range.
-   - The review MUST verify the governed-scope citation, the over-application determination and the equality of the diff with the declared scope.
+   - The review MUST verify the governed-scope citation, the over-application determination, the deadlock determination, the completeness of the declared set, and the equality of the diff with the declared scope.
    - All blocking findings MUST be resolved before merge.
    - The repair MUST use a guarded normal merge bound to the exact reviewed head.
 8. **Verification and reconciliation.**
    - After merge, the actual canonical merge SHA and ancestry MUST be verified.
    - Each repaired control MUST be exercised against that exact canonical state by a deterministic verifier or canonical workflow.
    - A separate canonical reconciliation MUST record the repair and the declared cycle before dependent execution resumes.
-   - The reconciliation MUST satisfy every required gate, including the repaired controls. The only exception is a non-success preserved on the same conditions as item 5(b), where an intended-scope control rejects the reconciliation solely because its paths lie outside the active candidate scope.
+   - The reconciliation MUST satisfy every required gate, including the repaired controls. The only exception is a non-success preserved in accordance with all of item 5, limited to the category in item 5(b), where an intended-scope control rejects the reconciliation solely because its paths lie outside the active candidate scope.
+   - The reconciliation's changed paths MUST be declared in the repair pull request. They are limited to canonical reconciliation records that record the repair, the declared cycle and all prior uses, plus, where applicable, the single `CONSTITUTION.md` metadata line that records an amendment merge SHA. The declared set MUST equal the reconciliation's diff exactly, verified mechanically. The reconciliation MUST NOT change any control, workflow, specification, task, or evidence outside those records.
    - If the reconciliation cannot be admitted under these conditions, the cycle is incomplete and no dependent execution may resume.
 9. **Single use.**
    - Per declared cycle, exactly one repair pull request may merge with preserved non-successes, together with that cycle's single reconciliation under item 8. No other candidate may rely on them.
@@ -196,10 +198,13 @@ A deadlock repair is authorized only when all of the following hold:
 
 This principle grants no authority to merge any candidate with an unpreserved or unrelated non-success. If strict preservation cannot be demonstrated under these conditions, the project remains blocked.
 
-**Transitional provision (0.3.0).** This provision is self-executing and takes effect upon the merge it authorizes. The pull request adopting this principle is itself rejected by the deadlock it addresses and cannot satisfy this principle. It may merge only if:
+**Transitional provision (0.3.0).** This provision governs its own adoption merge and takes effect for all other purposes upon that merge. The pull request adopting this principle is itself rejected by the deadlock it addresses and cannot satisfy this principle. It may merge only if:
 
 - it changes `CONSTITUTION.md` alone and satisfies Governance item 3;
-- each non-success is preserved individually under the conditions of item 5, and is shown to fail solely on the over-applied B2R16 freeze verification or on B2R17 intended-scope rejection of `CONSTITUTION.md`;
+- each non-success is recorded individually with its job identifier and failure string, is shown by its full log to contain no other failing condition, and fails solely on one of:
+  - (i) B2R16 freeze verification (`.github/workflows/000b2-public-b2r16-freeze.yml`, job `verify-b2r16-freeze`), shown to be over-applied by a verbatim governed-scope citation under this principle's first paragraph and by its rejection of canonical main;
+  - (ii) B2R17 intended-scope rejection of `CONSTITUTION.md`;
+- the pull request includes the item 1 declaration and the item 4 disclosure and evidence for those controls, treating them as the declared cycle for this merge only;
 - every other required exact-head gate succeeds;
 - a fresh independent substantive review covers the exact final range with no unresolved blocking finding;
 - it uses a guarded normal merge bound to the reviewed head.
