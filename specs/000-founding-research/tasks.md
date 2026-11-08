@@ -6,11 +6,11 @@ This file tracks child-spec progression, not a speculative implementation backlo
 
 - [x] `000A` ACP qualification — `VERIFIED` at canonical evidence merge `354695c9f4d406147cbdc425d8f59e841a2f96a3` and closeout merge `99dd6290ee01ce566d32b92df6d469b66b56520a`; recommendation `PARTIAL`, confidence `MODERATE`.
 - [ ] `000B` local STT/entity evidence — active recursive research parent; `000B1` remains historical `VERIFIED`, and the active B2 execution path is the public-corpus supersession defined by `000B2-public-corpus-bakeoff` once canonical.
-- [ ] `000C` turn/interruption measurement — intentionally coarse.
-- [ ] `000D` PTY fallback boundary — intentionally coarse.
-- [ ] `000E` platform audio/privacy feasibility — intentionally coarse.
-- [ ] `000F` dependency/license/provenance synthesis — intentionally coarse.
-- [ ] `000G` founding synthesis / first product Grain selection — intentionally coarse.
+- [ ] `000C` turn/interruption measurement — re-scoped by Constitution 1.0.0 into `000C-AGENT` and `000C-VOICE`; intentionally coarse.
+- [ ] `000D` PTY fallback boundary — blocks only optional developer-agent compatibility (Constitution 1.0.0); intentionally coarse.
+- [ ] `000E` platform feasibility — open research parent `specs/000E-platform-feasibility/` (Grains `SD-M0`, `ST-D00`, `ST-D00b`, `KT-01`).
+- [ ] `000F` provenance intake — open research parent `specs/000F-provenance-intake/` (Grain `CORE-00`).
+- [ ] `000G` founding synthesis / first product Grain selection — selects exactly one bounded Grain; intentionally coarse.
 
 ## Immediate authorized refinement/execution frontier
 

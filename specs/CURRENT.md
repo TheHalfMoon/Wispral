@@ -240,15 +240,15 @@ B3 may use frozen public-B2 C0 transcripts and separately frozen diagnostic deve
 
 ## Remaining founding children
 
-After the evidence-selected B chain stabilizes, the parent currently anticipates:
+Constitution 1.0.0 re-scopes the remaining children (`specs/000-founding-research/spec.md`):
 
-- `000C` — turn-taking, pause, and interruption measurement;
-- `000D` — PTY compatibility and fallback threat/maintenance boundary;
-- `000E` — platform audio feasibility and privacy/permission observations;
-- `000F` — dependency, licensing, provenance, and distribution decision inputs;
-- `000G` — founding synthesis and first product-Grain selection.
+- `000C`: split into `000C-AGENT` (optional developer-agent steering) and `000C-VOICE` (later hands-free and duplex dialogue). Coarse.
+- `000D`: the PTY boundary, which blocks only optional developer-agent compatibility. Coarse.
+- `000E`: platform feasibility. **Open as a research parent**: `specs/000E-platform-feasibility/`.
+- `000F`: provenance intake. **Open as a research parent**: `specs/000F-provenance-intake/`.
+- `000G`: founding synthesis, which selects exactly one bounded first Grain.
 
-Do not refine distant children merely to create activity. Fresh canonical evidence must shape them.
+000E and 000F do not wait for the B chain. Do not refine the other children merely to create activity; fresh canonical evidence must shape them.
 
 ## Global evidence gate
 
@@ -267,7 +267,7 @@ Before any child becomes `VERIFIED`:
 
 No Rust product implementation, Cargo workspace, permanent speech engine integration, ACP production client, PTY adapter, TUI, installer, or release is authorized until `000G` selects a bounded first implementation Grain and that Grain independently satisfies readiness.
 
-The public-corpus amendment and canonical chronology remediation do not weaken this gate.
+The public-corpus amendment and canonical chronology remediation do not weaken this gate. Under Constitution 1.0.0 (Governance item 8), this gate and the 000G decision are the only route to product code, and the 000E and 000F research Grains do not weaken it.
 
 ## Historical B2R01 recovery reconciliation — superseded predecessor record
 
@@ -449,3 +449,34 @@ B2R16 is canonically complete at guarded normal merge `885307429ec8b1aa0fe173169
 **ATTEMPT-003 primary decode entry open:** `true`
 
 B2R17 alone is the next bounded action: execute candidate cell 1 (`moonshine-compact`) against the identical frozen P0 audio under frozen C0. Preserve raw outputs, failures, runtime observations, exact run identity, frozen input identities, and claim guards. No scoring is authorized. B2R18 and every later successor remain closed. Comparative publication/ranking, production selection, and product-code authority remain closed; `HUMAN_DEVELOPER_SPEECH_ACCURACY_EVIDENCE=ABSENT`, `production_stt_selected=false`, and `product_code_authorized=false` remain preserved.
+
+## Platform frontier — research Grains 000E and 000F
+
+**Authority:** Constitution 1.0.0, frontier designation; packet F.
+
+This section opens two research parents alongside the B2 benchmark lane, which continues independently and unchanged:
+
+- `specs/000E-platform-feasibility/`;
+- `specs/000F-provenance-intake/`.
+
+It opens exactly these five research Grains, defined in `research/wispral-world-class/packets.json`:
+
+| Grain | Parent | Product | Depends on | State |
+| --- | --- | --- | --- | --- |
+| `CORE-00` | 000F | core (rights) | F | `GRAIN`, the first to take through readiness |
+| `SD-M0` | 000E | WisprSide | F, `CORE-00` | `GRAIN` |
+| `ST-D00` | 000E | WisprStudio | F, `CORE-00` | `GRAIN` |
+| `ST-D00b` | 000E | WisprStudio | F, `CORE-00` | `GRAIN` |
+| `KT-01` | 000E | Klaint | `CORE-00` | `GRAIN` |
+
+**Rules for these Grains:**
+
+- A Grain becomes `READY` only when its own pull request records:
+  - its dependencies as canonical;
+  - re-verified pins;
+  - evidence paths outside product paths;
+  - the checks that apply to it.
+- No other packet is opened.
+- Research authority carries no product-code, installer, release or distribution authority.
+- Creating a fork repository needs the founder's decision on its location and visibility.
+- Until the founder's outbound-licence decision is recorded, no `COPY` or `ADAPT` packet may land code.

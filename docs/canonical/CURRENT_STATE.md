@@ -396,21 +396,30 @@ B2R17 alone is the next bounded unit: execute candidate cell 1 (`moonshine-compa
 
 ## Current product thesis
 
-Wispral is a voice-native control plane for AI coding agents.
+Wispral is a modular voice platform (Constitution 1.0.0). It has three products on one shared authority, provenance and resource core:
 
-> A developer should be able to speak to an agent, think aloud without accidentally authorizing action, resolve developer-specific entities against repository context, interrupt and steer execution immediately, and preserve visible authority boundaries across multiple independent agents.
+- **WisprSide**: cross-application dictation, with optional developer-agent control;
+- **WisprStudio**: voice production;
+- **Klaint**: customer dialogue agents.
 
-This thesis is a program direction, not a benchmark result or compatibility claim.
+> A person should be able to speak, think aloud without accidentally authorizing action, resolve meaning against bounded and authorized context, interrupt and correct immediately, and keep visible authority boundaries over every system Wispral acts on.
+
+This thesis is a program direction, not a benchmark result, compatibility claim or product readiness claim.
 
 ## Current architecture posture
 
-- Rust remains the preferred product runtime; no production Cargo workspace is authorized yet.
-- ACP is the leading structured integration candidate, classified `PARTIAL` / `MODERATE` by 000A rather than selected as unconditional `PRIMARY`.
-- A PTY compatibility path may still be required for agents without sufficient structured semantics.
-- Local streaming speech recognition remains first-class, but no engine/model configuration is selected.
-- Repository-aware entity resolution remains a hypothesis to be measured after unbiased STT evidence exists.
+- Rust remains the preferred runtime for core contracts, concurrency and policy. No production Cargo workspace is authorized yet.
+- Donor-led baselines are the working hypothesis for each product's surface (invariant A12). None has been built or tested here yet, and none is selected. The 000E research Grains measure them:
+  - a desktop dictation fork for WisprSide;
+  - a desktop production fork for WisprStudio;
+  - a wrapped dialogue service for Klaint.
+- Isolated donor-native or Python workers are permitted only with evidenced dependency closure and stop behaviour (invariant A11).
+- ACP is the leading structured integration candidate for optional developer-agent control, classified `PARTIAL` / `MODERATE` by 000A rather than selected as unconditional `PRIMARY`.
+- A PTY compatibility path matters only for optional developer-agent compatibility (000D).
+- Local streaming speech recognition remains first-class, but no engine or model configuration is selected.
+- Context resolution, whether repository, application, project or tenant knowledge, remains a hypothesis to be measured.
 - `COMMAND` and `ASIDE` remain separate semantic concepts; the exact interaction/classification contract remains unselected.
-- Push-to-talk remains the preferred first reliable capture hypothesis; hands-free/full-duplex behavior requires later evidence.
+- Push-to-talk remains the preferred first reliable capture hypothesis. Hands-free and full-duplex behaviour require later evidence.
 
 ## Explicit non-claims
 
@@ -427,13 +436,19 @@ Wispral does NOT currently claim:
 - Arabic or English product support;
 - full-duplex audio or acoustic echo cancellation;
 - production security, accessibility, privacy, platform, or release qualification;
-- any GitHub growth outcome.
+- any GitHub growth outcome;
+- a built, tested or qualified WisprSide, WisprStudio or Klaint baseline (every donor baseline is `NOT RUN`);
+- a qualified voice-consent, voice-cloning or revocation workflow;
+- tenant isolation, channel integrations or safe external customer actions;
+- trademark, domain or store clearance for any product name.
 
 ## Product-code gate
 
 No Rust product implementation, Cargo workspace, permanent speech-engine integration, ACP production client, PTY adapter, TUI, installer, or release is authorized until Specification 000 synthesis reaches `000G`, selects a bounded first implementation Grain from reproducible evidence, and that Grain independently satisfies readiness.
 
 Verified 000A, verified 000B1, canonical B2 entry preparation, canonical B2 authority structure, canonical participant policy/materials, the canonical public-corpus B2 methodology, canonical qualification-chronology remediation, canonical public readiness, canonical B2P01 provenance, canonical B2P02 archive-byte verification, canonical B2P03 deterministic subset selection, canonical B2P04 subset-manifest freeze, and canonical B2P05 candidate revalidation do not weaken this gate.
+
+Under Constitution 1.0.0 (Governance item 8), this gate and the 000G decision are the only route to product code. The 000E and 000F research Grains do not weaken it.
 
 ## Canonical B2R07 recovery reconciliation — predecessor authority
 
