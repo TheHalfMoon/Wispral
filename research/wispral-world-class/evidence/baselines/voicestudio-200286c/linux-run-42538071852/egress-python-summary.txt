@@ -1,0 +1,18 @@
+EGRESS_DNS_NAMES=15
+EGRESS_TCP_SYN=1176
+EGRESS_MODEL_HUB_DNS=2
+DNS api.snapcraft.io
+DNS blob.bn3prdstrz12a.trafficmanager.net
+DNS example.com
+DNS glb-2a3c35-public-internal.githubapp.com
+DNS glb-db52c2cf8be544.github.com
+DNS hosted-compute-request-orchestrator-gccus02-02.githubapp.com
+DNS hosted-compute-watchdog-gccus02-02.githubapp.com
+DNS huggingface.co
+DNS productionresultssa32.blob.core.windows.net
+DNS results-receiver.actions.githubusercontent.com
+DNS us.aws.cdn.hf.co
+DNS x
+DNS x.05ntbcgp5thenjdf5nuj5flief.jx.internal.cloudapp.net
+DNS youtu.be
+DNS youtube.com

@@ -1,0 +1,4 @@
+LINT_EXIT=0
+KEYBOARD_EXIT=0
+PLAYWRIGHT_EXIT=0
+PLAYWRIGHT expected=2 unexpected=0 flaky=0 skipped=0

@@ -1,0 +1,268 @@
+{
+  "config": {
+    "argv": [
+      "/usr/local/bin/node",
+      "/home/runner/work/wisprside/wisprside/node_modules/.bin/playwright",
+      "test",
+      "--reporter=list,json"
+    ],
+    "configFile": "/home/runner/work/wisprside/wisprside/playwright.config.ts",
+    "rootDir": "/home/runner/work/wisprside/wisprside/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "ci": {
+        "commitHref": "https://github.com/TheHalfMoon/wisprside/commit/f83add0f710ce9675b9c8e1e3716f7977312c000",
+        "commitHash": "f83add0f710ce9675b9c8e1e3716f7977312c000",
+        "buildHref": "https://github.com/TheHalfMoon/wisprside/actions/runs/42536089224"
+      },
+      "gitCommit": {
+        "shortHash": "f83add0",
+        "hash": "f83add0f710ce9675b9c8e1e3716f7977312c000",
+        "subject": "wispral: SD-M0 research baseline workflow (donor suites unmodified)",
+        "body": "wispral: SD-M0 research baseline workflow (donor suites unmodified)\n\nAdds only .github/workflows/wispral-baseline-sd-m0.yml, copied from the donor's\ntest.yml, code-quality.yml and playwright.yml. No donor file is changed. The\ndonor's own workflows are disabled in this fork.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n",
+        "author": {
+          "name": "TheHalfMoon",
+          "email": "alshehriofficial@gmail.com",
+          "time": 1794181061000
+        },
+        "committer": {
+          "name": "TheHalfMoon",
+          "email": "alshehriofficial@gmail.com",
+          "time": 1794181061000
+        },
+        "branch": "wispral/baseline-sd-m0"
+      },
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/runner/work/wisprside/wisprside/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {
+          "ci": {
+            "commitHref": "https://github.com/TheHalfMoon/wisprside/commit/f83add0f710ce9675b9c8e1e3716f7977312c000",
+            "commitHash": "f83add0f710ce9675b9c8e1e3716f7977312c000",
+            "buildHref": "https://github.com/TheHalfMoon/wisprside/actions/runs/42536089224"
+          },
+          "gitCommit": {
+            "shortHash": "f83add0",
+            "hash": "f83add0f710ce9675b9c8e1e3716f7977312c000",
+            "subject": "wispral: SD-M0 research baseline workflow (donor suites unmodified)",
+            "body": "wispral: SD-M0 research baseline workflow (donor suites unmodified)\n\nAdds only .github/workflows/wispral-baseline-sd-m0.yml, copied from the donor's\ntest.yml, code-quality.yml and playwright.yml. No donor file is changed. The\ndonor's own workflows are disabled in this fork.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n",
+            "author": {
+              "name": "TheHalfMoon",
+              "email": "alshehriofficial@gmail.com",
+              "time": 1794181061000
+            },
+            "committer": {
+              "name": "TheHalfMoon",
+              "email": "alshehriofficial@gmail.com",
+              "time": 1794181061000
+            },
+            "branch": "wispral/baseline-sd-m0"
+          },
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/runner/work/wisprside/wisprside/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/runner/work/wisprside/wisprside/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {
+          "ci": {
+            "commitHref": "https://github.com/TheHalfMoon/wisprside/commit/f83add0f710ce9675b9c8e1e3716f7977312c000",
+            "commitHash": "f83add0f710ce9675b9c8e1e3716f7977312c000",
+            "buildHref": "https://github.com/TheHalfMoon/wisprside/actions/runs/42536089224"
+          },
+          "gitCommit": {
+            "shortHash": "f83add0",
+            "hash": "f83add0f710ce9675b9c8e1e3716f7977312c000",
+            "subject": "wispral: SD-M0 research baseline workflow (donor suites unmodified)",
+            "body": "wispral: SD-M0 research baseline workflow (donor suites unmodified)\n\nAdds only .github/workflows/wispral-baseline-sd-m0.yml, copied from the donor's\ntest.yml, code-quality.yml and playwright.yml. No donor file is changed. The\ndonor's own workflows are disabled in this fork.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n",
+            "author": {
+              "name": "TheHalfMoon",
+              "email": "alshehriofficial@gmail.com",
+              "time": 1794181061000
+            },
+            "committer": {
+              "name": "TheHalfMoon",
+              "email": "alshehriofficial@gmail.com",
+              "time": 1794181061000
+            },
+            "branch": "wispral/baseline-sd-m0"
+          },
+          "actualWorkers": 1
+        },
+        "name": "chromium",
+        "testDir": "/home/runner/work/wisprside/wisprside/tests",
+        "snapshotDir": "/home/runner/work/wisprside/wisprside/tests",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:1420",
+          "trace": "on-first-retry",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "bunx vite dev",
+      "url": "http://localhost:1420",
+      "reuseExistingServer": false,
+      "timeout": 30000
+    }
+  },
+  "suites": [
+    {
+      "title": "app.spec.ts",
+      "file": "app.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Handy App",
+          "file": "app.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "dev server responds",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1605,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-08T23:42:29.597Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c31ff144dc4fee3acd0a-f78c97d808732375bb33",
+              "file": "app.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "page has html structure",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 354,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-08T23:42:31.498Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c31ff144dc4fee3acd0a-127a670832dd1742fc77",
+              "file": "app.spec.ts",
+              "line": 10,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-08T23:42:28.810Z",
+    "duration": 3095.978,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

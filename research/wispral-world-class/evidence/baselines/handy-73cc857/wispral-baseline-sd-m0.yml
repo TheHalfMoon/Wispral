@@ -1,0 +1,121 @@
+# Wispral 000E research baseline SD-M0 (WisprSide).
+#
+# Runs the donor's own suites unmodified at the pin cjpais/Handy@73cc8579cff74e97e08de9d86035a92e4335ff7f.
+# Steps are copied from the donor's test.yml, code-quality.yml and playwright.yml. The only changes are
+# `cargo test --locked` (as packet SD-M0 requires) and capture of counts. Failures are recorded, not fixed.
+# Triggered only by a push to this branch. The donor's own workflows are disabled in this fork.
+name: "wispral-baseline-sd-m0"
+on:
+  push:
+    branches: [wispral/baseline-sd-m0]
+
+permissions:
+  contents: read
+
+jobs:
+  rust-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install system dependencies (donor test.yml)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev libasound2-dev libssl-dev libgtk-layer-shell-dev \
+            libvulkan-dev glslc spirv-headers
+
+      - name: Record toolchain
+        run: |
+          { rustc --version; cargo --version; uname -a; lsb_release -ds; } | tee toolchain.txt
+
+      - name: cargo test --locked (donor suite, unmodified)
+        working-directory: src-tauri
+        run: |
+          set +e
+          cargo test --locked 2>&1 | tee ../cargo-test.log
+          echo "CARGO_TEST_EXIT=${PIPESTATUS[0]}" | tee -a ../cargo-test.log
+          exit 0
+
+      - name: Summarize counts
+        run: |
+          python3 - <<'PY'
+          import re
+          log = open("cargo-test.log", encoding="utf-8", errors="replace").read()
+          totals = {"passed": 0, "failed": 0, "ignored": 0, "measured": 0, "filtered out": 0}
+          for m in re.finditer(r"test result: \w+\. (\d+) passed; (\d+) failed; (\d+) ignored; (\d+) measured; (\d+) filtered out", log):
+              for k, v in zip(totals, m.groups()):
+                  totals[k] += int(v)
+          exit_line = re.search(r"CARGO_TEST_EXIT=(\d+)", log)
+          out = f"CARGO_TEST_EXIT={exit_line.group(1) if exit_line else 'missing'} " + " ".join(f"{k.replace(' ', '_')}={v}" for k, v in totals.items())
+          print(out)
+          open("rust-summary.txt", "w").write(out + "\n")
+          PY
+          cat rust-summary.txt >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sd-m0-rust
+          path: |
+            toolchain.txt
+            cargo-test.log
+            rust-summary.txt
+
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies (donor, frozen lockfile)
+        run: |
+          bun --version | tee bun-version.txt
+          bun install --frozen-lockfile
+
+      - name: bun run lint
+        run: |
+          set +e
+          bun run lint 2>&1 | tee lint.log
+          echo "LINT_EXIT=${PIPESTATUS[0]}" | tee -a lint.log
+          exit 0
+
+      - name: bun run test:keyboard
+        run: |
+          set +e
+          bun run test:keyboard 2>&1 | tee keyboard.log
+          echo "KEYBOARD_EXIT=${PIPESTATUS[0]}" | tee -a keyboard.log
+          exit 0
+
+      - name: Playwright (donor playwright.yml)
+        run: |
+          set +e
+          bunx playwright install --with-deps chromium 2>&1 | tail -5
+          bun run test:playwright -- --reporter=list,json 2>&1 | tee playwright.log
+          echo "PLAYWRIGHT_EXIT=${PIPESTATUS[0]}" | tee -a playwright.log
+          exit 0
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-results.json
+
+      - name: Summarize
+        run: |
+          {
+            grep -h "_EXIT=" lint.log keyboard.log playwright.log
+            python3 -c "import json;d=json.load(open('playwright-results.json'));s=d.get('stats',{});print('PLAYWRIGHT expected=%s unexpected=%s flaky=%s skipped=%s'%(s.get('expected'),s.get('unexpected'),s.get('flaky'),s.get('skipped')))" 2>/dev/null || echo "PLAYWRIGHT stats unavailable"
+          } | tee frontend-summary.txt >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sd-m0-frontend
+          path: |
+            bun-version.txt
+            lint.log
+            keyboard.log
+            playwright.log
+            playwright-results.json
+            frontend-summary.txt

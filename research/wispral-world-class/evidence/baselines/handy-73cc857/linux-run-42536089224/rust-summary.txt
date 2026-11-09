@@ -1,0 +1,1 @@
+CARGO_TEST_EXIT=0 passed=338 failed=0 ignored=18 measured=0 filtered_out=0
