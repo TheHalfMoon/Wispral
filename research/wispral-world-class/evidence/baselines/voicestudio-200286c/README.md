@@ -43,10 +43,10 @@ The packet requires "no model or runtime download: `HF_HUB_OFFLINE=1` and an egr
 
 | Run | Model-hub DNS names looked up during pytest | Outbound HTTPS that followed |
 | --- | --- | --- |
-| 42536251537 | `huggingface.co`, `us.aws.cdn.hf.co` (23:44:02 UTC) | TCP SYNs to `108.138.246.85:443` and `54.68.202.150:443` within 100 ms of the lookups |
-| 42538071852 | `huggingface.co`, `us.aws.cdn.hf.co` (00:12:33 UTC) | TCP SYNs to `52.84.217.103:443` (38 ms after the lookup) and `100.29.213.216:443` |
+| 42536251537 | `huggingface.co`, `us.aws.cdn.hf.co` (23:44:02 UTC) | TCP SYNs to `108.138.246.85:443` and `54.68.202.150:443`. Each is an address in the DNS answer for those names: `huggingface.co` (query id 34494) answered `108.138.246.85, …`. |
+| 42538071852 | `huggingface.co`, `us.aws.cdn.hf.co` (00:12:33 UTC) | TCP SYNs to `52.84.217.103:443` and `100.29.213.216:443`. Each is an address in the DNS answer for those names: `huggingface.co` (query id 54716) answered `52.84.217.103, …`. |
 
-- **Attribution is by timing.** The capture kept DNS queries and SYNs, not the DNS answers, and `pytest -n auto` runs in parallel, so the exact test is not yet identified.
+- **Attribution.** The capture includes the DNS answers, and each connection's destination is an address returned for a model-hub name. So these are connections to Hugging Face, not just timing coincidences. What is not identified is **which test** made them, because `pytest -n auto` runs in parallel. (An earlier draft of this file said the answers were not captured. That was wrong; the fresh-context review corrected it.)
 - **What it means for Wispral.** At least one VoiceStudio test path reaches Hugging Face even when the offline flag is set. This matches the comparison finding (ST-D00b) that WisprStudio needs a local-only mode that blocks all egress.
 - **Other non-loopback names** looked up during the tests:
   - `example.com`, `x`, `youtube.com` and `youtu.be`, consistent with tests of URL-ingest validation;
