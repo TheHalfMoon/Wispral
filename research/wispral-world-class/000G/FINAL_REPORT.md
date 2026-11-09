@@ -140,6 +140,8 @@ The package gives a provisional order for the next 000G review:
 
 ## 10. Exact next step to implementation
 
-**The founder records Wispral's outbound licence (Q-01).** That single decision opens the gate for the first-ranked 000G candidate, a pure non-STT contract Grain. It is the only candidate with no outstanding 000E dependency.
+> **Correction (2026-11-09).** The founder decided Q-01: Apache-2.0 (#146, `53d32b5`). The earlier text here said that this single decision would open the contract Grain. That was wrong, because `CORE-01` depends on `D0G`, and `D0G` depends on `SD-M0`, `ST-D00` and `KT-01` (`packets.json`).
+
+**Corrected next step:** run the remaining P1 research Grains, `SD-M0` and `ST-D00` on hosted Linux in the public forks, and their Windows halves and `KT-01` on HW-A with the founder's go-ahead. Then make the `D0G` decision with a qualifying review.
 
 In parallel, with the founder's go-ahead for HW-A, run `SD-M0`, `ST-D00` and `KT-01`. Then re-run 000G with a qualifying review, select exactly one Grain, and take it through readiness. Product code starts only after that.
