@@ -1,0 +1,2 @@
+$ eslint src
+LINT_EXIT=0

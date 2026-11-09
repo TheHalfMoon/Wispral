@@ -1,0 +1,17 @@
+EGRESS_DNS_NAMES=14
+EGRESS_TCP_SYN=1327
+EGRESS_MODEL_HUB_DNS=2
+DNS blob.bn9prdstrz04a.trafficmanager.net
+DNS example.com
+DNS glb-db52c2cf8be544.github.com
+DNS glb-p4a577-public-internal.githubapp.com
+DNS hosted-compute-request-orchestrator-prod-eus-02.githubapp.com
+DNS hosted-compute-watchdog-prod-eus-02.githubapp.com
+DNS huggingface.co
+DNS productionresultssa16.blob.core.windows.net
+DNS results-receiver.actions.githubusercontent.com
+DNS us.aws.cdn.hf.co
+DNS x
+DNS x.5qpg1mpogauulbzptw0lbvsmmg.dx.internal.cloudapp.net
+DNS youtu.be
+DNS youtube.com

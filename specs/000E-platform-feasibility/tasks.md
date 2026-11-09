@@ -4,8 +4,8 @@ This file tracks Grain progression. Pins, acceptance and evidence paths are in `
 
 ## Grains
 
-- [ ] `SD-M0`: WisprSide fork baseline. State `GRAIN`. Its packet dependencies are canonical: F at `b6c8507` and `CORE-00` at `81b2de6`. The founder's decision on the fork's location and visibility, required by the Platform frontier rules, is recorded below.
-- [ ] `ST-D00`: WisprStudio fork baseline with the fake `_echo` engine. State `GRAIN`. Its packet dependencies are canonical: F at `b6c8507` and `CORE-00` at `81b2de6`. The founder's decision on the fork's location and visibility, required by the Platform frontier rules, is recorded below.
+- [ ] `SD-M0`: WisprSide fork baseline. State `GRAIN`. Its packet dependencies are canonical: F at `b6c8507` and `CORE-00` at `81b2de6`. The founder's decision on the fork's location and visibility, required by the Platform frontier rules, is recorded below. **Linux half recorded** (run 42536089224: 338 passed / 0 failed / 18 ignored; lint, keyboard and Playwright 2/2 pass), in `research/wispral-world-class/evidence/baselines/handy-73cc857/`. The HW-A half is pending.
+- [ ] `ST-D00`: WisprStudio fork baseline with the fake `_echo` engine. State `GRAIN`. Its packet dependencies are canonical: F at `b6c8507` and `CORE-00` at `81b2de6`. The founder's decision on the fork's location and visibility, required by the Platform frontier rules, is recorded below. **Linux half recorded** (rerun 42538071852: 13,307 + 600 passed, 0 failed; Electron checks pass), in `research/wispral-world-class/evidence/baselines/voicestudio-200286c/`. **Finding:** model-hub egress despite `HF_HUB_OFFLINE=1`, reproduced in both runs; the zero-model-hub criterion fails on Linux. The HW-A half is pending.
 - [x] `ST-D00b`: static comparison of the two production donors. `VERIFIED`: merged as `5c2663f146ac7dcb04a0da1e13d0aeb1129afb64` (#142), with a post-merge reread on #142. VoiceStudio stays the lead (capability 10 vs 7; delta size 17 vs 21.5). Evidence: `research/wispral-world-class/evidence/baselines/studio-lead-comparison.md`.
 - [ ] `KT-01`: Klaint dialogue-engine spike with a fake LLM backend. State `GRAIN`. Needs `CORE-00`.
 

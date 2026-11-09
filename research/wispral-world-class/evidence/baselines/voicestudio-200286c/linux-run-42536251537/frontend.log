@@ -1,0 +1,808 @@
+TAP version 13
+# Subtest: old Node versions get actionable guidance
+ok 1 - old Node versions get actionable guidance
+  ---
+  duration_ms: 1.513064
+  type: 'test'
+  ...
+# Subtest: API setup rejects old Node before probing or syncing dependencies
+ok 2 - API setup rejects old Node before probing or syncing dependencies
+  ---
+  duration_ms: 0.466042
+  type: 'test'
+  ...
+# Subtest: installing lifecycle hooks check Node first
+ok 3 - installing lifecycle hooks check Node first
+  ---
+  duration_ms: 0.302908
+  type: 'test'
+  ...
+# Subtest: supported Node releases pass
+ok 4 - supported Node releases pass
+  ---
+  duration_ms: 0.242585
+  type: 'test'
+  ...
+# Subtest: predev rejects old Node before installing or setting up the backend
+ok 5 - predev rejects old Node before installing or setting up the backend
+  ---
+  duration_ms: 0.280145
+  type: 'test'
+  ...
+# Subtest: desktop commands exit cleanly before Electron or port cleanup
+ok 6 - desktop commands exit cleanly before Electron or port cleanup
+  ---
+  duration_ms: 195.15851
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 288.965529
+$ node --test tests/frontend/*.test.mjs
+TAP version 13
+# Subtest: apiUrl falls back to API root on empty input
+ok 1 - apiUrl falls back to API root on empty input
+  ---
+  duration_ms: 1.476976
+  type: 'test'
+  ...
+# Subtest: apiUrl prepends slash when missing
+ok 2 - apiUrl prepends slash when missing
+  ---
+  duration_ms: 0.273432
+  type: 'test'
+  ...
+# Subtest: apiUrl passes absolute URLs through untouched
+ok 3 - apiUrl passes absolute URLs through untouched
+  ---
+  duration_ms: 0.197039
+  type: 'test'
+  ...
+# Subtest: ApiError carries status + detail
+ok 4 - ApiError carries status + detail
+  ---
+  duration_ms: 1.080994
+  type: 'test'
+  ...
+# Subtest: apiFetch resolves on 2xx
+ok 5 - apiFetch resolves on 2xx
+  ---
+  duration_ms: 71.249309
+  type: 'test'
+  ...
+# Subtest: apiFetch throws ApiError with JSON detail on non-2xx
+ok 6 - apiFetch throws ApiError with JSON detail on non-2xx
+  ---
+  duration_ms: 3.752499
+  type: 'test'
+  ...
+# Subtest: apiJson parses 2xx body
+ok 7 - apiJson parses 2xx body
+  ---
+  duration_ms: 1.116832
+  type: 'test'
+  ...
+# Subtest: apiPost json body sets Content-Type + stringified body
+ok 8 - apiPost json body sets Content-Type + stringified body
+  ---
+  duration_ms: 1.262445
+  type: 'test'
+  ...
+# Subtest: apiPost passes FormData without stringify + no Content-Type override
+ok 9 - apiPost passes FormData without stringify + no Content-Type override
+  ---
+  duration_ms: 2.564974
+  type: 'test'
+  ...
+# Subtest: clamp
+ok 10 - clamp
+  ---
+  duration_ms: 1.167186
+  type: 'test'
+  ...
+# Subtest: encodeWav writes valid RIFF/WAVE header
+ok 11 - encodeWav writes valid RIFF/WAVE header
+  ---
+  duration_ms: 0.387837
+  type: 'test'
+  ...
+# Subtest: encodeWav clamps out-of-range samples
+ok 12 - encodeWav clamps out-of-range samples
+  ---
+  duration_ms: 0.205304
+  type: 'test'
+  ...
+# Subtest: computePeaksFromChannel produces min/max per bucket
+ok 13 - computePeaksFromChannel produces min/max per bucket
+  ---
+  duration_ms: 0.508763
+  type: 'test'
+  ...
+# Subtest: computePeaksFromChannel with empty bucket range stays 0/0
+ok 14 - computePeaksFromChannel with empty bucket range stays 0/0
+  ---
+  duration_ms: 0.249377
+  type: 'test'
+  ...
+# Subtest: pickTickInterval picks sane steps
+ok 15 - pickTickInterval picks sane steps
+  ---
+  duration_ms: 0.193964
+  type: 'test'
+  ...
+# Subtest: xToTime maps canvas x to time linearly
+ok 16 - xToTime maps canvas x to time linearly
+  ---
+  duration_ms: 0.211897
+  type: 'test'
+  ...
+# Subtest: pickHandle classifies near-edge vs inside vs outside
+ok 17 - pickHandle classifies near-edge vs inside vs outside
+  ---
+  duration_ms: 0.272431
+  type: 'test'
+  ...
+# Subtest: applyDrag start handle respects minGap
+ok 18 - applyDrag start handle respects minGap
+  ---
+  duration_ms: 0.515606
+  type: 'test'
+  ...
+# Subtest: applyDrag end handle respects minGap and duration
+ok 19 - applyDrag end handle respects minGap and duration
+  ---
+  duration_ms: 0.423202
+  type: 'test'
+  ...
+# Subtest: applyDrag region preserves length and clamps
+ok 20 - applyDrag region preserves length and clamps
+  ---
+  duration_ms: 0.240791
+  type: 'test'
+  ...
+# Subtest: applyDrag pan clamps within duration
+ok 21 - applyDrag pan clamps within duration
+  ---
+  duration_ms: 0.148418
+  type: 'test'
+  ...
+# Subtest: zoomAtCursor keeps anchor time under xFrac
+ok 22 - zoomAtCursor keeps anchor time under xFrac
+  ---
+  duration_ms: 0.145693
+  type: 'test'
+  ...
+# Subtest: zoomAtCursor clamps to duration
+ok 23 - zoomAtCursor clamps to duration
+  ---
+  duration_ms: 0.115185
+  type: 'test'
+  ...
+# Subtest: zoomCenter halves duration
+ok 24 - zoomCenter halves duration
+  ---
+  duration_ms: 0.130074
+  type: 'test'
+  ...
+# Subtest: sliceToMono mixes channels and slices sample window
+ok 25 - sliceToMono mixes channels and slices sample window
+  ---
+  duration_ms: 1.116682
+  type: 'test'
+  ...
+# Subtest: sliceToMono handles mono buffer
+ok 26 - sliceToMono handles mono buffer
+  ---
+  duration_ms: 0.985887
+  type: 'test'
+  ...
+# Subtest: applyDrag start cannot go below 0
+ok 27 - applyDrag start cannot go below 0
+  ---
+  duration_ms: 0.167173
+  type: 'test'
+  ...
+# Subtest: applyDrag new-selection drags rightward
+ok 28 - applyDrag new-selection drags rightward
+  ---
+  duration_ms: 0.152054
+  type: 'test'
+  ...
+# Subtest: applyDrag new-selection drags leftward and swaps
+ok 29 - applyDrag new-selection drags leftward and swaps
+  ---
+  duration_ms: 0.105117
+  type: 'test'
+  ...
+# Subtest: applyDrag new-selection collapsed respects minGap
+ok 30 - applyDrag new-selection collapsed respects minGap
+  ---
+  duration_ms: 0.099206
+  type: 'test'
+  ...
+# Subtest: applyDrag region length 0 (edge case)
+ok 31 - applyDrag region length 0 (edge case)
+  ---
+  duration_ms: 0.107411
+  type: 'test'
+  ...
+# Subtest: BootstrapSplash: the `logs` useState is declared before the derived const that reads it
+ok 32 - BootstrapSplash: the `logs` useState is declared before the derived const that reads it
+  ---
+  duration_ms: 1.602773
+  type: 'test'
+  ...
+# Subtest: an explicit build commit wins over CI and the checkout
+ok 33 - an explicit build commit wins over CI and the checkout
+  ---
+  duration_ms: 0.996787
+  type: 'test'
+  ...
+# Subtest: CI supplies the commit when nothing overrides it
+ok 34 - CI supplies the commit when nothing overrides it
+  ---
+  duration_ms: 0.204453
+  type: 'test'
+  ...
+# Subtest: a local checkout supplies it through git
+ok 35 - a local checkout supplies it through git
+  ---
+  duration_ms: 0.153708
+  type: 'test'
+  ...
+# Subtest: no git history reports unknown
+ok 36 - no git history reports unknown
+  ---
+  duration_ms: 0.148719
+  type: 'test'
+  ...
+# Subtest: values that are not commit ids are ignored, never copied into a report
+ok 37 - values that are not commit ids are ignored, never copied into a report
+  ---
+  duration_ms: 1.0887
+  type: 'test'
+  ...
+# Subtest: parses only requested Windows TCP listeners
+ok 38 - parses only requested Windows TCP listeners
+  ---
+  duration_ms: 2.48767
+  type: 'test'
+  ...
+# Subtest: parses only requested Linux listeners and deduplicates pids
+ok 39 - parses only requested Linux listeners and deduplicates pids
+  ---
+  duration_ms: 0.43256
+  type: 'test'
+  ...
+# Subtest: command ownership requires a checkout path boundary
+ok 40 - command ownership requires a checkout path boundary
+  ---
+  duration_ms: 0.622516
+  type: 'test'
+  ...
+# Subtest: permission and exit races make a process uninspectable
+ok 41 - permission and exit races make a process uninspectable
+  ---
+  duration_ms: 0.239579
+  type: 'test'
+  ...
+# Subtest: an already-exited Unix process counts as stopped
+ok 42 - an already-exited Unix process counts as stopped
+  ---
+  duration_ms: 0.547947
+  type: 'test'
+  ...
+# Subtest: refuses an unrelated listener without signalling it
+ok 43 - refuses an unrelated listener without signalling it
+  ---
+  duration_ms: 0.506779
+  type: 'test'
+  ...
+# Subtest: refuses Windows auto-stop when termination cannot bind to the inspected process
+ok 44 - refuses Windows auto-stop when termination cannot bind to the inspected process
+  ---
+  duration_ms: 0.271168
+  type: 'test'
+  ...
+# Subtest: never force-kills a recycled pid
+ok 45 - never force-kills a recycled pid
+  ---
+  duration_ms: 0.3952
+  type: 'test'
+  ...
+# Subtest: escalates only while ownership and identity remain stable
+ok 46 - escalates only while ownership and identity remain stable
+  ---
+  duration_ms: 0.69945
+  type: 'test'
+  ...
+# Subtest: does not force-kill when the platform cannot prove process identity precisely
+ok 47 - does not force-kill when the platform cannot prove process identity precisely
+  ---
+  duration_ms: 1.704143
+  type: 'test'
+  ...
+# Subtest: waits for the listener to disappear after force stop
+ok 48 - waits for the listener to disappear after force stop
+  ---
+  duration_ms: 0.495648
+  type: 'test'
+  ...
+# Subtest: Windows termination rechecks identity before terminating
+ok 49 - Windows termination rechecks identity before terminating
+  ---
+  duration_ms: 0.350527
+  type: 'test'
+  ...
+# Subtest: Windows termination ignores a recycled pid and surfaces failures
+ok 50 - Windows termination ignores a recycled pid and surfaces failures
+  ---
+  duration_ms: 0.24601
+  type: 'test'
+  ...
+# Subtest: POSIX ownership uses POSIX separators regardless of host
+ok 51 - POSIX ownership uses POSIX separators regardless of host
+  ---
+  duration_ms: 0.144812
+  type: 'test'
+  ...
+# Subtest: an app-managed backend is recognised as ours
+ok 52 - an app-managed backend is recognised as ours
+  ---
+  duration_ms: 0.153297
+  type: 'test'
+  ...
+# Subtest: an Electron-managed runtime backend is recognised as ours
+ok 53 - an Electron-managed runtime backend is recognised as ours
+  ---
+  duration_ms: 0.141054
+  type: 'test'
+  ...
+# Subtest: the bundle id match is case-insensitive
+ok 54 - the bundle id match is case-insensitive
+  ---
+  duration_ms: 0.107661
+  type: 'test'
+  ...
+# Subtest: a foreign process is still refused
+ok 55 - a foreign process is still refused
+  ---
+  duration_ms: 0.106229
+  type: 'test'
+  ...
+# Subtest: matched tokens are applied, unmatched categories reset to Auto
+ok 56 - matched tokens are applied, unmatched categories reset to Auto
+  ---
+  duration_ms: 1.915868
+  type: 'test'
+  ...
+# Subtest: every CATEGORIES key is always present (full vdStates shape)
+ok 57 - every CATEGORIES key is always present (full vdStates shape)
+  ---
+  duration_ms: 0.909404
+  type: 'test'
+  ...
+# Subtest: tokens not in the picker whitelist are dropped (backend drift guard)
+ok 58 - tokens not in the picker whitelist are dropped (backend drift guard)
+  ---
+  duration_ms: 0.325309
+  type: 'test'
+  ...
+# Subtest: retyping a description never leaks stale tokens (fresh object each time)
+ok 59 - retyping a description never leaks stale tokens (fresh object each time)
+  ---
+  duration_ms: 0.16587
+  type: 'test'
+  ...
+# Subtest: empty / missing attrs yields all-Auto
+ok 60 - empty / missing attrs yields all-Auto
+  ---
+  duration_ms: 0.254407
+  type: 'test'
+  ...
+# Subtest: \#983 — a partial vdStates shape (as restored from a saved profile or localStorage) is completed to all 6 CATEGORIES keys
+ok 61 - \#983 — a partial vdStates shape (as restored from a saved profile or localStorage) is completed to all 6 CATEGORIES keys
+  ---
+  duration_ms: 0.239729
+  type: 'test'
+  ...
+# Subtest: CPU/CUDA/ROCm restarts skip sync while preserving bind-host and port overrides
+ok 62 - CPU/CUDA/ROCm restarts skip sync while preserving bind-host and port overrides
+  ---
+  duration_ms: 2.355061
+  type: 'test'
+  ...
+# Subtest: uvicorn runs directly on loopback because the wrapper owns source reloads
+ok 63 - uvicorn runs directly on loopback because the wrapper owns source reloads
+  ---
+  duration_ms: 1.835849
+  type: 'test'
+  ...
+# Subtest: dev backend honours the backend bind host and port knobs
+ok 64 - dev backend honours the backend bind host and port knobs
+  ---
+  duration_ms: 0.490268
+  type: 'test'
+  ...
+# Subtest: only Python source changes trigger backend reloads
+ok 65 - only Python source changes trigger backend reloads
+  ---
+  duration_ms: 0.194775
+  type: 'test'
+  ...
+# Subtest: resolveDataDir mirrors backend/core/config.py::get_app_data_dir
+ok 66 - resolveDataDir mirrors backend/core/config.py::get_app_data_dir
+  ---
+  duration_ms: 0.37401
+  type: 'test'
+  ...
+# Subtest: tailFile returns the last N lines, and null for a missing file
+ok 67 - tailFile returns the last N lines, and null for a missing file
+  ---
+  duration_ms: 0.760003
+  type: 'test'
+  ...
+# Subtest: banner names the exit, embeds the log tail, and points at the crash notice
+ok 68 - banner names the exit, embeds the log tail, and points at the crash notice
+  ---
+  duration_ms: 0.425467
+  type: 'test'
+  ...
+# Subtest: banner flags OOM-kill shapes and adds the Linux journalctl hint
+ok 69 - banner flags OOM-kill shapes and adds the Linux journalctl hint
+  ---
+  duration_ms: 0.313527
+  type: 'test'
+  ...
+# Subtest: an unexpected backend death is restarted instead of tearing down dev
+ok 70 - an unexpected backend death is restarted instead of tearing down dev
+  ---
+  duration_ms: 1.342294
+  type: 'test'
+  ...
+# Subtest: Python edits reload the direct worker without counting as crashes
+ok 71 - Python edits reload the direct worker without counting as crashes
+  ---
+  duration_ms: 0.842729
+  type: 'test'
+  ...
+# Subtest: a crash racing a requested reload still uses crash recovery
+ok 72 - a crash racing a requested reload still uses crash recovery
+  ---
+  duration_ms: 0.497612
+  type: 'test'
+  ...
+# Subtest: the supervisor stops after three restarts inside the crash window
+ok 73 - the supervisor stops after three restarts inside the crash window
+  ---
+  duration_ms: 0.514674
+  type: 'test'
+  ...
+# Subtest: old crashes expire from the bounded restart window
+ok 74 - old crashes expire from the bounded restart window
+  ---
+  duration_ms: 0.513623
+  type: 'test'
+  ...
+# Subtest: a deliberate stop never restarts the backend
+ok 75 - a deliberate stop never restarts the backend
+  ---
+  duration_ms: 0.255789
+  type: 'test'
+  ...
+# Subtest: a source watcher failure tears down dev with a failing exit
+ok 76 - a source watcher failure tears down dev with a failing exit
+  ---
+  duration_ms: 0.292248
+  type: 'test'
+  ...
+# Subtest: failure to spawn uv exits immediately instead of looping
+ok 77 - failure to spawn uv exits immediately instead of looping
+  ---
+  duration_ms: 0.271348
+  type: 'test'
+  ...
+# Subtest: process tree shutdown chooses the platform-specific mechanism
+ok 78 - process tree shutdown chooses the platform-specific mechanism
+  ---
+  duration_ms: 0.299862
+  type: 'test'
+  ...
+# Subtest: an unavailable taskkill path delegates to ChildProcess.kill
+ok 79 - an unavailable taskkill path delegates to ChildProcess.kill
+  ---
+  duration_ms: 0.44252
+  type: 'test'
+  ...
+# Subtest: a nonzero taskkill reload exit starts a replacement without crash handling
+ok 80 - a nonzero taskkill reload exit starts a replacement without crash handling
+  ---
+  duration_ms: 0.263032
+  type: 'test'
+  ...
+# Subtest: formatTime seconds below a minute
+ok 81 - formatTime seconds below a minute
+  ---
+  duration_ms: 1.50002
+  type: 'test'
+  ...
+# Subtest: formatTime whole minutes
+ok 82 - formatTime whole minutes
+  ---
+  duration_ms: 0.231784
+  type: 'test'
+  ...
+# Subtest: formatTime mixed minutes + seconds
+ok 83 - formatTime mixed minutes + seconds
+  ---
+  duration_ms: 0.356238
+  type: 'test'
+  ...
+# Subtest: formatTime zero-pads single-digit seconds
+ok 84 - formatTime zero-pads single-digit seconds
+  ---
+  duration_ms: 1.599235
+  type: 'test'
+  ...
+# Subtest: formatTime fractional boundary
+ok 85 - formatTime fractional boundary
+  ---
+  duration_ms: 0.393407
+  type: 'test'
+  ...
+# Subtest: lock helper falls back to perl where /usr/bin/lockf is missing (macOS 14 and older)
+ok 86 - lock helper falls back to perl where /usr/bin/lockf is missing (macOS 14 and older)
+  ---
+  duration_ms: 1.291429
+  type: 'test'
+  ...
+# Subtest: leases stay held while open and are pruned once released
+ok 87 - leases stay held while open and are pruned once released # SKIP
+  ---
+  duration_ms: 0.166993
+  type: 'test'
+  ...
+# Subtest: Linux source setup repairs CTranslate2 before native imports, including custom venvs
+ok 88 - Linux source setup repairs CTranslate2 before native imports, including custom venvs
+  ---
+  duration_ms: 23.471395
+  type: 'test'
+  ...
+# Subtest: native source repair does not invoke Python outside Linux
+ok 89 - native source repair does not invoke Python outside Linux
+  ---
+  duration_ms: 0.30952
+  type: 'test'
+  ...
+# Subtest: native source repair surfaces missing or failed interpreter probes
+ok 90 - native source repair surfaces missing or failed interpreter probes
+  ---
+  duration_ms: 0.750757
+  type: 'test'
+  ...
+# Subtest: capture can read the local renderer, API and media metadata
+ok 91 - capture can read the local renderer, API and media metadata
+  ---
+  duration_ms: 1.394722
+  type: 'test'
+  ...
+# Subtest: capture cannot mutate through either API or non-API paths
+ok 92 - capture cannot mutate through either API or non-API paths
+  ---
+  duration_ms: 0.446286
+  type: 'test'
+  ...
+# Subtest: the stateless voice-description parser is the sole permitted POST
+ok 93 - the stateless voice-description parser is the sole permitted POST
+  ---
+  duration_ms: 0.252954
+  type: 'test'
+  ...
+# Subtest: remote access is limited to the existing public GitHub star lookup
+ok 94 - remote access is limited to the existing public GitHub star lookup
+  ---
+  duration_ms: 0.314139
+  type: 'test'
+  ...
+# Subtest: linux selects CPU before torch installation
+ok 95 - linux selects CPU before torch installation
+  ---
+  duration_ms: 1.859764
+  type: 'test'
+  ...
+# Subtest: linux selects CUDA before torch installation
+ok 96 - linux selects CUDA before torch installation
+  ---
+  duration_ms: 0.17072
+  type: 'test'
+  ...
+# Subtest: win32 selects CPU before torch installation
+ok 97 - win32 selects CPU before torch installation
+  ---
+  duration_ms: 0.160451
+  type: 'test'
+  ...
+# Subtest: win32 selects CUDA before torch installation
+ok 98 - win32 selects CUDA before torch installation
+  ---
+  duration_ms: 0.10645
+  type: 'test'
+  ...
+# Subtest: macOS preserves MPS-capable native wheels without querying NVIDIA
+ok 99 - macOS preserves MPS-capable native wheels without querying NVIDIA
+  ---
+  duration_ms: 0.164909
+  type: 'test'
+  ...
+# Subtest: honors explicit cpu without probing
+ok 100 - honors explicit cpu without probing
+  ---
+  duration_ms: 0.157044
+  type: 'test'
+  ...
+# Subtest: honors explicit cuda without probing
+ok 101 - honors explicit cuda without probing
+  ---
+  duration_ms: 0.14436
+  type: 'test'
+  ...
+# Subtest: honors explicit rocm without probing
+ok 102 - honors explicit rocm without probing
+  ---
+  duration_ms: 0.088746
+  type: 'test'
+  ...
+# Subtest: explicit compute CPU selects CPU wheels, with explicit wheel choice taking precedence
+ok 103 - explicit compute CPU selects CPU wheels, with explicit wheel choice taking precedence
+  ---
+  duration_ms: 0.949228
+  type: 'test'
+  ...
+# Subtest: source setup syncs the locked CPU graph and post-install cannot re-sync CUDA
+ok 104 - source setup syncs the locked CPU graph and post-install cannot re-sync CUDA
+  ---
+  duration_ms: 1.164311
+  type: 'test'
+  ...
+# Subtest: failed dependency sync never continues into setup or reports success
+ok 105 - failed dependency sync never continues into setup or reports success
+  ---
+  duration_ms: 0.650418
+  type: 'test'
+  ...
+# Subtest: an Intel Mac stops before syncing and names the remote-backend path (\#3584)
+ok 106 - an Intel Mac stops before syncing and names the remote-backend path (\#3584)
+  ---
+  duration_ms: 0.356248
+  type: 'test'
+  ...
+# Subtest: root dev prepares the API before launch
+ok 107 - root dev prepares the API before launch
+  ---
+  duration_ms: 0.604973
+  type: 'test'
+  ...
+# Subtest: root dev leaves external-backend and Intel Mac launches usable
+ok 108 - root dev leaves external-backend and Intel Mac launches usable
+  ---
+  duration_ms: 0.156954
+  type: 'test'
+  ...
+# Subtest: every backend restart preserves the chosen CPU environment
+ok 109 - every backend restart preserves the chosen CPU environment
+  ---
+  duration_ms: 0.484728
+  type: 'test'
+  ...
+# Subtest: darwin ARM64 keeps native wheels with auto
+ok 110 - darwin ARM64 keeps native wheels with auto
+  ---
+  duration_ms: 0.185307
+  type: 'test'
+  ...
+# Subtest: darwin ARM64 keeps native wheels with cpu
+ok 111 - darwin ARM64 keeps native wheels with cpu
+  ---
+  duration_ms: 0.097743
+  type: 'test'
+  ...
+# Subtest: darwin ARM64 keeps native wheels with cuda
+ok 112 - darwin ARM64 keeps native wheels with cuda
+  ---
+  duration_ms: 0.095979
+  type: 'test'
+  ...
+# Subtest: linux ARM64 keeps native wheels with auto
+ok 113 - linux ARM64 keeps native wheels with auto
+  ---
+  duration_ms: 0.1013
+  type: 'test'
+  ...
+# Subtest: linux ARM64 keeps native wheels with cpu
+ok 114 - linux ARM64 keeps native wheels with cpu
+  ---
+  duration_ms: 0.098014
+  type: 'test'
+  ...
+# Subtest: linux ARM64 keeps native wheels with cuda
+ok 115 - linux ARM64 keeps native wheels with cuda
+  ---
+  duration_ms: 0.092794
+  type: 'test'
+  ...
+# Subtest: Windows ROCm opt-in preserves the explicit recipe regardless of NVIDIA
+ok 116 - Windows ROCm opt-in preserves the explicit recipe regardless of NVIDIA
+  ---
+  duration_ms: 0.220533
+  type: 'test'
+  ...
+# Subtest: Windows ARM64 selects CPU wheels and an emulated x64 Python
+ok 117 - Windows ARM64 selects CPU wheels and an emulated x64 Python
+  ---
+  duration_ms: 0.334035
+  type: 'test'
+  ...
+# Subtest: native library repair failure stops before Python post-install
+ok 118 - native library repair failure stops before Python post-install
+  ---
+  duration_ms: 1.615647
+  type: 'test'
+  ...
+# Subtest: an installed NVIDIA driver preserves CUDA when nvidia-smi is not on PATH
+ok 119 - an installed NVIDIA driver preserves CUDA when nvidia-smi is not on PATH
+  ---
+  duration_ms: 0.363171
+  type: 'test'
+  ...
+# Subtest: NVIDIA probe errors and empty GPU lists fall back to CPU
+ok 120 - NVIDIA probe errors and empty GPU lists fall back to CPU
+  ---
+  duration_ms: 0.269936
+  type: 'test'
+  ...
+# Subtest: Windows x64 ROCm is explicit and never queries NVIDIA
+ok 121 - Windows x64 ROCm is explicit and never queries NVIDIA
+  ---
+  duration_ms: 1.647556
+  type: 'test'
+  ...
+# Subtest: Windows ARM64 refuses the native ROCm recipe before sync
+ok 122 - Windows ARM64 refuses the native ROCm recipe before sync
+  ---
+  duration_ms: 0.857095
+  type: 'test'
+  ...
+# Subtest: source ROCm sync protects the overlay and installs before native repair
+ok 123 - source ROCm sync protects the overlay and installs before native repair
+  ---
+  duration_ms: 9.578812
+  type: 'test'
+  ...
+# Subtest: a failed Windows overlay stops setup before native imports
+ok 124 - a failed Windows overlay stops setup before native imports
+  ---
+  duration_ms: 9.888342
+  type: 'test'
+  ...
+# Subtest: packaging carries the recipe and all shared native helpers
+ok 125 - packaging carries the recipe and all shared native helpers
+  ---
+  duration_ms: 88.005195
+  type: 'test'
+  ...
+1..125
+# tests 125
+# suites 0
+# pass 124
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 627.327453
+FRONTEND_EXIT=0

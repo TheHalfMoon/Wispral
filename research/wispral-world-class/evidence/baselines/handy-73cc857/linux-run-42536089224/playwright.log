@@ -1,0 +1,10 @@
+$ playwright test "--reporter=list,json"
+
+Running 2 tests using 1 worker
+
+[WebServer] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+  ✓  1 [chromium] › tests/app.spec.ts:4:3 › Handy App › dev server responds (1.6s)
+  ✓  2 [chromium] › tests/app.spec.ts:10:3 › Handy App › page has html structure (354ms)
+
+  2 passed (3.1s)
+PLAYWRIGHT_EXIT=0

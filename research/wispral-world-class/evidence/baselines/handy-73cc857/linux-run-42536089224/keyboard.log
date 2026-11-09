@@ -1,0 +1,3 @@
+$ bun src/lib/utils/keyboard.test.ts
+keyboard: all assertions passed
+KEYBOARD_EXIT=0

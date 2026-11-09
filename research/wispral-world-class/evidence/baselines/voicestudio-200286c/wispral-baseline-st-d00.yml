@@ -1,0 +1,140 @@
+# Wispral 000E research baseline ST-D00 (WisprStudio).
+#
+# Runs the donor's own suites unmodified at the pin debpalash/VoiceStudio@200286ccff6f28faaf51bb08b2a5b54c460b39f4.
+# Steps are copied from the donor's ci.yml jobs "Tests (Python)" and "Tests (Electron)", with the
+# donor's pinned action SHAs and tool versions. The changes are failure capture (recorded, not fixed)
+# and an egress log during the test steps (DNS queries and TCP SYNs), as packet ST-D00 requires:
+# HF_HUB_OFFLINE=1 and zero model-hub connections. Triggered only by a push to this branch.
+# The donor's own workflows are disabled in this fork.
+name: "wispral-baseline-st-d00"
+on:
+  push:
+    branches: [wispral/baseline-st-d00]
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  python:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    env:
+      UV_HTTP_TIMEOUT: "120"
+      UV_HTTP_RETRIES: "5"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.11"
+      - uses: astral-sh/setup-uv@caf0cab7a618c569241d31dcd442f54681755d39 # v3.2.4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: '1.4.2'
+      - name: System deps (ffmpeg, squashfs-tools, tcpdump)
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg squashfs-tools tcpdump
+      - name: Install Python deps (donor script)
+        run: bash scripts/uv-sync-retry.sh --all-extras
+      - name: Install Electron deps
+        run: bun install --frozen-lockfile
+      - name: Start egress capture (test steps only)
+        run: |
+          sudo nohup tcpdump -i any -nn -l -tttt '(udp port 53) or (tcp[tcpflags] & tcp-syn != 0 and tcp[tcpflags] & tcp-ack == 0)' > egress-python.txt 2>/dev/null &
+          sleep 2
+      - name: pytest tests/
+        run: |
+          set +e
+          uv run --no-sync pytest tests/ -q --tb=short -n auto 2>&1 | tee pytest-tests.log
+          echo "PYTEST_TESTS_EXIT=${PIPESTATUS[0]}" | tee -a pytest-tests.log
+          exit 0
+        env:
+          HF_HUB_OFFLINE: "1"
+      - name: pytest backend/tests/
+        run: |
+          set +e
+          uv run --no-sync pytest backend/tests/ -q --tb=short 2>&1 | tee pytest-backend.log
+          echo "PYTEST_BACKEND_EXIT=${PIPESTATUS[0]}" | tee -a pytest-backend.log
+          exit 0
+        env:
+          HF_HUB_OFFLINE: "1"
+      - name: Stop egress capture and summarize
+        if: always()
+        run: |
+          sleep 2; sudo pkill tcpdump || true; sleep 1
+          python3 - <<'PY'
+          import re
+          lines = open("egress-python.txt", errors="replace").read().splitlines()
+          dns = sorted({m.group(1).rstrip(".") for l in lines for m in [re.search(r" (?:A|AAAA)\? ([^ ]+) ", l)] if m})
+          syn = [l for l in lines if " Flags [S]" in l]
+          hub = [d for d in dns if re.search(r"(huggingface\.co|hf\.co|hf-mirror\.com)$", d)]
+          out = [f"EGRESS_DNS_NAMES={len(dns)}", f"EGRESS_TCP_SYN={len(syn)}", f"EGRESS_MODEL_HUB_DNS={len(hub)}"] + [f"DNS {d}" for d in dns]
+          open("egress-python-summary.txt", "w").write("\n".join(out) + "\n")
+          print("\n".join(out[:3]))
+          PY
+      - name: Summarize
+        if: always()
+        run: |
+          {
+            grep -h "_EXIT=" pytest-tests.log pytest-backend.log
+            tail -n 3 pytest-tests.log | grep -E "passed|failed|error" || true
+            tail -n 3 pytest-backend.log | grep -E "passed|failed|error" || true
+            head -3 egress-python-summary.txt
+          } | tee python-summary.txt >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: st-d00-python
+          path: |
+            pytest-tests.log
+            pytest-backend.log
+            egress-python.txt
+            egress-python-summary.txt
+            python-summary.txt
+
+  electron:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: '1.4.2'
+      - name: System deps (ffmpeg, squashfs-tools)
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg squashfs-tools
+      - name: Install Electron deps
+        run: bun install --frozen-lockfile
+      - name: bun run test (donor root script)
+        run: |
+          set +e
+          node --test electron/tests/node-version.test.mjs 2>&1 | tee frontend.log
+          bun run test:frontend 2>&1 | tee -a frontend.log
+          echo "FRONTEND_EXIT=${PIPESTATUS[0]}" | tee -a frontend.log
+          bun run test 2>&1 | tee bun-test.log
+          echo "BUN_TEST_EXIT=${PIPESTATUS[0]}" | tee -a bun-test.log
+          exit 0
+      - name: bun run check:electron
+        run: |
+          set +e
+          bun run check:electron 2>&1 | tee check-electron.log
+          echo "CHECK_ELECTRON_EXIT=${PIPESTATUS[0]}" | tee -a check-electron.log
+          exit 0
+      - name: Summarize
+        if: always()
+        run: grep -h "_EXIT=" frontend.log bun-test.log check-electron.log | tee electron-summary.txt >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: st-d00-electron
+          path: |
+            frontend.log
+            bun-test.log
+            check-electron.log
+            electron-summary.txt

@@ -1,0 +1,7 @@
+PYTEST_TESTS_EXIT=1
+PYTEST_BACKEND_EXIT=0
+2 failed, 13305 passed, 51 skipped, 8 xfailed, 1 xpassed, 680 warnings, 63 subtests passed in 481.80s (0:08:01)
+600 passed, 14 warnings in 45.01s
+EGRESS_DNS_NAMES=14
+EGRESS_TCP_SYN=1327
+EGRESS_MODEL_HUB_DNS=2
