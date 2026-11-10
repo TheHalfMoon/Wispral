@@ -29,7 +29,7 @@ The other items are recorded below.
 | --- | --- |
 | Schematic generation | Builds a minimal valid instance of the requested schema. Strings are `"fake-text"`; lists of strings get 10 items. |
 | Decision | Propositions get a scripted probability. A choice takes its first option; a scale takes its middle level. |
-| ReAct (reply and tool use) | Adapted from Parlant's own test fake `_FakeReactGenerator` (`tests/core/nlp/test_react.py`, Apache-2.0; the notice is kept in the file). It calls the scripted tool once if that tool is offered, otherwise it replies `FAKE_REPLY`. |
+| ReAct (reply and tool use) | Adapted from Parlant's own test fake `_FakeReactGenerator` (`tests/core/nlp/test_react.py`, Apache-2.0; the file keeps the attribution and states that it was adapted). It calls the scripted tool once if that tool is offered, otherwise it replies `FAKE_REPLY`. |
 | Embedding, moderation, tokenizer | A 64-dimension SHA-256 embedding, no moderation, a zero-count tokenizer |
 
 [`harness/fake_provider_v3.py`](harness/fake_provider_v3.py) is a `NLPService` with the same idea for v3.3.2.
@@ -47,7 +47,7 @@ Evidence is in `research/wispral-world-class/evidence/kt01-hwa/`, below shortene
 | Plugin tool server disabled; a loopback call with a forged `customer_id` has no effect and returns no data | **FAIL on v4 and on v3.3.2** | `final/security.log`, `earlier/v3run2.log` |
 | LLM calls per turn, p95 turn latency (fake backend **and** one pinned local CPU model) and idle RSS on HW-A | **Fake backend: measured. Local CPU model: NOT RUN** (no authorized model) | `final/perf.log` |
 | Decision v4 versus v3.3.2 recorded | Recorded below | this file |
-| Tests: ported `tests/core/stable/engines/test_hooks.py` and `tests/sdk/test_hook_results.py` | **9 of 9 pass on v4 with the fake.** Run unchanged through [`harness/kt01_port.py`](harness/kt01_port.py), which only installs the fake and switches `SDKTest`'s default model map from Gemini to `fake` | `final/ported.log` |
+| Tests: ported `tests/core/stable/engines/test_hooks.py` and `tests/sdk/test_hook_results.py` | **9 of 9 pass on v4 with the fake.** Eight are unit tests of hook-chain helpers and do not touch the model. One SDK test runs a turn on the fake. None exercises the three required hooks in a live turn; that is covered by the hook-order test above. Run unchanged through [`harness/kt01_port.py`](harness/kt01_port.py), which only installs the fake and switches `SDKTest`'s default model map from Gemini to `fake` | `final/ported.log` |
 
 ### Hook order (v4)
 
@@ -55,7 +55,9 @@ One turn in which the fake calls a tool (`lookup_order`, which ran) gave this ho
 
 `on_preparing`, `on_generating_messages`, `on_step_started`, **`on_reviewing_tool_calls`**, `on_tool_calls_reviewed`, **`on_calling_tools`**, `on_tool_calls_completed`, `on_step_completed`, `on_step_started`, **`on_message_generated`**, `on_step_completed`, `on_messages_emitted`.
 
-The three required hooks fire in the required order. The order of the others (for example `on_generating_messages` before the first step) is recorded as observed, without judgement.
+The three required hooks fire in the required order. The order of the others (for example `on_generating_messages` before the first step) is recorded as observed, without judgement. `on_reviewing_message` was registered but did not fire; no message reviewer ran in this turn.
+
+`test_kt01_hooks.py` prints the order and asserts nothing, so this result rests on the logged `HOOKS` line, not on the test's pass status.
 
 ### BAIL replacement (v4)
 
@@ -65,6 +67,8 @@ The test hook on `on_message_generated` records the draft, emits `SYNTHETIC_REPL
 | --- | --- | --- |
 | BLOCK | `FAKE_REPLY` | `SYNTHETIC_REPLACEMENT` |
 | STREAM (Parlant's default) | `FAKE_REPLY` | **`FAKE_REPLY`**: the original draft |
+
+The test reads the first agent message only. The v4 source agrees with the reading: the docstring of `_complete_message_step` in `base_loop.py` says a BAIL suppresses the message only in the blocking loop, and that in streaming the hook only observes.
 
 **Security consequence.** In streaming mode this hook cannot stop or replace a message. A Klaint message gate built on it must run the agent in BLOCK mode, or gate at a point that comes before streaming.
 
@@ -91,7 +95,7 @@ This used synthetic test-only secrets and two customers, alpha and beta, with `A
 | Beta's token does the same | 200, 200, 201 |
 | A token signed with the wrong secret reads beta's session | 401 |
 
-The HTTP API enforces principal isolation. The tool server above does not go through it.
+The test records these statuses but asserts none of them, so the results rest on the logged values. The HTTP API enforces principal isolation. The tool server above does not go through it.
 
 ### Performance (v4, fake backend)
 
@@ -103,6 +107,7 @@ This is 40 turns each, BLOCK mode, measured inside the test process, from [`fina
 | Tool turn | 548.6 ms | 576.7 ms | 583.5 ms | 1 decision, 2 embedding, 2 ReAct |
 
 - **Idle memory:** the working set of the test process, which also holds the server, was 194.3 MB after start-up and 207.6 MB after the 80 turns.
+- **Calls per turn follow the fake's script**: the scripted decision probability, and whether a tool is offered. A real model may produce a different pattern.
 - **What the latency measures.** The fake answers instantly, so these numbers are Parlant's own overhead plus the SDK test client's send-and-wait loop. They are not model latency. **They do not show how Klaint would perform with a real model.**
 - An earlier attempt crashed in the harness's own memory-reading code, before measuring anything ([`earlier/perf1.log`](../wispral-world-class/evidence/kt01-hwa/earlier/perf1.log)). The harness was fixed.
 
@@ -110,7 +115,7 @@ This is 40 turns each, BLOCK mode, measured inside the test process, from [`fina
 
 ### v3.3.2 checks
 
-- **Hooks.** v3.3.2's `EngineHooks` (`core/engines/alpha/hooks.py`) has no `on_reviewing_tool_calls` and no `on_calling_tools`; checked in the source. v4's `CompassHooks` has both, plus their `_result` forms.
+- **Hooks.** v3.3.2's `EngineHooks` (`core/engines/alpha/hooks.py`) has no `on_reviewing_tool_calls` and no `on_calling_tools`; checked in the source. v4's `CompassHooks` has both. Only `on_reviewing_tool_calls` also has a `_result` form (`call_on_reviewing_tool_calls_result`); `on_calling_tools` returns a boolean.
 - **Tool server.** It has the same forged-`customer_id` flaw (table above).
 - **One turn on the fake: not achieved.** The turn timed out (HTTP 504). The engine finished a canned-response draft, then emitted no message within 30 s ([`earlier/v3run2.log`](../wispral-world-class/evidence/kt01-hwa/earlier/v3run2.log)). This is taken to be a gap in the v3 fake, not shown to be a v3 defect. So **the v3 BAIL behaviour was not measured.**
 
@@ -135,6 +140,6 @@ KT-01 cannot be marked `VERIFIED` while acceptance item 3 fails and item 4 is NO
 | --- | --- |
 | [`harness/`](harness/) | Fake providers (v4 and v3), the KT-01 tests, the plugin that ports the upstream tests, and the final run script |
 | [`../wispral-world-class/evidence/kt01-hwa/final/`](../wispral-world-class/evidence/kt01-hwa/final/) | The final v4 run: ported upstream tests, smoke, hooks, security, performance, and a summary of exit codes |
-| [`../wispral-world-class/evidence/kt01-hwa/earlier/`](../wispral-world-class/evidence/kt01-hwa/earlier/) | The earlier runs on the first fake (empty strings), the v3 runs, the failed first performance attempt, and the failed first port |
+| [`../wispral-world-class/evidence/kt01-hwa/earlier/`](../wispral-world-class/evidence/kt01-hwa/earlier/) | The earlier runs on the first fake (empty strings), the failed first performance attempt, and the failed first port. Also the v3 runs: `v3run1.log`, where the server did not start because of a container duplicate-definition error in the first v3 fake (fixed by giving each schema its own generator class), and `v3run2.log`, the run the v3 results cite. |
 
-Local paths in the logs are replaced by `REDACTED_HOME`. The JWT secret and admin key in the tests are synthetic, test-only values.
+Local paths in the logs are replaced by `REDACTED_HOME`. Where a path was written in another form, the user name is replaced by `REDACTED_USER`. The JWT secret and admin key in the tests are synthetic, test-only values.
