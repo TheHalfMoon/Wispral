@@ -1,0 +1,25 @@
+RUN_START 2026-11-10T06:25:13.6991559+03:00
+start toolchain 2026-11-10T06:25:13.7977191+03:00
+end toolchain exit=0 seconds=6 2026-11-10T06:25:19.8504977+03:00
+start bun-install 2026-11-10T06:25:19.8755997+03:00
+end bun-install exit=0 seconds=75 2026-11-10T06:26:35.3357121+03:00
+start lint 2026-11-10T06:26:35.3421879+03:00
+end lint exit=0 seconds=10 2026-11-10T06:26:45.3254802+03:00
+start test-keyboard 2026-11-10T06:26:45.3471664+03:00
+end test-keyboard exit=0 seconds=0 2026-11-10T06:26:45.6376653+03:00
+start playwright 2026-11-10T06:26:45.6600698+03:00
+end playwright exit=1 seconds=3 2026-11-10T06:26:49.0211328+03:00
+start frontend-build 2026-11-10T06:26:49.0403649+03:00
+end frontend-build exit=0 seconds=46 2026-11-10T06:27:35.4413078+03:00
+start cargo-test 2026-11-10T06:27:35.4660408+03:00
+end cargo-test exit=0 seconds=1682 2026-11-10T06:55:37.3357781+03:00
+start cargo-build-debug 2026-11-10T06:55:37.3626639+03:00
+end cargo-build-debug exit=0 seconds=121 2026-11-10T06:57:37.9948540+03:00
+start cargo-build-release 2026-11-10T06:57:38.0214696+03:00
+end cargo-build-release exit=0 seconds=2219 2026-11-10T07:34:36.9928320+03:00
+start artifacts 2026-11-10T07:34:36.9992739+03:00
+end artifacts exit=0 seconds=3 2026-11-10T07:34:40.4719930+03:00
+ALL_DONE 2026-11-10T07:34:43.3851405+03:00
+PLAYWRIGHT_RERUN_DONE
+PLAYWRIGHT_RERUN2_DONE
+PLAYWRIGHT_RERUN2_DONE

@@ -1,0 +1,14 @@
+warning: handy@0.10.0: Generated tray translations: 26 languages, 20 fields
+warning: handy@0.10.0: Staged 13 transcribe-cpp runtime library file(s)
+   Compiling handy v0.10.0 (REDACTED_HOME\w\hs\src-tauri)
+warning: unused import: `Emitter`
+  --> src\secure_input.rs:23:24
+   |
+23 | use tauri::{AppHandle, Emitter, Manager};
+   |                        ^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `handy` (lib) generated 1 warning (run `cargo fix --lib -p handy` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2m 00s
+STEP_EXIT=0 SECONDS=121
