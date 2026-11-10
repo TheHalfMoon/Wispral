@@ -429,7 +429,7 @@ Packets kept coarse:
 These have a stated disposition instead:
 - **Merged or done (P0):** G1, C1, PLAN, A040, C2, R, NOOP, G2, F.
 - **VERIFIED:** CORE-00, ST-D00b.
-- **SD-M0:** VERIFYING, then VERIFIED through GP-11.
+- **SD-M0:** VERIFYING, then VERIFIED through GP-13.
 - **ST-D00:** BLOCKED, remediated by ST-D00r.
 - **KT-01:** BLOCKED, item 3 superseded by KT-01b.
 - **D0G:** amended, executed as D0G-1.
