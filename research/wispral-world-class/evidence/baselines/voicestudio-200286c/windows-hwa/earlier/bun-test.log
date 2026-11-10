@@ -1,0 +1,83 @@
+$ bun run --cwd electron test
+$ bun run locale:check && vp test --run && vp test --run --config vite.shared.config.ts
+$ node tests/locale-encoding.mjs && node tests/locale-source-keys.mjs && node tests/locale-coverage.mjs
+Locale encoding and interpolation: 22 files passed
+Locale source keys: 1936 static renderer keys exist in en.json
+{
+  "missingEntries": 0,
+  "byNamespace": {},
+  "orphans": {}
+}
+
+ RUN  v5.1.0 C:/Users/REDACTED_USER/w/vs/electron
+
+Not implemented: navigation to another Document
+Not implemented: navigation to another Document
+ ❯ src/renderer/src/features/settings/support-settings.test.tsx (2 tests | 2 failed) 13506ms
+   × opens only the explicit destination and applies selected amounts only to PayPal 6487ms
+   × keeps contact and Pro actions visible and lets the donor clear an amount 6989ms
+ ❯ src/renderer/src/features/settings/model-credits.test.tsx (2 tests | 2 failed) 12848ms
+   × shows required credits in About before models or diagnostics load (en) 7467ms
+   × shows required credits in About before models or diagnostics load (ja) 5357ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/renderer/src/features/settings/model-credits.test.tsx > shows required credits in About before models or diagnostics load (en)
+ FAIL  src/renderer/src/features/settings/model-credits.test.tsx > shows required credits in About before models or diagnostics load (ja)
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/renderer/src/features/settings/model-credits.test.tsx:17:22
+     15| afterEach(cleanup);
+     16|
+     17| it.each(['en', 'ja'])(
+       |                      ^
+     18|   'shows required credits in About before models or diagnostics load (…
+     19|   async (language) => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/renderer/src/features/settings/support-settings.test.tsx > opens only the explicit destination and applies selected amounts only to PayPal
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/renderer/src/features/settings/support-settings.test.tsx:22:1
+     20|   vi.clearAllMocks();
+     21| });
+     22| it('opens only the explicit destination and applies selected amounts o…
+       | ^
+     23|   render(<SupportSettings />);
+     24|   expect(mock.open).not.toHaveBeenCalled();
+ ❯ VitestModuleRunner.directRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1262:59
+ ❯ VitestModuleRunner.cachedRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1169:73
+ ❯ VitestModuleRunner.import ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1124:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/renderer/src/features/settings/support-settings.test.tsx > keeps contact and Pro actions visible and lets the donor clear an amount
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/renderer/src/features/settings/support-settings.test.tsx:55:1
+     53| });
+     54|
+     55| it('keeps contact and Pro actions visible and lets the donor clear an …
+       | ^
+     56|   render(<SupportSettings />);
+     57|   expect(screen.getByRole('button', { name: 'supportPlans.get_pro' }))…
+ ❯ VitestModuleRunner.directRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1262:59
+ ❯ VitestModuleRunner.cachedRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1169:73
+ ❯ VitestModuleRunner.import ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1124:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  2 failed | 393 passed (395)
+      Tests  4 failed | 2896 passed | 12 skipped (2912)
+   Start at  05:40:44
+   Duration  593.70s (environment 45%, setup 27%, import 16%, tests 9%, transform 3%, worker 1%)
+
+Environment  jsdom was created 395 times · 2740.79s total, 45% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+error: script "test" exited with code 1
+error: script "test" exited with code 1
+BUN_TEST_EXIT=1

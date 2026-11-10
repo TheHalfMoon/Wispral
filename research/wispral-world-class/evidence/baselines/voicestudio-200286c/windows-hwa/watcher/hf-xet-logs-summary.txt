@@ -1,0 +1,7 @@
+# Every line of every file in hf-xet-logs/, grouped by level and message with numbers replaced by N.
+# lines 496
+103 INFO python/N; huggingface_hub/N; hf_xet/N; , xet-core revision deN-modified
+103 INFO hf_xet logging configuredN
+98 INFO starting log cleanup in "C:\\Users\\REDACTED_USER\\AppData\\Local\\OmniVoice\\hf_cache\\xet\\logs" (
+96 INFO Log Directory Cleanup: found N of logs in N log files, with N in N files eligible for deletionN
+96 INFO Log Directory Cleanup: deleted N in N files

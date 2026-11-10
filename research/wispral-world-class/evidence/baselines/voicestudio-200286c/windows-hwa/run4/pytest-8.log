@@ -1,0 +1,263 @@
+bringing up nodes...
+bringing up nodes...
+
+........................................................................ [  5%]
+.................................s...................................... [ 10%]
+........................................................................ [ 15%]
+..................................F.............................EEE..EEE [ 21%]
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 7914)
+Traceback (most recent call last):
+  File "REDACTED_HOME\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "REDACTED_HOME\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "REDACTED_HOME\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "REDACTED_HOME\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\server.py", line 440, in handle
+    self.handle_one_request()
+  File "REDACTED_HOME\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\server.py", line 428, in handle_one_request
+    method()
+  File "REDACTED_HOME\w\vs\tests\test_download_range_contract.py", line 34, in do_GET
+    self.wfile.write(content[lo:hi + 1] if mode.startswith('valid') else b'X' * (hi - lo + 1))
+  File "REDACTED_HOME\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\socketserver.py", line 834, in write
+    self._sock.sendall(b)
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 7920)
+Traceback (most recent call last):
+  File "REDACTED_HOME\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\socketserver.py", line 691, in process_request_thread
+    self.finish_request(request, client_address)
+  File "REDACTED_HOME\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "REDACTED_HOME\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\socketserver.py", line 755, in __init__
+    self.handle()
+  File "REDACTED_HOME\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\server.py", line 440, in handle
+    self.handle_one_request()
+  File "REDACTED_HOME\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\server.py", line 428, in handle_one_request
+    method()
+  File "REDACTED_HOME\w\vs\tests\test_download_range_contract.py", line 34, in do_GET
+    self.wfile.write(content[lo:hi + 1] if mode.startswith('valid') else b'X' * (hi - lo + 1))
+  File "REDACTED_HOME\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\socketserver.py", line 834, in write
+    self._sock.sendall(b)
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+........................................................................ [ 26%]
+................................s.ss.F..ss.............................. [ 31%]
+........................................................................ [ 37%]
+..................................F....................s..ss.ss.ss.ss.ss [ 42%]
+s....................................................................... [ 47%]
+....................................u.u................................. [ 53%]
+........................................................................ [ 58%]
+........................................................................ [ 63%]
+........................................................................ [ 68%]
+s....................................................................... [ 74%]
+......................................................................s. [ 79%]
+s.ss.s.ss............................................................... [ 84%]
+........................................................................ [ 90%]
+.................................................................sssssss [ 95%]
+s.ss........................................................             [100%]
+=================================== ERRORS ====================================
+_ ERROR at setup of test_encrypted_archive_certificate_matches_team_and_has_fingerprint _
+[gw3] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_ios_archive_signing.py:23: in identity
+    subprocess.run(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "1",
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-days', '1', '-subj', '/CN=Apple Development: fixture/OU=ABCDEFGHIJ', '-keyout', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw3\\archive-identity0\\key.pem', '-out', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw3\\archive-identity0\\cert.pem']' returned non-zero exit status 1.
+_ ERROR at setup of test_wrong_team_or_password_is_rejected_before_keychain_import[KLMNOPQRST-fixture-password] _
+[gw3] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_ios_archive_signing.py:23: in identity
+    subprocess.run(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "1",
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-days', '1', '-subj', '/CN=Apple Development: fixture/OU=ABCDEFGHIJ', '-keyout', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw3\\archive-identity0\\key.pem', '-out', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw3\\archive-identity0\\cert.pem']' returned non-zero exit status 1.
+_ ERROR at setup of test_wrong_team_or_password_is_rejected_before_keychain_import[ABCDEFGHIJ-wrong-password] _
+[gw3] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_ios_archive_signing.py:23: in identity
+    subprocess.run(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "1",
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-days', '1', '-subj', '/CN=Apple Development: fixture/OU=ABCDEFGHIJ', '-keyout', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw3\\archive-identity0\\key.pem', '-out', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw3\\archive-identity0\\cert.pem']' returned non-zero exit status 1.
+_ ERROR at setup of test_wrong_team_or_password_is_rejected_before_keychain_import[-fixture-password] _
+[gw3] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_ios_archive_signing.py:23: in identity
+    subprocess.run(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "1",
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-days', '1', '-subj', '/CN=Apple Development: fixture/OU=ABCDEFGHIJ', '-keyout', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw3\\archive-identity0\\key.pem', '-out', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw3\\archive-identity0\\cert.pem']' returned non-zero exit status 1.
+_ ERROR at setup of test_install_and_cleanup_preserve_other_keychains_and_remove_decoded_identity[False] _
+[gw3] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_ios_archive_signing.py:23: in identity
+    subprocess.run(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "1",
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-days', '1', '-subj', '/CN=Apple Development: fixture/OU=ABCDEFGHIJ', '-keyout', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw3\\archive-identity0\\key.pem', '-out', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw3\\archive-identity0\\cert.pem']' returned non-zero exit status 1.
+_ ERROR at setup of test_install_and_cleanup_preserve_other_keychains_and_remove_decoded_identity[True] _
+[gw3] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_ios_archive_signing.py:23: in identity
+    subprocess.run(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "1",
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-days', '1', '-subj', '/CN=Apple Development: fixture/OU=ABCDEFGHIJ', '-keyout', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw3\\archive-identity0\\key.pem', '-out', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw3\\archive-identity0\\cert.pem']' returned non-zero exit status 1.
+================================== FAILURES ===================================
+________________ test_x86_cpu_build_is_portable[linux-x86_64] _________________
+[gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_gguf_portable_x86_runtime.py:63: in test_x86_cpu_build_is_portable
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: ├óΓÇáΓÇÖ Cloning omnivoice.cpp at aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa into /tmp/omnivoice-cpp-build.NIu51x
+E     Submodule path 'ggml': checked out '210138933b22221ced02943b7b6e4308610ab530'
+E     Cloning into 'C:/Users/REDACTED_USER/AppData/Local/Temp/omnivoice-cpp-build.NIu51x/src'...
+E     Submodule 'ggml' (https://github.com/ServeurpersoCom/ggml.git) registered for path 'ggml'
+E     Cloning into 'C:/Users/REDACTED_USER/AppData/Local/Temp/omnivoice-cpp-build.NIu51x/src/ggml'...
+E     fatal: unable to read tree (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)
+E     
+E   assert 128 == 0
+E    +  where 128 = CompletedProcess(args=['C:/Program Files/Git/bin/bash.exe', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw0\\test_x86_cpu_b...Temp/omnivoice-cpp-build.NIu51x/src/ggml'...\nfatal: unable to read tree (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)\n").returncode
+_______________ test_x86_cpu_build_is_portable[windows-x86_64] ________________
+[gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_gguf_portable_x86_runtime.py:63: in test_x86_cpu_build_is_portable
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: ├óΓÇáΓÇÖ Cloning omnivoice.cpp at aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa into /tmp/omnivoice-cpp-build.Jd35Rq
+E     Submodule path 'ggml': checked out '210138933b22221ced02943b7b6e4308610ab530'
+E     Cloning into 'C:/Users/REDACTED_USER/AppData/Local/Temp/omnivoice-cpp-build.Jd35Rq/src'...
+E     Submodule 'ggml' (https://github.com/ServeurpersoCom/ggml.git) registered for path 'ggml'
+E     Cloning into 'C:/Users/REDACTED_USER/AppData/Local/Temp/omnivoice-cpp-build.Jd35Rq/src/ggml'...
+E     fatal: unable to read tree (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)
+E     
+E   assert 128 == 0
+E    +  where 128 = CompletedProcess(args=['C:/Program Files/Git/bin/bash.exe', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw0\\test_x86_cpu_b...Temp/omnivoice-cpp-build.Jd35Rq/src/ggml'...\nfatal: unable to read tree (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)\n").returncode
+________________ test_x86_cpu_build_is_portable[darwin-x86_64] ________________
+[gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_gguf_portable_x86_runtime.py:63: in test_x86_cpu_build_is_portable
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: ├óΓÇáΓÇÖ Cloning omnivoice.cpp at aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa into /tmp/omnivoice-cpp-build.uguX4d
+E     Submodule path 'ggml': checked out '210138933b22221ced02943b7b6e4308610ab530'
+E     Cloning into 'C:/Users/REDACTED_USER/AppData/Local/Temp/omnivoice-cpp-build.uguX4d/src'...
+E     Submodule 'ggml' (https://github.com/ServeurpersoCom/ggml.git) registered for path 'ggml'
+E     Cloning into 'C:/Users/REDACTED_USER/AppData/Local/Temp/omnivoice-cpp-build.uguX4d/src/ggml'...
+E     fatal: unable to read tree (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)
+E     
+E   assert 128 == 0
+E    +  where 128 = CompletedProcess(args=['C:/Program Files/Git/bin/bash.exe', 'REDACTED_HOME\\w\\pt-run4-8\\popen-gw0\\test_x86_cpu_b...Temp/omnivoice-cpp-build.uguX4d/src/ggml'...\nfatal: unable to read tree (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)\n").returncode
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/backend/services/test_audio_io.py: 15 warnings
+tests/test_dub_complete_audio.py: 10 warnings
+tests/test_dub_duration_plan_api.py: 2 warnings
+tests/test_openai_sdk_contract.py: 15 warnings
+tests/test_pause_fill.py: 2 warnings
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:337: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.save_with_torchcodec` under the hood. Some parameters like format, encoding, bits_per_sample, buffer_size, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's encoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.encoders.AudioEncoder
+    warnings.warn(
+
+tests/test_dub_complete_audio.py: 8 warnings
+tests/test_dub_duration_plan_api.py: 2 warnings
+tests/test_clone_reference_resolution.py: 10 warnings
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+    warnings.warn(
+
+tests/test_chunked_tts.py::test_long_text_is_chunked_through_engine
+tests/test_pause_fill.py::test_room_tone_gets_its_own_audiobook_cache_slot
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+    WeightNorm.apply(module, name, dim)
+
+tests/test_clone_reference_resolution.py::test_catalogue_installed_whisper_without_a_main_ref_is_reused[4]
+tests/test_prompt_disk_cache.py::test_prompt_save_load_roundtrip
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
+    m = re.match('([su]([0-9]{1,2})p?) \(([0-9]{1,2}) bit\)$', token)
+
+tests/test_clone_reference_resolution.py::test_catalogue_installed_whisper_without_a_main_ref_is_reused[4]
+tests/test_prompt_disk_cache.py::test_prompt_save_load_roundtrip
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
+    m2 = re.match('([su]([0-9]{1,2})p?)( \(default\))?$', token)
+
+tests/test_clone_reference_resolution.py::test_catalogue_installed_whisper_without_a_main_ref_is_reused[4]
+tests/test_prompt_disk_cache.py::test_prompt_save_load_roundtrip
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
+    elif re.match('(flt)p?( \(default\))?$', token):
+
+tests/test_clone_reference_resolution.py::test_catalogue_installed_whisper_without_a_main_ref_is_reused[4]
+tests/test_prompt_disk_cache.py::test_prompt_save_load_roundtrip
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
+    elif re.match('(dbl)p?( \(default\))?$', token):
+
+tests/test_clone_reference_resolution.py::test_catalogue_installed_whisper_without_a_main_ref_is_reused[4]
+tests/test_prompt_disk_cache.py::test_prompt_save_load_roundtrip
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+    import audioop
+
+tests/test_clone_reference_resolution.py::test_installed_engine_transcript_needs_no_model_whisper
+tests/test_karaoke_ass.py::TestKaraokeBurnEndpoint::test_karaoke_burn_uses_ass_filter_and_ascii_temp
+tests/test_smart_fit_export.py::TestDownloadEndpointIntegration::test_export_apad_branch_video_longer_than_track
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+    import pkg_resources
+
+tests/test_clone_reference_resolution.py: 5 warnings
+tests/test_karaoke_ass.py: 5 warnings
+tests/test_smart_fit_export.py: 5 warnings
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
+  Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+    declare_namespace(pkg)
+
+tests/test_moss_tts_nano_subprocess.py: 21 warnings
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\transformers\models\gpt2\tokenization_gpt2.py:110: DeprecationWarning: Deprecated in 0.9.0: BPE.__init__ will not create from files anymore, try `BPE.from_file` instead
+    BPE(
+
+tests/test_openai_sdk_contract.py::test_transcription_errors_are_openai_shaped
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\openai\resources\audio\transcriptions.py:1095: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+    log.warn("Unexpected audio response format: %s", response_format)
+
+tests/test_tts_placement_self_heal.py::test_successful_transcribe_restores_exactly_once
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:182: DeprecationWarning: invalid escape sequence '\s'
+    sep="\s+",
+
+tests/test_tts_placement_self_heal.py::test_successful_transcribe_restores_exactly_once
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:216: DeprecationWarning: invalid escape sequence '\s'
+    sep="\s+",
+
+tests/test_tts_placement_self_heal.py::test_successful_transcribe_restores_exactly_once
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:253: DeprecationWarning: invalid escape sequence '\s'
+    sep="\s+",
+
+tests/test_tts_placement_self_heal.py::test_successful_transcribe_restores_exactly_once
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:284: DeprecationWarning: invalid escape sequence '\s'
+    data = pd.read_csv(file_uem, names=names, dtype=dtype, sep="\s+")
+
+tests/test_tts_placement_self_heal.py::test_successful_transcribe_restores_exactly_once
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:309: DeprecationWarning: invalid escape sequence '\s'
+    data = pd.read_csv(path, names=names, dtype=dtype, sep="\s+")
+
+tests/test_tts_placement_self_heal.py::test_successful_transcribe_restores_exactly_once
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:93: DeprecationWarning: invalid escape sequence '\s'
+    file_trial, sep="\s+", names=["reference", "uri1", "uri2"]
+
+tests/test_tts_placement_self_heal.py::test_successful_transcribe_restores_exactly_once
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:292: DeprecationWarning: invalid escape sequence '\s'
+    ctm, names=names, dtype=dtype, sep="\s+"
+
+tests/test_tts_placement_self_heal.py::test_successful_transcribe_restores_exactly_once
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:357: DeprecationWarning: invalid escape sequence '\s'
+    mapping, names=names, dtype=dtype, sep="\s+"
+
+tests/test_tts_placement_self_heal.py::test_successful_transcribe_restores_exactly_once
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\audio\core\io.py:212: UserWarning: torchaudio._backend.list_audio_backends has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+    torchaudio.list_audio_backends()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_gguf_portable_x86_runtime.py::test_x86_cpu_build_is_portable[linux-x86_64]
+FAILED tests/test_gguf_portable_x86_runtime.py::test_x86_cpu_build_is_portable[windows-x86_64]
+FAILED tests/test_gguf_portable_x86_runtime.py::test_x86_cpu_build_is_portable[darwin-x86_64]
+ERROR tests/test_ios_archive_signing.py::test_encrypted_archive_certificate_matches_team_and_has_fingerprint
+ERROR tests/test_ios_archive_signing.py::test_wrong_team_or_password_is_rejected_before_keychain_import[KLMNOPQRST-fixture-password]
+ERROR tests/test_ios_archive_signing.py::test_wrong_team_or_password_is_rejected_before_keychain_import[ABCDEFGHIJ-wrong-password]
+ERROR tests/test_ios_archive_signing.py::test_wrong_team_or_password_is_rejected_before_keychain_import[-fixture-password]
+ERROR tests/test_ios_archive_signing.py::test_install_and_cleanup_preserve_other_keychains_and_remove_decoded_identity[False]
+ERROR tests/test_ios_archive_signing.py::test_install_and_cleanup_preserve_other_keychains_and_remove_decoded_identity[True]
+3 failed, 1309 passed, 36 skipped, 129 warnings, 6 errors, 2 subtests passed in 399.19s (0:06:39)
+EXIT=1

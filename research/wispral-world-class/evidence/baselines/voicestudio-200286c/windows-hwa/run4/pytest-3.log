@@ -1,0 +1,288 @@
+bringing up nodes...
+bringing up nodes...
+
+........................................................................ [  3%]
+........................................................................ [  7%]
+........................................................................ [ 11%]
+........................................................................ [ 15%]
+........................................................................ [ 19%]
+...................................s.................................... [ 23%]
+........................................................................ [ 27%]
+........................................................................ [ 31%]
+........................................................................ [ 35%]
+........................................................................ [ 38%]
+........................................................................ [ 42%]
+........................................................................ [ 46%]
+........................................................................ [ 50%]
+........................................................................ [ 54%]
+........................................................................ [ 58%]
+...........s........................................................F... [ 62%]
+........................................................................ [ 66%]
+..........s.....................F.s..................................... [ 70%]
+........................................................................ [ 73%]
+....................FFF.....uu.......................................... [ 77%]
+........................................................................ [ 81%]
+...............F..........................F............................. [ 85%]
+......................................................E................. [ 89%]
+........................................................................ [ 93%]
+........................................................................ [ 97%]
+...................................................                      [100%]
+=================================== ERRORS ====================================
+____________________ ERROR at setup of test_engine_matrix _____________________
+[gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:924: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+tests\probe\conftest.py:61: in boot_capture
+    return env.capture_first_run(data_dir)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\probe\env.py:87: in capture_first_run
+    proc = subprocess.run(
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:550: in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:1209: in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:1630: in _communicate
+    raise TimeoutExpired(self.args, orig_timeout)
+E   subprocess.TimeoutExpired: Command '['REDACTED_HOME\\w\\vs\\.venv\\Scripts\\python.exe', 'REDACTED_HOME\\w\\vs\\tests\\probe\\_boot_runner.py', 'REDACTED_HOME\\AppData\\Local\\Temp\\probe-firstrun-ihwcfkox', 'REDACTED_HOME\\AppData\\Local\\Temp\\probe-capture-1linqjm1.json']' timed out after 180.0 seconds
+================================== FAILURES ===================================
+_______________ test_mobile_voice_design_traits_match_electron ________________
+[gw2] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_mobile_contract.py:460: in test_mobile_voice_design_traits_match_electron
+    locales = [json.loads(path.read_text()) for path in (ROOT / "electron/src/renderer/src/i18n/locales").glob("*.json")]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_mobile_contract.py:460: in <listcomp>
+    locales = [json.loads(path.read_text()) for path in (ROOT / "electron/src/renderer/src/i18n/locales").glob("*.json")]
+                          ^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x81 in position 47: character maps to <undefined>
+_________ test_cleanup_error_after_commit_does_not_stop_other_assets __________
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_profile_delete_regression.py:68: in test_cleanup_error_after_commit_does_not_stop_other_assets
+    assert str(root / "ref.wav") in caplog.text
+E   AssertionError: assert 'REDACTED_HOME\\w\\pt-run4-3\\popen-gw1\\test_cleanup_error_after_commi0\\ref.wav' in 'WARNING  omnivoice.profiles:profiles.py:1403 Deleted profile asset cleanup failed: ~\\w\\pt-run4-3\\popen-gw1\\test_cleanup_error_after_commi0\\ref.wav\n'
+E    +  where 'REDACTED_HOME\\w\\pt-run4-3\\popen-gw1\\test_cleanup_error_after_commi0\\ref.wav' = str((WindowsPath('C:/Users/REDACTED_USER/w/pt-run4-3/popen-gw1/test_cleanup_error_after_commi0') / 'ref.wav'))
+E    +  and   'WARNING  omnivoice.profiles:profiles.py:1403 Deleted profile asset cleanup failed: ~\\w\\pt-run4-3\\popen-gw1\\test_cleanup_error_after_commi0\\ref.wav\n' = <_pytest.logging.LogCaptureFixture object at 0x000001894C4C9910>.text
+------------------------------ Captured log call ------------------------------
+WARNING  omnivoice.profiles:profiles.py:1403 Deleted profile asset cleanup failed: ~\w\pt-run4-3\popen-gw1\test_cleanup_error_after_commi0\ref.wav
+______________________ test_launcher_never_resyncs[None] ______________________
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_setup_rocm_variant.py:140: in test_launcher_never_resyncs
+    res = subprocess.run(["node", "--input-type=module", "-e", code], cwd=REPO, env=env,
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['node', '--input-type=module', '-e', "import * as m from './scripts/dev-backend.mjs';console.log(JSON.stringify({run: m.uvRunArgs(process.env), base: m.uvicornArgs({})}));"]' returned non-zero exit status 134.
+______________________ test_launcher_never_resyncs[auto] ______________________
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_setup_rocm_variant.py:140: in test_launcher_never_resyncs
+    res = subprocess.run(["node", "--input-type=module", "-e", code], cwd=REPO, env=env,
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['node', '--input-type=module', '-e', "import * as m from './scripts/dev-backend.mjs';console.log(JSON.stringify({run: m.uvRunArgs(process.env), base: m.uvicornArgs({})}));"]' returned non-zero exit status 134.
+_____________________ test_launcher_never_resyncs[ ROCm ] _____________________
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_setup_rocm_variant.py:140: in test_launcher_never_resyncs
+    res = subprocess.run(["node", "--input-type=module", "-e", code], cwd=REPO, env=env,
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['node', '--input-type=module', '-e', "import * as m from './scripts/dev-backend.mjs';console.log(JSON.stringify({run: m.uvRunArgs(process.env), base: m.uvicornArgs({})}));"]' returned non-zero exit status 134.
+________________ test_brand_mark_is_shared_and_fills_the_icon _________________
+[gw2] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_voicestudio_branding.py:72: in test_brand_mark_is_shared_and_fills_the_icon
+    assert 'src="docs/logo.png"' in (ROOT / "README.md").read_text()
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x81 in position 1787: character maps to <undefined>
+_________________ test_visible_brand_surfaces_say_voicestudio _________________
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_voicestudio_branding.py:48: in test_visible_brand_surfaces_say_voicestudio
+    readme = (ROOT / "README.md").read_text()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x81 in position 1787: character maps to <undefined>
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv\Lib\site-packages\pydub\utils.py:300
+.venv\Lib\site-packages\pydub\utils.py:300
+.venv\Lib\site-packages\pydub\utils.py:300
+.venv\Lib\site-packages\pydub\utils.py:300
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
+    m = re.match('([su]([0-9]{1,2})p?) \(([0-9]{1,2}) bit\)$', token)
+
+.venv\Lib\site-packages\pydub\utils.py:301
+.venv\Lib\site-packages\pydub\utils.py:301
+.venv\Lib\site-packages\pydub\utils.py:301
+.venv\Lib\site-packages\pydub\utils.py:301
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
+    m2 = re.match('([su]([0-9]{1,2})p?)( \(default\))?$', token)
+
+.venv\Lib\site-packages\pydub\utils.py:310
+.venv\Lib\site-packages\pydub\utils.py:310
+.venv\Lib\site-packages\pydub\utils.py:310
+.venv\Lib\site-packages\pydub\utils.py:310
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
+    elif re.match('(flt)p?( \(default\))?$', token):
+
+.venv\Lib\site-packages\pydub\utils.py:314
+.venv\Lib\site-packages\pydub\utils.py:314
+.venv\Lib\site-packages\pydub\utils.py:314
+.venv\Lib\site-packages\pydub\utils.py:314
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
+    elif re.match('(dbl)p?( \(default\))?$', token):
+
+.venv\Lib\site-packages\pydub\utils.py:14
+.venv\Lib\site-packages\pydub\utils.py:14
+.venv\Lib\site-packages\pydub\utils.py:14
+.venv\Lib\site-packages\pydub\utils.py:14
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+    import audioop
+
+tests/test_dub_batch_engine_selection.py: 4 warnings
+tests/test_audiobook_cancel.py: 2 warnings
+tests/test_synthetic_audio_watermark_1169.py: 7 warnings
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:337: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.save_with_torchcodec` under the hood. Some parameters like format, encoding, bits_per_sample, buffer_size, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's encoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.encoders.AudioEncoder
+    warnings.warn(
+
+tests/test_dub_batch_engine_selection.py: 2 warnings
+tests/test_clone_long_reference.py: 13 warnings
+tests/test_omnivoice_reference_bound.py: 1 warning
+tests/test_synthetic_audio_watermark_1169.py: 8 warnings
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+    warnings.warn(
+
+tests/test_dub_batch_engine_selection.py::test_batch_unpinned_voice_succeeds_on_noncloning_engine
+tests/test_audiobook_cancel.py::test_disconnect_stops_early_and_preserves_resume
+tests/test_clone_long_reference.py::test_generate_long_upload_skips_whole_clip_asr
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+    WeightNorm.apply(module, name, dim)
+
+tests/test_clone_long_reference.py::test_long_reference_over_75s_is_not_windowed
+tests/backend/test_models_yaml_engines.py::test_engine_ids_in_models_yaml_exist
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+    import pkg_resources
+
+tests/test_clone_long_reference.py: 5 warnings
+tests/backend/test_models_yaml_engines.py: 5 warnings
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
+  Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+    declare_namespace(pkg)
+
+tests/test_mobile_contract.py::test_openapi_contract_matches_backend
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\fastapi\openapi\utils.py:252: UserWarning: Duplicate Operation ID dub_get_media_dub_media__job_id__get for function dub_get_media at REDACTED_HOME\w\vs\backend\api\routers\dub_export.py
+    warnings.warn(message, stacklevel=1)
+
+tests/test_mobile_contract.py::test_openapi_contract_matches_backend
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\fastapi\openapi\utils.py:252: UserWarning: Duplicate Operation ID dub_preview_video_dub_preview_video__job_id__get for function dub_preview_video at REDACTED_HOME\w\vs\backend\api\routers\dub_export.py
+    warnings.warn(message, stacklevel=1)
+
+tests/test_model_install_cancel.py::test_cancel_stops_an_in_flight_snapshot_download_and_cleans_up
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\huggingface_hub\utils\_validators.py:205: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `snapshot_download`. Downloading to a local directory does not use symlinks anymore.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[ar]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: ar.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['ar'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[de]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: de.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['de'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[es]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: es.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['es'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[fr]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: fr.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['fr'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[hi]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: hi.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['hi'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[id]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: id.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['id'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[it]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: it.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['it'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[ja]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: ja.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['ja'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[nl]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: nl.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['nl'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[pl]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: pl.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['pl'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[pt]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: pt.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['pt'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[ru]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: ru.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['ru'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[sv]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: sv.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['sv'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[th]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: th.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['th'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[tr]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: tr.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['tr'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[uk]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: uk.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['uk'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[vi]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: vi.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['vi'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+tests/test_locale_parity.py::test_missing_keys_ratchet[zh-TW]
+  REDACTED_HOME\w\vs\tests\test_locale_parity.py:234: UserWarning: zh-TW.json now misses only 460 keys (baseline 464) ΓÇö tighten _MISSING_BASELINE['zh-TW'] to 460 so the ratchet holds the gain.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_mobile_contract.py::test_mobile_voice_design_traits_match_electron
+FAILED tests/test_profile_delete_regression.py::test_cleanup_error_after_commit_does_not_stop_other_assets
+FAILED tests/test_setup_rocm_variant.py::test_launcher_never_resyncs[None] - ...
+FAILED tests/test_setup_rocm_variant.py::test_launcher_never_resyncs[auto] - ...
+FAILED tests/test_setup_rocm_variant.py::test_launcher_never_resyncs[ ROCm ]
+FAILED tests/test_voicestudio_branding.py::test_brand_mark_is_shared_and_fills_the_icon
+FAILED tests/test_voicestudio_branding.py::test_visible_brand_surfaces_say_voicestudio
+ERROR tests/probe/test_probe_engines.py::test_engine_matrix - subprocess.Time...
+7 failed, 1837 passed, 4 skipped, 97 warnings, 1 error, 2 subtests passed in 480.10s (0:08:00)
+EXIT=1

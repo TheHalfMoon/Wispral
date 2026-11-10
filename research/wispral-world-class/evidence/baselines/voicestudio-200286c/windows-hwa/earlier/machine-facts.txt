@@ -1,0 +1,8 @@
+# Machine facts captured 2026-11-10T06:33:55.6661526+03:00 for the ST-D00 Windows README.
+## where.exe bash (order on PATH for a process started from PowerShell)
+C:\Windows\System32\bash.exe
+C:\Users\REDACTED_USER\AppData\Local\Microsoft\WindowsApps\bash.exe
+## HKLM\SYSTEM\CurrentControlSet\Control\FileSystem LongPathsEnabled
+0
+## System log event 1074 (shutdown/restart initiated) between 2026-11-09 and 2026-11-11
+2026-11-10T03:28:20.5729795+03:00 The process C:\Windows\SystemApps\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\StartMenuExperienceHost.exe (REDACTED_HOST) has initiated the power off of computer REDACTED_HOST on behalf of user REDACTED_HOST\REDACTED_USER for the following reason: Other (Unplanned)

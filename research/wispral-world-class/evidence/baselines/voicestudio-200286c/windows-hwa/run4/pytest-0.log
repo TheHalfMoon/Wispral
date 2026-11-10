@@ -1,0 +1,137 @@
+bringing up nodes...
+bringing up nodes...
+
+...............F........................................................ [  4%]
+...........................s...s.sss.......ss........................... [  8%]
+...F...F....s........................................................... [ 12%]
+...........................................s............................ [ 17%]
+.......................................................uuu........uuuuuu [ 20%]
+uu....s...................s............................................. [ 25%]
+........................................................................ [ 29%]
+........................................................................ [ 33%]
+.........................................................s.............. [ 37%]
+........................................................................ [ 42%]
+........................................................................ [ 46%]
+........................................................................ [ 50%]
+........................................................................ [ 55%]
+........................................................................ [ 59%]
+........................................................................ [ 63%]
+........................................................................ [ 67%]
+........................................................................ [ 72%]
+........................................................................ [ 76%]
+........................................................................ [ 80%]
+........................................................................ [ 85%]
+........................................................................ [ 89%]
+........................................................................ [ 93%]
+........................................................................ [ 97%]
+....................................                                     [100%]
+================================== FAILURES ===================================
+___________________ test_home_relative_cache_survives_chdir ___________________
+[gw3] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+REDACTED_HOME\w\vs\tests\test_confucius4_sidecar.py:350: in test_home_relative_cache_survives_chdir
+    assert os.environ['XDG_CACHE_HOME'] == expected
+E   AssertionError: assert 'REDACTED_HOME\\xdg' == 'REDACTED_HOME/xdg'
+E     
+E     - REDACTED_HOME/xdg
+E     ?               ^
+E     + REDACTED_HOME\xdg
+E     ?               ^
+____________ test_store_build_rejects_model_supplied_python_source ____________
+[gw2] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_bundled_code_policy.py:41: in test_store_build_rejects_model_supplied_python_source
+    assert "BUNDLED_CODE_POLICY" in result.stderr
+E   assert 'BUNDLED_CODE_POLICY' in 'Traceback (most recent call last):\n  File "<string>", line 2, in <module>\n  File "/unbundled/model.py", line 1, in <module>\nAssertionError: executed\n'
+E    +  where 'Traceback (most recent call last):\n  File "<string>", line 2, in <module>\n  File "/unbundled/model.py", line 1, in <module>\nAssertionError: executed\n' = CompletedProcess(args=['REDACTED_HOME\\w\\vs\\.venv\\Scripts\\python.exe', '-I', '-c', 'import importlib.util,sys,c...  File "<string>", line 2, in <module>\n  File "/unbundled/model.py", line 1, in <module>\nAssertionError: executed\n').stderr
+____ test_store_build_rejects_package_installer_subprocess_before_it_runs _____
+[gw2] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_bundled_code_policy.py:55: in test_store_build_rejects_package_installer_subprocess_before_it_runs
+    assert "executable installation is store-managed" in result.stderr
+E   assert 'executable installation is store-managed' in 'Traceback (most recent call last):\n  File "<string>", line 2, in <module>\n  File "REDACTED_HOME\\AppData\\Roamin...^^^\n  File "<frozen os>", line 824, in fsdecode\nTypeError: expected str, bytes or os.PathLike object, not NoneType\n'
+E    +  where 'Traceback (most recent call last):\n  File "<string>", line 2, in <module>\n  File "REDACTED_HOME\\AppData\\Roamin...^^^\n  File "<frozen os>", line 824, in fsdecode\nTypeError: expected str, bytes or os.PathLike object, not NoneType\n' = CompletedProcess(args=['REDACTED_HOME\\w\\vs\\.venv\\Scripts\\python.exe', '-I', '-c', "import importlib.util,sys,c...^^\n  File "<frozen os>", line 824, in fsdecode\nTypeError: expected str, bytes or os.PathLike object, not NoneType\n').stderr
+============================== warnings summary ===============================
+.venv\Lib\site-packages\pydub\utils.py:300
+.venv\Lib\site-packages\pydub\utils.py:300
+.venv\Lib\site-packages\pydub\utils.py:300
+.venv\Lib\site-packages\pydub\utils.py:300
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
+    m = re.match('([su]([0-9]{1,2})p?) \(([0-9]{1,2}) bit\)$', token)
+
+.venv\Lib\site-packages\pydub\utils.py:301
+.venv\Lib\site-packages\pydub\utils.py:301
+.venv\Lib\site-packages\pydub\utils.py:301
+.venv\Lib\site-packages\pydub\utils.py:301
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
+    m2 = re.match('([su]([0-9]{1,2})p?)( \(default\))?$', token)
+
+.venv\Lib\site-packages\pydub\utils.py:310
+.venv\Lib\site-packages\pydub\utils.py:310
+.venv\Lib\site-packages\pydub\utils.py:310
+.venv\Lib\site-packages\pydub\utils.py:310
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
+    elif re.match('(flt)p?( \(default\))?$', token):
+
+.venv\Lib\site-packages\pydub\utils.py:314
+.venv\Lib\site-packages\pydub\utils.py:314
+.venv\Lib\site-packages\pydub\utils.py:314
+.venv\Lib\site-packages\pydub\utils.py:314
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
+    elif re.match('(dbl)p?( \(default\))?$', token):
+
+.venv\Lib\site-packages\pydub\utils.py:14
+.venv\Lib\site-packages\pydub\utils.py:14
+.venv\Lib\site-packages\pydub\utils.py:14
+.venv\Lib\site-packages\pydub\utils.py:14
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+    import audioop
+
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_dropped_audio_reaches_the_user_1330.py::test_the_generate_response_actually_carries_the_loss
+tests/test_lexicon_order_cache_2728.py::test_swapping_case_variant_precedence_rerenders
+tests/test_relock_cache_identity.py::test_relock_with_same_text_and_seed_re_keys_the_longform_cache
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+    WeightNorm.apply(module, name, dim)
+
+tests/test_lexicon_order_cache_2728.py: 2 warnings
+tests/test_dub_multispeaker_voice_486.py: 2 warnings
+tests/test_dub_voice_match.py: 8 warnings
+tests/test_relock_cache_identity.py: 2 warnings
+tests/test_n8n_workflow.py: 1 warning
+tests/test_text_normalization.py: 2 warnings
+tests/test_openai_speech_engine_cache.py: 1 warning
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:337: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.save_with_torchcodec` under the hood. Some parameters like format, encoding, bits_per_sample, buffer_size, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's encoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.encoders.AudioEncoder
+    warnings.warn(
+
+tests/test_dub_multispeaker_voice_486.py: 2 warnings
+tests/test_dub_voice_match.py: 8 warnings
+tests/test_relock_cache_identity.py: 1 warning
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+    warnings.warn(
+
+tests/test_profile_storage_recovery.py::test_upload_recreates_missing_voice_directory
+tests/test_translation_install_command.py::test_list_engines_emits_install_command
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+    import pkg_resources
+
+tests/test_profile_storage_recovery.py: 5 warnings
+tests/test_translation_install_command.py: 5 warnings
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
+  Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+    declare_namespace(pkg)
+
+tests/test_translation_install_command.py::test_list_engines_emits_install_command
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\stanza\models\constituency\parse_transitions.py:322: DeprecationWarning: invalid escape sequence '\T'
+    return "\Tree [.%s ? ]" % self.label
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_confucius4_sidecar.py::test_home_relative_cache_survives_chdir
+FAILED tests/test_bundled_code_policy.py::test_store_build_rejects_model_supplied_python_source
+FAILED tests/test_bundled_code_policy.py::test_store_build_rejects_package_installer_subprocess_before_it_runs
+3 failed, 1666 passed, 12 skipped, 69 warnings, 11 subtests passed in 701.41s (0:11:41)
+EXIT=1

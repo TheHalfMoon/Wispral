@@ -1,0 +1,384 @@
+bringing up nodes...
+bringing up nodes...
+
+.........................................................s.............. [  5%]
+.............................F.......................................... [ 10%]
+........................................................................ [ 16%]
+......................................................................ss [ 21%]
+ss....................................s................................. [ 27%]
+.......s..........sss................F........F...............FFF.F..... [ 32%]
+......F...FF............................................................ [ 38%]
+........................................................................ [ 43%]
+........................................................................ [ 49%]
+...............................FF....................................... [ 54%]
+........................................................................ [ 60%]
+........................................................................ [ 65%]
+........................................................................ [ 71%]
+........................................................................ [ 76%]
+...........................................................FF........... [ 82%]
+...s.....ss....uuuuuu.uuuuuu............................................ [ 86%]
+.............sss.s...................................................... [ 92%]
+........................................................................ [ 97%]
+.s...............................                                        [100%]
+================================== FAILURES ===================================
+___________ test_concurrent_snapshots_cannot_share_a_recovery_slot ____________
+[gw3] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_db_backup_concurrent_slots.py:32: in test_concurrent_snapshots_cannot_share_a_recovery_slot
+    assert not list(tmp_path.glob('*.reserve'))
+E   AssertionError: assert not [WindowsPath('C:/Users/REDACTED_USER/w/pt-run4-9/popen-gw3/test_concurrent_snapshots_cann0/voices.db.backup-1.0-2.reserve')]
+E    +  where [WindowsPath('C:/Users/REDACTED_USER/w/pt-run4-9/popen-gw3/test_concurrent_snapshots_cann0/voices.db.backup-1.0-2.reserve')] = list(<generator object Path.glob at 0x000001B397AB2BD0>)
+E    +    where <generator object Path.glob at 0x000001B397AB2BD0> = glob('*.reserve')
+E    +      where glob = WindowsPath('C:/Users/REDACTED_USER/w/pt-run4-9/popen-gw3/test_concurrent_snapshots_cann0').glob
+_ test_release_downloads_legacy_feeds_only_from_final_tauri_tag[v0.5.3-True] __
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_electron_transition.py:171: in test_release_downloads_legacy_feeds_only_from_final_tauri_tag
+    assert (result.returncode == 0) == allowed
+E   assert (1 == 0) == True
+E    +  where 1 = CompletedProcess(args=['bash', '-e', '-c', 'test "$SUNSET_TAG" = "v0.5.3" || { echo "TAURI_SUNSET_TAG must be v0.5.3 b...-repo "$GITHUB_REPOSITORY"\n'], returncode=1, stdout=b'TAURI_SUNSET_TAG must be v0.5.3 before releasing\n', stderr=b'').returncode
+_______ test_packaging_omits_empty_signing_credentials[credentials0-|] ________
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_electron_transition.py:273: in test_packaging_omits_empty_signing_credentials
+    subprocess.run(['bash', '-e', '-c', script], cwd=ROOT / 'electron', env=env, check=True)
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['bash', '-e', '-c', 'if [ "darwin" = darwin ] && [ "$PUBLISH" = true ] && [ "$ALLOW_UNSIGNED" != true ]; then\n  if [ -z "${CSC_LINK:-}" ] || [ -z "${CSC_KEY_PASSWORD:-}" ] || [ -z "${APPLE_API_KEY:-}" ] || [ -z "${APPLE_API_KEY_ID:-}" ] || [ -z "${APPLE_API_ISSUER:-}" ]; then\n    echo "Signed macOS publication requires Developer ID and Apple notarization credentials"; exit 1\n  fi\nfi\nmac_notarization_args=()\nif [ "darwin" = darwin ]; then\n  source "$RUNNER_TEMP/prepare-apple-notarization.sh"\nfi\n# An empty CSC_LINK is interpreted as the working directory by the\n# signer. Omit absent credentials rather than passing empty strings.\nif [ -z "${CSC_LINK:-}" ]; then\n  unset CSC_LINK CSC_KEY_PASSWORD\nelif [ "darwin" = darwin ]; then\n  # With discovery off and no identity name, electron-builder never looks in\n  # the keychain it imported CSC_LINK into and skips signing (v0.5.7-beta.1).\n  # Discovery is limited to that imported keychain, not the runner\'s.\n  export CSC_IDENTITY_AUTO_DISCOVERY=true\nfi\n# Apple\'s ticket server can drop the staple lookup after notarization\n# succeeded (error 68, v0.5.7-beta.2); only that failure builds again.\nset -o pipefail\nattempt=1\nuntil bun x electron-builder --config electron-builder.config.mjs --mac --arm64 "${mac_notarization_args[@]}" --publish never 2>&1 | tee "$RUNNER_TEMP/electron-builder.log"; do\n  if [ "$attempt" -ge 2 ] || ! grep -q "Failed to staple" "$RUNNER_TEMP/electron-builder.log"; then exit 1; fi\n  attempt=$((attempt + 1))\n  echo "::warning::Stapling the notarization ticket failed; building again"\ndone\nif [ "$RUNNER_OS" = Linux ]; then\n  node scripts/embed-appimage-update.mjs\nfi\nnode tests/packaging-contract.mjs --artifact\nnode tests/update-package-contract.mjs --platform darwin --arch arm64\nnode ../scripts/create_store_artifact_manifest.mjs --platform=darwin --arch=arm64\n']' returned non-zero exit status 1.
+---------------------------- Captured stderr call -----------------------------
+/bin/bash: line 8: /prepare-apple-notarization.sh: No such file or directory
+_______ test_packaging_omits_empty_signing_credentials[credentials1-|] ________
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_electron_transition.py:273: in test_packaging_omits_empty_signing_credentials
+    subprocess.run(['bash', '-e', '-c', script], cwd=ROOT / 'electron', env=env, check=True)
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['bash', '-e', '-c', 'if [ "darwin" = darwin ] && [ "$PUBLISH" = true ] && [ "$ALLOW_UNSIGNED" != true ]; then\n  if [ -z "${CSC_LINK:-}" ] || [ -z "${CSC_KEY_PASSWORD:-}" ] || [ -z "${APPLE_API_KEY:-}" ] || [ -z "${APPLE_API_KEY_ID:-}" ] || [ -z "${APPLE_API_ISSUER:-}" ]; then\n    echo "Signed macOS publication requires Developer ID and Apple notarization credentials"; exit 1\n  fi\nfi\nmac_notarization_args=()\nif [ "darwin" = darwin ]; then\n  source "$RUNNER_TEMP/prepare-apple-notarization.sh"\nfi\n# An empty CSC_LINK is interpreted as the working directory by the\n# signer. Omit absent credentials rather than passing empty strings.\nif [ -z "${CSC_LINK:-}" ]; then\n  unset CSC_LINK CSC_KEY_PASSWORD\nelif [ "darwin" = darwin ]; then\n  # With discovery off and no identity name, electron-builder never looks in\n  # the keychain it imported CSC_LINK into and skips signing (v0.5.7-beta.1).\n  # Discovery is limited to that imported keychain, not the runner\'s.\n  export CSC_IDENTITY_AUTO_DISCOVERY=true\nfi\n# Apple\'s ticket server can drop the staple lookup after notarization\n# succeeded (error 68, v0.5.7-beta.2); only that failure builds again.\nset -o pipefail\nattempt=1\nuntil bun x electron-builder --config electron-builder.config.mjs --mac --arm64 "${mac_notarization_args[@]}" --publish never 2>&1 | tee "$RUNNER_TEMP/electron-builder.log"; do\n  if [ "$attempt" -ge 2 ] || ! grep -q "Failed to staple" "$RUNNER_TEMP/electron-builder.log"; then exit 1; fi\n  attempt=$((attempt + 1))\n  echo "::warning::Stapling the notarization ticket failed; building again"\ndone\nif [ "$RUNNER_OS" = Linux ]; then\n  node scripts/embed-appimage-update.mjs\nfi\nnode tests/packaging-contract.mjs --artifact\nnode tests/update-package-contract.mjs --platform darwin --arch arm64\nnode ../scripts/create_store_artifact_manifest.mjs --platform=darwin --arch=arm64\n']' returned non-zero exit status 1.
+---------------------------- Captured stderr call -----------------------------
+/bin/bash: line 8: /prepare-apple-notarization.sh: No such file or directory
+______ test_packaging_omits_empty_signing_credentials[credentials2-x|x] _______
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_electron_transition.py:273: in test_packaging_omits_empty_signing_credentials
+    subprocess.run(['bash', '-e', '-c', script], cwd=ROOT / 'electron', env=env, check=True)
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['bash', '-e', '-c', 'if [ "darwin" = darwin ] && [ "$PUBLISH" = true ] && [ "$ALLOW_UNSIGNED" != true ]; then\n  if [ -z "${CSC_LINK:-}" ] || [ -z "${CSC_KEY_PASSWORD:-}" ] || [ -z "${APPLE_API_KEY:-}" ] || [ -z "${APPLE_API_KEY_ID:-}" ] || [ -z "${APPLE_API_ISSUER:-}" ]; then\n    echo "Signed macOS publication requires Developer ID and Apple notarization credentials"; exit 1\n  fi\nfi\nmac_notarization_args=()\nif [ "darwin" = darwin ]; then\n  source "$RUNNER_TEMP/prepare-apple-notarization.sh"\nfi\n# An empty CSC_LINK is interpreted as the working directory by the\n# signer. Omit absent credentials rather than passing empty strings.\nif [ -z "${CSC_LINK:-}" ]; then\n  unset CSC_LINK CSC_KEY_PASSWORD\nelif [ "darwin" = darwin ]; then\n  # With discovery off and no identity name, electron-builder never looks in\n  # the keychain it imported CSC_LINK into and skips signing (v0.5.7-beta.1).\n  # Discovery is limited to that imported keychain, not the runner\'s.\n  export CSC_IDENTITY_AUTO_DISCOVERY=true\nfi\n# Apple\'s ticket server can drop the staple lookup after notarization\n# succeeded (error 68, v0.5.7-beta.2); only that failure builds again.\nset -o pipefail\nattempt=1\nuntil bun x electron-builder --config electron-builder.config.mjs --mac --arm64 "${mac_notarization_args[@]}" --publish never 2>&1 | tee "$RUNNER_TEMP/electron-builder.log"; do\n  if [ "$attempt" -ge 2 ] || ! grep -q "Failed to staple" "$RUNNER_TEMP/electron-builder.log"; then exit 1; fi\n  attempt=$((attempt + 1))\n  echo "::warning::Stapling the notarization ticket failed; building again"\ndone\nif [ "$RUNNER_OS" = Linux ]; then\n  node scripts/embed-appimage-update.mjs\nfi\nnode tests/packaging-contract.mjs --artifact\nnode tests/update-package-contract.mjs --platform darwin --arch arm64\nnode ../scripts/create_store_artifact_manifest.mjs --platform=darwin --arch=arm64\n']' returned non-zero exit status 1.
+---------------------------- Captured stderr call -----------------------------
+/bin/bash: line 8: /prepare-apple-notarization.sh: No such file or directory
+_ test_release_tag_override_preserves_exact_tag_checkout[refs/heads/main-v1.2.3-refs/tags/v1.2.3-True-True] _
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_electron_transition.py:302: in test_release_tag_override_preserves_exact_tag_checkout
+    assert (result.returncode == 0) == ok, result.stderr
+E   AssertionError: b'/bin/bash: -c: line 17: syntax error near unexpected token `(\' while looking for matching `)\'
+E     /bin/bash: -c: line 17: `VERSION=$(node -p \\"require(\'./package.json\').version\\")\'
+E     '
+E   assert (127 == 0) == True
+E    +  where 127 = CompletedProcess(args=['bash', '-e', '-c', 'may_publish_unsigned() {\n  [ -n "$1" ] || return 1\n  [ "$1" = "$OWNER" ]... looking for matching `)\'\n/bin/bash: -c: line 17: `VERSION=$(node -p \\"require(\'./package.json\').version\\")\'\n').returncode
+_ test_release_tag_override_preserves_exact_tag_checkout[refs/tags/v1.2.3--refs/tags/v1.2.3-True-True] _
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_electron_transition.py:302: in test_release_tag_override_preserves_exact_tag_checkout
+    assert (result.returncode == 0) == ok, result.stderr
+E   AssertionError: b'/bin/bash: -c: line 17: syntax error near unexpected token `(\' while looking for matching `)\'
+E     /bin/bash: -c: line 17: `VERSION=$(node -p \\"require(\'./package.json\').version\\")\'
+E     '
+E   assert (127 == 0) == True
+E    +  where 127 = CompletedProcess(args=['bash', '-e', '-c', 'may_publish_unsigned() {\n  [ -n "$1" ] || return 1\n  [ "$1" = "$OWNER" ]... looking for matching `)\'\n/bin/bash: -c: line 17: `VERSION=$(node -p \\"require(\'./package.json\').version\\")\'\n').returncode
+__ test_unsigned_publish_needs_owner_or_listed_publisher[-owner-owner-True] ___
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_electron_transition.py:330: in test_unsigned_publish_needs_owner_or_listed_publisher
+    assert (result.returncode == 0) == ok, result.stderr
+E   AssertionError: b'/bin/bash: -c: line 17: syntax error near unexpected token `(\' while looking for matching `)\'
+E     /bin/bash: -c: line 17: `VERSION=$(node -p \\"require(\'./package.json\').version\\")\'
+E     '
+E   assert (127 == 0) == True
+E    +  where 127 = CompletedProcess(args=['bash', '-e', '-c', 'may_publish_unsigned() {\n  [ -n "$1" ] || return 1\n  [ "$1" = "$OWNER" ]... looking for matching `)\'\n/bin/bash: -c: line 17: `VERSION=$(node -p \\"require(\'./package.json\').version\\")\'\n').returncode
+_ test_unsigned_publish_needs_owner_or_listed_publisher[maintainer-maintainer-maintainer-True] _
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_electron_transition.py:330: in test_unsigned_publish_needs_owner_or_listed_publisher
+    assert (result.returncode == 0) == ok, result.stderr
+E   AssertionError: b'/bin/bash: -c: line 17: syntax error near unexpected token `(\' while looking for matching `)\'
+E     /bin/bash: -c: line 17: `VERSION=$(node -p \\"require(\'./package.json\').version\\")\'
+E     '
+E   assert (127 == 0) == True
+E    +  where 127 = CompletedProcess(args=['bash', '-e', '-c', 'may_publish_unsigned() {\n  [ -n "$1" ] || return 1\n  [ "$1" = "$OWNER" ]... looking for matching `)\'\n/bin/bash: -c: line 17: `VERSION=$(node -p \\"require(\'./package.json\').version\\")\'\n').returncode
+_ test_unsigned_publish_needs_owner_or_listed_publisher[ other , maintainer -maintainer-maintainer-True] _
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_electron_transition.py:330: in test_unsigned_publish_needs_owner_or_listed_publisher
+    assert (result.returncode == 0) == ok, result.stderr
+E   AssertionError: b'/bin/bash: -c: line 17: syntax error near unexpected token `(\' while looking for matching `)\'
+E     /bin/bash: -c: line 17: `VERSION=$(node -p \\"require(\'./package.json\').version\\")\'
+E     '
+E   assert (127 == 0) == True
+E    +  where 127 = CompletedProcess(args=['bash', '-e', '-c', 'may_publish_unsigned() {\n  [ -n "$1" ] || return 1\n  [ "$1" = "$OWNER" ]... looking for matching `)\'\n/bin/bash: -c: line 17: `VERSION=$(node -p \\"require(\'./package.json\').version\\")\'\n').returncode
+____________ test_bare_windows_missing_process_error_is_actionable ____________
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_generation_audio_guard.py:125: in test_bare_windows_missing_process_error_is_actionable
+    err = _missing_media_process_error()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_generation_audio_guard.py:32: in _missing_media_process_error
+    raise AssertionError("missing ffmpeg unexpectedly launched")
+E   AssertionError: missing ffmpeg unexpectedly launched
+---------------------------- Captured stderr call -----------------------------
+ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers
+
+  built with gcc 15.2.0 (Rev13, Built by MSYS2 project)
+
+  configuration: --enable-gpl --enable-version3 --enable-static --disable-w32threads --disable-autodetect --enable-cairo --enable-fontconfig --enable-iconv --enable-gnutls --enable-lcms2 --enable-libxml2 --enable-gmp --enable-bzlib --enable-lzma --enable-libsnappy --enable-zlib --enable-librist --enable-libsrt --enable-libssh --enable-libzmq --enable-avisynth --enable-libbluray --enable-libcaca --enable-libdvdnav --enable-libdvdread --enable-sdl2 --enable-libaribb24 --enable-libaribcaption --enable-libdav1d --enable-libdavs2 --enable-libopenjpeg --enable-libquirc --enable-libuavs3d --enable-libxevd --enable-libzvbi --enable-liboapv --enable-libqrencode --enable-librav1e --enable-libsvtav1 --enable-libvvenc --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxeve --enable-libxvid --enable-libaom --enable-libjxl --enable-libsvtjpegxs --enable-libvpx --enable-mediafoundation --enable-libass --enable-frei0r --enable-libfreetype --enable-libfribidi --enable-libharfbuzz --enable-liblensfun --enable-libvidstab --enable-libvmaf --enable-libzimg --enable-amf --enable-cuda-llvm --enable-cuvid --enable-dxva2 --enable-d3d11va --enable-d3d12va --enable-ffnvcodec --enable-libvpl --enable-nvdec --enable-nvenc --enable-vaapi --enable-libshaderc --enable-vulkan --enable-libplacebo --enable-opencl --enable-libcdio --enable-openal --enable-libgme --enable-libmodplug --enable-libopenmpt --enable-libopencore-amrwb --enable-libmp3lame --enable-libshine --enable-libtheora --enable-libtwolame --enable-libvo-amrwbenc --enable-libcodec2 --enable-libilbc --enable-libgsm --enable-liblc3 --enable-libopencore-amrnb --enable-libopus --enable-libspeex --enable-libvorbis --enable-ladspa --enable-libbs2b --enable-libflite --enable-libmysofa --enable-librubberband --enable-libsoxr --enable-chromaprint --enable-whisper
+
+  libavutil      60. 26.101 / 60. 26.101
+
+  libavcodec     62. 28.101 / 62. 28.101
+
+  libavformat    62. 12.101 / 62. 12.101
+
+  libavdevice    62.  3.101 / 62.  3.101
+
+  libavfilter    11. 14.101 / 11. 14.101
+
+  libswscale      9.  5.101 /  9.  5.101
+
+  libswresample   6.  3.101 /  6.  3.101
+
+Universal media converter
+
+usage: ffmpeg [options] [[infile options] -i infile]... {[outfile options] outfile}...
+
+
+
+Use -h to get full help or, even better, run 'man ffmpeg'
+
+____________ test_posix_missing_media_process_error_is_actionable _____________
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_generation_audio_guard.py:138: in test_posix_missing_media_process_error_is_actionable
+    err = _missing_media_process_error()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_generation_audio_guard.py:32: in _missing_media_process_error
+    raise AssertionError("missing ffmpeg unexpectedly launched")
+E   AssertionError: missing ffmpeg unexpectedly launched
+---------------------------- Captured stderr call -----------------------------
+ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers
+
+  built with gcc 15.2.0 (Rev13, Built by MSYS2 project)
+
+  configuration: --enable-gpl --enable-version3 --enable-static --disable-w32threads --disable-autodetect --enable-cairo --enable-fontconfig --enable-iconv --enable-gnutls --enable-lcms2 --enable-libxml2 --enable-gmp --enable-bzlib --enable-lzma --enable-libsnappy --enable-zlib --enable-librist --enable-libsrt --enable-libssh --enable-libzmq --enable-avisynth --enable-libbluray --enable-libcaca --enable-libdvdnav --enable-libdvdread --enable-sdl2 --enable-libaribb24 --enable-libaribcaption --enable-libdav1d --enable-libdavs2 --enable-libopenjpeg --enable-libquirc --enable-libuavs3d --enable-libxevd --enable-libzvbi --enable-liboapv --enable-libqrencode --enable-librav1e --enable-libsvtav1 --enable-libvvenc --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxeve --enable-libxvid --enable-libaom --enable-libjxl --enable-libsvtjpegxs --enable-libvpx --enable-mediafoundation --enable-libass --enable-frei0r --enable-libfreetype --enable-libfribidi --enable-libharfbuzz --enable-liblensfun --enable-libvidstab --enable-libvmaf --enable-libzimg --enable-amf --enable-cuda-llvm --enable-cuvid --enable-dxva2 --enable-d3d11va --enable-d3d12va --enable-ffnvcodec --enable-libvpl --enable-nvdec --enable-nvenc --enable-vaapi --enable-libshaderc --enable-vulkan --enable-libplacebo --enable-opencl --enable-libcdio --enable-openal --enable-libgme --enable-libmodplug --enable-libopenmpt --enable-libopencore-amrwb --enable-libmp3lame --enable-libshine --enable-libtheora --enable-libtwolame --enable-libvo-amrwbenc --enable-libcodec2 --enable-libilbc --enable-libgsm --enable-liblc3 --enable-libopencore-amrnb --enable-libopus --enable-libspeex --enable-libvorbis --enable-ladspa --enable-libbs2b --enable-libflite --enable-libmysofa --enable-librubberband --enable-libsoxr --enable-chromaprint --enable-whisper
+
+  libavutil      60. 26.101 / 60. 26.101
+
+  libavcodec     62. 28.101 / 62. 28.101
+
+  libavformat    62. 12.101 / 62. 12.101
+
+  libavdevice    62.  3.101 / 62.  3.101
+
+  libavfilter    11. 14.101 / 11. 14.101
+
+  libswscale      9.  5.101 /  9.  5.101
+
+  libswresample   6.  3.101 /  6.  3.101
+
+Universal media converter
+
+usage: ffmpeg [options] [[infile options] -i infile]... {[outfile options] outfile}...
+
+
+
+Use -h to get full help or, even better, run 'man ffmpeg'
+
+_ test_package_builds_again_only_when_stapling_fails[2-Failed to staple your application with code: 68-2-False] _
+[gw2] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_release_signing_notes.py:145: in test_package_builds_again_only_when_stapling_fails
+    assert len(count.read_text().splitlines()) == calls
+               ^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1058: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: 'REDACTED_HOME\\w\\pt-run4-9\\popen-gw2\\test_package_builds_again_only0\\calls'
+_ test_package_builds_again_only_when_stapling_fails[1-codesign failed-1-False] _
+[gw2] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
+tests\test_release_signing_notes.py:145: in test_package_builds_again_only_when_stapling_fails
+    assert len(count.read_text().splitlines()) == calls
+               ^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1058: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: 'REDACTED_HOME\\w\\pt-run4-9\\popen-gw2\\test_package_builds_again_only1\\calls'
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_audiobook_expressive.py: 5 warnings
+tests/test_longform_language_cache.py: 2 warnings
+tests/test_smart_fit_generate.py: 22 warnings
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:337: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.save_with_torchcodec` under the hood. Some parameters like format, encoding, bits_per_sample, buffer_size, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's encoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.encoders.AudioEncoder
+    warnings.warn(
+
+tests/test_audiobook_expressive.py::test_chapter_cache_key_changes_for_every_expressive_field
+tests/test_longform_language_cache.py::test_language_change_misses_both_cache_layers
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+    WeightNorm.apply(module, name, dim)
+
+tests/test_audiobook_expressive.py: 1 warning
+tests/test_longform_language_cache.py: 1 warning
+tests/test_smart_fit_generate.py: 23 warnings
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+    warnings.warn(
+
+tests/test_diarization_weights_only.py::test_no_token_short_circuits_without_loading
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:182: DeprecationWarning: invalid escape sequence '\s'
+    sep="\s+",
+
+tests/test_diarization_weights_only.py::test_no_token_short_circuits_without_loading
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:216: DeprecationWarning: invalid escape sequence '\s'
+    sep="\s+",
+
+tests/test_diarization_weights_only.py::test_no_token_short_circuits_without_loading
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:253: DeprecationWarning: invalid escape sequence '\s'
+    sep="\s+",
+
+tests/test_diarization_weights_only.py::test_no_token_short_circuits_without_loading
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:284: DeprecationWarning: invalid escape sequence '\s'
+    data = pd.read_csv(file_uem, names=names, dtype=dtype, sep="\s+")
+
+tests/test_diarization_weights_only.py::test_no_token_short_circuits_without_loading
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:309: DeprecationWarning: invalid escape sequence '\s'
+    data = pd.read_csv(path, names=names, dtype=dtype, sep="\s+")
+
+tests/test_diarization_weights_only.py::test_no_token_short_circuits_without_loading
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:93: DeprecationWarning: invalid escape sequence '\s'
+    file_trial, sep="\s+", names=["reference", "uri1", "uri2"]
+
+tests/test_diarization_weights_only.py::test_no_token_short_circuits_without_loading
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:292: DeprecationWarning: invalid escape sequence '\s'
+    ctm, names=names, dtype=dtype, sep="\s+"
+
+tests/test_diarization_weights_only.py::test_no_token_short_circuits_without_loading
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:357: DeprecationWarning: invalid escape sequence '\s'
+    mapping, names=names, dtype=dtype, sep="\s+"
+
+tests/test_diarization_weights_only.py::test_no_token_short_circuits_without_loading
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\audio\core\io.py:212: UserWarning: torchaudio._backend.list_audio_backends has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+    torchaudio.list_audio_backends()
+
+tests/backend/services/test_tts_backend_registry.py::test_list_backends_resilient
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
+    m = re.match('([su]([0-9]{1,2})p?) \(([0-9]{1,2}) bit\)$', token)
+
+tests/backend/services/test_tts_backend_registry.py::test_list_backends_resilient
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
+    m2 = re.match('([su]([0-9]{1,2})p?)( \(default\))?$', token)
+
+tests/backend/services/test_tts_backend_registry.py::test_list_backends_resilient
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
+    elif re.match('(flt)p?( \(default\))?$', token):
+
+tests/backend/services/test_tts_backend_registry.py::test_list_backends_resilient
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
+    elif re.match('(dbl)p?( \(default\))?$', token):
+
+tests/backend/services/test_tts_backend_registry.py::test_list_backends_resilient
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+    import audioop
+
+tests/test_torch_dtype_guard.py::test_a_deliberate_dtype_leak
+  REDACTED_HOME\w\vs\tests\conftest.py:332: UserWarning: tests/test_torch_dtype_guard.py::test_a_deliberate_dtype_leak leaked torch default dtype torch.float16 ΓÇö resetting to float32. set to torch.float16 at:
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+      return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+      return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+      res = hook_impl.function(*args)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\_pytest\main.py", line 377, in pytest_cmdline_main
+      return wrap_session(config, _main)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\_pytest\main.py", line 330, in wrap_session
+      session.exitstatus = doit(config, session) or 0
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\_pytest\main.py", line 384, in _main
+      config.hook.pytest_runtestloop(session=session)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+      return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+      return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+      res = hook_impl.function(*args)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\xdist\remote.py", line 206, in pytest_runtestloop
+      self.run_one_test()
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\xdist\remote.py", line 227, in run_one_test
+      self.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+      return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+      return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+      res = hook_impl.function(*args)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\_pytest\runner.py", line 118, in pytest_runtest_protocol
+      runtestprotocol(item, nextitem=nextitem)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\_pytest\runner.py", line 139, in runtestprotocol
+      reports.append(call_and_report(item, "call", log))
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\_pytest\runner.py", line 249, in call_and_report
+      call = CallInfo.from_call(
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\_pytest\runner.py", line 361, in from_call
+      result: TResult | None = func()
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\_pytest\runner.py", line 250, in <lambda>
+      lambda: runtest_hook(item=item, **kwds),
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+      return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+      return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+      res = hook_impl.function(*args)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\_pytest\runner.py", line 184, in pytest_runtest_call
+      item.runtest()
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\_pytest\python.py", line 1707, in runtest
+      self.ihook.pytest_pyfunc_call(pyfuncitem=self)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+      return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+      return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+      res = hook_impl.function(*args)
+    File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\_pytest\python.py", line 167, in pytest_pyfunc_call
+      result = testfunction(**testargs)
+    File "REDACTED_HOME\w\vs\tests\test_torch_dtype_guard.py", line 22, in test_a_deliberate_dtype_leak
+      torch.set_default_dtype(torch.float16)
+    File "REDACTED_HOME\w\vs\tests\conftest.py", line 292, in _recording_set_default_dtype
+      _DTYPE_SETTER["stack"] = "".join(traceback.format_stack(limit=30))
+  
+    _warnings.warn(
+
+tests/test_speech_platform.py::test_versioned_stream_has_session_envelope
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+    import pkg_resources
+
+tests/test_speech_platform.py::test_versioned_stream_has_session_envelope
+tests/test_speech_platform.py::test_versioned_stream_has_session_envelope
+tests/test_speech_platform.py::test_versioned_stream_has_session_envelope
+tests/test_speech_platform.py::test_versioned_stream_has_session_envelope
+tests/test_speech_platform.py::test_versioned_stream_has_session_envelope
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
+  Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+    declare_namespace(pkg)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_db_backup_concurrent_slots.py::test_concurrent_snapshots_cannot_share_a_recovery_slot
+FAILED tests/test_electron_transition.py::test_release_downloads_legacy_feeds_only_from_final_tauri_tag[v0.5.3-True]
+FAILED tests/test_electron_transition.py::test_packaging_omits_empty_signing_credentials[credentials0-|]
+FAILED tests/test_electron_transition.py::test_packaging_omits_empty_signing_credentials[credentials1-|]
+FAILED tests/test_electron_transition.py::test_packaging_omits_empty_signing_credentials[credentials2-x|x]
+FAILED tests/test_electron_transition.py::test_release_tag_override_preserves_exact_tag_checkout[refs/heads/main-v1.2.3-refs/tags/v1.2.3-True-True]
+FAILED tests/test_electron_transition.py::test_release_tag_override_preserves_exact_tag_checkout[refs/tags/v1.2.3--refs/tags/v1.2.3-True-True]
+FAILED tests/test_electron_transition.py::test_unsigned_publish_needs_owner_or_listed_publisher[-owner-owner-True]
+FAILED tests/test_electron_transition.py::test_unsigned_publish_needs_owner_or_listed_publisher[maintainer-maintainer-maintainer-True]
+FAILED tests/test_electron_transition.py::test_unsigned_publish_needs_owner_or_listed_publisher[ other , maintainer -maintainer-maintainer-True]
+FAILED tests/test_generation_audio_guard.py::test_bare_windows_missing_process_error_is_actionable
+FAILED tests/test_generation_audio_guard.py::test_posix_missing_media_process_error_is_actionable
+FAILED tests/test_release_signing_notes.py::test_package_builds_again_only_when_stapling_fails[2-Failed to staple your application with code: 68-2-False]
+FAILED tests/test_release_signing_notes.py::test_package_builds_again_only_when_stapling_fails[1-codesign failed-1-False]
+14 failed, 1285 passed, 18 skipped, 81 warnings, 12 subtests passed in 423.37s (0:07:03)
+EXIT=1
