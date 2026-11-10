@@ -46,7 +46,7 @@ The ratings for value, reversibility and blast radius are unchanged from [`DECIS
 | Depends on (packets) | `D0G` | `D0G` | `BM-00`: `D0G`. `BM-01`: `SD-M0`, `ST-D00`, `CORE-07`. | `SD-M0`, plus `D0G` or `CORE-01` (first packets); the STT condition comes from Specification 000, not `packets.json` | `ST-D00`, `D0G` | `KT-01`, `D0G` |
 | Blocked P1 evidence it relies on | none in its own work | none in its own work | `BM-00` none; `BM-01` needs `ST-D00` | `SD-M0` (VERIFYING); 000B | **`ST-D00` (BLOCKED)** | **`KT-01` (BLOCKED)** |
 | Uses STT, donor runtime or a model | no | no | `BM-00` no | yes (STT) | yes (TTS donor) | yes (LLM) |
-| Ready to open if `D0G` passed today | **yes** | yes | `BM-00` yes. `BM-02` and `BM-03` would also become reachable once `SD-M0` is confirmed, and they use the Handy donor runtime and local ASR models. | **no** (000B) | **no** | **no** |
+| Eligible for a later selection if `D0G` passed today (not opened by it) | **yes** | yes | `BM-00` yes. `BM-02` and `BM-03` would also become reachable once `SD-M0` is confirmed, and they use the Handy donor runtime and local ASR models. | **no** (000B) | **no** | **no** |
 
 **ST-D00 gates more than WisprStudio.** Through `BM-01`, it also gates part of WisprSide: `SD-M1` depends on `BM-01`, and `SD-M10`, `PF-01`, `SD-R2`, `SD-R3` and `PF-02` follow from it. So while `ST-D00` stays blocked, part of WisprSide stays closed even after 000B clears.
 
@@ -57,16 +57,19 @@ The ratings for value, reversibility and blast radius are unchanged from [`DECIS
 1. Confirm `SD-M0`'s narrowed item 3. This makes it `VERIFIED`.
 2. Remediate `ST-D00`. For example, provide the AudioSeal checkpoint locally or stub it in tests, and fix the Windows `git` and `PATH` handling. Then rerun on both platforms with zero model-hub connections.
 3. Resolve `KT-01`: authorize a local CPU model and measure it. Then either amend item 3, or implement and evidence a tool gate.
-4. Re-run D0G with a qualifying review, selecting exactly one Grain (see the constraint above).
+4. Rewrite D0G acceptance item 2 and the `DECISION_000G` authority text to "selects exactly one bounded Grain per Specification 000". Alternatively, the D0G decision PR records that deviation explicitly.
+5. Re-run D0G with a qualifying review, selecting exactly one Grain (see the constraint above).
 
 This is the slowest path. Steps 2 and 3 are substantial work, and step 2 means deciding how far a research baseline may diverge from the donor.
 
 **Path B: amend D0G's dependencies and select exactly one Grain, `CORE-01`.** *(This is the recommended path, if the founder accepts the amendment.)*
 
-- **Amendment.** Remove `ST-D00` and `KT-01` from `D0G.depends_on` in `packets.json`. `SD-M0` is not needed for `CORE-01` either. Keeping it as a D0G dependency is a founder choice: it costs nothing once the narrowed item 3 is confirmed, but it would otherwise hold D0G. The product Grains already depend on their baselines, so nothing else changes: every `GRAIN_STUDIO` packet reaches `ST-D00`, and every `GRAIN_KLAINT_TEXT` packet reaches `KT-01`.
+- **Amendment.**
+  - Remove `ST-D00` and `KT-01` from `D0G.depends_on` in `packets.json`.
+  - Rewrite D0G acceptance item 2 and the `DECISION_000G` authority text, which now say D0G "opens GRAIN_CORE, GRAIN_DESIGN and GRAIN_BENCH … plus at most two product Grains", so that D0G "selects exactly one bounded Grain per Specification 000". Without this, a D0G decision that selects only `CORE-01` would fail its own packet. `SD-M0` is not needed for `CORE-01` either. Keeping it as a D0G dependency is a founder choice: it costs nothing once the narrowed item 3 is confirmed, but it would otherwise hold D0G. The product Grains already depend on their baselines, so nothing else changes: every `GRAIN_STUDIO` packet reaches `ST-D00`, and every `GRAIN_KLAINT_TEXT` packet reaches `KT-01`.
 - **Review.** This amendment relaxes a 000G gate, so it should have a **qualifying** review under Governance item 7, followed by the founder's approval.
-- **The D0G decision** then selects **exactly one Grain**, `CORE-01` (`GRAIN_CORE`). It does so in a separate PR with a qualifying review, as Specification 000 requires.
-- **Everything else stays closed:** `GRAIN_DESIGN`, `GRAIN_BENCH` (including `BM-00`), `GRAIN_SIDE`, `GRAIN_STUDIO` and `GRAIN_KLAINT_TEXT`. Each needs a later 000G selection.
+- **The D0G decision** then selects **exactly one Grain**, `CORE-01` (`GRAIN_CORE`). It does so in a separate PR. That PR needs a qualifying review under Governance item 7; selecting exactly one Grain is what Specification 000 requires.
+- **Everything else stays closed:** the sibling `GRAIN_CORE` packet `CORE-07`, `GRAIN_DESIGN`, `GRAIN_BENCH` (including `BM-00`), `GRAIN_SIDE`, `GRAIN_STUDIO` and `GRAIN_KLAINT_TEXT`. Each needs a later 000G selection.
 - `CORE-01` becomes `READY` once that decision is merged.
 
 **Why B is safe:**
