@@ -1,0 +1,6 @@
+ported EXIT=0
+smoke EXIT=0
+hooks EXIT=0
+security EXIT=0
+perf EXIT=0
+DONE

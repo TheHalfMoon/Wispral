@@ -1,0 +1,450 @@
+2026-11-09T22:12:46.071005Z [info     ] [<main>] Parlant server version 3.3.2
+2026-11-09T22:12:46.078015Z [info     ] [<main>] Using home directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant-v3\parlant-data'
+2026-11-09T22:12:46.111627Z [info     ] [<main>] No external modules selected
+2026-11-09T22:12:46.222986Z [debug    ] TRACE [<main>] BackgroundTaskService: Starting task 'websocket-logger'
+Error adding <class 'fake_provider_v3.FakeSchematicGenerator'> instance as 
+implementation for 
+parlant.core.nlp.generation.SchematicGenerator[parlant.core.engines.alpha.guide
+line_matching.generic.guideline_previously_applied_actionable_batch.GenericPrev
+iouslyAppliedActionableGuidelineMatchesSchema]
+2026-11-09T22:12:46.360366Z [info     ] [<main>] BackgroundTaskService: Cancelling all remaining tasks (1)
+2026-11-09T22:12:46.360366Z [info     ] [<main>] BackgroundTaskService: Shutting down
+2026-11-09T22:12:46.360366Z [info     ] [<main>] BackgroundTaskService: Waiting for task 'websocket-logger' to finish
+F2026-11-09T22:14:17.962253Z [info     ] [<main>] Parlant server version 3.3.2
+2026-11-09T22:14:17.965606Z [info     ] [<main>] Using home directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant-v3\parlant-data'
+2026-11-09T22:14:17.975146Z [info     ] [<main>] No external modules selected
+2026-11-09T22:14:18.041010Z [debug    ] TRACE [<main>] BackgroundTaskService: Starting task 'websocket-logger'
+Error adding <class 'fake_provider_v3.FakeSchematicGenerator'> instance as 
+implementation for 
+parlant.core.nlp.generation.SchematicGenerator[parlant.core.engines.alpha.guide
+line_matching.generic.guideline_previously_applied_actionable_batch.GenericPrev
+iouslyAppliedActionableGuidelineMatchesSchema]
+2026-11-09T22:14:18.368997Z [info     ] [<main>] BackgroundTaskService: Cancelling all remaining tasks (1)
+2026-11-09T22:14:18.369994Z [info     ] [<main>] BackgroundTaskService: Shutting down
+2026-11-09T22:14:18.369994Z [info     ] [<main>] BackgroundTaskService: Waiting for task 'websocket-logger' to finish
+F
+================================== FAILURES ===================================
+___________________ Test_kt01_v3_one_turn_and_bail.test_run ___________________
+
+    @contextlib.contextmanager
+    def map_httpcore_exceptions() -> typing.Iterator[None]:
+        global HTTPCORE_EXC_MAP
+        if len(HTTPCORE_EXC_MAP) == 0:
+            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
+        try:
+>           yield
+
+.venv\Lib\site-packages\httpx\_transports\default.py:101: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\httpx\_transports\default.py:394: in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpcore\_async\connection_pool.py:256: in handle_async_request
+    raise exc from None
+.venv\Lib\site-packages\httpcore\_async\connection_pool.py:236: in handle_async_request
+    response = await connection.handle_async_request(
+.venv\Lib\site-packages\httpcore\_async\connection.py:101: in handle_async_request
+    raise exc
+.venv\Lib\site-packages\httpcore\_async\connection.py:78: in handle_async_request
+    stream = await self._connect(request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpcore\_async\connection.py:124: in _connect
+    stream = await self._network_backend.connect_tcp(**kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpcore\_backends\auto.py:31: in connect_tcp
+    return await self._backend.connect_tcp(
+.venv\Lib\site-packages\httpcore\_backends\anyio.py:113: in connect_tcp
+    with map_exceptions(exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\..\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+map = {<class 'TimeoutError'>: <class 'httpcore.ConnectTimeout'>, <class 'OSError'>: <class 'httpcore.ConnectError'>, <class 'anyio.BrokenResourceError'>: <class 'httpcore.ConnectError'>}
+
+    @contextlib.contextmanager
+    def map_exceptions(map: ExceptionMapping) -> typing.Iterator[None]:
+        try:
+            yield
+        except Exception as exc:  # noqa: PIE786
+            for from_exc, to_exc in map.items():
+                if isinstance(exc, from_exc):
+>                   raise to_exc(exc) from exc
+E                   httpcore.ConnectError: All connection attempts failed
+
+.venv\Lib\site-packages\httpcore\_exceptions.py:14: ConnectError
+
+The above exception was the direct cause of the following exception:
+
+self = <Users.REDACTED_USER.w.kt01.test_kt01_v3.Test_kt01_v3_one_turn_and_bail object at 0x0000022E1C091610>
+client = <parlant.client.client.AsyncParlantClient object at 0x0000022E7C7AC200>
+
+    async def _wait_for_startup(self, client: Client) -> None:
+        start_time = time.time()
+    
+        while True:
+            try:
+>               await client.agents.list()
+
+tests\sdk\utils.py:235: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\parlant\client\agents\client.py:469: in list
+    _response = await self._client_wrapper.httpx_client.request(
+.venv\Lib\site-packages\parlant\client\core\http_client.py:417: in request
+    response = await self.httpx_client.request(
+.venv\Lib\site-packages\httpx\_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1629: in send
+    response = await self._send_handling_auth(
+.venv\Lib\site-packages\httpx\_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv\Lib\site-packages\httpx\_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_transports\default.py:393: in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\..\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    @contextlib.contextmanager
+    def map_httpcore_exceptions() -> typing.Iterator[None]:
+        global HTTPCORE_EXC_MAP
+        if len(HTTPCORE_EXC_MAP) == 0:
+            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
+        try:
+            yield
+        except Exception as exc:
+            mapped_exc = None
+    
+            for from_exc, to_exc in HTTPCORE_EXC_MAP.items():
+                if not isinstance(exc, from_exc):
+                    continue
+                # We want to map to the most specific exception we can find.
+                # Eg if `exc` is an `httpcore.ReadTimeout`, we want to map to
+                # `httpx.ReadTimeout`, not just `httpx.TimeoutException`.
+                if mapped_exc is None or issubclass(to_exc, mapped_exc):
+                    mapped_exc = to_exc
+    
+            if mapped_exc is None:  # pragma: no cover
+                raise
+    
+            message = str(exc)
+>           raise mapped_exc(message) from exc
+E           httpx.ConnectError: All connection attempts failed
+
+.venv\Lib\site-packages\httpx\_transports\default.py:118: ConnectError
+
+During handling of the above exception, another exception occurred:
+
+self = <Users.REDACTED_USER.w.kt01.test_kt01_v3.Test_kt01_v3_one_turn_and_bail object at 0x0000022E1C091610>
+
+    async def test_run(self) -> None:
+        port = get_random_port()
+    
+        server_task = await self._create_server_task(port)
+        client = Client(base_url=f"http://localhost:{port}")
+    
+        try:
+>           await self._wait_for_startup(client)
+
+tests\sdk\utils.py:207: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Users.REDACTED_USER.w.kt01.test_kt01_v3.Test_kt01_v3_one_turn_and_bail object at 0x0000022E1C091610>
+client = <parlant.client.client.AsyncParlantClient object at 0x0000022E7C7AC200>
+
+    async def _wait_for_startup(self, client: Client) -> None:
+        start_time = time.time()
+    
+        while True:
+            try:
+                await client.agents.list()
+                return
+            except Exception:
+                if time.time() >= (start_time + self.STARTUP_TIMEOUT):
+>                   raise RuntimeError("Server did not start in time")
+E                   RuntimeError: Server did not start in time
+
+tests\sdk\utils.py:239: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+self = <Users.REDACTED_USER.w.kt01.test_kt01_v3.Test_kt01_v3_one_turn_and_bail object at 0x0000022E1C091610>
+
+    async def test_run(self) -> None:
+        port = get_random_port()
+    
+        server_task = await self._create_server_task(port)
+        client = Client(base_url=f"http://localhost:{port}")
+    
+        try:
+            await self._wait_for_startup(client)
+            await self.run(Context(self.server, client, self.get_container()))
+        finally:
+            server_task.cancel()
+    
+            try:
+>               await server_task
+
+tests\sdk\utils.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\sdk\utils.py:221: in server_task
+    async with self.server:
+               ^^^^^^^^^^^
+src\parlant\sdk.py:4173: in __aenter__
+    self._container = await self._startup_context_manager.__aenter__()
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\..\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+src\parlant\bin\server.py:1116: in start_parlant
+    async with load_app(params) as (app, container):
+               ^^^^^^^^^^^^^^^^
+..\..\..\..\..\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+src\parlant\bin\server.py:978: in load_app
+    await initialize_container(
+src\parlant\bin\server.py:917: in initialize_container
+    try_define(
+src\parlant\bin\server.py:692: in try_define
+    _define_singleton_value(c, t, value)
+src\parlant\bin\server.py:548: in _define_singleton_value
+    container[implementation_type] = implementation
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lagom\container.py:399: in __setitem__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   ???
+E   lagom.exceptions.DuplicateDefinition
+
+lagom\container.py:169: DuplicateDefinition
+------------------------------ Captured log call ------------------------------
+INFO     parlant:_base.py:223 [2m2026-11-09T22:12:46.071005Z[0m [[32m[1minfo     [0m] [1m[<main>] Parlant server version 3.3.2[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:12:46.078015Z[0m [[32m[1minfo     [0m] [1m[<main>] Using home directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant-v3\parlant-data'[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:12:46.111627Z[0m [[32m[1minfo     [0m] [1m[<main>] No external modules selected[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:12:46.222986Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>] BackgroundTaskService: Starting task 'websocket-logger'[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:12:46.360366Z[0m [[32m[1minfo     [0m] [1m[<main>] BackgroundTaskService: Cancelling all remaining tasks (1)[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:12:46.360366Z[0m [[32m[1minfo     [0m] [1m[<main>] BackgroundTaskService: Shutting down[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:12:46.360366Z[0m [[32m[1minfo     [0m] [1m[<main>] BackgroundTaskService: Waiting for task 'websocket-logger' to finish[0m
+____________ Test_kt01_v3_tool_server_forged_customer_id.test_run _____________
+
+    @contextlib.contextmanager
+    def map_httpcore_exceptions() -> typing.Iterator[None]:
+        global HTTPCORE_EXC_MAP
+        if len(HTTPCORE_EXC_MAP) == 0:
+            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
+        try:
+>           yield
+
+.venv\Lib\site-packages\httpx\_transports\default.py:101: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\httpx\_transports\default.py:394: in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpcore\_async\connection_pool.py:256: in handle_async_request
+    raise exc from None
+.venv\Lib\site-packages\httpcore\_async\connection_pool.py:236: in handle_async_request
+    response = await connection.handle_async_request(
+.venv\Lib\site-packages\httpcore\_async\connection.py:101: in handle_async_request
+    raise exc
+.venv\Lib\site-packages\httpcore\_async\connection.py:78: in handle_async_request
+    stream = await self._connect(request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpcore\_async\connection.py:124: in _connect
+    stream = await self._network_backend.connect_tcp(**kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpcore\_backends\auto.py:31: in connect_tcp
+    return await self._backend.connect_tcp(
+.venv\Lib\site-packages\httpcore\_backends\anyio.py:113: in connect_tcp
+    with map_exceptions(exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\..\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+map = {<class 'TimeoutError'>: <class 'httpcore.ConnectTimeout'>, <class 'OSError'>: <class 'httpcore.ConnectError'>, <class 'anyio.BrokenResourceError'>: <class 'httpcore.ConnectError'>}
+
+    @contextlib.contextmanager
+    def map_exceptions(map: ExceptionMapping) -> typing.Iterator[None]:
+        try:
+            yield
+        except Exception as exc:  # noqa: PIE786
+            for from_exc, to_exc in map.items():
+                if isinstance(exc, from_exc):
+>                   raise to_exc(exc) from exc
+E                   httpcore.ConnectError: All connection attempts failed
+
+.venv\Lib\site-packages\httpcore\_exceptions.py:14: ConnectError
+
+The above exception was the direct cause of the following exception:
+
+self = <Users.REDACTED_USER.w.kt01.test_kt01_v3.Test_kt01_v3_tool_server_forged_customer_id object at 0x0000022E1D1613A0>
+client = <parlant.client.client.AsyncParlantClient object at 0x0000022E1D2D18E0>
+
+    async def _wait_for_startup(self, client: Client) -> None:
+        start_time = time.time()
+    
+        while True:
+            try:
+>               await client.agents.list()
+
+tests\sdk\utils.py:235: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\parlant\client\agents\client.py:469: in list
+    _response = await self._client_wrapper.httpx_client.request(
+.venv\Lib\site-packages\parlant\client\core\http_client.py:417: in request
+    response = await self.httpx_client.request(
+.venv\Lib\site-packages\httpx\_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1629: in send
+    response = await self._send_handling_auth(
+.venv\Lib\site-packages\httpx\_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv\Lib\site-packages\httpx\_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_transports\default.py:393: in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\..\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    @contextlib.contextmanager
+    def map_httpcore_exceptions() -> typing.Iterator[None]:
+        global HTTPCORE_EXC_MAP
+        if len(HTTPCORE_EXC_MAP) == 0:
+            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
+        try:
+            yield
+        except Exception as exc:
+            mapped_exc = None
+    
+            for from_exc, to_exc in HTTPCORE_EXC_MAP.items():
+                if not isinstance(exc, from_exc):
+                    continue
+                # We want to map to the most specific exception we can find.
+                # Eg if `exc` is an `httpcore.ReadTimeout`, we want to map to
+                # `httpx.ReadTimeout`, not just `httpx.TimeoutException`.
+                if mapped_exc is None or issubclass(to_exc, mapped_exc):
+                    mapped_exc = to_exc
+    
+            if mapped_exc is None:  # pragma: no cover
+                raise
+    
+            message = str(exc)
+>           raise mapped_exc(message) from exc
+E           httpx.ConnectError: All connection attempts failed
+
+.venv\Lib\site-packages\httpx\_transports\default.py:118: ConnectError
+
+During handling of the above exception, another exception occurred:
+
+self = <Users.REDACTED_USER.w.kt01.test_kt01_v3.Test_kt01_v3_tool_server_forged_customer_id object at 0x0000022E1D1613A0>
+
+    async def test_run(self) -> None:
+        port = get_random_port()
+    
+        server_task = await self._create_server_task(port)
+        client = Client(base_url=f"http://localhost:{port}")
+    
+        try:
+>           await self._wait_for_startup(client)
+
+tests\sdk\utils.py:207: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Users.REDACTED_USER.w.kt01.test_kt01_v3.Test_kt01_v3_tool_server_forged_customer_id object at 0x0000022E1D1613A0>
+client = <parlant.client.client.AsyncParlantClient object at 0x0000022E1D2D18E0>
+
+    async def _wait_for_startup(self, client: Client) -> None:
+        start_time = time.time()
+    
+        while True:
+            try:
+                await client.agents.list()
+                return
+            except Exception:
+                if time.time() >= (start_time + self.STARTUP_TIMEOUT):
+>                   raise RuntimeError("Server did not start in time")
+E                   RuntimeError: Server did not start in time
+
+tests\sdk\utils.py:239: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+self = <Users.REDACTED_USER.w.kt01.test_kt01_v3.Test_kt01_v3_tool_server_forged_customer_id object at 0x0000022E1D1613A0>
+
+    async def test_run(self) -> None:
+        port = get_random_port()
+    
+        server_task = await self._create_server_task(port)
+        client = Client(base_url=f"http://localhost:{port}")
+    
+        try:
+            await self._wait_for_startup(client)
+            await self.run(Context(self.server, client, self.get_container()))
+        finally:
+            server_task.cancel()
+    
+            try:
+>               await server_task
+
+tests\sdk\utils.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\sdk\utils.py:221: in server_task
+    async with self.server:
+               ^^^^^^^^^^^
+src\parlant\sdk.py:4173: in __aenter__
+    self._container = await self._startup_context_manager.__aenter__()
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\..\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+src\parlant\bin\server.py:1116: in start_parlant
+    async with load_app(params) as (app, container):
+               ^^^^^^^^^^^^^^^^
+..\..\..\..\..\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+src\parlant\bin\server.py:978: in load_app
+    await initialize_container(
+src\parlant\bin\server.py:917: in initialize_container
+    try_define(
+src\parlant\bin\server.py:692: in try_define
+    _define_singleton_value(c, t, value)
+src\parlant\bin\server.py:548: in _define_singleton_value
+    container[implementation_type] = implementation
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lagom\container.py:399: in __setitem__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   ???
+E   lagom.exceptions.DuplicateDefinition
+
+lagom\container.py:169: DuplicateDefinition
+------------------------------ Captured log call ------------------------------
+INFO     parlant:_base.py:223 [2m2026-11-09T22:14:17.962253Z[0m [[32m[1minfo     [0m] [1m[<main>] Parlant server version 3.3.2[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:14:17.965606Z[0m [[32m[1minfo     [0m] [1m[<main>] Using home directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant-v3\parlant-data'[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:14:17.975146Z[0m [[32m[1minfo     [0m] [1m[<main>] No external modules selected[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:14:18.041010Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>] BackgroundTaskService: Starting task 'websocket-logger'[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:14:18.368997Z[0m [[32m[1minfo     [0m] [1m[<main>] BackgroundTaskService: Cancelling all remaining tasks (1)[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:14:18.369994Z[0m [[32m[1minfo     [0m] [1m[<main>] BackgroundTaskService: Shutting down[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:14:18.369994Z[0m [[32m[1minfo     [0m] [1m[<main>] BackgroundTaskService: Waiting for task 'websocket-logger' to finish[0m
+=========================== short test summary info ===========================
+FAILED ::Test_kt01_v3_one_turn_and_bail::test_run - lagom.exceptions.Duplicat...
+FAILED ::Test_kt01_v3_tool_server_forged_customer_id::test_run - lagom.except...
+2 failed in 297.05s (0:04:57)

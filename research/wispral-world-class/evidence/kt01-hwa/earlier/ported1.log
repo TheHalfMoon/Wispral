@@ -1,0 +1,314 @@
+F........                                                                [100%]
+================================== FAILURES ===================================
+__ Test_that_resolve_on_preparing_skips_matching_and_still_responds.test_run __
+
+self = <tests.sdk.test_hook_results.Test_that_resolve_on_preparing_skips_matching_and_still_responds object at 0x0000021362286030>
+
+    async def test_run(self) -> None:
+        port = get_random_port()
+    
+        server_task = await self._create_server_task(port)
+        client = Client(
+            base_url=f"http://localhost:{port}",
+            admin_api_key=self.AUTH.admin_api_key if self.AUTH else None,
+        )
+    
+        try:
+>           await self._wait_for_startup(port)
+
+tests\sdk\utils.py:361: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <tests.sdk.test_hook_results.Test_that_resolve_on_preparing_skips_matching_and_still_responds object at 0x0000021362286030>
+port = 55419
+
+    async def _wait_for_startup(self, port: int) -> None:
+        start_time = time.time()
+        url = f"http://localhost:{port}/healthz"
+    
+        async with httpx.AsyncClient(
+            headers=_bearer(self.AUTH.admin_api_key if self.AUTH else None)
+        ) as http:
+            while True:
+                try:
+                    response = await http.get(url, timeout=5.0)
+                    if response.status_code == 200:
+                        data = response.json()
+                        assert data["instance_id"] == self.INSTANCE_ID
+                        return
+                except (httpx.RequestError, httpx.TimeoutException):
+                    pass
+    
+                if time.time() >= (start_time + self.STARTUP_TIMEOUT):
+>                   raise RuntimeError("Server did not start in time")
+E                   RuntimeError: Server did not start in time
+
+tests\sdk\utils.py:409: RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.sdk.test_hook_results.Test_that_resolve_on_preparing_skips_matching_and_still_responds object at 0x0000021362286030>
+
+    async def test_run(self) -> None:
+        port = get_random_port()
+    
+        server_task = await self._create_server_task(port)
+        client = Client(
+            base_url=f"http://localhost:{port}",
+            admin_api_key=self.AUTH.admin_api_key if self.AUTH else None,
+        )
+    
+        try:
+            await self._wait_for_startup(port)
+            await self.run(
+                Context(
+                    self.server,
+                    client,
+                    self.get_container(),
+                    base_url=f"http://localhost:{port}",
+                )
+            )
+        finally:
+            server_task.cancel()
+    
+            try:
+>               await server_task
+
+tests\sdk\utils.py:374: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\sdk\utils.py:382: in server_task
+    async with self.server:
+               ^^^^^^^^^^^
+src\parlant\sdk.py:3285: in __aexit__
+    await self._process_indexing_enrichment()
+src\parlant\sdk.py:3785: in _process_indexing_enrichment
+    indexing_results = await async_utils.safe_gather(*tasks)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\parlant\core\async_utils.py:169: in safe_gather
+    return await asyncio.gather(
+src\parlant\sdk.py:3771: in task_wrapper
+    result = await indexing
+             ^^^^^^^^^^^^^^
+src\parlant\sdk.py:615: in index_rule
+    return await self._index_rule(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <parlant.sdk._CachedIndexer object at 0x00000213624D8110>
+entity_id = 'cKJwNGXbgi'
+g = _RuleText(content='Greet the customer back warmly when they greet you.', condition=None)
+relativity_proposition = True, signal_proposition = True
+title_proposition = True, title = None, agent_id = 'hook-results-agent-1'
+
+    async def _index_rule(
+        self,
+        entity_id: RuleId,
+        g: _RuleText,
+        relativity_proposition: bool = True,
+        signal_proposition: bool = True,
+        title_proposition: bool = False,
+        title: str | None = None,
+        agent_id: AgentId | None = None,
+    ) -> _CachedIndexer.RuleIndexingResult:
+        # The indexing prompts consume the glossary terms relevant to this
+        # rule, so the cache must be sensitive to exactly those terms: a term
+        # added or edited at runtime invalidates only the indexing results it affects.
+        relevant_terms = (
+            await self._container[EntityQueries].find_glossary_terms_for_context(
+                agent_id,
+                query=compose_rule_query(
+                    title=title,
+                    condition=g.condition,
+                    content=g.content,
+                ),
+                max_terms=RuleIndexingProcessor._TERMS_PER_RULE,
+            )
+            if agent_id
+            else []
+        )
+    
+        # First check if we have a cached indexing result for this rule
+        _hash = self._hash_rule_indexing_request(
+            g=g,
+            relativity_proposition=relativity_proposition,
+            signal_proposition=signal_proposition,
+            title_proposition=title_proposition,
+            title=title,
+            agent_id=agent_id,
+            glossary_fingerprint=self._glossary_fingerprint(relevant_terms),
+        )
+    
+        if cached_indexing_result := await self._rule_collection.find_one({"id": {"$eq": _hash}}):
+            if self._cached_rule_indexing_is_usable(
+                cached_indexing_result,
+                signal_proposition=signal_proposition,
+            ):
+                self._set_progress(entity_id, 100.0)
+    
+                return self.RuleIndexingResult(
+                    references_other_policies=cached_indexing_result.get(
+                        "references_other_policies"
+                    ),
+                    signals=cached_indexing_result.get("signals", []),
+                    anti_signals=cached_indexing_result.get("anti_signals", []),
+                    title=cached_indexing_result.get("title"),
+                )
+    
+        indexing_task_id = await self._container[IndexingService].create_indexing_task(
+            payload_descriptors=[
+                PayloadDescriptor(
+                    PayloadKind.RULE,
+                    RulePayload(
+                        content=g.content,
+                        condition=g.condition,
+                        operation=PayloadOperation.ADD,
+                        relativity_proposition=relativity_proposition,
+                        signal_proposition=signal_proposition,
+                        title_proposition=title_proposition,
+                        title=title,
+                        agent_id=agent_id,
+                    ),
+                )
+            ],
+            hints=StoreProviderHints(call_site="sdk"),
+        )
+    
+        while True:
+            indexing_task = await self._container[IndexingService].read_indexing_task(
+                indexing_task_id=indexing_task_id,
+                hints=StoreProviderHints(call_site="sdk"),
+            )
+    
+            self._set_progress(entity_id, indexing_task.progress)
+    
+            if indexing_task.status in [IndexingStatus.PENDING, IndexingStatus.RUNNING]:
+                await asyncio.sleep(0.5)
+                continue
+            elif indexing_task.status == IndexingStatus.FAILED:
+>               raise SDKError(
+                    f"Indexing failed: {indexing_task.error}. Indexing calls your model "
+                    "provider when rules are created. If that cause is a provider error, "
+                    "check the provider's API key and quota first. A free-tier or low quota "
+                    'is a common cause: see "Rate Limits" in docs/providers.md to limit '
+                    "indexing's request rate."
+E                   parlant.sdk.SDKError: Indexing failed: RuleTitleProposer failed: ValueError: Generated title is empty. Indexing calls your model provider when rules are created. If that cause is a provider error, check the provider's API key and quota first. A free-tier or low quota is a common cause: see "Rate Limits" in docs/providers.md to limit indexing's request rate.
+
+src\parlant\sdk.py:710: SDKError
+---------------------------- Captured stdout call -----------------------------
+
+                             ..
+                          :=++++=-
+                        :+***+++**+.
+                      .=*****++++*+=:.
+                     .=+++*******-
+             ..:::::...  .::::=++
+         .-+***#####**+=-..=+=:.
+       :+######***********. =***=.
+      =####**###**********+ .*****-
+     =#******###** v4.0 **+ .******-
+    :#*******#######****=. =********:
+    .*#******#*:---=-::..-*********+
+     -##*##***. -----=++*******++**:
+      :*###**: =****###**********+:
+        -+*#- -****************+-
+          .: .*******++++++==-.
+            .****+=:.
+            =+=:.
+           ..
+      
+
+---------------------------- Captured stderr call -----------------------------
+2026-11-10T05:31:29.698892Z [info     ] [<main>] Server version: 4.0.2
+2026-11-10T05:31:29.707343Z [info     ] [<main>] Runtime data: 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data'
+2026-11-10T05:31:29.707343Z [info     ] [<main>] Log file: 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data\logs\parlant.log'
+2026-11-10T05:31:29.715955Z [info     ] [<main>] No external modules selected
+2026-11-10T05:31:29.733586Z [debug    ] TRACE [<main>][BackgroundTaskService] Starting task 'websocket-logger'
+2026-11-10T05:31:30.161001Z [debug    ] TRACE [<main>] Using error report directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data\diagnostic-reports\errors'
+2026-11-10T05:31:30.161001Z [debug    ] TRACE [<main>] Using trace export directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data\diagnostic-reports\traces'
+2026-11-10T05:31:30.161001Z [debug    ] TRACE [<main>] Log rotation is enabled: max_bytes=10485760, backup_count=5
+2026-11-10T05:31:30.176744Z [debug    ] TRACE [1e96328ce8][BackgroundTaskService] Starting task 'indexing(Wuu7tMfcvd)'
+2026-11-10T05:31:30.176744Z [debug    ] TRACE [1e96328ce8][RuleSignalProposer] RuleSignalProposer response: {
+  "rationale": "",
+  "signals": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ],
+  "anti_signals": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ]
+}
+2026-11-10T05:31:30.176744Z [warning  ] [1e96328ce8][RuleTitleProposer] RuleTitleProposer failed: ['Traceback (most recent call last):\n', '  File "REDACTED_HOME\\AppData\\Local\\Temp\\claude\\kt01\\parlant\\src\\parlant\\core\\services\\indexing\\rule_title_proposer.py", line 70, in propose_title\n    raise ValueError("Generated title is empty")\n', 'ValueError: Generated title is empty\n']
+2026-11-10T05:31:30.176744Z [info     ] [1e96328ce8] Indexing task 'Wuu7tMfcvd' failed due to the following error: 'RuleTitleProposer failed: ValueError: Generated title is empty'
+2026-11-10T05:31:30.678999Z [info     ] [<main>][BackgroundTaskService] Shutting down
+2026-11-10T05:31:30.678999Z [info     ] [<main>][BackgroundTaskService] Cancelling all remaining tasks (2)
+2026-11-10T05:31:30.678999Z [info     ] [<main>][BackgroundTaskService] Waiting for task 'websocket-logger' to finish
+------------------------------ Captured log call ------------------------------
+INFO     parlant:_base.py:223 2026-11-10T05:31:29.698892Z [info     ] [<main>] Server version: 4.0.2
+INFO     parlant:_base.py:223 2026-11-10T05:31:29.707343Z [info     ] [<main>] Runtime data: 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data'
+INFO     parlant:_base.py:223 2026-11-10T05:31:29.707343Z [info     ] [<main>] Log file: 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data\logs\parlant.log'
+INFO     parlant:_base.py:223 2026-11-10T05:31:29.715955Z [info     ] [<main>] No external modules selected
+DEBUG    parlant:_base.py:223 2026-11-10T05:31:29.733586Z [debug    ] TRACE [<main>][BackgroundTaskService] Starting task 'websocket-logger'
+DEBUG    parlant:_base.py:223 2026-11-10T05:31:30.161001Z [debug    ] TRACE [<main>] Using error report directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data\diagnostic-reports\errors'
+DEBUG    parlant:_base.py:223 2026-11-10T05:31:30.161001Z [debug    ] TRACE [<main>] Using trace export directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data\diagnostic-reports\traces'
+DEBUG    parlant:_base.py:223 2026-11-10T05:31:30.161001Z [debug    ] TRACE [<main>] Log rotation is enabled: max_bytes=10485760, backup_count=5
+DEBUG    parlant:_base.py:223 2026-11-10T05:31:30.176744Z [debug    ] TRACE [1e96328ce8][BackgroundTaskService] Starting task 'indexing(Wuu7tMfcvd)'
+DEBUG    parlant:_base.py:223 2026-11-10T05:31:30.176744Z [debug    ] TRACE [1e96328ce8][RuleSignalProposer] RuleSignalProposer response: {
+  "rationale": "",
+  "signals": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ],
+  "anti_signals": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ]
+}
+WARNING  parlant:_base.py:223 2026-11-10T05:31:30.176744Z [warning  ] [1e96328ce8][RuleTitleProposer] RuleTitleProposer failed: ['Traceback (most recent call last):\n', '  File "REDACTED_HOME\\AppData\\Local\\Temp\\claude\\kt01\\parlant\\src\\parlant\\core\\services\\indexing\\rule_title_proposer.py", line 70, in propose_title\n    raise ValueError("Generated title is empty")\n', 'ValueError: Generated title is empty\n']
+INFO     parlant:_base.py:223 2026-11-10T05:31:30.176744Z [info     ] [1e96328ce8] Indexing task 'Wuu7tMfcvd' failed due to the following error: 'RuleTitleProposer failed: ValueError: Generated title is empty'
+INFO     parlant:_base.py:223 2026-11-10T05:31:30.678999Z [info     ] [<main>][BackgroundTaskService] Shutting down
+INFO     parlant:_base.py:223 2026-11-10T05:31:30.678999Z [info     ] [<main>][BackgroundTaskService] Cancelling all remaining tasks (2)
+INFO     parlant:_base.py:223 2026-11-10T05:31:30.678999Z [info     ] [<main>][BackgroundTaskService] Waiting for task 'websocket-logger' to finish
+=================================== PASSES ====================================
+=========================== short test summary info ===========================
+PASSED tests/core/stable/engines/test_hooks.py::test_that_call_on_preparing_result_returns_call_next_for_an_exhausted_chain
+PASSED tests/core/stable/engines/test_hooks.py::test_that_call_on_preparing_result_returns_resolve_and_short_circuits
+PASSED tests/core/stable/engines/test_hooks.py::test_that_call_on_preparing_result_returns_bail
+PASSED tests/core/stable/engines/test_hooks.py::test_that_the_review_result_wrappers_surface_resolve
+PASSED tests/core/stable/engines/test_hooks.py::test_that_call_hooks_bool_stays_true_for_resolve_and_call_next_and_false_for_bail
+PASSED tests/core/stable/engines/test_hooks.py::test_that_call_on_giving_up_result_returns_call_next_for_an_exhausted_chain
+PASSED tests/core/stable/engines/test_hooks.py::test_that_call_on_giving_up_result_surfaces_resolve_and_short_circuits
+PASSED tests/core/stable/engines/test_hooks.py::test_that_call_on_giving_up_result_surfaces_bail
+FAILED tests/sdk/test_hook_results.py::Test_that_resolve_on_preparing_skips_matching_and_still_responds::test_run
+1 failed, 8 passed in 62.62s (0:01:02)
