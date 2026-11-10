@@ -2,7 +2,6 @@
 ## where.exe bash (order on PATH for a process started from PowerShell)
 C:\Windows\System32\bash.exe
 C:\Users\REDACTED_USER\AppData\Local\Microsoft\WindowsApps\bash.exe
-## Git Bash path the gguf tests used (from junit-7.xml / junit-8.xml output): see README
 ## HKLM\SYSTEM\CurrentControlSet\Control\FileSystem LongPathsEnabled
 0
 ## System log event 1074 (shutdown/restart initiated) between 2026-11-09 and 2026-11-11

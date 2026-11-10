@@ -1,13 +1,14 @@
 # Address lookups used in README findings 3-5. Two sources.
-# (a) Lookup run by the agent on HW-A at 2026-11-09T03:04:56Z, about 2 h after the 13.36.122.243 SYN (02:00:34Z).
+# (a) Lookup run by the agent on HW-A at 2026-11-09T03:04:56Z, about 1 h 04 min after the 13.36.122.243 SYN (02:00:34Z), with PowerShell Resolve-DnsName (A records for each name, PTR for the address) through the laptop's default resolver.
 #     Copied verbatim from the agent session's tool output; it was not written to a file at the time.
-huggingface.co -> 3.175.149.9, 3.175.149.15, 3.175.149.122, 3.175.149.77
-cdn-lfs.huggingface.co -> 
-us.aws.cdn.hf.co -> 15.236.34.207, 15.236.85.177, 13.37.65.55, 15.237.164.118, 15.236.197.3, 13.39.241.58, 15.188.188.74, 15.236.78.196, 13.37.0.65, 35.181.67.163, 13.36.183.231, 13.36.122.243
-cas-bridge.xethub.hf.co -> 52.85.110.55, 52.85.110.81, 52.85.110.125, 52.85.110.15
+huggingface.co -> 3.175.149.9, 3.175.149.15, 3.175.149.122, 3.175.149.77
+cdn-lfs.huggingface.co -> 
+us.aws.cdn.hf.co -> 15.236.34.207, 15.236.85.177, 13.37.65.55, 15.237.164.118, 15.236.197.3, 13.39.241.58, 15.188.188.74, 15.236.78.196, 13.37.0.65, 35.181.67.163, 13.36.183.231, 13.36.122.243
+cas-bridge.xethub.hf.co -> 52.85.110.55, 52.85.110.81, 52.85.110.125, 52.85.110.15
 PTR 13.36.122.243 -> ec2-13-36-122-243.eu-west-3.compute.amazonaws.com
 
-# (b) Lookups run on HW-A at 2026-11-10T03:31:02Z, after run 4.
+# (b) Lookups run on HW-A at 2026-11-10T03:31:02Z, after run 4, with PowerShell Resolve-DnsName (-Type A for names, -Type PTR for addresses) through the laptop's default resolver.
+#     Also corroborated by the HF_ADDRESSES_NOW line of run4/analysis.txt, produced by harness/st_d00_analyze.py with socket.getaddrinfo.
 huggingface.co -> 3.175.149.77, 3.175.149.9, 3.175.149.122, 3.175.149.15
 us.aws.cdn.hf.co -> 15.236.78.196, 15.236.34.207, 13.39.241.58, 13.36.183.231, 15.236.85.177, 35.181.67.163, 15.237.164.118, 15.236.197.3, 13.36.122.243, 13.37.65.55, 15.188.188.74, 13.37.0.65
 cas-bridge.xethub.hf.co -> 52.85.110.15, 52.85.110.125, 52.85.110.55, 52.85.110.81

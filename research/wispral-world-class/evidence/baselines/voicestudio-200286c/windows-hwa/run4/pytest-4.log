@@ -23,7 +23,7 @@ _______________ test_resolve_ffprobe_prefers_omnivoice_env_var ________________
 [gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\backend\services\test_ffmpeg_utils.py:28: in test_resolve_ffprobe_prefers_omnivoice_env_var
     assert ffmpeg_utils.resolve_ffprobe() == str(fake)
-E   AssertionError: assert 'C:\\Users\\S...\\ffprobe.EXE' == 'C:\\Users\\S...s_o0\\ffprobe'
+E   AssertionError: assert 'C:\\Users\\REDACTED...\\ffprobe.EXE' == 'C:\\Users\\REDACTED...s_o0\\ffprobe'
 E     
 E     - REDACTED_HOME\w\pt-run4-4\popen-gw0\test_resolve_ffprobe_prefers_o0\ffprobe
 E     + REDACTED_HOME\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-full_build\bin\ffprobe.EXE
@@ -33,7 +33,7 @@ ___________ test_resolve_ffprobe_falls_back_to_legacy_FFPROBE_PATH ____________
 [gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\backend\services\test_ffmpeg_utils.py:40: in test_resolve_ffprobe_falls_back_to_legacy_FFPROBE_PATH
     assert ffmpeg_utils.resolve_ffprobe() == str(fake)
-E   AssertionError: assert 'C:\\Users\\S...\\ffprobe.EXE' == 'C:\\Users\\S...fprobe-legacy'
+E   AssertionError: assert 'C:\\Users\\REDACTED...\\ffprobe.EXE' == 'C:\\Users\\REDACTED...fprobe-legacy'
 E     
 E     - REDACTED_HOME\w\pt-run4-4\popen-gw0\test_resolve_ffprobe_falls_bac0\ffprobe-legacy
 E     + REDACTED_HOME\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-full_build\bin\ffprobe.EXE
@@ -43,7 +43,7 @@ ______ test_resolve_ffprobe_omnivoice_path_takes_precedence_over_legacy _______
 [gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\backend\services\test_ffmpeg_utils.py:58: in test_resolve_ffprobe_omnivoice_path_takes_precedence_over_legacy
     assert ffmpeg_utils.resolve_ffprobe() == str(canonical)
-E   AssertionError: assert 'C:\\Users\\S...\\ffprobe.EXE' == 'C:\\Users\\S...obe-canonical'
+E   AssertionError: assert 'C:\\Users\\REDACTED...\\ffprobe.EXE' == 'C:\\Users\\REDACTED...obe-canonical'
 E     
 E     - REDACTED_HOME\w\pt-run4-4\popen-gw0\test_resolve_ffprobe_omnivoice0\ffprobe-canonical
 E     + REDACTED_HOME\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-full_build\bin\ffprobe.EXE

@@ -19,7 +19,7 @@ No remediation was attempted. Everything here is the **original baseline**. Any 
 | Python env | `bash scripts/uv-sync-retry.sh --all-extras --python 3.11 --no-group cuda --group cpu` (the donor's own sync script, CPU group) |
 | Machine settings, not changed | `where bash` lists `C:\Windows\System32\bash.exe` (WSL) first; `LongPathsEnabled` is 0 ([`earlier/machine-facts.txt`](earlier/machine-facts.txt)) |
 
-**Redaction.** Local paths, the user name and the host name are replaced by `REDACTED_HOME`, `REDACTED_USER` and `REDACTED_HOST`. pytest's own shortened paths (`C:\Users\S...`) are rewritten to `C:\Users\REDACTED...`. The test names `hf_AAAA…`, `ghp_…` and `github_pat_CCCC…` in `junit-4.xml` are the donor's synthetic test parameters, not secrets.
+**Redaction.** Local paths, the user name and the host name are replaced by `REDACTED_HOME`, `REDACTED_USER` and `REDACTED_HOST`. Truncated forms of the user name, in pytest's shortened paths and in shortened messages (for example `C:\Users\S...`), are rewritten to `C:\Users\REDACTED`. The test names `hf_AAAA…`, `ghp_…` and `github_pat_CCCC…` in `junit-4.xml` are the donor's synthetic test parameters, not secrets.
 
 ## Results
 
@@ -27,13 +27,13 @@ No remediation was attempted. Everything here is the **original baseline**. Any 
 | --- | --- | --- |
 | `pytest backend/tests/` (`HF_HUB_OFFLINE=1`) | exit 0. **590 passed, 10 skipped** ([log](earlier/pytest-backend.log)) | 600 passed |
 | `pytest tests/` (`HF_HUB_OFFLINE=1`), run 4 | Sum of the ten console summaries: **12,989 passed, 82 failed, 24 errors, 175 skipped, 8 xfailed, 1 xpassed**. Plus **21 tests deselected because they hang**, and the module `test_ci_change_detection`, which never ran (see below). | 13,307 passed, 0 failed, 51 skipped, 8 xfailed, 1 xpassed |
-| Frontend (`node --test electron/tests/node-version.test.mjs`: 6/6; `bun run test:frontend`: 124 passed, 1 skipped) | exit 0 ([log](earlier/frontend.log)) | exit 0 |
+| Frontend (a first `node --test` block, 6/6, whose command line is not in the log; then `bun run test:frontend`, 124 passed, 1 skipped) | exit 0 ([log](earlier/frontend.log)) | exit 0 |
 | `bun run test` (Electron unit) | exit 1. **4 failed, 2,896 passed, 12 skipped** (2,912). 3 of the 4 are 5,000 ms timeouts. ([log](earlier/bun-test.log)) | exit 0 |
 | `bun run check:electron` | exit 1 at its test step. **19 failed, 2,881 passed, 12 skipped**. 17 of the 19 are 5,000 ms timeouts. **The later steps (build, web build, packaging contract) did not run**, so they are NOT RUN on Windows, not passed. ([log](earlier/check-electron.log)) | exit 0 |
 
 **JUnit counts differ from the console counts.** The JUnit files have 13,276 test cases: 12,990 with no outcome element, 82 with `<failure>`, 21 with `<error>` and 183 with `<skipped>`.
 
-- JUnit files xfailed under skipped and xpassed under passed.
+- JUnit files xfailed tests under skipped and xpassed tests under passed.
 - The console counts the one collection error once per worker.
 
 `run4/analysis.txt` uses the JUnit counts.
@@ -108,7 +108,7 @@ Findings, original baseline:
    - It did not recur in run 4, where the same test passed with no egress record. Why is not established. One hypothesis is a result cached outside the test's temporary directory, as in finding 6; it is not checked.
 3. **A Python process attempted a connection to a Hugging Face address.**
    - In the unprobed `-n auto` attempt, the watcher recorded `SynSent 13.36.122.243:443 pid=14936 proc=python` at 2026-11-09 05:00:34 +03:00 ([`watcher/egress-tcp-attempt2-suites.txt`](watcher/egress-tcp-attempt2-suites.txt)). Only `SynSent` was seen, not `Established`, so this shows an attempt, not a completed connection.
-   - About 2 h later, and again after run 4, `us.aws.cdn.hf.co` answered with 13.36.122.243 among its addresses. The address reverse-resolves to `ec2-13-36-122-243.eu-west-3.compute.amazonaws.com` ([`watcher/address-lookups.txt`](watcher/address-lookups.txt)).
+   - About 1 h 04 min later (03:04:56Z, against the SYN at 02:00:34Z), and again after run 4, `us.aws.cdn.hf.co` answered with 13.36.122.243 among its addresses. The address reverse-resolves to `ec2-13-36-122-243.eu-west-3.compute.amazonaws.com` ([`watcher/address-lookups.txt`](watcher/address-lookups.txt)). The script-produced `run4/analysis.txt` (its `HF_ADDRESSES_NOW` line) also lists 13.36.122.243 among the Hugging Face addresses.
    - The same PID 14936 had started the native `hf_xet` client at 04:56:50 +03:00 ([`watcher/hf-xet-logs/xet_20261109T045650860+0300_14936.log`](watcher/hf-xet-logs/xet_20261109T045650860+0300_14936.log)).
    - **Which test made the attempt is not identified.** That attempt had no probe, and the watcher does not record tests.
 4. **An unattributed connection.** In the unprobed `-n 4` attempt, a Python process (PID 17916) had `Established 57.150.192.193:443` at 2026-11-09 06:54:27 +03:00 ([`watcher/egress-tcp-tests-n4.txt`](watcher/egress-tcp-tests-n4.txt)). The address has no reverse DNS record ([`watcher/address-lookups.txt`](watcher/address-lookups.txt)). **Who owns it, and which test made the connection, are not identified.**
