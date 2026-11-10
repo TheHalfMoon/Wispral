@@ -14,6 +14,8 @@
 
 The smallest safe first Grain is still **`CORE-01`**: the eight candidate contracts as a language-neutral package, with the gap-probe corpus. Its own work does not depend on any blocked evidence, because it uses no STT, no donor runtime and no model. It is reachable only through `D0G`, though. Section 4 gives the founder two paths.
 
+**A constraint both paths must respect.** Specification 000 says 000G "selects exactly one bounded next Grain … packets are not opened en masse" (`specs/000-founding-research/spec.md`, lines 10, 24 and 114; repeated in `specs/CURRENT.md` and `tasks.md`). The D0G acceptance in `packets.json` reads differently: it opens `GRAIN_CORE`, `GRAIN_DESIGN` and `GRAIN_BENCH` plus up to two product Grains. But `packets.json` is a `CANDIDATE` plan, and the specification is canonical. This package therefore recommends that the D0G decision select **exactly one** Grain. Opening more at once would first need Specification 000 amended, under a qualifying review.
+
 ## 1. D0G dependencies
 
 | Dependency | State | Evidence on `main` | What clears it |
@@ -21,8 +23,8 @@ The smallest safe first Grain is still **`CORE-01`**: the eight candidate contra
 | `F` | `VERIFIED` | #140, `b6c8507` | — |
 | `CORE-00` | `VERIFIED` | #141, `81b2de6` | — |
 | `ST-D00b` | `VERIFIED` | #142, `5c2663f` | — |
-| `SD-M0` | `VERIFYING` (#153) | Linux in #148 (`48fb9c0`); Windows in #150 (`131a2bf`). All suites pass. Debug and release builds succeed. Acceptance item 3 (bundled DLLs) is recorded only in the narrowed form the #150 review required: no VC++ runtime staged, installer contents NOT RUN. | **The founder confirms the narrowed item 3 satisfies the packet**, or amends the item |
-| `ST-D00` | `BLOCKED` (#153) | Linux #148; Windows #149 (`f29f5f5`); attribution #151 (`c407288`). The test suite reaches Hugging Face despite `HF_HUB_OFFLINE=1`: the AudioSeal watermark download through `torch.hub`. On Windows, a test also clones from GitHub and a runtime download is attempted. 82 failures and 21 errors on Windows. | A remediation decision, **and** a rerun on both platforms showing zero model-hub connections and no runtime download |
+| `SD-M0` | `VERIFYING` (#153) | Linux in #148 (`48fb9c0`); Windows in #150 (`131a2bf`). All suites pass; on Windows, Playwright passed on the fifth run, after two environment fixes. Debug and release builds succeed. Acceptance item 3 (bundled DLLs) is recorded only in the narrowed form the #150 review required: no VC++ runtime staged, installer contents NOT RUN. | **The founder confirms the narrowed item 3 satisfies the packet**, or amends the item |
+| `ST-D00` | `BLOCKED` (#153) | Linux #148; Windows #149 (`f29f5f5`); attribution #151 (`c407288`). The test suite reaches Hugging Face despite `HF_HUB_OFFLINE=1`. #151 attributes the lookups seen in its attribution runs to the AudioSeal watermark download through `torch.hub`. For the Linux traffic this is an inference, and the baseline's Windows SYN is not shown to be that test. On Windows, a test also clones from GitHub and a runtime download is attempted. Windows console totals: 82 failed and 24 errors (JUnit: 21 error cases). | A remediation decision, **and** a rerun on both platforms showing zero model-hub connections and no runtime download |
 | `KT-01` | `BLOCKED` (#153) | #152 (`246283f`). Hooks fire in order on Parlant v4.0.2. BAIL works only in BLOCK mode. **The integrated tool server cannot be disabled and accepts a forged `customer_id` (v4 and v3).** The local CPU model is NOT RUN. | Item 3: a packet amendment, or an implemented and evidenced gate. Item 4: the founder names a model, and it is measured. |
 
 ## 2. Capability dispositions D0G must cite (000B, 000C, 000D)
@@ -44,34 +46,42 @@ The ratings for value, reversibility and blast radius are unchanged from [`DECIS
 | Depends on (packets) | `D0G` | `D0G` | `BM-00`: `D0G`. `BM-01`: `SD-M0`, `ST-D00`, `CORE-07`. | `SD-M0`, plus `D0G` or `CORE-01` (first packets); the STT condition comes from Specification 000, not `packets.json` | `ST-D00`, `D0G` | `KT-01`, `D0G` |
 | Blocked P1 evidence it relies on | none in its own work | none in its own work | `BM-00` none; `BM-01` needs `ST-D00` | `SD-M0` (VERIFYING); 000B | **`ST-D00` (BLOCKED)** | **`KT-01` (BLOCKED)** |
 | Uses STT, donor runtime or a model | no | no | `BM-00` no | yes (STT) | yes (TTS donor) | yes (LLM) |
-| Ready to open if `D0G` passed today | **yes** | yes | `BM-00` yes | **no** (000B) | **no** | **no** |
+| Ready to open if `D0G` passed today | **yes** | yes | `BM-00` yes. `BM-02` and `BM-03` would also become reachable once `SD-M0` is confirmed, and they use the Handy donor runtime and local ASR models. | **no** (000B) | **no** | **no** |
+
+**ST-D00 gates more than WisprStudio.** Through `BM-01`, it also gates part of WisprSide: `SD-M1` depends on `BM-01`, and `SD-M10`, `PF-01`, `SD-R2`, `SD-R3` and `PF-02` follow from it. So while `ST-D00` stays blocked, part of WisprSide stays closed even after 000B clears.
 
 ## 4. Paths for the founder
 
-**Path A: clear the dependencies, then decide D0G as written.**
+**Path A: clear the dependencies, then decide D0G.**
 
 1. Confirm `SD-M0`'s narrowed item 3. This makes it `VERIFIED`.
 2. Remediate `ST-D00`. For example, provide the AudioSeal checkpoint locally or stub it in tests, and fix the Windows `git` and `PATH` handling. Then rerun on both platforms with zero model-hub connections.
 3. Resolve `KT-01`: authorize a local CPU model and measure it. Then either amend item 3, or implement and evidence a tool gate.
-4. Re-run D0G with a qualifying review.
+4. Re-run D0G with a qualifying review, selecting exactly one Grain (see the constraint above).
 
 This is the slowest path. Steps 2 and 3 are substantial work, and step 2 means deciding how far a research baseline may diverge from the donor.
 
-**Path B: amend D0G's dependencies so each blocked baseline gates only its own product Grain.** *(This is the recommended path, if the founder accepts the amendment.)*
+**Path B: amend D0G's dependencies and select exactly one Grain, `CORE-01`.** *(This is the recommended path, if the founder accepts the amendment.)*
 
-- Change `D0G.depends_on` to `F`, `CORE-00` and `ST-D00b`, plus `SD-M0` once it is confirmed.
-- Move `ST-D00` to the dependencies of `GRAIN_STUDIO`, and `KT-01` to those of `GRAIN_KLAINT_TEXT`. They already depend on them in `packets.json`.
-- D0G can then open `GRAIN_CORE`, `GRAIN_DESIGN` and `GRAIN_BENCH` (`BM-00` preregistration) with **no product Grain**. Each product Grain stays closed: `GRAIN_SIDE` on 000B, `GRAIN_STUDIO` on `ST-D00`, and `GRAIN_KLAINT_TEXT` on `KT-01`.
-- `CORE-01` becomes the first `READY` Grain.
-- This is a governance amendment to `packets.json`. It needs its own reviewed PR and the founder's approval, followed by the D0G decision PR, which also needs a qualifying review.
+- **Amendment.** Remove `ST-D00` and `KT-01` from `D0G.depends_on` in `packets.json`. `SD-M0` is not needed for `CORE-01` either. Keeping it as a D0G dependency is a founder choice: it costs nothing once the narrowed item 3 is confirmed, but it would otherwise hold D0G. The product Grains already depend on their baselines, so nothing else changes: every `GRAIN_STUDIO` packet reaches `ST-D00`, and every `GRAIN_KLAINT_TEXT` packet reaches `KT-01`.
+- **Review.** This amendment relaxes a 000G gate, so it should have a **qualifying** review under Governance item 7, followed by the founder's approval.
+- **The D0G decision** then selects **exactly one Grain**, `CORE-01` (`GRAIN_CORE`). It does so in a separate PR with a qualifying review, as Specification 000 requires.
+- **Everything else stays closed:** `GRAIN_DESIGN`, `GRAIN_BENCH` (including `BM-00`), `GRAIN_SIDE`, `GRAIN_STUDIO` and `GRAIN_KLAINT_TEXT`. Each needs a later 000G selection.
+- `CORE-01` becomes `READY` once that decision is merged.
 
 **Why B is safe:**
 
-- No Grain it opens touches the blocked evidence, STT, a donor runtime or a model.
-- The blocked baselines still gate the product Grains that would use them.
+- `CORE-01` lands contract schemas, transitions and fixtures. It uses no blocked evidence, no STT, no donor runtime and no model.
+- The blocked baselines still gate every packet that would use them.
 - Nothing is reported as verified that is not.
 
 **What B gives up:** D0G no longer waits for all of P1. The founder should decide whether that ordering mattered for its own sake.
+
+**Not changed by either path:**
+
+- the open Specification 000 acceptance conditions ([`DECISION_PACKAGE.md`](DECISION_PACKAGE.md) §2);
+- the unchecked 000F closeout synthesis;
+- the 000B STT lane.
 
 ## 5. What this package does not do
 
