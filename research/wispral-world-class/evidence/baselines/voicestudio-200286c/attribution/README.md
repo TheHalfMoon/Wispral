@@ -12,8 +12,8 @@ On Linux, `pytest tests/` with `HF_HUB_OFFLINE=1` looks up and connects to Huggi
 | What the test does | posts a long text to `/generate` with a fake TTS engine |
 | Call path | `backend/services/model_manager.py` `_run` → `backend/services/watermark.py` `mark_synthetic` → `embed_watermark` → `_get_generator` → `audioseal/loader.py` `load_model_checkpoint` → `torch.hub.load_state_dict_from_url` → `urllib` |
 | URL the call path implies | `https://huggingface.co/facebook/audioseal/resolve/main/generator_base.pth`. `_get_generator` calls `AudioSeal.load_generator("audioseal_wm_16bits")`, and that is the checkpoint URL in AudioSeal's packaged card `audioseal_wm_16bits.yaml`. The capture records host names only, not URLs. |
-| Why `HF_HUB_OFFLINE=1` does not stop it | the download goes through PyTorch's hub helper and the standard library, not through `huggingface_hub`, so the offline flag is never consulted |
-| Effect on the test | none: it passes either way (see the Windows rerun below) |
+| Why `HF_HUB_OFFLINE=1` does not stop it | inferred from the stack: the download goes through PyTorch's hub helper and the standard library, and no `huggingface_hub` frame appears, so the offline flag is not consulted on this path |
+| Effect on the test | none observed: with the lookup blocked it still passes ([`rerun.log`](windows-blocked-rerun/rerun.log)). The donor's `mark_synthetic` is documented to pass audio through unchanged when watermarking fails, so a blocked download silently yields **unwatermarked** output. |
 
 So the only model-hub traffic the probe saw is a **model-weight download for the synthetic-speech watermark**, made by a test that uses a fake engine. This matters for Wispral twice over:
 
@@ -32,10 +32,11 @@ So the only model-hub traffic the probe saw is a **model-weight download for the
 
 The baseline branch is unchanged.
 
-- **Suites:** `pytest tests/` gave 13,307 passed, 51 skipped, 8 xfailed, 1 xpassed. `pytest backend/tests/` gave 600 passed. These are the same totals as the baseline rerun ([`python-summary.txt`](linux-run-42749631072/python-summary.txt)).
-- **Probe:** 31 non-loopback records. Two are model-hub lookups, `huggingface.co` then `us.aws.cdn.hf.co`. Both are attributed to the test above, inside a pytest worker ([`attribution-summary.txt`](linux-run-42749631072/attribution-summary.txt), [`probe-out/`](linux-run-42749631072/probe-out/)).
-  - The probe keeps the last 12 stack frames. Here those were all standard-library `urllib` and `http.client` frames, so the calling library was found with the Windows rerun below.
-- **Packet capture** ([`egress-python.txt`](linux-run-42749631072/egress-python.txt), lines 161–181), at 2026-11-10 03:43:09 UTC:
+- **Suites:** `pytest tests/` gave 13,307 passed, 51 skipped, 8 xfailed, 1 xpassed. `pytest backend/tests/` gave 600 passed. ([`python-summary.txt`](linux-run-42749631072/python-summary.txt)). These are the same totals as the baseline rerun in [`../README.md`](../README.md).
+- **Probe:** 31 records the probe classed as non-loopback. Four of them are loopback aliases its classifier cannot parse (`127.1`, `0x7f000001`, `2130706433`). Four are model-hub records: lookups of `huggingface.co` and `us.aws.cdn.hf.co`, and a connect call to each. All four are attributed to the test above, inside a pytest worker (pid 3515) ([`attribution-summary.txt`](linux-run-42749631072/attribution-summary.txt), [`probe-out/`](linux-run-42749631072/probe-out/)).
+  - The probe drops standard-library frames by matching the Windows path `/Lib/`, which does not match on Linux, and keeps the last 12 frames. So on Linux the kept frames were all standard-library `urllib` and `http.client` frames. The calling library was found with the Windows rerun below.
+  - **Linking the Linux traffic to AudioSeal is an inference.** It rests on the same test, the same `urllib` frame shape, and the full call path from the Windows stack, which comes from a different Python build with different line numbers.
+- **Packet capture** ([`egress-python.txt`](linux-run-42749631072/egress-python.txt), lines 159–186), at 2026-11-10 03:43:09 UTC:
   1. A lookup of `huggingface.co`, answered with `143.204.1.6, …`.
   2. A TCP SYN to `143.204.1.6:443`.
   3. About 100 ms later, a lookup of `us.aws.cdn.hf.co`, answered with `44.233.64.198, …`.
@@ -51,17 +52,24 @@ The baseline branch is unchanged.
 - `HF_HUB_OFFLINE=1` was set.
 - `LOCALAPPDATA`, `APPDATA`, `USERPROFILE`, `XDG_CACHE_HOME` and `HF_HOME` pointed to new empty folders, so no cached file could hide the request.
 
-Result: `1 passed`. There was exactly one blocked lookup, `huggingface.co:443`, and its full stack is in [`block.txt`](windows-blocked-rerun/block.txt). That stack gives the call path in the table above.
+It was run twice:
+
+- **First run.** Only its stack dump was kept: [`block.txt`](windows-blocked-rerun/block.txt). The setup and result above come from the agent's session for that run and were not logged to a file.
+- **Second run**, repeated after review with everything logged ([`rerun.log`](windows-blocked-rerun/rerun.log), [`block-rerun2.txt`](windows-blocked-rerun/block-rerun2.txt)). The log records the environment, the command, a check that the folders were empty (0 entries), `1 passed` with `PYTEST_EXIT=0`, and exactly one blocked lookup, `huggingface.co:443`, during the test's call phase.
+
+The stacks give the call path in the table above.
 
 ## Open questions
 
-- **Why run 4 on Windows saw no lookup.** In the probed Windows run 4, this test passed and the probe recorded no model-hub lookup. A clean-cache rerun does make the lookup, and no AudioSeal checkpoint was found in the laptop's usual cache locations. Why run 4 differed is not established.
+- **Why run 4 on Windows saw no lookup.** In the probed Windows run 4, this test passed and the probe recorded no model-hub lookup. A clean-cache rerun does make the lookup. A search of the user cache folders and the work directory found no AudioSeal checkpoint ([`checkpoint-search.txt`](windows-blocked-rerun/checkpoint-search.txt)). Why run 4 differed is not established.
 - **The earlier Windows connection attempt.** The Windows SYN to 13.36.122.243 recorded in the baseline came from an unprobed run. It is consistent with this path, but it is not shown to be this test.
+- **Whether the Linux download completed.** `pytest-tests.log` shows a `weight_norm` `FutureWarning` listed under this test, together with another test. That could mean the generator model was built, which would need the download to have finished. It is inconclusive.
 - **Other weight downloads.** Only this path was observed. Other tests that reach the same watermark code with a real cache miss could do the same.
 
 ## What a remediation would need (not done here)
 
 - The test suite needs the watermark generator stubbed or a local checkpoint, and it must fail closed on egress.
 - The product needs AudioSeal weights treated as a pinned, licence-checked model asset under the offline policy, not fetched at run time by `torch.hub`.
+- A failed watermark load must not silently ship unwatermarked synthetic speech. The donor's own `mark_synthetic` docstring names this mark as its answer to EU AI Act Art. 50(2), which requires machine-readable marking of synthetic audio. So on an offline machine without the cached weights, this pass-through is a compliance gap, not just a test problem.
 
 These belong to a later Grain. Nothing here changes the donor.

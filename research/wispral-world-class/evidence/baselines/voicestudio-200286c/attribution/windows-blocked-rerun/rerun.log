@@ -1,0 +1,19 @@
+# Windows single-test rerun with egress blocked, 2026-11-10T05:13:49Z, HW-A, VoiceStudio checkout b8e67b5fd164368b0535a00890270d4cfca3759e
+# Environment for this command (all others inherited):
+#   HF_HUB_OFFLINE=1
+#   PYTHONPATH=<probe-block dir containing sitecustomize.py>
+#   LOCALAPPDATA, APPDATA, USERPROFILE, XDG_CACHE_HOME=<new empty dirs>; HF_HOME=<new empty dir>/cache/hf
+# Command: .venv/Scripts/python.exe -m pytest tests/test_chunked_tts.py::test_long_text_is_chunked_through_engine -q -p no:cacheprovider --basetemp=<new dir>
+# Empty-dir check before the run:
+0
+.                                                                        [100%]
+============================== warnings summary ===============================
+tests/test_chunked_tts.py::test_long_text_is_chunked_through_engine
+  C:\Users\REDACTED_USER\w\vs\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 1 warning in 38.86s
+PYTEST_EXIT=0
+# BLOCKED entries written: 1
+BLOCKED huggingface.co:443 pid=12328 test=tests/test_chunked_tts.py::test_long_text_is_chunked_through_engine (call)
