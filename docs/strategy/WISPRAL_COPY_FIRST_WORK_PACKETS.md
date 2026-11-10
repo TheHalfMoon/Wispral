@@ -1,5 +1,11 @@
 # Copy-first work packets
 
+> **Superseded (2026-11-10).** This V3 material is history. Two points in it are stale:
+> - **Fit guard:** the guard must allow overlapping segments (packet ST-D04).
+> - **Parlant:** version 4 removed strict canned responses, journeys, evaluations and the Plan hook that this text relies on.
+>
+> Sequencing follows the final master plan the founder approved on 2026-11-10 ([PR #155](https://github.com/TheHalfMoon/Wispral/pull/155)).
+
 All packets are **DRAFT proposals**, not executable scope. Each must be refined to a Grain and receive the applicable readiness authority after governance/000G. Exact source revisions, hashes, functions and direct dependency boundaries are retained in [source-transplants.json](../../research/rea/2026-10-21/source-transplants.json) and [SOURCE_TRANSPLANT_MATRIX.md](../../research/rea/2026-10-21/SOURCE_TRANSPLANT_MATRIX.md). A source ID below is a join key into that manifest, not permission to fetch latest main.
 
 See [packet-authorities.json](../../research/rea/2026-10-21/packet-authorities.json) for explicit 000C–000G/B2 readiness dependencies and [model routes](WISPRAL_MODEL_ROUTING_CONTRACTS.md). No graph node is currently READY. Full baselines/builds remain NOT_RUN; source counts are not test passes.

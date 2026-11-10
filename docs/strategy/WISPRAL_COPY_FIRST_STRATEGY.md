@@ -89,3 +89,15 @@ Explicitly **not** built new: ASR/TTS models, a duration-fit algorithm, a generi
 3. **Unchanged-copy proof:** a file declared "COPY unchanged" is verified by SHA-256 against the pinned donor blob in CI.
 4. **Notices:** LICENSE/NOTICE and third-party notices travel with the code and appear in the app's About screen.
 5. **No silent widening:** a fork may not gain network calls, telemetry or auto-downloads through a rebase without a reviewed delta.
+
+The rules below are carried from PR #73's adoption rules. Its rule 9 is omitted. That rule kept meeting capture, dictation, TTS, voice cloning, note taking, CRM automation and IDE features from displacing a single core category until a later horizon. Constitution 1.0.0 instead gives TTS, cloning and synthesis to WisprStudio and dialogue to Klaint as products in their own right.
+
+6. **One donor per named job:** each adoption states the user or engineering job it solves; nothing is adopted for being popular.
+7. **Smallest transplant:** if a small module solves the job, its whole architecture is not imported.
+8. **Auditable provenance:** prefer landing the exact donor snapshot first, the Wispral adaptation as a separate commit, and tests showing behaviour before and after.
+9. **No hidden dependency inheritance:** lockfiles, workflows, model downloads, binary helpers, analytics, cloud services, update channels and telemetry are each a separate dependency decision.
+10. **Models and data are separate rights:** permission for code does not cover weights, tokenizers, datasets, voices or generated assets.
+11. **Platform behaviour is correctness:** desktop, capture and hotkey donors document the behaviour relevant to the adopted job on macOS, Windows, Linux/X11 and Linux/Wayland; unsupported paths fail visibly.
+12. **Donor benchmarks are not Wispral claims:** they may shape experiments; claims need Wispral evidence.
+13. **Context never becomes authority:** copied memory or context mechanisms supply evidence only; retrieval never authorizes a consequential action.
+14. **Donors stay replaceable:** donor-specific types stay inside the adapter unless a specification proves the coupling is durable.

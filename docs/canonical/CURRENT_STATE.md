@@ -409,7 +409,12 @@ This thesis is a program direction, not a benchmark result, compatibility claim 
 ## Current architecture posture
 
 - Rust remains the preferred runtime for core contracts, concurrency and policy. No production Cargo workspace is authorized yet.
-- Donor-led baselines are the working hypothesis for each product's surface (invariant A12). None has been built or tested here yet, and none is selected. The 000E research Grains measure them:
+- Donor-led baselines are the working hypothesis for each product's surface (invariant A12). None is selected. As of 2026-11-10 the 000E research Grains have measured them, with evidence under `research/wispral-world-class/evidence/` and `research/klaint-spike/`:
+  - the WisprSide donor baseline (`SD-M0`) passes its suites on Linux and Windows, with debug and release builds recorded on Windows, and is `VERIFYING`;
+  - the WisprStudio donor baseline (`ST-D00`) is recorded and is `BLOCKED`, because its network condition fails;
+  - the Klaint dialogue spike (`KT-01`) is recorded and is `BLOCKED`, because the engine's tool server accepts a forged customer identity.
+
+  The three surfaces are:
   - a desktop dictation fork for WisprSide;
   - a desktop production fork for WisprStudio;
   - a wrapped dialogue service for Klaint.
@@ -437,7 +442,7 @@ Wispral does NOT currently claim:
 - full-duplex audio or acoustic echo cancellation;
 - production security, accessibility, privacy, platform, or release qualification;
 - any GitHub growth outcome;
-- a built, tested or qualified WisprSide, WisprStudio or Klaint baseline (every donor baseline is `NOT RUN`);
+- a qualified WisprSide, WisprStudio or Klaint baseline: `SD-M0` is `VERIFYING`, `ST-D00` and `KT-01` are `BLOCKED`, and none is `VERIFIED`;
 - a qualified voice-consent, voice-cloning or revocation workflow;
 - tenant isolation, channel integrations or safe external customer actions;
 - trademark, domain or store clearance for any product name.

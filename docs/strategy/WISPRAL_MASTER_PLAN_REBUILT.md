@@ -1,5 +1,11 @@
 # Wispral Master Plan V3 — rebuilt from source evidence
 
+> **Superseded (2026-11-10).** This V3 material is history. Two points in it are stale:
+> - **Fit guard:** the guard must allow overlapping segments (packet ST-D04).
+> - **Parlant:** version 4 removed strict canned responses, journeys, evaluations and the Plan hook that this text relies on.
+>
+> Sequencing follows the final master plan the founder approved on 2026-11-10 ([PR #155](https://github.com/TheHalfMoon/Wispral/pull/155)).
+
 Date: 2026-10-21. Status: **PROPOSED / PLANNING ONLY**. This is the next research-plan version, not a canonical authority transition. No product code, deployment, production STT choice or benchmark leadership is claimed. The active constitution/specification frontier still governs execution.
 
 Wispral becomes the proposed unified voice platform; **WisprSide**, **WisprStudio** and **Klaint** are the final founder-selected product names. The plan maximizes qualified source reuse by retaining pinned product forks where integration fits, wrapping packages, and extracting pure leaves only when justified. Baselines must validate that coarser reuse is faster and safer; it is not yet measured. The sequence remains COPY → ADAPT → INTEGRATE → TEST → IMPROVE. A new implementation requires a written explanation of why the inspected source cannot meet its precise boundary.

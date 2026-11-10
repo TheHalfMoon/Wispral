@@ -18,6 +18,20 @@ node research/wispral-world-class/validate_plan.mjs         # packet graph, link
 
 ## 3. Questions that genuinely need the founder
 
+**Status on 2026-11-10:**
+- **Resolved:**
+  - Q-01: Apache-2.0 (#146).
+  - Q-02: A040 merged with a qualifying review (#133, `76fe651`).
+  - Q-03: correction C2 (#135), then the Constitution 1.0.0 designation.
+  - Q-05: the frontier stands, with #118 recorded as an exception (#136).
+  - Q-06: Constitution 1.0.0 ratified (#139).
+  - Q-12: #123 merged; #124, #127 and #73 close after the records refresh (founder decision FD-19).
+  - Q-13: the governance sequence completed.
+- **Partly resolved:** Q-04. The founder is to name a standing qualifying-review route (FD-14); until then, a reviewer is named per PR.
+- **Open:** Q-07, Q-08, Q-09, Q-10 and Q-11. For Q-10, plan as AGPL-only until the founder records per-file grant scope (FD-08).
+
+The founder decisions are recorded on [PR #155](https://github.com/TheHalfMoon/Wispral/pull/155).
+
 | ID | Question | Why it is the founder's call | Recommended answer |
 | --- | --- | --- | --- |
 | Q-01 | Which outbound license for the Wispral repository? | Ownership and distribution terms; AGPL-derived Studio code and founder grants interact with it | Decide before CORE-00 closes; keep per-product licensing possible |
@@ -49,7 +63,7 @@ node research/wispral-world-class/validate_plan.mjs         # packet graph, link
 
 ## 5. Known limitations of this package
 
-- No donor was built or run; no audio, model, GPU, native insertion or competitor trial was executed. All such results are `NOT_RUN` and mapped to packets.
+- No donor was built or run when this package was written; no audio, model, GPU, native insertion or competitor trial was executed. *(2026-11-10: the donor baselines `SD-M0` and `ST-D00` and the Klaint spike `KT-01` have since run; see `specs/000E-platform-feasibility/tasks.md`.)*
 - The WisprSide competitor refresh for 2026-11-08 was incomplete; WisprSide competitor cells rely on PR #124's 2026-10-21 observations.
 - Several model weight licenses and gated terms remain to be read (listed in the [model strategy](../../docs/engineering/WISPRAL_MODEL_STRATEGY.md#4-initial-candidates-to-benchmark-not-selections)).
 - The validators run manually today. No workflow runs `validate_plan.mjs`, `check_contrast.mjs` or `run_conformance.py`. A follow-up PR adds that CI job; this planning-only PR edits no workflow.
