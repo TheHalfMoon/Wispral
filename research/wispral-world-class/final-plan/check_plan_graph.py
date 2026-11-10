@@ -15,8 +15,9 @@ Checks (exit 1 on any failure):
      an existing packet and change something (no unknown target, no no-op). The simulated packet graph
      must have no cycle.
   7. Order: after the edits, every dependency of a roadmap packet is available before the roadmap,
-     a research packet, or placed in the same or an earlier roadmap group. A selected Grain's
-     dependencies must be available before its own group.
+     a research packet, placed earlier in the same group, or placed in an earlier group (order inside
+     a group is binding). A selected Grain's dependencies must be available before its own group.
+     Every packet assumed available must have a disposition, and none may be a blocked baseline.
   8. Gating: after the edits, no roadmap packet in any group depends, directly or transitively, on a
      blocked baseline (ST-D00, KT-01).
 With --write, also regenerates RESOLUTION_REGISTER.md next to this file.
@@ -167,11 +168,20 @@ for pid, p in sim.items():
 find_cycles(set(sim), lambda n: sim[n]["depends_on"], "simulated packet")
 
 # 7. order
+pos = {pid: n for grp in groups for n, pid in enumerate(grp["packets"])}
+for d in available:
+    if d not in dispositions:
+        errors.append(f"available_before_roadmap: {d} has no disposition")
+    if d in graph["blocked_baselines"]:
+        errors.append(f"available_before_roadmap: {d} is a blocked baseline")
 for pid, (gi, gid) in placed.items():
     for d in sim.get(pid, {}).get("depends_on", []):
         if d in available or d in research:
             continue
-        if d in placed and placed[d][0] <= gi:
+        if d in placed and (placed[d][0] < gi or (placed[d][0] == gi and pos[d] < pos[pid])):
+            continue
+        if d in placed and placed[d][0] == gi:
+            errors.append(f"{gid}: {pid} is listed before its dependency {d} in the same group")
             continue
         where = f"later group {placed[d][1]}" if d in placed else (f"disposition '{dispositions.get(d)}'" if d in dispositions else "nowhere")
         errors.append(f"{gid}: {pid} depends on {d}, which is in {where}")

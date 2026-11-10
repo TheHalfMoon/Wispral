@@ -21,7 +21,7 @@ python research/wispral-world-class/final-plan/check_plan_graph.py --write
 4. Every 000G selection opens exactly one Grain (Specification 000).
 5. **Coverage.** Every one of the 75 packets in `packets.json` has exactly one place: a roadmap group, or a stated disposition. Every roadmap packet exists or is declared new, every new packet is placed, and research packets are declared separately.
 6. **Amendment simulation.** The proposed dependency edits are applied to `packets.json` in memory. Every edit must name an existing packet and change something: no unknown target, no no-op. Every new packet must have planned dependencies. The simulated graph must have no cycle.
-7. **Order.** After the edits, every dependency of a roadmap packet must be either available before the roadmap, a research packet, or placed in the same or an earlier group. A selected Grain's dependencies must be ready before its own group.
+7. **Order.** After the edits, every dependency of a roadmap packet must be either available before the roadmap, a research packet, placed earlier in the same group, or placed in an earlier group. Order inside a group is binding. A selected Grain's dependencies must be ready before its own group. Every packet assumed available must have a disposition, and none may be a blocked baseline.
 8. **Gating.** After the edits, no roadmap packet in any group may depend on the blocked `ST-D00` or `KT-01`.
 
 The checker was mutation-tested on a scratch copy. It caught all ten deliberate breakages:
@@ -46,6 +46,6 @@ The script reads `packets.json` and writes only `RESOLUTION_REGISTER.md`, and on
 - dependencies, licensing and the packet graph, computed from `packets.json`;
 - the three open planning draft PRs (#124, #127, #73).
 
-Duplicate findings were merged; their other IDs are listed as aliases. Review round 1 of PR #155 added 23 findings (marked with their source). The author's own dependency audit added one more (PKT-21). Finding IDs use area prefixes (GOV, ARC, SEC, LIC, DEP, PKT, SAL); `former_id` gives the ID before the rename.
+Duplicate findings were merged; their other IDs are listed as aliases. Review rounds 1 and 2 of PR #155 added 30 findings, each marked with its source. The author's own dependency audit added one more (PKT-21). Finding IDs use area prefixes (GOV, ARC, SEC, LIC, DEP, PKT, SAL); `former_id` gives the ID before the rename.
 
 **If you change a decision:** edit `plan_graph.json` and rerun. The checker shows which stages and vehicles the change affects.

@@ -52,7 +52,7 @@
       "stage": "S0",
       "approval": "founder",
       "depends_on": [],
-      "title": "Product order after the foundation: WisprSide, then Klaint text, then WisprStudio (recommended); each product is opened by its own exactly-one 000G selection"
+      "title": "Preferred product order after the foundation: WisprSide, then Klaint text, then WisprStudio; it is a preference, not a dependency, so a product whose prerequisites are met may be selected without waiting for an earlier product"
     },
     {
       "id": "FD-06",
@@ -60,7 +60,7 @@
       "stage": "S0",
       "approval": "founder",
       "depends_on": [],
-      "title": "WisprSide speech path: R1 internal alpha may use Handy's existing local engines labelled unranked, with no accuracy claim, only once GP-02 amends Specification 000 to allow it; accepted 000B evidence before any accuracy claim and before R3"
+      "title": "WisprSide speech path: R1 internal alpha may use Handy's existing local engines labelled unranked, with no accuracy claim, only once GP-02S amends Specification 000 to allow it; accepted 000B evidence before any accuracy claim and before R3"
     },
     {
       "id": "FD-07",
@@ -86,7 +86,7 @@
       "stage": "S0",
       "approval": "founder",
       "depends_on": [],
-      "title": "Synthetic-speech marking: mark every synthetic output by default; a failed required mark (cloned, third-party, licensed, commercial) refuses export; any other failed mark shows a visible notice and records 'unmarked' in the provenance sidecar; legal reading of EU AI Act Art. 50(2) to be checked"
+      "title": "Synthetic-speech marking: mark every synthetic output by default, and until the legal reading of EU AI Act Art. 50(2) is recorded, treat every mark as required, so any failed mark refuses export; after that reading, the founder may scope required marks (cloned, third-party, licensed, commercial) and have other failures shown visibly and recorded as unmarked in the provenance sidecar"
     },
     {
       "id": "FD-10",
@@ -128,7 +128,7 @@
       "stage": "S0",
       "approval": "founder",
       "depends_on": [],
-      "title": "Name the qualifying-review route and its fallback; a standing route lands through AM-1"
+      "title": "Name the qualifying-review route and its fallback; a standing route lands through AM-2, and until then a reviewer is named per PR as item 7(b) allows"
     },
     {
       "id": "FD-15",
@@ -190,7 +190,7 @@
       "depends_on": [
         "AM-1"
       ],
-      "title": "Write ADR-0003 refining ADR-0002: core = contracts and fixtures, no daemon; per-product language and authority map with the evidence for each Python exception (Parlant for Klaint, the VoiceStudio fork for Studio; the BUILD_NEW broker is a separate process outside the Parlant process and outside the model's reach); how microphone and CPU contention between co-installed products is handled until BM-05"
+      "title": "Write ADR-0003 refining ADR-0002: core = contracts and fixtures, no daemon; per-product language and authority map with the evidence for each Python exception (Parlant for Klaint, the VoiceStudio fork for Studio; the BUILD_NEW broker is a separate process outside the Parlant process and outside the model's reach, reachable for issuance only by Parlant over a dedicated channel); how microphone and CPU contention between co-installed products is handled until BM-05"
     },
     {
       "id": "GP-01",
@@ -210,7 +210,7 @@
       "depends_on": [
         "FD-02"
       ],
-      "title": "Specification 000 amendment: (a) a 000G selection opens the first Grain of one capability (core, design, bench, WisprSide, Klaint text, WisprStudio), exactly one per selection, and creates that capability's implementation spec; later Grains of an opened capability become READY by readiness record under that spec; (b) per-capability required children, so a scoped 000G for a non-STT capability may run while 000B, 000C and 000D are open; (c) 000C-VOICE and 000C-AGENT mapped to dependent packets"
+      "title": "Specification 000 amendment: (a) a 000G selection opens the first Grain of one capability (core, design, bench, WisprSide, Klaint text, WisprStudio), exactly one per selection, and creates that capability's implementation spec; later Grains of an opened capability become READY by readiness record under that spec; (b) per-capability required children, so a scoped 000G for a non-STT capability may run while 000B, 000C and 000D are open; (c) 000C-VOICE and 000C-AGENT mapped to dependent packets; (d) Specification 000 closes when the first selection is merged and its remaining children are VERIFIED, SUPERSEDED or CANCELLED; later selections run under the same per-capability rule; (e) each selection appends a frontier section to specs/CURRENT.md naming the capability spec it creates"
     },
     {
       "id": "GP-02S",
@@ -221,7 +221,7 @@
         "GP-02",
         "FD-06"
       ],
-      "title": "Specification 000 speech amendment: speech-bearing Grains may reach R1 internal alpha with engines labelled unranked and no accuracy claim before accepted 000B evidence; accepted evidence before any accuracy claim and before R3"
+      "title": "Specification 000 speech amendment: speech-bearing Grains may reach R1 internal alpha with engines labelled unranked and no accuracy claim before accepted 000B evidence; accepted evidence before any accuracy claim and before R3; BM-02 and BM-03 (which run the Handy runtime and local ASR models) are classified as speech-bearing measurement, allowed before accepted 000B evidence because they produce evidence, not product claims"
     },
     {
       "id": "GP-03",
@@ -237,7 +237,7 @@
       "id": "GP-04",
       "type": "GP",
       "stage": "S1",
-      "approval": "qualifying review + founder",
+      "approval": "fresh review + founder",
       "depends_on": [
         "AM-1",
         "FD-07"
@@ -333,7 +333,7 @@
         "FD-06",
         "GP-02S"
       ],
-      "title": "Speech-bearing WisprSide packets depend on a recorded 000B disposition"
+      "title": "Speech-bearing WisprSide packets carry the GP-02S R1-only condition (engines labelled unranked, no accuracy claim) and need accepted 000B evidence before R3"
     },
     {
       "id": "PA-05",
@@ -344,7 +344,7 @@
         "FD-12",
         "GP-12"
       ],
-      "title": "Klaint: KT-01 stays BLOCKED for item 3 and is SUPERSEDED for it by KT-01b (never rewritten into a pass); KT-03, KT-06 and KT-09 depend on KT-01b; KT-02 and KT-03 acceptance items 'plugin server disabled/off' are replaced by: capability required for every tool, per-tenant container isolation with a distinct UID, and the KT-01b probes; every customer-facing agent whose message gate is required runs in BLOCK mode, enforced at start-up and at run time, with a per-session STREAM negative fixture; KT-10 private-IP tests name the loopback tool-server port"
+      "title": "Klaint: KT-01 stays BLOCKED for item 3 and is SUPERSEDED for it by KT-01b (never rewritten into a pass); KT-03, KT-06 and KT-09 depend on KT-01b; KT-03's title and acceptance are rewritten for a broker in a separate process from Parlant (no longer 'one hardened Parlant process' or 'in-process ToolService'); KT-02 and KT-03 'plugin server disabled/off' items are replaced by: the capability on every tool, an authenticated issuance channel reachable only by Parlant with capabilities bound to the reviewed proposal, per-tenant container isolation with a distinct UID, and the KT-01b probes; every customer-facing agent whose message gate is required runs in BLOCK mode, enforced at start-up and at run time, with a per-session STREAM negative fixture; KT-10 private-IP tests name the loopback tool-server port and the broker issuance channel"
     },
     {
       "id": "PA-06",
@@ -356,7 +356,7 @@
         "FD-09",
         "FD-17"
       ],
-      "title": "WisprStudio: ST-D09 depends on ST-D08 and gates ST-D03; watermark is a staged asset with fail-closed export per FD-09; ST-D08 covers build-time sources; engine environments within the MVP limit; consent UX matches the contract; local-only tied to the ST-D01 loopback, Host/Origin and per-launch-token test, with a source offer; Studio packets that depend on ST-D00 depend on ST-D00r; new ST-D11 (identifiers, updater, Authenticode, NSIS), ST-D12 (Windows suite repair), ST-D13 (crash-safe long-form resume), ST-D14 (project migration and dubbing provenance)"
+      "title": "WisprStudio: ST-D09 depends on ST-D08 and gates ST-D03; watermark is a staged asset with fail-closed export per FD-09; ST-D08 covers build-time sources; engine environments within the MVP limit; consent UX matches the contract; local-only tied to the ST-D01 loopback, Host/Origin and per-launch-token test, with a source offer; Studio packets that depend on ST-D00 depend on ST-D00r; new ST-D11 (identifiers, updater, Authenticode, NSIS), ST-D12 (Windows suite repair), ST-D13 (crash-safe long-form resume), ST-D14 (project migration and dubbing provenance); ST-D12 acceptance: the Windows suites of the Wispral WisprStudio fork run green in fork CI at the exact head (failures fixed in product code, not deselected), distinct from ST-D00r, which only measures the donor baseline on a research branch"
     },
     {
       "id": "PA-07",
@@ -459,7 +459,7 @@
         "GP-11",
         "FD-12"
       ],
-      "title": "KT-01b: in the Linux target container stack with production AuthConfig, prove that every tool, read tools included, requires the broker-issued capability (bound to session, tool and arguments, short-lived, single use) and ignores context.customer_id; probes: a made-up session, a valid live session ID of another customer of the same tenant, another tenant, and every tool-server route including GET /tools all yield zero effects and zero data; per-tenant container or full namespace set with a distinct UID; namespace residents listed; a bounded experimental harness, not KT-03 code; item-4 local-model measurement if FD-11 names a model"
+      "title": "KT-01b: in the Linux target container stack with production AuthConfig, prove that every tool, read tools included, requires the broker-issued capability (bound to session, tool and arguments, short-lived, single use) and ignores context.customer_id; probes: a made-up session, a valid live session ID of another customer of the same tenant, another tenant, every tool-server route including GET /tools, and a capability request to the broker from any resident other than Parlant (including a connector over loopback) all yield zero effects, zero data and no capability; the broker accepts issuance requests only from Parlant over a dedicated channel no other resident can reach, and binds each capability to the tool proposal it reviewed in on_reviewing_tool_calls, not to a caller-supplied session ID; per-tenant container or full namespace set with a distinct UID; namespace residents listed; a bounded experimental harness, not KT-03 code; item-4 local-model measurement if FD-11 names a model"
     },
     {
       "id": "RG-2",
@@ -516,10 +516,20 @@
       "stage": "S1",
       "approval": "qualifying review + founder (Governance item 7)",
       "depends_on": [
-        "FD-01",
+        "FD-01"
+      ],
+      "title": "Constitutional amendment 1.1.0 (minor): (a) the Constitution's product-code gate, review and evidence rules extend to the product repositories (extend-only, never narrow; research branches the frontier authorizes, such as the SD-M0 baseline and the ST-D00r delta branch, are not product code); (c) the latest appended Platform frontier section governs, names what it supersedes, covers specs/CURRENT.md and docs/canonical/CURRENT_STATE.md, and grants nothing beyond the specifications; (d) the Preamble's resource core means per-product resource owners plus the BM-05 co-running measurement"
+    },
+    {
+      "id": "AM-2",
+      "type": "AMENDMENT",
+      "stage": "S1",
+      "approval": "qualifying review + founder (Governance item 7)",
+      "depends_on": [
+        "AM-1",
         "FD-14"
       ],
-      "title": "Constitutional amendment 1.1.0 (minor): (a) the Constitution's product-code gate, review and evidence rules extend to the product repositories (extend-only, never narrow); (b) a standing qualifying-review route under item 7(b); (c) the latest appended Platform frontier section governs, names what it supersedes, covers specs/CURRENT.md and docs/canonical/CURRENT_STATE.md, and grants nothing beyond the specifications; (d) the Preamble's resource core means per-product resource owners plus the BM-05 co-running measurement"
+      "title": "Constitutional amendment 1.2.0 (minor): a standing qualifying-review route under item 7(b), relaxing per-PR naming; every other item 7 condition (non-author, substantive, exact head, recorded, vendor rule) unchanged. Until it lands, reviewers are named per PR"
     },
     {
       "id": "GP-11",
@@ -528,10 +538,20 @@
       "approval": "qualifying review + founder",
       "depends_on": [
         "AM-1",
-        "S0-MERGE",
+        "S0-MERGE"
+      ],
+      "title": "Platform frontier update: a newly appended frontier section recording current Grain states (ST-D00 BLOCKED, KT-01 BLOCKED), the licence decision and the forks as founder-authorized research hosting; 000E and 000F spec amendments that open exactly three more research Grains, KT-01b, ST-D00r and 000F-W, each READY by its own readiness record, and amend the 000E scope clauses that today forbid fixing donor failures, so that ST-D00r's remediation is in scope as research"
+    },
+    {
+      "id": "GP-13",
+      "type": "GP",
+      "stage": "S1",
+      "approval": "fresh review + founder",
+      "depends_on": [
+        "GP-11",
         "FD-04"
       ],
-      "title": "Platform frontier update: a newly appended frontier section recording current Grain states (SD-M0 VERIFIED if FD-04, ST-D00 BLOCKED, KT-01 BLOCKED), the licence decision and the forks as founder-authorized research hosting; 000E and 000F spec amendments opening exactly three more research Grains, KT-01b, ST-D00r and 000F-W, each READY by its own readiness record"
+      "title": "SD-M0 verification record: the 000E tasks change that records the founder's confirmation of the narrowed acceptance item 3 and moves SD-M0 to VERIFIED, meeting the global evidence gate"
     },
     {
       "id": "GP-12",
@@ -539,10 +559,19 @@
       "stage": "S1",
       "approval": "qualifying review + founder",
       "depends_on": [
-        "FD-07",
         "FD-12"
       ],
-      "title": "Security-architecture amendment: rewrite KL-T3 (the tool server is reachable; every tool requires the broker capability) and reopen B6; KL-T5 with the shared-Chatwoot residual-risk statement or per-tenant Chatwoot; SI-2 and contracts README parity wording become 'every implementation passes the shared fixtures'; remove LAN render workers from the Studio architecture"
+      "title": "Klaint security-architecture amendment: rewrite KL-T3 (the tool server is reachable; every tool requires the broker capability; the broker authenticates issuance from Parlant only, over a dedicated channel, and binds capabilities to the reviewed proposal) and reopen B6; KL-T5 with the shared-Chatwoot residual-risk statement or per-tenant Chatwoot"
+    },
+    {
+      "id": "GP-14",
+      "type": "GP",
+      "stage": "S1",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "FD-07"
+      ],
+      "title": "Core and Studio architecture text: SI-2 and the contracts README parity wording become 'every implementation passes the shared fixtures'; remove LAN render workers from the Studio architecture and state Studio as local-only"
     },
     {
       "id": "PA-SET-CORE",
@@ -577,7 +606,8 @@
         "PA-04",
         "PA-07",
         "PA-10",
-        "PA-14"
+        "PA-14",
+        "FD-16"
       ],
       "title": "Packet regeneration 2 (WisprSide): PA-04, PA-07, PA-10, PA-14"
     },
@@ -590,7 +620,8 @@
         "PA-SET-CORE",
         "GP-12",
         "PA-05",
-        "PA-09"
+        "PA-09",
+        "GP-10"
       ],
       "title": "Packet regeneration 3 (Klaint): PA-05, PA-09"
     },
@@ -601,8 +632,9 @@
       "approval": "qualifying review + founder",
       "depends_on": [
         "PA-SET-CORE",
-        "GP-12",
-        "PA-06"
+        "GP-14",
+        "PA-06",
+        "FD-16"
       ],
       "title": "Packet regeneration 4 (WisprStudio): PA-06"
     },
@@ -616,8 +648,10 @@
         "GP-08",
         "GP-09",
         "GP-11",
+        "GP-13",
         "AM-1",
-        "FD-20"
+        "FD-20",
+        "GP-14"
       ],
       "selects": [
         "CORE-01"
@@ -648,7 +682,7 @@
       "selects": [
         "BM-00"
       ],
-      "title": "000G selection: the benchmark capability, opening BM-00 only (BM-01a, BM-01b, BM-02 and BM-03 follow by readiness record)",
+      "title": "000G selection: the benchmark capability, opening BM-00 only; BM-01a, BM-01b, BM-02 and BM-03 later become READY by readiness record under the benchmark spec, even where the plan schedules them inside a product stage",
       "type": "SELECTION",
       "approval": "qualifying review + founder (Governance item 7)"
     },
@@ -658,8 +692,8 @@
       "depends_on": [
         "SEL-BENCH",
         "PA-SET-SIDE",
-        "FD-05",
-        "FD-06"
+        "FD-06",
+        "FD-15"
       ],
       "selects": [
         "SD-M2"
@@ -672,7 +706,7 @@
       "id": "SEL-KLAINT",
       "stage": "S6",
       "depends_on": [
-        "SEL-SIDE",
+        "SEL-BENCH",
         "RG-1",
         "PA-SET-KLAINT"
       ],
@@ -687,7 +721,7 @@
       "id": "SEL-STUDIO",
       "stage": "S7",
       "depends_on": [
-        "SEL-KLAINT",
+        "SEL-BENCH",
         "RG-2",
         "RG-3",
         "FD-08",
@@ -955,7 +989,7 @@
       "cite": "CONSTITUTION.md:214; DECISION_LEDGER.md:32; specs/CURRENT.md:263",
       "resolved_by": [
         "FD-14",
-        "AM-1"
+        "AM-2"
       ],
       "former_id": "G-15"
     },
@@ -1243,7 +1277,7 @@
       "cite": "contracts README:36; WISPRAL_SECURITY_ARCHITECTURE.md:15; CORE-R1",
       "resolved_by": [
         "PA-08",
-        "GP-12"
+        "GP-14"
       ],
       "former_id": "A-03"
     },
@@ -1866,7 +1900,8 @@
       "summary": "Binding the product repositories and a standing review route change what the Constitution defines, so they need an amendment",
       "cite": "CONSTITUTION.md Governance items 1 and 7(b)",
       "resolved_by": [
-        "AM-1"
+        "AM-1",
+        "AM-2"
       ],
       "source": "review of PR #155 head 5640016"
     },
@@ -1900,7 +1935,7 @@
       "summary": "A founder decision alone cannot move SD-M0 to VERIFIED",
       "cite": "specs/CURRENT.md:255-264",
       "resolved_by": [
-        "GP-11"
+        "GP-13"
       ],
       "source": "review of PR #155 head 5640016"
     },
@@ -2054,7 +2089,7 @@
       "resolved_by": [
         "FD-07",
         "PA-06",
-        "GP-12"
+        "GP-14"
       ],
       "source": "review of PR #155 head 5640016"
     },
@@ -2104,6 +2139,86 @@
         "PA-SET-STUDIO"
       ],
       "source": "found by the author's dependency audit during review round 1"
+    },
+    {
+      "id": "SEC-20",
+      "area": "security",
+      "severity": "blocking",
+      "summary": "With the broker in its own process, its capability-issuing channel is a new trust boundary; another resident of the tenant stack could mint a capability with a valid session ID",
+      "cite": "plan §5 broker placement; KL-T3 (peer credentials identify a process, not a customer)",
+      "resolved_by": [
+        "RG-1",
+        "PA-05",
+        "GP-12",
+        "ADR-0003"
+      ],
+      "source": "review of PR #155 head ba44fcb"
+    },
+    {
+      "id": "PKT-22",
+      "area": "packet-graph",
+      "severity": "blocking",
+      "summary": "Product selections formed a hidden serial chain: a failed KT-01b would also hold WisprStudio, contradicting the plan's statements",
+      "cite": "plan_graph SEL-KLAINT and SEL-STUDIO dependencies at ba44fcb",
+      "resolved_by": [
+        "FD-05"
+      ],
+      "source": "review of PR #155 head ba44fcb"
+    },
+    {
+      "id": "PKT-23",
+      "area": "packet-graph",
+      "severity": "blocking",
+      "summary": "KT-03's title and acceptance still describe an in-process broker, contradicting the separate broker process",
+      "cite": "packets.json KT-03",
+      "resolved_by": [
+        "PA-05"
+      ],
+      "source": "review of PR #155 head ba44fcb"
+    },
+    {
+      "id": "PKT-24",
+      "area": "packet-graph",
+      "severity": "important",
+      "summary": "ST-D12 had only a title and could overlap ST-D00r's research harness fixes",
+      "cite": "plan PA-06",
+      "resolved_by": [
+        "PA-06"
+      ],
+      "source": "review of PR #155 head ba44fcb"
+    },
+    {
+      "id": "PKT-25",
+      "area": "packet-graph",
+      "severity": "important",
+      "summary": "FD-04 held the research Grains through GP-11",
+      "cite": "plan_graph GP-11 dependencies at ba44fcb",
+      "resolved_by": [
+        "GP-13"
+      ],
+      "source": "review of PR #155 head ba44fcb"
+    },
+    {
+      "id": "GOV-30",
+      "area": "governance",
+      "severity": "important",
+      "summary": "One amendment bundled the standing review route with unrelated items, so deferring FD-14 would hold the core",
+      "cite": "plan_graph AM-1 at ba44fcb",
+      "resolved_by": [
+        "AM-2"
+      ],
+      "source": "review of PR #155 head ba44fcb"
+    },
+    {
+      "id": "GOV-31",
+      "area": "governance",
+      "severity": "important",
+      "summary": "Specification 000's closure, and whether each selection appends a frontier section, were unstated",
+      "cite": "specs/000-founding-research/spec.md:114; specs/CURRENT.md",
+      "resolved_by": [
+        "GP-02"
+      ],
+      "source": "review of PR #155 head ba44fcb"
     }
   ],
   "simulated_amendments": {
@@ -2232,12 +2347,6 @@
     "ST-D00",
     "KT-01"
   ],
-  "gating_expectations": {
-    "S5-WisprSide-R1": [],
-    "S5-WisprSide-R2R3": [],
-    "S6-Klaint-R1": [],
-    "S7-Studio-R1": []
-  },
   "research_packets": {
     "KT-01b": [
       "CORE-00"
@@ -2366,12 +2475,12 @@
       "stage": "S8",
       "packets": [
         "AG-00",
+        "CORE-R1",
         "A-01",
         "BM-04",
         "BM-05",
         "PF-02",
         "CORE-08",
-        "CORE-R1",
         "KV-01",
         "KV-02",
         "ST-D10",
@@ -2391,7 +2500,7 @@
     "F": "MERGED (P0, #140)",
     "CORE-00": "VERIFIED (#141)",
     "ST-D00b": "VERIFIED (#142)",
-    "SD-M0": "VERIFYING; VERIFIED through GP-11 if FD-04 is accepted",
+    "SD-M0": "VERIFYING; VERIFIED through GP-13 if FD-04 is accepted",
     "ST-D00": "BLOCKED; recorded baseline stays as it is; remediated by research Grain ST-D00r (RG-2)",
     "KT-01": "BLOCKED; item 3 SUPERSEDED by research Grain KT-01b (RG-1), never rewritten into a pass",
     "D0G": "Amended by PA-01; executed as selection D0G-1",
