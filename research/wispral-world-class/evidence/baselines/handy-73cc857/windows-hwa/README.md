@@ -6,7 +6,7 @@
 
 - Rust `cargo test --locked`: 332 passed, 0 failed, 18 ignored.
 - Lint and the keyboard test pass.
-- Playwright passes 2 of 2, but only on the fifth run, after two environment fixes. Of the four failed runs, two logs survive, one was overwritten and one was deleted; all are disclosed below.
+- Playwright passes 2 of 2, but only on the fifth run, after two environment fixes. Four runs did not pass: runs 1 and 3 are logged as failed; run 2's log was overwritten and run 4's outcome is not recorded. All are disclosed below.
 - The debug and release builds succeed.
 - The DLLs the donor's Windows bundle config would ship are recorded from this build ([`bundle-dlls.txt`](bundle-dlls.txt)). The installer itself was not built, so what an installer would actually contain is NOT RUN.
 
@@ -34,7 +34,7 @@ Local paths in the logs are replaced by `REDACTED_HOME`. The redaction step also
 | Keyboard | `bun run test:keyboard` | exit 0, "all assertions passed" (the script reports no count) | <1 s | [log](test-keyboard.log) |
 | Playwright, run 1 | `bun run test:playwright` with `CI=true` | **exit 1**: the web server command `bunx vite dev` failed, because the winget Bun install has no `bunx` | 3 s | [log](playwright.log) |
 | Playwright, runs 2 and 3 | same, with a `bunx.cmd` shim ([`harness/bunx.cmd`](harness/bunx.cmd), `bun x %*`) on `PATH`. Run 2 was typed directly in the agent's PowerShell tool. Run 3 was the same commands from a detached script, which overwrote run 2's log. | **exit 1, 0 expected / 2 unexpected** (run 3). The browser install failed with `Error: ENOENT: no such file or directory, mkdir '…\AppData\Local\ms-playwright'`. That path is a dangling junction, made 2026-10-12, whose target no longer exists ([`playwright-folder-state.txt`](playwright-folder-state.txt)). It was left untouched. | 14 s | [log](playwright-rerun.log), [json](playwright-rerun-results.json) |
-| Playwright, run 4 | the run 3 script, launched again by mistake **before** the browser-path fix was added | **outcome not recorded**: it finished before the agent could stop it, and the agent deleted its log before run 5. Its `PLAYWRIGHT_RERUN2_DONE` marker is the first of the two in [`progress.txt`](progress.txt). The same environment as run 3 means the same failure would be expected, but that is not shown. | — | deleted |
+| Playwright, run 4 | the script after it was changed to write the `rerun2` outputs and marker, but **before** the `PLAYWRIGHT_BROWSERS_PATH` line was added; launched by mistake | **outcome not recorded**: it finished before the agent could stop it, and the agent deleted its log before run 5. Its `PLAYWRIGHT_RERUN2_DONE` marker is the first of the two in [`progress.txt`](progress.txt). The same environment as run 3 means the same failure would be expected, but that is not shown. | — | deleted |
 | Playwright, run 5 | same, plus `PLAYWRIGHT_BROWSERS_PATH` set to a folder in the work directory | exit 0. **2 expected, 0 unexpected, 0 flaky, 0 skipped**; the tests took 21.9 s, the rest was the browser download | 55 s | [log](playwright-rerun2.log), [json](playwright-rerun2-results.json), [script](harness/sd_m0_playwright.ps1) |
 | Frontend build | `bun run build` (`tsc && vite build`), so the release binary embeds the frontend | exit 0 | 46 s | [log](frontend-build.log) |
 | Rust tests | `cargo test --locked` in `src-tauri` | exit 0. **332 passed, 0 failed, 18 ignored**, 0 measured, 0 filtered out | 28 min (compile included) | [log](cargo-test.log) |
@@ -94,6 +94,7 @@ These hashes identify local research builds only. They are not reproducible-buil
 - Only `handy.exe` was inspected. The imports of `transcribe.dll` and the `ggml-*` DLLs were not dumped, so their dependency chain, which is expected to include the Vulkan loader, is not recorded.
 - DLLs loaded at run time (for example WebView2 or a GPU driver) are not visible to `dumpbin /dependents`.
 - **The app was not launched.** The packet does not ask for a launch, and none was done.
+- **No VC++ runtime DLL was staged.** The direct evidence is the staged folder: it contains no `msvcp`, `vcruntime` or `vcomp` DLL ([`bundle-dlls.txt`](bundle-dlls.txt)). The `HANDY_VC_REDIST_DIRS` check there was made after the build, in the agent's shell; the runner script does not set it.
 - **`handy.exe` imports the Visual C++ runtime.** Only the donor's CI path stages it for the installer (see above). The release-candidate packets must decide how Wispral ships it.
 
 ## Resource use
