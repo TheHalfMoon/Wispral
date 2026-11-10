@@ -20,7 +20,7 @@
 
 | Gate | State | Rule |
 | --- | --- | --- |
-| Wispral outbound licence | **CLOSED**. `TheHalfMoon/Wispral` has no LICENSE file: `gh api repos/TheHalfMoon/Wispral/license` returned HTTP 404 on 2026-11-08. | No `COPY` or `ADAPT` packet may land code in a Wispral repository until the founder's outbound-licence decision is recorded in this register. Research, reference reading and baselines of unmodified donors in their own forks are not blocked. |
+| Wispral outbound licence (historical; superseded by the next row) | **CLOSED until 2026-11-09.** At the time, `TheHalfMoon/Wispral` had no LICENSE file: `gh api repos/TheHalfMoon/Wispral/license` returned HTTP 404 on 2026-11-08. | No `COPY` or `ADAPT` packet may land code in a Wispral repository until the founder's outbound-licence decision is recorded in this register. Research, reference reading and baselines of unmodified donors in their own forks are not blocked. |
 | Wispral outbound licence: **decision recorded 2026-11-09** | **OPEN**. The founder chose **Apache-2.0** (instruction, verbatim: "Apache-2.0"). `LICENSE` at the repository root is the Apache License 2.0 text from apache.org, SHA-256 `cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30`. | Opening the gate makes no packet `READY`. A `COPY` or `ADAPT` packet may land code only when it is otherwise ready, including through a 000G decision for product code (Constitution 1.0.0, Governance item 8), and only under the conditions below. |
 
 **Conditions for landing adopted code under Apache-2.0.** These are recorded rules, not a legal opinion:

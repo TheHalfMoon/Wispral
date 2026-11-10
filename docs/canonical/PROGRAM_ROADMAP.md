@@ -366,7 +366,7 @@ The following are explicitly not justified by the platform thesis and require se
 - **KEEP:** a mandatory hosted security scanner;
 - **KEEP:** an LLM-based security verdict as direct execution authority;
 - **KEEP:** a generic plugin marketplace before an extension trust/admission contract is justified;
-- **KEEP:** a new timeline editor, model hub, CRM inbox or workflow engine built from scratch. Each product reuses its donor or an existing component unless the build-new register shows the donor cannot meet the boundary.
+- **KEEP (added 2026-11-10 by GP-07, from the build-new rule):** a new timeline editor, model hub, CRM inbox or workflow engine built from scratch. Each product reuses its donor or an existing component unless the build-new register shows the donor cannot meet the boundary.
 
 ## Refinement rule
 

@@ -410,7 +410,7 @@ This thesis is a program direction, not a benchmark result, compatibility claim 
 
 - Rust remains the preferred runtime for core contracts, concurrency and policy. No production Cargo workspace is authorized yet.
 - Donor-led baselines are the working hypothesis for each product's surface (invariant A12). None is selected. As of 2026-11-10 the 000E research Grains have measured them, with evidence under `research/wispral-world-class/evidence/` and `research/klaint-spike/`:
-  - the WisprSide donor baseline (`SD-M0`) builds and passes its suites on Linux and Windows and is `VERIFYING`;
+  - the WisprSide donor baseline (`SD-M0`) passes its suites on Linux and Windows, with debug and release builds recorded on Windows, and is `VERIFYING`;
   - the WisprStudio donor baseline (`ST-D00`) is recorded and is `BLOCKED`, because its network condition fails;
   - the Klaint dialogue spike (`KT-01`) is recorded and is `BLOCKED`, because the engine's tool server accepts a forged customer identity.
 
