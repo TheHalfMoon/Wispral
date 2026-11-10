@@ -1,0 +1,49 @@
+........................................................................ [ 12%]
+........................................................................ [ 24%]
+........................................................................ [ 36%]
+........................................................................ [ 48%]
+........................................................................ [ 60%]
+........................................................................ [ 72%]
+........................................................................ [ 84%]
+........................................................................ [ 96%]
+........................                                                 [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:864
+  /home/runner/work/wisprstudio/wisprstudio/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:864: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; wispral_probe
+    self.import_plugin(arg, consider_entry_points=True)
+
+.venv/lib/python3.11/site-packages/fastapi/testclient.py:1
+  /home/runner/work/wisprstudio/wisprstudio/.venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+backend/tests/test_asr_deep_import_fallback.py::test_settings_reports_broken_backend_with_repair_hint
+  /home/runner/work/wisprstudio/wisprstudio/.venv/lib/python3.11/site-packages/pydub/utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+    import audioop
+
+backend/tests/test_atomic_wav.py::TestSuccessPath::test_writes_valid_wav
+backend/tests/test_atomic_wav.py::TestSuccessPath::test_no_temp_leaks_on_success
+backend/tests/test_atomic_wav.py::TestSuccessPath::test_overwrites_existing_target
+backend/tests/test_atomic_wav.py::TestAtomicity::test_temp_file_lives_in_target_dir
+  /home/runner/work/wisprstudio/wisprstudio/.venv/lib/python3.11/site-packages/torchaudio/_backend/utils.py:337: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.save_with_torchcodec` under the hood. Some parameters like format, encoding, bits_per_sample, buffer_size, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's encoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.encoders.AudioEncoder
+    warnings.warn(
+
+backend/tests/test_atomic_wav.py::TestSuccessPath::test_writes_valid_wav
+backend/tests/test_atomic_wav.py::TestSuccessPath::test_no_temp_leaks_on_success
+backend/tests/test_atomic_wav.py::TestSuccessPath::test_overwrites_existing_target
+backend/tests/test_atomic_wav.py::TestAtomicity::test_temp_file_lives_in_target_dir
+  /home/runner/work/wisprstudio/wisprstudio/.venv/lib/python3.11/site-packages/torchaudio/_backend/ffmpeg.py:247: UserWarning: torio.io._streaming_media_encoder.StreamingMediaEncoder has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+    s = torchaudio.io.StreamWriter(uri, format=muxer, buffer_size=buffer_size)
+
+backend/tests/test_atomic_wav.py::TestSuccessPath::test_writes_valid_wav
+backend/tests/test_atomic_wav.py::TestSuccessPath::test_overwrites_existing_target
+  /home/runner/work/wisprstudio/wisprstudio/.venv/lib/python3.11/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+    warnings.warn(
+
+backend/tests/test_atomic_wav.py::TestSuccessPath::test_writes_valid_wav
+backend/tests/test_atomic_wav.py::TestSuccessPath::test_overwrites_existing_target
+  /home/runner/work/wisprstudio/wisprstudio/.venv/lib/python3.11/site-packages/torchaudio/_backend/ffmpeg.py:88: UserWarning: torio.io._streaming_media_decoder.StreamingMediaDecoder has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+    s = torchaudio.io.StreamReader(src, format, None, buffer_size)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+600 passed, 15 warnings in 43.55s
+PYTEST_BACKEND_EXIT=0

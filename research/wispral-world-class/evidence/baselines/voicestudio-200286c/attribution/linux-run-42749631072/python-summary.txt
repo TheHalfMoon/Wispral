@@ -1,0 +1,6 @@
+PYTEST_TESTS_EXIT=0
+PYTEST_BACKEND_EXIT=0
+13307 passed, 51 skipped, 8 xfailed, 1 xpassed, 682 warnings, 63 subtests passed in 467.13s (0:07:47)
+600 passed, 15 warnings in 43.55s
+PROBE_RECORDS=31 PROBE_MODEL_HUB=2
+TCPDUMP_MODEL_HUB_QUERIES=12
