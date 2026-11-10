@@ -1,0 +1,240 @@
+bringing up nodes...
+bringing up nodes...
+
+.................................................................FFF.... [  5%]
+........................................................................ [ 11%]
+................F....................................................... [ 17%]
+........................................................................ [ 23%]
+.......................FF............................................... [ 29%]
+.............................uuuu......................ss............... [ 34%]
+........................................................................ [ 40%]
+........................................................................ [ 46%]
+........................................................................ [ 52%]
+....s................................................................... [ 58%]
+........................................................................ [ 63%]
+..............................................F......................... [ 69%]
+........s............................................................... [ 75%]
+........................................................................ [ 81%]
+........................................................................ [ 87%]
+..............ssssssssssss...........................F.F.............s.. [ 93%]
+...s.....F.ssssssssss...........xxxXxxx................................. [ 98%]
+.............                                                            [100%]
+================================== FAILURES ===================================
+____________ test_normal_or_invalid_speed_adds_no_duration_control ____________
+[gw0] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\backend\services\test_indextts_speed_3588.py:46: in test_normal_or_invalid_speed_adds_no_duration_control
+    payload = forwarded(speed=speed)
+              ^^^^^^^^^^^^^^^^^^^^^^
+tests\backend\services\test_indextts_speed_3588.py:31: in run
+    backend.generate(TEXT, ref_audio="/tmp/ref.wav", language="en", **kw)
+backend\services\tts_backend.py:226: in render
+    return method(instance, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\engines\indextts\__init__.py:378: in generate
+    return super().generate(text, **forwarded)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\services\tts_backend.py:226: in render
+    return method(instance, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\services\subprocess_backend.py:805: in generate
+    return self._exchange(msg, deadline_text=text)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\services\subprocess_backend.py:868: in _exchange
+    with self._lock:
+         ^^^^^^^^^^
+E   AttributeError: 'IndexTTS2Backend' object has no attribute '_lock'
+_______________ test_explicit_duration_controls_win_over_speed ________________
+[gw0] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\backend\services\test_indextts_speed_3588.py:52: in test_explicit_duration_controls_win_over_speed
+    assert forwarded(speed=1.4, duration_factor=1.5)["duration_factor"] == 1.5
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\backend\services\test_indextts_speed_3588.py:31: in run
+    backend.generate(TEXT, ref_audio="/tmp/ref.wav", language="en", **kw)
+backend\services\tts_backend.py:226: in render
+    return method(instance, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\engines\indextts\__init__.py:378: in generate
+    return super().generate(text, **forwarded)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\services\tts_backend.py:226: in render
+    return method(instance, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\services\subprocess_backend.py:805: in generate
+    return self._exchange(msg, deadline_text=text)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\services\subprocess_backend.py:868: in _exchange
+    with self._lock:
+         ^^^^^^^^^^
+E   AttributeError: 'IndexTTS2Backend' object has no attribute '_lock'
+____________________ test_speed_keeps_the_emotion_controls ____________________
+[gw0] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\backend\services\test_indextts_speed_3588.py:59: in test_speed_keeps_the_emotion_controls
+    payload = forwarded(speed=2.0, emo_text="calm", emo_alpha=0.5)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\backend\services\test_indextts_speed_3588.py:31: in run
+    backend.generate(TEXT, ref_audio="/tmp/ref.wav", language="en", **kw)
+backend\services\tts_backend.py:226: in render
+    return method(instance, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\engines\indextts\__init__.py:378: in generate
+    return super().generate(text, **forwarded)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\services\tts_backend.py:226: in render
+    return method(instance, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\services\subprocess_backend.py:805: in generate
+    return self._exchange(msg, deadline_text=text)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\services\subprocess_backend.py:868: in _exchange
+    with self._lock:
+         ^^^^^^^^^^
+E   AttributeError: 'IndexTTS2Backend' object has no attribute '_lock'
+______________________ test_composes_with_eager_fallback ______________________
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_compile_thread_affinity.py:182: in test_composes_with_eager_fallback
+    dispatch_idents, results = _dispatch_from_pool(model, n_calls=1, workers=2)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_compile_thread_affinity.py:87: in _dispatch_from_pool
+    results.append(fut.result(timeout=30))
+                   ^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\concurrent\futures\_base.py:458: in result
+    raise TimeoutError()
+E   TimeoutError
+------------------------------ Captured log call ------------------------------
+WARNING  omnivoice.model:model_manager.py:1805 torch.compile runtime failure during generation (RuntimeError: Detected that you are using FX to symbolically trace a dynamo-optimized function. This is not supported at the moment.) ΓÇö falling back to the eager model and disabling torch.compile for this session. Generation is being retried without it.
+WARNING  omnivoice.engine_env:engine_env.py:75 torch.compile disabled for this session after a runtime failure: RuntimeError: Detected that you are using FX to symbolically trace a dynamo-optimized function. This is not supported at the moment.
+___________ test_windows_build_ships_its_cpp_runtime_with_checksums ___________
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_gguf_desktop_bundle.py:137: in test_windows_build_ships_its_cpp_runtime_with_checksums
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: ├óΓÇáΓÇÖ Cloning omnivoice.cpp at aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa into /tmp/omnivoice-cpp-build.YXEweb
+E     Submodule path 'ggml': checked out '210138933b22221ced02943b7b6e4308610ab530'
+E     Cloning into 'C:/Users/<USER>/AppData/Local/Temp/omnivoice-cpp-build.YXEweb/src'...
+E     Submodule 'ggml' (https://github.com/ServeurpersoCom/ggml.git) registered for path 'ggml'
+E     Cloning into 'C:/Users/<USER>/AppData/Local/Temp/omnivoice-cpp-build.YXEweb/src/ggml'...
+E     fatal: unable to read tree (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)
+E     
+E   assert 128 == 0
+E    +  where 128 = CompletedProcess(args=['C:/Program Files/Git/bin/bash.exe', 'C:\\Users\\<USER>\\w\\pt-run4-7\\popen-gw3\\test_windows_b...Temp/omnivoice-cpp-build.YXEweb/src/ggml'...\nfatal: unable to read tree (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)\n").returncode
+______________ test_windows_build_fails_without_the_cpp_runtime _______________
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_gguf_desktop_bundle.py:150: in test_windows_build_fails_without_the_cpp_runtime
+    assert "Visual C++ runtime DLLs not found" in result.stderr
+E   assert 'Visual C++ runtime DLLs not found' in "Cloning into 'C:/Users/<USER>/AppData/Local/Temp/omnivoice-cpp-build.Y9bXex/src'...\nSubmodule 'ggml' (https://github..../Temp/omnivoice-cpp-build.Y9bXex/src/ggml'...\nfatal: unable to read tree (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)\n"
+E    +  where "Cloning into 'C:/Users/<USER>/AppData/Local/Temp/omnivoice-cpp-build.Y9bXex/src'...\nSubmodule 'ggml' (https://github..../Temp/omnivoice-cpp-build.Y9bXex/src/ggml'...\nfatal: unable to read tree (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)\n" = CompletedProcess(args=['C:/Program Files/Git/bin/bash.exe', 'C:\\Users\\<USER>\\w\\pt-run4-7\\popen-gw3\\test_windows_b...Temp/omnivoice-cpp-build.Y9bXex/src/ggml'...\nfatal: unable to read tree (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)\n").stderr
+______ test_head_file_inventory_excludes_gitlinks_and_uncommitted_files _______
+[gw2] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_cla_audit.py:100: in test_head_file_inventory_excludes_gitlinks_and_uncommitted_files
+    (tmp_path / unusual).write_text("retained source\n")
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1078: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\w\\pt-run4-7\\popen-gw2\\test_head_file_inventory_exclu0\\tab\tand\nnewline.py'
+______________ test_the_resolved_binaries_are_published_on_PATH _______________
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_media_tool_missing.py:107: in test_the_resolved_binaries_are_published_on_PATH
+    assert added == [str(bin_dir)]
+E   AssertionError: assert ['C:\\Users\\...tools\\shims'] == ['C:\\Users\\..._are0\\media']
+E     
+E     Left contains one more item: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\omnivoice-test-data-p_tgqif_\\media_tools\\shims'
+E     Use -v to get more diff
+__________________ test_separate_directories_are_both_added ___________________
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_media_tool_missing.py:142: in test_separate_directories_are_both_added
+    assert sorted(ffmpeg_utils.ensure_media_tools_on_path()) == sorted([str(a), str(b)])
+E   AssertionError: assert ['C:\\Users\\...ies_are_0\\b'] == ['C:\\Users\\...ies_are_0\\b']
+E     
+E     At index 0 diff: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\omnivoice-test-data-p_tgqif_\\media_tools\\shims' != 'C:\\Users\\<USER>\\w\\pt-run4-7\\popen-gw3\\test_separate_directories_are_0\\a'
+E     Left contains one more item: 'C:\\Users\\<USER>\\w\\pt-run4-7\\popen-gw3\\test_separate_directories_are_0\\b'
+E     Use -v to get more diff
+________________ test_each_xdist_worker_gets_its_own_data_dir _________________
+[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_xdist_data_dir_isolation.py:39: in test_each_xdist_worker_gets_its_own_data_dir
+    subprocess.run(
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['C:\\Users\\<USER>\\w\\vs\\.venv\\Scripts\\python.exe', '-m', 'pytest', '-p', 'no:cacheprovider', '-q', '-n', '3', 'C:\\Users\\<USER>\\w\\vs\\tests\\test_xdist_data_dir_isolation.py::test_probe_records_worker_and_data_dir']' returned non-zero exit status 3.
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  <HOME>\w\vs\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_first_sound_instruct.py::test_first_sound_instruction_passes_runtime_taxonomy_validation
+tests/test_browser_guard.py::test_credentialed_remote_clients_are_not_host_checked
+tests/test_identity_paths_survive_the_rename.py::test_the_model_class_name_is_unchanged
+  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
+    m = re.match('([su]([0-9]{1,2})p?) \(([0-9]{1,2}) bit\)$', token)
+
+tests/test_first_sound_instruct.py::test_first_sound_instruction_passes_runtime_taxonomy_validation
+tests/test_browser_guard.py::test_credentialed_remote_clients_are_not_host_checked
+tests/test_identity_paths_survive_the_rename.py::test_the_model_class_name_is_unchanged
+  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
+    m2 = re.match('([su]([0-9]{1,2})p?)( \(default\))?$', token)
+
+tests/test_first_sound_instruct.py::test_first_sound_instruction_passes_runtime_taxonomy_validation
+tests/test_browser_guard.py::test_credentialed_remote_clients_are_not_host_checked
+tests/test_identity_paths_survive_the_rename.py::test_the_model_class_name_is_unchanged
+  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
+    elif re.match('(flt)p?( \(default\))?$', token):
+
+tests/test_first_sound_instruct.py::test_first_sound_instruction_passes_runtime_taxonomy_validation
+tests/test_browser_guard.py::test_credentialed_remote_clients_are_not_host_checked
+tests/test_identity_paths_survive_the_rename.py::test_the_model_class_name_is_unchanged
+  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
+    elif re.match('(dbl)p?( \(default\))?$', token):
+
+tests/test_first_sound_instruct.py::test_first_sound_instruction_passes_runtime_taxonomy_validation
+tests/test_browser_guard.py::test_credentialed_remote_clients_are_not_host_checked
+tests/test_identity_paths_survive_the_rename.py::test_the_model_class_name_is_unchanged
+  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+    import audioop
+
+tests/test_persona_bundle.py::test_build_roundtrip_identity_fields
+tests/test_persona_bundle.py::test_build_include_reference_false_is_preview_only
+tests/test_persona_bundle.py::test_build_stereo_offrate_source_downmixed_resampled
+  <HOME>\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+    warnings.warn(
+
+tests/test_persona_bundle.py::test_build_roundtrip_identity_fields
+tests/test_persona_bundle.py::test_build_include_reference_false_is_preview_only
+tests/test_persona_bundle.py::test_build_stereo_offrate_source_downmixed_resampled
+  <HOME>\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:337: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.save_with_torchcodec` under the hood. Some parameters like format, encoding, bits_per_sample, buffer_size, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's encoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.encoders.AudioEncoder
+    warnings.warn(
+
+tests/test_identity_paths_survive_the_rename.py::test_the_model_class_name_is_unchanged
+  <HOME>\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+    WeightNorm.apply(module, name, dim)
+
+tests/test_dub_transcribe.py::TestTranscribeRoute::test_screenshot_regression_consolidates_fragments
+  <HOME>\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+    import pkg_resources
+
+tests/test_dub_transcribe.py::TestTranscribeRoute::test_screenshot_regression_consolidates_fragments
+tests/test_dub_transcribe.py::TestTranscribeRoute::test_screenshot_regression_consolidates_fragments
+tests/test_dub_transcribe.py::TestTranscribeRoute::test_screenshot_regression_consolidates_fragments
+tests/test_dub_transcribe.py::TestTranscribeRoute::test_screenshot_regression_consolidates_fragments
+tests/test_dub_transcribe.py::TestTranscribeRoute::test_screenshot_regression_consolidates_fragments
+  <HOME>\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
+  Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+    declare_namespace(pkg)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/backend/services/test_indextts_speed_3588.py::test_normal_or_invalid_speed_adds_no_duration_control
+FAILED tests/backend/services/test_indextts_speed_3588.py::test_explicit_duration_controls_win_over_speed
+FAILED tests/backend/services/test_indextts_speed_3588.py::test_speed_keeps_the_emotion_controls
+FAILED tests/test_compile_thread_affinity.py::test_composes_with_eager_fallback
+FAILED tests/test_gguf_desktop_bundle.py::test_windows_build_ships_its_cpp_runtime_with_checksums
+FAILED tests/test_gguf_desktop_bundle.py::test_windows_build_fails_without_the_cpp_runtime
+FAILED tests/test_cla_audit.py::test_head_file_inventory_excludes_gitlinks_and_uncommitted_files
+FAILED tests/test_media_tool_missing.py::test_the_resolved_binaries_are_published_on_PATH
+FAILED tests/test_media_tool_missing.py::test_separate_directories_are_both_added
+FAILED tests/test_xdist_data_dir_isolation.py::test_each_xdist_worker_gets_its_own_data_dir
+10 failed, 1188 passed, 29 skipped, 6 xfailed, 1 xpassed, 32 warnings, 4 subtests passed in 350.09s (0:05:50)
+EXIT=1

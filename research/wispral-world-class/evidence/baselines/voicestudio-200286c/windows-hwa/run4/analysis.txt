@@ -1,0 +1,67 @@
+TOTALS {'tests': 13276, 'passed': 12990, 'failed': 82, 'skipped': 183, 'error': 21} hung_deselected 21
+FAILURES_BY_FILE
+   48 FAILED tests
+   21 FAILED tests.test_virustotal
+   18 ERROR tests
+   11 FAILED tests.backend.services
+    2 ERROR tests.probe
+    2 FAILED tests.backend.engines
+    1 ERROR 
+PROBE_EGRESS (Python sockets, attributed)
+    1 getaddrinfo youtu.be:443 test=tests/test_dub_download_403.py::test_403_escalates_player_clients_in_order
+        tests/test_dub_download_403.py:54:test_403_escalates_player_clients_in_order <- backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url
+    1 getaddrinfo youtu.be:443 test=tests/test_dub_download_403.py::test_success_after_403_on_alternate_client
+        backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url <- backend/core/url_safety.py:282:_guarded_getaddrinfo
+    1 getaddrinfo youtu.be:443 test=tests/test_dub_download_ffmpeg_location.py::test_download_omits_ffmpeg_location_when_unresolved
+        backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url <- backend/core/url_safety.py:282:_guarded_getaddrinfo
+    1 getaddrinfo youtu.be:443 test=tests/test_dub_download_ffmpeg_location.py::test_download_passes_resolved_ffmpeg_location
+        tests/test_dub_download_ffmpeg_location.py:44:test_download_passes_resolved_ffmpeg_location <- backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url
+    1 getaddrinfo youtu.be:443 test=tests/test_dub_download_mtime.py::test_download_opts_disable_mtime
+        tests/test_dub_download_mtime.py:41:test_download_opts_disable_mtime <- backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url
+    1 getaddrinfo example.com:443 test=tests/test_dub_download_os_error.py::test_preflight_lets_a_healthy_folder_through
+        tests/test_dub_download_os_error.py:191:test_preflight_lets_a_healthy_folder_through <- backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url
+    1 getaddrinfo example.com:443 test=tests/test_dub_download_os_error.py::test_unwritable_destination_fails_before_yt_dlp_runs
+        tests/test_dub_download_os_error.py:170:test_unwritable_destination_fails_before_yt_dlp_runs <- backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url
+    1 getaddrinfo x:443 test=tests/test_dub_download_retry.py::test_does_not_retry_unsupported_url
+        backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url <- backend/core/url_safety.py:282:_guarded_getaddrinfo
+    1 getaddrinfo example.com:443 test=tests/test_dub_download_retry.py::test_gives_up_after_bounded_retries
+        backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url <- backend/core/url_safety.py:282:_guarded_getaddrinfo
+    1 getaddrinfo youtube.com:443 test=tests/test_dub_download_retry.py::test_reload_request_exhaustion_keeps_network_guidance
+        backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url <- backend/core/url_safety.py:282:_guarded_getaddrinfo
+    1 getaddrinfo example.com:443 test=tests/test_dub_download_retry.py::test_retries_then_recovers_on_broken_pipe
+        tests/test_dub_download_retry.py:128:test_retries_then_recovers_on_broken_pipe <- backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url
+    1 getaddrinfo youtu.be:443 test=tests/test_dub_download_stdio.py::test_download_opts_silence_stdio
+        tests/test_dub_download_stdio.py:51:_captured_opts <- backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url
+    1 getaddrinfo youtu.be:443 test=tests/test_dub_download_stdio.py::test_ytdlp_output_survives_broken_stdio
+        backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url <- backend/core/url_safety.py:282:_guarded_getaddrinfo
+    1 getaddrinfo example.com:443 test=tests/test_dub_export_unique.py::TestAudioOnlyDubbing::test_ingest_requests_reject_unregistered_source_languages
+        backend/core/url_safety.py:171:check_public_url <- backend/core/url_safety.py:282:_guarded_getaddrinfo
+    1 connect 192.0.2.1:9 test=tests/test_network_share.py::test_lan_ipv4_filters_loopback_and_linklocal
+        tests/test_network_share.py:21:test_lan_ipv4_filters_loopback_and_linklocal <- backend/services/network_share.py:264:lan_ipv4_addresses <- backend/services/network_share.py:235:_default_route_ipv4
+    1 connect 192.0.2.1:9 test=tests/test_network_share_lifecycle.py::test_share_listener_lifecycle
+        backend/services/network_share.py:423:_enable <- backend/services/network_share.py:264:lan_ipv4_addresses <- backend/services/network_share.py:235:_default_route_ipv4
+    1 getaddrinfo 10.255.255.1:443 test=tests/test_setup_preflight.py::test_preflight_network_handles_offline
+        _pytest/python.py:167:pytest_pyfunc_call <- tests/test_setup_preflight.py:515:test_preflight_network_handles_offline <- backend/api/routers/setup/wizard.py:319:_probe_network
+    1 connect 10.255.255.1:443 test=tests/test_setup_preflight.py::test_preflight_network_handles_offline
+        _pytest/python.py:167:pytest_pyfunc_call <- tests/test_setup_preflight.py:515:test_preflight_network_handles_offline <- backend/api/routers/setup/wizard.py:319:_probe_network
+    1 getaddrinfo gpu.example:None test=tests/test_speech_client.py::test_remote_bearer_rejects_plain_http_before_network
+        tests/test_speech_client.py:77:test_remote_bearer_rejects_plain_http_before_network <- backend/speech_client/__main__.py:112:_open <- backend/speech_client/__main__.py:84:_is_loopback_host
+    1 getaddrinfo 0x7f000001:None test=tests/test_speech_client_boundaries.py::test_numeric_loopback_aliases_are_local_without_dns[0x7f000001]
+        tests/test_speech_client_boundaries.py:43:test_numeric_loopback_aliases_are_local_without_dns <- backend/speech_client/__main__.py:84:_is_loopback_host <- tests/test_speech_client_boundaries.py:40:numeric_only
+    1 getaddrinfo 127.1:None test=tests/test_speech_client_boundaries.py::test_numeric_loopback_aliases_are_local_without_dns[127.1]
+        tests/test_speech_client_boundaries.py:43:test_numeric_loopback_aliases_are_local_without_dns <- backend/speech_client/__main__.py:84:_is_loopback_host <- tests/test_speech_client_boundaries.py:40:numeric_only
+    1 getaddrinfo 2130706433:None test=tests/test_speech_client_boundaries.py::test_numeric_loopback_aliases_are_local_without_dns[2130706433]
+        tests/test_speech_client_boundaries.py:43:test_numeric_loopback_aliases_are_local_without_dns <- backend/speech_client/__main__.py:84:_is_loopback_host <- tests/test_speech_client_boundaries.py:40:numeric_only
+    1 getaddrinfo 127.1:None test=tests/test_speech_client_boundaries.py::test_only_loopback_requests_bypass_environment_proxies[http://127.1:3900/v1/x-False]
+        tests/test_speech_client_boundaries.py:84:test_only_loopback_requests_bypass_environment_proxies <- backend/speech_client/__main__.py:101:proxy_open <- backend/speech_client/__main__.py:84:_is_loopback_host
+    1 getaddrinfo gpu.example:None test=tests/test_speech_client_boundaries.py::test_only_loopback_requests_bypass_environment_proxies[http://gpu.example/v1/x-True]
+        tests/test_speech_client_boundaries.py:84:test_only_loopback_requests_bypass_environment_proxies <- backend/speech_client/__main__.py:101:proxy_open <- backend/speech_client/__main__.py:84:_is_loopback_host
+    1 getaddrinfo youtube.com:443 test=tests/test_youtube_cookie_import.py::test_cookie_export_is_forwarded_to_ytdlp
+        tests/test_youtube_cookie_import.py:155:test_cookie_export_is_forwarded_to_ytdlp <- backend/services/dub_pipeline.py:1177:yt_download_sync <- backend/core/url_safety.py:171:check_public_url
+    1 getaddrinfo youtube.com:443 test=tests/test_youtube_cookie_import.py::test_enqueue_failure_deletes_staged_cookie
+        backend/core/url_safety.py:171:check_public_url <- backend/core/url_safety.py:282:_guarded_getaddrinfo
+    1 getaddrinfo youtube.com:443 test=tests/test_youtube_cookie_import.py::test_job_directory_failure_happens_before_cookie_staging
+        backend/core/url_safety.py:171:check_public_url <- backend/core/url_safety.py:282:_guarded_getaddrinfo
+TIMELINE_SPANS 13274
+HF_ADDRESSES_NOW ['13.36.122.243', '13.36.183.231', '13.37.0.65', '13.37.65.55', '13.39.241.58', '15.188.188.74', '15.236.197.3', '15.236.34.207', '15.236.78.196', '15.236.85.177', '15.237.164.118', '18.213.84.241', '2600:9000:292d:1e00:17:b174:6d00:93a1', '2600:9000:292d:6a00:17:b174:6d00:93a1', '2600:9000:292d:8c00:17:b174:6d00:93a1', '2600:9000:292d:9000:17:b174:6d00:93a1', '2600:9000:292d:ca00:17:b174:6d00:93a1', '2600:9000:292d:da00:17:b174:6d00:93a1', '2600:9000:292d:e400:17:b174:6d00:93a1', '2600:9000:292d:f000:17:b174:6d00:93a1', '3.175.149.122', '3.175.149.15', '3.175.149.77', '3.175.149.9', '3.210.66.237', '34.198.14.237', '34.202.8.246', '34.204.155.59', '35.181.67.163', '44.212.132.255', '52.85.110.125', '52.85.110.15', '52.85.110.55', '52.85.110.81']
+TCP_WATCHER python connections (non-loopback)

@@ -1,0 +1,399 @@
+bringing up nodes...
+bringing up nodes...
+
+........................................................................ [  6%]
+........................................................................ [ 12%]
+...........................EEEEEEEEEFF..EEE............................. [ 18%]
+........................................................................ [ 24%]
+.................................................................x...... [ 30%]
+........................................................................ [ 36%]
+...................................s............sss..................... [ 42%]
+............ss.......................................................... [ 49%]
+........................................................................ [ 55%]
+........................................................................ [ 61%]
+........................s..............................................s [ 67%]
+....................s................................................... [ 73%]
+........................................................................ [ 79%]
+........................................................................ [ 85%]
+........................................................................ [ 91%]
+........................................................................ [ 98%]
+.......................                                                  [100%]
+=================================== ERRORS ====================================
+_______ ERROR at setup of test_trusts_exactly_the_session_proxy_origin ________
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:43: in proxy_trust_env
+    return _helpers()["proxy_trust_env"]
+           ^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:34: in _helpers
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+____________ ERROR at setup of test_existing_allow_lists_are_kept _____________
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:43: in proxy_trust_env
+    return _helpers()["proxy_trust_env"]
+           ^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:34: in _helpers
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+_ ERROR at setup of test_anything_but_a_plain_https_origin_trusts_nothing[None] _
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:43: in proxy_trust_env
+    return _helpers()["proxy_trust_env"]
+           ^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:34: in _helpers
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+__ ERROR at setup of test_anything_but_a_plain_https_origin_trusts_nothing[] __
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:43: in proxy_trust_env
+    return _helpers()["proxy_trust_env"]
+           ^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:34: in _helpers
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+_ ERROR at setup of test_anything_but_a_plain_https_origin_trusts_nothing[http://abc-3900-colab.googleusercontent.com] _
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:43: in proxy_trust_env
+    return _helpers()["proxy_trust_env"]
+           ^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:34: in _helpers
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+_ ERROR at setup of test_anything_but_a_plain_https_origin_trusts_nothing[javascript:alert(1)] _
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:43: in proxy_trust_env
+    return _helpers()["proxy_trust_env"]
+           ^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:34: in _helpers
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+_ ERROR at setup of test_anything_but_a_plain_https_origin_trusts_nothing[https://user:pw@abc.googleusercontent.com] _
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:43: in proxy_trust_env
+    return _helpers()["proxy_trust_env"]
+           ^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:34: in _helpers
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+_ ERROR at setup of test_anything_but_a_plain_https_origin_trusts_nothing[not a url] _
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:43: in proxy_trust_env
+    return _helpers()["proxy_trust_env"]
+           ^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:34: in _helpers
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+_ ERROR at setup of test_anything_but_a_plain_https_origin_trusts_nothing[https://] _
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:43: in proxy_trust_env
+    return _helpers()["proxy_trust_env"]
+           ^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:34: in _helpers
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+_ ERROR at setup of test_proxied_ui_reaches_the_api_with_the_trust[8ryeuvc2w3-496ff2e9c6d22116-3900-colab.googleusercontent.com] _
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:43: in proxy_trust_env
+    return _helpers()["proxy_trust_env"]
+           ^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:34: in _helpers
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+_ ERROR at setup of test_proxied_ui_reaches_the_api_with_the_trust[localhost:3900] _
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:43: in proxy_trust_env
+    return _helpers()["proxy_trust_env"]
+           ^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:34: in _helpers
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+_________ ERROR at setup of test_another_colab_session_stays_refused __________
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:43: in proxy_trust_env
+    return _helpers()["proxy_trust_env"]
+           ^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:34: in _helpers
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+================================== FAILURES ===================================
+________________ test_outside_colab_the_launcher_adds_nothing _________________
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:72: in test_outside_colab_the_launcher_adds_nothing
+    assert _helpers()["colab_proxy_env"](3900, {}) == {}
+           ^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:34: in _helpers
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+_________ test_launch_cell_applies_the_trust_before_starting_uvicorn __________
+[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+tests\test_colab_proxy_trust_2705.py:76: in test_launch_cell_applies_the_trust_before_starting_uvicorn
+    source = _launch_cell()
+             ^^^^^^^^^^^^^^
+tests\test_colab_proxy_trust_2705.py:28: in _launch_cell
+    cells = json.loads(NOTEBOOK.read_text())["cells"]
+                       ^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\encodings\cp1252.py:23: in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x8d in position 27928: character maps to <undefined>
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  <HOME>\w\vs\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_bearer_middleware.py::test_platform_ws_accepts_path_bound_ticket
+tests/test_bearer_middleware.py::test_ws_handshake_accepted_with_query_key
+tests/test_nemo_parakeet_install_hint.py::test_nemo_parakeet_hint_surfaced_in_list_backends
+  <HOME>\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+    import pkg_resources
+
+tests/test_bearer_middleware.py: 10 warnings
+tests/test_nemo_parakeet_install_hint.py: 5 warnings
+  <HOME>\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
+  Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+    declare_namespace(pkg)
+
+tests/test_generate_engine.py::test_generate_honors_settings_selected_engine
+  <HOME>\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+    WeightNorm.apply(module, name, dim)
+
+tests/test_api.py::TestStreamingTTS::test_generate_returns_streaming_response
+tests/test_generation_failure_diagnostics.py::test_prepare_reference_passage_ranks_once_and_cleans_up
+tests/test_bearer_middleware.py::test_whitespace_only_env_is_not_an_api_key
+tests/test_reference_asr_offline.py::test_missing_implicit_asr_never_calls_network_capable_loader[1]
+  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
+    m = re.match('([su]([0-9]{1,2})p?) \(([0-9]{1,2}) bit\)$', token)
+
+tests/test_api.py::TestStreamingTTS::test_generate_returns_streaming_response
+tests/test_generation_failure_diagnostics.py::test_prepare_reference_passage_ranks_once_and_cleans_up
+tests/test_bearer_middleware.py::test_whitespace_only_env_is_not_an_api_key
+tests/test_reference_asr_offline.py::test_missing_implicit_asr_never_calls_network_capable_loader[1]
+  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
+    m2 = re.match('([su]([0-9]{1,2})p?)( \(default\))?$', token)
+
+tests/test_api.py::TestStreamingTTS::test_generate_returns_streaming_response
+tests/test_generation_failure_diagnostics.py::test_prepare_reference_passage_ranks_once_and_cleans_up
+tests/test_bearer_middleware.py::test_whitespace_only_env_is_not_an_api_key
+tests/test_reference_asr_offline.py::test_missing_implicit_asr_never_calls_network_capable_loader[1]
+  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
+    elif re.match('(flt)p?( \(default\))?$', token):
+
+tests/test_api.py::TestStreamingTTS::test_generate_returns_streaming_response
+tests/test_generation_failure_diagnostics.py::test_prepare_reference_passage_ranks_once_and_cleans_up
+tests/test_bearer_middleware.py::test_whitespace_only_env_is_not_an_api_key
+tests/test_reference_asr_offline.py::test_missing_implicit_asr_never_calls_network_capable_loader[1]
+  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
+    elif re.match('(dbl)p?( \(default\))?$', token):
+
+tests/test_api.py::TestStreamingTTS::test_generate_returns_streaming_response
+tests/test_generation_failure_diagnostics.py::test_prepare_reference_passage_ranks_once_and_cleans_up
+tests/test_bearer_middleware.py::test_whitespace_only_env_is_not_an_api_key
+tests/test_reference_asr_offline.py::test_missing_implicit_asr_never_calls_network_capable_loader[1]
+  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+    import audioop
+
+tests/test_longform_progress_3417.py: 1 warning
+tests/test_openai_voice_by_name_2617.py: 8 warnings
+tests/test_perf_operation_budgets.py: 4 warnings
+  <HOME>\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:337: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.save_with_torchcodec` under the hood. Some parameters like format, encoding, bits_per_sample, buffer_size, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's encoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.encoders.AudioEncoder
+    warnings.warn(
+
+tests/test_dub_source_revision.py::test_srt_import_during_transcription_survives_its_commit
+  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:182: DeprecationWarning: invalid escape sequence '\s'
+    sep="\s+",
+
+tests/test_dub_source_revision.py::test_srt_import_during_transcription_survives_its_commit
+  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:216: DeprecationWarning: invalid escape sequence '\s'
+    sep="\s+",
+
+tests/test_dub_source_revision.py::test_srt_import_during_transcription_survives_its_commit
+  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:253: DeprecationWarning: invalid escape sequence '\s'
+    sep="\s+",
+
+tests/test_dub_source_revision.py::test_srt_import_during_transcription_survives_its_commit
+  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:284: DeprecationWarning: invalid escape sequence '\s'
+    data = pd.read_csv(file_uem, names=names, dtype=dtype, sep="\s+")
+
+tests/test_dub_source_revision.py::test_srt_import_during_transcription_survives_its_commit
+  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:309: DeprecationWarning: invalid escape sequence '\s'
+    data = pd.read_csv(path, names=names, dtype=dtype, sep="\s+")
+
+tests/test_dub_source_revision.py::test_srt_import_during_transcription_survives_its_commit
+  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:93: DeprecationWarning: invalid escape sequence '\s'
+    file_trial, sep="\s+", names=["reference", "uri1", "uri2"]
+
+tests/test_dub_source_revision.py::test_srt_import_during_transcription_survives_its_commit
+  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:292: DeprecationWarning: invalid escape sequence '\s'
+    ctm, names=names, dtype=dtype, sep="\s+"
+
+tests/test_dub_source_revision.py::test_srt_import_during_transcription_survives_its_commit
+  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:357: DeprecationWarning: invalid escape sequence '\s'
+    mapping, names=names, dtype=dtype, sep="\s+"
+
+tests/test_dub_source_revision.py::test_srt_import_during_transcription_survives_its_commit
+  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\audio\core\io.py:212: UserWarning: torchaudio._backend.list_audio_backends has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+    torchaudio.list_audio_backends()
+
+tests/test_perf_operation_budgets.py::test_dub_remix_budget_zero_tts_calls
+tests/test_perf_operation_budgets.py::test_dub_remix_budget_zero_decode_zero_rewrite
+tests/test_reference_asr_offline.py::test_sidecar_reuses_installed_asr_for_short_reference[None]
+tests/test_reference_asr_offline.py::test_sidecar_reuses_installed_asr_for_short_reference[]
+tests/test_reference_asr_offline.py::test_sidecar_reuses_installed_asr_for_short_reference[   ]
+tests/test_perf_operation_budgets.py::test_interactive_dub_uses_native_batches
+  <HOME>\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_colab_proxy_trust_2705.py::test_outside_colab_the_launcher_adds_nothing
+FAILED tests/test_colab_proxy_trust_2705.py::test_launch_cell_applies_the_trust_before_starting_uvicorn
+ERROR tests/test_colab_proxy_trust_2705.py::test_trusts_exactly_the_session_proxy_origin
+ERROR tests/test_colab_proxy_trust_2705.py::test_existing_allow_lists_are_kept
+ERROR tests/test_colab_proxy_trust_2705.py::test_anything_but_a_plain_https_origin_trusts_nothing[None]
+ERROR tests/test_colab_proxy_trust_2705.py::test_anything_but_a_plain_https_origin_trusts_nothing[]
+ERROR tests/test_colab_proxy_trust_2705.py::test_anything_but_a_plain_https_origin_trusts_nothing[http://abc-3900-colab.googleusercontent.com]
+ERROR tests/test_colab_proxy_trust_2705.py::test_anything_but_a_plain_https_origin_trusts_nothing[javascript:alert(1)]
+ERROR tests/test_colab_proxy_trust_2705.py::test_anything_but_a_plain_https_origin_trusts_nothing[https://user:pw@abc.googleusercontent.com]
+ERROR tests/test_colab_proxy_trust_2705.py::test_anything_but_a_plain_https_origin_trusts_nothing[not a url]
+ERROR tests/test_colab_proxy_trust_2705.py::test_anything_but_a_plain_https_origin_trusts_nothing[https://]
+ERROR tests/test_colab_proxy_trust_2705.py::test_proxied_ui_reaches_the_api_with_the_trust[8ryeuvc2w3-496ff2e9c6d22116-3900-colab.googleusercontent.com]
+ERROR tests/test_colab_proxy_trust_2705.py::test_proxied_ui_reaches_the_api_with_the_trust[localhost:3900]
+ERROR tests/test_colab_proxy_trust_2705.py::test_another_colab_session_stays_refused
+2 failed, 1151 passed, 9 skipped, 1 xfailed, 71 warnings, 12 errors in 341.13s (0:05:41)
+EXIT=1

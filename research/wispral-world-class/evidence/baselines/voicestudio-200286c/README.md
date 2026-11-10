@@ -2,7 +2,7 @@
 
 **Grain:** `ST-D00` (Specification 000E). Packet in `research/wispral-world-class/packets.json`.
 
-**Status:** the **Linux half is recorded here**. The HW-A (Windows) half is not yet run. The Grain is not `VERIFIED` until both halves are recorded.
+**Status:** both halves are recorded. The Linux half is below; the HW-A (Windows) half is in [`windows-hwa/`](windows-hwa/README.md). **The Grain is NOT VERIFIED**: the packet's network condition (zero model-hub connections under `HF_HUB_OFFLINE=1`) fails on Linux and on Windows, and the Windows suites do not pass.
 
 | Item | Value |
 | --- | --- |
@@ -57,4 +57,4 @@ The packet requires "no model or runtime download: `HF_HUB_OFFLINE=1` and an egr
 
 No donor failure was fixed. The finding is recorded, not patched.
 
-**Not yet covered by this half:** the Windows suites and the Windows egress log.
+**The Windows half** ([`windows-hwa/`](windows-hwa/README.md)) found more egress: a test that clones from GitHub through the real `git` because its fake-`git` `PATH` breaks on Windows; a runtime download from GitHub by `test_setup_preflight`; and one Python connection to a Hugging Face address that could not be tied to a test.

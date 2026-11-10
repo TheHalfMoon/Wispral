@@ -1,0 +1,118 @@
+HANG_LIMIT_EXCEEDED 600.0s test=tests/test_electron_transition.py::test_snap_store_workflow_builds_strict_snap_and_uploads_only_tags_to_candidate t=1794262108.5160282
+Thread 0x000080f0 (most recent call first):
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py", line 1599 in _readerthread
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 982 in run
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1045 in _bootstrap_inner
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1002 in _bootstrap
+
+Thread 0x000073d0 (most recent call first):
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py", line 1599 in _readerthread
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 982 in run
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1045 in _bootstrap_inner
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1002 in _bootstrap
+
+Current thread 0x00001eb8 (most recent call first):
+  File "<HOME>\w\probe\wispral_probe.py", line 109 in _expire
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1401 in run
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1045 in _bootstrap_inner
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1002 in _bootstrap
+
+Thread 0x00001df4 (most recent call first):
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 81 in _worker
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 982 in run
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1045 in _bootstrap_inner
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1002 in _bootstrap
+
+Thread 0x00002a2c (most recent call first):
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 81 in _worker
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 982 in run
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1045 in _bootstrap_inner
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1002 in _bootstrap
+
+Thread 0x00008318 (most recent call first):
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 81 in _worker
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 982 in run
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1045 in _bootstrap_inner
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1002 in _bootstrap
+
+Thread 0x00005984 (most recent call first):
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 81 in _worker
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 982 in run
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1045 in _bootstrap_inner
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1002 in _bootstrap
+
+Thread 0x00008e7c (most recent call first):
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 81 in _worker
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 982 in run
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1045 in _bootstrap_inner
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1002 in _bootstrap
+
+Thread 0x0000905c (most recent call first):
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 81 in _worker
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 982 in run
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1045 in _bootstrap_inner
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1002 in _bootstrap
+
+Thread 0x00004914 (most recent call first):
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 81 in _worker
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 982 in run
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1045 in _bootstrap_inner
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1002 in _bootstrap
+
+Thread 0x00008c2c (most recent call first):
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\concurrent\futures\thread.py", line 81 in _worker
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 982 in run
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1045 in _bootstrap_inner
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1002 in _bootstrap
+
+Thread 0x000022e4 (most recent call first):
+  File "<HOME>\w\vs\.venv\Lib\site-packages\execnet\gateway_base.py", line 534 in read
+  File "<HOME>\w\vs\.venv\Lib\site-packages\execnet\gateway_base.py", line 567 in from_io
+  File "<HOME>\w\vs\.venv\Lib\site-packages\execnet\gateway_base.py", line 1160 in _thread_receiver
+  File "<HOME>\w\vs\.venv\Lib\site-packages\execnet\gateway_base.py", line 341 in run
+  File "<HOME>\w\vs\.venv\Lib\site-packages\execnet\gateway_base.py", line 411 in _perform_spawn
+
+Thread 0x00007ed8 (most recent call first):
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1139 in _wait_for_tstate_lock
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1119 in join
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py", line 1628 in _communicate
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py", line 1209 in communicate
+  File "<HOME>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py", line 550 in run
+  File "<HOME>\w\vs\tests\test_electron_transition.py", line 65 in test_snap_store_workflow_builds_strict_snap_and_uploads_only_tags_to_candidate
+  File "<HOME>\w\vs\.venv\Lib\site-packages\_pytest\python.py", line 167 in pytest_pyfunc_call
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_callers.py", line 121 in _multicall
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_hooks.py", line 512 in __call__
+  File "<HOME>\w\vs\.venv\Lib\site-packages\_pytest\python.py", line 1707 in runtest
+  File "<HOME>\w\vs\.venv\Lib\site-packages\_pytest\runner.py", line 184 in pytest_runtest_call
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_callers.py", line 121 in _multicall
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_hooks.py", line 512 in __call__
+  File "<HOME>\w\vs\.venv\Lib\site-packages\_pytest\runner.py", line 250 in <lambda>
+  File "<HOME>\w\vs\.venv\Lib\site-packages\_pytest\runner.py", line 361 in from_call
+  File "<HOME>\w\vs\.venv\Lib\site-packages\_pytest\runner.py", line 249 in call_and_report
+  File "<HOME>\w\vs\.venv\Lib\site-packages\_pytest\runner.py", line 139 in runtestprotocol
+  File "<HOME>\w\vs\.venv\Lib\site-packages\_pytest\runner.py", line 118 in pytest_runtest_protocol
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_callers.py", line 121 in _multicall
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_hooks.py", line 512 in __call__
+  File "<HOME>\w\vs\.venv\Lib\site-packages\xdist\remote.py", line 227 in run_one_test
+  File "<HOME>\w\vs\.venv\Lib\site-packages\xdist\remote.py", line 206 in pytest_runtestloop
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_callers.py", line 121 in _multicall
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_hooks.py", line 512 in __call__
+  File "<HOME>\w\vs\.venv\Lib\site-packages\_pytest\main.py", line 384 in _main
+  File "<HOME>\w\vs\.venv\Lib\site-packages\_pytest\main.py", line 330 in wrap_session
+  File "<HOME>\w\vs\.venv\Lib\site-packages\_pytest\main.py", line 377 in pytest_cmdline_main
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_callers.py", line 121 in _multicall
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_manager.py", line 120 in _hookexec
+  File "<HOME>\w\vs\.venv\Lib\site-packages\pluggy\_hooks.py", line 512 in __call__
+  File "<HOME>\w\vs\.venv\Lib\site-packages\xdist\remote.py", line 427 in <module>
+  File "<HOME>\w\vs\.venv\Lib\site-packages\execnet\gateway_base.py", line 1291 in executetask
+  File "<HOME>\w\vs\.venv\Lib\site-packages\execnet\gateway_base.py", line 341 in run
+  File "<HOME>\w\vs\.venv\Lib\site-packages\execnet\gateway_base.py", line 411 in _perform_spawn
+  File "<HOME>\w\vs\.venv\Lib\site-packages\execnet\gateway_base.py", line 389 in integrate_as_primary_thread
+  File "<HOME>\w\vs\.venv\Lib\site-packages\execnet\gateway_base.py", line 1273 in serve
+  File "<HOME>\w\vs\.venv\Lib\site-packages\execnet\gateway_base.py", line 1806 in serve
+  File "<string>", line 8 in <module>
+  File "<string>", line 1 in <module>

@@ -1,0 +1,570 @@
+$ node scripts/validate_store_foundation.mjs && bun run --cwd electron typecheck && bun run --cwd electron test && bun run --cwd electron build && bun run --cwd electron build:web && node electron/tests/packaging-contract.mjs
+PASS: store foundation (direct, updates=application)
+$ tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json
+$ bun run locale:check && vp test --run && vp test --run --config vite.shared.config.ts
+$ node tests/locale-encoding.mjs && node tests/locale-source-keys.mjs && node tests/locale-coverage.mjs
+Locale encoding and interpolation: 22 files passed
+Locale source keys: 1936 static renderer keys exist in en.json
+{
+  "missingEntries": 0,
+  "byNamespace": {},
+  "orphans": {}
+}
+
+ RUN  v5.1.0 C:/Users/<USER>/w/vs/electron
+
+ ❯ src/main/wheel-prefetch.test.ts (28 tests | 1 failed) 6949ms
+   ❯ prefetching planned wheels (#3411) (4)
+     × reuses a wheel an earlier attempt finished and drops wheels the lock no longer needs 5167ms
+Not implemented: navigation to another Document
+Not implemented: navigation to another Document
+ ❯ src/renderer/src/features/settings/performance-settings.test.tsx (4 tests | 1 failed) 14791ms
+   × recovers from a CUDA save error (refetch fails: null) 5129ms
+ ❯ src/renderer/src/features/settings/model-credits.test.tsx (2 tests | 2 failed) 18567ms
+   × shows required credits in About before models or diagnostics load (en) 11147ms
+   × shows required credits in About before models or diagnostics load (ja) 7390ms
+ ❯ src/renderer/src/features/settings/sharing-settings.test.tsx (4 tests | 1 failed) 15095ms
+   × confirms LAN exposure, shows its PIN/QR, and stops the listener 5887ms
+ ❯ src/renderer/src/features/integrations/twilio-setup.test.tsx (17 tests | 2 failed) 40141ms
+   × starts off with every step to do, a clear next action and no network beyond local state 5511ms
+   × saves only the account step, never echoes a stored token, and replaces it on request 5561ms
+ ❯ src/renderer/src/features/settings/support-settings.test.tsx (2 tests | 2 failed) 17303ms
+   × opens only the explicit destination and applies selected amounts only to PayPal 9072ms
+   × keeps contact and Pro actions visible and lets the donor clear an amount 8207ms
+ ❯ src/main/runtime-readiness-flow.test.ts (10 tests | 1 failed) 32392ms
+   × propagates Windows ROCm launch refusal through compatible checks 5123ms
+ ❯ src/renderer/src/features/calls/calls-page.test.tsx (7 tests | 1 failed) 17471ms
+   × explains an outdated backend instead of failing when the Calls API is missing 3133ms
+ ❯ src/renderer/src/components/setup-gate.test.tsx (5 tests | 1 failed) 11107ms
+   × requires passing preflight and installed models before completion 5503ms
+ ❯ src/main/runtime-project.test.ts (80 tests | 7 failed) 192802ms
+   ❯ packaged runtime setup (60)
+     × never reuses an interrupted install as a compatible Tauri environment 5475ms
+     × requires successful installation, a complete venv and the current dependency graph 5576ms
+     × keeps an installed CPU torch through a re-run instead of uninstalling it (#3475) 7491ms
+   ❯ regional PyPI mirror for the frozen sync (#3444) (9)
+     ❯ the auto region (2)
+       × uses the aliyun mirror when it answers and PyPI does not 5331ms
+   ❯ multi-connection download of large locked wheels (#3411) (4)
+     × hands uv the verified local copy, then restores the lock and frees the space 5171ms
+     × lets uv download the wheel itself when it cannot use the local copy 5185ms
+   ❯ outdated Visual C++ runtime behind a native import crash (#3293) (4)
+     × keeps the plain import failure when the runtime is current or the error is not a crash 5177ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 19 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/main/runtime-project.test.ts > packaged runtime setup > never reuses an interrupted install as a compatible Tauri environment
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/main/runtime-project.test.ts:331:3
+    329|     );
+    330|   });
+    331|   it('never reuses an interrupted install as a compatible Tauri enviro…
+       |   ^
+    332|     const { bundle, project } = await fixture();
+    333|     await stageRuntimeSources(bundle, project);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/21]⎯
+
+ FAIL  src/main/runtime-project.test.ts > packaged runtime setup > never reuses an interrupted install as a compatible Tauri environment
+Error: ENOTEMPTY: directory not empty, rmdir '<HOME>\AppData\Local\Temp\vs-runtime-test-5clEB3'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/21]⎯
+
+ FAIL  src/main/runtime-project.test.ts > packaged runtime setup > requires successful installation, a complete venv and the current dependency graph
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/main/runtime-project.test.ts:365:3
+    363|     expect(await runtimeInstallInterrupted(project)).toBe(false);
+    364|   });
+    365|   it('requires successful installation, a complete venv and the curren…
+       |   ^
+    366|     const { bundle, project } = await fixture();
+    367|     expect(await runtimeReady(bundle, project)).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/21]⎯
+
+ FAIL  src/main/runtime-project.test.ts > packaged runtime setup > keeps an installed CPU torch through a re-run instead of uninstalling it (#3475)
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/main/runtime-project.test.ts:820:3
+    818|     expect(await runtimeInstallInterrupted(project)).toBe(false);
+    819|   });
+    820|   it('keeps an installed CPU torch through a re-run instead of uninsta…
+       |   ^
+    821|     forcePlatform('win32');
+    822|     vi.spyOn(process, 'arch', 'get').mockReturnValue('x64');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/21]⎯
+
+ FAIL  src/main/runtime-project.test.ts > regional PyPI mirror for the frozen sync (#3444) > the auto region > uses the aliyun mirror when it answers and PyPI does not
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/main/runtime-project.test.ts:1428:5
+    1426|     const body = () => new Response(new Uint8Array(PYPI_SPEED_SAMPLE_B…
+    1427|
+    1428|     it('uses the aliyun mirror when it answers and PyPI does not', asy…
+       |     ^
+    1429|       const { seen, log } = await autoInstall(async (url) => {
+    1430|         if (url.includes('files.pythonhosted.org')) throw new Error('E…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/21]⎯
+
+ FAIL  src/main/runtime-project.test.ts > multi-connection download of large locked wheels (#3411) > hands uv the verified local copy, then restores the lock and frees the space
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/main/runtime-project.test.ts:1580:3
+    1578|   }
+    1579|
+    1580|   it('hands uv the verified local copy, then restores the lock and fre…
+       |   ^
+    1581|     const { bundle, project, seen, planning, transfer } = await instal…
+    1582|     expect(planning).toEqual([expect.objectContaining({ quiet: true })…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/21]⎯
+
+ FAIL  src/main/runtime-project.test.ts > multi-connection download of large locked wheels (#3411) > lets uv download the wheel itself when it cannot use the local copy
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/main/runtime-project.test.ts:1602:3
+    1600|   });
+    1601|
+    1602|   it('lets uv download the wheel itself when it cannot use the local c…
+       |   ^
+    1603|     forcePlatform('win32');
+    1604|     vi.spyOn(process, 'arch', 'get').mockReturnValue('x64');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/21]⎯
+
+ FAIL  src/main/runtime-project.test.ts > outdated Visual C++ runtime behind a native import crash (#3293) > keeps the plain import failure when the runtime is current or the error is not a crash
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/main/runtime-project.test.ts:1701:3
+    1699|   });
+    1700|
+    1701|   it('keeps the plain import failure when the runtime is current or th…
+       |   ^
+    1702|     const current = await fixture();
+    1703|     await expect(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/21]⎯
+
+ FAIL  src/main/runtime-readiness-flow.test.ts > propagates Windows ROCm launch refusal through compatible checks
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/main/runtime-readiness-flow.test.ts:79:58
+     77| });
+     78|
+     79| it.each(['ready', 'compatible', 'dependencies'] as const)('propagates …
+       |                                                          ^
+     80|   const { bundle, target } = await prepared();
+     81|   vi.mocked(execFile).mockImplementation(((
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/21]⎯
+
+ FAIL  src/main/runtime-readiness-flow.test.ts > propagates Windows ROCm launch refusal through compatible checks
+Error: ENOTEMPTY: directory not empty, rmdir '<HOME>\AppData\Local\Temp\vs-win-rocm-bj51ZR\project'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/21]⎯
+
+ FAIL  src/main/wheel-prefetch.test.ts > prefetching planned wheels (#3411) > reuses a wheel an earlier attempt finished and drops wheels the lock no longer needs
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/main/wheel-prefetch.test.ts:335:3
+    333|   });
+    334|
+    335|   it('reuses a wheel an earlier attempt finished and drops wheels the …
+       |   ^
+    336|     const dir = join(await scratch(), 'prefetch');
+    337|     const first = memoryTransport(data);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/21]⎯
+
+ FAIL  src/renderer/src/components/setup-gate.test.tsx > requires passing preflight and installed models before completion
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/renderer/src/components/setup-gate.test.tsx:90:1
+     88|   expect(screen.queryByText('Preflight')).not.toBeInTheDocument();
+     89| });
+     90| it('requires passing preflight and installed models before completion'…
+       | ^
+     91|   mock.ready = false;
+     92|   const client = mount();
+ ❯ VitestModuleRunner.directRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1262:59
+ ❯ VitestModuleRunner.cachedRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1169:73
+ ❯ VitestModuleRunner.import ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1124:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/21]⎯
+
+ FAIL  src/renderer/src/features/calls/calls-page.test.tsx > explains an outdated backend instead of failing when the Calls API is missing
+TestingLibraryElementError: Unable to find role="heading" and name "Calls need the latest backend"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"flex h-full min-h-0 flex-col"[39m
+      [33mdata-layout[39m=[32m"three"[39m
+    [36m>[39m
+      [36m<header>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"text-sm font-medium"[39m
+        [36m>[39m
+          [0mCalls[0m
+        [36m</h1>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"group/button inline-flex shrink-0 items-center justify-center rounded-(--control-radius) border border-transparent bg-clip-padding font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,opacity] outline-none select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 h-7 gap-1.5 px-2 text-sm [&_svg:not([class*='size-'])]:size-3.5 ml-2"[39m
+          [33mdata-size[39m=[32m"sm"[39m
+          [33mdata-slot[39m=[32m"button"[39m
+          [33mdata-variant[39m=[32m"ghost"[39m
+          [33mtabindex[39m=[32m"0"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"lucide lucide-phone-incoming"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"24"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"24"[39m
+            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M16 2v6h6"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"m22 2-6 6"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"hidden sm:inline"[39m
+          [36m>[39m
+            [0mIncoming calls[0m
+          [36m</span>[39m
+        [36m</button>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex min-h-0 flex-1 flex-col"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"grid min-h-0 flex-1 grid-cols-[300px_minmax(0,1fr)_380px] min-[2560px]:grid-cols-[360px_minmax(0,1fr)_460px]"[39m
+        [36m>[39m
+          [36m<section[39m
+            [33maria-label[39m=[32m"Recent calls"[39m
+            [33mclass[39m=[32m"flex min-h-0 min-w-0 flex-col bg-[color-mix(in_oklab,var(--muted)_10%,var(--background))] border-r border-border/55"[39m
+          [36m>[39m
+            [36m<header[39m
+              [33mclass[39m=[32m"flex h-11 shrink-0 items-center gap-2 border-b border-border/50 px-4"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"lucide lucide-rotate-ccw-clock lucide-history size-4 text-muted-foreground"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mheight[39m=[32m"24"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"2"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [33mwidth[39m=[32m"24"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M3 3v5h5"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M12 7v5l4 2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [36m<h2[39m
+                [33mclass[39m=[32m"min-w-0 flex-1 truncate text-sm font-medium"[39m
+              [36m>[39m
+                [0mRecent calls[0m
+              [36m</h2>[39m
+              [36m<button[39m
+                [33maria-label[39m=[32m"Refresh"[39m
+                [33mclass[39m=[32m"group/button inline-flex shrink-0 items-center justify-center border border-transparent bg-clip-padding text-sm leading-5 font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,opacity] outline-none select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 size-6 rounded-sm [&_svg:not([class*='size-'])]:size-3.5"[39m
+                [33mdata-size[39m=[32m"icon-xs"[39m
+                [33mdata-slot[39m=[32m"button"[39m
+                [33mdata-variant[39m=[32m"ghost"[39m
+                [33mtabindex[39m=[32m"0"[39m
+                [33mtitle[39m=[32m"Refresh"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"lucide lucide-refresh-cw animate-spin"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"24"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"24"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"[39m
+                  [36m/>[39m
+   ...
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"flex h-full min-h-0 flex-col"[39m
+      [33mdata-layout[39m=[32m"three"[39m
+    [36m>[39m
+      [36m<header>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"text-sm font-medium"[39m
+        [36m>[39m
+          [0mCalls[0m
+        [36m</h1>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"group/button inline-flex shrink-0 items-center justify-center rounded-(--control-radius) border border-transparent bg-clip-padding font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,opacity] outline-none select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 h-7 gap-1.5 px-2 text-sm [&_svg:not([class*='size-'])]:size-3.5 ml-2"[39m
+          [33mdata-size[39m=[32m"sm"[39m
+          [33mdata-slot[39m=[32m"button"[39m
+          [33mdata-variant[39m=[32m"ghost"[39m
+          [33mtabindex[39m=[32m"0"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"lucide lucide-phone-incoming"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"24"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"24"[39m
+            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M16 2v6h6"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"m22 2-6 6"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"hidden sm:inline"[39m
+          [36m>[39m
+            [0mIncoming calls[0m
+          [36m</span>[39m
+        [36m</button>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex min-h-0 flex-1 flex-col"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"grid min-h-0 flex-1 grid-cols-[300px_minmax(0,1fr)_380px] min-[2560px]:grid-cols-[360px_minmax(0,1fr)_460px]"[39m
+        [36m>[39m
+          [36m<section[39m
+            [33maria-label[39m=[32m"Recent calls"[39m
+            [33mclass[39m=[32m"flex min-h-0 min-w-0 flex-col bg-[color-mix(in_oklab,var(--muted)_10%,var(--background))] border-r border-border/55"[39m
+          [36m>[39m
+            [36m<header[39m
+              [33mclass[39m=[32m"flex h-11 shrink-0 items-center gap-2 border-b border-border/50 px-4"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"lucide lucide-rotate-ccw-clock lucide-history size-4 text-muted-foreground"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mheight[39m=[32m"24"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"2"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [33mwidth[39m=[32m"24"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M3 3v5h5"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M12 7v5l4 2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [36m<h2[39m
+                [33mclass[39m=[32m"min-w-0 flex-1 truncate text-sm font-medium"[39m
+              [36m>[39m
+                [0mRecent calls[0m
+              [36m</h2>[39m
+              [36m<button[39m
+                [33maria-label[39m=[32m"Refresh"[39m
+                [33mclass[39m=[32m"group/button inline-flex shrink-0 items-center justify-center border border-transparent bg-clip-padding text-sm leading-5 font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,opacity] outline-none select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 size-6 rounded-sm [&_svg:not([class*='size-'])]:size-3.5"[39m
+                [33mdata-size[39m=[32m"icon-xs"[39m
+                [33mdata-slot[39m=[32m"button"[39m
+                [33mdata-variant[39m=[32m"ghost"[39m
+                [33mtabindex[39m=[32m"0"[39m
+                [33mtitle[39m=[32m"Refresh"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"lucide lucide-refresh-cw animate-spin"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"24"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"24"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"[39m
+                  [36m/>[39m
+   ...
+ ❯ waitForWrapper ../node_modules/.bun/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ ../node_modules/.bun/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/renderer/src/features/calls/calls-page.test.tsx:118:18
+    116|   renderPage();
+    117|   expect(
+    118|     await screen.findByRole('heading', { name: 'Calls need the latest …
+       |                  ^
+    119|   ).toBeVisible();
+    120|   expect(screen.getByRole('link', { name: 'Set up Twilio' })).toHaveAt…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/21]⎯
+
+ FAIL  src/renderer/src/features/integrations/twilio-setup.test.tsx > starts off with every step to do, a clear next action and no network beyond local state
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/renderer/src/features/integrations/twilio-setup.test.tsx:124:1
+    122| afterEach(cleanup);
+    123|
+    124| it('starts off with every step to do, a clear next action and no netwo…
+       | ^
+    125|   renderPage(base);
+    126|   const hero = await loadedHero();
+ ❯ VitestModuleRunner.directRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1262:59
+ ❯ VitestModuleRunner.cachedRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1169:73
+ ❯ VitestModuleRunner.import ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1124:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/21]⎯
+
+ FAIL  src/renderer/src/features/integrations/twilio-setup.test.tsx > saves only the account step, never echoes a stored token, and replaces it on request
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/renderer/src/features/integrations/twilio-setup.test.tsx:157:1
+    155| });
+    156|
+    157| it('saves only the account step, never echoes a stored token, and repl…
+       | ^
+    158|   put = async () => complete;
+    159|   renderPage({ ...base, has_auth_token: true });
+ ❯ VitestModuleRunner.directRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1262:59
+ ❯ VitestModuleRunner.cachedRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1169:73
+ ❯ VitestModuleRunner.import ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1124:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/21]⎯
+
+ FAIL  src/renderer/src/features/settings/model-credits.test.tsx > shows required credits in About before models or diagnostics load (en)
+ FAIL  src/renderer/src/features/settings/model-credits.test.tsx > shows required credits in About before models or diagnostics load (ja)
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/renderer/src/features/settings/model-credits.test.tsx:17:22
+     15| afterEach(cleanup);
+     16|
+     17| it.each(['en', 'ja'])(
+       |                      ^
+     18|   'shows required credits in About before models or diagnostics load (…
+     19|   async (language) => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/21]⎯
+
+ FAIL  src/renderer/src/features/settings/performance-settings.test.tsx > recovers from a CUDA save error (refetch fails: null)
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/renderer/src/features/settings/performance-settings.test.tsx:25:35
+     23| });
+     24|
+     25| it.each([null, 'cuda', 'compute'])(
+       |                                   ^
+     26|   'recovers from a CUDA save error (refetch fails: %s)',
+     27|   async (failRefetch) => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/21]⎯
+
+ FAIL  src/renderer/src/features/settings/sharing-settings.test.tsx > confirms LAN exposure, shows its PIN/QR, and stops the listener
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/renderer/src/features/settings/sharing-settings.test.tsx:77:1
+     75| }
+     76|
+     77| it('confirms LAN exposure, shows its PIN/QR, and stops the listener', …
+       | ^
+     78|   renderSettings();
+     79|
+ ❯ VitestModuleRunner.directRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1262:59
+ ❯ VitestModuleRunner.cachedRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1169:73
+ ❯ VitestModuleRunner.import ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1124:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/21]⎯
+
+ FAIL  src/renderer/src/features/settings/support-settings.test.tsx > opens only the explicit destination and applies selected amounts only to PayPal
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/renderer/src/features/settings/support-settings.test.tsx:22:1
+     20|   vi.clearAllMocks();
+     21| });
+     22| it('opens only the explicit destination and applies selected amounts o…
+       | ^
+     23|   render(<SupportSettings />);
+     24|   expect(mock.open).not.toHaveBeenCalled();
+ ❯ VitestModuleRunner.directRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1262:59
+ ❯ VitestModuleRunner.cachedRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1169:73
+ ❯ VitestModuleRunner.import ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1124:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/21]⎯
+
+ FAIL  src/renderer/src/features/settings/support-settings.test.tsx > keeps contact and Pro actions visible and lets the donor clear an amount
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/renderer/src/features/settings/support-settings.test.tsx:55:1
+     53| });
+     54|
+     55| it('keeps contact and Pro actions visible and lets the donor clear an …
+       | ^
+     56|   render(<SupportSettings />);
+     57|   expect(screen.getByRole('button', { name: 'supportPlans.get_pro' }))…
+ ❯ VitestModuleRunner.directRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1262:59
+ ❯ VitestModuleRunner.cachedRequest ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1169:73
+ ❯ VitestModuleRunner.import ../node_modules/.bun/@voidzero-dev+vite-plus-core@1.5.0+6d7d90e323102a40/node_modules/@voidzero-dev/vite-plus-core/dist/vite/node/module-runner.js:1124:10
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/21]⎯
+
+
+ Test Files  10 failed | 385 passed (395)
+      Tests  19 failed | 2881 passed | 12 skipped (2912)
+   Start at  05:51:09
+   Duration  733.85s (environment 42%, setup 25%, import 17%, tests 14%, transform 1%, worker 1%)
+
+Environment  jsdom was created 395 times · 3216.13s total, 42% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+error: script "test" exited with code 1
+error: script "check:electron" exited with code 1
+CHECK_ELECTRON_EXIT=1
