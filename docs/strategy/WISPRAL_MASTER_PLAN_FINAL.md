@@ -1,17 +1,32 @@
-# Wispral master implementation plan: final (for founder approval)
+# Wispral master implementation plan: final (frozen for founder approval)
 
-**Status: PROPOSED FINAL PLAN, at the founder's planning-approval gate.** This is planning and research only.
+**Status: FROZEN FINAL PLAN, at the founder's approval gate.** This is planning and research only. The founder approved decisions FD-01 to FD-20 as recommended on 2026-11-10 (recorded on PR #155). This frozen text now asks for approval of the plan itself and, separately, of merging PR #155.
 
 - It authorizes no product code, no product build, no release and no D0G execution.
 - `CORE-01` is not selected here.
 
 **Rank.** This plan ranks **below** the Constitution, Specification 000 and `specs/CURRENT.md`. It changes nothing canonical by itself. Every governance change it lists lands through its own reviewed PR, and every Grain still needs its own selection or readiness record. Only `specs/CURRENT.md` and the specifications authorize executable work (`AGENTS.md` §9, line 109; `PROGRAM_ROADMAP.md:82`).
 
-**Date:** 2026-11-10. **Canonical base:** `main` at `246283f59dcdfa945ef9d49d0cc2fa5b9deb8b09`.
+**Date:** 2026-11-10. **Canonical base:** `main` at `f4abac79f2295c3845b3ff4518ca5af585d352bf`. That commit includes #153 (000E Grain states, `0d997d5`), #154 (D0G package, `f40cce2`) and GP-07 (#156, `f4abac7`).
 
-**Inputs not yet merged:**
-- #153: the 000E Grain states, approved at `66bb707`;
-- #154: the D0G package, approved at `9433034`.
+## 0. Execution status: what is done and what is only planned
+
+**Done** (each with its evidence):
+
+| Vehicle | Result |
+| --- | --- |
+| S0-MERGE | #153 merged as `0d997d5`; #154 merged as `f40cce2` |
+| FD-01 to FD-20 | Approved as recommended on 2026-11-10 and recorded on PR #155. Exceptions: FD-11 and FD-14 still need the founder's named input, and FD-10 waits for the RG-3 evidence. |
+| GP-07 | Records refresh merged as #156 (`f4abac7`). It deliberately left GOV-20 alone, because that is B2-lane text; GOV-20 now goes to the B2-lane vehicle B2L-1. |
+| FD-19 | #124, #127 and #73 closed on 2026-11-10, with their branches kept |
+
+**Planned, not started.** Everything else in this plan is a planned implementation step: AM-1, AM-2, GP-01 to GP-14S, ADR-0003, the four packet regenerations, the research Grains and every 000G selection. **None has been started.** Each starts only when its dependencies are met, and each needs its own PR, its own review and the founder's merge.
+
+**Open founder inputs:**
+- FD-11: the local CPU model to measure.
+- FD-14: the standing qualifying-review route. Until it is named, a reviewer is named per PR.
+- FD-10: the watermark technology, after RG-3.
+- The copyright holder named in the root `NOTICE` (merged with GP-07 as "the Wispral authors (repository owner: TheHalfMoon)").
 
 **Supersedes, for sequencing only, these non-canonical candidate documents:**
 - the 2026-11-08 [`WISPRAL_WORLD_CLASS_MASTER_PLAN.md`](WISPRAL_WORLD_CLASS_MASTER_PLAN.md) §1.7 and §8;
@@ -37,7 +52,8 @@ The phase order in `packets.json` changes only through the four packet regenerat
 2. **121 findings resolved:** 33 blocking, 64 important, 24 minor. They span governance, architecture, security, licensing, dependencies, the packet graph and three stale draft PRs. 30 of them came from two review rounds of this plan, and 1 from the author's own dependency audit. Each is resolved by named vehicles:
    - 21 founder decisions;
    - 2 constitutional amendments;
-   - 18 governance and plan PRs, including the four packet regenerations;
+   - 19 governance and plan PRs, including the four packet regenerations;
+   - 1 B2-lane vehicle outside this plan's authority (B2L-1);
    - 16 packet amendments;
    - 5 research Grains;
    - 1 ADR;
@@ -68,12 +84,16 @@ The phase order in `packets.json` changes only through the four packet regenerat
    - zero hidden egress, proven on the shipped binary.
 8. **Nothing is published** without the founder's green light at R2, R3 and R4. Installers, signing and update channels each have an owning packet.
 
-## 2. The approval gate: what you are approving
+## 2. The approval gate
 
-| If you approve | Then |
+**Already decided.** FD-01 to FD-20 were approved as recommended on 2026-11-10 (§0).
+
+**What this frozen version asks for:**
+
+| Approval | Effect |
 | --- | --- |
-| **FD-01** (the plan) | This document becomes the reviewed plan for sequencing. The PRs in §8 may be opened, each with the review level it lists. |
-| Each other **FD** in §4 that you accept | It is recorded as a founder decision with its date. |
+| **Approve the frozen plan** | This text, at its reviewed head, becomes the plan of record for sequencing. The next planned step, AM-1, still starts only on the founder's separate instruction. |
+| **Approve merging PR #155** (separate) | The plan lands on `main` as a non-canonical strategy document. It still ranks below the Constitution, Specification 000 and `specs/CURRENT.md`. |
 | **Nothing in this plan** | authorizes product code, a product build, D0G execution, a release, signing, publishing, or any spend |
 
 **What happens if you defer a decision.** Deferring an FD holds every vehicle that depends on it. `plan_graph.json` lists those dependencies.
@@ -81,7 +101,7 @@ The phase order in `packets.json` changes only through the four packet regenerat
 The work is split so that **deferring one product's decisions never holds the core or another product**:
 - **Packet amendments.** There are four regenerations. PA-SET-CORE covers everything `CORE-01` and the foundation need; PA-SET-SIDE, PA-SET-KLAINT and PA-SET-STUDIO cover each product.
 - **Specification 000.** The speech change is its own PR (GP-02S), so it holds only WisprSide.
-- **Security text.** Klaint's security text (GP-12) is separate from the core and Studio architecture text (GP-14).
+- **Security and architecture text.** Klaint's security text (GP-12), the core parity text (GP-14C) and the Studio local-only text (GP-14S) are three separate PRs.
 - **Review route.** The standing route is its own amendment (AM-2), so FD-14 holds nothing else.
 - **SD-M0.** Its verification record (GP-13) is separate from the research frontier (GP-11), so FD-04 does not hold the research Grains.
 
@@ -92,11 +112,9 @@ The work is split so that **deferring one product's decisions never holds the co
 | `CORE-01` (D0G-1); also SEL-DESIGN and SEL-BENCH | S0-MERGE, FD-01, FD-02, FD-03, FD-04, FD-07, FD-20 |
 | WisprSide (SEL-SIDE) | adds FD-06, FD-15, FD-16, FD-18 |
 | Klaint (SEL-KLAINT) | adds FD-12 |
-| WisprStudio (SEL-STUDIO) | adds FD-08, FD-09, FD-10, FD-13, FD-16, FD-17 |
+| WisprStudio (SEL-STUDIO) | adds FD-08, FD-09, FD-10, FD-13, FD-15, FD-16, FD-17 |
 | Research: KT-01b / ST-D00r / 000F-W | S0-MERGE and FD-01, plus FD-12 (KT-01b) or FD-13 (ST-D00r) |
 
-
-**Recommended way to approve:** reply with the FD numbers you accept as recommended, and give any you want changed.
 
 ## 3. How the plan becomes binding
 
@@ -105,16 +123,16 @@ Changes land in this order:
 1. **Founder decisions (FD).** Recorded on approval.
 2. **Amendments AM-1 and AM-2.** Constitutional, minor versions 1.1.0 and 1.2.0. Governance item 7 **requires** a qualifying review for each.
 3. **Governance and plan PRs** (§8).
-   - The plan chooses a qualifying review, which is stricter than item 7 requires, for: GP-01, GP-02, GP-02S, GP-03, GP-05, GP-11, GP-12, GP-14, ADR-0003 and the four packet regenerations. They change Specification 000, relax a 000G gate, open research Grains, or change gates and security text.
+   - The plan chooses a qualifying review, which is stricter than item 7 requires, for: GP-01, GP-02, GP-02S, GP-03, GP-05, GP-11, GP-12, GP-14C, GP-14S, ADR-0003 and the four packet regenerations. They change Specification 000, relax a 000G gate, open research Grains, or change gates and security text.
    - The others take a fresh-context review.
    - All of them need the founder's merge.
 4. **Research Grains.** KT-01b, ST-D00r and 000F-W are opened by GP-11, an amendment of the 000E and 000F specs plus a new frontier section. Each becomes READY by its own readiness record.
 5. **The six 000G selections.** Governance item 7 **requires** a qualifying review for each. Each also needs the founder's merge and a readiness record (GP-03).
 6. **Later Grains.** Readiness records under each capability's implementation spec, with a fresh review and the founder's merge.
 
-## 4. Founder decisions
+## 4. Founder decisions (approved 2026-11-10)
 
-"Rec." is the recommendation. Each row lists the findings it resolves, using the IDs in the register.
+"Rec." is the final recommendation. **All of them were approved as recommended on 2026-11-10.** FD-11 and FD-14 still need a named input, FD-10 waits for RG-3, and FD-19 is done. Each row lists the findings it resolves, using the IDs in the register.
 
 | FD | Decision | Rec. | Alternative | Resolves |
 | --- | --- | --- | --- | --- |
@@ -182,7 +200,7 @@ The architecture is recorded in ADR-0003, refining ADR-0002. FD-20 ratifies it; 
   - privacy and telemetry contract;
   - the envelope event families that invariant A1 requires;
   - the unavailable-capability manifest.
-- **Parity.** Every implementation passes the shared fixtures. That replaces "identical Rust and Python verdicts" (GP-14 updates SI-2 and the contracts README). A Rust policy crate (CORE-R1) waits for a second Rust consumer.
+- **Parity.** Every implementation passes the shared fixtures. That replaces "identical Rust and Python verdicts" (GP-14C updates SI-2 and the contracts README). A Rust policy crate (CORE-R1) waits for a second Rust consumer.
 - **Contract consumption.** Forks vendor the contract package by digest, with a CI check (GP-04).
 
 **Language and authority map** (Constitution X: Rust-first unless evidence shows a better boundary):
@@ -248,9 +266,11 @@ The architecture is recorded in ADR-0003, refining ADR-0002. FD-20 ratifies it; 
 
 ## 8. Governance wave (stage S1)
 
+**Only GP-07 is done. Every other row is a planned step, not yet started.** Each needs its own PR, its review and the founder's merge.
+
 | # | Vehicle | What lands | Review |
 | --- | --- | --- | --- |
-| 1 | **GP-07** | Records refresh in **editable sections and non-canonical documents only**, never a frozen frontier section. Refreshes stale licence, fork and Actions claims and adds superseded notes. Imports the two #124 review files. Adds the NOTICE file and the harness rights row, plus risk-register, copy-first, release-quality and anti-roadmap updates. | fresh |
+| 1 | **GP-07** (**DONE**, #156 `f4abac7`) | Records refresh in **editable sections and non-canonical documents only**, never a frozen frontier section. Refreshed stale licence, fork and Actions claims and added superseded notes. Imported the two #124 review files. Added the NOTICE file and the harness rights row, plus risk-register, copy-first, release-quality and anti-roadmap updates. GOV-20 was not changed: it is B2-lane text, handled by B2L-1. | fresh (done) |
 | 2 | **AM-1** | Constitutional amendment 1.1.0: <ul><li>(a) the product-code gate, review and evidence rules **extend** to the product repositories. Extend-only; research branches the frontier authorizes are not product code.</li><li>(c) the latest appended Platform frontier section governs. It names what it supersedes, covers `specs/CURRENT.md` and `CURRENT_STATE.md`, and grants nothing beyond the specifications.</li><li>(d) the resource core means per-product owners</li></ul> | qualifying (required) |
 | 2b | **AM-2** | Constitutional amendment 1.2.0: (b) a standing qualifying-review route under item 7(b). Every other item 7 condition is unchanged. Until it lands, reviewers are named per PR. | qualifying (required) |
 | 3 | **GP-01** | Procedure for amending packets | qualifying |
@@ -262,14 +282,16 @@ The architecture is recorded in ADR-0003, refining ADR-0002. FD-20 ratifies it; 
 | 7 | **GP-04** | How contract versions are consumed in forks, and the packet repository field | fresh |
 | 8 | **GP-08** | Owner-act comment format and guarded expected-head merges | fresh |
 | 9 | **GP-12** | Klaint security-architecture amendment: KL-T3 (reachable tool server, capability per tool, authenticated issuance), B6 reopened, KL-T5 and Chatwoot | qualifying |
-| 9b | **GP-14** | Core and Studio architecture text: SI-2 and contracts-README parity wording; no LAN render workers; Studio local-only | qualifying |
+| 9b | **GP-14C** | Core parity text: SI-2 and contracts-README parity wording. CORE-01 depends on it, and it needs no product decision. | qualifying |
+| 9c | **GP-14S** | Studio architecture text: no LAN render workers; Studio local-only. It holds only WisprStudio. | qualifying |
 | 10 | **ADR-0003** | The architecture record (FD-20 ratifies it) | qualifying |
 | 11 | **GP-05** | CI in the Wispral repo **and both forks**: an aggregator check, validate_plan, conformance, contrast and the fork suites. The B2 lane workflows are untouched. | qualifying |
 | 12 | **GP-09** | Python and TypeScript verification sets | fresh |
 | 13 | **GP-10** | Decision-ledger rows superseding D-04, D-20 and T-7 | fresh |
 | 14 | **PA-SET-CORE** | Regeneration 1: PA-01, PA-02, PA-03, PA-08, PA-11, PA-12, PA-13, PA-15, PA-16 | qualifying |
-| 15 | **PA-SET-SIDE**, **PA-SET-KLAINT**, **PA-SET-STUDIO** | Regenerations 2–4: PA-04, PA-07, PA-10, PA-14 (WisprSide); PA-05, PA-09 (Klaint, after GP-12 and GP-10); PA-06 (WisprStudio, after GP-14) | qualifying |
-| 16 | **FD-19** | Close #124, #127 and #73 | — |
+| 15 | **PA-SET-SIDE**, **PA-SET-KLAINT**, **PA-SET-STUDIO** | Regenerations 2–4: PA-04, PA-07, PA-10, PA-14 (WisprSide); PA-05, PA-09 (Klaint, after GP-12 and GP-10); PA-06 (WisprStudio, after GP-14S) | qualifying |
+| 16 | **FD-19** (**DONE** 2026-11-10) | Closed #124, #127 and #73 after GP-07 | — |
+| — | **B2L-1** (B2 lane, not scheduled here) | The B2 lane, under its own authority, updates the stale 000B text in `specs/000-founding-research/tasks.md` and records the private lane's closure, so that Specification 000 can close | B2 lane |
 
 ## 9. Packet amendments
 
@@ -310,17 +332,16 @@ Release stages R0–R4 and their gates are as in [`WISPRAL_RELEASE_QUALITY.md`](
 
 **Estimates.** 35 product packets in P3–P6 have no estimate today (49 across all phases). The plan does not invent numbers: GP-03 requires an estimate in each readiness record.
 
-### S0: Planning closeout (now)
-- **Entry:** this plan.
-- **Exit:** S0-MERGE done; FD-01 approved; the FDs you accept are recorded.
+### S0: Planning closeout (**done**)
+- S0-MERGE is done. FD-01 to FD-20 are approved and recorded.
 
-### S1: Governance wave, and S2: Research Grains
-- **Entry:** FD-01.
+### S1: Governance wave, and S2: Research Grains (**planned**; GP-07 and FD-19 done)
+- **Entry:** FD-01 (met). AM-1 starts only on the founder's instruction.
 - **Exit:** the PRs in §8 are merged. KT-01b, ST-D00r and 000F-W run once GP-11 opens them.
 - **Important:** `CORE-01` does **not** wait for the research Grains, and FD-04 does not hold them. Only Klaint waits for KT-01b, and only WisprStudio waits for ST-D00r and 000F-W.
 
 ### S3: First 000G selection, D0G-1, opening `CORE-01`
-- **Entry:** PA-SET-CORE, GP-03, GP-05, GP-08, GP-09, GP-11, GP-13 (SD-M0 VERIFIED), GP-14, AM-1 and FD-20.
+- **Entry:** PA-SET-CORE, GP-03, GP-05, GP-08, GP-09, GP-11, GP-13 (SD-M0 VERIFIED), GP-14C, AM-1 and FD-20.
 - **Gate:** a qualifying review, the founder's merge, and a readiness record for `CORE-01`.
 - **This is the first point where product code may be written**, and only for the contract package.
 
@@ -329,7 +350,7 @@ Release stages R0–R4 and their gates are as in [`WISPRAL_RELEASE_QUALITY.md`](
 | --- | --- | --- |
 | Core | CORE-02 (added contracts), CORE-07 (egress, delivery and supply-chain harness) | Readiness records under the core spec |
 | Design | DS-01 (font harness, type decision), DS-KIT (tokens and component kit) | SEL-DESIGN opens DS-01; DS-KIT by readiness record |
-| Benchmarks | BM-00 (WB-AR preregistration), BM-01a (Handy egress baseline), BM-02 (delivery harness) | SEL-BENCH opens BM-00; the rest by readiness record under the benchmark spec. That spec also issues the records for BM-01b and BM-03, which the plan schedules inside product stages. |
+| Benchmarks | BM-00 (WB-AR preregistration), BM-01a (Handy egress baseline), BM-02 (delivery harness) | SEL-BENCH (after D0G-1; it does not wait for design) opens BM-00; the rest by readiness record under the benchmark spec. That spec also issues the records for BM-01b and BM-03, which the plan schedules inside product stages. |
 
 ### S5: WisprSide
 **SEL-SIDE opens `SD-M2`.** Later Grains open by readiness record under the WisprSide spec.
@@ -421,7 +442,7 @@ The full table is in the register.
 
 **Recommended sequence** (the graph allows more parallelism than this):
 
-`S0` → GP-07 → AM-1 → GP-01, GP-02, GP-03, GP-11, GP-13, GP-14 → GP-04, GP-08, ADR-0003 → GP-05, GP-09 → PA-SET-CORE → **D0G-1 (`CORE-01`)** → CORE-02 → CORE-07 → SEL-DESIGN (DS-01 → DS-KIT) → SEL-BENCH (BM-00 → BM-01a → BM-02) → SEL-SIDE (after GP-02S and PA-SET-SIDE) (SD-M2 … SD-M6, DS-05, SD-M10) → **WisprSide R1**.
+`S0` → GP-07 → AM-1 → GP-01, GP-02, GP-03, GP-11, GP-13, GP-14C → GP-04, GP-08, ADR-0003 → GP-05, GP-09 → PA-SET-CORE → **D0G-1 (`CORE-01`)** → CORE-02 → CORE-07 → SEL-DESIGN (DS-01 → DS-KIT) → SEL-BENCH (BM-00 → BM-01a → BM-02) → SEL-SIDE (after GP-02S and PA-SET-SIDE) (SD-M2 … SD-M6, DS-05, SD-M10) → **WisprSide R1**.
 
 **In parallel:**
 - KT-01b, ST-D00r, 000F-W and 000F closure, once GP-11 opens them;
@@ -444,15 +465,16 @@ The full table is in the register.
 
 - **`check_plan_graph.py`: PASS** on this head.
   - 121 findings, each resolved by an existing vehicle.
-  - 70 vehicles with no cycle and no dependency on a later stage.
+  - 72 vehicles with no cycle and no dependency on a later stage. Each has an execution status: 3 DONE (with evidence), 19 APPROVED, 49 PLANNED and 1 coarse direction.
+  - No product's selection depends on another product's selection.
   - 6 selections, each opening exactly one Grain.
   - Every one of the 75 packets is placed (57) or has a disposition (18); 12 new and 2 research packets are declared.
   - Under the simulated amendments:
     - every roadmap packet's dependencies come earlier, including order inside each group;
     - every selected Grain's dependencies are ready before its group;
     - no stage is gated by `ST-D00` or `KT-01`;
-    - nothing blocked is assumed available.
-- **Mutation tests**, run on a scratch copy: the checker catches all ten deliberate breakages:
+    - nothing blocked, retired or out of scope is assumed available.
+- **Mutation tests**, run on a scratch copy: the checker caught all 17 deliberate breakages:
   - a two-Grain selection;
   - an unknown replacement target;
   - a no-op replacement;
@@ -462,9 +484,20 @@ The full table is in the register.
   - a new packet without dependencies;
   - a selected Grain whose dependency is not ready;
   - a vehicle cycle;
-  - an unresolved finding.
+  - an unresolved finding;
+  - wrong order inside a group;
+  - a blocked or retired packet assumed available;
+  - product selections chained together;
+  - a DONE status without evidence;
+  - a missing status;
+  - a review note with an unknown target.
+
+  A round-3 reviewer separately ran 33 mutations.
 - **`validate_plan.mjs` on the current `packets.json`: PASS.** It is rerun on each regeneration.
-- **Independent reviews** are recorded on PR #155 with reviewer, instructions, head and verdict. Rounds 1 and 2 ran on heads `5640016` and `ba44fcb`, and this text answers all of their blocking findings. In round 2 a reviewer also ran 26 mutation tests on the checker. The review of the final head is recorded on the PR.
+- **Independent reviews** are recorded on PR #155 with reviewer, instructions, head and verdict.
+  - Rounds 1 to 3 ran on heads `5640016`, `ba44fcb` and `24bd345`. Three fresh-context reviewers approved `24bd345`.
+  - This frozen head reconciles the plan with current `main`, records the approved decisions and execution status, and applies the round-3 non-blocking notes (listed in the register as RN-01 to RN-13). Its confirmation by the same three reviewers is recorded on the PR.
+  - **The different-vendor (Nemotron) review was waived by the founder for this planning PR; it was not completed on the final heads.** That waiver does not extend to any later vehicle that requires a qualifying review.
 
 ## 15. Superseded material and PR dispositions
 
@@ -472,14 +505,14 @@ The full table is in the register.
   - [`WISPRAL_WORLD_CLASS_MASTER_PLAN.md`](WISPRAL_WORLD_CLASS_MASTER_PLAN.md) §1.7 and §8;
   - [`WISPRAL_ENGINEERING_ROADMAP.md`](WISPRAL_ENGINEERING_ROADMAP.md) §3.
 
-  GP-07 adds superseded notes to each.
-- **Already marked superseded:** V3 ([`WISPRAL_MASTER_PLAN_REBUILT.md`](WISPRAL_MASTER_PLAN_REBUILT.md)) and the architecture replan. GP-07 also notes their stale fit-overlap and Parlant text.
-- **#124:** close as carried, after importing its two review files.
-- **#127:** close as superseded by Constitution 1.0.0.
-- **#73:** close after salvage:
-  - donor-qualification gates go into GP-03 and the risk register;
-  - input-capture patterns go into PA-07;
-  - adoption rules go into the copy-first strategy.
+  GP-07 (#156) added superseded notes to each.
+- **Marked superseded by GP-07:** V3 ([`WISPRAL_MASTER_PLAN_REBUILT.md`](WISPRAL_MASTER_PLAN_REBUILT.md), the copy-first work packets) and the architecture replan, including their stale fit-overlap and Parlant text.
+- **#124:** closed as carried (FD-19, done), after GP-07 imported its two review files.
+- **#127:** closed as superseded by Constitution 1.0.0 (FD-19, done).
+- **#73:** closed after salvage (FD-19, done):
+  - donor-qualification gates went into the risk register (R-30 to R-32), and go into GP-03 when it lands;
+  - input-capture patterns go into PA-07 (planned);
+  - adoption rules went into the copy-first strategy (rules 6 to 14).
 
 ## 16. What this plan does not do
 

@@ -20,6 +20,10 @@ Checks (exit 1 on any failure):
      Every packet assumed available must have a disposition, and none may be a blocked baseline.
   8. Gating: after the edits, no roadmap packet in any group depends, directly or transitively, on a
      blocked baseline (ST-D00, KT-01).
+  9. Product independence: no product's 000G selection depends, directly or transitively, on another
+     product's selection.
+ 10. Status: every vehicle has an execution status; a DONE status cites evidence (a PR or commit), and
+     every applied review note names existing vehicles or files.
 With --write, also regenerates RESOLUTION_REGISTER.md next to this file.
 """
 import copy
@@ -172,6 +176,8 @@ pos = {pid: n for grp in groups for n, pid in enumerate(grp["packets"])}
 for d in available:
     if d not in dispositions:
         errors.append(f"available_before_roadmap: {d} has no disposition")
+    elif not dispositions[d].split()[0].rstrip(";:,") in ("MERGED", "DONE", "VERIFIED", "VERIFYING", "Amended"):
+        errors.append(f"available_before_roadmap: {d} disposition '{dispositions[d][:40]}' is not merged, done, verified, verifying or amended")
     if d in graph["blocked_baselines"]:
         errors.append(f"available_before_roadmap: {d} is a blocked baseline")
 for pid, (gi, gid) in placed.items():
@@ -216,6 +222,35 @@ for grp in groups:
             errors.append(f"{grp['id']}: {pid} still gated by {b} after the simulated amendments")
     gating[grp["id"]] = hit
 
+# 9. product independence at selection level
+def vanc(i, seen=None):
+    seen = set() if seen is None else seen
+    for d in vehicles[i]["depends_on"]:
+        if d in vehicles and d not in seen:
+            seen.add(d)
+            vanc(d, seen)
+    return seen
+
+
+prods = graph.get("product_selections", [])
+for a in prods:
+    for b in prods:
+        if a != b and b in vanc(a):
+            errors.append(f"product selection {a} depends on another product's selection {b}")
+
+# 10. statuses and review notes
+for v in graph["vehicles"]:
+    st = v.get("status")
+    if not st:
+        errors.append(f"{v['id']}: no status")
+    elif st.startswith("DONE") and not any(t in st for t in ("#", "merged", "closed")):
+        errors.append(f"{v['id']}: DONE status without evidence")
+known_files = {"check_plan_graph.py", "README.md", "WISPRAL_MASTER_PLAN_FINAL.md"}
+for n in graph.get("review_notes", []):
+    for t in n["applied_to"]:
+        if t not in vehicles and t not in known_files:
+            errors.append(f"review note {n['id']}: unknown target {t}")
+
 sev = {}
 for f in findings:
     sev[f["severity"]] = sev.get(f["severity"], 0) + 1
@@ -225,6 +260,11 @@ for v in graph["vehicles"]:
 print(f"findings: {len(findings)} {dict(sorted(sev.items()))}")
 print(f"vehicles: {len(vehicles)} {dict(sorted(types.items()))}")
 print(f"packets: {len(packet_ids)} in packets.json; {sum(1 for p in placed if p in packet_ids)} placed, {len(dispositions)} with a disposition; {len(new_packets)} new; {len(research)} research")
+st_count = {}
+for v in graph["vehicles"]:
+    key = v.get("status", "").split(" ")[0].rstrip(":;")
+    st_count[key] = st_count.get(key, 0) + 1
+print("vehicle statuses: " + json.dumps(dict(sorted(st_count.items()))))
 print(f"selections: {len(selections)}, each exactly one Grain: " + ", ".join(f"{v['id']}={v['selects'][0]}" for v in selections))
 print("gating after simulated amendments: " + json.dumps({k: v for k, v in gating.items()}))
 if errors:
@@ -260,10 +300,14 @@ if "--write" in sys.argv:
             tag = f" ({'; '.join(extra)})" if extra else ""
             out.append(f"| {f['id']}{tag} | {f['severity']} | {f['summary']} | {', '.join(f['resolved_by'])} | {f['cite']} |")
         out.append("")
-    out += ["## Vehicles", "", "| ID | Type | Stage | Approval | Depends on | What it does | Resolves |", "| --- | --- | --- | --- | --- | --- | --- |"]
+    out += ["## Vehicles", "", "| ID | Type | Stage | Status | Approval | Depends on | What it does | Resolves |", "| --- | --- | --- | --- | --- | --- | --- | --- |"]
     for v in graph["vehicles"]:
         sel = f" Selects: {v['selects'][0]}." if v.get("selects") else ""
-        out.append(f"| {v['id']} | {v['type']} | {v['stage']} | {v['approval']} | {', '.join(v['depends_on']) or '—'} | {v['title']}.{sel} | {', '.join(by_vehicle.get(v['id'], [])) or '—'} |")
+        out.append(f"| {v['id']} | {v['type']} | {v['stage']} | {v.get('status','')} | {v['approval']} | {', '.join(v['depends_on']) or '—'} | {v['title']}.{sel} | {', '.join(by_vehicle.get(v['id'], [])) or '—'} |")
+    if graph.get("review_notes"):
+        out += ["", "## Review notes applied (non-blocking; not counted as findings)", "", "| ID | Source | Note | Applied to | Disposition |", "| --- | --- | --- | --- | --- |"]
+        for n in graph["review_notes"]:
+            out.append(f"| {n['id']} | {n['source']} | {n['note']} | {', '.join(n['applied_to'])} | {n.get('disposition', 'applied')} |")
     out += ["", "## Packet dispositions (packets not placed in a roadmap group)", "", "| Packet | Disposition |", "| --- | --- |"]
     for pid in packet_ids:
         if pid in dispositions:
