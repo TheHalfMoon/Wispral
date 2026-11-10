@@ -1,0 +1,11 @@
+clipboard::tests::classifies_ydotool_0_1_8_symbolic_help
+clipboard::tests::classifies_ydotool_1_0_4_raw_keycode_help
+clipboard::tests::dotool_script_does_not_run_lines_of_text_as_commands
+clipboard::tests::dotool_script_types_single_line_text_unchanged
+clipboard::tests::external_script_does_not_wait_for_inherited_stdio
+clipboard::tests::generates_raw_ydotool_arguments_for_all_paste_methods
+clipboard::tests::generates_symbolic_ydotool_arguments_for_all_paste_methods
+clipboard::tests::unknown_ydotool_help_falls_back_to_raw_keycodes
+managers::model::tests::test_delete_preserves_other_filenames_sharing_a_blob
+managers::model::tests::test_delete_reports_a_file_it_cant_remove
+settings::tests::default_shortcuts_do_not_conflict_with_ibus_input_method_switch

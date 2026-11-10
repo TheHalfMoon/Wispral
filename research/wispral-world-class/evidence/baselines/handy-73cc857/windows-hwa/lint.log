@@ -1,0 +1,2 @@
+$ eslint src
+STEP_EXIT=0 SECONDS=10

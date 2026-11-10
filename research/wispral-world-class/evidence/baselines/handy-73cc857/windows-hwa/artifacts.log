@@ -1,0 +1,151 @@
+=== debug
+ggml-base.dll	674304
+ggml-cpu-alderlake.dll	1100800
+ggml-cpu-cannonlake.dll	1204224
+ggml-cpu-cascadelake.dll	1203712
+ggml-cpu-haswell.dll	1102848
+ggml-cpu-icelake.dll	1203712
+ggml-cpu-sandybridge.dll	1073664
+ggml-cpu-skylakex.dll	1204224
+ggml-cpu-sse42.dll	772096
+ggml-cpu-x64.dll	773120
+ggml-vulkan.dll	45311488
+ggml.dll	61952
+handy_app_lib.dll	3849216
+handy.exe	66930176
+transcribe.dll	2022912
+--- dumpbin /dependents target\debug\handy.exe
+Microsoft (R) COFF/PE Dumper Version 14.44.35229.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file target\debug\handy.exe
+
+File Type: EXECUTABLE IMAGE
+
+  Image has the following dependencies:
+
+    bcryptprimitives.dll
+    kernel32.dll
+    advapi32.dll
+    ole32.dll
+    api-ms-win-core-synch-l1-2-0.dll
+    shlwapi.dll
+    comctl32.dll
+    combase.dll
+    shell32.dll
+    oleaut32.dll
+    mmdevapi.dll
+    api-ms-win-core-winrt-error-l1-1-0.dll
+    ntdll.dll
+    user32.dll
+    gdi32.dll
+    dwmapi.dll
+    imm32.dll
+    api-ms-win-core-winrt-l1-1-0.dll
+    crypt32.dll
+    secur32.dll
+    bcrypt.dll
+    ws2_32.dll
+    KERNEL32.dll
+    wtsapi32.dll
+    transcribe.dll
+    VCRUNTIME140.dll
+    VCRUNTIME140_1.dll
+    api-ms-win-crt-string-l1-1-0.dll
+    api-ms-win-crt-math-l1-1-0.dll
+    api-ms-win-crt-stdio-l1-1-0.dll
+    api-ms-win-crt-runtime-l1-1-0.dll
+    api-ms-win-crt-heap-l1-1-0.dll
+    api-ms-win-crt-utility-l1-1-0.dll
+    api-ms-win-crt-time-l1-1-0.dll
+    api-ms-win-crt-convert-l1-1-0.dll
+    api-ms-win-crt-locale-l1-1-0.dll
+
+  Summary
+
+       AA000 .data
+      2C2000 .pdata
+      C49000 .rdata
+       2F000 .reloc
+        C000 .rsrc
+     2FEB000 .text
+--- sha256
+ED6B64AFFD973BD7C65D8F35B1BFAC3D189B72BB483BB4F5F445EA8ABA7C95BF
+=== release
+ggml-base.dll	674304
+ggml-cpu-alderlake.dll	1100800
+ggml-cpu-cannonlake.dll	1204224
+ggml-cpu-cascadelake.dll	1203712
+ggml-cpu-haswell.dll	1102848
+ggml-cpu-icelake.dll	1203712
+ggml-cpu-sandybridge.dll	1073664
+ggml-cpu-skylakex.dll	1204224
+ggml-cpu-sse42.dll	772096
+ggml-cpu-x64.dll	773120
+ggml-vulkan.dll	45311488
+ggml.dll	61952
+handy_app_lib.dll	3391488
+handy.exe	31245824
+transcribe.dll	2022912
+--- dumpbin /dependents target\release\handy.exe
+Microsoft (R) COFF/PE Dumper Version 14.44.35229.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file target\release\handy.exe
+
+File Type: EXECUTABLE IMAGE
+
+  Image has the following dependencies:
+
+    bcryptprimitives.dll
+    kernel32.dll
+    advapi32.dll
+    api-ms-win-core-synch-l1-2-0.dll
+    ole32.dll
+    oleaut32.dll
+    combase.dll
+    mmdevapi.dll
+    shell32.dll
+    comctl32.dll
+    shlwapi.dll
+    ntdll.dll
+    api-ms-win-core-winrt-l1-1-0.dll
+    api-ms-win-core-winrt-error-l1-1-0.dll
+    user32.dll
+    gdi32.dll
+    dwmapi.dll
+    imm32.dll
+    crypt32.dll
+    ws2_32.dll
+    secur32.dll
+    bcrypt.dll
+    KERNEL32.dll
+    wtsapi32.dll
+    transcribe.dll
+    VCRUNTIME140.dll
+    VCRUNTIME140_1.dll
+    api-ms-win-crt-runtime-l1-1-0.dll
+    api-ms-win-crt-string-l1-1-0.dll
+    api-ms-win-crt-math-l1-1-0.dll
+    api-ms-win-crt-stdio-l1-1-0.dll
+    api-ms-win-crt-heap-l1-1-0.dll
+    api-ms-win-crt-utility-l1-1-0.dll
+    api-ms-win-crt-time-l1-1-0.dll
+    api-ms-win-crt-convert-l1-1-0.dll
+    api-ms-win-crt-locale-l1-1-0.dll
+
+  Summary
+
+       9B000 .data
+       D7000 .pdata
+      77F000 .rdata
+       17000 .reloc
+        C000 .rsrc
+     14BD000 .text
+--- sha256
+A1C5C0DE4E2E077BCB3EB6F1C6E01858ED547F29278B8D872724C2DA04340BE7
+=== target size GB
+16.99
+STEP_EXIT=0 SECONDS=3

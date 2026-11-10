@@ -2,7 +2,7 @@
 
 **Grain:** `SD-M0` (Specification 000E). Packet in `research/wispral-world-class/packets.json`.
 
-**Status:** the **Linux half is recorded here**. The HW-A (Windows) half is not yet run: suites, debug and release binaries, and the bundled DLL list. The Grain is not `VERIFIED` until both halves are recorded.
+**Status:** both halves are recorded. The HW-A (Windows) half, with suites, debug and release binaries and the bundled DLL list, is in [`windows-hwa/`](windows-hwa/README.md). The Grain becomes `VERIFIED` only when this evidence is merged after review.
 
 | Item | Value |
 | --- | --- |
