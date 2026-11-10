@@ -1,5 +1,7 @@
 # Wispral engineering roadmap
 
+> **Sequencing superseded (2026-11-10).** The order of work now follows the final master plan the founder approved on 2026-11-10 ([PR #155](https://github.com/TheHalfMoon/Wispral/pull/155)). Its decisions also supersede the conflicting points noted there. The detailed content below stays as specification material.
+
 **Status:** CANDIDATE. No dates are promised. Durations are engineering-day *estimates* for one familiar contributor or agent team on the founder's CPU-only machine, excluding review and governance latency, which dominates elapsed time (R-20). The packet graph in [packets.json](../../research/wispral-world-class/packets.json) is authoritative; this page summarizes it. **Phases are labels, not gates:** a packet starts as soon as its own dependencies are verified and its readiness authority opens it.
 
 ## 1. Phase overview

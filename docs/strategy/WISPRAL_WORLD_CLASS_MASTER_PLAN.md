@@ -1,5 +1,7 @@
 # Wispral World-Class Master Plan
 
+> **Sequencing superseded (2026-11-10).** The order of work now follows the final master plan the founder approved on 2026-11-10 ([PR #155](https://github.com/TheHalfMoon/Wispral/pull/155)). Its decisions also supersede the conflicting points noted there. The detailed content below stays as specification material.
+
 **Status:** CANDIDATE MASTER PLAN — the one authoritative *candidate* plan for Wispral, WisprStudio, WisprSide and Klaint. It is **not ratified governance** and authorizes no implementation, release or publication. It becomes binding only through the governance sequence in [WISPRAL_GOVERNANCE_RECONCILIATION.md](WISPRAL_GOVERNANCE_RECONCILIATION.md).
 **Date:** 2026-11-08 · **Canonical base:** `main` = `5879c43c7a389bd460955f2e181e8bd70f0ecee5` (after G1 `8d52a45` and C1 `5879c43`; the plan was first written on `edacdf7`) · **Supersedes for planning:** PR #124's [Master Plan V3](WISPRAL_MASTER_PLAN_REBUILT.md) and [architecture replan](WISPRAL_PLATFORM_ARCHITECTURE_REPLAN.md) (kept unchanged as history and evidence).
 

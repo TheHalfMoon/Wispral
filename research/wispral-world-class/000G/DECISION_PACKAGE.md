@@ -1,5 +1,12 @@
 # 000G decision package: founding synthesis (2026-11-09)
 
+> **Superseded in part (2026-11-10).** This document is kept unchanged below as the record of 2026-11-09. Since then:
+> - the outbound licence is decided: Apache-2.0 (#146);
+> - the 000E Grain states are `SD-M0` `VERIFYING`, and `ST-D00` and `KT-01` `BLOCKED` (#153);
+> - both research forks have GitHub Actions enabled, with every donor workflow disabled;
+> - the D0G recommendation is in [`D0G_PACKAGE.md`](D0G_PACKAGE.md) (#154);
+> - sequencing follows the final master plan the founder approved on 2026-11-10 ([PR #155](https://github.com/TheHalfMoon/Wispral/pull/155)).
+
 **Status:** decision package and recommendation for the founder. It is not itself a 000G decision.
 
 - **Authority.** Specification 000 (`specs/000-founding-research/spec.md`): 000G "selects exactly one bounded first product Grain, or records that evidence is insufficient to implement product code". Constitution 1.0.0, Governance item 8: product code is authorized only when a 000G decision selects a bounded Grain and that Grain satisfies readiness. Governance item 7: a 000G decision needs a qualifying review.

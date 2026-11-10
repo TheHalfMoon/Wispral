@@ -1,5 +1,12 @@
 # Master plan completion and governance execution: final report (2026-11-09)
 
+> **Superseded in part (2026-11-10).** This document is kept unchanged below as the record of 2026-11-09. Since then:
+> - the outbound licence is decided: Apache-2.0 (#146);
+> - the 000E Grain states are `SD-M0` `VERIFYING`, and `ST-D00` and `KT-01` `BLOCKED` (#153);
+> - both research forks have GitHub Actions enabled, with every donor workflow disabled;
+> - the D0G recommendation is in [`D0G_PACKAGE.md`](D0G_PACKAGE.md) (#154);
+> - sequencing follows the final master plan the founder approved on 2026-11-10 ([PR #155](https://github.com/TheHalfMoon/Wispral/pull/155)).
+
 This report covers the ten items requested in the founder's brief. Canonical `main` is `04d12e2134dc19df7635dd0ffc1df5a2ca07443d`.
 
 Every merge listed below:

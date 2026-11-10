@@ -1,5 +1,7 @@
 # Wispral platform architecture replan
 
+> **Superseded (2026-11-10).** This replan is history. Its Parlant text is stale: version 4 removed the strict canned responses, journeys, evaluations and the Plan hook it relies on. In the approved plan, Klaint's broker runs in a separate process and requires a capability on every tool call. Sequencing and architecture follow the final master plan the founder approved on 2026-11-10 ([PR #155](https://github.com/TheHalfMoon/Wispral/pull/155)).
+
 Status: **PROPOSED — RESEARCH ONLY**, 2026-10-21. This plan follows the [source studies](../../research/rea/2026-10-21/README.md) and [75-record source matrix](../../research/rea/2026-10-21/SOURCE_TRANSPLANT_MATRIX.md). It does not replace the active constitution, canonical architecture, specification frontier or 000G gate. Final founder names: **Wispral / WisprStudio / WisprSide / Klaint**.
 
 Wispral Core is shared versioned contracts, a small optional embedded policy library and conformance fixtures, not a mandatory cross-product daemon. Each product has one local authority owner appropriate to its deployment. WisprSide provides cross-application dictation and optional developer-agent control. WisprStudio provides generation, timeline/editing, long-form rendering and dubbing. Klaint provides bounded customer dialogue, tools, channels and human handoff. Each surface can ship on its own qualified capability manifest; no user must install every engine or open an account to use the local core.
