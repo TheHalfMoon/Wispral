@@ -9,7 +9,7 @@ Locale source keys: 1936 static renderer keys exist in en.json
   "orphans": {}
 }
 
- RUN  v5.1.0 C:/Users/<USER>/w/vs/electron
+ RUN  v5.1.0 C:/Users/REDACTED_USER/w/vs/electron
 
 Not implemented: navigation to another Document
 Not implemented: navigation to another Document

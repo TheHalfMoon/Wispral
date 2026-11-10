@@ -57,4 +57,4 @@ The packet requires "no model or runtime download: `HF_HUB_OFFLINE=1` and an egr
 
 No donor failure was fixed. The finding is recorded, not patched.
 
-**The Windows half** ([`windows-hwa/`](windows-hwa/README.md)) found more egress: a test that clones from GitHub through the real `git` because its fake-`git` `PATH` breaks on Windows; a runtime download from GitHub by `test_setup_preflight`; and one Python connection to a Hugging Face address that could not be tied to a test.
+**The Windows half** ([`windows-hwa/`](windows-hwa/README.md)) found more egress: a test that clones from GitHub through the real `git` because its fake-`git` `PATH` breaks on Windows; runtime-download attempts to GitHub by `test_setup_preflight`; and one Python connection attempt (a SYN) to a Hugging Face address that could not be tied to a test.

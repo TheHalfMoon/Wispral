@@ -22,7 +22,7 @@ bringing up nodes...
 ...                                                                      [100%]
 ================================== FAILURES ===================================
 ____ test_electron_reuse_probe_rejects_wrong_abi_with_python_optimization _____
-[gw2] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw2] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_setup_windows_rocm.py:62: in test_electron_reuse_probe_rejects_wrong_abi_with_python_optimization
     code = subprocess.check_output(["node", "--input-type=module", "-e", script], text=True).strip()
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -30,7 +30,7 @@ tests\test_setup_windows_rocm.py:62: in test_electron_reuse_probe_rejects_wrong_
     return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:571: in run
     raise CalledProcessError(retcode, process.args,
-E   subprocess.CalledProcessError: Command '['node', '--input-type=module', '-e', 'const m = await import("file:///C:/Users/<USER>/w/vs/electron/src/main/runtime-windows-rocm.ts"); console.log(m.WINDOWS_ROCM_ABI_PROBE);']' returned non-zero exit status 1.
+E   subprocess.CalledProcessError: Command '['node', '--input-type=module', '-e', 'const m = await import("file:///C:/Users/REDACTED_USER/w/vs/electron/src/main/runtime-windows-rocm.ts"); console.log(m.WINDOWS_ROCM_ABI_PROBE);']' returned non-zero exit status 1.
 ---------------------------- Captured stderr call -----------------------------
 node:internal/modules/esm/resolve:271
 
@@ -40,7 +40,7 @@ node:internal/modules/esm/resolve:271
 
 
 
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '<HOME>\w\vs\electron\src\main\runtime-launch-refusal' imported from <HOME>\w\vs\electron\src\main\runtime-windows-rocm.ts
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'REDACTED_HOME\w\vs\electron\src\main\runtime-launch-refusal' imported from REDACTED_HOME\w\vs\electron\src\main\runtime-windows-rocm.ts
 
     at finalizeResolution (node:internal/modules/esm/resolve:271:11)
 
@@ -64,7 +64,7 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '<HOME>\w\vs\electron\src\main\
 
   code: 'ERR_MODULE_NOT_FOUND',
 
-  url: 'file:///C:/Users/<USER>/w/vs/electron/src/main/runtime-launch-refusal'
+  url: 'file:///C:/Users/REDACTED_USER/w/vs/electron/src/main/runtime-launch-refusal'
 
 }
 
@@ -76,37 +76,37 @@ Node.js v24.19.0
 tests/test_clone_prompt_wiring.py::test_single_chunk_encodes_reference_once
 tests/test_auth_session_api.py::test_cookie_session_authorizes_remote_consumption_and_admin
 tests/test_diagnostic_bundle.py::test_bundle_members_and_meta
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
     m = re.match('([su]([0-9]{1,2})p?) \(([0-9]{1,2}) bit\)$', token)
 
 tests/test_clone_prompt_wiring.py::test_single_chunk_encodes_reference_once
 tests/test_auth_session_api.py::test_cookie_session_authorizes_remote_consumption_and_admin
 tests/test_diagnostic_bundle.py::test_bundle_members_and_meta
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
     m2 = re.match('([su]([0-9]{1,2})p?)( \(default\))?$', token)
 
 tests/test_clone_prompt_wiring.py::test_single_chunk_encodes_reference_once
 tests/test_auth_session_api.py::test_cookie_session_authorizes_remote_consumption_and_admin
 tests/test_diagnostic_bundle.py::test_bundle_members_and_meta
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
     elif re.match('(flt)p?( \(default\))?$', token):
 
 tests/test_clone_prompt_wiring.py::test_single_chunk_encodes_reference_once
 tests/test_auth_session_api.py::test_cookie_session_authorizes_remote_consumption_and_admin
 tests/test_diagnostic_bundle.py::test_bundle_members_and_meta
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
     elif re.match('(dbl)p?( \(default\))?$', token):
 
 tests/test_clone_prompt_wiring.py::test_single_chunk_encodes_reference_once
 tests/test_auth_session_api.py::test_cookie_session_authorizes_remote_consumption_and_admin
 tests/test_diagnostic_bundle.py::test_bundle_members_and_meta
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
     import audioop
 
 tests/test_agentic_provider_contract.py::test_pipecat_speech_request_returns_pcm
 tests/test_longform_segment_cache.py::test_resume_with_missing_segment_file
 tests/test_generate_ref_text_persist.py::test_auto_transcript_persisted_and_reused
-  <HOME>\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
     WeightNorm.apply(module, name, dim)
 
 tests/test_agentic_provider_contract.py: 5 warnings
@@ -114,25 +114,25 @@ tests/test_audiobook_cast.py: 3 warnings
 tests/test_longform_segment_cache.py: 7 warnings
 tests/test_longform_cache_portable_2279.py: 9 warnings
 tests/test_project_bundle_routes.py: 6 warnings
-  <HOME>\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:337: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.save_with_torchcodec` under the hood. Some parameters like format, encoding, bits_per_sample, buffer_size, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's encoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.encoders.AudioEncoder
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:337: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.save_with_torchcodec` under the hood. Some parameters like format, encoding, bits_per_sample, buffer_size, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's encoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.encoders.AudioEncoder
     warnings.warn(
 
 tests/test_longform_segment_cache.py: 6 warnings
 tests/test_longform_cache_portable_2279.py: 5 warnings
 tests/test_project_bundle_routes.py: 6 warnings
-  <HOME>\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
     warnings.warn(
 
 tests/test_packaged_lan_frontend.py::test_lan_device_gets_the_packaged_web_ui
 tests/test_diagnostic_bundle.py::test_bundle_members_and_meta
 tests/test_profile_images.py::test_portrait_saved_served_replaced_and_deleted
-  <HOME>\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
     import pkg_resources
 
 tests/test_packaged_lan_frontend.py: 5 warnings
 tests/test_diagnostic_bundle.py: 5 warnings
 tests/test_profile_images.py: 5 warnings
-  <HOME>\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
   Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
     declare_namespace(pkg)
 

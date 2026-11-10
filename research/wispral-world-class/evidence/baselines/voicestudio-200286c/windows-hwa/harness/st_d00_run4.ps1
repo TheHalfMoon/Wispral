@@ -1,7 +1,7 @@
 # ST-D00 HW-A pytest tests/ run 4: resumable chunks (one JUnit XML each), probe with outcomes,
 # TCP watcher, and the 21 tests already proven to hang deselected (listed in hung-tests.txt).
-$W = '<HOME>\w'; $OUT = "$W\st-d00-hwa\run4"
-$env:PATH = '<HOME>\AppData\Local\Microsoft\WinGet\Packages\astral-sh.uv_Microsoft.Winget.Source_8wekyb3d8bbwe;' + $env:PATH
+$W = 'REDACTED_HOME\w'; $OUT = "$W\st-d00-hwa\run4"
+$env:PATH = 'REDACTED_HOME\AppData\Local\Microsoft\WinGet\Packages\astral-sh.uv_Microsoft.Winget.Source_8wekyb3d8bbwe;' + $env:PATH
 $env:PYTHONPATH = "$W\probe"; $env:WISPRAL_PROBE_DIR = "$OUT\probe"; $env:WISPRAL_TEST_LIMIT_S = '600'; $env:HF_HUB_OFFLINE = '1'
 New-Item -ItemType Directory "$OUT\probe" -Force | Out-Null
 Set-Location "$W\vs"

@@ -64,7 +64,7 @@ tests\test_ci_change_detection.py:28: in <module>
     hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
 E   FileNotFoundError: [WinError 2] The system cannot find the file specified
 ________________ ERROR at setup of test_dictation_ws_contract _________________
-[gw0] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 .venv\Lib\site-packages\pytest_asyncio\plugin.py:924: in pytest_fixture_setup
     return (yield)
             ^^^^^
@@ -81,36 +81,36 @@ tests\probe\env.py:87: in capture_first_run
                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\subprocess.py:1630: in _communicate
     raise TimeoutExpired(self.args, orig_timeout)
-E   subprocess.TimeoutExpired: Command '['C:\\Users\\<USER>\\w\\vs\\.venv\\Scripts\\python.exe', 'C:\\Users\\<USER>\\w\\vs\\tests\\probe\\_boot_runner.py', 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\probe-firstrun-356wa968', 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\probe-capture-p23__l16.json']' timed out after 180.0 seconds
+E   subprocess.TimeoutExpired: Command '['REDACTED_HOME\\w\\vs\\.venv\\Scripts\\python.exe', 'REDACTED_HOME\\w\\vs\\tests\\probe\\_boot_runner.py', 'REDACTED_HOME\\AppData\\Local\\Temp\\probe-firstrun-356wa968', 'REDACTED_HOME\\AppData\\Local\\Temp\\probe-capture-p23__l16.json']' timed out after 180.0 seconds
 ================================== FAILURES ===================================
 ________________ test_ws_tts_reports_true_first_audio_latency _________________
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_text_normalization_routes.py:195: in test_ws_tts_reports_true_first_audio_latency
     assert done["type"] == "done", frames
-E   AssertionError: [{'type': 'error', 'detail': "cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawst...likely due to a circular import) (C:\\Users\\<USER>\\w\\vs\\.venv\\Lib\\site-packages\\beartype\\claw\\_clawstate.py)"}]
+E   AssertionError: [{'type': 'error', 'detail': "cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawst...likely due to a circular import) (REDACTED_HOME\\w\\vs\\.venv\\Lib\\site-packages\\beartype\\claw\\_clawstate.py)"}]
 E   assert 'error' == 'done'
 E     
 E     - done
 E     + error
 ------------------------------ Captured log call ------------------------------
 WARNING  omnivoice.memory_budget:memory_budget.py:94 TTS stream load (fake-norm-route): Low memory: 1.1 GB free. Loading a large model here risks the backend being killed by the OS ΓÇö close some apps, or unload a model you're not using (Unload in Model Catalogue).
-ERROR    omnivoice.tts_stream:tts_stream.py:513 TTS streaming failed: cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawstate' (most likely due to a circular import) (<HOME>\w\vs\.venv\Lib\site-packages\beartype\claw\_clawstate.py)
+ERROR    omnivoice.tts_stream:tts_stream.py:513 TTS streaming failed: cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawstate' (most likely due to a circular import) (REDACTED_HOME\w\vs\.venv\Lib\site-packages\beartype\claw\_clawstate.py)
 Traceback (most recent call last):
-  File "<HOME>\w\vs\backend\api\routers\tts_stream.py", line 404, in ws_tts
+  File "REDACTED_HOME\w\vs\backend\api\routers\tts_stream.py", line 404, in ws_tts
     sentences = split_stream_sentences(text, data.get("language"))
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "<HOME>\w\vs\backend\api\routers\tts_stream.py", line 220, in split_stream_sentences
+  File "REDACTED_HOME\w\vs\backend\api\routers\tts_stream.py", line 220, in split_stream_sentences
     from services.sentence_chunker import SentenceChunker
-  File "<HOME>\w\vs\.venv\Lib\site-packages\beartype\claw\_importlib\_clawimpload.py", line 317, in get_code
+  File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\beartype\claw\_importlib\_clawimpload.py", line 317, in get_code
     from beartype.claw._clawstate import claw_state
-  File "<HOME>\w\vs\.venv\Lib\site-packages\beartype\claw\_importlib\_clawimpload.py", line 317, in get_code
+  File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\beartype\claw\_importlib\_clawimpload.py", line 317, in get_code
     from beartype.claw._clawstate import claw_state
-  File "<HOME>\w\vs\.venv\Lib\site-packages\beartype\claw\_importlib\_clawimpload.py", line 317, in get_code
+  File "REDACTED_HOME\w\vs\.venv\Lib\site-packages\beartype\claw\_importlib\_clawimpload.py", line 317, in get_code
     from beartype.claw._clawstate import claw_state
   [Previous line repeated 1 more time]
-ImportError: cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawstate' (most likely due to a circular import) (<HOME>\w\vs\.venv\Lib\site-packages\beartype\claw\_clawstate.py)
+ImportError: cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawstate' (most likely due to a circular import) (REDACTED_HOME\w\vs\.venv\Lib\site-packages\beartype\claw\_clawstate.py)
 ________________ test_batch_applies_normalization_exactly_once ________________
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_text_normalization_routes.py:272: in test_batch_applies_normalization_exactly_once
     assert fake_engine.calls[0][0] == "Doctor Smith has two cats"
 E   AssertionError: assert 'Doctor Smith has 2 cats' == 'Doctor Smith has two cats'
@@ -120,7 +120,7 @@ E     ?                  ^^^
 E     + Doctor Smith has 2 cats
 E     ?                  ^
 _ test_failed_import_repairs_only_confirmed_pinned_sdk_damage[intact-rocm-sdk-core-_rocm_sdk_core/bin/amdhip64_7.dll-torch] _
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_windows_rocm_sdk_integrity.py:40: in test_failed_import_repairs_only_confirmed_pinned_sdk_damage
     native = importlib.import_module("core.windows_rocm.native")
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -145,9 +145,9 @@ tests\test_windows_rocm_sdk_integrity.py:40: in test_failed_import_repairs_only_
     from beartype.claw._clawstate import claw_state
 .venv\Lib\site-packages\beartype\claw\_importlib\_clawimpload.py:317: in get_code
     from beartype.claw._clawstate import claw_state
-E   ImportError: cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawstate' (most likely due to a circular import) (<HOME>\w\vs\.venv\Lib\site-packages\beartype\claw\_clawstate.py)
+E   ImportError: cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawstate' (most likely due to a circular import) (REDACTED_HOME\w\vs\.venv\Lib\site-packages\beartype\claw\_clawstate.py)
 _ test_failed_import_repairs_only_confirmed_pinned_sdk_damage[intact-rocm-sdk-core-_rocm_sdk_core/bin/amdhip64_7.dll-ctranslate2] _
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_windows_rocm_sdk_integrity.py:40: in test_failed_import_repairs_only_confirmed_pinned_sdk_damage
     native = importlib.import_module("core.windows_rocm.native")
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -172,9 +172,9 @@ tests\test_windows_rocm_sdk_integrity.py:40: in test_failed_import_repairs_only_
     from beartype.claw._clawstate import claw_state
 .venv\Lib\site-packages\beartype\claw\_importlib\_clawimpload.py:317: in get_code
     from beartype.claw._clawstate import claw_state
-E   ImportError: cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawstate' (most likely due to a circular import) (<HOME>\w\vs\.venv\Lib\site-packages\beartype\claw\_clawstate.py)
+E   ImportError: cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawstate' (most likely due to a circular import) (REDACTED_HOME\w\vs\.venv\Lib\site-packages\beartype\claw\_clawstate.py)
 _ test_failed_import_repairs_only_confirmed_pinned_sdk_damage[unreadable-rocm-sdk-core-_rocm_sdk_core/bin/amdhip64_7.dll-ctranslate2] _
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_windows_rocm_sdk_integrity.py:40: in test_failed_import_repairs_only_confirmed_pinned_sdk_damage
     native = importlib.import_module("core.windows_rocm.native")
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -199,9 +199,9 @@ tests\test_windows_rocm_sdk_integrity.py:40: in test_failed_import_repairs_only_
     from beartype.claw._clawstate import claw_state
 .venv\Lib\site-packages\beartype\claw\_importlib\_clawimpload.py:317: in get_code
     from beartype.claw._clawstate import claw_state
-E   ImportError: cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawstate' (most likely due to a circular import) (<HOME>\w\vs\.venv\Lib\site-packages\beartype\claw\_clawstate.py)
+E   ImportError: cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawstate' (most likely due to a circular import) (REDACTED_HOME\w\vs\.venv\Lib\site-packages\beartype\claw\_clawstate.py)
 _ test_failed_import_repairs_only_confirmed_pinned_sdk_damage[external-rocm-sdk-libraries-custom-_rocm_sdk_libraries_custom/bin/hipblas.dll-ctranslate2] _
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_windows_rocm_sdk_integrity.py:40: in test_failed_import_repairs_only_confirmed_pinned_sdk_damage
     native = importlib.import_module("core.windows_rocm.native")
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -226,13 +226,13 @@ tests\test_windows_rocm_sdk_integrity.py:40: in test_failed_import_repairs_only_
     from beartype.claw._clawstate import claw_state
 .venv\Lib\site-packages\beartype\claw\_importlib\_clawimpload.py:317: in get_code
     from beartype.claw._clawstate import claw_state
-E   ImportError: cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawstate' (most likely due to a circular import) (<HOME>\w\vs\.venv\Lib\site-packages\beartype\claw\_clawstate.py)
+E   ImportError: cannot import name 'claw_state' from partially initialized module 'beartype.claw._clawstate' (most likely due to a circular import) (REDACTED_HOME\w\vs\.venv\Lib\site-packages\beartype\claw\_clawstate.py)
 ============================== warnings summary ===============================
 .venv\Lib\site-packages\fastapi\testclient.py:1
 .venv\Lib\site-packages\fastapi\testclient.py:1
 .venv\Lib\site-packages\fastapi\testclient.py:1
 .venv\Lib\site-packages\fastapi\testclient.py:1
-  <HOME>\w\vs\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
     from starlette.testclient import TestClient as TestClient  # noqa
 
 tests/backend/test_dub_pipeline_wav.py: 2 warnings
@@ -241,64 +241,64 @@ tests/test_redub_incremental.py: 10 warnings
 tests/test_openai_speech_extension_controls.py: 3 warnings
 tests/test_profile_unification.py: 1 warning
 tests/test_text_normalization_routes.py: 5 warnings
-  <HOME>\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:337: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.save_with_torchcodec` under the hood. Some parameters like format, encoding, bits_per_sample, buffer_size, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's encoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.encoders.AudioEncoder
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:337: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.save_with_torchcodec` under the hood. Some parameters like format, encoding, bits_per_sample, buffer_size, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's encoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.encoders.AudioEncoder
     warnings.warn(
 
 tests/test_colab_asr_setup.py::ColabAsrSetupTests::test_setup_can_be_rerun
 tests/test_colab_asr_setup.py::ColabAsrSetupTests::test_setup_can_be_rerun
 tests/test_colab_asr_setup.py::ColabAsrSetupTests::test_setup_downloads_the_default_model_into_the_shared_cache
 tests/test_capture_ws.py::test_demoted_sherpa_query_keeps_pcm_transport_for_legacy_fallback
-  <HOME>\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
     import pkg_resources
 
 tests/test_colab_asr_setup.py: 15 warnings
 tests/test_capture_ws.py: 5 warnings
-  <HOME>\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
   Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
     declare_namespace(pkg)
 
 tests/test_generation_design_recipe.py::test_generate_stores_validated_recipe_and_history_returns_it
 tests/test_openai_speech_extension_controls.py::test_defaults_send_only_the_always_on_flags
-  <HOME>\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
     WeightNorm.apply(module, name, dim)
 
 tests/test_omnivoice_lazy_model_import.py::test_audio_tokenizer_import_failure_is_actionable_and_classified
 tests/test_gpu_routing_caveats_1812.py::test_preflight_gpu_row_does_not_say_cuda_ready_without_kernels
 tests/test_setup_preflight.py::test_preflight_never_lists_media_tools_as_requirements
 tests/test_cpu_arm_hosts.py::test_preflight_tells_a_windows_on_arm_user_what_to_expect
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
     m = re.match('([su]([0-9]{1,2})p?) \(([0-9]{1,2}) bit\)$', token)
 
 tests/test_omnivoice_lazy_model_import.py::test_audio_tokenizer_import_failure_is_actionable_and_classified
 tests/test_gpu_routing_caveats_1812.py::test_preflight_gpu_row_does_not_say_cuda_ready_without_kernels
 tests/test_setup_preflight.py::test_preflight_never_lists_media_tools_as_requirements
 tests/test_cpu_arm_hosts.py::test_preflight_tells_a_windows_on_arm_user_what_to_expect
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
     m2 = re.match('([su]([0-9]{1,2})p?)( \(default\))?$', token)
 
 tests/test_omnivoice_lazy_model_import.py::test_audio_tokenizer_import_failure_is_actionable_and_classified
 tests/test_gpu_routing_caveats_1812.py::test_preflight_gpu_row_does_not_say_cuda_ready_without_kernels
 tests/test_setup_preflight.py::test_preflight_never_lists_media_tools_as_requirements
 tests/test_cpu_arm_hosts.py::test_preflight_tells_a_windows_on_arm_user_what_to_expect
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
     elif re.match('(flt)p?( \(default\))?$', token):
 
 tests/test_omnivoice_lazy_model_import.py::test_audio_tokenizer_import_failure_is_actionable_and_classified
 tests/test_gpu_routing_caveats_1812.py::test_preflight_gpu_row_does_not_say_cuda_ready_without_kernels
 tests/test_setup_preflight.py::test_preflight_never_lists_media_tools_as_requirements
 tests/test_cpu_arm_hosts.py::test_preflight_tells_a_windows_on_arm_user_what_to_expect
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
     elif re.match('(dbl)p?( \(default\))?$', token):
 
 tests/test_omnivoice_lazy_model_import.py::test_audio_tokenizer_import_failure_is_actionable_and_classified
 tests/test_gpu_routing_caveats_1812.py::test_preflight_gpu_row_does_not_say_cuda_ready_without_kernels
 tests/test_setup_preflight.py::test_preflight_never_lists_media_tools_as_requirements
 tests/test_cpu_arm_hosts.py::test_preflight_tells_a_windows_on_arm_user_what_to_expect
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
     import audioop
 
 tests/test_redub_incremental.py: 10 warnings
-  <HOME>\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
     warnings.warn(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

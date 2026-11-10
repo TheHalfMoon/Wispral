@@ -20,59 +20,59 @@ FFFFFF.................................................................. [ 85%]
 ................................                                         [100%]
 ================================== FAILURES ===================================
 _______________ test_resolve_ffprobe_prefers_omnivoice_env_var ________________
-[gw0] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\backend\services\test_ffmpeg_utils.py:28: in test_resolve_ffprobe_prefers_omnivoice_env_var
     assert ffmpeg_utils.resolve_ffprobe() == str(fake)
 E   AssertionError: assert 'C:\\Users\\S...\\ffprobe.EXE' == 'C:\\Users\\S...s_o0\\ffprobe'
 E     
-E     - <HOME>\w\pt-run4-4\popen-gw0\test_resolve_ffprobe_prefers_o0\ffprobe
-E     + <HOME>\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-full_build\bin\ffprobe.EXE
+E     - REDACTED_HOME\w\pt-run4-4\popen-gw0\test_resolve_ffprobe_prefers_o0\ffprobe
+E     + REDACTED_HOME\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-full_build\bin\ffprobe.EXE
 ------------------------------ Captured log call ------------------------------
 WARNING  omnivoice.api:ffmpeg_utils.py:260 Rejecting non-runnable ffmpeg/ffprobe candidate ffprobe: [WinError 193] %1 is not a valid Win32 application
 ___________ test_resolve_ffprobe_falls_back_to_legacy_FFPROBE_PATH ____________
-[gw0] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\backend\services\test_ffmpeg_utils.py:40: in test_resolve_ffprobe_falls_back_to_legacy_FFPROBE_PATH
     assert ffmpeg_utils.resolve_ffprobe() == str(fake)
 E   AssertionError: assert 'C:\\Users\\S...\\ffprobe.EXE' == 'C:\\Users\\S...fprobe-legacy'
 E     
-E     - <HOME>\w\pt-run4-4\popen-gw0\test_resolve_ffprobe_falls_bac0\ffprobe-legacy
-E     + <HOME>\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-full_build\bin\ffprobe.EXE
+E     - REDACTED_HOME\w\pt-run4-4\popen-gw0\test_resolve_ffprobe_falls_bac0\ffprobe-legacy
+E     + REDACTED_HOME\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-full_build\bin\ffprobe.EXE
 ------------------------------ Captured log call ------------------------------
 WARNING  omnivoice.api:ffmpeg_utils.py:260 Rejecting non-runnable ffmpeg/ffprobe candidate ffprobe-legacy: [WinError 193] %1 is not a valid Win32 application
 ______ test_resolve_ffprobe_omnivoice_path_takes_precedence_over_legacy _______
-[gw0] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\backend\services\test_ffmpeg_utils.py:58: in test_resolve_ffprobe_omnivoice_path_takes_precedence_over_legacy
     assert ffmpeg_utils.resolve_ffprobe() == str(canonical)
 E   AssertionError: assert 'C:\\Users\\S...\\ffprobe.EXE' == 'C:\\Users\\S...obe-canonical'
 E     
-E     - <HOME>\w\pt-run4-4\popen-gw0\test_resolve_ffprobe_omnivoice0\ffprobe-canonical
-E     + <HOME>\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-full_build\bin\ffprobe.EXE
+E     - REDACTED_HOME\w\pt-run4-4\popen-gw0\test_resolve_ffprobe_omnivoice0\ffprobe-canonical
+E     + REDACTED_HOME\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-full_build\bin\ffprobe.EXE
 ------------------------------ Captured log call ------------------------------
 WARNING  omnivoice.api:ffmpeg_utils.py:260 Rejecting non-runnable ffmpeg/ffprobe candidate ffprobe-canonical: [WinError 193] %1 is not a valid Win32 application
 WARNING  omnivoice.api:ffmpeg_utils.py:260 Rejecting non-runnable ffmpeg/ffprobe candidate ffprobe-legacy: [WinError 193] %1 is not a valid Win32 application
 _____________ test_resolve_ffprobe_rejects_non_runnable_candidate _____________
-[gw0] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\backend\services\test_ffmpeg_utils.py:100: in test_resolve_ffprobe_rejects_non_runnable_candidate
     assert ffmpeg_utils.resolve_ffprobe() == str(good)
-E   AssertionError: assert None == 'C:\\Users\\<USER>\\w\\pt-run4-4\\popen-gw0\\test_resolve_ffprobe_rejects_n0\\ffprobe-good'
+E   AssertionError: assert None == 'REDACTED_HOME\\w\\pt-run4-4\\popen-gw0\\test_resolve_ffprobe_rejects_n0\\ffprobe-good'
 E    +  where None = <function resolve_ffprobe at 0x0000027661145DA0>()
-E    +    where <function resolve_ffprobe at 0x0000027661145DA0> = <module 'services.ffmpeg_utils' from 'C:\\Users\\<USER>\\w\\vs\\backend\\services\\ffmpeg_utils.py'>.resolve_ffprobe
-E    +  and   'C:\\Users\\<USER>\\w\\pt-run4-4\\popen-gw0\\test_resolve_ffprobe_rejects_n0\\ffprobe-good' = str(WindowsPath('C:/Users/<USER>/w/pt-run4-4/popen-gw0/test_resolve_ffprobe_rejects_n0/ffprobe-good'))
+E    +    where <function resolve_ffprobe at 0x0000027661145DA0> = <module 'services.ffmpeg_utils' from 'REDACTED_HOME\\w\\vs\\backend\\services\\ffmpeg_utils.py'>.resolve_ffprobe
+E    +  and   'REDACTED_HOME\\w\\pt-run4-4\\popen-gw0\\test_resolve_ffprobe_rejects_n0\\ffprobe-good' = str(WindowsPath('C:/Users/REDACTED_USER/w/pt-run4-4/popen-gw0/test_resolve_ffprobe_rejects_n0/ffprobe-good'))
 ------------------------------ Captured log call ------------------------------
 WARNING  omnivoice.api:ffmpeg_utils.py:260 Rejecting non-runnable ffmpeg/ffprobe candidate ffprobe-broken: [WinError 193] %1 is not a valid Win32 application
 WARNING  omnivoice.api:ffmpeg_utils.py:260 Rejecting non-runnable ffmpeg/ffprobe candidate ffprobe-good: [WinError 193] %1 is not a valid Win32 application
 ______ test_resolve_ffprobe_env_var_with_command_name_resolves_via_which ______
-[gw0] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\backend\services\test_ffmpeg_utils.py:131: in test_resolve_ffprobe_env_var_with_command_name_resolves_via_which
     assert ffmpeg_utils.resolve_ffprobe() == str(fake)
-E   AssertionError: assert None == 'C:\\Users\\<USER>\\w\\pt-run4-4\\popen-gw0\\test_resolve_ffprobe_env_var_w0\\ffprobe'
+E   AssertionError: assert None == 'REDACTED_HOME\\w\\pt-run4-4\\popen-gw0\\test_resolve_ffprobe_env_var_w0\\ffprobe'
 E    +  where None = <function resolve_ffprobe at 0x0000027661145DA0>()
-E    +    where <function resolve_ffprobe at 0x0000027661145DA0> = <module 'services.ffmpeg_utils' from 'C:\\Users\\<USER>\\w\\vs\\backend\\services\\ffmpeg_utils.py'>.resolve_ffprobe
-E    +  and   'C:\\Users\\<USER>\\w\\pt-run4-4\\popen-gw0\\test_resolve_ffprobe_env_var_w0\\ffprobe' = str(WindowsPath('C:/Users/<USER>/w/pt-run4-4/popen-gw0/test_resolve_ffprobe_env_var_w0/ffprobe'))
+E    +    where <function resolve_ffprobe at 0x0000027661145DA0> = <module 'services.ffmpeg_utils' from 'REDACTED_HOME\\w\\vs\\backend\\services\\ffmpeg_utils.py'>.resolve_ffprobe
+E    +  and   'REDACTED_HOME\\w\\pt-run4-4\\popen-gw0\\test_resolve_ffprobe_env_var_w0\\ffprobe' = str(WindowsPath('C:/Users/REDACTED_USER/w/pt-run4-4/popen-gw0/test_resolve_ffprobe_env_var_w0/ffprobe'))
 ------------------------------ Captured log call ------------------------------
 WARNING  omnivoice.api:ffmpeg_utils.py:260 Rejecting non-runnable ffmpeg/ffprobe candidate ffprobe: [WinError 193] %1 is not a valid Win32 application
 _________________ test_mobile_maintainer_catalog_is_localized _________________
-[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw3] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_mobile_contributors.py:27: in test_mobile_maintainer_catalog_is_localized
     locale = json.loads(path.read_text())
                         ^^^^^^^^^^^^^^^^
@@ -84,12 +84,12 @@ tests\test_mobile_contributors.py:27: in test_mobile_maintainer_catalog_is_local
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x81 in position 47: character maps to <undefined>
 ____________ test_progress_endpoint_answers_long_before_readiness _____________
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_startup_progress_early_bind.py:99: in test_progress_endpoint_answers_long_before_readiness
     pytest.fail(
 E   Failed: /startup/progress did not answer within 8s of spawn (last error: <urlopen error timed out>) ΓÇö the early-bind contract is broken
 ___________________ test_current_files_round_trip_unchanged ___________________
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_update_contributors.py:90: in test_current_files_round_trip_unchanged
     assert uc.render_readme(readme.read_text(), [l for l in logins if l not in core], readme) == readme.read_text()
                             ^^^^^^^^^^^^^^^^^^
@@ -101,7 +101,7 @@ tests\test_update_contributors.py:90: in test_current_files_round_trip_unchanged
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x81 in position 1787: character maps to <undefined>
 _ VirusTotalTests.test_api_errors_are_actionable_without_echoing_credentials_or_body _
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -110,9 +110,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpbktsvc7r\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpbktsvc7r\\public "sample".zip'
 _______ VirusTotalTests.test_big_file_host_is_for_the_file_upload_only ________
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -121,9 +121,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpwc926ltx\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpwc926ltx\\public "sample".zip'
 _ VirusTotalTests.test_default_archive_uses_committed_tree_instead_of_local_edits _
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -132,9 +132,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpjpe_zi8y\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpjpe_zi8y\\public "sample".zip'
 _ VirusTotalTests.test_documented_http_upload_urls_are_upgraded_before_sending_credentials _
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -143,9 +143,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpqmwk56fd\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpqmwk56fd\\public "sample".zip'
 ________ VirusTotalTests.test_empty_or_oversize_files_make_no_requests ________
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -154,9 +154,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpxdnlxjos\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpxdnlxjos\\public "sample".zip'
 ____ VirusTotalTests.test_file_override_and_no_wait_print_link_without_key ____
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -165,9 +165,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpgnqdyus0\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpgnqdyus0\\public "sample".zip'
 _ VirusTotalTests.test_flagged_engines_fail_but_unsupported_only_is_inconclusive _
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -176,9 +176,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmporz5b0fc\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmporz5b0fc\\public "sample".zip'
 ___________ VirusTotalTests.test_generic_requests_still_refuse_http ___________
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -187,9 +187,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpir3cbk0c\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpir3cbk0c\\public "sample".zip'
 _______ VirusTotalTests.test_large_upload_gets_one_use_url_then_uploads _______
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -198,9 +198,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpkzr__uox\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpkzr__uox\\public "sample".zip'
 _ VirusTotalTests.test_large_upload_may_use_the_big_file_host_virustotal_returns _
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -209,9 +209,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmp6vabcazo\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmp6vabcazo\\public "sample".zip'
 __ VirusTotalTests.test_make_passes_file_override_without_needing_a_live_api __
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -220,9 +220,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpg4xf6mtn\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpg4xf6mtn\\public "sample".zip'
 ______ VirusTotalTests.test_missing_key_fails_before_archive_or_network _______
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -231,9 +231,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpyfh8ooos\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpyfh8ooos\\public "sample".zip'
 _____ VirusTotalTests.test_plain_make_keeps_the_existing_release_default ______
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -242,9 +242,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpb_jzln7n\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpb_jzln7n\\public "sample".zip'
 _ VirusTotalTests.test_poll_deadline_prevents_waiting_for_another_quota_slot __
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -253,9 +253,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmp6z7glrpt\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmp6z7glrpt\\public "sample".zip'
 __________ VirusTotalTests.test_polling_waits_for_completed_analysis __________
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -264,9 +264,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmprly6tssj\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmprly6tssj\\public "sample".zip'
 __________ VirusTotalTests.test_redirects_never_forward_credentials ___________
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -275,9 +275,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpn3jj3lqt\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpn3jj3lqt\\public "sample".zip'
 _ VirusTotalTests.test_rejected_upload_url_diagnostic_omits_tokens_and_credentials _
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -286,9 +286,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpas7kh7ch\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpas7kh7ch\\public "sample".zip'
 __________ VirusTotalTests.test_requests_respect_public_api_interval __________
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -297,9 +297,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpcnehbrvr\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpcnehbrvr\\public "sample".zip'
 _ VirusTotalTests.test_small_upload_streams_multipart_with_exact_length_and_basename _
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -308,9 +308,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpkbzcc9vf\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpkbzcc9vf\\public "sample".zip'
 _____________ VirusTotalTests.test_timeout_is_not_a_clean_verdict _____________
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -319,9 +319,9 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmp564td90k\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmp564td90k\\public "sample".zip'
 ____ VirusTotalTests.test_untrusted_upload_url_cannot_receive_file_or_key _____
-[gw1] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw1] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_virustotal.py:30: in setUp
     self.path.write_bytes(b"public sample bytes\x00\xff")
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1067: in write_bytes
@@ -330,72 +330,72 @@ tests\test_virustotal.py:30: in setUp
 ..\..\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py:1044: in open
     return io.open(self, mode, buffering, encoding, errors, newline)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   OSError: [Errno 22] Invalid argument: 'C:\\Users\\<USER>\\AppData\\Local\\Temp\\tmpukgpw42z\\public "sample".zip'
+E   OSError: [Errno 22] Invalid argument: 'REDACTED_HOME\\AppData\\Local\\Temp\\tmpukgpw42z\\public "sample".zip'
 ============================== warnings summary ===============================
 .venv\Lib\site-packages\fastapi\testclient.py:1
 .venv\Lib\site-packages\fastapi\testclient.py:1
 .venv\Lib\site-packages\fastapi\testclient.py:1
 .venv\Lib\site-packages\fastapi\testclient.py:1
-  <HOME>\w\vs\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
     from starlette.testclient import TestClient as TestClient  # noqa
 
 .venv\Lib\site-packages\pydub\utils.py:300
 .venv\Lib\site-packages\pydub\utils.py:300
 .venv\Lib\site-packages\pydub\utils.py:300
 .venv\Lib\site-packages\pydub\utils.py:300
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
     m = re.match('([su]([0-9]{1,2})p?) \(([0-9]{1,2}) bit\)$', token)
 
 .venv\Lib\site-packages\pydub\utils.py:301
 .venv\Lib\site-packages\pydub\utils.py:301
 .venv\Lib\site-packages\pydub\utils.py:301
 .venv\Lib\site-packages\pydub\utils.py:301
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
     m2 = re.match('([su]([0-9]{1,2})p?)( \(default\))?$', token)
 
 .venv\Lib\site-packages\pydub\utils.py:310
 .venv\Lib\site-packages\pydub\utils.py:310
 .venv\Lib\site-packages\pydub\utils.py:310
 .venv\Lib\site-packages\pydub\utils.py:310
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
     elif re.match('(flt)p?( \(default\))?$', token):
 
 .venv\Lib\site-packages\pydub\utils.py:314
 .venv\Lib\site-packages\pydub\utils.py:314
 .venv\Lib\site-packages\pydub\utils.py:314
 .venv\Lib\site-packages\pydub\utils.py:314
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
     elif re.match('(dbl)p?( \(default\))?$', token):
 
 .venv\Lib\site-packages\pydub\utils.py:14
 .venv\Lib\site-packages\pydub\utils.py:14
 .venv\Lib\site-packages\pydub\utils.py:14
 .venv\Lib\site-packages\pydub\utils.py:14
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
     import audioop
 
 tests\test_startup_progress_early_bind.py:42
 tests\test_startup_progress_early_bind.py:42
 tests\test_startup_progress_early_bind.py:42
 tests\test_startup_progress_early_bind.py:42
-  <HOME>\w\vs\tests\test_startup_progress_early_bind.py:42: PytestUnknownMarkWarning: Unknown pytest.mark.slow - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  REDACTED_HOME\w\vs\tests\test_startup_progress_early_bind.py:42: PytestUnknownMarkWarning: Unknown pytest.mark.slow - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     @pytest.mark.slow
 
 tests/test_asr_model_missing.py::TestHelper::test_transcribe_reference_skips_without_backend_construction
 tests/backend/services/test_subprocess_asr.py::test_registry_exposes_isolated_backend
 tests/test_diagnose.py::test_report_shape
-  <HOME>\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
     import pkg_resources
 
 tests/test_asr_model_missing.py: 5 warnings
 tests/backend/services/test_subprocess_asr.py: 5 warnings
 tests/test_diagnose.py: 5 warnings
-  <HOME>\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
   Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
     declare_namespace(pkg)
 
 tests/test_generate_language_refusal_http.py::test_supported_profile_language_succeeds
-  <HOME>\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
     WeightNorm.apply(module, name, dim)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

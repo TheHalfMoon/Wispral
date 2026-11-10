@@ -11,7 +11,7 @@ Locale source keys: 1936 static renderer keys exist in en.json
   "orphans": {}
 }
 
- RUN  v5.1.0 C:/Users/<USER>/w/vs/electron
+ RUN  v5.1.0 C:/Users/REDACTED_USER/w/vs/electron
 
  ❯ src/main/wheel-prefetch.test.ts (28 tests | 1 failed) 6949ms
    ❯ prefetching planned wheels (#3411) (4)
@@ -67,7 +67,7 @@ If this is a long-running test, pass a timeout value as the last argument or con
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/21]⎯
 
  FAIL  src/main/runtime-project.test.ts > packaged runtime setup > never reuses an interrupted install as a compatible Tauri environment
-Error: ENOTEMPTY: directory not empty, rmdir '<HOME>\AppData\Local\Temp\vs-runtime-test-5clEB3'
+Error: ENOTEMPTY: directory not empty, rmdir 'REDACTED_HOME\AppData\Local\Temp\vs-runtime-test-5clEB3'
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/21]⎯
 
  FAIL  src/main/runtime-project.test.ts > packaged runtime setup > requires successful installation, a complete venv and the current dependency graph
@@ -162,7 +162,7 @@ If this is a long-running test, pass a timeout value as the last argument or con
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/21]⎯
 
  FAIL  src/main/runtime-readiness-flow.test.ts > propagates Windows ROCm launch refusal through compatible checks
-Error: ENOTEMPTY: directory not empty, rmdir '<HOME>\AppData\Local\Temp\vs-win-rocm-bj51ZR\project'
+Error: ENOTEMPTY: directory not empty, rmdir 'REDACTED_HOME\AppData\Local\Temp\vs-win-rocm-bj51ZR\project'
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/21]⎯
 
  FAIL  src/main/wheel-prefetch.test.ts > prefetching planned wheels (#3411) > reuses a wheel an earlier attempt finished and drops wheels the lock no longer needs

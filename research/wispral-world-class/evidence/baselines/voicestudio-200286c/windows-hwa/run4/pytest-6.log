@@ -21,7 +21,7 @@ bringing up nodes...
 ...........................................F.F....                       [100%]
 ================================== FAILURES ===================================
 ______ test_transformers_import_hint_versions_match_the_constraint_file _______
-[gw3] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw3] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_failure_classify.py:217: in test_transformers_import_hint_versions_match_the_constraint_file
     surfaces["troubleshooting.md"] = fh.read()
                                      ^^^^^^^^^
@@ -30,7 +30,7 @@ tests\test_failure_classify.py:217: in test_transformers_import_hint_versions_ma
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x9d in position 9061: character maps to <undefined>
 ___________________ test_no_indextts_import_in_tts_backend ____________________
-[gw2] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw2] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\backend\services\test_indextts_sidecar.py:477: in test_no_indextts_import_in_tts_backend
     src = (REPO_ROOT / "backend" / "services" / "tts_backend.py").read_text()
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -42,21 +42,21 @@ tests\backend\services\test_indextts_sidecar.py:477: in test_no_indextts_import_
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 E   UnicodeDecodeError: 'charmap' codec can't decode byte 0x9d in position 149026: character maps to <undefined>
 ___________ test_sidecar_loader_keeps_user_managed_v2_compatibility ___________
-[gw2] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw2] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\backend\services\test_indextts_sidecar.py:632: in test_sidecar_loader_keeps_user_managed_v2_compatibility
     assert captured["cfg_path"].endswith("checkpoints/config.yaml")
 E   AssertionError: assert False
 E    +  where False = <built-in method endswith of str object at 0x0000023F1B491B30>('checkpoints/config.yaml')
-E    +    where <built-in method endswith of str object at 0x0000023F1B491B30> = 'C:\\Users\\<USER>\\w\\pt-run4-6\\popen-gw2\\test_sidecar_loader_keeps_user0\\checkpoints\\config.yaml'.endswith
+E    +    where <built-in method endswith of str object at 0x0000023F1B491B30> = 'REDACTED_HOME\\w\\pt-run4-6\\popen-gw2\\test_sidecar_loader_keeps_user0\\checkpoints\\config.yaml'.endswith
 ____ test_sidecar_2_fallback_keeps_target_tokens_and_drops_25_only_kwargs _____
-[gw2] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw2] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\backend\services\test_indextts_sidecar.py:651: in test_sidecar_2_fallback_keeps_target_tokens_and_drops_25_only_kwargs
     assert model_kwargs["cfg_path"].endswith("checkpoints/config.yaml")
 E   AssertionError: assert False
 E    +  where False = <built-in method endswith of str object at 0x0000023F42074CF0>('checkpoints/config.yaml')
 E    +    where <built-in method endswith of str object at 0x0000023F42074CF0> = '/models/index-tts\\checkpoints\\config.yaml'.endswith
 ______ test_mobile_mp3_upstream_sources_and_packaged_licence_are_pinned _______
-[gw2] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw2] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\test_mobile_mp3_source.py:13: in test_mobile_mp3_upstream_sources_and_packaged_licence_are_pinned
     module.verify()
 mobile\native\mp3\verify_source.py:23: in verify
@@ -64,7 +64,7 @@ mobile\native\mp3\verify_source.py:23: in verify
            ^^^^^^^^^^^^^^^^^^
 E   AssertionError: Unpinned encoder input
 ____________ test_transcript_is_handed_over_as_a_file_then_deleted ____________
-[gw0] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\backend\engines\test_omnivoice_gguf.py:361: in test_transcript_is_handed_over_as_a_file_then_deleted
     rig.instance.generate("x", ref_audio=str(clip), ref_text="caf\u00e9 au lait")
 backend\services\tts_backend.py:226: in render
@@ -74,9 +74,9 @@ backend\engines\omnivoice_gguf\backend.py:911: in generate
     argv = self._build_argv(
 backend\engines\omnivoice_gguf\backend.py:998: in _build_argv
     raise FileNotFoundError(
-E   FileNotFoundError: Reference audio is outside the directories this engine may read: <HOME>\w\pt-run4-6\popen-gw0\test_transcript_is_handed_over0\prompt.wav
+E   FileNotFoundError: Reference audio is outside the directories this engine may read: REDACTED_HOME\w\pt-run4-6\popen-gw0\test_transcript_is_handed_over0\prompt.wav
 ______ test_transcript_file_never_outlives_a_failed_call[runner_raises] _______
-[gw0] win32 -- Python 3.11.15 <HOME>\w\vs\.venv\Scripts\python.exe
+[gw0] win32 -- Python 3.11.15 REDACTED_HOME\w\vs\.venv\Scripts\python.exe
 tests\backend\engines\test_omnivoice_gguf.py:393: in test_transcript_file_never_outlives_a_failed_call
     rig.instance.generate("x", ref_audio=str(clip), ref_text="abc")
 backend\services\tts_backend.py:226: in render
@@ -86,115 +86,115 @@ backend\engines\omnivoice_gguf\backend.py:911: in generate
     argv = self._build_argv(
 backend\engines\omnivoice_gguf\backend.py:998: in _build_argv
     raise FileNotFoundError(
-E   FileNotFoundError: Reference audio is outside the directories this engine may read: <HOME>\w\pt-run4-6\popen-gw0\test_transcript_file_never_out0\prompt.wav
+E   FileNotFoundError: Reference audio is outside the directories this engine may read: REDACTED_HOME\w\pt-run4-6\popen-gw0\test_transcript_file_never_out0\prompt.wav
 ============================== warnings summary ===============================
 .venv\Lib\site-packages\pydub\utils.py:300
 .venv\Lib\site-packages\pydub\utils.py:300
 .venv\Lib\site-packages\pydub\utils.py:300
 .venv\Lib\site-packages\pydub\utils.py:300
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:300: DeprecationWarning: invalid escape sequence '\('
     m = re.match('([su]([0-9]{1,2})p?) \(([0-9]{1,2}) bit\)$', token)
 
 .venv\Lib\site-packages\pydub\utils.py:301
 .venv\Lib\site-packages\pydub\utils.py:301
 .venv\Lib\site-packages\pydub\utils.py:301
 .venv\Lib\site-packages\pydub\utils.py:301
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:301: DeprecationWarning: invalid escape sequence '\('
     m2 = re.match('([su]([0-9]{1,2})p?)( \(default\))?$', token)
 
 .venv\Lib\site-packages\pydub\utils.py:310
 .venv\Lib\site-packages\pydub\utils.py:310
 .venv\Lib\site-packages\pydub\utils.py:310
 .venv\Lib\site-packages\pydub\utils.py:310
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:310: DeprecationWarning: invalid escape sequence '\('
     elif re.match('(flt)p?( \(default\))?$', token):
 
 .venv\Lib\site-packages\pydub\utils.py:314
 .venv\Lib\site-packages\pydub\utils.py:314
 .venv\Lib\site-packages\pydub\utils.py:314
 .venv\Lib\site-packages\pydub\utils.py:314
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:314: DeprecationWarning: invalid escape sequence '\('
     elif re.match('(dbl)p?( \(default\))?$', token):
 
 .venv\Lib\site-packages\pydub\utils.py:14
 .venv\Lib\site-packages\pydub\utils.py:14
 .venv\Lib\site-packages\pydub\utils.py:14
 .venv\Lib\site-packages\pydub\utils.py:14
-  <HOME>\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pydub\utils.py:14: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
     import audioop
 
 .venv\Lib\site-packages\fastapi\testclient.py:1
 .venv\Lib\site-packages\fastapi\testclient.py:1
 .venv\Lib\site-packages\fastapi\testclient.py:1
 .venv\Lib\site-packages\fastapi\testclient.py:1
-  <HOME>\w\vs\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
     from starlette.testclient import TestClient as TestClient  # noqa
 
 tests/test_asr_vram_preflight.py::test_ensure_asr_applies_preflight_before_load
-  <HOME>\w\vs\.venv\Lib\site-packages\speechbrain\utils\torch_audio_backend.py:64: UserWarning: torchaudio._backend.list_audio_backends has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\speechbrain\utils\torch_audio_backend.py:64: UserWarning: torchaudio._backend.list_audio_backends has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
     available_backends = torchaudio.list_audio_backends()
 
 tests/test_generate_streaming.py::test_stream_yields_chunks_incrementally
 tests/test_longform_e2e.py::test_pruning_during_atomic_cache_publication_preserves_the_write
 tests/test_profile_language_propagation.py::test_generate_uses_profile_language_when_request_unset
-  <HOME>\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:144: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
     WeightNorm.apply(module, name, dim)
 
 tests/test_diarization_error_class.py::TestGetDiarizationPipeline::test_no_token_returns_no_token_sentinel
-  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:182: DeprecationWarning: invalid escape sequence '\s'
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:182: DeprecationWarning: invalid escape sequence '\s'
     sep="\s+",
 
 tests/test_diarization_error_class.py::TestGetDiarizationPipeline::test_no_token_returns_no_token_sentinel
-  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:216: DeprecationWarning: invalid escape sequence '\s'
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:216: DeprecationWarning: invalid escape sequence '\s'
     sep="\s+",
 
 tests/test_diarization_error_class.py::TestGetDiarizationPipeline::test_no_token_returns_no_token_sentinel
-  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:253: DeprecationWarning: invalid escape sequence '\s'
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:253: DeprecationWarning: invalid escape sequence '\s'
     sep="\s+",
 
 tests/test_diarization_error_class.py::TestGetDiarizationPipeline::test_no_token_returns_no_token_sentinel
-  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:284: DeprecationWarning: invalid escape sequence '\s'
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:284: DeprecationWarning: invalid escape sequence '\s'
     data = pd.read_csv(file_uem, names=names, dtype=dtype, sep="\s+")
 
 tests/test_diarization_error_class.py::TestGetDiarizationPipeline::test_no_token_returns_no_token_sentinel
-  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:309: DeprecationWarning: invalid escape sequence '\s'
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\util.py:309: DeprecationWarning: invalid escape sequence '\s'
     data = pd.read_csv(path, names=names, dtype=dtype, sep="\s+")
 
 tests/test_diarization_error_class.py::TestGetDiarizationPipeline::test_no_token_returns_no_token_sentinel
-  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:93: DeprecationWarning: invalid escape sequence '\s'
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:93: DeprecationWarning: invalid escape sequence '\s'
     file_trial, sep="\s+", names=["reference", "uri1", "uri2"]
 
 tests/test_diarization_error_class.py::TestGetDiarizationPipeline::test_no_token_returns_no_token_sentinel
-  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:292: DeprecationWarning: invalid escape sequence '\s'
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:292: DeprecationWarning: invalid escape sequence '\s'
     ctm, names=names, dtype=dtype, sep="\s+"
 
 tests/test_diarization_error_class.py::TestGetDiarizationPipeline::test_no_token_returns_no_token_sentinel
-  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:357: DeprecationWarning: invalid escape sequence '\s'
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\database\loader.py:357: DeprecationWarning: invalid escape sequence '\s'
     mapping, names=names, dtype=dtype, sep="\s+"
 
 tests/test_diarization_error_class.py::TestGetDiarizationPipeline::test_no_token_returns_no_token_sentinel
-  <HOME>\w\vs\.venv\Lib\site-packages\pyannote\audio\core\io.py:212: UserWarning: torchaudio._backend.list_audio_backends has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pyannote\audio\core\io.py:212: UserWarning: torchaudio._backend.list_audio_backends has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
     torchaudio.list_audio_backends()
 
 tests/test_longform_e2e.py: 30 warnings
-  <HOME>\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:337: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.save_with_torchcodec` under the hood. Some parameters like format, encoding, bits_per_sample, buffer_size, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's encoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.encoders.AudioEncoder
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:337: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.save_with_torchcodec` under the hood. Some parameters like format, encoding, bits_per_sample, buffer_size, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's encoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.encoders.AudioEncoder
     warnings.warn(
 
 tests/test_longform_e2e.py::test_resume_reserves_later_inputs_before_overlapping_prune[segments-started]
 tests/test_longform_e2e.py::test_resume_reserves_later_inputs_before_overlapping_prune[segments-preparing]
 tests/test_longform_e2e.py::test_resume_reserves_later_inputs_before_overlapping_prune[segments-chapter]
-  <HOME>\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\torchaudio\_backend\utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
     warnings.warn(
 
 tests/test_performance_profiles.py::test_tier_applies_to_the_omnivoice_sidecar
 tests/backend/api/test_engines_route_shape.py::test_engines_response_includes_new_fields
 tests/test_performance_profiles.py::test_diarisation_is_applicable_only_with_a_real_runtime_choice
-  <HOME>\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\ctranslate2\__init__.py:8: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
     import pkg_resources
 
 tests/test_performance_profiles.py: 10 warnings
 tests/backend/api/test_engines_route_shape.py: 5 warnings
-  <HOME>\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
+  REDACTED_HOME\w\vs\.venv\Lib\site-packages\pkg_resources\__init__.py:3147: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pyannote')`.
   Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
     declare_namespace(pkg)
 
