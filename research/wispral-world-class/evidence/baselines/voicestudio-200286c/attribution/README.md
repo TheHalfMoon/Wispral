@@ -13,7 +13,7 @@ On Linux, `pytest tests/` with `HF_HUB_OFFLINE=1` looks up and connects to Huggi
 | Call path | `backend/services/model_manager.py` `_run` → `backend/services/watermark.py` `mark_synthetic` → `embed_watermark` → `_get_generator` → `audioseal/loader.py` `load_model_checkpoint` → `torch.hub.load_state_dict_from_url` → `urllib` |
 | URL the call path implies | `https://huggingface.co/facebook/audioseal/resolve/main/generator_base.pth`. `_get_generator` calls `AudioSeal.load_generator("audioseal_wm_16bits")`, and that is the checkpoint URL in AudioSeal's packaged card `audioseal_wm_16bits.yaml`. The capture records host names only, not URLs. |
 | Why `HF_HUB_OFFLINE=1` does not stop it | inferred from the stack: the download goes through PyTorch's hub helper and the standard library, and no `huggingface_hub` frame appears, so the offline flag is not consulted on this path |
-| Effect on the test | none observed: with the lookup blocked it still passes ([`rerun.log`](windows-blocked-rerun/rerun.log)). The donor's `mark_synthetic` is documented to pass audio through unchanged when watermarking fails, so a blocked download silently yields **unwatermarked** output. |
+| Effect on the test | none observed: with the lookup blocked it still passes ([`rerun.log`](windows-blocked-rerun/rerun.log)). When watermarking is on (the user setting, or `force=True`), the donor's `mark_synthetic` passes the audio through unchanged if watermarking fails (`backend/services/watermark.py` at `b8e67b5`, docstring lines 366–381). `embed_watermark` logs a warning, "Watermark embedding failed (passing through original)". So with the download blocked, the request still succeeds and the audio leaves **unwatermarked**, with only a log warning. |
 
 So the only model-hub traffic the probe saw is a **model-weight download for the synthetic-speech watermark**, made by a test that uses a fake engine. This matters for Wispral twice over:
 
@@ -70,6 +70,6 @@ The stacks give the call path in the table above.
 
 - The test suite needs the watermark generator stubbed or a local checkpoint, and it must fail closed on egress.
 - The product needs AudioSeal weights treated as a pinned, licence-checked model asset under the offline policy, not fetched at run time by `torch.hub`.
-- A failed watermark load must not silently ship unwatermarked synthetic speech. The donor's own `mark_synthetic` docstring names this mark as its answer to EU AI Act Art. 50(2), which requires machine-readable marking of synthetic audio. So on an offline machine without the cached weights, this pass-through is a compliance gap, not just a test problem.
+- A failed watermark load must not let unwatermarked synthetic speech leave with only a log warning. The donor's own `mark_synthetic` docstring (`watermark.py` lines 366–368 at `b8e67b5`) presents this mark as its answer to EU AI Act Art. 50(2), which, per that docstring, requires machine-readable marking of synthetic audio. This legal reading is the donor's and has not been checked independently. If it holds, the pass-through on an offline machine without cached weights is a compliance risk, not just a test problem.
 
 These belong to a later Grain. Nothing here changes the donor.
