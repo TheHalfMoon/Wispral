@@ -1,0 +1,1792 @@
+{
+  "schema": "wispral-final-plan/1",
+  "date": "2026-11-10",
+  "base": "246283f59dcdfa945ef9d49d0cc2fa5b9deb8b09",
+  "status": "PROPOSED for founder approval. Planning only. Authorizes no product code, no build, no D0G execution.",
+  "vehicles": [
+    {
+      "id": "S0-MERGE",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "Merge #153 (000E Grain states) and #154 (D0G package), both reviewed"
+    },
+    {
+      "id": "FD-01",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [
+        "S0-MERGE"
+      ],
+      "title": "Approve this plan as the planning authority for sequencing; it supersedes the 2026-11-08 candidate master plan's order and does not itself amend governance"
+    },
+    {
+      "id": "FD-02",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "Keep Specification 000's exactly-one-Grain rule for every 000G selection (recommended) instead of amending the spec to open several Grains"
+    },
+    {
+      "id": "FD-03",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "D0G Path B: remove ST-D00 and KT-01 from D0G's dependencies; the first 000G selection (D0G-1) selects CORE-01 only"
+    },
+    {
+      "id": "FD-04",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "Accept SD-M0's narrowed acceptance item 3 (DLLs from this build and the bundle config; VC++ runtime and installer contents moved to a release-candidate packet), making SD-M0 VERIFIED"
+    },
+    {
+      "id": "FD-05",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "Product order after the core foundation: WisprSide, then Klaint text, then WisprStudio (recommended); each product still needs its own 000G selection"
+    },
+    {
+      "id": "FD-06",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "WisprSide speech path: an explicit 000B insufficient-evidence synthesis permits R1 internal alpha with Handy's existing local engines labelled unranked; accepted 000B evidence is required before any accuracy claim and before R3"
+    },
+    {
+      "id": "FD-07",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "Repositories and licences: Wispral repo Apache-2.0 (contracts, policies, harnesses, research, Klaint service); WisprSide in the MIT fork with Wispral deltas under MIT; WisprStudio in the AGPL-3.0 fork with all deltas AGPL-3.0 and local-only (no network service) unless AGPL section 13 is satisfied"
+    },
+    {
+      "id": "FD-08",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [
+        "FD-07"
+      ],
+      "title": "Founder grant scope (Q-10): until the founder records per-file scope, plan as AGPL-3.0 only; no VoiceStudio code moves into the Apache repository; no private document is requested"
+    },
+    {
+      "id": "FD-09",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "Synthetic-speech marking scope: mark every synthetic output by default; when a mark is required (cloned, third-party, licensed, commercial) a failed mark refuses the export; legal reading of EU AI Act Art. 50(2) to be checked"
+    },
+    {
+      "id": "FD-10",
+      "type": "FD",
+      "stage": "S2",
+      "approval": "founder",
+      "depends_on": [
+        "RG-3"
+      ],
+      "title": "Choose the watermark technology (AudioSeal or PerTh) from RG-3's licence and robustness evidence"
+    },
+    {
+      "id": "FD-11",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "Name one pinned local CPU model (permissive weight licence, CPU-runnable, digest-pinned) for the KT-01 item-4 measurement, or accept that item as NOT RUN until later"
+    },
+    {
+      "id": "FD-12",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "Parlant pin: v4.0.2 only, with Klaint-side gates; drop the v3.3.2 fallback"
+    },
+    {
+      "id": "FD-13",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "ST-D00 remediation: keep the recorded baseline unchanged and run a separate remediation baseline (RG-2) on a recorded research delta branch"
+    },
+    {
+      "id": "FD-14",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "Name the standing qualifying-review route (Governance item 7) and its fallback"
+    },
+    {
+      "id": "FD-15",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "Runner plan: hosted CI for Linux; HW-A for Windows manual gates within its recorded limits; a clean-install Windows VM before R2"
+    },
+    {
+      "id": "FD-16",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "Update policy: offer an opt-in, content-free security-advisory check to one declared host (recommended), or document the risk of no check"
+    },
+    {
+      "id": "FD-17",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "Defer third-party and commercial voice cloning beyond the WisprStudio MVP, so no Wispral-hosted consent service is needed; the issuer question becomes a later Grain"
+    },
+    {
+      "id": "FD-18",
+      "type": "FD",
+      "stage": "S0",
+      "approval": "founder",
+      "depends_on": [],
+      "title": "Scope Arabic claims before the consented panel (BM-04) to public-subset measurements only"
+    },
+    {
+      "id": "FD-19",
+      "type": "FD",
+      "stage": "S1",
+      "approval": "founder",
+      "depends_on": [
+        "GP-07"
+      ],
+      "title": "Close draft PRs #124, #127 and #73 after their salvage items land"
+    },
+    {
+      "id": "FD-20",
+      "type": "FD",
+      "stage": "S1",
+      "approval": "founder + qualifying review",
+      "depends_on": [
+        "ADR-0003"
+      ],
+      "title": "Ratify ADR-0003 (core = contracts and fixtures, no daemon; per-product language and authority map)"
+    },
+    {
+      "id": "ADR-0003",
+      "type": "ADR",
+      "stage": "S1",
+      "approval": "qualifying review",
+      "depends_on": [
+        "FD-01"
+      ],
+      "title": "Write ADR-0003 refining ADR-0002 with the per-product language and authority map and the meaning of the resource core"
+    },
+    {
+      "id": "GP-01",
+      "type": "GP",
+      "stage": "S1",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "FD-01"
+      ],
+      "title": "Packet amendment procedure: edit the generator, regenerate, qualifying review when a gate is relaxed, founder approval, frontier record"
+    },
+    {
+      "id": "GP-02",
+      "type": "GP",
+      "stage": "S1",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "FD-02"
+      ],
+      "title": "Specification 000 amendment: per-capability required children for 000G; a scoped 000G for a non-STT Grain may run while 000B, 000C and 000D are open; map 000C-VOICE and 000C-AGENT to dependent packets; keep exactly one Grain per selection"
+    },
+    {
+      "id": "GP-03",
+      "type": "GP",
+      "stage": "S1",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "FD-01"
+      ],
+      "title": "Definition of a ready product Grain: canonical dependencies, re-verified pins, repository and paths, existing CI gates by name, rights rows, reviewer route, estimate, and donor-qualification checks (quarantine, diagnostics-as-transcript, redistribution view)"
+    },
+    {
+      "id": "GP-04",
+      "type": "GP",
+      "stage": "S1",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "FD-07"
+      ],
+      "title": "Repository binding: which repositories the Constitution, gates, CI and evidence rules bind; how forks consume contract versions (vendored by digest with a CI check)"
+    },
+    {
+      "id": "GP-05",
+      "type": "GP",
+      "stage": "S1",
+      "approval": "fresh review + founder",
+      "depends_on": [
+        "GP-04"
+      ],
+      "title": "CI enablement: one always-run aggregator check; jobs for validate_plan, contract conformance and contrast; ruleset only after the aggregator exists"
+    },
+    {
+      "id": "GP-06",
+      "type": "GP",
+      "stage": "S1",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "FD-01"
+      ],
+      "title": "Patch amendment: the latest appended Platform frontier section governs, and each new one names what it supersedes"
+    },
+    {
+      "id": "GP-07",
+      "type": "GP",
+      "stage": "S1",
+      "approval": "fresh review + founder",
+      "depends_on": [
+        "S0-MERGE"
+      ],
+      "title": "Records refresh: stale state, licence, fork and Actions claims; superseded notes on candidate documents; import the two #124 review files; NOTICE file and harness register row; risk register and copy-first rules updates; release-quality additions"
+    },
+    {
+      "id": "GP-08",
+      "type": "GP",
+      "stage": "S1",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "FD-14"
+      ],
+      "title": "Owner-act format, guarded expected-head merges, the standing qualifying-review route, and what independent means outside the B2 lane"
+    },
+    {
+      "id": "GP-09",
+      "type": "GP",
+      "stage": "S1",
+      "approval": "fresh review + founder",
+      "depends_on": [
+        "GP-04"
+      ],
+      "title": "Verification sets for Python and TypeScript product code (pinned pytest, lint, dependency audit, bun checks) alongside the cargo set"
+    },
+    {
+      "id": "GP-10",
+      "type": "GP",
+      "stage": "S1",
+      "approval": "fresh review + founder",
+      "depends_on": [
+        "FD-12"
+      ],
+      "title": "Decision-ledger rows superseding D-04, D-20, the Rust/Python parity wording and T-7 (Arabic TTS route)"
+    },
+    {
+      "id": "PA-SET",
+      "type": "GP",
+      "stage": "S1",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "GP-01",
+        "GP-02",
+        "GP-03",
+        "FD-03"
+      ],
+      "title": "One regenerated packets.json applying PA-01 to PA-16 through the generator"
+    },
+    {
+      "id": "PA-01",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [
+        "FD-02",
+        "FD-03"
+      ],
+      "title": "D0G: dependencies F, CORE-00, ST-D00b (plus SD-M0 if FD-04); D0G, D1G and SE-01 acceptance and the DECISION_000G authority rewritten so each selection opens exactly one bounded Grain"
+    },
+    {
+      "id": "PA-02",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [
+        "FD-05"
+      ],
+      "title": "D1G: remove the SD-M6 condition; each later product is opened by its own exactly-one 000G selection"
+    },
+    {
+      "id": "PA-03",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [],
+      "title": "Design: shared tokens and component kit live outside the Handy fork; DS-07 and DS-08 depend on DS-01, not on DS-05 or SD-M6"
+    },
+    {
+      "id": "PA-04",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [
+        "FD-06"
+      ],
+      "title": "Speech-bearing WisprSide packets depend on a recorded 000B disposition"
+    },
+    {
+      "id": "PA-05",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [
+        "FD-12"
+      ],
+      "title": "Klaint: KT-01 item 3 superseded by RG-1; KT-02/03/04 require server-side principal derivation, per-tenant network isolation with a loopback probe, and a refusal to start in STREAM mode with gated tools, with a STREAM negative fixture; KT-03, KT-06 and KT-09 depend on KT-01b (RG-1) instead of KT-01"
+    },
+    {
+      "id": "PA-06",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [
+        "FD-07",
+        "FD-09"
+      ],
+      "title": "WisprStudio: ST-D09 depends on ST-D08 and gates ST-D03; watermark is a staged asset with fail-closed export; ST-D08 covers build-time sources; engine environments within the MVP limit; consent UX matches the contract; new ST-D11 (identifiers, updater, Authenticode, NSIS), ST-D12 (Windows suite repair), ST-D13 (crash-safe long-form resume), ST-D14 (project migration and dubbing provenance); local-only network policy; Studio packets that depend on ST-D00 depend on ST-D00r (RG-2) instead, and BM-01b depends on ST-D00r"
+    },
+    {
+      "id": "PA-07",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [
+        "FD-04"
+      ],
+      "title": "WisprSide: new SD-M12 model-catalog licence gate; SD-M2 covers --transcribe-file; new SD-R10 installer, DLL closure, VC++ runtime and SBOM; SD-M9 provisions the Vulkan SDK; drop the LLVM risk; delivery_outcome platform discriminator before PF-02; input-capture items as coarse P4 catalog entries"
+    },
+    {
+      "id": "PA-08",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [
+        "ADR-0003"
+      ],
+      "title": "Core: CORE-01 adds cross-language digest vectors and fixes the bundle count; contracts added before their consumers (network capability manifest, runtime manifest, export provenance sidecar, update manifest, privacy contract, envelope event families, unavailable-capability manifest); shared verdict fixtures are the parity authority; CORE-07 adds test isolation and the git-crate supply-chain gate"
+    },
+    {
+      "id": "PA-09",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [],
+      "title": "Klaint: KT-10 adds SSRF, DNS, redirect and private-IP tests; coarse handoff-summary and conversation-QA packet; shared Chatwoot stated as an accepted shared component; voice channel closed until RG-5"
+    },
+    {
+      "id": "PA-10",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [
+        "FD-18"
+      ],
+      "title": "Benchmarks: one BM numbering across documents; SD-R9 Arabic limited to public subsets until BM-04"
+    },
+    {
+      "id": "PA-11",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [
+        "GP-04"
+      ],
+      "title": "Packets gain a repository field and a merge order for shared hotspot files; donor modes corrected"
+    },
+    {
+      "id": "PA-12",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [],
+      "title": "Toolchain pins per fork (Rust, Bun, Node, uv) used on every platform; Parlant source tree verified against 2a463ccd"
+    },
+    {
+      "id": "PA-13",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [
+        "GP-01"
+      ],
+      "title": "Packet status regenerated from canonical tasks; validator checks states against tasks, source licence against destination repository, exactly-one selections, and reports path collisions"
+    },
+    {
+      "id": "PA-14",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [],
+      "title": "PF-01 covers installers and signing for both desktop products"
+    },
+    {
+      "id": "PA-15",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [],
+      "title": "New AG-00 (agent risk-tier policy and ACP event contract) before A-01; A-01 stays a later horizon"
+    },
+    {
+      "id": "PA-16",
+      "type": "PA",
+      "stage": "S1",
+      "approval": "via PA-SET",
+      "depends_on": [],
+      "title": "Split BM-01 into BM-01a (Handy egress baseline: SD-M0, CORE-07) and BM-01b (VoiceStudio egress baseline: ST-D00 or ST-D00r, CORE-07); SD-M1 depends on BM-01a and ST-D01 on BM-01b"
+    },
+    {
+      "id": "RG-1",
+      "type": "RG",
+      "stage": "S2",
+      "approval": "fresh review + founder",
+      "depends_on": [
+        "FD-12"
+      ],
+      "title": "KT-01b: in the Linux target container, prove server-side principal derivation and per-tenant network isolation of Parlant's tool server; run the item-4 local-model measurement if FD-11 names a model"
+    },
+    {
+      "id": "RG-2",
+      "type": "RG",
+      "stage": "S2",
+      "approval": "fresh review + founder",
+      "depends_on": [
+        "FD-13"
+      ],
+      "title": "ST-D00r: remediation baseline on both platforms with staged or stubbed watermark weights, socket-level egress denial, sandboxed profiles and Windows harness fixes; acceptance is zero model-hub connections and no runtime download"
+    },
+    {
+      "id": "RG-3",
+      "type": "RG",
+      "stage": "S2",
+      "approval": "fresh review + founder",
+      "depends_on": [],
+      "title": "000F-W: weight and asset rights for AudioSeal, PerTh, default TTS engines, the Handy model catalog, ggml and transcribe-cpp notices, and VC++ runtime redistribution"
+    },
+    {
+      "id": "RG-4",
+      "type": "RG",
+      "stage": "S2",
+      "approval": "fresh review + founder",
+      "depends_on": [
+        "RG-3"
+      ],
+      "title": "000F closure: per-donor dependency closures (torch, ggml and Vulkan, Playwright, Electron) and the 000F synthesis"
+    },
+    {
+      "id": "RG-5",
+      "type": "RG",
+      "stage": "S8",
+      "approval": "fresh review + founder",
+      "depends_on": [
+        "PA-05"
+      ],
+      "title": "Pre-stream commitment guard design for any streamed or voice Klaint channel"
+    },
+    {
+      "id": "D0G-1",
+      "type": "SELECTION",
+      "stage": "S3",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "PA-SET",
+        "GP-03",
+        "GP-05",
+        "FD-20",
+        "FD-04"
+      ],
+      "selects": [
+        "CORE-01"
+      ],
+      "title": "First 000G selection: CORE-01 only"
+    },
+    {
+      "id": "SEL-CORE-07",
+      "type": "SELECTION",
+      "stage": "S4",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "D0G-1"
+      ],
+      "selects": [
+        "CORE-07"
+      ],
+      "title": "000G selection: CORE-07 (egress, delivery and supply-chain harness)"
+    },
+    {
+      "id": "SEL-DS-01",
+      "type": "SELECTION",
+      "stage": "S4",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "SEL-CORE-07"
+      ],
+      "selects": [
+        "DS-01"
+      ],
+      "title": "000G selection: DS-01 (tokens and component kit)"
+    },
+    {
+      "id": "SEL-BM-00",
+      "type": "SELECTION",
+      "stage": "S4",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "SEL-DS-01"
+      ],
+      "selects": [
+        "BM-00"
+      ],
+      "title": "000G selection: BM-00 (benchmark preregistration)"
+    },
+    {
+      "id": "SEL-SIDE",
+      "type": "SELECTION",
+      "stage": "S5",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "SEL-BM-00",
+        "FD-05",
+        "FD-06",
+        "PA-04"
+      ],
+      "selects": [
+        "SD-M2"
+      ],
+      "title": "000G selection: first WisprSide Grain (SD-M2); later WisprSide Grains follow their own readiness"
+    },
+    {
+      "id": "SEL-KLAINT",
+      "type": "SELECTION",
+      "stage": "S6",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "SEL-SIDE",
+        "RG-1"
+      ],
+      "selects": [
+        "KT-03"
+      ],
+      "title": "000G selection: first Klaint Grain (KT-03)"
+    },
+    {
+      "id": "SEL-STUDIO",
+      "type": "SELECTION",
+      "stage": "S7",
+      "approval": "qualifying review + founder",
+      "depends_on": [
+        "SEL-KLAINT",
+        "RG-2",
+        "RG-3",
+        "FD-08",
+        "FD-10"
+      ],
+      "selects": [
+        "ST-D01"
+      ],
+      "title": "000G selection: first WisprStudio Grain (ST-D01)"
+    },
+    {
+      "id": "PLAN-S8",
+      "type": "PLAN",
+      "stage": "S8",
+      "approval": "none (coarse direction)",
+      "depends_on": [],
+      "title": "Expansion priorities kept coarse: authority failures, first reliable workflow, recovery and install, held-out Arabic and Gulf, measured speed"
+    }
+  ],
+  "new_packets": [
+    "SD-M12",
+    "SD-R10",
+    "ST-D11",
+    "ST-D12",
+    "ST-D13",
+    "ST-D14",
+    "AG-00",
+    "KT-01b",
+    "ST-D00r",
+    "KT-HQA",
+    "BM-01a",
+    "BM-01b"
+  ],
+  "roadmap_packets": {
+    "S5-WisprSide-R1": [
+      "SD-M2",
+      "SD-M11",
+      "BM-02",
+      "SD-M9",
+      "SD-M3",
+      "SD-M4",
+      "SD-M5",
+      "SD-M6",
+      "SD-M12",
+      "DS-05",
+      "SD-M8",
+      "SD-M1",
+      "SD-M10",
+      "BM-01a"
+    ],
+    "S5-WisprSide-R2R3": [
+      "SD-R1",
+      "SD-R2",
+      "SD-R3",
+      "SD-R4",
+      "SD-R6",
+      "SD-R7",
+      "SD-R8",
+      "SD-R9",
+      "SD-R10",
+      "PF-01",
+      "BM-03",
+      "SE-01"
+    ],
+    "S6-Klaint-R1": [
+      "KT-03",
+      "KT-04",
+      "KT-05",
+      "KT-06",
+      "KT-07",
+      "KT-08",
+      "KT-09",
+      "KT-10",
+      "KT-02",
+      "DS-08",
+      "KT-HQA"
+    ],
+    "S7-Studio-R1": [
+      "BM-01b",
+      "ST-D01",
+      "ST-D02",
+      "ST-D03",
+      "ST-D04",
+      "ST-D05",
+      "ST-D06",
+      "ST-D07",
+      "ST-D08",
+      "ST-D09",
+      "ST-D11",
+      "ST-D12",
+      "ST-D13",
+      "ST-D14",
+      "DS-07"
+    ],
+    "S8-Expansion": [
+      "AG-00",
+      "A-01",
+      "BM-04",
+      "PF-02",
+      "CORE-08",
+      "CORE-R1"
+    ]
+  },
+  "stages": [
+    {
+      "id": "S0",
+      "title": "Planning closeout and founder decisions",
+      "order": 0
+    },
+    {
+      "id": "S1",
+      "title": "Governance and plan-amendment wave",
+      "order": 1
+    },
+    {
+      "id": "S2",
+      "title": "Research remediation (parallel with S1 where independent)",
+      "order": 1
+    },
+    {
+      "id": "S3",
+      "title": "First 000G selection: CORE-01",
+      "order": 3
+    },
+    {
+      "id": "S4",
+      "title": "Core foundation selections, one at a time",
+      "order": 4
+    },
+    {
+      "id": "S5",
+      "title": "WisprSide to R1 internal alpha, then R2/R3",
+      "order": 5
+    },
+    {
+      "id": "S6",
+      "title": "Klaint text to R1",
+      "order": 6
+    },
+    {
+      "id": "S7",
+      "title": "WisprStudio to R1",
+      "order": 7
+    },
+    {
+      "id": "S8",
+      "title": "Expansion (coarse)",
+      "order": 8
+    }
+  ],
+  "findings": [
+    {
+      "id": "G-01",
+      "area": "governance",
+      "severity": "blocking",
+      "summary": "Specification 000 requires exactly one Grain per 000G selection; D0G, D1G and DECISION_000G open several",
+      "cite": "specs/000-founding-research/spec.md:10,24,114; packets.json D0G.acceptance[1], authorities.DECISION_000G; unmerged D0G_PACKAGE.md",
+      "resolved_by": [
+        "FD-02",
+        "PA-01",
+        "PA-02"
+      ],
+      "aliases": [
+        "P-02"
+      ]
+    },
+    {
+      "id": "G-02",
+      "area": "governance",
+      "severity": "blocking",
+      "summary": "D0G depends on ST-D00 and KT-01, which are BLOCKED, so every Grain including CORE-01 is held",
+      "cite": "packets.json D0G.depends_on; unmerged 000E tasks.md (ST-D00, KT-01 BLOCKED)",
+      "resolved_by": [
+        "FD-03",
+        "PA-01"
+      ],
+      "aliases": [
+        "P-01"
+      ]
+    },
+    {
+      "id": "G-03",
+      "area": "governance",
+      "severity": "blocking",
+      "summary": "No canonical procedure exists for amending packets.json, which canonical text relies on",
+      "cite": "specs/CURRENT.md:462; packets.json status CANDIDATE; FINAL_HANDOFF.md:15",
+      "resolved_by": [
+        "GP-01"
+      ]
+    },
+    {
+      "id": "G-04",
+      "area": "governance",
+      "severity": "blocking",
+      "summary": "Unclear whether 000G may run while 000B, 000C and 000D are open",
+      "cite": "specs/000-founding-research/tasks.md:58-64 vs spec.md:19,107",
+      "resolved_by": [
+        "GP-02"
+      ]
+    },
+    {
+      "id": "G-05",
+      "area": "governance",
+      "severity": "blocking",
+      "summary": "Readiness for a product Grain is never defined",
+      "cite": "CONSTITUTION.md:97; specs/CURRENT.md:268; D0G.definition_of_done",
+      "resolved_by": [
+        "GP-03"
+      ]
+    },
+    {
+      "id": "G-06",
+      "area": "governance",
+      "severity": "blocking",
+      "summary": "Which repositories the governance and gates bind is undefined",
+      "cite": "CONSTITUTION.md:208; SD-M1.affected; RIGHTS_REGISTER.md:23-29",
+      "resolved_by": [
+        "FD-07",
+        "GP-04"
+      ]
+    },
+    {
+      "id": "G-07",
+      "area": "governance",
+      "severity": "blocking",
+      "summary": "CI gates that packets cite (conformance, validate_plan, contrast) do not exist",
+      "cite": "FINAL_HANDOFF.md:55; FINAL_REPORT.md:137; CORE-01.acceptance",
+      "resolved_by": [
+        "GP-05"
+      ]
+    },
+    {
+      "id": "G-08",
+      "area": "governance",
+      "severity": "important",
+      "summary": "GRAIN_SIDE has no STT dependency in packets.json although Specification 000 requires one",
+      "cite": "spec.md:19; D0G_PACKAGE.md:46",
+      "resolved_by": [
+        "FD-06",
+        "PA-04"
+      ],
+      "aliases": [
+        "P-05"
+      ]
+    },
+    {
+      "id": "G-09",
+      "area": "governance",
+      "severity": "important",
+      "summary": "Product ordering, P2 parity, the P0 exit and distant detail contradict each other across documents",
+      "cite": "packets.json phases; DECISION_PACKAGE.md:65-69; DECISION_LEDGER.md:27; AGENTS.md:109",
+      "resolved_by": [
+        "FD-05",
+        "PA-02",
+        "PA-08",
+        "GP-07"
+      ]
+    },
+    {
+      "id": "G-10",
+      "area": "governance",
+      "severity": "important",
+      "summary": "Lifecycle state appears in packets.json, CURRENT.md and tasks.md and disagrees",
+      "cite": "packets.json status; specs/CURRENT.md:466-470; 000E tasks.md",
+      "resolved_by": [
+        "GP-07",
+        "PA-13"
+      ],
+      "aliases": [
+        "P-06"
+      ]
+    },
+    {
+      "id": "G-11",
+      "area": "governance",
+      "severity": "important",
+      "summary": "Merged Platform frontier section is frozen and no rule says a later one governs",
+      "cite": "CONSTITUTION.md:180; specs/CURRENT.md:453-482",
+      "resolved_by": [
+        "GP-06"
+      ]
+    },
+    {
+      "id": "G-12",
+      "area": "governance",
+      "severity": "important",
+      "summary": "CURRENT_STATE says no donor was built or tested",
+      "cite": "docs/canonical/CURRENT_STATE.md:412,440",
+      "resolved_by": [
+        "GP-07"
+      ]
+    },
+    {
+      "id": "G-13",
+      "area": "governance",
+      "severity": "important",
+      "summary": "Licence state is recorded as both decided and closed",
+      "cite": "RIGHTS_REGISTER.md:24; 000F tasks.md:7; RISK_REGISTER.md:26; DECISION_PACKAGE.md:16",
+      "resolved_by": [
+        "GP-07"
+      ],
+      "aliases": [
+        "L-07"
+      ]
+    },
+    {
+      "id": "G-14",
+      "area": "governance",
+      "severity": "important",
+      "summary": "Fork and Actions facts are stale; public forks need to be recorded as research hosting, not distribution",
+      "cite": "000E tasks.md:23; DECISION_PACKAGE.md:29; specs/CURRENT.md:480",
+      "resolved_by": [
+        "S0-MERGE",
+        "GP-07"
+      ]
+    },
+    {
+      "id": "G-15",
+      "area": "governance",
+      "severity": "important",
+      "summary": "Qualifying-review route is fragile and independent is undefined outside the B2 lane",
+      "cite": "CONSTITUTION.md:214; DECISION_LEDGER.md:32; specs/CURRENT.md:263",
+      "resolved_by": [
+        "FD-14",
+        "GP-08"
+      ]
+    },
+    {
+      "id": "G-16",
+      "area": "governance",
+      "severity": "important",
+      "summary": "Donor selections are unratified; D-04 and D-20 contradict KT-01 evidence",
+      "cite": "DECISION_LEDGER.md:3,9,33; research/klaint-spike/README.md",
+      "resolved_by": [
+        "FD-12",
+        "GP-10"
+      ]
+    },
+    {
+      "id": "G-17",
+      "area": "governance",
+      "severity": "important",
+      "summary": "Which Grains depend on 000C is undefined",
+      "cite": "spec.md:20,24",
+      "resolved_by": [
+        "GP-02"
+      ]
+    },
+    {
+      "id": "G-18",
+      "area": "governance",
+      "severity": "important",
+      "summary": "Owner-act and merge rules are only partly codified",
+      "cite": "CONSTITUTION.md:160,214; FINAL_REPORT.md:7",
+      "resolved_by": [
+        "GP-08"
+      ]
+    },
+    {
+      "id": "G-19",
+      "area": "governance",
+      "severity": "minor",
+      "summary": "Canonical-status labels of the roadmap and candidate plans are confusing",
+      "cite": "PROGRAM_ROADMAP.md:3; WISPRAL_WORLD_CLASS_MASTER_PLAN.md:3",
+      "resolved_by": [
+        "GP-07",
+        "FD-01"
+      ]
+    },
+    {
+      "id": "G-20",
+      "area": "governance",
+      "severity": "minor",
+      "summary": "Stale 000B text; the private B2 lane needs an explicit closure",
+      "cite": "specs/000-founding-research/tasks.md:51-52",
+      "resolved_by": [
+        "GP-07"
+      ]
+    },
+    {
+      "id": "G-21",
+      "area": "governance",
+      "severity": "minor",
+      "summary": "Leftover stale statements and resolved handoff questions",
+      "cite": "TRUSTED_CONTROL_REPAIRS.md:292; FINAL_HANDOFF.md:52",
+      "resolved_by": [
+        "GP-07"
+      ]
+    },
+    {
+      "id": "G-22",
+      "area": "governance",
+      "severity": "minor",
+      "summary": "KT-01 code location differs from the stated evidence location",
+      "cite": "000E spec.md:72; research/klaint-spike/",
+      "resolved_by": [
+        "GP-07"
+      ]
+    },
+    {
+      "id": "S-01",
+      "area": "security",
+      "severity": "blocking",
+      "summary": "Parlant's tool server cannot be disabled and accepts a forged customer_id; plans assume it is off",
+      "cite": "research/klaint-spike/README.md:7,85; WISPRAL_SECURITY_ARCHITECTURE.md:114; KT-02, KT-03; INDEPENDENT_REVIEW.md:29",
+      "resolved_by": [
+        "RG-1",
+        "PA-05",
+        "FD-12"
+      ],
+      "aliases": [
+        "P-04"
+      ]
+    },
+    {
+      "id": "S-02",
+      "area": "security",
+      "severity": "blocking",
+      "summary": "WisprStudio fetches AudioSeal weights at run time and exports unwatermarked audio on failure",
+      "cite": "attribution/README.md:13-16; model_manifest.schema.json:5; ST-D08, ST-D09",
+      "resolved_by": [
+        "PA-06",
+        "RG-3",
+        "FD-09",
+        "FD-10"
+      ]
+    },
+    {
+      "id": "S-03",
+      "area": "security",
+      "severity": "blocking",
+      "summary": "Watermark scope is undecided and the plan is narrower than the donor",
+      "cite": "ST-D09; consent_record.schema.json; WISPRSTUDIO_SOURCE_RESEARCH.md:148",
+      "resolved_by": [
+        "FD-09"
+      ]
+    },
+    {
+      "id": "S-04",
+      "area": "security",
+      "severity": "important",
+      "summary": "Klaint's message gate does nothing in STREAM mode; packets do not require BLOCK",
+      "cite": "research/klaint-spike/README.md:69-73; KT-03, KT-05, KV-02",
+      "resolved_by": [
+        "PA-05",
+        "RG-5"
+      ]
+    },
+    {
+      "id": "S-05",
+      "area": "security",
+      "severity": "important",
+      "summary": "Per-tenant processes share a host where any process can reach each tool server",
+      "cite": "WISPRAL_SECURITY_ARCHITECTURE.md:116; ARCHITECTURE_TRADEOFFS.md:23; KT-02",
+      "resolved_by": [
+        "RG-1",
+        "PA-05"
+      ]
+    },
+    {
+      "id": "S-06",
+      "area": "security",
+      "severity": "important",
+      "summary": "WisprStudio's updater, signing and installer chain has no owning packet",
+      "cite": "WISPRAL_SECURITY_ARCHITECTURE.md:133; ST-D01; voicestudio windows-hwa README:32",
+      "resolved_by": [
+        "PA-06",
+        "PA-14"
+      ]
+    },
+    {
+      "id": "S-07",
+      "area": "security",
+      "severity": "important",
+      "summary": "Updates are off by default while incident response relies on the update channel",
+      "cite": "WISPRAL_PLATFORM_COMPATIBILITY.md:48; WISPRAL_SECURITY_ARCHITECTURE.md:152",
+      "resolved_by": [
+        "FD-16"
+      ]
+    },
+    {
+      "id": "S-08",
+      "area": "security",
+      "severity": "important",
+      "summary": "WisprSide installer contents and VC++ runtime are unowned",
+      "cite": "handy windows-hwa README:79-80,98",
+      "resolved_by": [
+        "FD-04",
+        "PA-07"
+      ]
+    },
+    {
+      "id": "S-09",
+      "area": "security",
+      "severity": "important",
+      "summary": "Studio per-engine environments created at first run contradict pinned bundles",
+      "cite": "WISPRAL_PLATFORM_COMPATIBILITY.md:22; WISPRAL_PRODUCT_ARCHITECTURE.md:119; ST-D01",
+      "resolved_by": [
+        "PA-06",
+        "GP-07"
+      ]
+    },
+    {
+      "id": "S-10",
+      "area": "security",
+      "severity": "important",
+      "summary": "VoiceStudio's test suite is not isolated (real profile, network clone)",
+      "cite": "voicestudio windows-hwa README:101,127; CORE-07",
+      "resolved_by": [
+        "PA-08",
+        "RG-2"
+      ]
+    },
+    {
+      "id": "S-11",
+      "area": "security",
+      "severity": "important",
+      "summary": "Studio consent UX asks for data the consent contract forbids",
+      "cite": "WISPRSTUDIO_UX_SPEC.md:72; contracts README:16; WISPRAL_SECURITY_ARCHITECTURE.md:96",
+      "resolved_by": [
+        "PA-06"
+      ]
+    },
+    {
+      "id": "S-12",
+      "area": "security",
+      "severity": "important",
+      "summary": "No issuer or registry for commercial consent keys",
+      "cite": "WISPRAL_SECURITY_ARCHITECTURE.md:96; fixtures/trusted_keys.json:2; CONSTITUTION VII",
+      "resolved_by": [
+        "FD-17"
+      ]
+    },
+    {
+      "id": "S-13",
+      "area": "security",
+      "severity": "minor",
+      "summary": "Handy's --transcribe-file path is not covered by SD-M2",
+      "cite": "SD-M2; BM-02; SD-T13",
+      "resolved_by": [
+        "PA-07"
+      ]
+    },
+    {
+      "id": "S-14",
+      "area": "security",
+      "severity": "minor",
+      "summary": "Klaint operational metrics have no privacy contract",
+      "cite": "WISPRAL_PRODUCT_ARCHITECTURE.md:60; CONSTITUTION XIV:109",
+      "resolved_by": [
+        "PA-08"
+      ]
+    },
+    {
+      "id": "A-01",
+      "area": "architecture",
+      "severity": "blocking",
+      "summary": "000E cannot close as written because KT-01 and ST-D00 cannot reach VERIFIED",
+      "cite": "000E spec.md:54-58; KT-01 item 3; ST-D00 egress",
+      "resolved_by": [
+        "FD-03",
+        "FD-13",
+        "RG-1",
+        "RG-2",
+        "GP-02"
+      ]
+    },
+    {
+      "id": "A-02",
+      "area": "architecture",
+      "severity": "blocking",
+      "summary": "Core shape and per-product language boundaries exist only in unratified, disagreeing documents",
+      "cite": "docs/adr 0001 vs 0002; WISPRAL_PRODUCT_ARCHITECTURE.md:3,139-142; CONSTITUTION X; AGENTS 7",
+      "resolved_by": [
+        "ADR-0003",
+        "FD-20"
+      ]
+    },
+    {
+      "id": "A-03",
+      "area": "architecture",
+      "severity": "important",
+      "summary": "Rust/Python policy parity cannot be met while the Rust crate is deferred",
+      "cite": "contracts README:36; WISPRAL_SECURITY_ARCHITECTURE.md:15; CORE-R1",
+      "resolved_by": [
+        "PA-08",
+        "GP-10"
+      ]
+    },
+    {
+      "id": "A-04",
+      "area": "architecture",
+      "severity": "important",
+      "summary": "Cross-language digest tests are missing from CORE-01 acceptance; bundle count inconsistent",
+      "cite": "contracts README:9; CORE-01",
+      "resolved_by": [
+        "PA-08"
+      ]
+    },
+    {
+      "id": "A-05",
+      "area": "architecture",
+      "severity": "important",
+      "summary": "Core contracts lack schemas products are meant to share",
+      "cite": "WISPRAL_SECURITY_ARCHITECTURE.md:19; envelope.schema.json:192; ARCHITECTURE_INVARIANTS:12-29",
+      "resolved_by": [
+        "PA-08"
+      ]
+    },
+    {
+      "id": "A-06",
+      "area": "architecture",
+      "severity": "important",
+      "summary": "Agent control assumes an undefined risk-tier policy and ACP contract",
+      "cite": "THREAT_MODEL.md:323-333; A-01",
+      "resolved_by": [
+        "PA-15"
+      ]
+    },
+    {
+      "id": "A-07",
+      "area": "architecture",
+      "severity": "important",
+      "summary": "WisprStudio is Windows-first but its Windows baseline is red",
+      "cite": "WISPRAL_PLATFORM_COMPATIBILITY.md:9; voicestudio windows-hwa README:29",
+      "resolved_by": [
+        "FD-13",
+        "PA-06",
+        "RG-2"
+      ]
+    },
+    {
+      "id": "A-08",
+      "area": "architecture",
+      "severity": "important",
+      "summary": "Klaint evidence came from Windows; the target is a Linux container",
+      "cite": "research/klaint-spike/README.md:21; WISPRAL_PLATFORM_COMPATIBILITY.md:10,67",
+      "resolved_by": [
+        "RG-1"
+      ]
+    },
+    {
+      "id": "A-09",
+      "area": "architecture",
+      "severity": "important",
+      "summary": "How fork repositories consume contract versions is undefined",
+      "cite": "WISPRAL_PRODUCT_ARCHITECTURE.md:72; CORE-01",
+      "resolved_by": [
+        "GP-04"
+      ]
+    },
+    {
+      "id": "A-10",
+      "area": "architecture",
+      "severity": "important",
+      "summary": "No verification set exists for Python or TypeScript product code",
+      "cite": "AGENTS.md:78-84",
+      "resolved_by": [
+        "GP-09"
+      ]
+    },
+    {
+      "id": "A-11",
+      "area": "architecture",
+      "severity": "important",
+      "summary": "WisprStudio's outbound licence is unstated",
+      "cite": "RIGHTS_REGISTER.md:24,29",
+      "resolved_by": [
+        "FD-07"
+      ]
+    },
+    {
+      "id": "A-12",
+      "area": "architecture",
+      "severity": "minor",
+      "summary": "The portable delivery_outcome contract is Windows-specific",
+      "cite": "delivery_outcome.schema.json:134; CONSTITUTION I",
+      "resolved_by": [
+        "PA-07"
+      ]
+    },
+    {
+      "id": "A-13",
+      "area": "architecture",
+      "severity": "minor",
+      "summary": "Arabic TTS route conflicts between trade-offs and model strategy",
+      "cite": "ARCHITECTURE_TRADEOFFS.md:51; WISPRAL_MODEL_STRATEGY.md:63",
+      "resolved_by": [
+        "GP-10"
+      ]
+    },
+    {
+      "id": "A-14",
+      "area": "architecture",
+      "severity": "minor",
+      "summary": "Benchmark numbering BM-04/BM-05 conflicts across documents",
+      "cite": "WISPRAL_BENCHMARKS.md:107-108; packets.json",
+      "resolved_by": [
+        "PA-10"
+      ]
+    },
+    {
+      "id": "A-15",
+      "area": "architecture",
+      "severity": "minor",
+      "summary": "Per-tenant datastore rule conflicts with a shared Chatwoot",
+      "cite": "WISPRAL_SECURITY_ARCHITECTURE.md:116; WISPRAL_PRODUCT_ARCHITECTURE.md:55",
+      "resolved_by": [
+        "PA-09"
+      ]
+    },
+    {
+      "id": "P-03",
+      "area": "packet-graph",
+      "severity": "blocking",
+      "summary": "WisprStudio and Klaint MVPs are gated on WisprSide (D1G, DS-05/SD-M6)",
+      "cite": "packets.json D1G, DS-07, DS-08",
+      "resolved_by": [
+        "PA-02",
+        "PA-03"
+      ]
+    },
+    {
+      "id": "P-07",
+      "area": "packet-graph",
+      "severity": "important",
+      "summary": "Consent and watermark dependencies are missing",
+      "cite": "ST-D03, ST-D09, BM-04",
+      "resolved_by": [
+        "PA-06"
+      ]
+    },
+    {
+      "id": "P-08",
+      "area": "packet-graph",
+      "severity": "important",
+      "summary": "SD-R9 measures Arabic cells without the consented panel",
+      "cite": "DECISION_LEDGER.md:28; SD-R9",
+      "resolved_by": [
+        "FD-18",
+        "PA-10"
+      ]
+    },
+    {
+      "id": "P-09",
+      "area": "packet-graph",
+      "severity": "minor",
+      "summary": "Path collisions and no repository field",
+      "cite": "DS-05, SD-R8; actions.rs, clipboard.rs, settings.rs",
+      "resolved_by": [
+        "PA-11"
+      ]
+    },
+    {
+      "id": "P-10",
+      "area": "packet-graph",
+      "severity": "minor",
+      "summary": "Donor modes mislabelled",
+      "cite": "SD-M3, SD-R7, KT-03, KT-10, ST-D04",
+      "resolved_by": [
+        "PA-11"
+      ]
+    },
+    {
+      "id": "P-11",
+      "area": "packet-graph",
+      "severity": "important",
+      "summary": "All 32 product packets in P3-P6 are unestimated",
+      "cite": "packets.json estimate fields",
+      "resolved_by": [
+        "GP-03"
+      ]
+    },
+    {
+      "id": "P-12",
+      "area": "packet-graph",
+      "severity": "important",
+      "summary": "The validator cannot see Grain states, licence direction, exactly-one selections or collisions",
+      "cite": "validate_plan.mjs:17-105",
+      "resolved_by": [
+        "PA-13"
+      ]
+    },
+    {
+      "id": "L-01",
+      "area": "licensing",
+      "severity": "blocking",
+      "summary": "No licence decision for the product codebases",
+      "cite": "RIGHTS_REGISTER.md:29,31; FINAL_HANDOFF.md:23",
+      "resolved_by": [
+        "FD-07"
+      ]
+    },
+    {
+      "id": "L-02",
+      "area": "licensing",
+      "severity": "blocking",
+      "summary": "Founder grant scope is unrecorded",
+      "cite": "FINAL_HANDOFF.md:32; RIGHTS_REGISTER.md:29,49",
+      "resolved_by": [
+        "FD-08"
+      ]
+    },
+    {
+      "id": "L-03",
+      "area": "licensing",
+      "severity": "blocking",
+      "summary": "AudioSeal weight licence is NOASSERTION",
+      "cite": "SOURCE_DECISION_MATRIX.md:48; WISPRAL_MODEL_STRATEGY.md:70",
+      "resolved_by": [
+        "RG-3",
+        "FD-10"
+      ]
+    },
+    {
+      "id": "L-04",
+      "area": "licensing",
+      "severity": "important",
+      "summary": "Default TTS engine weight licences unverified",
+      "cite": "WISPRAL_MODEL_STRATEGY.md:63; ST-D02",
+      "resolved_by": [
+        "RG-3"
+      ]
+    },
+    {
+      "id": "L-05",
+      "area": "licensing",
+      "severity": "important",
+      "summary": "No WisprSide gate enforces Handy model-catalog weight licences",
+      "cite": "RIGHTS_REGISTER.md:43; SD-M1..SD-M11",
+      "resolved_by": [
+        "PA-07",
+        "RG-3"
+      ]
+    },
+    {
+      "id": "L-06",
+      "area": "licensing",
+      "severity": "important",
+      "summary": "No gate covers AGPL section 13 network use",
+      "cite": "WISPRSTUDIO_SOURCE_RESEARCH.md:312; WISPRAL_RELEASE_QUALITY.md:42",
+      "resolved_by": [
+        "FD-07",
+        "PA-06"
+      ]
+    },
+    {
+      "id": "L-08",
+      "area": "licensing",
+      "severity": "important",
+      "summary": "000F cannot close: no dependency closures or native and model artifacts",
+      "cite": "specs/000F-provenance-intake/spec.md:10-16,59-66",
+      "resolved_by": [
+        "RG-4"
+      ]
+    },
+    {
+      "id": "L-09",
+      "area": "licensing",
+      "severity": "minor",
+      "summary": "Licence gate only covers COPY/ADAPT; no NOTICE; harness adaptation unregistered",
+      "cite": "CORE-00 acceptance; WISPRAL_COPY_FIRST_STRATEGY.md:90; research/klaint-spike/harness/fake_provider.py",
+      "resolved_by": [
+        "PA-13",
+        "GP-07"
+      ]
+    },
+    {
+      "id": "D-01",
+      "area": "dependency",
+      "severity": "blocking",
+      "summary": "Parlant v3.3.2 fallback is not viable",
+      "cite": "research/klaint-spike/README.md:118-124; KT-01 rollback; DECISION_LEDGER D-04",
+      "resolved_by": [
+        "FD-12",
+        "GP-10"
+      ]
+    },
+    {
+      "id": "D-02",
+      "area": "dependency",
+      "severity": "blocking",
+      "summary": "WisprStudio baseline network and Windows failures",
+      "cite": "voicestudio README:5,40-60; windows-hwa README",
+      "resolved_by": [
+        "FD-13",
+        "RG-2"
+      ]
+    },
+    {
+      "id": "D-03",
+      "area": "dependency",
+      "severity": "important",
+      "summary": "Toolchains are not pinned across platforms",
+      "cite": "handy windows-hwa README:21,24; voicestudio README:14",
+      "resolved_by": [
+        "PA-12"
+      ]
+    },
+    {
+      "id": "D-04",
+      "area": "dependency",
+      "severity": "important",
+      "summary": "Parlant was tested from unpacked trees, not verified checkouts",
+      "cite": "research/klaint-spike/README.md:18-20",
+      "resolved_by": [
+        "PA-12",
+        "RG-1"
+      ]
+    },
+    {
+      "id": "D-05",
+      "area": "dependency",
+      "severity": "important",
+      "summary": "WisprSide native closure gaps: VC++ runtime, Vulkan SDK in CI, stale LLVM risk",
+      "cite": "handy windows-hwa README:79,97,121; SD-M9; SD-M0",
+      "resolved_by": [
+        "PA-07"
+      ]
+    },
+    {
+      "id": "D-06",
+      "area": "dependency",
+      "severity": "important",
+      "summary": "Four git-sourced crates have no supply-chain gate",
+      "cite": "handy windows-hwa README:116-120",
+      "resolved_by": [
+        "PA-08"
+      ]
+    },
+    {
+      "id": "D-07",
+      "area": "dependency",
+      "severity": "important",
+      "summary": "Studio Python environment count conflicts with the MVP limit",
+      "cite": "ST-D01; WISPRSTUDIO_SOURCE_RESEARCH.md:278-280; WISPRAL_MODEL_STRATEGY.md:63",
+      "resolved_by": [
+        "PA-06"
+      ]
+    },
+    {
+      "id": "D-08",
+      "area": "dependency",
+      "severity": "important",
+      "summary": "HW-A capacity limits the manual gates",
+      "cite": "handy windows-hwa README:42,109-111; voicestudio windows-hwa README:50",
+      "resolved_by": [
+        "FD-15"
+      ]
+    },
+    {
+      "id": "D-09",
+      "area": "dependency",
+      "severity": "minor",
+      "summary": "KT-01 item 4 local model is unnamed",
+      "cite": "research/klaint-spike/README.md:114; FINAL_HANDOFF.md:31",
+      "resolved_by": [
+        "FD-11"
+      ]
+    },
+    {
+      "id": "R-01",
+      "area": "salvage",
+      "severity": "minor",
+      "summary": "Two #124 review files are cited by main but absent",
+      "cite": "WISPRAL_IMPLEMENTATION_PACKETS.md:36,88; DECISION_LEDGER.md:35",
+      "resolved_by": [
+        "GP-07",
+        "FD-19"
+      ]
+    },
+    {
+      "id": "R-02",
+      "area": "salvage",
+      "severity": "important",
+      "summary": "WisprStudio crash-safe long-form resume has no owning packet",
+      "cite": "WISPRAL_COPY_FIRST_WORK_PACKETS.md:39; WISPRAL_RELEASE_QUALITY.md 3.2",
+      "resolved_by": [
+        "PA-06"
+      ]
+    },
+    {
+      "id": "R-03",
+      "area": "salvage",
+      "severity": "important",
+      "summary": "Studio project migration, downgrade and dubbing provenance are uncovered",
+      "cite": "WISPRAL_COPY_FIRST_WORK_PACKETS.md:40-41",
+      "resolved_by": [
+        "PA-06"
+      ]
+    },
+    {
+      "id": "R-04",
+      "area": "salvage",
+      "severity": "important",
+      "summary": "Klaint connector SSRF, DNS, redirect and private-IP tests are missing",
+      "cite": "WISPRAL_COPY_FIRST_WORK_PACKETS.md:20; KT-10",
+      "resolved_by": [
+        "PA-09"
+      ]
+    },
+    {
+      "id": "R-05",
+      "area": "salvage",
+      "severity": "minor",
+      "summary": "Klaint handoff summaries and conversation QA have no packet",
+      "cite": "WISPRAL_MASTER_PLAN_REBUILT.md:54; WISPRAL_PRODUCT_VISION.md:132",
+      "resolved_by": [
+        "PA-09"
+      ]
+    },
+    {
+      "id": "R-06",
+      "area": "salvage",
+      "severity": "minor",
+      "summary": "Unavailable-capability manifest and the rollback limit on external actions are missing",
+      "cite": "WISPRAL_MASTER_PLAN_REBUILT.md:67-68",
+      "resolved_by": [
+        "PA-08",
+        "GP-07"
+      ]
+    },
+    {
+      "id": "R-07",
+      "area": "salvage",
+      "severity": "minor",
+      "summary": "Expansion priority order and coarse horizons are missing",
+      "cite": "WISPRAL_MASTER_PLAN_REBUILT.md:58-60",
+      "resolved_by": [
+        "PLAN-S8"
+      ]
+    },
+    {
+      "id": "R-08",
+      "area": "salvage",
+      "severity": "minor",
+      "summary": "Anti-roadmap lacks timeline-editor, model-hub and workflow-engine lines",
+      "cite": "WISPRAL_COPY_FIRST_WORK_PACKETS.md:65; PROGRAM_ROADMAP.md:351-368",
+      "resolved_by": [
+        "GP-07"
+      ]
+    },
+    {
+      "id": "R-09",
+      "area": "salvage",
+      "severity": "minor",
+      "summary": "PR #127 is superseded by Constitution 1.0.0",
+      "cite": "CURRENT_STATE_INVENTORY.md:28",
+      "resolved_by": [
+        "FD-19"
+      ]
+    },
+    {
+      "id": "R-10",
+      "area": "salvage",
+      "severity": "important",
+      "summary": "#73 donor-qualification gates are not carried (quarantine, diagnostics-as-transcript, redistribution view)",
+      "cite": "PR #73 SOURCE_ADOPTION_GAP_REVIEW.md",
+      "resolved_by": [
+        "GP-03",
+        "GP-07"
+      ]
+    },
+    {
+      "id": "R-11",
+      "area": "salvage",
+      "severity": "minor",
+      "summary": "#73 WisprSide input-capture patterns are not in any packet",
+      "cite": "PR #73 VOICE_CAPTURE_PRODUCT_REFERENCES.md:218-243",
+      "resolved_by": [
+        "PA-07"
+      ]
+    },
+    {
+      "id": "R-12",
+      "area": "salvage",
+      "severity": "minor",
+      "summary": "#73 adoption rules are not folded into the copy-first strategy",
+      "cite": "PR #73 SOURCE_ADOPTION_STRATEGY.md:301-357",
+      "resolved_by": [
+        "GP-07"
+      ]
+    },
+    {
+      "id": "R-13",
+      "area": "salvage",
+      "severity": "minor",
+      "summary": "V3 documents on main carry stale fit-overlap and Parlant mechanism text",
+      "cite": "WISPRAL_COPY_FIRST_WORK_PACKETS.md:18,42; WISPRAL_WORLD_CLASS_MASTER_PLAN.md:70,72",
+      "resolved_by": [
+        "GP-07"
+      ]
+    },
+    {
+      "id": "P-13",
+      "area": "packet-graph",
+      "severity": "blocking",
+      "summary": "Even with D0G amended, ST-D00 still gates WisprSide's egress lockdown, identifiers and signing (SD-M1, SD-M10, PF-01, SD-R2, SD-R3) because BM-01 covers both forks",
+      "cite": "packets.json BM-01.depends_on [SD-M0, ST-D00, CORE-07]; SD-M1.depends_on; simulation in final-plan README",
+      "resolved_by": [
+        "PA-16"
+      ]
+    },
+    {
+      "id": "P-14",
+      "area": "packet-graph",
+      "severity": "important",
+      "summary": "SE-01 (a DECISION_000G selection) opens two packets, SD-R9 and BM-04, against the exactly-one rule",
+      "cite": "packets.json SE-01.acceptance",
+      "resolved_by": [
+        "PA-01"
+      ]
+    }
+  ],
+  "simulated_amendments": {
+    "note": "Dependency edits from PA-01, PA-02, PA-03, PA-05, PA-06 and PA-16, applied in memory by check_plan_graph.py. The research Grains KT-01b and ST-D00r are modelled as depending only on canonical research Grains, so a product stage is gated only until they are VERIFIED.",
+    "remove_deps": {
+      "D0G": [
+        "ST-D00",
+        "KT-01"
+      ],
+      "D1G": [
+        "SD-M6"
+      ]
+    },
+    "replace_deps": {
+      "DS-07": {
+        "DS-05": "DS-01",
+        "ST-D00": "ST-D00r"
+      },
+      "DS-08": {
+        "DS-05": "DS-01"
+      },
+      "SD-M1": {
+        "BM-01": "BM-01a"
+      },
+      "ST-D01": {
+        "BM-01": "BM-01b",
+        "ST-D00": "ST-D00r"
+      },
+      "KT-03": {
+        "KT-01": "KT-01b"
+      },
+      "KT-06": {
+        "KT-01": "KT-01b"
+      },
+      "KT-09": {
+        "KT-01": "KT-01b"
+      },
+      "ST-D02": {
+        "ST-D00": "ST-D00r"
+      },
+      "ST-D03": {
+        "ST-D00": "ST-D00r"
+      },
+      "ST-D04": {
+        "ST-D00": "ST-D00r"
+      },
+      "ST-D05": {
+        "ST-D00": "ST-D00r"
+      },
+      "ST-D07": {
+        "ST-D00": "ST-D00r"
+      }
+    },
+    "add_packets": {
+      "BM-01a": [
+        "SD-M0",
+        "CORE-07"
+      ],
+      "BM-01b": [
+        "ST-D00r",
+        "CORE-07"
+      ],
+      "KT-01b": [
+        "CORE-00"
+      ],
+      "ST-D00r": [
+        "F",
+        "CORE-00"
+      ]
+    }
+  },
+  "blocked_baselines": [
+    "ST-D00",
+    "KT-01"
+  ],
+  "gating_expectations": {
+    "S5-WisprSide-R1": [],
+    "S5-WisprSide-R2R3": [],
+    "S6-Klaint-R1": [],
+    "S7-Studio-R1": []
+  }
+}
