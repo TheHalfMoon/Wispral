@@ -1,6 +1,6 @@
 # Wispral Program Roadmap
 
-**Status:** Founding candidate  
+**Status:** Founding candidate. Directional only: `specs/CURRENT.md` and the specifications authorize work, and the order of work follows the final master plan the founder approved on 2026-11-10 ([PR #155](https://github.com/TheHalfMoon/Wispral/pull/155)).  
 **Planning model:** progressive refinement; only the active frontier may be decomposed to execution-level tasks
 
 ## Mission
@@ -365,7 +365,8 @@ The following are explicitly not justified by the platform thesis and require se
 - **RE-SCOPE:** the core has no generic enterprise dashboard. Klaint may expose the minimum operational inbox, QA, and tenant controls that a separately qualified customer workflow requires, using existing APIs;
 - **KEEP:** a mandatory hosted security scanner;
 - **KEEP:** an LLM-based security verdict as direct execution authority;
-- **KEEP:** a generic plugin marketplace before an extension trust/admission contract is justified.
+- **KEEP:** a generic plugin marketplace before an extension trust/admission contract is justified;
+- **KEEP:** a new timeline editor, model hub, CRM inbox or workflow engine built from scratch. Each product reuses its donor or an existing component unless the build-new register shows the donor cannot meet the boundary.
 
 ## Refinement rule
 

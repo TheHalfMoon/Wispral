@@ -62,6 +62,8 @@
 | `agentclientprotocol/rust-sdk` 5.0.0 | `050cd94c081056ace37a7b89abfed7f6220b47eb` | Apache-2.0 | not required | WRAP (later) | none |
 | `TheHalfMoon/Yamakan` | `c178610544501a497f29860e6ab620167d798947` | GPL-3.0 (combined distribution, with third-party GPL code per its NOTICE) | founder-owned | **REFERENCE only** | No code is copied |
 
+**Code already adapted into this repository.** `research/klaint-spike/harness/fake_provider.py` adapts `_FakeReactGenerator` from Parlant's `tests/core/nlp/test_react.py` (`emcie-co/parlant@2a463ccd10eaf0d70d42731705f4f00ef066bee8`, Apache-2.0, Copyright 2026 Emcie Co Ltd.). The attribution is kept in the file and in the root `NOTICE`. It is research harness code for KT-01, not product code.
+
 ## 3. Reference-only files and repositories
 
 No code may be copied from these into Wispral. Reading them for design is allowed.

@@ -1,0 +1,11 @@
+Wispral
+Copyright 2026 the Wispral authors (repository owner: TheHalfMoon)
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Third-party code included in this repository:
+
+- research/klaint-spike/harness/fake_provider.py adapts `_FakeReactGenerator`
+  from Parlant's tests/core/nlp/test_react.py
+  (https://github.com/emcie-co/parlant, commit 2a463ccd10eaf0d70d42731705f4f00ef066bee8).
+  Copyright 2026 Emcie Co Ltd. Licensed under the Apache License, Version 2.0.

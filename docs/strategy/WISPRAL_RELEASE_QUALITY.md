@@ -37,7 +37,7 @@ Each gate has an ID, the evidence that satisfies it, and the stage where it firs
 | **G-FAIL** Failure handling | Mic unplug, permission revoked, model missing, disk full, crash mid-job, network loss: each produces a visible, recoverable state; user work is preserved | ● | ● | ● | ● |
 | **G-UPDATE** Update and rollback | Signed update applies; rollback to N-1 restores a working app and readable data | — | — | ● | ● |
 | **G-SIGN** Code signing | Installer and binaries signed; SmartScreen or Gatekeeper behavior recorded honestly (an unsigned build is never described as warning-free) | — | ● | ● | ● |
-| **G-DOCS** Documentation | User guide, privacy statement listing every network host and data store, known limitations, support channel | — | ● | ● | ● |
+| **G-DOCS** Documentation | User guide, privacy statement listing every network host and data store, known limitations, a capability manifest that lists the OS, app, backend and language cells the release does *not* support, support channel | — | ● | ● | ● |
 | **G-REVIEW** Independent review | Reviewer independent of the author covers the release range; blocking findings resolved | ● | ● | ● | ● |
 | **G-LEGAL** Name and notices | Trademark/domain clearance review for the product name; AGPL/GPL obligations satisfied or covered by founder-confirmed grants (recorded per file, no confidential documents requested) | — | — | ● | ● |
 | **G-GREEN** Founder green light | Repository-owner comment authorizing the exact stage and artifact | — | ● | ● | ● |

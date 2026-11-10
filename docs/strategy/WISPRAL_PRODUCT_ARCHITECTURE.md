@@ -116,7 +116,7 @@ Channel message → the tenant's Parlant process → rule and policy matching �
 | Product | First release | Later |
 | --- | --- | --- |
 | WisprSide | Per-user Windows install (signed installer), local models in the user profile, no server | macOS (notarized), Linux (X11 first, Wayland via portals), managed enterprise deployment |
-| WisprStudio | Desktop install; Python engine environments created by the app's existing per-engine mechanism; optional GPU | Shared render workers on a LAN; local authenticated API |
+| WisprStudio | Desktop install; pinned, digest-checked Python engine bundles shipped or staged offline (ST-D01, ST-D08), or one explicit user-started download from a declared host; optional GPU | Shared render workers on a LAN; local authenticated API |
 | Klaint | MVP: one hardened Parlant process (production mode, loopback only, dashboard and plugin tool server off), broker, local inference server, database, optional Chatwoot; webhooks acknowledged immediately and processed from a queue | Tier S: gateway + one Parlant process per tenant (plugin tool server off in every process) + shared Chatwoot (one account and bot per tenant); shared multi-tenant Parlant only after isolation fixtures pass |
 
 ## 6. Failure behavior

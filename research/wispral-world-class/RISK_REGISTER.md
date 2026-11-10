@@ -23,7 +23,10 @@
 | R-13 | **Parlant API churn (realized):** v4 removed strict canned responses, journeys, the evaluations API, the Plan hook and most REST CRUD routes | 5 | 4 | Already happened (v4.0.2, 2026-11-04) | Spike KT-01 decides v4.0.2 versus the v3.3.2 fallback; broker as sole executor; commitment guard; tau2-bench harness independent of Parlant | ENG |
 | R-23 | VoiceStudio upstream velocity (about 118 commits/day) and open-core drift (Pro remote workers, cloud sync) | 4 | 3 | Rebase conflicts; features moving behind paid tiers | Pinned fork, scheduled rebase windows, delta register; egress table re-diffed on every rebase | ENG |
 | R-24 | Key Arabic TTS donor unmaintained (Chatterbox Multilingual V3 retired upstream in August 2026) | 4 | 3 | No upstream fixes | Treat as a frozen artifact; evaluate `silma-tts` and Piper Arabic voices; fine-tune trigger FT-5 if no permissive option reaches the gate | ENG |
-| R-25 | The Wispral repository has no outbound LICENSE | 5 | 4 | Any COPY packet | Founder chooses the Wispral license before code is copied in (Q-01) | FOUNDER |
+| R-25 | **Resolved 2026-11-09.** The Wispral repository had no outbound LICENSE; the founder chose Apache-2.0 (#146, `53d32b5`) | — | — | — | Closed (Q-01) | FOUNDER (done) |
+| R-30 | **Donor code executes before Wispral has qualified it:** setup scripts, workflows, package hooks, test fixtures or binaries run with access to credentials or the network | 3 | 4 | A baseline run needs secrets, or makes network access that was not declared | Source quarantine before qualification: no Wispral credentials in donor CI; lifecycle hooks disabled or inspected; mutable downloads pinned before execution; network access recorded; bootstrap code only inside the bounded qualification environment (carried from PR #73, gate G1) | ENG |
+| R-31 | **Donor logging or diagnostics become a hidden transcript store** (audio, raw transcripts, repository content, environment variables, credentials) | 3 | 4 | A support bundle or log contains transcript text | Each donor with logging documents: retained fields, transcript and audio retention, redaction, rotation, support-bundle contents, opt-in debug content, deletion (carried from PR #73, gate G4) | ENG |
+| R-32 | **Rights records cover access but not redistribution** of adapted code, binaries or assets | 3 | 4 | A packet relies on a grant whose redistribution terms are unrecorded | Where separate permission is relied on, record the operative answers only: modify, redistribute source, redistribute binaries, notice terms, snapshot or future versions, code or assets. No private document is requested (carried from PR #73, gate G14). | FOUNDER |
 | R-26 | Windows fixtures that GitHub-hosted runners cannot host (elevated vs medium integrity, secure desktop, audio input) | 4 | 3 | Fixtures skipped in CI | Execution-context tags per packet; recorded manual runs on HW-A; pure tests for PID/HWND reuse | ENG |
 | R-27 | No clean-VM capability on Windows 11 Home (no Hyper-V Manager or Sandbox) | 4 | 3 | G-INSTALL cannot run | Second machine or a free cloud VM the founder already has; otherwise record G-INSTALL as `BLOCKED_EXTERNAL` | FOUNDER |
 | R-28 | Klaint inference cost and latency on CPU (several LLM calls per turn; BLOCK mode prevents streaming) | 4 | 4 | KT-01 p95 turn latency | One owned inference server; tenant-configured provider by explicit choice; text MVP tolerates non-streamed replies | ENG + FOUNDER |
@@ -41,10 +44,10 @@
 
 | Dependency | Needed by | Status |
 | --- | --- | --- |
-| Founder ratification of the governance amendment(s) | Every product packet | Pending (FOUNDER) |
+| Founder ratification of the governance amendment(s) | Every product packet | Constitution 1.0.0 ratified (#139, `4c16b7e`). The further amendments AM-1 and AM-2 in the final master plan are pending. |
 | Independent reviewer availability (human or agent of a different lineage) | Every gated merge | To be named by the founder |
 | Founder decision on code-signing path and budget | R2 (private beta) | Pending |
-| A040 (#133) merged with a qualifying review | C2, R | Pending |
+| A040 (#133) merged with a qualifying review | C2, R | Done (`76fe651`, 2026-11-08) |
 | Consent program for the Arabic/English speech panel (forms, volunteers, storage) | WB-AR claims, WB-TTS cloning tests | Pending |
 | Trademark clearance | R3/R4 | Pending |
 | Donor repositories remain accessible at pinned SHAs | All fork packets | Verified on 2026-11-08 for the pins listed in the [source decision matrix](SOURCE_DECISION_MATRIX.md) |

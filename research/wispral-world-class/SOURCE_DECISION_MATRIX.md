@@ -6,7 +6,7 @@
 
 **Rights item Q-01 (resolved 2026-11-09):** the founder chose **Apache-2.0** as Wispral's outbound licence, and `LICENSE` is at the repository root. The conditions for landing adopted code are in [`RIGHTS_REGISTER.md`](RIGHTS_REGISTER.md) §1. Before that date, the repository had no LICENSE (`gh api` license = none).
 
-**CORE-00 (2026-11-08):** every anchor below was re-verified at its pin (`ANCHORS=57 PASS=57`). The per-donor rights, reference-only files and the closed licence gate are in [`RIGHTS_REGISTER.md`](RIGHTS_REGISTER.md); corrections to earlier records, including full SHAs for the short pins below, are in [`CATALOG_ERRATA.md`](CATALOG_ERRATA.md).
+**CORE-00 (2026-11-08):** every anchor below was re-verified at its pin (`ANCHORS=57 PASS=57`). The per-donor rights, reference-only files and the licence gate (closed at CORE-00, opened by the Apache-2.0 decision on 2026-11-09) are in [`RIGHTS_REGISTER.md`](RIGHTS_REGISTER.md); corrections to earlier records, including full SHAs for the short pins below, are in [`CATALOG_ERRATA.md`](CATALOG_ERRATA.md).
 
 ## Summary of lead decisions
 

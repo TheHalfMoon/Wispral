@@ -142,4 +142,6 @@ KT-01 cannot be marked `VERIFIED` while acceptance item 3 fails and item 4 is NO
 | [`../wispral-world-class/evidence/kt01-hwa/final/`](../wispral-world-class/evidence/kt01-hwa/final/) | The final v4 run: ported upstream tests, smoke, hooks, security, performance, and a summary of exit codes |
 | [`../wispral-world-class/evidence/kt01-hwa/earlier/`](../wispral-world-class/evidence/kt01-hwa/earlier/) | The earlier runs on the first fake (empty strings), the failed first performance attempt, and the failed first port. Also the v3 runs: `v3run1.log`, where the server did not start because of a container duplicate-definition error in the first v3 fake (fixed by giving each schema its own generator class), and `v3run2.log`, the run the v3 results cite. |
 
+Per the 000E specification, the run evidence lives under `research/wispral-world-class/evidence/kt01-hwa/`; this folder holds the harness and this report.
+
 Local paths in the logs are replaced by `REDACTED_HOME`. Where a path was written in another form, the user name is replaced by `REDACTED_USER`. The JWT secret and admin key in the tests are synthetic, test-only values.

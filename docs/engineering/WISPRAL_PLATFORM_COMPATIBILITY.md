@@ -19,7 +19,7 @@
 | Product | Format | Notes |
 | --- | --- | --- |
 | WisprSide | **Per-user NSIS installer** (Tauri default `currentUser`, no admin), plus MSI for managed deployment | Tauri builds NSIS and MSI only; **it cannot produce MSIX**. A Microsoft Store listing would point to the signed installer. Set `webviewInstallMode` deliberately: the Tauri default download bootstrapper needs network access when WebView2 is missing (normally present on Windows 11) |
-| WisprStudio | NSIS via electron-builder (donor's existing packaging), with Python engine environments created by the app's per-engine mechanism | Electron MSIX targets are beta/experimental; not used |
+| WisprStudio | NSIS via electron-builder (donor's existing packaging), with pinned, digest-checked Python engine bundles shipped or staged offline (ST-D01, ST-D08), or one explicit user-started download from a declared host; nothing is created from third-party mirrors at first run | Electron MSIX targets are beta/experimental; not used |
 | Portable builds | Handy's portable mode (marker file → `Data/`) retained for evaluation builds | — |
 
 ### 2.2 Code signing and SmartScreen (honest expectations)
