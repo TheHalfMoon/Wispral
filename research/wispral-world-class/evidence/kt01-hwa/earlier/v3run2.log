@@ -1,0 +1,407 @@
+2026-11-09T22:17:23.344775Z [info     ] [<main>] Parlant server version 3.3.2
+2026-11-09T22:17:23.346777Z [info     ] [<main>] Using home directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant-v3\parlant-data'
+2026-11-09T22:17:23.353778Z [info     ] [<main>] No external modules selected
+2026-11-09T22:17:23.374789Z [debug    ] TRACE [<main>] BackgroundTaskService: Starting task 'websocket-logger'
+
+                             ..
+                          :=++++=-
+                        :+***+++**+.
+                      .=*****++++*+=:.
+                     .=+++*******-
+             ..:::::...  .::::=++
+         .-+***#####**+=-..=+=:.
+       :+######***********. =***=.
+      =####**###**********+ .*****-
+     =#******###** v3.3 **+ .******-
+    :#*******#######****=. =********:
+    .*#******#*:---=-::..-*********+
+     -##*##***. -----=++*******++**:
+      :*###**: =****###**********+:
+        -+*#- -****************+-
+          .: .*******++++++==-.
+            .****+=:.
+            =+=:.
+           ..
+      
+
+Caching entity embeddings (1) ---------------------------------------- 0:00:00
+2026-11-09T22:17:24.505449Z [info     ] [<main>] .-----------------------------------------.
+2026-11-09T22:17:24.505818Z [info     ] [<main>] | Server is ready for some serious action |
+2026-11-09T22:17:24.505818Z [info     ] [<main>] '-----------------------------------------'
+2026-11-09T22:17:24.505818Z [info     ] [<main>] Server authorization policy: development
+2026-11-09T22:17:24.506829Z [info     ] [<main>] Try the Sandbox UI at http://localhost:33131
+2026-11-09T22:17:24.789710Z [info     ] [<main>] Server is ready to accept requests.
+2026-11-09T22:17:24.992616Z [debug    ] TRACE [<main>] Histogram 'httpreq' recorded duration=0.000000 attributes={'http.request.operation': 'list_agents', 'http.request.method': 'GET'}
+2026-11-09T22:17:25.011886Z [debug    ] TRACE [<main>] Histogram 'httpreq' recorded duration=0.015000 attributes={'http.request.operation': 'create_session', 'http.request.method': 'POST'}
+2026-11-09T22:17:25.020412Z [debug    ] TRACE [<main>] BackgroundTaskService: Starting task 'process-session(VTXZRDBh11)'
+2026-11-09T22:17:25.022412Z [debug    ] TRACE [<main>] Histogram 'httpreq' recorded duration=0.000000 attributes={'http.request.operation': 'create_event', 'http.request.method': 'POST'}
+2026-11-09T22:17:25.033195Z [debug    ] TRACE [<main>][GuidelineMatcher][RelationalResolver] RelationalResolver iteration 1
+2026-11-09T22:17:25.034193Z [debug    ] TRACE [<main>][GuidelineMatcher][RelationalResolver] RelationalResolver converged after 1 iteration(s)
+2026-11-09T22:17:25.138488Z [debug    ] TRACE [<main>] Skipping tool calling; no tools associated with guidelines found
+2026-11-09T22:17:25.140487Z [debug    ] TRACE [<main>][MessageEventComposer][CannedResponseGenerator] Histogram 'canrep.draft' recorded duration=0.000000
+2026-11-09T22:17:25.142491Z [debug    ] TRACE [<main>][MessageEventComposer][CannedResponseGenerator] Canned Response Draft Completion:
+{
+  "last_message_of_user": null,
+  "guidelines": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ],
+  "insights": null,
+  "response_preamble_that_was_already_sent": null,
+  "response_body": null
+}
+2026-11-09T22:17:25.143488Z [debug    ] TRACE [<main>][MessageEventComposer][CannedResponseGenerator] Histogram 'canrep.draft' recorded duration=0.000000
+2026-11-09T22:17:25.143488Z [debug    ] TRACE [<main>][MessageEventComposer][CannedResponseGenerator] Canned Response Draft Completion:
+{
+  "last_message_of_user": null,
+  "guidelines": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ],
+  "insights": null,
+  "response_preamble_that_was_already_sent": null,
+  "response_body": null
+}
+2026-11-09T22:17:25.145487Z [debug    ] TRACE [<main>][MessageEventComposer][CannedResponseGenerator] Histogram 'canrep.draft' recorded duration=0.000000
+2026-11-09T22:17:25.145487Z [debug    ] TRACE [<main>][MessageEventComposer][CannedResponseGenerator] Canned Response Draft Completion:
+{
+  "last_message_of_user": null,
+  "guidelines": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ],
+  "insights": null,
+  "response_preamble_that_was_already_sent": null,
+  "response_body": null
+}
+2026-11-09T22:17:25.145487Z [debug    ] TRACE [<main>][MessageEventComposer][CannedResponseGenerator] Histogram 'canrep' recorded duration=0.000000
+2026-11-09T22:17:25.147489Z [debug    ] TRACE [<main>] Histogram 'eng.process' recorded duration=0.125000
+2026-11-09T22:17:55.042137Z [debug    ] TRACE [<main>] Histogram 'httpreq' recorded duration=30.015000 attributes={'http.request.operation': 'list_events', 'http.request.method': 'GET'}
+2026-11-09T22:17:55.058301Z [info     ] [<main>] BackgroundTaskService: Cancelling all remaining tasks (2)
+2026-11-09T22:17:55.063613Z [info     ] [<main>] BackgroundTaskService: Shutting down
+F2026-11-09T22:17:57.424216Z [info     ] [<main>] Parlant server version 3.3.2
+2026-11-09T22:17:57.424216Z [info     ] [<main>] Using home directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant-v3\parlant-data'
+2026-11-09T22:17:57.436209Z [info     ] [<main>] No external modules selected
+2026-11-09T22:17:57.463455Z [debug    ] TRACE [<main>] BackgroundTaskService: Starting task 'websocket-logger'
+
+                             ..
+                          :=++++=-
+                        :+***+++**+.
+                      .=*****++++*+=:.
+                     .=+++*******-
+             ..:::::...  .::::=++
+         .-+***#####**+=-..=+=:.
+       :+######***********. =***=.
+      =####**###**********+ .*****-
+     =#******###** v3.3 **+ .******-
+    :#*******#######****=. =********:
+    .*#******#*:---=-::..-*********+
+     -##*##***. -----=++*******++**:
+      :*###**: =****###**********+:
+        -+*#- -****************+-
+          .: .*******++++++==-.
+            .****+=:.
+            =+=:.
+           ..
+      
+
+Caching entity embeddings (2) ---------------------------------------- 0:00:00
+2026-11-09T22:17:57.915823Z [debug    ] TRACE [<main>] Evaluating guideline: Condition: the customer asks about a balance, Action: look up the balance
+2026-11-09T22:17:57.916822Z [debug    ] TRACE [<main>] BackgroundTaskService: Starting task 'evaluation(KtBW539bmx)'
+2026-11-09T22:17:57.924329Z [debug    ] TRACE [<main>] evaluation task 'KtBW539bmx' completed
+
+2026-11-09T22:17:58.422837Z [info     ] [<main>] .-----------------------------------------.
+2026-11-09T22:17:58.423844Z [info     ] [<main>] | Server is ready for some serious action |
+2026-11-09T22:17:58.423844Z [info     ] [<main>] '-----------------------------------------'
+2026-11-09T22:17:58.424841Z [info     ] [<main>] Server authorization policy: development
+2026-11-09T22:17:58.424841Z [info     ] [<main>] Try the Sandbox UI at http://localhost:11077
+2026-11-09T22:17:58.725240Z [info     ] [<main>] Server is ready to accept requests.
+2026-11-09T22:17:58.925028Z [debug    ] TRACE [<main>] Histogram 'httpreq' recorded duration=0.000000 attributes={'http.request.operation': 'list_agents', 'http.request.method': 'GET'}
+KT01V3_RESULT v3_tool_server_list_status = 200
+KT01V3_RESULT v3_forged_call_status = 200
+KT01V3_RESULT v3_forged_call_body = "{\"result\":{\"data\":{\"customer_id\":\"FORGED_CUSTOMER\",\"balance\":\"SYNTHETIC-100\"},\"metadata\":{},\"control\":{},\"canned_responses\":[],\"canned_response_fields\":{},\"guidelines\":[]}}"
+KT01V3_RESULT v3_forged_call_tool_ran_with = ["FORGED_CUSTOMER"]
+2026-11-09T22:17:58.995786Z [info     ] [<main>] BackgroundTaskService: Cancelling all remaining tasks (2)
+2026-11-09T22:17:58.997778Z [info     ] [<main>] BackgroundTaskService: Shutting down
+.
+================================== FAILURES ===================================
+___________________ Test_kt01_v3_one_turn_and_bail.test_run ___________________
+
+self = <Users.REDACTED_USER.w.kt01.test_kt01_v3.Test_kt01_v3_one_turn_and_bail object at 0x0000023898600560>
+
+    async def test_run(self) -> None:
+        port = get_random_port()
+    
+        server_task = await self._create_server_task(port)
+        client = Client(base_url=f"http://localhost:{port}")
+    
+        try:
+            await self._wait_for_startup(client)
+>           await self.run(Context(self.server, client, self.get_container()))
+
+tests\sdk\utils.py:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+REDACTED_HOME\w\kt01\test_kt01_v3.py:62: in run
+    answer = await ctx.send_and_receive_message(customer_message="Hello", recipient=self.agent)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\sdk\utils.py:187: in send_and_receive_message
+    agent_message = await self.send_and_receive_message_event(
+tests\sdk\utils.py:83: in send_and_receive_message_event
+    agent_messages = await self.client.sessions.list_events(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <parlant.client.sessions.client.AsyncSessionsClient object at 0x00000238999925D0>
+session_id = 'VTXZRDBh11'
+
+    async def list_events(
+        self,
+        session_id: str,
+        *,
+        min_offset: typing.Optional[int] = None,
+        source: typing.Optional[EventSourceDto] = None,
+        correlation_id: typing.Optional[str] = None,
+        trace_id: typing.Optional[str] = None,
+        kinds: typing.Optional[str] = None,
+        wait_for_data: typing.Optional[int] = None,
+        sse: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.List[Event]:
+        """
+        Lists events from a session with optional filtering and waiting capabilities.
+    
+        This endpoint retrieves events from a specified session and can:
+        1. Filter events by their offset, source, type, and trace ID
+        2. Wait for new events to arrive if requested
+        3. Return events in chronological order based on their offset
+        4. Stream events via Server-Sent Events (SSE) when sse=true
+    
+        Notes:
+            Long Polling Behavior (when sse=false):
+            - When wait_for_data = 0:
+                Returns immediately with any existing events that match the criteria
+            - When wait_for_data > 0:
+                - If new matching events arrive within the timeout period, returns with those events
+                - If no new events arrive before timeout, raises 504 Gateway Timeout
+                - If matching events already exist, returns immediately with those events
+    
+            SSE Mode (when sse=true):
+            - Returns a text/event-stream response
+            - Continuously sends events as they arrive
+            - wait_for_data is used as the timeout between events before closing the stream
+    
+        Parameters
+        ----------
+        session_id : str
+            Unique identifier for the session
+    
+        min_offset : typing.Optional[int]
+    
+        source : typing.Optional[EventSourceDto]
+    
+        correlation_id : typing.Optional[str]
+    
+        trace_id : typing.Optional[str]
+    
+        kinds : typing.Optional[str]
+    
+        wait_for_data : typing.Optional[int]
+    
+        sse : typing.Optional[bool]
+    
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+    
+        Returns
+        -------
+        typing.List[Event]
+            List of events matching the specified criteria
+    
+        Examples
+        --------
+        import asyncio
+    
+        from parlant.client import AsyncParlantClient
+    
+        client = AsyncParlantClient(
+            base_url="https://yourhost.com/path/to/api",
+        )
+    
+    
+        async def main() -> None:
+            await client.sessions.list_events(
+                session_id="sess_123yz",
+                min_offset=0,
+                correlation_id="corr_13xyz",
+                trace_id="corr_13xyz",
+                kinds="message,tool",
+            )
+    
+    
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"sessions/{jsonable_encoder(session_id)}/events",
+            method="GET",
+            params={
+                "min_offset": min_offset,
+                "source": source,
+                "correlation_id": correlation_id,
+                "trace_id": trace_id,
+                "kinds": kinds,
+                "wait_for_data": wait_for_data,
+                "sse": sse,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    typing.List[Event],
+                    parse_obj_as(
+                        type_=typing.List[Event],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    typing.cast(
+                        typing.Optional[typing.Any],
+                        parse_obj_as(
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    typing.cast(
+                        typing.Optional[typing.Any],
+                        parse_obj_as(
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 504:
+>               raise GatewayTimeoutError(
+                    typing.cast(
+                        typing.Optional[typing.Any],
+                        parse_obj_as(
+                            type_=typing.Optional[typing.Any],  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+E               parlant.client.errors.gateway_timeout_error.GatewayTimeoutError: status_code: 504, body: {'detail': 'Request timed out'}
+
+.venv\Lib\site-packages\parlant\client\sessions\client.py:1829: GatewayTimeoutError
+------------------------------ Captured log call ------------------------------
+INFO     parlant:_base.py:223 [2m2026-11-09T22:17:23.344775Z[0m [[32m[1minfo     [0m] [1m[<main>] Parlant server version 3.3.2[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:17:23.346777Z[0m [[32m[1minfo     [0m] [1m[<main>] Using home directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant-v3\parlant-data'[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:17:23.353778Z[0m [[32m[1minfo     [0m] [1m[<main>] No external modules selected[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:23.374789Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>] BackgroundTaskService: Starting task 'websocket-logger'[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:17:24.505449Z[0m [[32m[1minfo     [0m] [1m[<main>] .-----------------------------------------.[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:17:24.505818Z[0m [[32m[1minfo     [0m] [1m[<main>] | Server is ready for some serious action |[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:17:24.505818Z[0m [[32m[1minfo     [0m] [1m[<main>] '-----------------------------------------'[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:17:24.505818Z[0m [[32m[1minfo     [0m] [1m[<main>] Server authorization policy: development[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:17:24.506829Z[0m [[32m[1minfo     [0m] [1m[<main>] Try the Sandbox UI at http://localhost:33131[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:17:24.789710Z[0m [[32m[1minfo     [0m] [1m[<main>] Server is ready to accept requests.[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:24.992616Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>] Histogram 'httpreq' recorded duration=0.000000 attributes={'http.request.operation': 'list_agents', 'http.request.method': 'GET'}[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.011886Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>] Histogram 'httpreq' recorded duration=0.015000 attributes={'http.request.operation': 'create_session', 'http.request.method': 'POST'}[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.020412Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>] BackgroundTaskService: Starting task 'process-session(VTXZRDBh11)'[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.022412Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>] Histogram 'httpreq' recorded duration=0.000000 attributes={'http.request.operation': 'create_event', 'http.request.method': 'POST'}[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.033195Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>][GuidelineMatcher][RelationalResolver] RelationalResolver iteration 1[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.034193Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>][GuidelineMatcher][RelationalResolver] RelationalResolver converged after 1 iteration(s)[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.138488Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>] Skipping tool calling; no tools associated with guidelines found[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.140487Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>][MessageEventComposer][CannedResponseGenerator] Histogram 'canrep.draft' recorded duration=0.000000[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.142491Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>][MessageEventComposer][CannedResponseGenerator] Canned Response Draft Completion:
+{
+  "last_message_of_user": null,
+  "guidelines": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ],
+  "insights": null,
+  "response_preamble_that_was_already_sent": null,
+  "response_body": null
+}[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.143488Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>][MessageEventComposer][CannedResponseGenerator] Histogram 'canrep.draft' recorded duration=0.000000[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.143488Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>][MessageEventComposer][CannedResponseGenerator] Canned Response Draft Completion:
+{
+  "last_message_of_user": null,
+  "guidelines": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ],
+  "insights": null,
+  "response_preamble_that_was_already_sent": null,
+  "response_body": null
+}[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.145487Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>][MessageEventComposer][CannedResponseGenerator] Histogram 'canrep.draft' recorded duration=0.000000[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.145487Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>][MessageEventComposer][CannedResponseGenerator] Canned Response Draft Completion:
+{
+  "last_message_of_user": null,
+  "guidelines": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ],
+  "insights": null,
+  "response_preamble_that_was_already_sent": null,
+  "response_body": null
+}[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.145487Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>][MessageEventComposer][CannedResponseGenerator] Histogram 'canrep' recorded duration=0.000000[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:25.147489Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>] Histogram 'eng.process' recorded duration=0.125000[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-09T22:17:55.042137Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>] Histogram 'httpreq' recorded duration=30.015000 attributes={'http.request.operation': 'list_events', 'http.request.method': 'GET'}[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:17:55.058301Z[0m [[32m[1minfo     [0m] [1m[<main>] BackgroundTaskService: Cancelling all remaining tasks (2)[0m
+INFO     parlant:_base.py:223 [2m2026-11-09T22:17:55.063613Z[0m [[32m[1minfo     [0m] [1m[<main>] BackgroundTaskService: Shutting down[0m
+=========================== short test summary info ===========================
+FAILED ::Test_kt01_v3_one_turn_and_bail::test_run - parlant.client.errors.gat...
+1 failed, 1 passed in 96.86s (0:01:36)

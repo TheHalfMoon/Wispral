@@ -1,0 +1,173 @@
+2026-11-10T05:11:49.194422Z [info     ] [<main>] Server version: 4.0.2
+2026-11-10T05:11:49.194422Z [info     ] [<main>] Runtime data: 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data'
+2026-11-10T05:11:49.196203Z [info     ] [<main>] Log file: 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data\logs\parlant.log'
+2026-11-10T05:11:49.196203Z [info     ] [<main>] No external modules selected
+2026-11-10T05:11:49.205860Z [debug    ] TRACE [<main>][BackgroundTaskService] Starting task 'websocket-logger'
+
+                             ..
+                          :=++++=-
+                        :+***+++**+.
+                      .=*****++++*+=:.
+                     .=+++*******-
+             ..:::::...  .::::=++
+         .-+***#####**+=-..=+=:.
+       :+######***********. =***=.
+      =####**###**********+ .*****-
+     =#******###** v4.0 **+ .******-
+    :#*******#######****=. =********:
+    .*#******#*:---=-::..-*********+
+     -##*##***. -----=++*******++**:
+      :*###**: =****###**********+:
+        -+*#- -****************+-
+          .: .*******++++++==-.
+            .****+=:.
+            =+=:.
+           ..
+      
+
+2026-11-10T05:11:50.335207Z [debug    ] TRACE [<main>] Using error report directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data\diagnostic-reports\errors'
+2026-11-10T05:11:50.335207Z [debug    ] TRACE [<main>] Using trace export directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data\diagnostic-reports\traces'
+2026-11-10T05:11:50.335207Z [debug    ] TRACE [<main>] Log rotation is enabled: max_bytes=10485760, backup_count=5
+2026-11-10T05:11:50.337656Z [debug    ] TRACE [ea31d2d726][BackgroundTaskService] Starting task 'indexing(wwSbXKtbho)'
+2026-11-10T05:11:50.346930Z [debug    ] TRACE [ea31d2d726][RuleSignalProposer] RuleSignalProposer response: {
+  "rationale": "",
+  "signals": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ],
+  "anti_signals": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ]
+}
+2026-11-10T05:11:50.346930Z [debug    ] TRACE [ea31d2d726] indexing task 'wwSbXKtbho' completed
+
+2026-11-10T05:11:50.880423Z [info     ] [<main>] .-----------------------------------------.
+2026-11-10T05:11:50.880423Z [info     ] [<main>] | Server is ready for some serious action |
+2026-11-10T05:11:50.880423Z [info     ] [<main>] '-----------------------------------------'
+2026-11-10T05:11:50.880423Z [info     ] [<main>] Server authorization policy: development
+2026-11-10T05:11:50.880423Z [info     ] [<main>] Try the Sandbox UI at http://localhost:6705
+2026-11-10T05:11:50.893928Z [warning  ] [<main>] Model prices are missing for: fake:fake-decision, fake:fake-embedding, fake:fake-moderation, fake:fake-react, fake:fake-schematic. Add server.set_pricing(...) to report monetary costs; without it usage remains tokens only. Prices apply to future turns.
+2026-11-10T05:11:51.167129Z [info     ] [<main>] Server is ready to accept requests.
+2026-11-10T05:11:53.170234Z [info     ] [<main>][BackgroundTaskService] Cancelling all remaining tasks (2)
+2026-11-10T05:11:53.170234Z [info     ] [<main>][BackgroundTaskService] Shutting down
+2026-11-10T05:11:53.176663Z [info     ] [<main>][BackgroundTaskService] Cancelling all remaining tasks (2)
+F
+================================== FAILURES ===================================
+___________________ Test_kt01_perf_on_fake_backend.test_run ___________________
+
+self = <Users.REDACTED_USER.w.kt01.test_kt01_perf.Test_kt01_perf_on_fake_backend object at 0x0000023A4566CC80>
+
+    async def test_run(self) -> None:
+        port = get_random_port()
+    
+        server_task = await self._create_server_task(port)
+        client = Client(
+            base_url=f"http://localhost:{port}",
+            admin_api_key=self.AUTH.admin_api_key if self.AUTH else None,
+        )
+    
+        try:
+            await self._wait_for_startup(port)
+>           await self.run(
+                Context(
+                    self.server,
+                    client,
+                    self.get_container(),
+                    base_url=f"http://localhost:{port}",
+                )
+            )
+
+tests\sdk\utils.py:362: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+REDACTED_HOME\w\kt01\test_kt01_perf.py:78: in run
+    record("rss_mb_idle_after_startup", rss_mb())
+                                        ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def rss_mb() -> float:
+        # Working set of this process via the Windows API (no extra dependency).
+        import ctypes
+        from ctypes import wintypes
+    
+        class PMC(ctypes.Structure):
+            _fields_ = [("cb", wintypes.DWORD), ("PageFaultCount", wintypes.DWORD), ("PeakWorkingSetSize", ctypes.c_size_t),
+                        ("WorkingSetSize", ctypes.c_size_t), ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                        ("QuotaPagedPoolUsage", ctypes.c_size_t), ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                        ("QuotaNonPagedPoolUsage", ctypes.c_size_t), ("PagefileUsage", ctypes.c_size_t),
+                        ("PeakPagefileUsage", ctypes.c_size_t)]
+    
+        pmc = PMC(); pmc.cb = ctypes.sizeof(PMC)
+        k32 = ctypes.WinDLL("kernel32"); psapi = ctypes.WinDLL("psapi")
+        k32.GetCurrentProcess.restype = wintypes.HANDLE
+>       psapi.GetProcessMemoryInfo(k32.GetCurrentProcess(), ctypes.byref(pmc), pmc.cb)
+E       ctypes.ArgumentError: argument 1: OverflowError: int too long to convert
+
+REDACTED_HOME\w\kt01\test_kt01_perf.py:35: ArgumentError
+------------------------------ Captured log call ------------------------------
+INFO     parlant:_base.py:223 [2m2026-11-10T05:11:49.194422Z[0m [[32m[1minfo     [0m] [1m[<main>] Server version: 4.0.2[0m
+INFO     parlant:_base.py:223 [2m2026-11-10T05:11:49.194422Z[0m [[32m[1minfo     [0m] [1m[<main>] Runtime data: 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data'[0m
+INFO     parlant:_base.py:223 [2m2026-11-10T05:11:49.196203Z[0m [[32m[1minfo     [0m] [1m[<main>] Log file: 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data\logs\parlant.log'[0m
+INFO     parlant:_base.py:223 [2m2026-11-10T05:11:49.196203Z[0m [[32m[1minfo     [0m] [1m[<main>] No external modules selected[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-10T05:11:49.205860Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>][BackgroundTaskService] Starting task 'websocket-logger'[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-10T05:11:50.335207Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>] Using error report directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data\diagnostic-reports\errors'[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-10T05:11:50.335207Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>] Using trace export directory 'REDACTED_HOME\AppData\Local\Temp\claude\kt01\parlant\parlant-data\diagnostic-reports\traces'[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-10T05:11:50.335207Z[0m [[32m[1mdebug    [0m] [1mTRACE [<main>] Log rotation is enabled: max_bytes=10485760, backup_count=5[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-10T05:11:50.337656Z[0m [[32m[1mdebug    [0m] [1mTRACE [ea31d2d726][BackgroundTaskService] Starting task 'indexing(wwSbXKtbho)'[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-10T05:11:50.346930Z[0m [[32m[1mdebug    [0m] [1mTRACE [ea31d2d726][RuleSignalProposer] RuleSignalProposer response: {
+  "rationale": "",
+  "signals": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ],
+  "anti_signals": [
+    "fake-item-0",
+    "fake-item-1",
+    "fake-item-2",
+    "fake-item-3",
+    "fake-item-4",
+    "fake-item-5",
+    "fake-item-6",
+    "fake-item-7",
+    "fake-item-8",
+    "fake-item-9"
+  ]
+}[0m
+DEBUG    parlant:_base.py:223 [2m2026-11-10T05:11:50.346930Z[0m [[32m[1mdebug    [0m] [1mTRACE [ea31d2d726] indexing task 'wwSbXKtbho' completed[0m
+INFO     parlant:_base.py:223 [2m2026-11-10T05:11:50.880423Z[0m [[32m[1minfo     [0m] [1m[<main>] .-----------------------------------------.[0m
+INFO     parlant:_base.py:223 [2m2026-11-10T05:11:50.880423Z[0m [[32m[1minfo     [0m] [1m[<main>] | Server is ready for some serious action |[0m
+INFO     parlant:_base.py:223 [2m2026-11-10T05:11:50.880423Z[0m [[32m[1minfo     [0m] [1m[<main>] '-----------------------------------------'[0m
+INFO     parlant:_base.py:223 [2m2026-11-10T05:11:50.880423Z[0m [[32m[1minfo     [0m] [1m[<main>] Server authorization policy: development[0m
+INFO     parlant:_base.py:223 [2m2026-11-10T05:11:50.880423Z[0m [[32m[1minfo     [0m] [1m[<main>] Try the Sandbox UI at http://localhost:6705[0m
+WARNING  parlant:_base.py:223 [2m2026-11-10T05:11:50.893928Z[0m [[33m[1mwarning  [0m] [1m[<main>] Model prices are missing for: fake:fake-decision, fake:fake-embedding, fake:fake-moderation, fake:fake-react, fake:fake-schematic. Add server.set_pricing(...) to report monetary costs; without it usage remains tokens only. Prices apply to future turns.[0m
+INFO     parlant:_base.py:223 [2m2026-11-10T05:11:51.167129Z[0m [[32m[1minfo     [0m] [1m[<main>] Server is ready to accept requests.[0m
+INFO     parlant:_base.py:223 [2m2026-11-10T05:11:53.170234Z[0m [[32m[1minfo     [0m] [1m[<main>][BackgroundTaskService] Cancelling all remaining tasks (2)[0m
+INFO     parlant:_base.py:223 [2m2026-11-10T05:11:53.170234Z[0m [[32m[1minfo     [0m] [1m[<main>][BackgroundTaskService] Shutting down[0m
+INFO     parlant:_base.py:223 [2m2026-11-10T05:11:53.176663Z[0m [[32m[1minfo     [0m] [1m[<main>][BackgroundTaskService] Cancelling all remaining tasks (2)[0m
+=========================== short test summary info ===========================
+FAILED ::Test_kt01_perf_on_fake_backend::test_run - ctypes.ArgumentError: arg...
+1 failed in 60.55s (0:01:00)
