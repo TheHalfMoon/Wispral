@@ -48,7 +48,7 @@
       "stage": "S0",
       "approval": "founder",
       "depends_on": [],
-      "title": "Accept SD-M0's narrowed acceptance item 3; the VC++ runtime and installer contents move to SD-R10 (PA-07). SD-M0 becomes VERIFIED only through the reviewed tasks change in GP-11",
+      "title": "Accept SD-M0's narrowed acceptance item 3; the VC++ runtime and installer contents move to SD-R10 (PA-07). SD-M0 becomes VERIFIED only through the reviewed tasks change in GP-13",
       "status": "APPROVED 2026-11-10 (as recommended)"
     },
     {

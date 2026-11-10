@@ -227,7 +227,7 @@ The architecture is recorded in ADR-0003, refining ADR-0002. FD-20 ratifies it; 
 | --- | --- | --- |
 | Authority | Speech and model output are evidence only. Destructive actions need deterministic gates and explicit user authority. | (settled: Constitution II, VIII, XIX) |
 | Klaint tool server | **Assume it is reachable.** Every tool, read tools included, requires the broker-issued capability (bound to session, tool and arguments; short-lived; single use) and ignores `context.customer_id`. Each tenant runs its own container stack with a distinct UID, and the residents of each namespace are listed. | RG-1, PA-05, GP-12 |
-| Capability issuance | The broker's issuance channel is a trust boundary. It accepts requests only from Parlant, over a dedicated channel no other resident (console, connector, bridge) can reach. It binds each capability to the tool proposal it reviewed in `on_reviewing_tool_calls`, never to a caller-supplied session ID. | RG-1, PA-05, GP-12, ADR-0003 |
+| Capability issuance | The broker's issuance channel is a trust boundary. It accepts requests only from Parlant, over a dedicated channel no other resident (console, connector, bridge) can reach. The mechanism is a distinct UID per component inside the tenant stack, or a socket on a mount only Parlant can see; ADR-0003 fixes the choice. It binds each capability to the tool proposal it reviewed in `on_reviewing_tool_calls`, never to a caller-supplied session ID. | RG-1, PA-05, GP-12, ADR-0003 |
 | Klaint probes | Each of these yields zero effects and zero data, under production `AuthConfig`, not dev allow-all: a made-up session; **a valid live session of another customer of the same tenant**; another tenant; every tool-server route, including `GET /tools`; loopback from a KT-10 connector; **a capability request to the broker from any resident other than Parlant**, which must yield no capability. | RG-1, PA-05, PA-09 |
 | Canonical text | KL-T3, KT-02 and KT-03 stop saying the tool server is disabled. B6 is reopened. KL-T5 records the shared-Chatwoot residual risk, or moves to per-tenant Chatwoot. | GP-12, PA-05 |
 | Klaint output mode | **Every customer-facing agent whose message gate is required runs in BLOCK mode**, with or without tools. This is enforced at start-up and at run time, with a per-session STREAM negative fixture. Voice stays closed until a pre-stream guard exists (RG-5). | PA-05, RG-5 |
@@ -390,7 +390,7 @@ Speech engines are labelled unranked under the GP-02S R1-only condition. The R1 
   - KT-HQA.
 
 ### S7: WisprStudio
-- **Entry:** the foundation (SEL-BENCH), ST-D00r VERIFIED, 000F-W recorded, FD-08, FD-10 and FD-17 decided, and PA-SET-STUDIO. Then **SEL-STUDIO opens `ST-D12`** (Windows suite repair). It does not wait for WisprSide or Klaint.
+- **Entry:** the foundation (SEL-BENCH), ST-D00r VERIFIED, 000F-W recorded, FD-08, FD-10, FD-15 and FD-17 decided, and PA-SET-STUDIO. Then **SEL-STUDIO opens `ST-D12`** (Windows suite repair). It does not wait for WisprSide or Klaint.
 - **To R1:**
   - BM-01b VoiceStudio egress baseline;
   - ST-D01 strip egress, pin runtime bundles, local-only test;
@@ -496,7 +496,7 @@ The full table is in the register.
 - **`validate_plan.mjs` on the current `packets.json`: PASS.** It is rerun on each regeneration.
 - **Independent reviews** are recorded on PR #155 with reviewer, instructions, head and verdict.
   - Rounds 1 to 3 ran on heads `5640016`, `ba44fcb` and `24bd345`. Three fresh-context reviewers approved `24bd345`.
-  - This frozen head reconciles the plan with current `main`, records the approved decisions and execution status, and applies the round-3 non-blocking notes (listed in the register as RN-01 to RN-13). Its confirmation by the same three reviewers is recorded on the PR.
+  - The frozen version reconciles the plan with current `main`, records the approved decisions and execution status, and applies the round-3 non-blocking notes (listed in the register as RN-01 to RN-13). The same three reviewers' confirmations of the frozen head are recorded on the PR, as review comments posted after the head they cover.
   - **The different-vendor (Nemotron) review was waived by the founder for this planning PR; it was not completed on the final heads.** That waiver does not extend to any later vehicle that requires a qualifying review.
 
 ## 15. Superseded material and PR dispositions
