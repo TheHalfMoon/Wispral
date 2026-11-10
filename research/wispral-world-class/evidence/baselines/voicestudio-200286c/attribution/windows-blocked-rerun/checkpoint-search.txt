@@ -1,0 +1,11 @@
+# AudioSeal checkpoint search on HW-A, 2026-11-10T08:14:51.7088116+03:00. Read-only. Searched for files named generator_base*.pth or detector_base*.pth, and for torch hub checkpoint folders.
+## C:\Users\REDACTED_USER\.cache (exists: True)
+matches: 0
+## C:\Users\REDACTED_USER\AppData\Local (exists: True)
+matches: 0
+## C:\Users\REDACTED_USER\AppData\Roaming (exists: True)
+matches: 0
+## C:\Users\REDACTED_USER\w (exists: True)
+matches: 0
+## TORCH_HOME=unset
+## torch hub checkpoints dir (USERPROFILE\.cache\torch\hub\checkpoints) exists: False

@@ -1,0 +1,18 @@
+PROBE_RECORDS=31 PROBE_MODEL_HUB=2
+HUB getaddrinfo huggingface.co:443 test=tests/test_chunked_tts.py::test_long_text_is_chunked_through_engine in_worker=True argv=['-c']
+    /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/http/client.py:1346:endheaders <- /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/http/client.py:1106:_send_output <- /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/http/client.py:1044:send <- /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/http/client.py:1516:connect <- /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/http/client.py:1010:connect <- /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/socket.py:839:create_connection
+HUB getaddrinfo us.aws.cdn.hf.co:443 test=tests/test_chunked_tts.py::test_long_text_is_chunked_through_engine in_worker=True argv=['-c']
+    /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/http/client.py:1346:endheaders <- /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/http/client.py:1106:_send_output <- /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/http/client.py:1044:send <- /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/http/client.py:1516:connect <- /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/http/client.py:1010:connect <- /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/socket.py:839:create_connection
+TCPDUMP_MODEL_HUB_QUERIES=12
+  2026-11-10 03:43:09.079756 lo    In  IP 127.0.0.1.43548 > 127.0.0.53.53: 44002+ [1au] A? huggingface.co. (43)
+  2026-11-10 03:43:09.079788 lo    In  IP 127.0.0.1.43548 > 127.0.0.53.53: 49888+ [1au] AAAA? huggingface.co. (43)
+  2026-11-10 03:43:09.080062 eth0  Out IP 10.1.0.197.45978 > 168.63.129.16.53: 15332+ [1au] A? huggingface.co. (43)
+  2026-11-10 03:43:09.080064 enP37733s1 Out IP 10.1.0.197.45978 > 168.63.129.16.53: 15332+ [1au] A? huggingface.co. (43)
+  2026-11-10 03:43:09.080179 eth0  Out IP 10.1.0.197.41957 > 168.63.129.16.53: 15097+ [1au] AAAA? huggingface.co. (43)
+  2026-11-10 03:43:09.080181 enP37733s1 Out IP 10.1.0.197.41957 > 168.63.129.16.53: 15097+ [1au] AAAA? huggingface.co. (43)
+  2026-11-10 03:43:09.230211 lo    In  IP 127.0.0.1.60069 > 127.0.0.53.53: 1876+ [1au] A? us.aws.cdn.hf.co. (45)
+  2026-11-10 03:43:09.230234 lo    In  IP 127.0.0.1.60069 > 127.0.0.53.53: 46678+ [1au] AAAA? us.aws.cdn.hf.co. (45)
+  2026-11-10 03:43:09.230459 eth0  Out IP 10.1.0.197.40986 > 168.63.129.16.53: 7896+ [1au] A? us.aws.cdn.hf.co. (45)
+  2026-11-10 03:43:09.230461 enP37733s1 Out IP 10.1.0.197.40986 > 168.63.129.16.53: 7896+ [1au] A? us.aws.cdn.hf.co. (45)
+  2026-11-10 03:43:09.230573 eth0  Out IP 10.1.0.197.54597 > 168.63.129.16.53: 12813+ [1au] AAAA? us.aws.cdn.hf.co. (45)
+  2026-11-10 03:43:09.230575 enP37733s1 Out IP 10.1.0.197.54597 > 168.63.129.16.53: 12813+ [1au] AAAA? us.aws.cdn.hf.co. (45)

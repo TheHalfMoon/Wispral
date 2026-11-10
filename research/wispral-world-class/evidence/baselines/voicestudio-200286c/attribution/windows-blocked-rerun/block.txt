@@ -1,0 +1,58 @@
+BLOCKED huggingface.co:443 pid=21580 test=tests/test_chunked_tts.py::test_long_text_is_chunked_through_engine (call)
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1002, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 1045, in _bootstrap_inner
+    self.run()
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py", line 982, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\REDACTED_USER\w\vs\backend\services\model_manager.py", line 1339, in _run
+    future.set_result(fn(*args, **kwargs))
+  File "C:\Users\REDACTED_USER\w\vs\backend\services\watermark.py", line 395, in mark_synthetic
+    marked = embed_watermark(waveform, sample_rate, force=force)
+  File "C:\Users\REDACTED_USER\w\vs\.venv\Lib\site-packages\torch\utils\_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+  File "C:\Users\REDACTED_USER\w\vs\backend\services\watermark.py", line 513, in embed_watermark
+    generator = _get_generator()
+  File "C:\Users\REDACTED_USER\w\vs\backend\services\watermark.py", line 219, in _get_generator
+    _generator = AudioSeal.load_generator("audioseal_wm_16bits")
+  File "C:\Users\REDACTED_USER\w\vs\.venv\Lib\site-packages\audioseal\loader.py", line 365, in load_generator
+    checkpoint, config = AudioSeal.parse_model(
+  File "C:\Users\REDACTED_USER\w\vs\.venv\Lib\site-packages\audioseal\loader.py", line 290, in parse_model
+    checkpoint = load_model_checkpoint(checkpoint)
+  File "C:\Users\REDACTED_USER\w\vs\.venv\Lib\site-packages\audioseal\loader.py", line 163, in load_model_checkpoint
+    return torch.hub.load_state_dict_from_url(
+  File "C:\Users\REDACTED_USER\w\vs\.venv\Lib\site-packages\torch\hub.py", line 871, in load_state_dict_from_url
+    download_url_to_file(url, cached_file, hash_prefix, progress=progress)
+  File "C:\Users\REDACTED_USER\w\vs\.venv\Lib\site-packages\torch\hub.py", line 712, in download_url_to_file
+    u = urlopen(req)
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\urllib\request.py", line 519, in open
+    response = self._open(req, data)
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\urllib\request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\urllib\request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\urllib\request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 1323, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 1369, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 1318, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 1078, in _send_output
+    self.send(msg)
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 1016, in send
+    self.connect()
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 1488, in connect
+    super().connect()
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 982, in connect
+    self.sock = self._create_connection(
+  File "C:\Users\REDACTED_USER\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\socket.py", line 839, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+  File "C:\Users\REDACTED_USER\w\probe-block\sitecustomize.py", line 18, in _gai
+    f.write("".join(traceback.format_stack()) + "\n")
+
