@@ -1,0 +1,6 @@
+# State of the pre-existing %LOCALAPPDATA%\ms-playwright folder, captured 2026-11-10T08:05+03:00 with read-only PowerShell checks (Test-Path, Get-Item, Get-ChildItem). Nothing was changed.
+Test-Path: True
+Get-Item: Attributes Directory, ReparsePoint; LinkType Junction; created 2026-10-12T20:34:00+03:00
+Junction target: a folder in a cleanup archive on drive D: (path withheld); Test-Path on the target: False
+Get-ChildItem: ERROR: Could not find a part of the path.
+Conclusion: a dangling junction. Playwright's mkdir of this path fails with ENOENT (playwright-rerun.log).

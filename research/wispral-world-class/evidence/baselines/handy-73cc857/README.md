@@ -2,7 +2,7 @@
 
 **Grain:** `SD-M0` (Specification 000E). Packet in `research/wispral-world-class/packets.json`.
 
-**Status:** both halves are recorded. The HW-A (Windows) half, with suites, debug and release binaries and the bundled DLL list, is in [`windows-hwa/`](windows-hwa/README.md). The Grain becomes `VERIFIED` only when this evidence is merged after review.
+**Status:** both halves are recorded. The HW-A (Windows) half, with suites, debug and release binaries, and the DLLs the Windows bundle config would ship (installer not built), is in [`windows-hwa/`](windows-hwa/README.md). The Grain becomes `VERIFIED` only when this evidence is merged after review.
 
 | Item | Value |
 | --- | --- |
@@ -28,10 +28,6 @@
 
 **Toolchain:** rustc 1.99.1, cargo 1.99.1, Ubuntu 24.04.5 LTS ([`toolchain.txt`](linux-run-42536089224/toolchain.txt)); Bun 1.4.4.
 
-**Not yet covered by this half:**
-
-- the Windows suites;
-- Windows debug and release binaries and their bundled DLL list;
-- installer packaging, which the packet defers to the release-candidate packets.
+**Not covered by this half:** the Windows suites, binaries and DLLs, which are now in [`windows-hwa/`](windows-hwa/README.md); and installer packaging, which the packet defers to the release-candidate packets.
 
 No failures were fixed.

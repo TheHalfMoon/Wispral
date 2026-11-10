@@ -1,0 +1,27 @@
+# Bundle-relevant DLL evidence, captured 2026-11-10T05:06:05Z on HW-A from the SD-M0 checkout after the release build. Read-only.
+## src-tauri/tauri.windows.conf.json (donor, unchanged)
+{
+  "bundle": {
+    "resources": {
+      "resources": "resources",
+      "transcribe-libs": "."
+    }
+  }
+}
+## Files in src-tauri/transcribe-libs/ (staged by build.rs; shipped to the install root by the config above)
+ggml-base.dll	674304
+ggml-cpu-alderlake.dll	1100800
+ggml-cpu-cannonlake.dll	1204224
+ggml-cpu-cascadelake.dll	1203712
+ggml-cpu-haswell.dll	1102848
+ggml-cpu-icelake.dll	1203712
+ggml-cpu-sandybridge.dll	1073664
+ggml-cpu-skylakex.dll	1204224
+ggml-cpu-sse42.dll	772096
+ggml-cpu-x64.dll	773120
+ggml-vulkan.dll	45311488
+ggml.dll	61952
+transcribe.dll	2022912
+## HANDY_VC_REDIST_DIRS in the build environment
+unset
+## build.rs: stage_vc_runtime_dlls() returns early when HANDY_VC_REDIST_DIRS is unset (donor comment: set by CI), so no msvcp140/vcruntime140/vcomp140 DLL was staged.
