@@ -1,0 +1,44 @@
+name: 000B2 Public Corpus B2R17 Moonshine Compact
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/000b2-public-b2r17-moonshine-compact.yml"
+      - "research/000b2-public/decode_b2r17.py"
+      - "research/000b2-public/b2r17-moonshine-compact.json"
+      - "research/000b2-public/b2r17-provenance.json"
+      - "research/000b2-public/verify_b2r17.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-b2r17-capture:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      TASK: B2R17
+      EXACT_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+
+    steps:
+      - name: Checkout exact B2R17 revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.EXACT_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact B2R17 revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$EXACT_REVISION"
+          test "$(git rev-parse HEAD)" = "$EXACT_REVISION"
+
+      - name: Verify preserved B2R17 primary capture
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile research/000b2-public/decode_b2r17.py research/000b2-public/verify_b2r17.py
+          PYTHONDONTWRITEBYTECODE=1 python3 research/000b2-public/verify_b2r17.py --require-git
