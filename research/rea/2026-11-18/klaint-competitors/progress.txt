@@ -1,0 +1,405 @@
+==============================================================================
+DEEP REA PROGRESS LOG — Klaint vs Lorikeet CX / Decagon / Parloa
+==============================================================================
+Start: 2026-11-18
+Workspace: D:\Klaint-REA-20261118
+Operator: AI research agent (OpenCode + DeepSeek V4.1 Flash)
+Scope lock: product/architecture research ONLY. No edits to Wispral repos.
+Evidence labels: SOURCE-VERIFIED / DOCS-VERIFIED / OBSERVED / MARKETING-INFERRED / UNKNOWN.
+
+------------------------------------------------------------------------------
+STAGE 0 — BOOTSTRAP  (complete)
+------------------------------------------------------------------------------
+- sources/ created; toolchain: git 2.56.0, Python 3.14.7, Node 24.19.0, curl.
+- progress.txt created before research.
+
+------------------------------------------------------------------------------
+STAGE 1 — WISPRAL / KLAINT BASELINE  (complete for this pass)
+------------------------------------------------------------------------------
+Repo: https://github.com/TheHalfMoon/Wispral
+Clone: sources/wispral, depth 1, HEAD 689a4e421d6f8acebedf15df1d2dfca0c905a835
+       2026-11-10 18:02:01 +0300 "plan: final Wispral master implementation
+       plan — at the founder approval gate (#155)"
+Size: 781 files, mostly .md/.py harness/evidence. NO product application source.
+Key facts read:
+- docs/canonical/CURRENT_STATE.md: "Active product implementation: none",
+  "Published release: none", program status SPEC_000_RESEARCH_ACTIVE.
+- docs/engineering/WISPRAL_SECURITY_ARCHITECTURE.md: Klaint threat model
+  KL-T1..KL-T11, including KT-01 findings (forged customer_id via Parlant
+  plugin tool server 127.0.0.1:8818; BAIL ineffective in STREAM mode) and the
+  broker-issued single-use Ed25519 capability design.
+- research/klaint-spike/README.md: KT-01 NOT VERIFIED; item 3 FAIL; item 4 NOT RUN.
+- docs/canonical/ARCHITECTURE_INVARIANTS.md: A1-A15.
+Implication: Klaint is a *specified* product, not an implemented one. All
+"does Klaint have X" answers must be split: specified / donor-inherited /
+missing.
+
+------------------------------------------------------------------------------
+STAGE 2 — SOURCE DISCOVERY  (in progress)
+------------------------------------------------------------------------------
+LORIKEET CX (legal entity trails: Optech AI -> Lorikeet):
+- Site https://www.lorikeetcx.ai fetched 2026-11-18: channels Chat/Email/Voice/
+  SMS/SDK; says pay per resolved ticket, escalations not charged; MCP server,
+  API, agent-readable endpoints (book.lorikeetcx.ai/schema,
+  api.lorikeetcx.ai/v1/ask/pk_...). Trust center trust.lorikeetcx.ai.
+- GitHub org https://github.com/optechai (name "Lorikeet", blog lorikeetcx.ai,
+  support@lorikeetcx.ai) — 8 public repos:
+    mock-api (MIT, TS), node-sdk (Apache-2.0, TS), nestjs-temporal (MIT),
+    4 Claude "skill" report repos, the-agent-economy-skill.
+  Cloned: sources/lorikeet-node-sdk @4bdaf93962d039938c2ef8526e6c55f41c40b1c7
+          (release 3.0.0, 2026-11-09) — Stainless-generated OpenAPI SDK.
+          sources/lorikeet-mock-api @d8e7b594544fbb2e315b11f34dad49d0ed5dc2b8
+          (2026-10-07).
+- npm @lorikeetai/node-sdk 3.0.0 (Apache-2.0), @lorikeetai/mcp-server 1.0.0
+  (dist-only, ISC), @lorikeetai/mcp-client 1.0.0, plus web/react-native SDKs.
+- Pre-seeded in workspace (not cloned by me): lorikeet-react-native-sdk 3.0.0
+  tarball extract (no .git).
+AS-BUILT API FACTS (from SDK source, cite file+line in report):
+  /v1/conversation/chat/{create,message}, /email/*, /voice/outbound,
+  /voice/web/create (LiveKit wsUrl+token), /v1/customer{,/token,/consent,
+  /profile/:id,/remote/:id}, /v1/api-keys, /v1/customer-events,
+  /ingest/{toolId}/{ticketId}/{inputHash}/{workflowId}, /ingest/test, /ingest/
+  validate. HMAC-SHA256 base64url signatures (src/lib/generate-signature.ts).
+  Statuses incl. DraftResponse/Responded/Escalated/EscalatedFailed/Tagged.
+  Profile has MEMORY-scoped keys with observedAt watermarks.
+
+DECAGON:
+- Site https://decagon.ai fetched: Voice 3, chat, email, AOPs, Missions, Duet,
+  Experiments, Testing & QA, Watchtower, Suggestions, "Personal Agent Gateway".
+- GitHub org "decagonai": 404 (no such org). npm @decagon-ai/duet-cli 0.6.1
+  (license "SEE LICENSE IN LICENSE", requires approved account). PyPI decagon:
+  404. Docs site not yet fetched.
+
+PARLOA:
+- Site https://www.parloa.com fetched: Agent Builder, Performance Lab, Lens,
+  Conversation Infrastructure, enterprise security/governance, SAP SOLEX,
+  ISO27001/SOC2/HIPAA/PCI/DORA/EU AI Act badges (marketing claims).
+- GitHub org https://github.com/parloa (2 public repos, incl. fork of
+  terraform-azurerm-avm-res-cache-redis). Separate org "parloa-oss" hosts SDK.
+- PyPI "parloa" 1.0.0 (Apache-2.0, official Python client) →
+  github.com/parloa-oss/parloa-sdk-python. Pre-seeded clone at
+  sources/parloa-sdk-python @873c3f437a373b1be77091aeb75786aa6dc36e02
+  ("Release v1.0.0", 2026-11-05).
+AS-BUILT API FACTS (from SDK raw_client.py): agent-blueprints (+draft, versions,
+publish, subtask-agents), skills (hangup/custom/routing/authentication/
+knowledge), start-hooks/end-hooks with execution-steps, deployments (+:validate,
+:deactivate, :sync), environments + variables, evaluations (definitions, runs,
+results), simulations (definitions, runs, batches, quota), connectors + tools,
+knowledge attributes/collections/files/imports, secrets, models, tenant_urls,
+oauth/token.
+
+Pre-existing artifacts in sources/ not created by this run: parloa-sdk-python,
+lorikeet-react-native-sdk. Treated as provided inputs; provenance verified via
+git log / tarball name.
+
+------------------------------------------------------------------------------
+FILES WRITTEN
+------------------------------------------------------------------------------
+progress.txt
+
+------------------------------------------------------------------------------
+BLOCKERS / ERRORS
+------------------------------------------------------------------------------
+- None blocking. GitHub anonymous API rate limit applies (60/hr core,
+  10/min search); using sparingly.
+
+------------------------------------------------------------------------------
+NEXT ACTION
+------------------------------------------------------------------------------
+Read Parloa SDK type models (simulations/evaluations/skills) for semantics;
+then Decagon official docs; then donor repos (Parlant, Rasa, Pipecat, Chatwoot,
+tau2-bench, standard-webhooks) with pinned commits; then write deliverables.
+==============================================================================
+
+==============================================================================
+STAGE 3 - DONOR ASSESSMENT + DELIVERABLE WRITING (2026-11-18)
+==============================================================================
+DONOR REPOS CLONED (depth 1), pinned:
+  parlant          4962e62bcd988ff65c1e41c4cc4ade7338efe0dd  2026-11-17  Apache-2.0  v4.0.6
+  pipecat          257129f9395d5c5ed41bcc11608b751670e17032  2026-11-17  BSD-2-Clause
+  tau2-bench       c06b07dd7c4d4ec61ba6ff9bcdf0b15dd7ef36d4  2026-11-10  MIT
+  standard-webhooks 3d65b1824b6697f05a5a4584e7062bd23512fc8e 2026-11-17 Apache-2.0
+  rasa             60a3cff9c08183760355b07bd60f5223d8916d6b  2025-12-18  Apache-2.0  v3.6.21 MAINTENANCE MODE
+  chatwoot         8b33b543fc45578d0518553edb8bc51d9603e48c  2026-11-18  MIT + enterprise/ restricted
+
+UPSTREAM PARLANT DELTA vs Wispral pin 4.0.2  [CORRECTED 2026-11-18]
+  - 4.0.6 DOES still expose the /tools/{name}/calls HTTP plugin tool server
+    (core/services/tools/plugins.py:851) and CallToolRequest still takes
+    agent_id/session_id/customer_id from the caller (:607-612) with no auth.
+    The SDK starts it on 127.0.0.1 (sdk.py:4961-4990, port default 8818 at
+    :3065); the standalone PluginServer defaults to 0.0.0.0:8089 (:642-643).
+    => KT-01's forged-customer_id surface is NOT fixed upstream. An earlier
+    line in this log claiming it was gone was wrong and is retracted.
+  - 4.0.6 adds a pre-emit reviewer gate that BUFFERS streaming output when
+    message review is requested (loop/base_loop.py:2140-2144, _maybe_review_message
+    2160-2227, rejection/regeneration 2246-2254).
+  - on_message_generated BAIL is STILL observational in STREAM mode
+    (loop/base_loop.py:2229-2244, sentence at 2234-2238). KT-01 item 4 remains
+    a design constraint and is not resolved by upgrading.
+  - Therefore: Klaint must disable the plugin server, register consequential
+    tools only in-process, require broker-issued capabilities, and gate output
+    at the reviewer/buffer point or outside the engine.
+
+SUPERVISOR_EVIDENCE.md integrated:
+  - Decagon Duet CLI 0.6.1 tarball + restrictive license verified; duplicate of
+    npm public package; NOT open source, no reuse.
+  - Official Decagon engineering blogs fetched (agent engine 2024-11-20,
+    evaluation engine 2025-07-06, SOP->AOP, Missions 2026-11-12).
+  - Parloa Agent Management API/SDK/CLI/MCP blog 2026-11-02 fetched.
+
+NEW EVIDENCE SAVED:
+  sources/evidence/{parloa,decagon,lorikeet}/*.txt  (HTML text extractions)
+  sources/evidence/telephony/{twilio,deepgram,elevenlabs}*
+  sources/decagon-duet-cli/
+
+NEXT ACTION: write SOURCE_CODE_INVENTORY.md, COMPETITOR_EVIDENCE_MATRIX.md,
+then architecture/roadmap/access-gaps/reproduce/master/README.
+
+==============================================================================
+STAGE 4 - FINAL DELIVERABLES + CORRECTION AUDIT (2026-11-18)
+==============================================================================
+FILES WRITTEN:
+  SOURCE_CODE_INVENTORY.md
+  COMPETITOR_EVIDENCE_MATRIX.md
+  KLAINT_TARGET_ARCHITECTURE.md
+  KLAINT_COMPETITIVE_ROADMAP.md
+  ACCESS_GAPS.md
+  REPRODUCE.md
+  REA_MASTER_REPORT.md
+  README.md (Arabic executive summary)
+
+CRITICAL CORRECTION (verified twice in pinned source):
+  Parlant 4.0.6 STILL exposes the plugin tool server:
+    core/services/tools/plugins.py:851  @app.post('/tools/{name}/calls')
+    core/services/tools/plugins.py:607-612  CallToolRequest{agent_id,session_id,
+      customer_id,arguments} - caller-supplied identity, no auth on server
+    sdk.py:3065  tool_service_port=8818; sdk.py:4961-4990 starts PluginServer
+      on 127.0.0.1 and registers it as a tool service
+    plugins.py:642-643  standalone PluginServer default host 0.0.0.0 port 8089
+  Stream output safety unchanged: loop/base_loop.py:2229-2244 (sentence 2234-
+  2238) says the hook is observational in streaming. 4.0.6 ADDS a buffering
+  reviewer path: :2140-2144, :2160-2227, rejection/regeneration :2246-2254.
+  => KT-01 remains BINDING. Upgrading Parlant does not clear it.
+  => Earlier Stage-3 lines were edited in place and marked retracted.
+  => SOURCE_CODE_INVENTORY 5.1 + C1, REPRODUCE 5.4, ROADMAP 5 updated.
+
+SECOND CORRECTION (minor, line refs):
+  Parloa barge_in fields are at types/barge_in.py:21-28 (not 23-31).
+  Pipeline sentence at types/pipeline.py:25 (not 24-29).
+  Parlant path is core/engines/compass/loop/base_loop.py (not alpha/alpha_engine).
+  REPRODUCE 5.3 path fixed accordingly.
+
+NEW EVIDENCE ADDED IN STAGE 4:
+  sources/evidence/parloa/doc-ask-tokens.md      (docs agent cannot verify
+    token/authorization model from public docs)
+  sources/evidence/parloa/docs-sitemap-pages.xml  (exactly ONE public URL)
+  Confirms: docs.parloa.com is a landing page; docs.amp.parloa.com needs a
+  whitelisted login (docs-welcome.md says so explicitly).
+
+CITATION VERIFICATION PERFORMED (commands in REPRODUCE 5.x):
+  wispral CURRENT_STATE 33-34,105            OK
+  parlant plugins.py 607-612,851 / sdk.py 4961-4990,3065   OK
+  parlant base_loop.py 2140-2144,2160-2227,2229-2244      OK
+  lorikeet chat.ts 26,38,51,207-211; web.ts 12,24,35-42; ingest.ts 15,23,31
+            customer.ts 26,42,55,65,88; generate-signature.ts 8-18          OK
+  parloa pipeline.py 25; barge_in.py 21-28; authentication_customer_
+            identity.py 22-31                                           OK
+  decagon bin.mjs 213-215,488,605,1023,1039,1116,1282,1324          OK
+  twilio-voice-us.txt 395-398; deepgram-pricing.txt 130            OK
+  chatwoot app/models/conversation.rb 16-51; LICENSE enterprise split OK
+  tau2-bench README 23-24 (six languages, no Arabic)               OK
+
+BLOCKERS STILL OPEN:
+  Decagon docs/API login-gated (G1,G2); Parloa AMP whitelist (G5); no
+  competitor private repo exists in connected accounts (G9).
+
+NEXT ACTION: none required for delivery. If extended, request the access
+  list in ACCESS_GAPS 8, then re-run REPRODUCE 5 and relabel affected cells.
+==============================================================================
+
+==============================================================================
+STAGE 5 - PRE-HANDOFF RECONCILIATION (2026-11-18, post-delivery review)
+==============================================================================
+
+CONFLICT FOUND
+  Canonical: docs/strategy/WISPRAL_COPY_FIRST_STRATEGY.md:50-58,71 says the
+  Klaint MVP is ONE hardened Python Parlant process, a Python broker package
+  (BN-02, ~800-1,500 LOC estimate) in a separate process as sole executor,
+  and a ledger implemented as a DB table. Rust wispral-policy/journal are
+  deferred until a second Rust consumer exists.
+  REA draft: README, KLAINT_TARGET_ARCHITECTURE, ROADMAP and MASTER_REPORT
+  specified a Rust capability broker/ledger at P0. That was NEVER ratified.
+
+SUPERSEDING / SUPPORTING DOCS CHECKED
+  WISPRAL_MASTER_PLAN_FINAL.md:3,23,50,79,203,212,224-231,309,159
+    - KT-01 BLOCKED: tool server CANNOT be disabled (line 50)
+    - Python is an evidenced, bounded exception for the Klaint service (79)
+    - broker in a SEPARATE PROCESS from Parlant, capability on every tool,
+      capability bound to reviewed proposal, per-tenant container/UID
+    - PA-05 (:309) REPLACES "plugin server disabled/off" with capability-on-
+      every-tool + authenticated issuance channel + isolation + probes +
+      BLOCK mode + per-session STREAM negative fixture
+  docs/adr/ contains ONLY 0001 and 0002. ADR-0003 is approved IN DIRECTION
+  by FD-20 but its text does not exist yet -> plan frozen at approval gate.
+  CONSTITUTION.md:83-85 Rust-first SHOULD; other languages MAY with evidence;
+  language purity MUST NOT outrank correctness/portability/maintainability.
+
+RESOLUTION
+  1. Rust broker/ledger = UNRATIFIED PROPOSAL in every REA document.
+     Canonical P0 = Python broker + DB ledger, separate process.
+     Ratification would need: ADR text, decision-ledger row (GP-10 lane),
+     cross-language fixture parity (JCS/NFC/path/digests), migration story,
+     cost estimate vs BN-02 baseline.
+  2. "Plugin tool server off" legacy wording is SUPERSEDED (KT-01 + plan :50
+     + PA-05 :309). Assume the server is reachable. Loopback is not a
+     security boundary (SDK itself binds 127.0.0.1:8818). Authorisation comes
+     from capability + tenant container/UID, not from binding address.
+  3. NO REAL CUSTOMER DATA until KT-01b probes (made-up session, another
+     customer same tenant, another tenant, every route incl GET /tools,
+     loopback from a connector, capability request from any non-Parlant
+     resident), BLOCK-mode start-up + runtime checks, and the per-session
+     STREAM negative fixture pass with zero data and zero effects.
+  4. Extra trust boundaries introduced by the Rust proposal recorded as
+     B1-B6 in ARCHITECTURE_RECONCILIATION 4.5 (issuance, orchestrator IPC,
+     worker escalation, cross-language canonicalisation, broker restart/
+     nonce loss, deployment drift).
+  5. Competitor wording softened to "no public verified documentation in the
+     sources reviewed"; absence of evidence is not evidence of absence.
+     No claim of cryptographic superiority over unknown internals.
+  6. Claims ledger added: vendor prices = OBSERVED (URL+date); Klaint TCO,
+     latency p95, barge-in, Arabic delta, effort = ESTIMATES / ACCEPTANCE
+     TARGETS. No competitor latency/accuracy/score exists in this work.
+  7. Parlant pin stated explicitly: canonical 2a463ccd (v4.0.2, Wispral's
+     pin); independently inspected 4962e62b (v4.0.6).
+
+FILES CREATED / EDITED IN STAGE 5
+  ARCHITECTURE_RECONCILIATION.md      NEW: canonical anchors, comparison,
+                                     contradiction resolution, B1-B6,
+                                     evidence-language rules, validation gates
+  KLAINT_TARGET_ARCHITECTURE.md       canonical-vs-proposal banner; diagram,
+                                     component table, 19 migration rows and
+                                     latency costs relabelled
+  KLAINT_COMPETITIVE_ROADMAP.md       P0 broker = canonical Python; Rust
+                                     deferred; competitor claims softened;
+                                     effort/latency marked estimates/targets
+  REA_MASTER_REPORT.md                2.4 status note; diagram + 8 decisions;
+                                     Parlant recommendation no longer says
+                                     "disable the tool server"; 14 softened;
+                                     TCO and latency labelled
+  README.md (Arabic)                  proposal notice, softened absolutes,
+                                     observed-vs-estimate labels, new file row
+  COMPETITOR_EVIDENCE_MATRIX.md       scope rule added; self-host, dialect,
+                                     provenance, ownership and "cannot match"
+                                     cells rewritten
+  progress.txt                        this entry
+
+VERIFICATION STILL VALID
+  REPRODUCE 5.1-5.4 unchanged and re-runnable from workspace root.
+  No product repository was touched; all edits are inside
+  D:\Klaint-REA-20261118.
+
+OPEN ITEMS (not fixed here, research-only)
+  R1 write ADR-0003 text (FD-20 already approved in direction)
+  R2 choose Python vs Rust broker with evidence before P0
+  R3 freeze KT-01b probe list as an executable suite
+  R4 confirm BLOCK-mode policy per agent + STREAM negative fixture
+  R5 fix legacy "plugin server off" wording in strategy docs in a docs PR
+
+NEXT ACTION: hand off. The nine deliverables plus
+  ARCHITECTURE_RECONCILIATION.md are complete and cross-referenced.
+==============================================================================
+
+==============================================================================
+STAGE 6 - SUPPLEMENTAL PUBLIC CODE (2026-11-18)
+==============================================================================
+
+WHAT WAS ADDED
+  Four Lorikeet-related public archives were downloaded after the first pass
+  and verified. Evidence lives in sources/; provenance summary in
+  SUPPLEMENTAL_PUBLIC_CODE.md; full inventory in SOURCE_CODE_INVENTORY 2.5.
+
+  1. optechai/nestjs-temporal
+     HEAD da2f975def682e9da7b536aaa4d49c9ccc9aadbd (shallow clone, ONE
+     visible commit, 2024-12-06). LICENCE = MIT, (c) 2022 Zegue Kurt.
+     20 TS files in lib/ (NestJS module, @Workflow/@Activity decorators,
+     providers, metadata accessors) + 1 spec.
+     LIMIT: generic third-party library republished in the org; no evidence
+     Lorikeet production runs it; no Lorikeet business logic observed.
+     Do NOT call it "their backend".
+
+  2. @lorikeetai/mcp-server 1.0.0 (1,760 B tarball)
+     Contains EXACTLY package/package.json + package/README.md.
+     package.json declares main index.js, bin ./dist/index.js,
+     files ["dist"], deps node-sdk ^0.13.1 / MCP SDK ^1.13 / express 5 /
+     zod 3 - but NO dist/ and NO index.js are shipped.
+     NO license field, NO LICENSE file.
+     => cannot run as published; README describes POST /mcp, GET /health,
+        resource lorikeet://workflow/{id}, tool getWorkflows, env
+        LORIKEET_CLIENT_ID/SECRET. Intent only.
+     => stale: targets node-sdk ^0.13.1 while current SDK is 3.0.0.
+     => no reuse.
+
+  3. @lorikeetai/mcp-client 1.0.0 (1,819 B tarball)
+     package.json license ISC; NO LICENSE file shipped.
+     description: "Dummy Lorikeet MCP Client example".
+     src/index.ts = 28 lines: MCPOrchestrator with client/tool maps,
+     addServer() -> connect + listTools(), callTool() with a non-null
+     assertion. example/dev.ts connects to http://localhost:3000/mcp and
+     calls getWorkflows.
+     LIMIT: no backend, no credential handling, no tenant identity, no retry.
+     Reference only.
+
+  4. @lorikeetai/web-sdk 1.13.0 (32,185 B tarball)
+     dist/ only (widget.js 32,447 B; widget.umd.cjs 28,758 B;
+     voice-widget.js 7,147 B; webmcp.js 6,413 B; .d.ts), plus README and
+     CHANGELOG. NO src/, NO license field, NO LICENSE file.
+     exports map points "./globals" at ./src/globals.d.ts which is absent.
+     Observable: getIframeStartUrl() comment says the URL carries no
+     credentials - they are handed to the iframe by postMessage to the
+     chat origin; only host literal in dist is https://chat.lorikeetcx.ai;
+     deploy script targets gs://resources.lorikeetcx.ai.
+     CHANGELOG 1.13.0: credential hand-off, logout(), WebMCP next actions.
+     LIMIT: bundled loader for a hosted iframe; iframe internals/backend/
+     authorization are not in the archive. No reuse without a grant.
+
+  5. @lorikeetai/react-sdk: HTTP 404 on npm (2026-11-18). No inference
+     about other libraries.
+
+CORRECTIONS MADE
+  - "Lorikeet publishes an MCP server" -> "publishes an MCP server PACKAGE
+    whose tarball contains README + package.json only - no implementation".
+    This is the difference between a listing and a runnable server.
+  - New rule in inventory: missing licence = no reuse permission; package
+    presence =/= implementation; org-repo membership =/= production use.
+  - No change to the core finding: no Lorikeet backend, planner, guardrail
+    model, tenancy mechanism, or latency data is public.
+
+FILES EDITED
+  SOURCE_CODE_INVENTORY.md        master rows E-LOR-06..09; new 2.5; 2.1 and
+                                  2.3 corrected; contradiction log C8-C12;
+                                  reuse table rows; provenance rules 7-9
+  REPRODUCE.md                    new 3.3 with fetch/list/verify commands
+  COMPETITOR_EVIDENCE_MATRIX.md   MCP row qualified; supplemental note
+  REA_MASTER_REPORT.md            2.1 obtainable-column updated; four
+                                  archives listed with limits
+  README.md (Arabic)              short supplemental note; no overclaim
+  ARCHITECTURE_RECONCILIATION.md  KL-T3 "disabled" wording added to the
+                                  superseded set; 7.4 verification steps;
+                                  change table updated
+  progress.txt                    this entry
+
+FINAL STATE
+  Nine original deliverables exist. ARCHITECTURE_RECONCILIATION.md is
+  complete and cross-referenced. SUPPLEMENTAL_PUBLIC_CODE.md (provided) is
+  now backed by inventory, reproduce and matrix updates.
+  No production project was touched. All edits are under
+  D:\Klaint-REA-20261118.
+==============================================================================
+
+STAGE 6 ADDENDUM
+  Re-grepped every deliverable for stale "disable the plugin tool server"
+  instructions after the supplemental pass. Two remained in
+  SOURCE_CODE_INVENTORY (5.1 implication and 6 KL-T3 summary); both were
+  corrected to the superseded/capability-on-every-tool position. No other
+  deliverable now tells an implementer to switch the server off.
+==============================================================================

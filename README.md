@@ -150,6 +150,7 @@ Supporting foundations:
 - [`docs/benchmarks/WISPRALBENCH.md`](./docs/benchmarks/WISPRALBENCH.md)
 - [`docs/security/THREAT_MODEL.md`](./docs/security/THREAT_MODEL.md)
 - [`docs/strategy/CATEGORY_AND_ADOPTION.md`](./docs/strategy/CATEGORY_AND_ADOPTION.md)
+- [`Klaint competitor REA (2026-11-18)`](./research/rea/2026-11-18/klaint-competitors/README.md) — non-canonical research, source/licence inventory, architecture reconciliation, and agent handoff
 
 ## Ambition
 
