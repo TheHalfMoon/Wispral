@@ -168,7 +168,7 @@ const OPERATIONS: Operation[] = [
         consent: boolean(),
         variables: object(),
         mode: { type: "string", enum: ["simulated", "carrier"] },
-        provider: { type: "string", enum: ["simulated", "twilio", "signalwire"] },
+        provider: { type: "string", enum: ["simulated", "twilio", "signalwire", "telnyx", "vonage", "sip"] },
         from: string(),
       },
       ["to", "agentId", "consent"],
@@ -312,6 +312,47 @@ const OPERATIONS: Operation[] = [
   { method: "delete", path: "/v1/credentials/{name}", tag: "credentials", id: "deleteCredential", summary: "Delete a credential", status: 204 },
 
   { method: "get", path: "/v1/telephony/providers", tag: "telephony", id: "listTelephonyProviders", summary: "Carrier availability and the honest reason when unavailable", response: list("ProviderAvailability") },
+  { method: "get", path: "/v1/telephony/sip/status", tag: "telephony", id: "getSipStatus", summary: "SIP RFC 3261, SRTP AES_CM_128_HMAC_SHA1_80 and OM-T7 transport security posture", response: GENERIC },
+  {
+    method: "post",
+    path: "/v1/realtime/token",
+    tag: "realtime",
+    id: "createRealtimeToken",
+    summary: "Issue a short-lived single-use media token for /v1/realtime/ws",
+    request: object({ agentId: string(), ttlSec: integer(5, 300) }, ["agentId"]),
+    response: object({ token: string(), expiresAt: string(), singleUse: boolean(), wsUrl: string() }, ["token", "expiresAt", "singleUse"]),
+    status: 201,
+  },
+  {
+    method: "post",
+    path: "/v1/realtime/webrtc/offer",
+    tag: "realtime",
+    id: "negotiateWebRtcOffer",
+    summary: "Negotiate SDP offer/answer, ICE-lite candidate, RTP/SRTP PCMU/PCMA media and DataChannel",
+    request: object({ agentId: string(), sdp: string(), sinkAckSupported: boolean() }, ["agentId", "sdp"]),
+    response: GENERIC,
+    status: 201,
+  },
+  { method: "get", path: "/v1/realtime/webrtc/{id}", tag: "realtime", id: "getWebRtcSession", summary: "Inspect a live WebRTC session and T0..T6 latency telemetry", response: GENERIC },
+  {
+    method: "post",
+    path: "/v1/realtime/webrtc/{id}/ice",
+    tag: "realtime",
+    id: "addWebRtcIceCandidate",
+    summary: "Submit a Trickle ICE candidate for an active WebRTC session",
+    request: object({ candidate: string() }, ["candidate"]),
+    response: object({ accepted: boolean(), count: integer() }),
+  },
+  {
+    method: "post",
+    path: "/v1/realtime/webrtc/{id}/control",
+    tag: "realtime",
+    id: "sendWebRtcControlEvent",
+    summary: "Send a JSON control event (barge_in, clear.ack, utterance.text) to a WebRTC session",
+    request: GENERIC,
+    response: GENERIC,
+  },
+  { method: "delete", path: "/v1/realtime/webrtc/{id}", tag: "realtime", id: "closeWebRtcSession", summary: "Terminate an active WebRTC session", status: 204 },
   { method: "get", path: "/v1/numbers", tag: "telephony", id: "listNumbers", summary: "List configured phone numbers", response: list("PhoneNumber") },
   {
     method: "post",
@@ -366,7 +407,7 @@ export const PROVIDER_FACING = [
   "POST /telephony/{provider}/sms",
 ] as const;
 
-export const NOT_JSON = ["GET /v1/calls/{id}/stream"] as const;
+export const NOT_JSON = ["GET /v1/calls/{id}/stream", "GET /v1/realtime/ws"] as const;
 
 function components(): Record<string, Schema> {
   return {
@@ -543,6 +584,7 @@ export function openApiDocument(): Record<string, unknown> {
       { name: "knowledge" },
       { name: "credentials" },
       { name: "telephony" },
+      { name: "realtime" },
       { name: "automation" },
       { name: "keys" },
     ],

@@ -46,20 +46,25 @@ test("SignalWire is selected through its Twilio-compatible credentials", () => {
   assert.equal(provider.capabilities.sms, true);
 });
 
-test("Telnyx and Vonage are reported as unimplemented even with credentials", () => {
+test("Telnyx, Vonage, and SIP adapters activate when their credentials exist", () => {
   const env = {
     TELNYX_API_KEY: "key",
     TELNYX_CONNECTION_ID: "1",
     VONAGE_API_KEY: "key",
     VONAGE_API_SECRET: "secret",
     VONAGE_APPLICATION_ID: "app",
+    OMALLA_SIP_GATEWAY_URL: "http://127.0.0.1:5080",
   };
   const registry = new TelephonyRegistry({ env });
   const telnyx = registry.availability(env).find((entry) => entry.id === "telnyx");
   const vonage = registry.availability(env).find((entry) => entry.id === "vonage");
-  assert.equal(telnyx?.available, false);
-  assert.match(telnyx?.detail ?? "", /not implemented/);
-  assert.match(vonage?.detail ?? "", /not implemented/);
+  const sip = registry.availability(env).find((entry) => entry.id === "sip");
+  assert.equal(telnyx?.available, true);
+  assert.equal(vonage?.available, true);
+  assert.equal(sip?.available, true);
+  assert.equal(registry.get("telnyx").capabilities.transfer, true);
+  assert.equal(registry.get("vonage").capabilities.transfer, true);
+  assert.equal(registry.get("sip").capabilities.sip, true);
 });
 
 test("a missing SIP gateway never pretends to be a carrier", () => {

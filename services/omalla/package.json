@@ -19,13 +19,13 @@
     "dev": "node scripts/build.mjs && node packages/server/dist/bin/serve.js",
     "test": "node scripts/run-tests.mjs",
     "typecheck": "tsc -p tsconfig.check.json --noEmit",
+    "openapi:check": "node scripts/run-tests.mjs tests/openapi.test.ts",
     "audit:licenses": "node scripts/check-licenses.mjs",
     "check:docs": "node scripts/check-docs.mjs",
     "smoke": "node scripts/smoke-server.mjs",
     "smoke:python": "node scripts/smoke-python.mjs",
     "test:python": "python -m unittest discover -s sdks/python/tests -t sdks/python",
-    "verify": "npm run build && npm run typecheck && npm test && npm run audit:licenses && npm run check:docs",
-    "openapi:check": "node scripts/run-tests.mjs tests/openapi.test.ts"
+    "verify": "npm run build && npm run typecheck && npm test && npm run audit:licenses && npm run check:docs"
   },
   "dependencies": {
     "@fastify/cors": "^11.0.1",

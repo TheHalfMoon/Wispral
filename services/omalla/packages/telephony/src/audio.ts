@@ -65,6 +65,67 @@ export function decodeMulaw(bytes: Uint8Array): Int16Array {
 }
 
 /* ------------------------------------------------------------------ */
+/* G.711 A-law (PCMA, ITU-T G.711)                                     */
+/* ------------------------------------------------------------------ */
+
+/** Encodes one signed 16-bit PCM sample to an 8-bit ITU-T G.711 A-law byte. */
+export function linearToAlaw(sample: number): number {
+  let pcm = Math.max(-32768, Math.min(32767, Math.round(sample)));
+  let mask = 0x55;
+  if (pcm >= 0) {
+    mask |= 0x80;
+  } else {
+    pcm = -pcm - 1;
+    if (pcm < 0) pcm = 0;
+  }
+
+  // Convert 16-bit magnitude to 13-bit A-law magnitude
+  const mag = pcm >> 3;
+  let seg = 0;
+  let shift = 0x40;
+  while (seg < 7 && mag >= shift) {
+    seg += 1;
+    shift <<= 1;
+  }
+  const aval = seg << 4;
+  const mantissa = seg < 2 ? (mag >> 1) & 0x0f : (mag >> seg) & 0x0f;
+  return (aval | mantissa) ^ mask;
+}
+
+/** Decodes one 8-bit ITU-T G.711 A-law byte to a signed 16-bit PCM sample. */
+export function alawToLinear(byte: number): number {
+  const toggled = (byte & 0xff) ^ 0x55;
+  const sign = toggled & 0x80;
+  const exponent = (toggled & 0x70) >> 4;
+  const mantissa = toggled & 0x0f;
+  let value: number;
+  if (exponent === 0) {
+    value = (mantissa << 4) + 8;
+  } else if (exponent === 1) {
+    value = (mantissa << 4) + 0x108;
+  } else {
+    value = ((mantissa << 4) + 0x108) << (exponent - 1);
+  }
+  return sign !== 0 ? value : -value;
+}
+
+export function encodeAlaw(samples: Int16Array): Uint8Array {
+  const out = new Uint8Array(samples.length);
+  for (let i = 0; i < samples.length; i += 1) {
+    out[i] = linearToAlaw(samples[i] ?? 0);
+  }
+  return out;
+}
+
+export function decodeAlaw(bytes: Uint8Array): Int16Array {
+  const out = new Int16Array(bytes.length);
+  for (let i = 0; i < bytes.length; i += 1) {
+    out[i] = alawToLinear(bytes[i] ?? 0);
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------ */
 /* PCM helpers                                                         */
 /* ------------------------------------------------------------------ */
 

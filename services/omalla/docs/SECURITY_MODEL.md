@@ -8,12 +8,12 @@ boundaries, the controls that exist, and the gaps that remain.
 
 | Asset | Where it lives | Sensitivity |
 | --- | --- | --- |
-| Carrier credentials | encrypted credential store or environment | critical |
-| API keys | hashed in the JSON store | critical |
-| Transcripts and summaries | JSON store | personal data |
+| Carrier credentials | encrypted credential store or allowlisted single-tenant environment | critical |
+| API keys | SHA-256 hashed in SQLite (`omalla.db` WAL mode) | critical |
+| Transcripts and summaries | SQLite (`omalla.db` WAL mode) | personal data |
 | Recordings | data directory (carrier-hosted when carrier recording is used) | personal data |
-| Caller numbers | JSON store, logs (redacted) | personal data |
-| Workflow secrets | encrypted credential store | critical |
+| Caller numbers | SQLite (`omalla.db`), logs (redacted) | personal data |
+| Workflow secrets | encrypted credential store (`AES-256-GCM`) | critical |
 | Tool destinations | workflow/agent config | integrity-critical |
 
 ## Trust boundaries
@@ -34,11 +34,12 @@ idempotency key or an approval.
 | Surface | Control |
 | --- | --- |
 | REST API | `Authorization: Bearer omk_...`; SHA-256 hash at rest; prefix index; constant-time compare; revocation timestamp |
-| Roles | `owner > admin > operator > viewer`; number purchase requires owner; search/send requires operator |
-| Tenant scope | Every query filters by `principal.tenantId`; cross-tenant ids return 404, not 403 |
-| Carrier webhooks | Twilio HMAC-SHA1 over exact URL + sorted form; constant-time compare; no signature means reject |
-| Media WebSocket | HMAC-SHA256 token bound to `callId`, verified before audio is accepted |
-| SIP gateway (future) | `x-omalla-gateway-token`, minimum 16 chars, compared as a secret |
+| Roles | `owner > admin > operator > viewer`; number purchase requires owner; live tool dryRun bypass requires admin; search/send requires operator |
+| Tenant scope (`OM-T1`) | Every query, KB attach, tool, task, webhook, and normalized inbound number filters strictly by `principal.tenantId`; cross-tenant ids return 404 |
+| Caller ANI (`OM-T2`) | `callerNumberVerified` is `false` unless trunk attestation verified ANI; high-risk tools refuse unverified ANI and untrusted `variables` cannot spoof verification |
+| Webhooks (`OM-T3`) | Twilio/SignalWire HMAC-SHA1, Telnyx Ed25519/HMAC, Vonage HS256 JWT (`iat` + `payload_hash`), Standard Webhooks, and Omalla HMAC (`x-omalla-timestamp` ±300s) + durable SQLite replay cache |
+| Media & Realtime (`OM-T3`, `OM-T8`) | Short-lived single-use media tokens (`ommt_...` / `omrt_...`), verified STUN `MESSAGE-INTEGRITY`, and sink-confirmed `T2` (`observed_audio_halt` vs `stopped_unconfirmed`) |
+| SIP & SRTP (`OM-T7`) | `127.0.0.1` default bind; non-loopback media requires SRTP (`AES_CM_128_HMAC_SHA1_80`), non-loopback SDES/`x-omalla-gateway-token` requires `sips:` TLS or attested tunnel; single-use Digest nonces |
 | Rate limits | 600 requests/min per client; 30 auth attempts/min |
 | Dashboard | Same API key; stored in `localStorage` on the operator's machine |
 
@@ -58,20 +59,16 @@ the public URL, or every webhook fails closed.
 - Provider errors are surfaced without the auth token; a test asserts the token
   does not appear in the message.
 
-## SSRF
+## SSRF (`OM-T4`)
 
-Every workflow HTTP node, n8n webhook, `api_request` tool and MCP URL goes
-through `evaluateUrl`:
+Every workflow HTTP node, n8n webhook, `api_request` tool, MCP URL, and BYOK/local
+provider `baseUrl` goes through `evaluateUrl` and connect-time `createSsrfGuardedFetch`:
 
 - only `http`/`https`;
-- rejects loopback, private, link-local, multicast and unique-local addresses;
-- rejects credentials in the URL;
-- `OMALLA_ALLOW_PRIVATE_HTTP=1` is required to reach a local n8n or Ollama;
-- redirects are not followed by default.
-
-DNS rebinding is not fully solved: the check resolves the hostname, then fetch
-resolves again. A production deployment should pin the resolved address or use
-an egress proxy. This is a known gap, listed below.
+- rejects loopback, RFC1918, link-local/IMDS, CGNAT, NAT64, ULA, and IPv4-mapped IPv6 addresses;
+- resolves DNS at connect time, rejects mixed public+private A/AAAA answers, and pins the verified IP;
+- strips `Authorization`, `Cookie`, `Proxy-Authorization`, and `x-omalla-signature` on cross-origin redirects and aborts responses exceeding 2 MiB;
+- `OMALLA_ALLOW_PRIVATE_HTTP=1` is required for tenant-supplied private URLs.
 
 ## Prompt injection and tool authority
 
@@ -93,9 +90,11 @@ purchase is confirmed.
 | Control | Behaviour |
 | --- | --- |
 | Outbound disabled by default | `tenant.settings.outboundEnabled` must be true |
-| Consent required | outbound call and SMS require `consent: true` |
-| Daily cap | `dailyOutboundCap`, enforced before dialling |
-| Quiet hours | local-time window, enforced |
+| Consent required (`OM-T6`) | outbound calls and SMS (REST + workflow `sms.send`) require `consent: true` |
+| DNC & allowlist (`OM-T6`) | `dncList` and `outboundAllowlist` enforced on simulated calls, carrier calls, and SMS |
+| Daily cap & minute quotas (`OM-T6`) | `dailyOutboundCap`, `maxConcurrentCalls`, `dailyMinuteQuota`, and `monthlyMinuteQuota` enforced |
+| Quiet hours (`OM-T6`) | local-time `callingWindow` + `timezone` enforced on calls and SMS |
+| Idempotency (`OM-T5`) | Durable SQLite `(tenant_id, scope, idem_key)` + RFC 8785 JCS SHA-256 `args_digest` (floats rejected) |
 | Number purchase | `OMALLA_ALLOW_CARRIER_PURCHASES=1`, owner role, `confirm: true` |
 | Release | owner role, `confirm: true`, warning that it may be irreversible |
 | Cost disclosure | `carrierCharges` and `costNote` in every search/provision response |
@@ -141,15 +140,13 @@ per-destination allowlist yet.
 
 | Gap | Impact | Planned mitigation |
 | --- | --- | --- |
-| No TLS termination | API keys and audio in clear text if exposed | Run behind a TLS proxy; bind loopback by default |
-| DNS rebinding after SSRF check | Reach internal services | Pin resolved IP or egress proxy |
-| JSON store unencrypted | Transcripts readable on disk | OS disk encryption; field-level encryption later |
+| No HTTP TLS termination built in | API keys and WS audio in clear text if exposed | Run behind a TLS proxy; HTTP binds loopback `127.0.0.1` by default (`sips:` TLS is supported on `SipStack`) |
+| SQLite store unencrypted at table level | Transcripts readable on disk (`credentials` column uses AES-256-GCM) | OS disk encryption; field-level transcript encryption later |
 | No automatic retention | Personal data accumulates | Retention policy and delete job |
-| No tamper-evident audit | Local edits undetectable | Append-only log with hash chain |
+| No tamper-evident audit | Local DB edits undetectable | Append-only log with hash chain |
 | Rate limit is per process | Multi-process deployment bypasses it | Shared limiter |
-| No destination allowlist | Outbound toll fraud via stolen key | Per-tenant allowlist |
-| Carrier live behaviour unverified | Signature/proxy edge cases | Live qualification run |
-| SIP token comparison | Shared secret, no rotation | Rotation and per-gateway keys |
+| Live PSTN carrier edge cases | Proxy/NAT differences in production | Live carrier qualification run |
+| SIP gateway token rotation | Shared secret without automated rotation | Per-gateway key rotation |
 
 ## Reporting
 

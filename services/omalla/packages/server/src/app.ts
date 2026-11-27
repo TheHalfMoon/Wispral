@@ -38,6 +38,7 @@ import type { TemplateId } from "@omalla/workflow";
 import type { OmallaRuntime } from "./runtime.js";
 import { parseSpokenDateTime } from "./parse-when.js";
 import { registerTelephonyRoutes } from "./telephony-routes.js";
+import { registerRealtimeRoutes } from "./realtime/routes.js";
 import { openApiDocument } from "./openapi.js";
 
 declare module "fastify" {
@@ -176,6 +177,7 @@ export async function buildApp(runtime: OmallaRuntime, options: BuildAppOptions 
   /* ------------------------------------------------------------------ */
 
   registerTelephonyRoutes(app, runtime);
+  registerRealtimeRoutes(app, runtime);
 
   /* ------------------------------------------------------------------ */
   /* system & tenant settings                                            */
@@ -1210,6 +1212,7 @@ export async function buildApp(runtime: OmallaRuntime, options: BuildAppOptions 
   app.get("/", async (_request, reply) => sendAsset(reply, "index.html"));
   app.get("/app.js", async (_request, reply) => sendAsset(reply, "app.js"));
   app.get("/styles.css", async (_request, reply) => sendAsset(reply, "styles.css"));
+  app.get("/audio-worklet.js", async (_request, reply) => sendAsset(reply, "audio-worklet.js"));
 
   return app;
 }

@@ -1,7 +1,10 @@
 import type { TelephonyProvider, TelephonyProviderId } from "./provider.js";
 import { TELEPHONY_PROVIDER_IDS } from "./provider.js";
 import { SimulatedTelephonyProvider } from "./providers/simulator.js";
+import { SipTelephonyProvider } from "./providers/sip-provider.js";
+import { TelnyxProvider } from "./providers/telnyx.js";
 import { TwilioProvider } from "./providers/twilio.js";
+import { VonageProvider } from "./providers/vonage.js";
 
 export interface TelephonyRegistryOptions {
   env?: Record<string, string | undefined>;
@@ -67,6 +70,58 @@ export class TelephonyRegistry {
             authToken: token,
             apiBaseUrl: `https://${space}/api/laml`,
             variant: "signalwire",
+            ...(options.fetchImpl ? { fetchImpl: options.fetchImpl } : {}),
+          }),
+        );
+      }
+    }
+
+    if (!this.providers.has("telnyx")) {
+      const apiKey = env.TELNYX_API_KEY?.trim();
+      const connectionId = env.TELNYX_CONNECTION_ID?.trim();
+      if (apiKey && connectionId) {
+        this.providers.set(
+          "telnyx",
+          new TelnyxProvider({
+            apiKey,
+            connectionId,
+            ...(env.TELNYX_PUBLIC_KEY ? { publicKey: env.TELNYX_PUBLIC_KEY } : {}),
+            ...(env.TELNYX_WEBHOOK_SECRET ? { webhookSecret: env.TELNYX_WEBHOOK_SECRET } : {}),
+            ...(env.TELNYX_API_BASE_URL ? { apiBaseUrl: env.TELNYX_API_BASE_URL } : {}),
+            ...(options.fetchImpl ? { fetchImpl: options.fetchImpl } : {}),
+          }),
+        );
+      }
+    }
+
+    if (!this.providers.has("vonage")) {
+      const apiKey = env.VONAGE_API_KEY?.trim();
+      const apiSecret = env.VONAGE_API_SECRET?.trim();
+      const applicationId = env.VONAGE_APPLICATION_ID?.trim();
+      if (apiKey && apiSecret && applicationId) {
+        this.providers.set(
+          "vonage",
+          new VonageProvider({
+            apiKey,
+            apiSecret,
+            applicationId,
+            ...(env.VONAGE_SIGNATURE_SECRET ? { signatureSecret: env.VONAGE_SIGNATURE_SECRET } : {}),
+            ...(env.VONAGE_API_BASE_URL ? { apiBaseUrl: env.VONAGE_API_BASE_URL } : {}),
+            ...(options.fetchImpl ? { fetchImpl: options.fetchImpl } : {}),
+          }),
+        );
+      }
+    }
+
+    if (!this.providers.has("sip")) {
+      const gatewayUrl = env.OMALLA_SIP_GATEWAY_URL?.trim();
+      if (gatewayUrl) {
+        this.providers.set(
+          "sip",
+          new SipTelephonyProvider({
+            gatewayUrl,
+            ...(env.OMALLA_SIP_GATEWAY_TOKEN ? { gatewayToken: env.OMALLA_SIP_GATEWAY_TOKEN } : {}),
+            attestedEncryptedTunnel: env.OMALLA_SIP_ATTESTED_TUNNEL === "1" || env.OMALLA_SIP_ATTESTED_TUNNEL === "true",
             ...(options.fetchImpl ? { fetchImpl: options.fetchImpl } : {}),
           }),
         );
@@ -154,13 +209,10 @@ function labelFor(id: TelephonyProviderId): string {
 function unavailableReason(id: TelephonyProviderId, env: Record<string, string | undefined>): string {
   if (id === "sip") {
     return env.OMALLA_SIP_GATEWAY_URL?.trim()
-      ? "gateway URL configured, but the SIP bridge adapter is not implemented in v0.1.0"
-      : "no gateway configured; the SIP bridge contract is documented but no gateway is bundled";
+      ? "SIP gateway not configured"
+      : "no gateway configured; set OMALLA_SIP_GATEWAY_URL or start the local SipStack";
   }
   const missing = requiredEnvFor(id).filter((name) => !env[name]?.trim());
   if (missing.length > 0) return `credentials missing: ${missing.join(", ")}`;
-  if (id === "telnyx" || id === "vonage") {
-    return "adapter not implemented in v0.1.0; credentials are not sufficient";
-  }
   return "not configured";
 }
