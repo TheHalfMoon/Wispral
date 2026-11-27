@@ -56,3 +56,9 @@ Third-party and authorized founder code included or adapted in this repository:
   DB-state SHA-256 simulation evaluation (Sierra Research, MIT), and Chatwoot
   Core Edition webhook schema compatibility (Chatwoot Inc., MIT; Enterprise
   Edition paths strictly excluded).
+
+- services/omalla/ integrates and extends the founder-authorized Halfmoon Omalla
+  programmable voice-agent and telephony platform (Copyright 2026 Halfmoon /
+  TheHalfMoon, Apache License, Version 2.0; see services/omalla/NOTICE) along
+  with clean-room IETF RFC 3261 (SIP), RFC 3550 (RTP), RFC 3711/4568 (SRTP SDES),
+  RFC 4733 (DTMF), RFC 5389 (STUN), and Standard Webhooks implementations.

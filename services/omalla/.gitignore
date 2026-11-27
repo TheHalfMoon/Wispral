@@ -1,0 +1,32 @@
+node_modules/
+dist/
+*.tsbuildinfo
+*.db*
+target/
+
+# Local data and secrets
+.omalla/
+data/
+api-key.txt
+*.key
+recordings/
+tmp/
+artifacts/
+coverage/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# Logs and OS noise
+*.log
+.DS_Store
+Thumbs.db

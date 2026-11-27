@@ -1,0 +1,62 @@
+# Skeletons only: nothing here has been run. See README.md.
+name: omalla-sip
+
+services:
+  asterisk:
+    image: andrius/asterisk:20
+    profiles: ["asterisk"]
+    restart: unless-stopped
+    ports:
+      - "5060:5060/udp"
+      - "5060:5060/tcp"
+      - "10000-10100:10000-10100/udp"
+    environment:
+      OMALLA_VOICE_WEBHOOK: ${OMALLA_PUBLIC_URL:?set OMALLA_PUBLIC_URL}/telephony/sip/voice
+      OMALLA_MEDIA_WS: ${OMALLA_PUBLIC_WS:?set OMALLA_PUBLIC_WS}/telephony/sip/media
+      OMALLA_GATEWAY_TOKEN: ${OMALLA_GATEWAY_TOKEN:?set OMALLA_GATEWAY_TOKEN}
+
+  freeswitch:
+    image: safarov/freeswitch:1.10
+    profiles: ["freeswitch"]
+    restart: unless-stopped
+    ports:
+      - "5080:5080/udp"
+      - "5080:5080/tcp"
+      - "16384-16484:16384-16484/udp"
+    environment:
+      OMALLA_VOICE_WEBHOOK: ${OMALLA_PUBLIC_URL:?set OMALLA_PUBLIC_URL}/telephony/sip/voice
+      OMALLA_MEDIA_WS: ${OMALLA_PUBLIC_WS:?set OMALLA_PUBLIC_WS}/telephony/sip/media
+      OMALLA_GATEWAY_TOKEN: ${OMALLA_GATEWAY_TOKEN:?set OMALLA_GATEWAY_TOKEN}
+
+  livekit-sip:
+    image: livekit/sip:latest
+    profiles: ["livekit"]
+    restart: unless-stopped
+    ports:
+      - "5060:5060/udp"
+    environment:
+      SIP_CONFIG_BODY: |
+        api_key: ${LIVEKIT_API_KEY:?set LIVEKIT_API_KEY}
+        api_secret: ${LIVEKIT_API_SECRET:?set LIVEKIT_API_SECRET}
+        ws_url: ${LIVEKIT_WS_URL:?set LIVEKIT_WS_URL}
+        redis:
+          address: redis:6379
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    profiles: ["livekit"]
+    restart: unless-stopped
+
+  jambonz:
+    image: jambonz/jambonz-api-server:latest
+    profiles: ["jambonz"]
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      JAMBONZ_ACCOUNT_SID: ${JAMBONZ_ACCOUNT_SID:-}
+      JAMBONZ_API_KEY: ${JAMBONZ_API_KEY:-}
+    # A real jambonz deployment also needs MySQL, Redis, drachtio and rtpengine.
+    # This single container is not a working stack.

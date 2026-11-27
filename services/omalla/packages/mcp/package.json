@@ -1,0 +1,17 @@
+{
+  "name": "@omalla/mcp",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "omalla-mcp": "./dist/main.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@omalla/core": "0.1.0",
+    "@omalla/sdk": "0.1.0"
+  }
+}
