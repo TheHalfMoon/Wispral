@@ -180,7 +180,16 @@
     "stale_epoch",
     "binding_expired",
     "policy_denied",
-    "user_cancelled"
+    "user_cancelled",
+    "wayland_copy_fallback"
+   ]
+  },
+  "platform": {
+   "enum": [
+    "windows",
+    "macos",
+    "linux_x11",
+    "linux_wayland"
    ]
   },
   "method": {

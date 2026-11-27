@@ -278,6 +278,40 @@ add("effect_intent", "invalid_capability_args_substituted", "invalid", mutate(IN
 add("effect_intent", "invalid_capability_ttl_over_60s", "invalid", mutate(INTENT, ["capability", "expires_at"], "2026-11-08T10:05:00Z"), "capabilities live at most 60 seconds", layer="runtime")
 add("effect_intent", "invalid_capability_expires_before_issue", "invalid", mutate(INTENT, ["capability", "expires_at"], "2026-11-08T09:59:00Z"), "expiry follows issue", layer="runtime")
 
+# ---- v1.1 ecosystem extensions (Omalla, Wayland copy_fallback, streaming_mode, network_manifest, export_provenance)
+add("envelope", "valid_omalla_sip_envelope", "valid", mutate(mutate(TENANT_ENVELOPE, ["principal_scope", "channel"], "sip"), ["source"], {"product": "omalla", "component": "sip_gateway"}))
+add("consent_record", "valid_omalla_product_scope", "valid", {**COMMERCIAL, "products": ["klaint", "omalla"]})
+add("delivery_outcome", "valid_wayland_copy_fallback_refused", "valid", {**DELIVERY, "platform": "linux_wayland", "outcome": "refused", "refusal_reason": "wayland_copy_fallback", "method": "none", "chars_delivered": 0, "focus_revalidated_before_delivery": False})
+add("model_manifest", "valid_streaming_mode_duplex", "valid", {**MANIFEST, "streaming_mode": "full_duplex"})
+add("effect_intent", "valid_omalla_gateway_dispatch", "valid", {**STUDIO_INTENT, "owner": "omalla_gateway", "action_class": "reversible_write", "idempotency_key": "acme:call:outbound-9912:v1", "dispatch": {"tool": "telephony.dial", "args_digest": H}})
+add("effect_intent", "invalid_omalla_gateway_without_dispatch", "invalid", {**STUDIO_INTENT, "owner": "omalla_gateway", "action_class": "reversible_write", "idempotency_key": "acme:call:outbound-9912:v1"}, "omalla gateway intents declare dispatch")
+
+NET_OFFLINE = {
+    "schema_version": 1, "product": "wisprside", "surface": "desktop_core",
+    "mode": "offline_strict", "allowed_hosts": [],
+    "forbid_auto_download": True, "forbid_default_telemetry": True, "ssrf_block_private_ips": True,
+}
+add("network_manifest", "valid_side_offline_strict", "valid", NET_OFFLINE)
+add("network_manifest", "valid_studio_loopback_only", "valid", {**NET_OFFLINE, "product": "wisprstudio", "surface": "fastapi_sidecar", "mode": "loopback_only", "loopback_ports": [8000]})
+add("network_manifest", "valid_omalla_allowlisted", "valid", {**NET_OFFLINE, "product": "omalla", "surface": "carrier_webhooks", "mode": "allowlisted_hosts", "allowed_hosts": ["api.telnyx.com", "api.twilio.com"]})
+add("network_manifest", "invalid_offline_with_allowed_hosts", "invalid", mutate(NET_OFFLINE, ["allowed_hosts"], ["api.openai.com"]), "offline_strict forbids external hosts")
+add("network_manifest", "invalid_telemetry_enabled_by_default", "invalid", mutate(NET_OFFLINE, ["forbid_default_telemetry"], False), "default telemetry is forbidden")
+add("network_manifest", "invalid_allowlisted_empty_hosts", "invalid", {**NET_OFFLINE, "mode": "allowlisted_hosts"}, "allowlisted_hosts requires at least one host")
+
+EXPORT_PROV = {
+    "schema_version": 1, "export_id": "exp-0000001", "project_id": "proj-01", "product": "wisprstudio",
+    "artifact_sha256": H, "duration_ms": 4200, "sample_rate_hz": 24000,
+    "voice_mode": "authorized_clone", "consent_id": "consent-0001", "consent_epoch": 1, "voice_id": "voice-00001",
+    "model": {"model_id": "kokoro-82m", "revision": "v1.0", "artifact_sha256": HX},
+    "watermark": {"embedded": True, "scheme": "wispral-qim-v1", "payload_digest": H, "roundtrip_verified": True},
+    "created_at": "2026-11-27T12:00:00Z", "signature": SIGNATURE,
+}
+add("export_provenance", "valid_authorized_clone_export", "valid", EXPORT_PROV)
+add("export_provenance", "valid_stock_catalog_export", "valid", {k: v for k, v in EXPORT_PROV.items() if k not in ("consent_id", "consent_epoch", "voice_id")} | {"voice_mode": "stock_catalog", "stock_voice_catalog_id": "catalog:kokoro:af_heart"})
+add("export_provenance", "invalid_clone_without_consent", "invalid", mutate(EXPORT_PROV, ["consent_id"], DELETE), "authorized clone export cites consent_id")
+add("export_provenance", "invalid_unverified_watermark", "invalid", mutate(EXPORT_PROV, ["watermark", "roundtrip_verified"], False), "export requires roundtrip-verified watermark")
+add("export_provenance", "invalid_stock_with_consent_epoch", "invalid", {**EXPORT_PROV, "voice_mode": "stock_catalog", "stock_voice_catalog_id": "catalog:kokoro:af_heart"}, "stock and clone fields are mutually exclusive")
+
 ALLOW_MONEY = {**VERDICT, "verdict_id": "verdict-0002", "candidate_decision": "ALLOW", "enforced_decision": "ALLOW", "layers": [{"source": "base", "decision": "ALLOW"}]}
 BUNDLES = [
     {"name": "valid_intent_bound_to_allow_verdict", "expect": "valid", "intents": [INTENT], "verdicts": [ALLOW_MONEY]},

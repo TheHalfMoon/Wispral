@@ -1,0 +1,133 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://wispral.invalid/contracts/v1/network_manifest.schema.json",
+ "title": "Product network egress manifest (v1.1)",
+ "description": "Declares the permitted network posture for a Wispral product or worker surface. Offline-by-default desktop surfaces declare offline_strict or loopback_only with zero external hosts; self-hosted server connectors declare allowlisted_hosts with SSRF private-IP blocking enabled unless explicitly overridden by a self-hosted operator.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "schema_version",
+  "product",
+  "surface",
+  "mode",
+  "allowed_hosts",
+  "forbid_auto_download",
+  "forbid_default_telemetry",
+  "ssrf_block_private_ips"
+ ],
+ "properties": {
+  "schema_version": {
+   "const": 1
+  },
+  "product": {
+   "enum": [
+    "wisprside",
+    "wisprstudio",
+    "klaint",
+    "omalla",
+    "core"
+   ]
+  },
+  "surface": {
+   "type": "string",
+   "pattern": "^[a-z][a-z0-9_-]{1,63}$"
+  },
+  "mode": {
+   "enum": [
+    "offline_strict",
+    "loopback_only",
+    "allowlisted_hosts"
+   ]
+  },
+  "allowed_hosts": {
+   "type": "array",
+   "maxItems": 64,
+   "uniqueItems": true,
+   "items": {
+    "type": "string",
+    "pattern": "^[a-z0-9.-]{1,253}$"
+   }
+  },
+  "forbid_auto_download": {
+   "const": true
+  },
+  "forbid_default_telemetry": {
+   "const": true
+  },
+  "ssrf_block_private_ips": {
+   "type": "boolean"
+  },
+  "loopback_ports": {
+   "type": "array",
+   "maxItems": 16,
+   "uniqueItems": true,
+   "items": {
+    "type": "integer",
+    "minimum": 1,
+    "maximum": 65535
+   }
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "mode": {
+      "enum": [
+       "offline_strict",
+       "loopback_only"
+      ]
+     }
+    },
+    "required": [
+     "mode"
+    ]
+   },
+   "then": {
+    "properties": {
+     "allowed_hosts": {
+      "maxItems": 0
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "mode": {
+      "const": "offline_strict"
+     }
+    },
+    "required": [
+     "mode"
+    ]
+   },
+   "then": {
+    "not": {
+     "required": [
+      "loopback_ports"
+     ]
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "mode": {
+      "const": "allowlisted_hosts"
+     }
+    },
+    "required": [
+     "mode"
+    ]
+   },
+   "then": {
+    "properties": {
+     "allowed_hosts": {
+      "minItems": 1
+     }
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+[package]
+name = "wispral-contracts"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Wispral Core portable contracts, RFC 8785 JCS canonicalization, Windows path digesting, and Ed25519 verification"
+
+[dependencies]
+base64.workspace = true
+chrono.workspace = true
+ed25519-dalek.workspace = true
+hex.workspace = true
+rand_core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+unicode-normalization.workspace = true
+wispral-journal = { path = "../wispral-journal" }
+wispral-policy = { path = "../wispral-policy" }

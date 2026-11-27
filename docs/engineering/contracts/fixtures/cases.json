@@ -5471,6 +5471,519 @@
     }
    },
    "invariant": "expiry follows issue"
+  },
+  {
+   "schema": "envelope",
+   "name": "valid_omalla_sip_envelope",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": "t1",
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "tenant",
+     "ref": "acme",
+     "account_ref": "acct-1",
+     "channel": "sip"
+    },
+    "source": {
+     "product": "omalla",
+     "component": "sip_gateway"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "TranscriptFinal",
+    "payload": {}
+   }
+  },
+  {
+   "schema": "consent_record",
+   "name": "valid_omalla_product_scope",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "consent_id": "consent-0001",
+    "voice_id": "voice-00001",
+    "subject_ref": "subj-ab12cd",
+    "relationship": "self",
+    "principal_scope_ref": "local-user",
+    "purposes": [
+     "commercial"
+    ],
+    "products": [
+     "klaint",
+     "omalla"
+    ],
+    "valid_from": "2026-11-08T00:00:00Z",
+    "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "active",
+    "consent_epoch": 1,
+    "watermark_required": true,
+    "reference_artifact_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "speaker_match": {
+     "method": "speaker_verification_model",
+     "result": "match",
+     "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation": {
+     "issuer": {
+      "kind": "consent_service",
+      "key_id": "consent-svc:key-1"
+     },
+     "identity_check": "in_person_id_check",
+     "statement": {
+      "script_id": "voice-consent@1",
+      "transcript_match": "match",
+      "operator_confirmed": true,
+      "live_capture": true,
+      "challenge_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+     },
+     "bound_fields_digest": "sha256:ae580863ea67b0f605080440b65bb720a270cd3e615d581cac065390aa5104f7",
+     "nonce": "c0nsentN0nce_0123456789",
+     "issued_at": "2026-11-08T00:00:00Z",
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "consent-svc:key-1",
+      "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+     }
+    }
+   }
+  },
+  {
+   "schema": "delivery_outcome",
+   "name": "valid_wayland_copy_fallback_refused",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "delivery_id": "del-0000001",
+    "intent_id": "int-0000001",
+    "request_id": "req-00000001",
+    "epoch": 3,
+    "epoch_at_activation": 3,
+    "target": {
+     "captured_at_activation": true,
+     "window_handle": "0x00A1B2",
+     "process_instance": {
+      "pid": 4242,
+      "start_generation": "133700000000000000"
+     },
+     "focus_element": {
+      "runtime_id_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "control_type": "Edit",
+      "is_password": false,
+      "is_read_only": false
+     },
+     "image_path_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "app_display_name": "Notepad",
+     "integrity_level": "medium"
+    },
+    "revalidated_before_delivery": true,
+    "focus_revalidated_before_delivery": false,
+    "outcome": "refused",
+    "method": "none",
+    "chars_total": 120,
+    "chars_delivered": 0,
+    "clipboard": {
+     "used": false,
+     "restored": false,
+     "skipped_reason": "not_used"
+    },
+    "platform": "linux_wayland",
+    "refusal_reason": "wayland_copy_fallback"
+   }
+  },
+  {
+   "schema": "model_manifest",
+   "name": "valid_streaming_mode_duplex",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "model_id": "example-local-asr",
+    "revision": "r1",
+    "source_url": "https://example.invalid/model",
+    "source_revision": "abc123",
+    "modality": "stt",
+    "artifact": {
+     "files": [
+      {
+       "path": "model.gguf",
+       "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "size_bytes": 148000000
+      },
+      {
+       "path": "tokenizer.json",
+       "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+       "size_bytes": 2000
+      }
+     ],
+     "bundle_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "languages": [
+     {
+      "code": "en",
+      "support": "documented"
+     },
+     {
+      "code": "ar",
+      "variety": "MSA",
+      "support": "documented"
+     },
+     {
+      "code": "ar-SA",
+      "variety": "Najdi",
+      "support": "unsupported"
+     }
+    ],
+    "runtime": "ggml",
+    "serialization": "gguf",
+    "trust_remote_code": false,
+    "offline_capable": true,
+    "network_hosts": [],
+    "acquisition": "user_initiated_download",
+    "code_license": "MIT",
+    "weight_license": "Apache-2.0",
+    "commercial_use": "allowed",
+    "requires_consent": false,
+    "effect_classes": [
+     "text_hypothesis"
+    ],
+    "authority_ceiling": "evidence_only",
+    "requirements": {
+     "process_isolation": "subprocess",
+     "network_required": false,
+     "accelerator": "none"
+    },
+    "admission_state": "admitted",
+    "streaming_mode": "full_duplex"
+   }
+  },
+  {
+   "schema": "effect_intent",
+   "name": "valid_omalla_gateway_dispatch",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:call:outbound-9912:v1",
+    "owner": "omalla_gateway",
+    "action_class": "reversible_write",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "telephony.dial",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+   }
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_omalla_gateway_without_dispatch",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:call:outbound-9912:v1",
+    "owner": "omalla_gateway",
+    "action_class": "reversible_write",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3
+   },
+   "invariant": "omalla gateway intents declare dispatch"
+  },
+  {
+   "schema": "network_manifest",
+   "name": "valid_side_offline_strict",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "product": "wisprside",
+    "surface": "desktop_core",
+    "mode": "offline_strict",
+    "allowed_hosts": [],
+    "forbid_auto_download": true,
+    "forbid_default_telemetry": true,
+    "ssrf_block_private_ips": true
+   }
+  },
+  {
+   "schema": "network_manifest",
+   "name": "valid_studio_loopback_only",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "product": "wisprstudio",
+    "surface": "fastapi_sidecar",
+    "mode": "loopback_only",
+    "allowed_hosts": [],
+    "forbid_auto_download": true,
+    "forbid_default_telemetry": true,
+    "ssrf_block_private_ips": true,
+    "loopback_ports": [
+     8000
+    ]
+   }
+  },
+  {
+   "schema": "network_manifest",
+   "name": "valid_omalla_allowlisted",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "product": "omalla",
+    "surface": "carrier_webhooks",
+    "mode": "allowlisted_hosts",
+    "allowed_hosts": [
+     "api.telnyx.com",
+     "api.twilio.com"
+    ],
+    "forbid_auto_download": true,
+    "forbid_default_telemetry": true,
+    "ssrf_block_private_ips": true
+   }
+  },
+  {
+   "schema": "network_manifest",
+   "name": "invalid_offline_with_allowed_hosts",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "product": "wisprside",
+    "surface": "desktop_core",
+    "mode": "offline_strict",
+    "allowed_hosts": [
+     "api.openai.com"
+    ],
+    "forbid_auto_download": true,
+    "forbid_default_telemetry": true,
+    "ssrf_block_private_ips": true
+   },
+   "invariant": "offline_strict forbids external hosts"
+  },
+  {
+   "schema": "network_manifest",
+   "name": "invalid_telemetry_enabled_by_default",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "product": "wisprside",
+    "surface": "desktop_core",
+    "mode": "offline_strict",
+    "allowed_hosts": [],
+    "forbid_auto_download": true,
+    "forbid_default_telemetry": false,
+    "ssrf_block_private_ips": true
+   },
+   "invariant": "default telemetry is forbidden"
+  },
+  {
+   "schema": "network_manifest",
+   "name": "invalid_allowlisted_empty_hosts",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "product": "wisprside",
+    "surface": "desktop_core",
+    "mode": "allowlisted_hosts",
+    "allowed_hosts": [],
+    "forbid_auto_download": true,
+    "forbid_default_telemetry": true,
+    "ssrf_block_private_ips": true
+   },
+   "invariant": "allowlisted_hosts requires at least one host"
+  },
+  {
+   "schema": "export_provenance",
+   "name": "valid_authorized_clone_export",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "export_id": "exp-0000001",
+    "project_id": "proj-01",
+    "product": "wisprstudio",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "duration_ms": 4200,
+    "sample_rate_hz": 24000,
+    "voice_mode": "authorized_clone",
+    "consent_id": "consent-0001",
+    "consent_epoch": 1,
+    "voice_id": "voice-00001",
+    "model": {
+     "model_id": "kokoro-82m",
+     "revision": "v1.0",
+     "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "watermark": {
+     "embedded": true,
+     "scheme": "wispral-qim-v1",
+     "payload_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "roundtrip_verified": true
+    },
+    "created_at": "2026-11-27T12:00:00Z",
+    "signature": {
+     "alg": "ed25519",
+     "key_id": "op-key:studio-001",
+     "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    }
+   }
+  },
+  {
+   "schema": "export_provenance",
+   "name": "valid_stock_catalog_export",
+   "expect": "valid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "export_id": "exp-0000001",
+    "project_id": "proj-01",
+    "product": "wisprstudio",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "duration_ms": 4200,
+    "sample_rate_hz": 24000,
+    "voice_mode": "stock_catalog",
+    "model": {
+     "model_id": "kokoro-82m",
+     "revision": "v1.0",
+     "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "watermark": {
+     "embedded": true,
+     "scheme": "wispral-qim-v1",
+     "payload_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "roundtrip_verified": true
+    },
+    "created_at": "2026-11-27T12:00:00Z",
+    "signature": {
+     "alg": "ed25519",
+     "key_id": "op-key:studio-001",
+     "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    },
+    "stock_voice_catalog_id": "catalog:kokoro:af_heart"
+   }
+  },
+  {
+   "schema": "export_provenance",
+   "name": "invalid_clone_without_consent",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "export_id": "exp-0000001",
+    "project_id": "proj-01",
+    "product": "wisprstudio",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "duration_ms": 4200,
+    "sample_rate_hz": 24000,
+    "voice_mode": "authorized_clone",
+    "consent_epoch": 1,
+    "voice_id": "voice-00001",
+    "model": {
+     "model_id": "kokoro-82m",
+     "revision": "v1.0",
+     "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "watermark": {
+     "embedded": true,
+     "scheme": "wispral-qim-v1",
+     "payload_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "roundtrip_verified": true
+    },
+    "created_at": "2026-11-27T12:00:00Z",
+    "signature": {
+     "alg": "ed25519",
+     "key_id": "op-key:studio-001",
+     "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    }
+   },
+   "invariant": "authorized clone export cites consent_id"
+  },
+  {
+   "schema": "export_provenance",
+   "name": "invalid_unverified_watermark",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "export_id": "exp-0000001",
+    "project_id": "proj-01",
+    "product": "wisprstudio",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "duration_ms": 4200,
+    "sample_rate_hz": 24000,
+    "voice_mode": "authorized_clone",
+    "consent_id": "consent-0001",
+    "consent_epoch": 1,
+    "voice_id": "voice-00001",
+    "model": {
+     "model_id": "kokoro-82m",
+     "revision": "v1.0",
+     "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "watermark": {
+     "embedded": true,
+     "scheme": "wispral-qim-v1",
+     "payload_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "roundtrip_verified": false
+    },
+    "created_at": "2026-11-27T12:00:00Z",
+    "signature": {
+     "alg": "ed25519",
+     "key_id": "op-key:studio-001",
+     "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    }
+   },
+   "invariant": "export requires roundtrip-verified watermark"
+  },
+  {
+   "schema": "export_provenance",
+   "name": "invalid_stock_with_consent_epoch",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "export_id": "exp-0000001",
+    "project_id": "proj-01",
+    "product": "wisprstudio",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "duration_ms": 4200,
+    "sample_rate_hz": 24000,
+    "voice_mode": "stock_catalog",
+    "consent_id": "consent-0001",
+    "consent_epoch": 1,
+    "voice_id": "voice-00001",
+    "model": {
+     "model_id": "kokoro-82m",
+     "revision": "v1.0",
+     "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "watermark": {
+     "embedded": true,
+     "scheme": "wispral-qim-v1",
+     "payload_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "roundtrip_verified": true
+    },
+    "created_at": "2026-11-27T12:00:00Z",
+    "signature": {
+     "alg": "ed25519",
+     "key_id": "op-key:studio-001",
+     "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    },
+    "stock_voice_catalog_id": "catalog:kokoro:af_heart"
+   },
+   "invariant": "stock and clone fields are mutually exclusive"
   }
  ],
  "sequences": [

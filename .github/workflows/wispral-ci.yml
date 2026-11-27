@@ -1,0 +1,65 @@
+name: Wispral Ecosystem CI
+
+on:
+  pull_request:
+    paths:
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.cargo/**'
+      - 'crates/**'
+      - 'docs/engineering/contracts/**'
+      - 'docs/design/tokens/**'
+      - 'services/**'
+      - '.github/workflows/wispral-ci.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.cargo/**'
+      - 'crates/**'
+      - 'docs/engineering/contracts/**'
+      - 'docs/design/tokens/**'
+      - 'services/**'
+      - '.github/workflows/wispral-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  contracts-and-tokens:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install jsonschema
+        run: python -m pip install "jsonschema>=4.23"
+      - name: Run contract conformance suite
+        run: python -I docs/engineering/contracts/run_conformance.py
+      - name: Run Quiet Signal WCAG & hue separation checks
+        run: node docs/design/tokens/check_contrast.mjs
+
+  rust-core:
+    runs-on: ubuntu-latest
+    env:
+      CARGO_INCREMENTAL: '0'
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install audio system headers
+        run: sudo apt-get update && sudo apt-get install -y libasound2-dev pkg-config
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+      - name: Run clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: Run workspace unit and conformance tests
+        run: cargo test --workspace

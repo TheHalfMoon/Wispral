@@ -29,7 +29,8 @@
   "owner": {
    "enum": [
     "studio_export_commit",
-    "klaint_broker"
+    "klaint_broker",
+    "omalla_gateway"
    ]
   },
   "action_class": {
@@ -291,6 +292,30 @@
      "capability",
      "dispatch"
     ]
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "owner": {
+      "const": "omalla_gateway"
+     }
+    },
+    "required": [
+     "owner"
+    ]
+   },
+   "then": {
+    "required": [
+     "dispatch"
+    ],
+    "properties": {
+     "action_class": {
+      "not": {
+       "const": "file_export"
+      }
+     }
+    }
    }
   }
  ]

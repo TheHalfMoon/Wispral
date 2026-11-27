@@ -21,7 +21,18 @@ from jsonschema import Draft202012Validator
 from referencing import Registry, Resource
 
 HERE = pathlib.Path(__file__).resolve().parent
-NAMES = ["envelope", "cancellation", "model_manifest", "consent_record", "policy_verdict", "provenance_event", "delivery_outcome", "effect_intent"]
+NAMES = [
+    "envelope",
+    "cancellation",
+    "model_manifest",
+    "consent_record",
+    "policy_verdict",
+    "provenance_event",
+    "delivery_outcome",
+    "effect_intent",
+    "network_manifest",
+    "export_provenance",
+]
 TERMINAL_INTENT = {"settled", "abandoned", "reconciled"}
 ORDER = {"ALLOW": 0, "ASK": 1, "DENY": 2}
 CAPABILITY_MAX_SECONDS = 60

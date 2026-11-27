@@ -1,0 +1,24 @@
+# Rust / Cargo
+/target/
+**/target/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Node / TypeScript
+node_modules/
+**/node_modules/
+dist/
+
+# Runtime SQLite & local data
+*.db
+*.db-wal
+*.db-shm
+*.lock
+*.rewrite
+.wispral-local/
