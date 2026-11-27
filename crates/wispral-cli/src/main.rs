@@ -9,7 +9,7 @@
 //! - `wispral mcp`: starts the zero-listener Model Context Protocol JSON-RPC 2.0 `stdio` server;
 //! - `wispral benchmark`: executes `WispralBench` and writes JSON/Markdown reports.
 
-use std::io::{BufRead, Write};
+use std::io::{BufRead, Read as _, Write};
 use std::path::{Path, PathBuf};
 
 use clap::{Parser, Subcommand};
@@ -125,10 +125,29 @@ fn build_doctor_payload(home: &Path) -> Value {
     })
 }
 
+fn read_bounded_wav_bytes(path: &Path, limit: usize) -> Result<Vec<u8>, String> {
+    ensure_not_reparse_or_symlink(path).map_err(|e| e.to_string())?;
+    let file = std::fs::File::open(path).map_err(|e| e.to_string())?;
+    let mut raw = Vec::new();
+    file.take((limit as u64).saturating_add(1))
+        .read_to_end(&mut raw)
+        .map_err(|e| e.to_string())?;
+    Ok(raw)
+}
+
 pub fn handle_mcp_request(home: &Path, req: &Value) -> Option<Value> {
-    let method = req.get("method").and_then(Value::as_str)?;
     // Notifications (no `id`) receive no response frame per JSON-RPC 2.0
     let id_val = req.get("id")?.clone();
+    let Some(method) = req.get("method").and_then(Value::as_str) else {
+        return Some(json!({
+            "jsonrpc": "2.0",
+            "id": id_val,
+            "error": {
+                "code": -32600,
+                "message": "Invalid Request: missing string method"
+            }
+        }));
+    };
 
     match method {
         "initialize" => Some(json!({
@@ -265,11 +284,13 @@ pub fn handle_mcp_request(home: &Path, req: &Value) -> Option<Value> {
                         .ok_or_else(|| "missing output_path".to_owned());
                     let lang = args.get("language").and_then(Value::as_str).unwrap_or("en");
                     out_path.and_then(|p| {
-                        if let Some(parent) = Path::new(p).parent() {
+                        let out_p = Path::new(p);
+                        if let Some(parent) = out_p.parent() {
                             if !parent.as_os_str().is_empty() {
                                 std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
                             }
                         }
+                        ensure_not_reparse_or_symlink(out_p).map_err(|e| e.to_string())?;
                         let art = DeterministicFormantTts
                             .synthesize(&SynthesisRequest {
                                 text: VerbatimTranscript::new(text),
@@ -279,7 +300,7 @@ pub fn handle_mcp_request(home: &Path, req: &Value) -> Option<Value> {
                                 pronunciation_overrides: vec![],
                             })
                             .map_err(|e| e.to_string())?;
-                        std::fs::write(p, art.to_wav_bytes()).map_err(|e| e.to_string())?;
+                        std::fs::write(out_p, art.to_wav_bytes()).map_err(|e| e.to_string())?;
                         Ok(json!({
                             "output_path": p,
                             "duration_ms": art.duration_ms,
@@ -294,9 +315,10 @@ pub fn handle_mcp_request(home: &Path, req: &Value) -> Option<Value> {
                         .ok_or_else(|| "missing wav_path".to_owned());
                     let lang = args.get("language").and_then(Value::as_str);
                     wav_p.and_then(|p| {
-                        let raw = std::fs::read(p).map_err(|e| e.to_string())?;
-                        let (samples, sr) = decode_wav_pcm16_bounded(&raw, 32 * 1024 * 1024)
-                            .map_err(|e| e.to_string())?;
+                        let limit = 32 * 1024 * 1024;
+                        let raw = read_bounded_wav_bytes(Path::new(p), limit)?;
+                        let (samples, sr) =
+                            decode_wav_pcm16_bounded(&raw, limit).map_err(|e| e.to_string())?;
                         let hyp = DeterministicLocalStt::new()
                             .transcribe(&samples, sr, lang)
                             .map_err(|e| e.to_string())?;
@@ -385,24 +407,46 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             expected_sha256,
         } => {
             let store = ModelCasStore::open(&home)?;
-            if let (Some(src), Some(sha)) = (stage_file, expected_sha256) {
-                let staged = store.stage_verified_blob(&src, &sha)?;
-                println!(
-                    "{}",
-                    serde_json::to_string_pretty(&json!({
-                        "status": "staged",
-                        "blob_path": staged.display().to_string(),
-                        "sha256": sha
-                    }))?
-                );
-            } else {
-                println!(
-                    "{}",
-                    serde_json::to_string_pretty(&json!({
-                        "status": "ready",
-                        "models_root": home.join("models").display().to_string()
-                    }))?
-                );
+            match (stage_file, expected_sha256) {
+                (Some(src), Some(sha)) => {
+                    let staged = store.stage_verified_blob(&src, &sha)?;
+                    println!(
+                        "{}",
+                        serde_json::to_string_pretty(&json!({
+                            "status": "staged",
+                            "blob_path": staged.display().to_string(),
+                            "sha256": sha
+                        }))?
+                    );
+                }
+                (None, None) => {
+                    let models_root = home.join("models");
+                    let list_names = |sub: &str| -> Vec<String> {
+                        let mut names: Vec<String> = std::fs::read_dir(models_root.join(sub))
+                            .ok()
+                            .into_iter()
+                            .flatten()
+                            .flatten()
+                            .filter_map(|e| e.file_name().into_string().ok())
+                            .collect();
+                        names.sort();
+                        names
+                    };
+                    println!(
+                        "{}",
+                        serde_json::to_string_pretty(&json!({
+                            "status": "ready",
+                            "models_root": models_root.display().to_string(),
+                            "manifests": list_names("manifests"),
+                            "blobs": list_names("blobs"),
+                        }))?
+                    );
+                }
+                _ => {
+                    return Err(
+                        "--stage-file and --expected-sha256 must be provided together".into(),
+                    );
+                }
             }
         }
         Commands::Transcribe {
@@ -410,8 +454,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             lang,
             json: as_json,
         } => {
-            let raw = std::fs::read(&wav_path)?;
-            let (samples, sr) = decode_wav_pcm16_bounded(&raw, 64 * 1024 * 1024)?;
+            let limit = 64 * 1024 * 1024;
+            let raw = read_bounded_wav_bytes(&wav_path, limit)?;
+            let (samples, sr) = decode_wav_pcm16_bounded(&raw, limit)?;
             let hyp = DeterministicLocalStt::new().transcribe(&samples, sr, Some(&lang))?;
             if as_json {
                 println!("{}", serde_json::to_string_pretty(&hyp)?);
@@ -437,6 +482,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     std::fs::create_dir_all(parent)?;
                 }
             }
+            ensure_not_reparse_or_symlink(&output)?;
             std::fs::write(&output, art.to_wav_bytes())?;
             println!(
                 "{}",

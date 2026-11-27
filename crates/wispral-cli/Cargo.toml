@@ -13,15 +13,11 @@ path = "src/main.rs"
 
 [dependencies]
 clap.workspace = true
-serde.workspace = true
 serde_json.workspace = true
 wispral-adaptive = { path = "../wispral-adaptive" }
 wispral-arabic = { path = "../wispral-arabic" }
 wispral-audio = { path = "../wispral-audio" }
 wispral-bench = { path = "../wispral-bench" }
-wispral-context = { path = "../wispral-context" }
-wispral-contracts = { path = "../wispral-contracts" }
-wispral-live = { path = "../wispral-live" }
 wispral-memory = { path = "../wispral-memory" }
 wispral-policy = { path = "../wispral-policy" }
 wispral-speech = { path = "../wispral-speech" }

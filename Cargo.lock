@@ -877,15 +877,11 @@ name = "wispral-cli"
 version = "0.1.0"
 dependencies = [
  "clap",
- "serde",
  "serde_json",
  "wispral-adaptive",
  "wispral-arabic",
  "wispral-audio",
  "wispral-bench",
- "wispral-context",
- "wispral-contracts",
- "wispral-live",
  "wispral-memory",
  "wispral-policy",
  "wispral-speech",
