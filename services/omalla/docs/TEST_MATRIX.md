@@ -62,18 +62,25 @@ Status vocabulary:
 | Carriers appear only with credentials | `telephony-registry` | UNIT-TESTED |
 | Unknown requested provider falls back to simulator | `telephony-registry` | UNIT-TESTED |
 | SignalWire via Twilio-compatible credentials | `telephony-registry` | UNIT-TESTED |
-| Telnyx/Vonage reported unimplemented even with credentials | `telephony-registry` | UNIT-TESTED |
+| Telnyx Ed25519/HMAC + Vonage HS256 JWT (`iat` + `payload_hash`) + `SipTelephonyProvider` | `telephony-registry`, `sip-srtp-loopback` | UNIT-TESTED |
 | Missing SIP gateway never pretends to be a carrier | `telephony-registry` | UNIT-TESTED |
 
-## SIP contract
+## SIP, SRTP, and Realtime Duplex (`OM-T7`, `OM-T8`)
 
 | Capability | Test | Status |
 | --- | --- | --- |
 | Webhook and wss URLs derived from public base | `telephony-sip` | UNIT-TESTED |
 | http base downgrades ws and is called out | `telephony-sip` | UNIT-TESTED |
 | Weak token and relative URL rejected | `telephony-sip` | UNIT-TESTED |
-| Four engines described, all `not-run` | `telephony-sip` | UNIT-TESTED |
-| Gateway actually carries a call | none | **NOT RUN** |
+| Four external B2BUA engines described (`not-run` without daemon) | `telephony-sip` | UNIT-TESTED |
+| RFC 3261 `SipStack` (`REGISTER`, `INVITE`, `ACK`, `REFER`, `CANCEL`, `BYE`) over loopback UDP & `sips:` TLS | `sip-srtp-loopback` | VERIFIED |
+| RFC 3711 SRTP `AES_CM_128_HMAC_SHA1_80` (including `P=1` padded RTP) + 64-pkt anti-replay + RFC 4733 DTMF `E=1` dedup | `sip-srtp-loopback` | VERIFIED |
+| `OM-T7` non-loopback cleartext SDES / gateway-token / plain-RTP / empty-INVITE rejection | `sip-srtp-loopback` | UNIT-TESTED |
+| Bounded jitter buffer (PLC + max-depth) & 20 ms outbound pacer (`turnEpoch` + watermarks) | `realtime-duplex` | UNIT-TESTED |
+| `OM-T8` sink-confirmed `T2` (`observed_audio_halt` on `clear.ack` vs `stopped_unconfirmed`) | `realtime-duplex` | VERIFIED |
+| Live `/v1/realtime/ws` single-use media token + `/v1/realtime/webrtc/offer` ICE-lite STUN (`MESSAGE-INTEGRITY`) + SRTP | `realtime-duplex` | VERIFIED |
+| Studio Quiet Signal (`#7E22CE` / `#D8B4FE`), RTL/LTR `dir="auto"`, AudioWorklet, 1-click rollback | `studio-console` | VERIFIED |
+| External carrier PSTN / Docker B2BUA live call | none | **NOT RUN** |
 
 ## Server lifecycle
 
@@ -149,15 +156,16 @@ Status vocabulary:
 
 | Check | Result | Status |
 | --- | --- | --- |
-| `npm run build` | 8 packages, ok | VERIFIED |
+| `npm run build` | 9 workspace packages + TS SDK, ok | VERIFIED |
 | `npm run typecheck` | no errors | VERIFIED |
-| `npm test` | 64 pass, 0 fail | VERIFIED |
-| `npm run audit:licenses` | 71 packages, 0 disallowed, 0 unknown | VERIFIED |
+| `npm test` | 85+ tests across 14 suites (SQLite WAL, `OM-T1..OM-T8`, SIP/SRTP, Realtime, Studio), 0 fail | VERIFIED |
+| `npm run audit:licenses` | 73 packages, 0 disallowed, 0 unknown | VERIFIED |
 | `npm audit --omit=dev` | 0 vulnerabilities after zod 4.6.7 | VERIFIED |
 | `npm run check:docs` | 14 required files, links resolve | VERIFIED |
-| `npm run smoke` | 33 checks against a real server process | VERIFIED |
-| `npm run test:python` | 12 tests, OK | VERIFIED |
-| `npm run smoke:python` | 20 checks against a real server process | VERIFIED |
+| `npm run openapi:check` | 58 OpenAPI 3.1 paths verified in sync with Fastify routes | VERIFIED |
+| `npm run smoke` | end-to-end checks against a real server process | VERIFIED |
+| `pytest sdks/python` | 17 tests, OK | VERIFIED |
+| `cargo test` (`sdks/rust`) | 5 pure-Rust SDK tests, OK | VERIFIED |
 | `omalla sip engines` | table printed | MANUAL |
 | `omalla sip contract` | contract printed, `not run` warning | MANUAL |
 | Dashboard `node --check` | syntax ok | VERIFIED |

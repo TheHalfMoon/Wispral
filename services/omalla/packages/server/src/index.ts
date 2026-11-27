@@ -7,5 +7,6 @@ export * from "./webhooks.js";
 export * from "./idempotency.js";
 export * from "./tools.js";
 export * from "./runtime.js";
+export * from "./realtime/index.js";
 export * from "./app.js";
 export * from "./openapi.js";

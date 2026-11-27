@@ -1,15 +1,105 @@
-/* Omalla local console — vanilla ES module, no build step. */
+/* Omalla Studio — local-first voice, realtime & SIP console (vanilla ES module, zero build step). */
+
+const I18N = {
+  en: {
+    "nav.overview": "Overview",
+    "nav.studio": "Voice Studio",
+    "nav.agents": "Agents & Versions",
+    "nav.calls": "Calls",
+    "nav.workflows": "Workflows",
+    "nav.automations": "Automations",
+    "nav.telephony": "Telephony & SIP",
+    "nav.settings": "Settings",
+    "studio.title": "Omalla Voice Studio",
+    "studio.sub": "Full-duplex AudioWorklet WebSocket & WebRTC console with live waveform and sink-confirmed T0..T6 latency telemetry.",
+    "studio.connectWs": "Connect Duplex WS",
+    "studio.connectRtc": "Connect WebRTC",
+    "studio.startMic": "Start Mic (AudioWorklet)",
+    "studio.stopSession": "Disconnect",
+    "studio.bargeIn": "Trigger Barge-In (OM-T8)",
+    "studio.latency": "T0..T6 Audio-Boundary Latency Inspector",
+    "agents.title": "Agents & Version History",
+    "agents.sub": "Immutable agent snapshots (v1, v2, …), deterministic test runner, and 1-click rollback.",
+    "rollback": "Rollback",
+  },
+  ar: {
+    "nav.overview": "نظرة عامة",
+    "nav.studio": "استوديو الصوت المباشر",
+    "nav.agents": "الوكلاء والإصدارات",
+    "nav.calls": "المكالمات",
+    "nav.workflows": "سير العمل",
+    "nav.automations": "الأتمتة والسجلات",
+    "nav.telephony": "الهاتف و SIP",
+    "nav.settings": "الإعدادات",
+    "studio.title": "استوديو أومالا الصوتي المباشر",
+    "studio.sub": "وحدة اختبار صوتية ثنائية الاتجاه عبر WebSocket و WebRTC مع مخطط الموجة وقياس زمن الاستجابة T0..T6 المؤكد.",
+    "studio.connectWs": "اتصال WebSocket مزدوج",
+    "studio.connectRtc": "اتصال WebRTC",
+    "studio.startMic": "تشغيل الميكروفون (AudioWorklet)",
+    "studio.stopSession": "قطع الاتصال",
+    "studio.bargeIn": "اختبار المقاطعة (OM-T8)",
+    "studio.latency": "محلل زمن الاستجابة الصوتي T0..T6",
+    "agents.title": "الوكلاء وسجل الإصدارات",
+    "agents.sub": "لقطات إصدارات غير قابلة للتغيير، فحص تجريبي، واسترجاع فوري بنقرة واحدة.",
+    "rollback": "استرجاع الإصدار",
+  },
+};
+
 const state = {
   token: localStorage.getItem("omalla.key") ?? "",
+  lang: localStorage.getItem("omalla.lang") ?? "en",
+  theme: localStorage.getItem("omalla.theme") ?? "dark",
   me: null,
   view: "overview",
   route: [],
-  cache: { calls: [], workflows: [], templates: [], metrics: {}, tasks: [], bookings: [], escalations: [], credentials: [], agents: [], numbers: [], sms: [], providers: [] },
+  cache: {
+    calls: [],
+    workflows: [],
+    templates: [],
+    metrics: {},
+    tasks: [],
+    bookings: [],
+    escalations: [],
+    credentials: [],
+    agents: [],
+    numbers: [],
+    sms: [],
+    providers: [],
+  },
   socket: null,
   refreshTimer: null,
+  studio: {
+    ws: null,
+    webrtcSessionId: null,
+    audioCtx: null,
+    workletNode: null,
+    micStream: null,
+    activeSources: [],
+    seq: 0,
+    turnEpoch: 0,
+    waveformHistory: new Array(64).fill(0.02),
+    lastTelemetry: null,
+    events: [],
+  },
 };
 
 const $ = (sel, root = document) => root.querySelector(sel);
+const t = (key) => I18N[state.lang]?.[key] ?? I18N.en[key] ?? key;
+
+function applyLocaleAndTheme() {
+  const html = document.documentElement;
+  html.dataset.theme = state.theme;
+  html.lang = state.lang;
+  html.dir = state.lang === "ar" ? "rtl" : "ltr";
+  document.querySelectorAll("[data-i18n]").forEach((node) => {
+    const key = node.dataset.i18n;
+    if (key) node.textContent = t(key);
+  });
+  const langBtn = $("#lang-toggle");
+  if (langBtn) langBtn.textContent = state.lang === "ar" ? "English (LTR)" : "العربية (RTL)";
+  const themeBtn = $("#theme-toggle");
+  if (themeBtn) themeBtn.textContent = state.theme === "dark" ? "Light (#7E22CE)" : "Dark (#D8B4FE)";
+}
 
 function el(tag, props = {}, ...children) {
   const node = document.createElement(tag);
@@ -31,7 +121,7 @@ function el(tag, props = {}, ...children) {
 }
 
 function toast(message, bad = false) {
-  const node = el("div", { class: `toast${bad ? " bad" : ""}`, text: message });
+  const node = el("div", { class: `toast${bad ? " bad" : ""}`, dir: "auto", text: message });
   $("#toasts").append(node);
   setTimeout(() => node.remove(), 4200);
 }
@@ -62,7 +152,7 @@ async function api(path, options = {}) {
 /* ------------------------------------------------------------------ */
 
 const fmtTime = (iso) => (iso ? new Date(iso).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "—");
-const fmtMs = (ms) => (ms ? `${ms} ms` : "—");
+const fmtMs = (ms) => (ms !== null && ms !== undefined && ms !== "" ? `${ms} ms` : "—");
 const shortId = (id) => (id ? String(id).split("_")[1]?.slice(0, 8) ?? id : "—");
 
 function duration(call) {
@@ -78,6 +168,7 @@ function statusBadge(status) {
     ringing: ["warn", "ringing"],
     failed: ["bad", "failed"],
     active: ["good", "active"],
+    published: ["good", "published"],
     draft: ["", "draft"],
     archived: ["", "archived"],
     succeeded: ["good", "succeeded"],
@@ -91,15 +182,16 @@ function statusBadge(status) {
     delivered: ["good", "delivered"],
     received: ["good", "received"],
     undelivered: ["bad", "undelivered"],
-    released: ["", "released"],
-    provisioning: ["warn", "provisioning"],
+    observed_audio_halt: ["good", "observed_audio_halt"],
+    stopped_unconfirmed: ["warn", "stopped_unconfirmed"],
+    pending_sink_ack: ["live", "pending_sink_ack"],
   };
   const [tone, label] = map[status] ?? ["", status];
   return el("span", { class: `badge ${tone}`, text: label ?? "—" });
 }
 
 /* ------------------------------------------------------------------ */
-/* auth                                                                */
+/* auth & shell controls                                               */
 /* ------------------------------------------------------------------ */
 
 function showLogin(message) {
@@ -115,6 +207,19 @@ function showLogin(message) {
 }
 
 async function boot() {
+  applyLocaleAndTheme();
+  $("#lang-toggle")?.addEventListener("click", () => {
+    state.lang = state.lang === "en" ? "ar" : "en";
+    localStorage.setItem("omalla.lang", state.lang);
+    applyLocaleAndTheme();
+    if (!$("#shell").hidden) route();
+  });
+  $("#theme-toggle")?.addEventListener("click", () => {
+    state.theme = state.theme === "dark" ? "light" : "dark";
+    localStorage.setItem("omalla.theme", state.theme);
+    applyLocaleAndTheme();
+  });
+
   if (!state.token) return showLogin();
   try {
     state.me = await api("/v1/me");
@@ -152,6 +257,8 @@ $("#login-form").addEventListener("submit", async (event) => {
 
 const VIEWS = {
   overview: renderOverview,
+  studio: renderStudio,
+  agents: renderAgents,
   calls: renderCalls,
   workflows: renderWorkflows,
   automations: renderAutomations,
@@ -169,6 +276,7 @@ function route() {
   });
   clearInterval(state.refreshTimer);
   closeSocket();
+  if (state.view !== "studio") teardownStudioSession();
   $("#main").replaceChildren();
   VIEWS[state.view]();
 }
@@ -194,8 +302,14 @@ function closeSocket() {
 async function renderOverview() {
   const main = $("#main");
   main.append(el("div", { class: "page-head" },
-    el("div", {}, el("h1", { text: "Overview" }), el("p", { class: "sub", text: "Everything here runs on this machine. Calls are simulated; no carrier is contacted." })),
-    el("button", { class: "primary", text: "Simulate a call", onclick: () => { location.hash = "#/calls"; } }),
+    el("div", {},
+      el("h1", { dir: "auto", text: t("nav.overview") }),
+      el("p", { class: "sub", dir: "auto", text: "Local-first voice AI, SQLite WAL persistence, and deterministic telephony simulation." }),
+    ),
+    el("div", { class: "row" },
+      el("button", { text: t("nav.studio"), onclick: () => { location.hash = "#/studio"; } }),
+      el("button", { class: "primary", text: "Simulate a call", onclick: () => { location.hash = "#/calls"; } }),
+    ),
   ));
 
   const [metrics, calls, workflows] = await Promise.all([
@@ -224,7 +338,7 @@ async function renderOverview() {
   const recent = el("div", { class: "card panel" });
   recent.append(el("div", { class: "panel-head" }, el("h2", { text: "Recent calls" }), el("button", { class: "ghost", text: "All calls", onclick: () => { location.hash = "#/calls"; } })));
   if (calls.length === 0) {
-    recent.append(el("div", { class: "empty", text: "No calls yet. Start one from the Calls page — it takes one click and costs nothing." }));
+    recent.append(el("div", { class: "empty", text: "No calls yet. Start one from Voice Studio or Calls." }));
   } else {
     const table = el("table");
     table.append(el("thead", {}, el("tr", {},
@@ -253,7 +367,7 @@ async function renderOverview() {
   for (const workflow of workflows.slice(0, 5)) {
     list.append(el("div", { class: "list-item" },
       el("div", { class: "grow" },
-        el("div", { text: workflow.name }),
+        el("div", { dir: "auto", text: workflow.name }),
         el("div", { class: "muted small", text: `${workflow.trigger.type} · v${workflow.version}` }),
       ),
       statusBadge(workflow.status),
@@ -262,17 +376,536 @@ async function renderOverview() {
   automation.append(list);
 
   main.append(el("div", { class: "grid cols-2" }, recent, automation));
-  main.append(el("div", { class: "card panel" },
-    el("div", { class: "panel-head" }, el("h2", { text: "Simulation boundary" })),
-    el("div", { class: "panel-body stack" },
-      el("p", { class: "muted", text: "Omalla never dials a real phone number in this build. Inbound and outbound calls run through an in-process carrier simulator, so tests are deterministic and free. Connecting a real SIP trunk is a deployment decision that requires a provider and a reviewed security configuration." }),
-      el("p", { class: "muted", text: "Local speech uses Windows SAPI where available; otherwise the voice provider returns silence and the transcript carries the conversation." }),
-    ),
-  ));
 
   state.refreshTimer = setInterval(() => {
     if (state.view === "overview") route();
   }, 15000);
+}
+
+/* ------------------------------------------------------------------ */
+/* Voice Studio (AudioWorklet + Duplex WS + WebRTC + T0..T6 Inspector) */
+/* ------------------------------------------------------------------ */
+
+function teardownStudioSession() {
+  const s = state.studio;
+  for (const src of s.activeSources) {
+    try { src.stop(); } catch { /* ignore */ }
+  }
+  s.activeSources = [];
+  if (s.workletNode) {
+    try { s.workletNode.disconnect(); } catch { /* ignore */ }
+    s.workletNode = null;
+  }
+  if (s.micStream) {
+    s.micStream.getTracks().forEach((tr) => tr.stop());
+    s.micStream = null;
+  }
+  if (s.audioCtx) {
+    try { void s.audioCtx.close(); } catch { /* ignore */ }
+    s.audioCtx = null;
+  }
+  if (s.ws) {
+    try { s.ws.close(); } catch { /* ignore */ }
+    s.ws = null;
+  }
+  if (s.webrtcSessionId) {
+    const id = s.webrtcSessionId;
+    s.webrtcSessionId = null;
+    void api(`/v1/realtime/webrtc/${id}`, { method: "DELETE" }).catch(() => {});
+  }
+}
+
+async function renderStudio() {
+  const main = $("#main");
+  const [agents, sipStatus] = await Promise.all([
+    api("/v1/agents"),
+    api("/v1/telephony/sip/status"),
+  ]);
+  state.cache.agents = agents;
+
+  main.append(el("div", { class: "page-head" },
+    el("div", {},
+      el("h1", { dir: "auto", text: t("studio.title") }),
+      el("p", { class: "sub", dir: "auto", text: t("studio.sub") }),
+    ),
+    el("span", { class: "badge live", id: "studio-conn-badge", text: "idle" }),
+  ));
+
+  const agentSelect = el("select", { id: "studio-agent" });
+  for (const ag of agents) {
+    agentSelect.append(el("option", { value: ag.id, text: `${ag.name} (v${ag.version} · ${ag.config.language})` }));
+  }
+  const codecSelect = el("select", { id: "studio-codec" },
+    el("option", { value: "pcm16", text: "PCM16 · 16 kHz (20 ms = 640 B)" }),
+    el("option", { value: "pcmu", text: "G.711 PCMU μ-law · 8 kHz (20 ms = 160 B)" }),
+    el("option", { value: "pcma", text: "G.711 PCMA A-law · 8 kHz (20 ms = 160 B)" }),
+  );
+  const sinkAckBox = el("input", { type: "checkbox", checked: true, id: "studio-sink-ack" });
+
+  const canvas = el("canvas", { id: "studio-waveform", class: "waveform-canvas", width: 640, height: 92 });
+  const transcriptBox = el("div", { class: "transcript", id: "studio-transcript" },
+    el("div", { class: "empty", dir: "auto", text: "Connect Duplex WebSocket or WebRTC to begin live voice testing." }),
+  );
+  const latencyContainer = el("div", { id: "studio-latency-cards", class: "latency-grid" });
+  renderLatencyCards(latencyContainer, state.studio.lastTelemetry);
+
+  const utteranceInput = el("input", {
+    dir: "auto",
+    placeholder: state.lang === "ar"
+      ? "اكتب عبارة صوتية أو بالعربية: مرحبا أريد حجز موعد غداً الساعة 3"
+      : "Speak via AudioWorklet or send utterance (e.g. مرحبا أريد حجز موعد غداً الساعة 3)…",
+  });
+
+  const pushWaveSample = (rms) => {
+    state.studio.waveformHistory.push(Math.min(1, Math.max(0.015, rms * 3.2)));
+    if (state.studio.waveformHistory.length > 64) state.studio.waveformHistory.shift();
+    drawWaveform(canvas, state.studio.waveformHistory);
+  };
+  drawWaveform(canvas, state.studio.waveformHistory);
+
+  const appendTurnBubble = (role, text, meta = "") => {
+    if (transcriptBox.querySelector(".empty")) transcriptBox.replaceChildren();
+    transcriptBox.append(el("div", { class: `turn ${role}` },
+      el("div", { class: "who", text: role }),
+      el("div", { class: "text", dir: "auto", text }),
+      ...(meta ? [el("div", { class: "meta mono", text: meta })] : []),
+    ));
+    transcriptBox.scrollTop = transcriptBox.scrollHeight;
+  };
+
+  const handleServerRealtimeEvent = (ev) => {
+    if (typeof ev.turnEpoch === "number") state.studio.turnEpoch = ev.turnEpoch;
+    if (ev.type === "session.ready") {
+      $("#studio-conn-badge").textContent = `live · epoch ${ev.turnEpoch}`;
+    } else if (ev.type === "stt.final") {
+      appendTurnBubble("caller", ev.text, `T4=${ev.atMs}ms · epoch ${ev.turnEpoch}`);
+    } else if (ev.type === "assistant.speech") {
+      appendTurnBubble("assistant", ev.text, ev.interrupted ? "interrupted (barge-in)" : `epoch ${ev.turnEpoch}`);
+    } else if (ev.type === "audio.clear") {
+      // Stop local Web Audio playback immediately and send sink confirmation (OM-T8)!
+      for (const src of state.studio.activeSources) {
+        try { src.stop(); } catch { /* ignore */ }
+      }
+      state.studio.activeSources = [];
+      if (sinkAckBox.checked) {
+        sendControl({ type: "clear.ack", turnEpoch: ev.turnEpoch });
+      }
+    } else if (ev.type === "barge_in.halt") {
+      state.studio.lastTelemetry = {
+        ...(state.studio.lastTelemetry ?? {}),
+        turnEpoch: ev.turnEpoch,
+        t1BargeInOnsetMs: ev.t1BargeInOnsetMs,
+        t2AudioHaltMs: ev.t2AudioHaltMs,
+        t2HaltStatus: ev.t2HaltStatus,
+        deltasMs: {
+          ...(state.studio.lastTelemetry?.deltasMs ?? {}),
+          bargeInHaltMs: ev.bargeInHaltMs,
+        },
+      };
+      renderLatencyCards(latencyContainer, state.studio.lastTelemetry);
+    } else if (ev.type === "telemetry.latency" && ev.telemetry) {
+      state.studio.lastTelemetry = ev.telemetry;
+      renderLatencyCards(latencyContainer, ev.telemetry);
+    }
+  };
+
+  const sendControl = (obj) => {
+    if (state.studio.ws && state.studio.ws.readyState === WebSocket.OPEN) {
+      state.studio.ws.send(JSON.stringify(obj));
+      return;
+    }
+    if (state.studio.webrtcSessionId) {
+      void api(`/v1/realtime/webrtc/${state.studio.webrtcSessionId}/control`, {
+        method: "POST",
+        body: JSON.stringify(obj),
+      }).then((res) => {
+        if (res?.events) res.events.forEach(handleServerRealtimeEvent);
+        if (res?.telemetry?.turns?.length) {
+          state.studio.lastTelemetry = res.telemetry.turns[res.telemetry.turns.length - 1];
+          renderLatencyCards(latencyContainer, state.studio.lastTelemetry);
+        }
+      }).catch((err) => toast(err.message, true));
+    }
+  };
+
+  const connectWsBtn = el("button", {
+    class: "primary",
+    text: t("studio.connectWs"),
+    onclick: async () => {
+      teardownStudioSession();
+      const agentId = agentSelect.value;
+      if (!agentId) return toast("Select an agent first.", true);
+      try {
+        const issued = await api("/v1/realtime/token", {
+          method: "POST",
+          body: JSON.stringify({ agentId }),
+        });
+        const proto = location.protocol === "https:" ? "wss:" : "ws:";
+        const wsUrl = `${proto}//${location.host}/v1/realtime/ws?token=${encodeURIComponent(issued.token)}&codec=${encodeURIComponent(codecSelect.value)}&sinkAck=${sinkAckBox.checked ? "1" : "0"}`;
+        const ws = new WebSocket(wsUrl);
+        ws.binaryType = "arraybuffer";
+        state.studio.ws = ws;
+
+        ws.addEventListener("message", (msg) => {
+          if (typeof msg.data === "string") {
+            try { handleServerRealtimeEvent(JSON.parse(msg.data)); } catch { /* ignore */ }
+            return;
+          }
+          const bytes = new Uint8Array(msg.data);
+          let energy = 0;
+          for (let i = 0; i < bytes.length; i += 2) energy += Math.abs((bytes[i] ?? 0) - 128) / 128;
+          pushWaveSample(bytes.length ? energy / (bytes.length / 2) : 0.05);
+          playOutboundFrame(bytes, codecSelect.value);
+        });
+        ws.addEventListener("close", () => {
+          const badge = $("#studio-conn-badge");
+          if (badge) badge.textContent = "disconnected";
+        });
+        toast("Connected to /v1/realtime/ws with single-use media token.");
+      } catch (err) {
+        toast(err.message, true);
+      }
+    },
+  });
+
+  const connectRtcBtn = el("button", {
+    text: t("studio.connectRtc"),
+    onclick: async () => {
+      teardownStudioSession();
+      const agentId = agentSelect.value;
+      if (!agentId) return toast("Select an agent first.", true);
+      try {
+        const keySalt = new Uint8Array(30);
+        crypto.getRandomValues(keySalt);
+        const inlineKey = btoa(String.fromCharCode(...keySalt));
+        const sdpOffer = [
+          "v=0",
+          "o=- 1000 2 IN IP4 127.0.0.1",
+          "s=-",
+          "t=0 0",
+          "m=audio 9 RTP/SAVP 0 8 101",
+          "c=IN IP4 127.0.0.1",
+          "a=ice-ufrag:studio",
+          "a=ice-pwd:studiopassword1234567890",
+          "a=rtpmap:0 PCMU/8000",
+          "a=rtpmap:8 PCMA/8000",
+          "a=rtpmap:101 telephone-event/8000",
+          `a=crypto:1 AES_CM_128_HMAC_SHA1_80 inline:${inlineKey}`,
+          "m=application 9 UDP/DTLS/SCTP webrtc-datachannel",
+          "a=sctp-port:5000",
+        ].join("\r\n") + "\r\n";
+
+        const negotiated = await api("/v1/realtime/webrtc/offer", {
+          method: "POST",
+          body: JSON.stringify({
+            agentId,
+            sdp: sdpOffer,
+            sinkAckSupported: sinkAckBox.checked,
+          }),
+        });
+        state.studio.webrtcSessionId = negotiated.sessionId;
+        $("#studio-conn-badge").textContent = `webrtc · ${negotiated.codec.toUpperCase()} :${negotiated.localUdpPort}`;
+        toast(`WebRTC ICE-lite negotiated (${negotiated.sessionId}).`);
+      } catch (err) {
+        toast(err.message, true);
+      }
+    },
+  });
+
+  const micBtn = el("button", {
+    text: t("studio.startMic"),
+    onclick: async () => {
+      if (!state.studio.ws || state.studio.ws.readyState !== WebSocket.OPEN) {
+        return toast("Connect Duplex WS first, then enable AudioWorklet microphone.", true);
+      }
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        state.studio.audioCtx = ctx;
+        await ctx.audioWorklet.addModule("/audio-worklet.js");
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+        });
+        state.studio.micStream = stream;
+        const source = ctx.createMediaStreamSource(stream);
+        const worklet = new AudioWorkletNode(ctx, "omalla-pcm16-worklet");
+        state.studio.workletNode = worklet;
+        worklet.port.onmessage = (ev) => {
+          if (ev.data?.type !== "pcm16") return;
+          pushWaveSample(ev.data.rms ?? 0.03);
+          if (state.studio.ws?.readyState === WebSocket.OPEN) {
+            const pcmBytes = new Uint8Array(ev.data.pcm16Buffer);
+            const framed = new Uint8Array(4 + pcmBytes.length);
+            framed[0] = 0x4f; // 'O'
+            framed[1] = 0x4d; // 'M'
+            const seq = state.studio.seq & 0xffff;
+            state.studio.seq = (seq + 1) & 0xffff;
+            framed[2] = (seq >> 8) & 0xff;
+            framed[3] = seq & 0xff;
+            framed.set(pcmBytes, 4);
+            state.studio.ws.send(framed.buffer);
+          }
+        };
+        source.connect(worklet);
+        toast("AudioWorklet streaming 20 ms 16 kHz PCM16 frames.");
+      } catch (err) {
+        toast(`Microphone unavailable (${err.message}); use simulated utterance probe below.`, true);
+      }
+    },
+  });
+
+  const bargeBtn = el("button", {
+    class: "danger",
+    text: t("studio.bargeIn"),
+    onclick: () => {
+      sendControl({ type: "barge_in" });
+      pushWaveSample(0.65);
+    },
+  });
+
+  const stopBtn = el("button", {
+    class: "ghost",
+    text: t("studio.stopSession"),
+    onclick: () => {
+      teardownStudioSession();
+      $("#studio-conn-badge").textContent = "idle";
+    },
+  });
+
+  const sendUtteranceBtn = el("button", {
+    class: "primary",
+    text: "Send Voice Turn",
+    onclick: () => {
+      const text = utteranceInput.value.trim();
+      if (!text) return;
+      utteranceInput.value = "";
+      pushWaveSample(0.45);
+      sendControl({ type: "utterance.text", text });
+    },
+  });
+  utteranceInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendUtteranceBtn.click(); });
+
+  const arabicPresetBtn = el("button", {
+    class: "ghost",
+    dir: "rtl",
+    text: "تجربة بالعربية: حجز موعد غداً الساعة 3",
+    onclick: () => {
+      utteranceInput.value = "مرحبا أريد حجز موعد غداً الساعة 3 باسم سارة";
+      sendUtteranceBtn.click();
+    },
+  });
+
+  const controlCard = el("div", { class: "card panel" },
+    el("div", { class: "panel-head" },
+      el("h2", { text: "Live Duplex Console" }),
+      el("div", { class: "row" }, connectWsBtn, connectRtcBtn, micBtn, bargeBtn, stopBtn),
+    ),
+    el("div", { class: "panel-body stack" },
+      el("div", { class: "form-grid" },
+        el("label", { class: "field" }, el("span", { text: "Agent" }), agentSelect),
+        el("label", { class: "field" }, el("span", { text: "Wire Codec" }), codecSelect),
+      ),
+      el("label", { class: "row" },
+        sinkAckBox,
+        el("span", { class: "muted small", text: "Client sends clear.ack on barge-in (uncheck to simulate unacknowledged PSTN trunk -> stopped_unconfirmed per OM-T8)" }),
+      ),
+      canvas,
+      el("div", { class: "row" },
+        el("div", { style: "flex:1" }, utteranceInput),
+        sendUtteranceBtn,
+        arabicPresetBtn,
+      ),
+    ),
+  );
+
+  const latencyCard = el("div", { class: "card panel" },
+    el("div", { class: "panel-head" },
+      el("h2", { dir: "auto", text: t("studio.latency") }),
+      el("span", { class: "muted small mono", text: "OM-T8 sink-confirmed audio boundaries" }),
+    ),
+    el("div", { class: "panel-body" }, latencyContainer),
+  );
+
+  const sipSummaryCard = buildSipMonitorCard(sipStatus);
+
+  main.append(el("div", { class: "stack" },
+    controlCard,
+    latencyCard,
+    el("div", { class: "grid cols-2" },
+      el("div", { class: "card panel" },
+        el("div", { class: "panel-head" }, el("h2", { text: "Live Turn Transcript" })),
+        transcriptBox,
+      ),
+      sipSummaryCard,
+    ),
+  ));
+}
+
+function renderLatencyCards(container, tlm) {
+  container.replaceChildren();
+  const stages = [
+    ["T0 · Speech End", tlm?.t0SpeechEndMs, "Caller VAD final"],
+    ["T1 · Barge-In Onset", tlm?.t1BargeInOnsetMs, "turn_epoch++"],
+    ["T2 · Audio Halt", tlm?.t2AudioHaltMs, tlm?.t2HaltStatus ?? "not_applicable"],
+    ["T3 · Partial STT", tlm?.t3PartialSttMs, "Streaming partial"],
+    ["T4 · Final STT", tlm?.t4FinalSttMs, tlm?.deltasMs?.sttFinalMs != null ? `+${tlm.deltasMs.sttFinalMs} ms` : "—"],
+    ["T5 · First Token", tlm?.t5FirstTokenMs, tlm?.deltasMs?.llmFirstTokenMs != null ? `+${tlm.deltasMs.llmFirstTokenMs} ms` : "—"],
+    ["T6 · First TTS Frame", tlm?.t6FirstAudioFrameMs, tlm?.deltasMs?.ttsFirstFrameFromSpeechEndMs != null ? `E2E ${tlm.deltasMs.ttsFirstFrameFromSpeechEndMs} ms` : "20 ms pacer"],
+  ];
+  for (const [label, ms, sub] of stages) {
+    const stageEl = el("div", { class: "latency-stage" },
+      el("span", { class: "code-tag", text: label }),
+      el("span", { class: "ms-val", text: ms !== null && ms !== undefined ? `${ms} ms` : "—" }),
+    );
+    if (sub === "observed_audio_halt" || sub === "stopped_unconfirmed" || sub === "pending_sink_ack") {
+      stageEl.append(statusBadge(sub));
+    } else {
+      stageEl.append(el("span", { class: "muted small", text: sub }));
+    }
+    container.append(stageEl);
+  }
+}
+
+function drawWaveform(canvas, samples) {
+  const ctx = canvas.getContext?.("2d");
+  if (!ctx) return;
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+  const accent = state.theme === "light" ? "#7E22CE" : "#D8B4FE";
+  ctx.fillStyle = accent;
+  const barW = Math.max(3, Math.floor(w / samples.length) - 3);
+  samples.forEach((amp, i) => {
+    const bh = Math.max(4, Math.round(amp * (h - 14)));
+    const x = i * (barW + 3) + 4;
+    const y = Math.round((h - bh) / 2);
+    ctx.fillRect(x, y, barW, bh);
+  });
+}
+
+function playOutboundFrame(bytes, codec) {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    if (!state.studio.audioCtx) state.studio.audioCtx = new AudioCtx();
+    const ctx = state.studio.audioCtx;
+    if (codec !== "pcm16" || bytes.byteLength < 4) return;
+    const sampleCount = Math.floor(bytes.byteLength / 2);
+    const audioBuf = ctx.createBuffer(1, sampleCount, 16000);
+    const chan = audioBuf.getChannelData(0);
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    for (let i = 0; i < sampleCount; i += 1) {
+      chan[i] = view.getInt16(i * 2, true) / 32768;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = audioBuf;
+    src.connect(ctx.destination);
+    state.studio.activeSources.push(src);
+    src.onended = () => {
+      state.studio.activeSources = state.studio.activeSources.filter((s) => s !== src);
+    };
+    src.start();
+  } catch {
+    /* Headless / autoplay restricted environments ignore Web Audio output */
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Agents & Immutable Version Rollback UI                              */
+/* ------------------------------------------------------------------ */
+
+async function renderAgents() {
+  const main = $("#main");
+  const agents = await api("/v1/agents");
+  state.cache.agents = agents;
+
+  main.append(el("div", { class: "page-head" },
+    el("div", {},
+      el("h1", { dir: "auto", text: t("agents.title") }),
+      el("p", { class: "sub", dir: "auto", text: t("agents.sub") }),
+    ),
+  ));
+
+  for (const agent of agents) {
+    const versions = await api(`/v1/agents/${agent.id}/versions`);
+    const card = el("div", { class: "card panel", style: "margin-bottom:14px" });
+    const testBtn = el("button", {
+      text: "Run Eval Test",
+      onclick: async () => {
+        try {
+          const res = await api(`/v1/agents/${agent.id}/test`, {
+            method: "POST",
+            body: JSON.stringify({
+              callerTurns: ["What are your opening hours?", "مع السلامة"],
+            }),
+          });
+          toast(`Agent v${res.versionTested} passed=${res.passed} (${(res.transcript ?? []).length} turns).`);
+        } catch (err) {
+          toast(err.message, true);
+        }
+      },
+    });
+    const bumpBtn = el("button", {
+      class: "primary",
+      text: "Publish New Snapshot",
+      onclick: async () => {
+        try {
+          await api(`/v1/agents/${agent.id}/publish`, { method: "POST" });
+          toast(`Published new snapshot for ${agent.name}.`);
+          route();
+        } catch (err) {
+          toast(err.message, true);
+        }
+      },
+    });
+
+    card.append(el("div", { class: "panel-head" },
+      el("div", {},
+        el("h2", { dir: "auto", text: `${agent.name} · v${agent.version}` }),
+        el("div", { class: "muted small", text: `${agent.config.language} · model ${agent.config.model.provider}/${agent.config.model.model} · silenceTimeout ${agent.config.silenceTimeoutSec}s` }),
+      ),
+      el("div", { class: "row" }, statusBadge(agent.status), testBtn, bumpBtn),
+    ));
+
+    const vTable = el("table");
+    vTable.append(el("thead", {}, el("tr", {},
+      el("th", { text: "Version" }),
+      el("th", { text: "Created" }),
+      el("th", { text: "Actor" }),
+      el("th", { text: "Note" }),
+      el("th", { text: "" }),
+    )));
+    const vBody = el("tbody");
+    for (const ver of versions) {
+      const rbBtn = el("button", {
+        class: "ghost",
+        disabled: ver.version === agent.version,
+        text: t("rollback"),
+        onclick: async () => {
+          try {
+            const updated = await api(`/v1/agents/${agent.id}/rollback`, {
+              method: "POST",
+              body: JSON.stringify({ version: ver.version, note: `Studio 1-click rollback to v${ver.version}` }),
+            });
+            toast(`Rolled back ${updated.name} to v${ver.version} (now v${updated.version}).`);
+            route();
+          } catch (err) {
+            toast(err.message, true);
+          }
+        },
+      });
+      vBody.append(el("tr", {},
+        el("td", { class: "mono", text: `v${ver.version}` }),
+        el("td", { class: "muted", text: fmtTime(ver.createdAt) }),
+        el("td", { class: "mono small", text: ver.createdBy }),
+        el("td", { dir: "auto", class: "muted small", text: ver.note ?? "—" }),
+        el("td", {}, rbBtn),
+      ));
+    }
+    vTable.append(vBody);
+    card.append(vTable);
+    main.append(card);
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -285,7 +918,7 @@ async function renderCalls() {
   if (callId) return renderCallDetail(callId);
 
   main.append(el("div", { class: "page-head" },
-    el("div", {}, el("h1", { text: "Calls" }), el("p", { class: "sub", text: "Simulated inbound and outbound conversations, with live transcripts." })),
+    el("div", {}, el("h1", { dir: "auto", text: t("nav.calls") }), el("p", { class: "sub", text: "Simulated, Realtime WS/WebRTC, and carrier conversations with live transcripts." })),
     el("button", { class: "primary", text: "New simulated call", onclick: openNewCall }),
   ));
 
@@ -317,7 +950,6 @@ async function renderCalls() {
     panel.append(table);
   }
   main.append(panel);
-  main.append(el("p", { class: "hint", text: "All calls use the simulated carrier. The agent's tools write to this workspace's local task, booking and contact stores." }));
 }
 
 function openNewCall() {
@@ -325,7 +957,7 @@ function openNewCall() {
   const form = el("form", { class: "dialog-body" });
   const to = el("input", { value: "+15550001234" });
   const from = el("input", { value: "+15550112233" });
-  const say = el("textarea", { placeholder: "One caller utterance per line, e.g.\nI'd like to book an appointment\nMy name is Sam Rivera\nTomorrow at 3pm\nYes please" });
+  const say = el("textarea", { dir: "auto", placeholder: "One caller utterance per line, e.g.\nI'd like to book an appointment\nMy name is Sam Rivera\nTomorrow at 3pm" });
   const press = el("input", { placeholder: "Optional DTMF keys, e.g. 1" });
 
   form.append(
@@ -335,7 +967,6 @@ function openNewCall() {
     ),
     el("label", { class: "field" }, el("span", { text: "Caller utterances" }), say),
     el("label", { class: "field" }, el("span", { text: "DTMF (before speech)" }), press),
-    el("p", { class: "hint", text: "The call runs immediately; you can keep talking from the call screen." }),
   );
   const actions = el("div", { class: "row" }, el("div", { class: "spacer" }));
   const submit = el("button", { class: "primary", type: "submit", text: "Start call" });
@@ -395,7 +1026,7 @@ async function renderCallDetail(callId) {
   const controls = el("div", { class: "card panel" });
   controls.append(el("div", { class: "panel-head" }, el("h2", { text: "Call controls" })));
   const controlsBody = el("div", { class: "panel-body stack" });
-  const input = el("input", { placeholder: "Speak as the caller…", disabled: !live });
+  const input = el("input", { dir: "auto", placeholder: "Speak as the caller…", disabled: !live });
   const send = el("button", { class: "primary", text: "Say", disabled: !live, onclick: async () => {
     const text = input.value.trim();
     if (!text) return;
@@ -439,7 +1070,8 @@ async function renderCallDetail(callId) {
       signalRow("Turns", String(call.metrics?.turnCount ?? 0)),
       signalRow("Tool calls", String(call.metrics?.toolCalls ?? 0)),
       signalRow("Interruptions", String(call.metrics?.interruptions ?? 0)),
-      signalRow("Avg latency", fmtMs(call.metrics?.turnLatenciesMs?.length ? Math.round(call.metrics.turnLatenciesMs.reduce((a, b) => a + b, 0) / call.metrics.turnLatenciesMs.length) : 0)),
+      signalRow("Avg latency", fmtMs(call.metrics?.turnLatenciesMs?.length ? Math.round(call.metrics.turnLatenciesMs.reduce((a, b) => a + b, 0) / call.metrics.turnLatenciesMs.length) : null)),
+      signalRow("Caller verified (OM-T2)", String(Boolean(call.metadata?.callerNumberVerified))),
       signalRow("Ended because", call.endedReason ?? "—"),
     ),
   ));
@@ -467,7 +1099,7 @@ function renderTranscript(container, call) {
     const assistant = turn.role !== "caller";
     container.append(el("div", { class: `turn ${assistant ? "assistant" : "caller"}` },
       el("div", { class: "who", text: assistant ? "assistant" : "caller" }),
-      el("div", { class: "text", text: turn.text }),
+      el("div", { class: "text", dir: "auto", text: turn.text }),
       el("div", { class: "meta", text: `${Math.round((turn.offsetMs ?? 0) / 1000)}s${turn.latencyMs ? ` · ${turn.latencyMs} ms` : ""}${turn.interrupted ? " · interrupted" : ""}` }),
     ));
   }
@@ -508,15 +1140,10 @@ function connectCallSocket(callId, transcript) {
       setTimeout(() => { if (location.hash.startsWith("#/calls/")) route(); }, 700);
     }
   });
-
-  socket.addEventListener("close", () => {
-    const dot = $("#live-dot");
-    if (dot) { dot.textContent = "disconnected"; dot.classList.remove("speaking"); }
-  });
 }
 
 /* ------------------------------------------------------------------ */
-/* workflows                                                           */
+/* workflows + version rollback                                        */
 /* ------------------------------------------------------------------ */
 
 async function renderWorkflows() {
@@ -525,7 +1152,7 @@ async function renderWorkflows() {
   if (runId) return renderRunDetail(runId);
 
   main.append(el("div", { class: "page-head" },
-    el("div", {}, el("h1", { text: "Workflows" }), el("p", { class: "sub", text: "Native automation, n8n-compatible import and export, and post-call flows." })),
+    el("div", {}, el("h1", { dir: "auto", text: t("nav.workflows") }), el("p", { class: "sub", text: "Native automation, n8n import/export, immutable versions, and 1-click rollback." })),
     el("button", { class: "primary", text: "Install template", onclick: openTemplates }),
   ));
 
@@ -555,14 +1182,15 @@ async function renderWorkflows() {
           route();
         } catch (error) { toast(error.message, true); }
       }});
+      const versionsBtn = el("button", { class: "ghost", text: "Versions / Rollback", onclick: (event) => { event.stopPropagation(); void openWorkflowVersions(workflow); } });
       const runButton = el("button", { text: "Run", onclick: (event) => { event.stopPropagation(); openRun(workflow); } });
       body.append(el("tr", {},
-        el("td", { text: workflow.name }),
+        el("td", { dir: "auto", text: workflow.name }),
         el("td", {}, el("span", { class: "badge", text: workflow.trigger.type })),
         el("td", {}, statusBadge(workflow.status)),
         el("td", { class: "mono", text: `v${workflow.version}` }),
         el("td", { class: "muted", text: fmtTime(workflow.updatedAt) }),
-        el("td", {}, el("div", { class: "row" }, toggle, runButton)),
+        el("td", {}, el("div", { class: "row" }, toggle, versionsBtn, runButton)),
       ));
     }
     table.append(body);
@@ -573,7 +1201,7 @@ async function renderWorkflows() {
   const runsPanel = el("div", { class: "card panel", style: "margin-top:14px" });
   runsPanel.append(el("div", { class: "panel-head" }, el("h2", { text: "Recent runs" }), el("span", { class: "muted small", text: "newest first" })));
   if (runs.length === 0) {
-    runsPanel.append(el("div", { class: "empty", text: "No runs yet. Run a flow or finish a call that has a post-call workflow." }));
+    runsPanel.append(el("div", { class: "empty", text: "No runs yet." }));
   } else {
     const table = el("table");
     table.append(el("thead", {}, el("tr", {}, el("th", { text: "Started" }), el("th", { text: "Workflow" }), el("th", { text: "Status" }), el("th", { text: "Steps" }), el("th", { text: "Error" }))));
@@ -582,7 +1210,7 @@ async function renderWorkflows() {
       const workflow = state.cache.workflows.find((candidate) => candidate.id === run.workflowId);
       body.append(el("tr", { class: "clickable", onclick: () => { location.hash = `#/workflows/${run.id}`; } },
         el("td", { text: fmtTime(run.startedAt) }),
-        el("td", { text: workflow?.name ?? shortId(run.workflowId) }),
+        el("td", { dir: "auto", text: workflow?.name ?? shortId(run.workflowId) }),
         el("td", {}, statusBadge(run.status)),
         el("td", { text: String(run.steps.length) }),
         el("td", { class: "muted truncate", text: run.error ?? "—" }),
@@ -594,10 +1222,48 @@ async function renderWorkflows() {
   main.append(runsPanel);
 }
 
+async function openWorkflowVersions(workflow) {
+  const versions = await api(`/v1/workflows/${workflow.id}/versions`);
+  const dialog = el("dialog");
+  const body = el("div", { class: "dialog-body" });
+  for (const ver of versions) {
+    body.append(el("div", { class: "list-item" },
+      el("div", { class: "grow" },
+        el("div", { class: "mono", text: `v${ver.version} · ${fmtTime(ver.createdAt)}` }),
+        el("div", { class: "muted small", text: `${ver.createdBy}${ver.note ? ` · ${ver.note}` : ""}` }),
+      ),
+      el("button", {
+        class: "primary",
+        disabled: ver.version === workflow.version,
+        text: t("rollback"),
+        onclick: async () => {
+          try {
+            const updated = await api(`/v1/workflows/${workflow.id}/rollback`, {
+              method: "POST",
+              body: JSON.stringify({ version: ver.version, note: `Studio rollback to v${ver.version}` }),
+            });
+            dialog.close();
+            toast(`Workflow rolled back to v${ver.version} (now v${updated.version}).`);
+            route();
+          } catch (err) {
+            toast(err.message, true);
+          }
+        },
+      }),
+    ));
+  }
+  dialog.append(
+    el("div", { class: "dialog-head" }, el("h2", { text: `${workflow.name} · Versions` }), el("button", { class: "ghost", text: "Close", onclick: () => dialog.close() })),
+    body,
+  );
+  document.body.append(dialog);
+  dialog.addEventListener("close", () => dialog.remove());
+  dialog.showModal();
+}
+
 function openTemplates() {
   const dialog = el("dialog");
   const body = el("div", { class: "dialog-body" });
-  body.append(el("p", { class: "muted", text: "Templates use local stores by default. Trello, Google, Slack and WhatsApp nodes run when those credentials are present and are skipped or fail visibly otherwise." }));
   for (const template of state.cache.templates) {
     body.append(el("div", { class: "list-item" },
       el("div", { class: "grow" },
@@ -626,7 +1292,6 @@ function openRun(workflow) {
   const dryRun = el("input", { type: "checkbox", checked: false });
   const form = el("form", { class: "dialog-body" });
   form.append(
-    el("p", { class: "muted", text: `Trigger: ${workflow.trigger.type}. Payload is available as {{trigger.*}} inside the flow.` }),
     el("label", { class: "field" }, el("span", { text: "Trigger payload (JSON)" }), payload),
     el("label", { class: "row" }, dryRun, el("span", { class: "muted small", text: "Dry run — external HTTP is recorded, never sent" })),
   );
@@ -678,17 +1343,13 @@ async function renderRunDetail(runId) {
     el("div", { class: "row" }, statusBadge(run.status), el("span", { class: "muted small", text: fmtTime(run.startedAt) })),
   ));
 
-  if (run.error) {
-    main.append(el("div", { class: "card", style: "border-color:#3a2028" }, el("p", { class: "error", text: run.error })));
-  }
-
   const steps = el("div", { class: "steps" });
   run.steps.forEach((step, index) => {
     steps.append(el("div", { class: "step" },
       el("span", { class: "idx", text: String(index + 1).padStart(2, "0") }),
       el("div", {},
         el("div", { text: `${step.nodeId} · ${step.nodeType}` }),
-        el("div", { class: "muted small", text: step.error ? step.error : `${step.attempts} attempt${step.attempts === 1 ? "" : "s"}` }),
+        el("div", { class: "muted small", text: step.error ? step.error : `${step.attempts} attempt(s)` }),
       ),
       statusBadge(step.status === "succeeded" ? "succeeded" : "failed"),
     ));
@@ -696,11 +1357,6 @@ async function renderRunDetail(runId) {
   main.append(el("div", { class: "card panel" },
     el("div", { class: "panel-head" }, el("h2", { text: "Steps" })),
     el("div", { class: "panel-body" }, steps),
-  ));
-
-  main.append(el("div", { class: "card panel", style: "margin-top:14px" },
-    el("div", { class: "panel-head" }, el("h2", { text: "Trigger" })),
-    el("div", { class: "panel-body" }, el("pre", { class: "mono", style: "overflow:auto;margin:0", text: JSON.stringify(run.trigger, null, 2) })),
   ));
 }
 
@@ -712,7 +1368,7 @@ async function renderAutomations() {
   const main = $("#main");
   const tab = state.route[0] ?? "tasks";
   main.append(el("div", { class: "page-head" },
-    el("div", {}, el("h1", { text: "Automations" }), el("p", { class: "sub", text: "The local system of record: tasks, bookings, contacts and escalations created by voice agents and workflows." })),
+    el("div", {}, el("h1", { dir: "auto", text: t("nav.automations") }), el("p", { class: "sub", text: "Tasks, bookings, contacts and escalations created by voice agents and workflows." })),
   ));
 
   const tabs = el("div", { class: "tabs" });
@@ -724,16 +1380,12 @@ async function renderAutomations() {
   if (tab === "tasks") {
     const tasks = await api("/v1/tasks");
     const panel = el("div", { class: "card panel" });
-    if (tasks.length === 0) panel.append(el("div", { class: "empty", text: "No tasks yet. Finish a call where nothing was booked, or run the task template." }));
+    if (tasks.length === 0) panel.append(el("div", { class: "empty", text: "No tasks yet." }));
     for (const task of tasks) {
       panel.append(el("div", { class: "list-item" },
         el("div", { class: "grow" },
-          el("div", { text: task.title }),
-          el("div", { class: "muted small truncate", text: task.description || "—" }),
-          el("div", { class: "row", style: "margin-top:6px" },
-            el("span", { class: "badge", text: task.priority }),
-            ...task.labels.map((label) => el("span", { class: "badge", text: label })),
-          ),
+          el("div", { dir: "auto", text: task.title }),
+          el("div", { dir: "auto", class: "muted small truncate", text: task.description || "—" }),
         ),
         el("select", { value: task.status, onchange: async (event) => {
           try {
@@ -749,11 +1401,11 @@ async function renderAutomations() {
   if (tab === "bookings") {
     const bookings = await api("/v1/bookings");
     const panel = el("div", { class: "card panel" });
-    if (bookings.length === 0) panel.append(el("div", { class: "empty", text: "No bookings yet. Ask the receptionist agent to book an appointment." }));
+    if (bookings.length === 0) panel.append(el("div", { class: "empty", text: "No bookings yet." }));
     for (const booking of bookings) {
       panel.append(el("div", { class: "list-item" },
         el("div", { class: "grow" },
-          el("div", { text: `${booking.name} — ${booking.title}` }),
+          el("div", { dir: "auto", text: `${booking.name} — ${booking.title}` }),
           el("div", { class: "muted small", text: `${fmtTime(booking.startAt)} · ${booking.durationMin} min · ${booking.phone ?? booking.email ?? "no contact"}` }),
         ),
         statusBadge(booking.status === "confirmed" ? "good" : booking.status),
@@ -765,11 +1417,11 @@ async function renderAutomations() {
   if (tab === "escalations") {
     const escalations = await api("/v1/escalations");
     const panel = el("div", { class: "card panel" });
-    if (escalations.length === 0) panel.append(el("div", { class: "empty", text: "No escalations. Urgent calls and large parties land here." }));
+    if (escalations.length === 0) panel.append(el("div", { class: "empty", text: "No escalations." }));
     for (const escalation of escalations) {
       panel.append(el("div", { class: "list-item" },
         el("div", { class: "grow" },
-          el("div", { text: escalation.reason }),
+          el("div", { dir: "auto", text: escalation.reason }),
           el("div", { class: "muted small", text: fmtTime(escalation.createdAt) }),
         ),
         statusBadge(escalation.status),
@@ -787,11 +1439,11 @@ async function renderAutomations() {
   if (tab === "contacts") {
     const contacts = await api("/v1/contacts");
     const panel = el("div", { class: "card panel" });
-    if (contacts.length === 0) panel.append(el("div", { class: "empty", text: "No contacts yet. Lead qualification and CRM flows create them." }));
+    if (contacts.length === 0) panel.append(el("div", { class: "empty", text: "No contacts yet." }));
     for (const contact of contacts) {
       panel.append(el("div", { class: "list-item" },
         el("div", { class: "grow" },
-          el("div", { text: contact.name }),
+          el("div", { dir: "auto", text: contact.name }),
           el("div", { class: "muted small", text: contact.email ?? contact.phone ?? "no contact details" }),
         ),
         ...contact.tags.map((tag) => el("span", { class: "badge", text: tag })),
@@ -802,7 +1454,7 @@ async function renderAutomations() {
 }
 
 /* ------------------------------------------------------------------ */
-/* telephony                                                           */
+/* telephony & SIP status monitor                                      */
 /* ------------------------------------------------------------------ */
 
 async function renderTelephony() {
@@ -811,13 +1463,13 @@ async function renderTelephony() {
 
   main.append(el("div", { class: "page-head" },
     el("div", {},
-      el("h1", { text: "Telephony" }),
-      el("p", { class: "sub", text: "Simulated numbers are free and default. Carrier numbers are optional, billed by the carrier, and never purchased without an explicit confirmation." }),
+      el("h1", { dir: "auto", text: t("nav.telephony") }),
+      el("p", { class: "sub", text: "Simulated numbers, RFC 3261 SIP/SRTP monitor (OM-T7), and Twilio/Telnyx/Vonage carrier adapters." }),
     ),
   ));
 
   const tabs = el("div", { class: "tabs" });
-  for (const [id, label] of [["numbers", "Numbers"], ["sms", "Messages"], ["providers", "Providers"]]) {
+  for (const [id, label] of [["numbers", "Numbers"], ["sip", "SIP & SRTP Monitor"], ["sms", "Messages"], ["providers", "Providers"]]) {
     tabs.append(el("button", {
       class: `tab${tab === id ? " active" : ""}`,
       text: label,
@@ -827,8 +1479,33 @@ async function renderTelephony() {
   main.append(tabs);
 
   if (tab === "numbers") return renderNumbers(main);
+  if (tab === "sip") {
+    const sipStatus = await api("/v1/telephony/sip/status");
+    main.append(buildSipMonitorCard(sipStatus));
+    return;
+  }
   if (tab === "sms") return renderSms(main);
   return renderProviders(main);
+}
+
+function buildSipMonitorCard(sipStatus) {
+  const card = el("div", { class: "card panel" });
+  card.append(el("div", { class: "panel-head" },
+    el("h2", { text: "SIP / SRTP / OM-T7 Monitor" }),
+    el("span", { class: "badge good", text: sipStatus.defaultBindHost }),
+  ));
+  card.append(el("div", { class: "panel-body stack" },
+    signalRow("SIP Stack", sipStatus.stack),
+    signalRow("Transports", (sipStatus.transports ?? []).join(", ")),
+    signalRow("SIP Methods", (sipStatus.methods ?? []).join(", ")),
+    signalRow("SRTP Suite", (sipStatus.srtpSuites ?? []).join(", ")),
+    signalRow("DTMF", sipStatus.dtmf),
+    signalRow("OM-T7 Non-Loopback SRTP", String(sipStatus.omT7Policy?.nonLoopbackRequiresSrtp)),
+    signalRow("OM-T7 SDES/Token TLS Guard", String(sipStatus.omT7Policy?.nonLoopbackSdesRequiresSipsTlsOrAttestedTunnel)),
+    signalRow("Symmetric RTP Latch", String(sipStatus.omT7Policy?.symmetricRtpLatchAfterAuthenticatedSdp)),
+    signalRow("Active Duplex WS / WebRTC", `${sipStatus.activeRealtimeWs ?? 0} WS · ${sipStatus.activeWebRtcSessions ?? 0} WebRTC`),
+  ));
+  return card;
 }
 
 async function renderNumbers(main) {
@@ -846,7 +1523,7 @@ async function renderNumbers(main) {
   ));
 
   if (numbers.length === 0) {
-    panel.append(el("div", { class: "empty", text: "No numbers yet. Search for a free simulated number to test inbound calls and IVR menus." }));
+    panel.append(el("div", { class: "empty", text: "No numbers yet." }));
   } else {
     const table = el("table");
     table.append(el("thead", {}, el("tr", {},
@@ -857,10 +1534,7 @@ async function renderNumbers(main) {
     for (const number of numbers) {
       const release = el("button", { class: "ghost", text: "Release", onclick: async (event) => {
         event.stopPropagation();
-        const warning = number.simulated
-          ? `Release ${number.e164}? It is simulated, so nothing is billed.`
-          : `Release ${number.e164}? The carrier may charge for the release and the number may not be recoverable.`;
-        if (!confirm(warning)) return;
+        if (!confirm(`Release ${number.e164}?`)) return;
         try {
           await api(`/v1/numbers/${number.id}?confirm=true`, { method: "DELETE" });
           toast(`Released ${number.e164}.`);
@@ -870,7 +1544,7 @@ async function renderNumbers(main) {
       body.append(el("tr", {},
         el("td", { class: "mono", text: number.e164 }),
         el("td", {}, el("span", { class: "badge", text: number.provider })),
-        el("td", { text: number.label }),
+        el("td", { dir: "auto", text: number.label }),
         el("td", { class: "muted", text: number.inboundAgentId ? shortId(number.inboundAgentId) : "-" }),
         el("td", {}, statusBadge(number.status)),
         el("td", {}, release),
@@ -880,20 +1554,17 @@ async function renderNumbers(main) {
     panel.append(table);
   }
   main.append(panel);
-
-  const note = el("div", { class: "card panel", style: "margin-top:14px" });
-  note.append(el("div", { class: "panel-head" }, el("h2", { text: "How billing works" })));
-  note.append(el("div", { class: "panel-body stack" },
-    el("p", { class: "muted", text: "Omalla never bills for telephony. Simulated numbers cost nothing. A real carrier number is billed by that carrier: monthly rental, inbound minutes, outbound minutes and SMS are all charged on your carrier account, not here." }),
-    el("p", { class: "muted", text: "Carrier purchases are disabled unless the server is started with allowCarrierPurchases enabled, and every purchase still requires a confirmation in this console or the API." }),
-  ));
-  main.append(note);
 }
 
 function openNumberSearch() {
   const dialog = el("dialog");
   const provider = el("select");
-  for (const [value, label] of [["simulated", "Simulated - free"], ["twilio", "Twilio - carrier charges"], ["signalwire", "SignalWire - carrier charges"]]) {
+  for (const [value, label] of [
+    ["simulated", "Simulated - free"],
+    ["twilio", "Twilio - carrier charges"],
+    ["telnyx", "Telnyx - carrier charges"],
+    ["signalwire", "SignalWire - carrier charges"],
+  ]) {
     provider.append(el("option", { value, text: label }));
   }
   const country = el("input", { value: "US", maxlength: "2", spellcheck: "false" });
@@ -903,7 +1574,6 @@ function openNumberSearch() {
   const search = el("button", { class: "primary", type: "button", text: "Search" });
   const form = el("div", { class: "dialog-body" });
   form.append(
-    el("p", { class: "muted", text: "Simulated numbers are generated locally and are free. Selecting a carrier searches that carrier's inventory; provisioning it starts carrier billing." }),
     el("div", { class: "form-grid" },
       el("label", { class: "field" }, el("span", { text: "Provider" }), provider),
       el("label", { class: "field" }, el("span", { text: "Country" }), country),
@@ -927,15 +1597,11 @@ function openNumberSearch() {
         }),
       });
       results.replaceChildren();
-      results.append(el("p", { class: found.carrierCharges ? "error" : "muted small", text: found.carrierCharges ? "Carrier charges apply. Prices are set by the carrier." : "Free simulated numbers." }));
-      if (found.offers.length === 0) {
-        results.append(el("div", { class: "empty", text: "No numbers matched. Try another area code or provider." }));
-      }
       for (const offer of found.offers) {
         results.append(el("div", { class: "list-item" },
           el("div", { class: "grow" },
             el("div", { class: "mono", text: offer.e164 }),
-            el("div", { class: "muted small", text: `${offer.locality ?? "unknown locality"} - ${offer.capabilities.join(", ")} - ${offer.costNote}` }),
+            el("div", { class: "muted small", text: `${offer.capabilities.join(", ")} · ${offer.costNote}` }),
           ),
           el("button", { text: "Provision", onclick: () => openProvision(offer, provider.value, dialog) }),
         ));
@@ -956,24 +1622,19 @@ function openNumberSearch() {
 function openProvision(offer, provider, parent) {
   const dialog = el("dialog");
   const label = el("input", { placeholder: "Front desk", maxlength: "120" });
-  const agents = state.cache.agents;
   const agent = el("select");
   agent.append(el("option", { value: "", text: "No inbound agent yet" }));
-  for (const candidate of agents) agent.append(el("option", { value: candidate.id, text: candidate.name }));
+  for (const candidate of state.cache.agents) agent.append(el("option", { value: candidate.id, text: candidate.name }));
   const confirmBox = el("input", { type: "checkbox" });
   const submit = el("button", { class: "primary", type: "submit", text: "Provision", disabled: true });
-  const carrier = provider !== "simulated";
   confirmBox.addEventListener("change", () => { submit.disabled = !confirmBox.checked; });
 
   const form = el("form", { class: "dialog-body" });
   form.append(
     el("p", { class: "mono", text: offer.e164 }),
-    el("p", { class: carrier ? "error" : "muted", text: carrier
-      ? "This provisions a real carrier number. The carrier charges a monthly fee and per-minute or per-message usage. The charge appears on your carrier account."
-      : "This simulated number is free. No carrier is contacted." }),
     el("label", { class: "field" }, el("span", { text: "Label" }), label),
     el("label", { class: "field" }, el("span", { text: "Inbound agent" }), agent),
-    el("label", { class: "row" }, confirmBox, el("span", { class: "muted small", text: "I understand the billing and want to provision this number" })),
+    el("label", { class: "row" }, confirmBox, el("span", { class: "muted small", text: "I confirm provisioning this number" })),
   );
   const actions = el("div", { class: "row" }, el("div", { class: "spacer" }));
   actions.append(el("button", { type: "button", text: "Cancel", onclick: () => dialog.close() }), submit);
@@ -995,7 +1656,7 @@ function openProvision(offer, provider, parent) {
       });
       dialog.close();
       if (parent) parent.close();
-      toast(`Provisioned ${created.number.e164}. ${created.billing.note}`);
+      toast(`Provisioned ${created.number.e164}.`);
       route();
     } catch (error) {
       toast(error.message, true);
@@ -1014,12 +1675,9 @@ async function renderSms(main) {
   state.cache.sms = messages;
 
   const panel = el("div", { class: "card panel" });
-  panel.append(el("div", { class: "panel-head" },
-    el("h2", { text: "Messages" }),
-    el("span", { class: "muted small", text: "inbound and outbound" }),
-  ));
+  panel.append(el("div", { class: "panel-head" }, el("h2", { text: "Messages" })));
   if (messages.length === 0) {
-    panel.append(el("div", { class: "empty", text: "No messages yet. Send one below; simulated messages never leave this machine." }));
+    panel.append(el("div", { class: "empty", text: "No messages yet." }));
   } else {
     const table = el("table");
     table.append(el("thead", {}, el("tr", {},
@@ -1033,7 +1691,7 @@ async function renderSms(main) {
         el("td", {}, el("span", { class: "badge", text: message.direction })),
         el("td", { class: "mono", text: message.from }),
         el("td", { class: "mono", text: message.to }),
-        el("td", { class: "truncate", text: message.body }),
+        el("td", { dir: "auto", class: "truncate", text: message.body }),
         el("td", {}, statusBadge(message.status)),
       ));
     }
@@ -1041,45 +1699,6 @@ async function renderSms(main) {
     panel.append(table);
   }
   main.append(panel);
-
-  const compose = el("div", { class: "card panel", style: "margin-top:14px" });
-  compose.append(el("div", { class: "panel-head" }, el("h2", { text: "Send a message" }), el("span", { class: "muted small", text: "consent required" })));
-  const to = el("input", { placeholder: "+15550112233", spellcheck: "false" });
-  const from = el("input", { placeholder: "leave empty to use a workspace number", spellcheck: "false" });
-  const text = el("textarea", { placeholder: "Your appointment is confirmed for Tuesday at 3pm.", rows: "3" });
-  const consent = el("input", { type: "checkbox" });
-  const send = el("button", { class: "primary", type: "submit", text: "Send" });
-  const form = el("form", { class: "panel-body form-grid" });
-  form.append(
-    el("label", { class: "field" }, el("span", { text: "To (E.164)" }), to),
-    el("label", { class: "field" }, el("span", { text: "From" }), from),
-    el("label", { class: "field full" }, el("span", { text: "Message" }), text),
-    el("label", { class: "row full" }, consent, el("span", { class: "muted small", text: "The recipient agreed to receive messages from this workspace" })),
-    el("div", { class: "full row" }, send),
-  );
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    if (!consent.checked) return toast("Record the recipient's consent before sending.", true);
-    send.disabled = true;
-    try {
-      const message = await api("/v1/sms", {
-        method: "POST",
-        body: JSON.stringify({
-          to: to.value.trim(),
-          body: text.value,
-          ...(from.value.trim() ? { from: from.value.trim() } : {}),
-          consent: true,
-        }),
-      });
-      toast(`Message ${message.status}${message.simulated ? " (simulated)" : ""}.`);
-      route();
-    } catch (error) {
-      toast(error.message, true);
-      send.disabled = false;
-    }
-  });
-  compose.append(form);
-  main.append(compose);
 }
 
 async function renderProviders(main) {
@@ -1087,10 +1706,7 @@ async function renderProviders(main) {
   state.cache.providers = providers;
 
   const panel = el("div", { class: "card panel" });
-  panel.append(el("div", { class: "panel-head" },
-    el("h2", { text: "Carrier adapters" }),
-    el("span", { class: "muted small", text: "availability is reported honestly" }),
-  ));
+  panel.append(el("div", { class: "panel-head" }, el("h2", { text: "Carrier adapters" })));
   const table = el("table");
   table.append(el("thead", {}, el("tr", {},
     el("th", { text: "Provider" }), el("th", { text: "Available" }), el("th", { text: "Detail" }), el("th", { text: "Required credentials" }),
@@ -1107,14 +1723,6 @@ async function renderProviders(main) {
   table.append(body);
   panel.append(table);
   main.append(panel);
-
-  const help = el("div", { class: "card panel", style: "margin-top:14px" });
-  help.append(el("div", { class: "panel-head" }, el("h2", { text: "Self-hosted SIP" })));
-  help.append(el("div", { class: "panel-body stack" },
-    el("p", { class: "muted", text: "Asterisk, FreeSWITCH, LiveKit SIP and Jambonz can sit behind the SIP gateway contract so calls never touch a paid carrier. That path needs Docker and has not been verified in this build." }),
-    el("p", { class: "muted small", text: "Set credentials in Settings. Twilio needs TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN plus TWILIO_PHONE_NUMBER for outbound calls." }),
-  ));
-  main.append(help);
 }
 
 /* ------------------------------------------------------------------ */
@@ -1124,7 +1732,7 @@ async function renderProviders(main) {
 async function renderSettings() {
   const main = $("#main");
   main.append(el("div", { class: "page-head" },
-    el("div", {}, el("h1", { text: "Settings" }), el("p", { class: "sub", text: "Credentials are encrypted at rest with this host's master key and never returned by the API." })),
+    el("div", {}, el("h1", { dir: "auto", text: t("nav.settings") }), el("p", { class: "sub", text: "Encrypted BYOK credentials and tenant outbound policy." })),
   ));
 
   const [credentials, agents, me] = await Promise.all([
@@ -1138,7 +1746,7 @@ async function renderSettings() {
   tenantCard.append(el("div", { class: "panel-body stack" },
     signalRow("Tenant", me.tenant?.name ?? "—"),
     signalRow("Timezone", me.tenant?.settings?.timezone ?? "—"),
-    signalRow("Outbound", me.tenant?.settings?.outboundEnabled ? "enabled (consent still required)" : "disabled"),
+    signalRow("Outbound", me.tenant?.settings?.outboundEnabled ? "enabled (consent + OM-T6 enforced)" : "disabled"),
     signalRow("Daily outbound cap", String(me.tenant?.settings?.dailyOutboundCap ?? 0)),
     signalRow("Reach", location.host),
   ));
@@ -1148,7 +1756,7 @@ async function renderSettings() {
   for (const agent of agents) {
     agentsCard.append(el("div", { class: "list-item" },
       el("div", { class: "grow" },
-        el("div", { text: agent.name }),
+        el("div", { dir: "auto", text: `${agent.name} · v${agent.version}` }),
         el("div", { class: "muted small", text: `${agent.config.model.provider}/${agent.config.model.model} · voice ${agent.config.voice.provider}` }),
       ),
       statusBadge(agent.status),
@@ -1156,15 +1764,15 @@ async function renderSettings() {
   }
 
   const credCard = el("div", { class: "card panel" });
-  credCard.append(el("div", { class: "panel-head" }, el("h2", { text: "Credentials" }), el("span", { class: "muted small", text: "BYOK, optional" })));
+  credCard.append(el("div", { class: "panel-head" }, el("h2", { text: "Credentials" }), el("span", { class: "muted small", text: "BYOK, encrypted at rest" })));
   const form = el("form", { class: "panel-body form-grid" });
-  const name = el("input", { placeholder: "TRELLO_KEY", spellcheck: "false" });
+  const name = el("input", { placeholder: "OPENAI_API_KEY", spellcheck: "false" });
   const value = el("input", { type: "password", placeholder: "value", autocomplete: "off" });
   const submit = el("button", { class: "primary", type: "submit", text: "Save credential" });
   form.append(
     el("label", { class: "field" }, el("span", { text: "Name (UPPER_SNAKE_CASE)" }), name),
     el("label", { class: "field" }, el("span", { text: "Value" }), value),
-    el("div", { class: "full row" }, submit, el("span", { class: "hint", text: "Trello: TRELLO_KEY, TRELLO_TOKEN. Google: GOOGLE_ACCESS_TOKEN. Slack: SLACK_BOT_TOKEN." })),
+    el("div", { class: "full row" }, submit),
   );
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -1193,9 +1801,6 @@ async function renderSettings() {
         } catch (error) { toast(error.message, true); }
       }}),
     ));
-  }
-  if (credentials.length === 0) {
-    credCard.append(el("div", { class: "empty", text: "No credentials stored. The zero-cost path needs none." }));
   }
 
   main.append(el("div", { class: "grid cols-2" }, tenantCard, agentsCard));
