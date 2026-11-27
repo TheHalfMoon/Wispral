@@ -1,9 +1,9 @@
 # Wispral Ecosystem Unified Architecture, Assessment, and Execution Specification (v2.1 — EGM Hardened)
 
-**Date:** 2026-11-27  
-**Company:** Halfmoon  
-**Umbrella Platform:** Wispral  
-**Official Product Family:** Wispral Core · WisprSide · WisprStudio · Klaint · Omalla  
+**Date:** 2026-11-27
+**Company:** Halfmoon
+**Umbrella Platform:** Wispral
+**Official Product Family:** Wispral Core · WisprSide · WisprStudio · Klaint · Omalla
 **Authority:** Prepared under the 2026-11-27 Master Founder Execution Directive and Constitutional Amendment **2.0.0** (`0df0b19`, PR #158), incorporating all blocking and major findings from the three-agent Google Elephant-Goldfish Model (EGM) review (`egm-design`, `egm-zoom-out`, `egm-implementation-readiness`).
 
 > **Evidence & Claim Discipline (Constitution Principle XI):** Every latency, accuracy, resolution-rate, and adversarial-pass figure stated below is an engineering **`RELEASE_GATE_TARGET (NOT_MEASURED)`** until reproduced by committed `WispralBench` runs with recorded hardware, OS, and model digests.
@@ -37,7 +37,7 @@
 | **WisprSide Target-Bound Delivery & Linux Scope** | Dedicated MTA thread (`CoInitializeEx(COINIT_MULTITHREADED)`, 150 ms timeout) + `SetWinEventHook` atomic `focus_epoch` + `WM_RENDERFORMAT` delayed-render focus re-check in `paste_tx` (`reliable_paste = true` default); Linux Wayland explicitly scoped as `copy_fallback` when compositor focus binding is unavailable; `wispral-*` consumed via pinned 40-char git SHA + root `NOTICE`. |
 | **WisprStudio License & Offline Provenance** | One-way `Apache-2.0 -> AGPL-3.0-only` schema/lexicon flow; FastAPI per-launch 256-bit token piped over `stdin` (`127.0.0.1` + `Origin` check); pure-DSP spread-spectrum/QIM watermark (`NumPy`/`SciPy`, zero HF runtime fetch, zero `NOASSERTION` weights) with round-trip extract verify + Ed25519 `.provenance.json` sidecar; 4-point `consent_epoch` check wired into existing `profiles.py`/synthesis routes. |
 | **Klaint Out-of-Process Broker & Per-Tenant Storage** | Pin Python `>=3.12` (`<120 MB` core venv: `fastapi`, `pydantic`, `cryptography` Ed25519, `httpx`, SQLite FTS5 + RRF hybrid RAG; `[parlant]`/`[postgres]` optional extras); separate OS process `klaint-broker` receiving a 256-bit `broker_issuance_secret` via `stdin` pipe, holding Ed25519 signing keys & connector secrets exclusively; physical per-tenant SQLite DB + vector files (`data/tenants/<tenant_id>/`); `BLOCK`/clause-buffered Output Gate blocking unbacked commitments across chat & voice; `tau2`-compatible deterministic DB-hash simulation & Chatwoot Core (`standard-webhooks`) epoch-guarded handoff. |
-| **Omalla Node 24 Store, Realtime, & SIP/RTP/SRTP** | Built-in `node:sqlite` (`DatabaseSync`, WAL + `busy_timeout=5000`, auto-migration from `omalla.db.json`); full-duplex `PCM16`/μ-law Audio WebSocket (`/v1/realtime/ws`) + WebRTC signaling/SDP/RTP (`PCMU`/`PCMA` + DataChannel) with 20 ms outbound pacer, bounded jitter buffer, and sink-confirmed `T0..T6` telemetry; pure-TS RFC 3261 UDP/TCP SIP + RFC 3550 RTP + RFC 4733 DTMF (`E=1` dedup) + RFC 3711/4568 SDES `AES_CM_128_HMAC_SHA1_80` (`node:crypto`) bound to `127.0.0.1` in local/CI with loopback SIP simulator. |
+| **Omalla Node 24 Store, Realtime, & SIP/RTP/SRTP** | Built-in `node:sqlite` (`DatabaseSync`, WAL + `busy_timeout=5000`, auto-migration from `omalla.db.json`); full-duplex `PCM16`/μ-law Audio WebSocket (`/v1/realtime/ws`) + WebRTC signaling/SDP/RTP (`PCMU`/`PCMA` + DataChannel) with 20 ms outbound pacer, bounded jitter buffer, and sink-confirmed `T0..T6` telemetry; pure-TS RFC 3261 UDP/TCP/TLS (`sips:`) SIP + RFC 3550 RTP + RFC 4733 DTMF (`E=1` dedup) + RFC 3711/4568 SDES `AES_CM_128_HMAC_SHA1_80` (`node:crypto`, requiring `sips:` TLS or encrypted local SBC/tunnel whenever non-loopback SDES or gateway-token SIP is enabled) bound to `127.0.0.1` by default with loopback SIP simulator. |
 
 ---
 

@@ -1,6 +1,6 @@
 # Wispral Live Execution Registry
 
-**Authority:** Constitutional Amendment 2.0.0 (`0df0b19`, PR #158) and the 2026-11-27 Master Founder Execution Directive.  
+**Authority:** Constitutional Amendment 2.0.0 (`0df0b19`, PR #158) and the 2026-11-27 Master Founder Execution Directive.
 **Purpose:** Canonical live tracker for all implementation waves, source integrations, commits, pull requests, test results, Alibaba `ocr` reviews, PStack/EGM reviews, benchmarks, and remaining mandatory capabilities across `TheHalfMoon/Wispral`, `TheHalfMoon/wisprside`, and `TheHalfMoon/wisprstudio`.
 
 ---
