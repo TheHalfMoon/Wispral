@@ -1,0 +1,37 @@
+Klaint (part of Wispral by Halfmoon)
+Copyright 2026 the Wispral authors (repository owner: TheHalfMoon)
+
+This product is licensed under the Apache License, Version 2.0 (see ../../LICENSE).
+
+Third-party attributions and compatibility notices:
+
+1. Parlant (https://github.com/emcie-co/parlant, commit 2a463ccd10eaf0d70d42731705f4f00ef066bee8)
+   Copyright 2026 Emcie Co Ltd.
+   Licensed under the Apache License, Version 2.0.
+   Klaint provides an optional Parlant v4 BLOCK-mode protocol adapter (`klaint/conversation/parlant_adapter.py`)
+   behind Klaint's server-authenticated session boundary, out-of-process Ed25519 capability broker, and
+   Commitment Output Gate, without exposing Parlant's unauthenticated integrated plugin tool server.
+
+2. Standard Webhooks (https://github.com/standard-webhooks/standard-webhooks, commit ab6844147ce9cdb0d2dbf2e60d1ea85001fd2554)
+   Copyright Standard Webhooks contributors.
+   Licensed under the Apache License, Version 2.0.
+   `klaint/inbox/chatwoot_bridge.py` implements Standard Webhooks raw-byte HMAC-SHA256 verification,
+   timestamp tolerance (+/- 300 seconds), and replay-cache semantics compatible with the specification.
+
+3. tau2-bench (https://github.com/sierra-research/tau2-bench, commit 033bf082f48e4a3c6a1256208e93cf2ce9c3bb6f)
+   Copyright Sierra Research / tau2-bench contributors.
+   Licensed under the MIT License.
+   `klaint/simulation/` implements a deterministic post-conversation database-state SHA-256 outcome
+   evaluator inspired by tau2-bench's environment-state evaluation methodology.
+
+4. Chatwoot Core API (https://github.com/chatwoot/chatwoot, commit caab07a8f00032d5205b5a5d7e2eb0ba2f3d2d82)
+   Copyright Chatwoot Inc. and contributors (outside `enterprise/`).
+   Licensed under the MIT License (Core edition only).
+   `klaint/inbox/chatwoot_bridge.py` integrates strictly with open-source Chatwoot MIT Core webhook/API
+   payload shapes and never uses or references any Chatwoot Enterprise Edition (`enterprise/`) code or paths.
+
+5. Orcel & Sentrdel (https://github.com/TheHalfMoon/Orcel, https://github.com/TheHalfMoon/Sentrdel)
+   Copyright the Halfmoon authors.
+   Licensed under the Apache License, Version 2.0.
+   Effect-intent state transitions (`pending -> dispatched -> settled | abandoned | unknown -> reconciled`)
+   and monotone policy narrowing (`ALLOW < ASK < DENY`) follow Wispral's Apache-2.0 contract definitions.
