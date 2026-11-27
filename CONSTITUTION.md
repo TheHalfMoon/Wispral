@@ -1,20 +1,22 @@
 # Wispral Constitution
 
-**Version:** 1.0.0
+**Version:** 2.0.0
 **Status:** Active  
 **Ratified:** 2026-09-01  
-**Amended:** 2026-11-08  
+**Amended:** 2026-11-27  
 **Canonical ratification merge:** `3cbe212bf7202c37ec322f114c0e5486e5218d9b`
 
 ## Preamble
 
-Wispral makes voice a trustworthy interface for writing, audio production, and interaction with independent agents. It is one platform with three products that share one authority, provenance, and resource core:
+Wispral (by Halfmoon) makes voice a trustworthy, independent intelligence platform for people, AI agents, developers, creators, and businesses. It is one coherent ecosystem comprising shared infrastructure and four independently installable products:
 
-- **WisprSide**: cross-application dictation, spoken writing and editing, and optional control of independent developer agents;
-- **WisprStudio**: voice production, including authorized voice cloning, synthesis, editing, and dubbing;
-- **Klaint**: customer dialogue agents with bounded tools, channels, and human handoff.
+- **Wispral Core**: shared voice intelligence infrastructure, portable authority/provenance/consent contracts, audio capture/DSP, adaptive model routing, privacy-scoped context and memory, real-time duplex turn/cancellation primitives, `Wispral Connect` (CLI/SDK/MCP), and `WispralBench`;
+- **WisprSide**: local-first cross-application voice typing, intelligent writing and editing, and optional structured control of independent developer agents;
+- **WisprStudio**: local-first professional AI voice and audio production, including speech synthesis, authorized voice cloning, transcription, dubbing, translation, and timeline editing;
+- **Klaint**: self-hostable enterprise customer-experience and verified customer-resolution agents with deterministic capability brokering, procedures, cited knowledge, inbox/handoff, studio, and simulation;
+- **Omalla**: self-hostable programmable real-time voice-agent, WebRTC/WebSocket streaming, workflow, and telephony infrastructure.
 
-These names are final founder selections; trademark, domain, and store clearance is not asserted. Each product should let a person speak, think aloud, interrupt, steer, inspect, correct, approve, and recover while preserving the authority boundaries of the systems it acts on.
+These five names (`Wispral`, `WisprSide`, `WisprStudio`, `Klaint`, `Omalla`) are final founder selections; trademark, domain, and store clearance is not asserted. Each product owns its runtime lifecycle and resource leases without requiring a central cross-product daemon, while letting users speak, think aloud, interrupt, steer, inspect, correct, approve, and recover within deterministic authority boundaries.
 
 The project optimizes for durable usefulness, interoperability, trust, speed, and open evidence. Popularity is a desired consequence of exceptional utility, not a substitute for it.
 
@@ -201,15 +203,25 @@ External side effects MUST use scoped credentials and idempotency, and an action
 
 Qualified reuse of authorized source precedes new implementation. Every adopted source MUST record its immutable provenance (upstream, revision, and paths), its actual dependency closure, its required notices and attribution, its mismatches with Wispral contracts, and its tests. Smaller modules or services are preferred to duplicating complete applications, and a decision to build something new MUST be justified against the qualified donor options.
 
-Reuse MUST NOT weaken any correctness, security, consent, tenant, or rights gate, and renaming adopted code never removes original authorship or notices.
+Reuse MUST NOT weaken any correctness, security, consent, tenant, or rights gate, and renaming adopted code never removes original authorship or notices. Strict outbound license isolation applies across repositories: `AGPL-3.0` material in `TheHalfMoon/wisprstudio` MUST NOT flow into Apache-2.0 (`TheHalfMoon/Wispral`) or MIT (`TheHalfMoon/wisprside`) repositories, and `FSL-1.1-MIT` files in donor repositories remain reference-only.
+
+## Principle XXI — Zero-mandatory-cost and self-hostable independence
+
+The complete Wispral ecosystem MUST operate with zero mandatory founder-funded or Wispral-hosted service dependencies:
+
+- no mandatory Wispral cloud account, subscription, hosted database, paid code-review gate, or mandatory telemetry;
+- `WisprSide` and core `WisprStudio` workflows MUST support fully local, offline operation on ordinary hardware (including 8 GB `T0` laptops within bounded sequential residency);
+- `Klaint` and `Omalla` MUST support full self-hosted operation and include zero-paid-service local demonstration, WebRTC/WebSocket, synthetic-tool, and simulated-telephony environments;
+- optional commercial inference, cloud hosting, SIP trunks, and carrier usage MAY be supported strictly through explicit user- or tenant-configured credentials, with zero silent fallback from failed local routes to paid or external providers;
+- shared models SHOULD resolve through a content-addressed, digest- and license-verified `$WISPRAL_HOME/models` cache so independent products avoid duplicate downloads without sharing mutable runtime state.
 
 ## Governance
 
-1. This constitution is the highest product-governance document in the repository.
+1. This constitution is the highest product-governance document in the repository and extends its security, consent, provenance, and evidence invariants across `TheHalfMoon/Wispral`, `TheHalfMoon/wisprside`, and `TheHalfMoon/wisprstudio`.
 2. An implementation that violates a principle requires an explicit constitution amendment, not a hidden exception.
 3. Amendments require a dedicated pull request describing motivation, compatibility impact, security/privacy impact, and affected specifications.
-4. Semantic versioning applies to this constitution: major for incompatible principle changes, minor for new or materially stronger principles, patch for clarification.
-5. ADRs govern durable architectural decisions. Specs govern bounded outcomes. Tasks govern execution order. Evidence governs verified state.
+4. Semantic versioning applies to this constitution: major for incompatible principle or scope changes, minor for new or materially stronger principles, patch for clarification.
+5. ADRs and architecture specifications govern durable architectural decisions. Live execution registries and bounded specs govern execution order. Reproducible test, review, and benchmark artifacts govern verified state.
 6. When these authorities conflict, the conflict must be resolved explicitly before dependent work proceeds.
-7. A review is a qualifying independent review only when the reviewer did not author the change, the review is substantive (it examines the exact final range and states any blocking findings), every blocking finding is resolved before merge, and the review is recorded on the pull request with the exact reviewed head SHA. Qualifying reviewers are: (a) the repository owner personally; (b) a human the owner names for that pull request; or (c) an automated reviewer whose model comes from a different vendor than the model that authored the change, with its model identity, prompt, and output recorded. Local classifiers and reviewers from the author's model vendor may assist but never qualify. Reviews required by Principles XVI and XVII, constitutional amendments, founding-synthesis (000G) decisions, and benchmark-lane merges require a qualifying review; other pull requests require a fresh-context review and the owner's merge approval.
-8. The `claim_guards` of the B2 benchmark lane's readiness file, including `product_code_authorized=false`, are claims of that lane only. They neither grant nor withhold product-code authority outside that lane. Product-code authority is governed by the product-code gate and the founding synthesis (000G): until a 000G decision selects a bounded implementation Grain and that Grain satisfies readiness, no product code is authorized.
+7. Under the 2026-11-27 Master Founder Execution Directive, the founder explicitly authorizes autonomous multi-agent implementation, governance simplification, and independent AI engineering review across the Wispral ecosystem without redundant pre-code administrative approval packets. Every meaningful implementation pull request MUST pass applicable automated gates and undergo substantive fresh-context review (combining deterministic local diff/rule inspection via `open-code-review` / `ocr` where applicable and fresh-context multi-bar PStack/EGM review covering correctness, parsimony, product-spec alignment, and security) bound to the exact reviewed head SHA, with all blocking defects repaired before guarded merge. Principles XVI and XVII benchmark-lane control repairs retain their strict qualifying-review requirements on `000B2` paths. No AI review may be represented as human usability research or external third-party security certification.
+8. The `claim_guards` of the `000B2` benchmark lane's readiness files remain claims of that historical benchmark lane only and are preserved untouched. By explicit founder directive recorded in Version 2.0.0 (2026-11-27), bounded product implementation, shared `Wispral Core` crates, `WisprSide`, `WisprStudio`, `Klaint`, `Omalla`, `Wispral Connect`, and `WispralBench` are authorized to proceed directly through reviewed, test-qualified pull requests tracked in `docs/canonical/EXECUTION_REGISTRY.md`. The latest appended `## Platform frontier` section in `specs/CURRENT.md` and `docs/canonical/CURRENT_STATE.md` records the platform transition while leaving all `000B2`-owned sections and frozen blobs untouched.
