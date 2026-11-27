@@ -15,6 +15,7 @@ import hashlib
 import json
 import pathlib
 import sys
+import unicodedata
 from datetime import datetime
 
 from jsonschema import Draft202012Validator
@@ -43,6 +44,16 @@ def ts(value):
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
+def _nfc(val):
+    if isinstance(val, str):
+        return unicodedata.normalize("NFC", val)
+    if isinstance(val, list):
+        return [_nfc(x) for x in val]
+    if isinstance(val, dict):
+        return {unicodedata.normalize("NFC", k): _nfc(v) for k, v in val.items()}
+    return val
+
+
 def bound_digest(record):
     """SHA-256 of the canonical JSON of every signed consent field: the record minus its lifecycle fields,
     plus the attestation minus bound_fields_digest and signature (absent optional fields as null)."""
@@ -50,7 +61,7 @@ def bound_digest(record):
                                          "valid_from", "valid_until", "evidence_digest", "consent_epoch", "watermark_required",
                                          "reference_artifact_digest", "speaker_match")}
     fields["attestation"] = {k: v for k, v in record["attestation"].items() if k not in ("bound_fields_digest", "signature")}
-    return "sha256:" + hashlib.sha256(json.dumps(fields, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
+    return "sha256:" + hashlib.sha256(json.dumps(_nfc(fields), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
 
 
 def compose(layers):

@@ -10,6 +10,7 @@ import copy
 import hashlib
 import json
 import pathlib
+import unicodedata
 
 H = "sha256:" + "a" * 64
 HX = "b" * 64
@@ -32,6 +33,16 @@ DELETE = object()
 UNSIGNED_CONSENT_FIELDS = ("status", "revoked_at", "scope_note")
 
 
+def _nfc(val):
+    if isinstance(val, str):
+        return unicodedata.normalize("NFC", val)
+    if isinstance(val, list):
+        return [_nfc(x) for x in val]
+    if isinstance(val, dict):
+        return {unicodedata.normalize("NFC", k): _nfc(v) for k, v in val.items()}
+    return val
+
+
 def bound_digest(record):
     """SHA-256 of the canonical JSON of every signed consent field: the record minus its lifecycle fields,
     plus the attestation minus bound_fields_digest and signature (absent optional fields as null)."""
@@ -39,7 +50,7 @@ def bound_digest(record):
                                          "valid_from", "valid_until", "evidence_digest", "consent_epoch", "watermark_required",
                                          "reference_artifact_digest", "speaker_match")}
     fields["attestation"] = {k: v for k, v in record["attestation"].items() if k not in ("bound_fields_digest", "signature")}
-    return "sha256:" + hashlib.sha256(json.dumps(fields, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
+    return "sha256:" + hashlib.sha256(json.dumps(_nfc(fields), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
 
 
 def attest(record):
@@ -311,6 +322,12 @@ add("export_provenance", "valid_stock_catalog_export", "valid", {k: v for k, v i
 add("export_provenance", "invalid_clone_without_consent", "invalid", mutate(EXPORT_PROV, ["consent_id"], DELETE), "authorized clone export cites consent_id")
 add("export_provenance", "invalid_unverified_watermark", "invalid", mutate(EXPORT_PROV, ["watermark", "roundtrip_verified"], False), "export requires roundtrip-verified watermark")
 add("export_provenance", "invalid_stock_with_consent_epoch", "invalid", {**EXPORT_PROV, "voice_mode": "stock_catalog", "stock_voice_catalog_id": "catalog:kokoro:af_heart"}, "stock and clone fields are mutually exclusive")
+add("export_provenance", "invalid_stock_with_voice_id_only", "invalid", {k: v for k, v in EXPORT_PROV.items() if k not in ("consent_id", "consent_epoch")} | {"voice_mode": "stock_catalog", "stock_voice_catalog_id": "catalog:kokoro:af_heart"}, "stock_catalog forbids voice_id")
+add("export_provenance", "invalid_model_digest_shape", "invalid", mutate(EXPORT_PROV, ["model", "artifact_sha256"], "not-a-hex-digest"), "export provenance validates model artifact_sha256")
+add("network_manifest", "invalid_host_url_instead_of_hostname", "invalid", {**NET_OFFLINE, "mode": "allowlisted_hosts", "allowed_hosts": ["https://api.example.com/path"]}, "allowed_hosts accepts hostnames only")
+add("network_manifest", "invalid_port_zero", "invalid", {**NET_OFFLINE, "mode": "loopback_only", "loopback_ports": [0]}, "loopback_ports must be >= 1")
+add("effect_intent", "invalid_malformed_tool_name", "invalid", mutate(INTENT, ["dispatch", "tool"], "Refunds/Create;rm"), "dispatch.tool matches safe identifier pattern")
+add("envelope", "invalid_explicit_null_optional_field", "invalid", {**ENVELOPE, "turn_id": None}, "optional contract properties forbid explicit null")
 
 ALLOW_MONEY = {**VERDICT, "verdict_id": "verdict-0002", "candidate_decision": "ALLOW", "enforced_decision": "ALLOW", "layers": [{"source": "base", "decision": "ALLOW"}]}
 BUNDLES = [

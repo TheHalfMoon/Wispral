@@ -559,8 +559,107 @@ fn has_unique_items<T: Eq + std::hash::Hash>(items: &[T]) -> bool {
     items.iter().all(|i| set.insert(i))
 }
 
+fn contains_any_null(v: &Value) -> bool {
+    match v {
+        Value::Null => true,
+        Value::Array(items) => items.iter().any(contains_any_null),
+        Value::Object(map) => map.values().any(contains_any_null),
+        _ => false,
+    }
+}
+
+fn contains_null_outside_envelope_payload(root: &Map<String, Value>) -> bool {
+    for (k, v) in root {
+        if k == "payload" {
+            if v.is_null() {
+                return true;
+            }
+            continue;
+        }
+        if contains_any_null(v) {
+            return true;
+        }
+    }
+    false
+}
+
+fn is_b64url_token(s: &str, min_len: usize, max_len: usize) -> bool {
+    s.len() >= min_len
+        && s.len() <= max_len
+        && s.bytes()
+            .all(|b| b.is_ascii_alphanumeric() || b == b'_' || b == b'-')
+}
+
+fn is_catalog_id(s: &str) -> bool {
+    s.strip_prefix("catalog:").is_some_and(|rest| {
+        !rest.is_empty()
+            && rest.len() <= 120
+            && rest
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'.' | b'_' | b':' | b'-'))
+    })
+}
+
+fn is_hostname(s: &str) -> bool {
+    !s.is_empty()
+        && s.len() <= 253
+        && s.bytes()
+            .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'.' || b == b'-')
+}
+
+fn is_bcp47_code(s: &str) -> bool {
+    let mut parts = s.split('-');
+    let Some(primary) = parts.next() else {
+        return false;
+    };
+    if !(2..=3).contains(&primary.len()) || !primary.bytes().all(|b| b.is_ascii_lowercase()) {
+        return false;
+    }
+    parts.all(|sub| (2..=8).contains(&sub.len()) && sub.bytes().all(|b| b.is_ascii_alphanumeric()))
+}
+
+fn is_tool_name(s: &str) -> bool {
+    s.len() >= 2
+        && s.len() <= 64
+        && s.as_bytes()[0].is_ascii_lowercase()
+        && s[1..]
+            .bytes()
+            .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'_' || b == b'.')
+}
+
+fn is_surface_ident(s: &str) -> bool {
+    s.len() >= 2
+        && s.len() <= 64
+        && s.as_bytes()[0].is_ascii_lowercase()
+        && s[1..]
+            .bytes()
+            .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'_' || b == b'-')
+}
+
+fn is_hex_handle(s: &str) -> bool {
+    s.strip_prefix("0x")
+        .is_some_and(|h| !h.is_empty() && h.len() <= 16 && h.bytes().all(|b| b.is_ascii_hexdigit()))
+}
+
+fn is_provenance_model_valid(m: &ProvenanceModel) -> bool {
+    is_len(&m.model_id, 1, 128)
+        && is_len(&m.revision, 1, 128)
+        && (is_lower_hex_64(&m.artifact_sha256)
+            || m.artifact_sha256 == "PROVIDER_MANAGED_DIGEST_UNAVAILABLE")
+}
+
 /// Validates schema/shape invariants (`Draft 2020-12` equivalent) for any of the 10 contracts.
 pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
+    let Some(root_obj) = value.as_object() else {
+        return Err("contract instance must be a JSON object".into());
+    };
+    if schema == "envelope" {
+        if contains_null_outside_envelope_payload(root_obj) {
+            return Err("explicit null is forbidden on envelope fields".into());
+        }
+    } else if contains_any_null(value) {
+        return Err("explicit null is forbidden by contract schema".into());
+    }
     match schema {
         "envelope" => {
             let env: Envelope = serde_json::from_value(value.clone()).map_err(|e| e.to_string())?;
@@ -867,6 +966,19 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
                 return Err("invalid languages count".into());
             }
             for lang in &m.languages {
+                if !is_bcp47_code(&lang.code) {
+                    return Err("invalid language code".into());
+                }
+                if let Some(var) = &lang.variety {
+                    if !is_len(var, 0, 64) {
+                        return Err("invalid language variety length".into());
+                    }
+                }
+                if let Some(ev) = &lang.evidence {
+                    if !is_len(ev, 0, 512) {
+                        return Err("invalid language evidence length".into());
+                    }
+                }
                 if !matches!(
                     lang.support.as_str(),
                     "documented" | "measured" | "unsupported"
@@ -883,8 +995,28 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
             ) {
                 return Err("invalid runtime".into());
             }
-            if m.network_hosts.len() > 16 {
-                return Err("too many network_hosts".into());
+            if m.network_hosts.len() > 16 || !m.network_hosts.iter().all(|h| is_hostname(h)) {
+                return Err("invalid or too many network_hosts".into());
+            }
+            if let Some(cc) = &m.commercial_conditions {
+                if !is_len(cc, 0, 512) {
+                    return Err("invalid commercial_conditions length".into());
+                }
+            }
+            if let Some(refs) = &m.qualification_evidence_refs {
+                if !refs.iter().all(|r| is_len(r, 0, 256)) {
+                    return Err("invalid qualification_evidence_refs".into());
+                }
+            }
+            if let Some(kl) = &m.known_limitations {
+                if !kl.iter().all(|k| is_len(k, 0, 512)) {
+                    return Err("invalid known_limitations".into());
+                }
+            }
+            if let Some(pr) = &m.provenance_ref {
+                if !is_len(pr, 1, 512) {
+                    return Err("invalid provenance_ref length".into());
+                }
             }
             if !matches!(
                 m.acquisition.as_str(),
@@ -1028,6 +1160,16 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
             {
                 return Err("invalid products".into());
             }
+            if let Some(ae) = &c.allowed_engines {
+                if !has_unique_items(ae) || !ae.iter().all(|e| is_len(e, 1, 128)) {
+                    return Err("invalid allowed_engines".into());
+                }
+            }
+            if let Some(sn) = &c.scope_note {
+                if !is_len(sn, 0, 512) {
+                    return Err("invalid scope_note".into());
+                }
+            }
             if !is_rfc3339_utc_z(&c.valid_from) {
                 return Err("invalid valid_from".into());
             }
@@ -1099,20 +1241,35 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
                 return Err("invalid script_id pattern".into());
             }
             if !is_sha256_prefixed(&att.bound_fields_digest)
-                || att.nonce.len() < 22
-                || att.nonce.len() > 64
+                || !is_b64url_token(&att.nonce, 22, 64)
                 || !is_rfc3339_utc_z(&att.issued_at)
                 || !is_sig_shape_valid(&att.signature)
             {
                 return Err("invalid attestation fields".into());
             }
+            let is_valid_key_suffix = |s: &str| {
+                !s.is_empty()
+                    && s.len() <= 48
+                    && s.bytes()
+                        .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'.' | b'_' | b'-'))
+            };
             if att.issuer.kind == "consent_service"
-                && !att.issuer.key_id.starts_with("consent-svc:")
+                && !att
+                    .issuer
+                    .key_id
+                    .strip_prefix("consent-svc:")
+                    .is_some_and(is_valid_key_suffix)
             {
-                return Err("consent_service requires consent-svc: key_id".into());
+                return Err("consent_service requires valid consent-svc: key_id".into());
             }
-            if att.issuer.kind == "studio_operator" && !att.issuer.key_id.starts_with("op-key:") {
-                return Err("studio_operator requires op-key: key_id".into());
+            if att.issuer.kind == "studio_operator"
+                && !att
+                    .issuer
+                    .key_id
+                    .strip_prefix("op-key:")
+                    .is_some_and(is_valid_key_suffix)
+            {
+                return Err("studio_operator requires valid op-key: key_id".into());
             }
             // allOf rules
             if (c.status == "revoked") != c.revoked_at.is_some() {
@@ -1183,8 +1340,31 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
             ) {
                 return Err("invalid action_class".into());
             }
-            if !has_unique_items(&v.rule_ids) || v.layers.len() > 16 {
+            if !has_unique_items(&v.rule_ids)
+                || !v.rule_ids.iter().all(|r| is_len(r, 1, 128))
+                || v.layers.len() > 16
+            {
                 return Err("invalid rule_ids or layers".into());
+            }
+            if let Some(kf) = &v.kernel_floor_ids {
+                if !has_unique_items(kf) || !kf.iter().all(|k| is_len(k, 1, 128)) {
+                    return Err("invalid kernel_floor_ids".into());
+                }
+            }
+            if let Some(rsn) = &v.reason {
+                if !is_len(rsn, 0, 512) {
+                    return Err("invalid reason length".into());
+                }
+            }
+            if let Some(cid) = &v.consent_id {
+                if !is_len(cid, 8, 128) {
+                    return Err("invalid consent_id".into());
+                }
+            }
+            if let Some(vid) = &v.voice_id {
+                if !is_len(vid, 8, 128) {
+                    return Err("invalid voice_id".into());
+                }
             }
             if let Some(ev) = &v.evidence {
                 if ev.len() > 32
@@ -1204,7 +1384,7 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
                 }
             }
             if let Some(cat) = &v.stock_voice_catalog_id {
-                if !cat.starts_with("catalog:") || cat.len() <= 8 || cat.len() > 128 {
+                if !is_catalog_id(cat) {
                     return Err("invalid stock_voice_catalog_id".into());
                 }
             }
@@ -1328,12 +1508,26 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
             ) {
                 return Err("invalid retention".into());
             }
-            if let Some(m) = &p.model {
-                if !is_len(&m.model_id, 1, 128)
-                    || !is_len(&m.revision, 1, 128)
-                    || !(is_lower_hex_64(&m.artifact_sha256)
-                        || m.artifact_sha256 == "PROVIDER_MANAGED_DIGEST_UNAVAILABLE")
+            if let Some(pe) = &p.parent_event_id {
+                if !is_len(pe, 8, 128) {
+                    return Err("invalid parent_event_id".into());
+                }
+            }
+            if let Some(comp) = &p.components {
+                if comp
+                    .prompt_digest
+                    .as_deref()
+                    .is_some_and(|d| !is_sha256_prefixed(d))
+                    || comp
+                        .thresholds_digest
+                        .as_deref()
+                        .is_some_and(|d| !is_sha256_prefixed(d))
                 {
+                    return Err("invalid provenance components digest".into());
+                }
+            }
+            if let Some(m) = &p.model {
+                if !is_provenance_model_valid(m) {
                     return Err("invalid provenance model".into());
                 }
             }
@@ -1375,17 +1569,38 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
         "delivery_outcome" => {
             let d: DeliveryOutcome =
                 serde_json::from_value(value.clone()).map_err(|e| e.to_string())?;
-            if !is_len(&d.delivery_id, 8, 128) || !is_len(&d.request_id, 8, 128) {
+            if !is_len(&d.delivery_id, 8, 128)
+                || !is_len(&d.request_id, 8, 128)
+                || d.intent_id.as_deref().is_some_and(|i| !is_len(i, 8, 128))
+            {
                 return Err("invalid delivery ids".into());
             }
             if !d.target.captured_at_activation
-                || !d.target.window_handle.strip_prefix("0x").is_some_and(|h| {
-                    !h.is_empty() && h.len() <= 16 && h.bytes().all(|b| b.is_ascii_hexdigit())
+                || !is_hex_handle(&d.target.window_handle)
+                || d.target
+                    .focus_handle
+                    .as_deref()
+                    .is_some_and(|fh| !is_hex_handle(fh))
+                || d.target
+                    .app_display_name
+                    .as_deref()
+                    .is_some_and(|n| !is_len(n, 0, 128))
+                || d.target.integrity_level.as_deref().is_some_and(|il| {
+                    !matches!(il, "low" | "medium" | "high" | "system" | "unknown")
                 })
                 || !is_process_instance_valid(&d.target.process_instance)
                 || !is_sha256_prefixed(&d.target.image_path_digest)
             {
                 return Err("invalid delivery target".into());
+            }
+            if let Some(hp) = &d.target.hosted_process_instance {
+                let pi = ProcessInstance {
+                    pid: hp.pid,
+                    start_generation: hp.start_generation.clone(),
+                };
+                if !is_process_instance_valid(&pi) || !is_sha256_prefixed(&hp.image_path_digest) {
+                    return Err("invalid hosted_process_instance".into());
+                }
             }
             if let Some(fe) = &d.target.focus_element {
                 if !is_sha256_prefixed(&fe.runtime_id_digest)
@@ -1444,6 +1659,14 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
                     "clipboard_paste" | "send_input_unicode" | "uia_value_pattern" | "none"
                 ) {
                     return Err("invalid delivery method".into());
+                }
+            }
+            if let Some(sr) = &d.clipboard.skipped_reason {
+                if !matches!(
+                    sr.as_str(),
+                    "user_changed_clipboard" | "not_used" | "restore_failed"
+                ) {
+                    return Err("invalid clipboard.skipped_reason".into());
                 }
             }
             // clipboard rules
@@ -1523,17 +1746,34 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
                     return Err("invalid reconciled_result".into());
                 }
             }
+            if let Some(rp) = &e.reconcile_probe {
+                if !is_len(rp, 1, 256) {
+                    return Err("invalid reconcile_probe".into());
+                }
+            }
+            if let Some(dr) = &e.detail_ref {
+                if !is_len(dr, 8, 128) {
+                    return Err("invalid detail_ref".into());
+                }
+            }
             if let Some(disp) = &e.dispatch {
-                if !is_sha256_prefixed(&disp.args_digest) {
-                    return Err("invalid dispatch.args_digest".into());
+                if !is_tool_name(&disp.tool) || !is_sha256_prefixed(&disp.args_digest) {
+                    return Err("invalid dispatch".into());
                 }
             }
             if let Some(cap) = &e.capability {
-                if !cap.token_id.starts_with("cap-")
+                if !cap
+                    .token_id
+                    .strip_prefix("cap-")
+                    .is_some_and(|s| is_b64url_token(s, 8, 64))
                     || cap.issuer != "klaint_broker"
-                    || !cap.session_ref.starts_with("ses-")
+                    || !cap
+                        .session_ref
+                        .strip_prefix("ses-")
+                        .is_some_and(|s| is_b64url_token(s, 8, 64))
+                    || !is_tool_name(&cap.tool)
                     || !is_sha256_prefixed(&cap.args_digest)
-                    || cap.nonce.len() < 22
+                    || !is_b64url_token(&cap.nonce, 22, 64)
                     || !is_rfc3339_utc_z(&cap.issued_at)
                     || !is_rfc3339_utc_z(&cap.expires_at)
                     || !cap.single_use
@@ -1573,11 +1813,19 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
             let n: NetworkManifest =
                 serde_json::from_value(value.clone()).map_err(|e| e.to_string())?;
             if n.schema_version != 1
+                || !is_surface_ident(&n.surface)
                 || !n.forbid_auto_download
                 || !n.forbid_default_telemetry
+                || n.allowed_hosts.len() > 64
                 || !has_unique_items(&n.allowed_hosts)
+                || !n.allowed_hosts.iter().all(|h| is_hostname(h))
             {
                 return Err("invalid network_manifest invariants".into());
+            }
+            if let Some(ports) = &n.loopback_ports {
+                if ports.len() > 16 || !has_unique_items(ports) || !ports.iter().all(|&p| p >= 1) {
+                    return Err("invalid loopback_ports".into());
+                }
             }
             match n.mode.as_str() {
                 "offline_strict" => {
@@ -1604,6 +1852,9 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
                 serde_json::from_value(value.clone()).map_err(|e| e.to_string())?;
             if ep.schema_version != 1
                 || !is_len(&ep.export_id, 8, 128)
+                || ep.project_id.as_deref().is_some_and(|p| !is_len(p, 1, 128))
+                || ep.consent_id.as_deref().is_some_and(|c| !is_len(c, 8, 128))
+                || ep.voice_id.as_deref().is_some_and(|v| !is_len(v, 8, 128))
                 || !matches!(ep.product.as_str(), "wisprstudio" | "klaint" | "omalla")
                 || !is_sha256_prefixed(&ep.artifact_sha256)
                 || ep.duration_ms < 1
@@ -1611,6 +1862,7 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
                     ep.sample_rate_hz,
                     8000 | 16000 | 22050 | 24000 | 32000 | 44100 | 48000
                 )
+                || !is_provenance_model_valid(&ep.model)
                 || !ep.watermark.embedded
                 || ep.watermark.scheme != "wispral-qim-v1"
                 || !is_sha256_prefixed(&ep.watermark.payload_digest)
@@ -1620,16 +1872,21 @@ pub fn validate_shape(schema: &str, value: &Value) -> Result<(), String> {
             {
                 return Err("invalid export_provenance fields".into());
             }
+            if let Some(cat) = &ep.stock_voice_catalog_id {
+                if !is_catalog_id(cat) {
+                    return Err("invalid stock_voice_catalog_id".into());
+                }
+            }
             match ep.voice_mode.as_str() {
                 "stock_catalog" => {
-                    if !ep
-                        .stock_voice_catalog_id
-                        .as_deref()
-                        .is_some_and(|s| s.starts_with("catalog:"))
+                    if ep.stock_voice_catalog_id.is_none()
                         || ep.consent_id.is_some()
                         || ep.consent_epoch.is_some()
+                        || ep.voice_id.is_some()
                     {
-                        return Err("stock_catalog requires catalog id and forbids consent".into());
+                        return Err(
+                            "stock_catalog requires catalog id and forbids consent/voice_id".into(),
+                        );
                     }
                 }
                 "authorized_clone" => {

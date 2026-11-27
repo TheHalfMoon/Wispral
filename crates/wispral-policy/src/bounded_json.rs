@@ -49,13 +49,8 @@ pub enum PreflightError {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Container {
-    Object {
-        keys: usize,
-        expecting_key_or_end: bool,
-    },
-    Array {
-        empty: bool,
-    },
+    Object { keys: usize },
+    Array,
 }
 
 /// Scans `raw` against `limits` without allocating a DOM tree.
@@ -230,10 +225,7 @@ pub fn preflight(raw: &[u8], limits: PreflightLimits) -> Result<(), PreflightErr
                             limit: limits.max_object_keys,
                         });
                     }
-                    stack.push(Container::Object {
-                        keys: 1,
-                        expecting_key_or_end: false,
-                    });
+                    stack.push(Container::Object { keys: 1 });
                     continue;
                 }
             }
@@ -248,7 +240,7 @@ pub fn preflight(raw: &[u8], limits: PreflightLimits) -> Result<(), PreflightErr
                 if i < bytes.len() && bytes[i] == b']' {
                     i += 1;
                 } else {
-                    stack.push(Container::Array { empty: false });
+                    stack.push(Container::Array);
                     continue;
                 }
             }
@@ -270,11 +262,7 @@ pub fn preflight(raw: &[u8], limits: PreflightLimits) -> Result<(), PreflightErr
                 return Ok(());
             };
             match top {
-                Container::Object {
-                    keys,
-                    expecting_key_or_end,
-                } => {
-                    let _ = expecting_key_or_end;
+                Container::Object { keys } => {
                     if i >= bytes.len() {
                         return Err(PreflightError::MalformedJson);
                     }
@@ -301,7 +289,7 @@ pub fn preflight(raw: &[u8], limits: PreflightLimits) -> Result<(), PreflightErr
                         return Err(PreflightError::MalformedJson);
                     }
                 }
-                Container::Array { .. } => {
+                Container::Array => {
                     if i >= bytes.len() {
                         return Err(PreflightError::MalformedJson);
                     }

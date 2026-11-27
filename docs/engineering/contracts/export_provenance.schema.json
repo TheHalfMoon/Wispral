@@ -196,6 +196,11 @@
        "required": [
         "consent_epoch"
        ]
+      },
+      {
+       "required": [
+        "voice_id"
+       ]
       }
      ]
     }

@@ -3,13 +3,17 @@
 
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use base64::Engine as _;
-use ed25519_dalek::{Signature, Signer as _, SigningKey, Verifier as _, VerifyingKey};
+use ed25519_dalek::{Signature, Signer as _, SigningKey, VerifyingKey};
 use rand_core::OsRng;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use thiserror::Error;
 
-use crate::jcs::sha256_jcs;
+use crate::jcs::{canonicalize_jcs_no_floats, sha256_jcs};
+
+pub const DOMAIN_CONSENT_RECORD: &[u8] = b"wispral:consent_record:v1:";
+pub const DOMAIN_CAPABILITY_TOKEN: &[u8] = b"wispral:capability_token:v1:";
+pub const DOMAIN_EXPORT_PROVENANCE: &[u8] = b"wispral:export_provenance:v1:";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -94,8 +98,37 @@ pub fn verify_detached_signature(
     let signature = Signature::from_bytes(&sig_arr);
 
     verifying_key
-        .verify(message, &signature)
+        .verify_strict(message, &signature)
         .map_err(|_| CryptoError::VerificationFailed)
+}
+
+/// Domain-separated canonical JCS (`no_floats`) Ed25519 signing helper for contract payloads.
+pub fn sign_domain_json(
+    keypair: &Ed25519Keypair,
+    domain_prefix: &[u8],
+    payload: &Value,
+) -> Result<DetachedSignature, CryptoError> {
+    let jcs = canonicalize_jcs_no_floats(payload)
+        .map_err(|e| CryptoError::Canonicalization(e.to_string()))?;
+    let mut msg = Vec::with_capacity(domain_prefix.len() + jcs.len());
+    msg.extend_from_slice(domain_prefix);
+    msg.extend_from_slice(&jcs);
+    Ok(keypair.sign_bytes(&msg))
+}
+
+/// Domain-separated canonical JCS (`no_floats`) Ed25519 strict verification helper.
+pub fn verify_domain_json(
+    public_key_b64url: &str,
+    domain_prefix: &[u8],
+    payload: &Value,
+    sig: &DetachedSignature,
+) -> Result<(), CryptoError> {
+    let jcs = canonicalize_jcs_no_floats(payload)
+        .map_err(|e| CryptoError::Canonicalization(e.to_string()))?;
+    let mut msg = Vec::with_capacity(domain_prefix.len() + jcs.len());
+    msg.extend_from_slice(domain_prefix);
+    msg.extend_from_slice(&jcs);
+    verify_detached_signature(public_key_b64url, &msg, sig)
 }
 
 /// Computes `attestation.bound_fields_digest` over the exact signed subset of a `consent_record`,
@@ -139,7 +172,7 @@ pub fn compute_consent_bound_digest(record: &Value) -> Result<String, CryptoErro
     }
     fields.insert("attestation".to_owned(), Value::Object(att_filtered));
 
-    sha256_jcs(&json!(fields), false).map_err(|e| CryptoError::Canonicalization(e.to_string()))
+    sha256_jcs(&json!(fields), true).map_err(|e| CryptoError::Canonicalization(e.to_string()))
 }
 
 #[cfg(test)]

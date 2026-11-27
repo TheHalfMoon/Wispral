@@ -339,13 +339,19 @@ pub fn append_chained<T: Serialize + DeserializeOwned>(
     })
 }
 
-/// Reads all records from a hash-chained journal and verifies sequence continuity
-/// and every entry's SHA-256 digest. Fails closed with [`JournalError::HashChainBroken`]
-/// on any tampering, deletion, reordering, or forged digest.
+/// Reads all records from a hash-chained journal and verifies sequence continuity,
+/// absence of truncated/torn lines, and every entry's SHA-256 digest. Fails closed
+/// with [`JournalError::HashChainBroken`] on any tampering, truncation, deletion,
+/// reordering, or forged digest.
 pub fn read_and_verify_chain<T: Serialize + DeserializeOwned>(
     path: &Path,
 ) -> Result<Lines<ChainedRecord<T>>, JournalError> {
     let parsed: Lines<ChainedRecord<T>> = read_lines(path)?;
+    if parsed.torn > 0 {
+        return Err(JournalError::HashChainBroken {
+            seq: parsed.lines.len() as u64,
+        });
+    }
     let mut expected_prev = GENESIS_DIGEST;
     for (idx, item) in parsed.lines.iter().enumerate() {
         let expected_seq = idx as u64;
@@ -871,5 +877,24 @@ mod tests {
             read_and_verify_chain::<Line>(&path).unwrap_err(),
             JournalError::HashChainBroken { seq: 1 }
         );
+
+        // Truncating the final bytes of a committed chained record must fail closed
+        // on both read_and_verify_chain and append_chained (never silently overwrite seq 1).
+        let base_dir = dir("chained-torn");
+        let torn_path = base_dir.join("audit.jsonl");
+        append_chained(&torn_path, line("consent_granted", "c2"), wait).unwrap();
+        append_chained(&torn_path, line("consent_revoked", "c2"), wait).unwrap();
+        let mut bytes = std::fs::read(&torn_path).unwrap();
+        bytes.truncate(bytes.len() - 6);
+        std::fs::write(&torn_path, bytes).unwrap();
+        assert_eq!(
+            read_and_verify_chain::<Line>(&torn_path).unwrap_err(),
+            JournalError::HashChainBroken { seq: 1 }
+        );
+        assert_eq!(
+            append_chained(&torn_path, line("consent_check", "c2"), wait).unwrap_err(),
+            JournalError::HashChainBroken { seq: 1 }
+        );
+        let _ = std::fs::remove_dir_all(&base_dir);
     }
 }

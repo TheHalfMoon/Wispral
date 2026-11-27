@@ -5984,6 +5984,183 @@
     "stock_voice_catalog_id": "catalog:kokoro:af_heart"
    },
    "invariant": "stock and clone fields are mutually exclusive"
+  },
+  {
+   "schema": "export_provenance",
+   "name": "invalid_stock_with_voice_id_only",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "export_id": "exp-0000001",
+    "project_id": "proj-01",
+    "product": "wisprstudio",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "duration_ms": 4200,
+    "sample_rate_hz": 24000,
+    "voice_mode": "stock_catalog",
+    "voice_id": "voice-00001",
+    "model": {
+     "model_id": "kokoro-82m",
+     "revision": "v1.0",
+     "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "watermark": {
+     "embedded": true,
+     "scheme": "wispral-qim-v1",
+     "payload_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "roundtrip_verified": true
+    },
+    "created_at": "2026-11-27T12:00:00Z",
+    "signature": {
+     "alg": "ed25519",
+     "key_id": "op-key:studio-001",
+     "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    },
+    "stock_voice_catalog_id": "catalog:kokoro:af_heart"
+   },
+   "invariant": "stock_catalog forbids voice_id"
+  },
+  {
+   "schema": "export_provenance",
+   "name": "invalid_model_digest_shape",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "export_id": "exp-0000001",
+    "project_id": "proj-01",
+    "product": "wisprstudio",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "duration_ms": 4200,
+    "sample_rate_hz": 24000,
+    "voice_mode": "authorized_clone",
+    "consent_id": "consent-0001",
+    "consent_epoch": 1,
+    "voice_id": "voice-00001",
+    "model": {
+     "model_id": "kokoro-82m",
+     "revision": "v1.0",
+     "artifact_sha256": "not-a-hex-digest"
+    },
+    "watermark": {
+     "embedded": true,
+     "scheme": "wispral-qim-v1",
+     "payload_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "roundtrip_verified": true
+    },
+    "created_at": "2026-11-27T12:00:00Z",
+    "signature": {
+     "alg": "ed25519",
+     "key_id": "op-key:studio-001",
+     "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    }
+   },
+   "invariant": "export provenance validates model artifact_sha256"
+  },
+  {
+   "schema": "network_manifest",
+   "name": "invalid_host_url_instead_of_hostname",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "product": "wisprside",
+    "surface": "desktop_core",
+    "mode": "allowlisted_hosts",
+    "allowed_hosts": [
+     "https://api.example.com/path"
+    ],
+    "forbid_auto_download": true,
+    "forbid_default_telemetry": true,
+    "ssrf_block_private_ips": true
+   },
+   "invariant": "allowed_hosts accepts hostnames only"
+  },
+  {
+   "schema": "network_manifest",
+   "name": "invalid_port_zero",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "product": "wisprside",
+    "surface": "desktop_core",
+    "mode": "loopback_only",
+    "allowed_hosts": [],
+    "forbid_auto_download": true,
+    "forbid_default_telemetry": true,
+    "ssrf_block_private_ips": true,
+    "loopback_ports": [
+     0
+    ]
+   },
+   "invariant": "loopback_ports must be >= 1"
+  },
+  {
+   "schema": "effect_intent",
+   "name": "invalid_malformed_tool_name",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "intent_id": "int-0000002",
+    "idempotency_key": "acme:refund:order-4821:v1",
+    "owner": "klaint_broker",
+    "action_class": "money",
+    "state": "dispatched",
+    "verdict_id": "verdict-0002",
+    "principal_scope_ref": "tenant:acme",
+    "epoch": 3,
+    "dispatch": {
+     "tool": "Refunds/Create;rm",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "capability": {
+     "token_id": "cap-00000001",
+     "issuer": "klaint_broker",
+     "session_ref": "ses-00000001",
+     "tool": "refunds.create",
+     "args_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "nonce": "capN0nce_0123456789abcd",
+     "issued_at": "2026-11-08T10:00:00Z",
+     "expires_at": "2026-11-08T10:00:30Z",
+     "single_use": true,
+     "signature": {
+      "alg": "ed25519",
+      "key_id": "broker-key:acme-1",
+      "value": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+     }
+    }
+   },
+   "invariant": "dispatch.tool matches safe identifier pattern"
+  },
+  {
+   "schema": "envelope",
+   "name": "invalid_explicit_null_optional_field",
+   "expect": "invalid",
+   "layer": "shape",
+   "instance": {
+    "schema_version": 1,
+    "request_id": "req-00000001",
+    "session_id": "ses-00000001",
+    "turn_id": null,
+    "epoch": 3,
+    "sequence": 12,
+    "principal_scope": {
+     "kind": "desktop_user",
+     "ref": "local-user",
+     "os_session": "1"
+    },
+    "source": {
+     "product": "wisprside",
+     "component": "speech_worker",
+     "artifact_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "policy_version": "side-policy@1.0.0",
+    "event": "TranscriptFinal",
+    "payload": {}
+   },
+   "invariant": "optional contract properties forbid explicit null"
   }
  ],
  "sequences": [

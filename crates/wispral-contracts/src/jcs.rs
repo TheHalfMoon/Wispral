@@ -17,6 +17,8 @@ pub enum JcsError {
     Serialization(String),
     #[error("floating-point numbers are forbidden in signed or idempotent contract payloads")]
     FloatingPointForbidden,
+    #[error("duplicate object key after Unicode NFC normalization: `{0}`")]
+    DuplicateKey(String),
 }
 
 /// Canonicalizes a `serde_json::Value` into RFC 8785 JCS UTF-8 bytes with NFC-normalized strings.
@@ -112,6 +114,11 @@ fn write_value(value: &Value, forbid_floats: bool, out: &mut Vec<u8>) -> Result<
                 map.iter().map(|(k, v)| (k.nfc().collect(), v)).collect();
             // RFC 8785 §3.2.3: sort object member names by UTF-16 code units
             entries.sort_by(|(a, _), (b, _)| a.encode_utf16().cmp(b.encode_utf16()));
+            for idx in 1..entries.len() {
+                if entries[idx - 1].0 == entries[idx].0 {
+                    return Err(JcsError::DuplicateKey(entries[idx].0.clone()));
+                }
+            }
             for (idx, (k, v)) in entries.iter().enumerate() {
                 if idx > 0 {
                     out.push(b',');

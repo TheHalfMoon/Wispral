@@ -174,7 +174,7 @@ impl DiacritizedTtsInput {
                 }
             }
             if replaced.is_none() {
-                if let Some((proclitic_display, stem)) = split_arabic_proclitic_for_tts(core) {
+                for (proclitic_display, stem) in candidate_proclitic_splits_for_tts(core) {
                     let stem_key =
                         NormalizedMatchKey::from_surface(stem, NormalizationLevel::FullMatchFold);
                     for (k, rep) in &table {
@@ -182,6 +182,9 @@ impl DiacritizedTtsInput {
                             replaced = Some(format!("{proclitic_display}{rep}"));
                             break;
                         }
+                    }
+                    if replaced.is_some() {
+                        break;
                     }
                 }
             }
@@ -262,31 +265,72 @@ fn split_outer_punctuation(word: &str) -> (&str, &str, &str) {
     (&word[..start], &word[start..end], &word[end..])
 }
 
-/// Proclitic prefixes ordered longest-first (`وال`, `بال`, `كال`, `فال`, `لل`, `ال`, `و`, `ف`, `ب`, `ك`, `ل`).
+/// Proclitic prefixes ordered longest-first, including compound conjunction+preposition+article forms.
 pub const ARABIC_PROCLITICS: &[&str] = &[
-    "وال", "بال", "كال", "فال", "لل", "ال", "و", "ف", "ب", "ك", "ل",
+    "وبال", "فبال", "وكال", "فكال", "ولل", "فلل", "وال", "بال", "كال", "فال", "وب", "فب", "ول",
+    "فل", "وك", "فك", "لل", "ال", "و", "ف", "ب", "ك", "ل",
 ];
 
-fn split_arabic_proclitic_for_tts(word: &str) -> Option<(&str, &str)> {
-    // Strip tatweel only at seam check if needed; check clean prefix on surface word
-    for &prefix in ARABIC_PROCLITICS {
-        if let Some(rest) = word.strip_prefix(prefix) {
-            let rest_clean = rest.trim_start_matches(TATWEEL);
-            let arabic_letters = rest_clean
-                .chars()
-                .filter(|&c| is_arabic_script(c) && !is_arabic_diacritic(c))
-                .count();
-            let latin_letters = rest_clean
-                .chars()
-                .filter(|c| c.is_ascii_alphabetic())
-                .count();
-            if arabic_letters >= 3 || latin_letters >= 2 {
-                let consumed = word.len() - rest_clean.len();
-                return Some((&word[..consumed], rest_clean));
+fn match_proclitic_preserving_harakat<'a>(
+    word: &'a str,
+    prefix: &str,
+) -> Option<(String, &'a str)> {
+    let mut display = String::new();
+    let mut iter = word.char_indices().peekable();
+
+    for expected in prefix.chars() {
+        while let Some(&(_, c)) = iter.peek() {
+            if c == TATWEEL {
+                iter.next();
+            } else if is_arabic_diacritic(c) {
+                display.push(c);
+                iter.next();
+            } else {
+                break;
+            }
+        }
+        let (_, ch) = iter.next()?;
+        if fold_alef_and_digits(ch) != expected {
+            return None;
+        }
+        display.push(ch);
+        while let Some(&(_, c)) = iter.peek() {
+            if c == TATWEEL {
+                iter.next();
+            } else if is_arabic_diacritic(c) {
+                display.push(c);
+                iter.next();
+            } else {
+                break;
             }
         }
     }
-    None
+
+    let rest_offset = iter.peek().map_or(word.len(), |&(idx, _)| idx);
+    let rest_clean = word[rest_offset..].trim_start_matches(TATWEEL);
+    let arabic_letters = rest_clean
+        .chars()
+        .filter(|&c| is_arabic_script(c) && !is_arabic_diacritic(c))
+        .count();
+    let latin_letters = rest_clean
+        .chars()
+        .filter(|c| c.is_ascii_alphabetic())
+        .count();
+    if arabic_letters >= 3 || latin_letters >= 2 {
+        Some((display, rest_clean))
+    } else {
+        None
+    }
+}
+
+fn candidate_proclitic_splits_for_tts(word: &str) -> Vec<(String, &str)> {
+    let mut out = Vec::new();
+    for &prefix in ARABIC_PROCLITICS {
+        if let Some(pair) = match_proclitic_preserving_harakat(word, prefix) {
+            out.push(pair);
+        }
+    }
+    out
 }
 
 /// Tokenizes mixed Arabic-English text while linking standalone code-switch proclitics
@@ -311,11 +355,13 @@ pub fn tokenize_proclitic_aware(input: &str) -> Vec<AnalyzedToken> {
             i += 1;
             continue;
         }
-        // Check standalone Arabic proclitic ending in tatweel before a Latin token, e.g. `للـ pull`
+        // Check standalone Arabic proclitic ending in tatweel before a Latin token, e.g. `للـ pull`, `وللـ pull`
         if core.ends_with(TATWEEL) && i + 1 < raw_tokens.len() {
             let prefix_clean = core.trim_end_matches(TATWEEL);
+            let prefix_folded =
+                NormalizedMatchKey::from_surface(prefix_clean, NormalizationLevel::FullMatchFold);
             let (_, next_core, _) = split_outer_punctuation(raw_tokens[i + 1]);
-            if ARABIC_PROCLITICS.contains(&prefix_clean)
+            if ARABIC_PROCLITICS.contains(&prefix_folded.as_key_str())
                 && next_core.chars().any(|c| c.is_ascii_alphanumeric())
             {
                 let combined_surface = format!("{core} {next_core}");
@@ -328,7 +374,7 @@ pub fn tokenize_proclitic_aware(input: &str) -> Vec<AnalyzedToken> {
                 out.push(AnalyzedToken {
                     surface: combined_surface,
                     match_key,
-                    proclitic: Some(prefix_clean.to_owned()),
+                    proclitic: Some(prefix_folded.as_key_str().to_owned()),
                     stem_key,
                     is_code_switched_latin: true,
                 });
@@ -395,7 +441,11 @@ pub fn isolate_ltr_in_rtl(input: &str) -> String {
         let starts_ltr = c.is_ascii_alphabetic()
             || (matches!(c, '-' | '/' | '@' | '#')
                 && i + 1 < chars.len()
-                && chars[i + 1].is_ascii_alphanumeric());
+                && chars[i + 1].is_ascii_alphanumeric())
+            || (c == '-'
+                && i + 2 < chars.len()
+                && chars[i + 1] == '-'
+                && chars[i + 2].is_ascii_alphanumeric());
         if starts_ltr {
             let start = i;
             let mut last_ltr_end = i + 1;
@@ -443,11 +493,15 @@ pub fn detect_dialect_hint(input: &str) -> ArabicDialectHint {
     if !input.chars().any(is_arabic_script) {
         return ArabicDialectHint::EnglishOrOther;
     }
+    let norm_phrase = NormalizedMatchKey::from_surface(input, NormalizationLevel::FullMatchFold);
+    let phrase = norm_phrase.as_key_str();
+    if phrase.contains("طال عمرك") || phrase.contains("وش صار") || phrase.contains("ايش صار")
+    {
+        return ArabicDialectHint::SaudiGulf;
+    }
+
     let tokens = tokenize_proclitic_aware(input);
-    let keys: Vec<&str> = tokens
-        .iter()
-        .flat_map(|t| [t.match_key.as_key_str(), t.stem_key.as_key_str()])
-        .collect();
+    let keys: Vec<&str> = tokens.iter().map(|t| t.match_key.as_key_str()).collect();
 
     const GULF: &[&str] = &[
         "سو",
@@ -457,12 +511,9 @@ pub fn detect_dialect_hint(input: &str) -> ArabicDialectHint {
         "وش",
         "الحين",
         "ابغى",
-        "ابي",
         "يبغى",
         "شلون",
         "وايد",
-        "مره",
-        "طال عمرك",
     ];
     const EGYPTIAN: &[&str] = &[
         "عايز",
@@ -520,22 +571,58 @@ pub struct ProtectedEntity {
 pub fn extract_protected_entities(input: &str) -> Vec<ProtectedEntity> {
     let mut entities = Vec::new();
     for raw in input.split_whitespace() {
-        let (_, core, _) = split_outer_punctuation(raw.trim_matches(|c| c == FSI || c == PDI));
-        if core.is_empty() {
+        let stripped_bidi: String = raw.chars().filter(|&c| c != FSI && c != PDI).collect();
+        let trimmed = stripped_bidi.trim_matches(|c: char| {
+            matches!(
+                c,
+                ',' | '.'
+                    | ';'
+                    | ':'
+                    | '!'
+                    | '?'
+                    | '('
+                    | ')'
+                    | '['
+                    | ']'
+                    | '{'
+                    | '}'
+                    | '"'
+                    | '\''
+                    | '،'
+                    | '؛'
+                    | '؟'
+                    | '«'
+                    | '»'
+                    | '“'
+                    | '”'
+                    | '’'
+            )
+        });
+        if trimmed.is_empty() {
             continue;
         }
-        if raw.starts_with("--") || (raw.starts_with('-') && raw.len() > 1 && raw.is_ascii()) {
+        if trimmed.starts_with("--")
+            || (trimmed.starts_with('-') && trimmed.len() > 1 && trimmed.is_ascii())
+        {
             entities.push(ProtectedEntity {
-                text: raw.trim_end_matches(&[',', '.', '،', '؛'][..]).to_owned(),
+                text: trimmed.to_owned(),
                 kind: EntityKind::CliFlag,
             });
             continue;
         }
-        if (raw.starts_with('#') && raw[1..].chars().all(|c| c.is_ascii_digit()))
+        let (_, core, _) = split_outer_punctuation(trimmed);
+        if (trimmed.starts_with('#')
+            && trimmed.len() > 1
+            && trimmed[1..].chars().all(|c| c.is_ascii_digit()))
             || (core.contains('-') && core.chars().any(|c| c.is_ascii_digit()))
         {
+            let clean_ref = if trimmed.starts_with('#') {
+                trimmed
+            } else {
+                core
+            };
             entities.push(ProtectedEntity {
-                text: raw.trim_end_matches(&[',', '.', '،', '؛'][..]).to_owned(),
+                text: clean_ref.to_owned(),
                 kind: EntityKind::ReferenceId,
             });
             continue;
@@ -630,6 +717,44 @@ mod tests {
         assert_eq!(
             detect_dialect_hint("أريد الاستفسار عن حالة الطلب"),
             ArabicDialectHint::MsaOrGeneral
+        );
+        assert_eq!(
+            detect_dialect_hint("سألت أبي مرة أخرى ورفع كفين للدعاء"),
+            ArabicDialectHint::MsaOrGeneral
+        );
+        assert_eq!(
+            detect_dialect_hint("أبشر طال عمرك"),
+            ArabicDialectHint::SaudiGulf
+        );
+    }
+
+    #[test]
+    fn vocalized_and_compound_proclitics_and_isolated_entities_are_handled() {
+        let spoken = VerbatimTranscript::new("بدأنا بِالمشروع وبِمشروع آخر وبالمشروع الثالث");
+        let tts = DiacritizedTtsInput::from_transcript(
+            &spoken,
+            &[PronunciationOverride {
+                surface: "مشروع".into(),
+                vocalized_replacement: "مَشْرُوع".into(),
+            }],
+        );
+        assert_eq!(tts.as_str(), "بدأنا بِالمَشْرُوع وبِمَشْرُوع آخر وبالمَشْرُوع الثالث");
+
+        let isolated =
+            VerbatimTranscript::new("راجع الطلب #160، وشغّل الخيار --release.").to_bidi_isolated();
+        let ents = extract_protected_entities(isolated.as_str());
+        assert_eq!(
+            ents,
+            vec![
+                ProtectedEntity {
+                    text: "#160".into(),
+                    kind: EntityKind::ReferenceId
+                },
+                ProtectedEntity {
+                    text: "--release".into(),
+                    kind: EntityKind::CliFlag
+                }
+            ]
         );
     }
 }

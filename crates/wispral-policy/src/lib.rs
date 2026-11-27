@@ -103,8 +103,6 @@ pub enum PolicyError {
     UnattendedUndecidableAsk,
     #[error("enforced ALLOW requires at least one deterministic rule_id for {action_class:?}")]
     MissingRuleId { action_class: ActionClass },
-    #[error("ASK candidate cannot become enforced ALLOW without operator or step-up confirmation")]
-    MissingConfirmation,
     #[error("high-risk confirmation on {action_class:?} requires human_present = true")]
     UnattendedHighRiskConfirmation { action_class: ActionClass },
     #[error("voice_render ALLOW requires either stock_voice_catalog_id or active consent_record")]
@@ -210,7 +208,7 @@ pub fn evaluate_verdict(inputs: &EnforcementInputs<'_>) -> Result<ResolvedVerdic
         });
     }
 
-    let (mut enforced, used_resolution) = match candidate {
+    let (enforced, used_resolution) = match candidate {
         CandidateDecision::Deny => (EnforcedDecision::Deny, None),
         CandidateDecision::Undecidable => {
             if !inputs.human_present && inputs.undecidable_resolution == UndecidableResolution::Ask
@@ -253,11 +251,6 @@ pub fn evaluate_verdict(inputs: &EnforcementInputs<'_>) -> Result<ResolvedVerdic
         if inputs.action_class == ActionClass::TextDelivery && !inputs.has_target_binding {
             return Err(PolicyError::TextDeliveryMissingTargetBinding);
         }
-    }
-
-    // Never widen candidate when unconfirmed
-    if candidate == CandidateDecision::Deny {
-        enforced = EnforcedDecision::Deny;
     }
 
     Ok(ResolvedVerdict {
