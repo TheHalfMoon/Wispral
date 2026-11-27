@@ -48,3 +48,11 @@ Third-party and authorized founder code included or adapted in this repository:
   bounded JSON preflight concepts from TheHalfMoon/Sentrdel
   (commit f5747319a50831ef7cee983d253c0ca5503c9a64).
   Copyright 2026 TheHalfMoon. Licensed under the Apache License, Version 2.0.
+
+- services/klaint/ includes clean-room Apache-2.0 / MIT architectural and protocol
+  adaptations documented in services/klaint/NOTICE: Parlant v4 conversation
+  BLOCK-gate patterns (Emcie Co Ltd, Apache-2.0), Standard Webhooks signature
+  verification (Standard Webhooks authors, Apache-2.0), tau2-bench post-conversation
+  DB-state SHA-256 simulation evaluation (Sierra Research, MIT), and Chatwoot
+  Core Edition webhook schema compatibility (Chatwoot Inc., MIT; Enterprise
+  Edition paths strictly excluded).

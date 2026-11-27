@@ -63,3 +63,15 @@ jobs:
         run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
       - name: Run workspace unit and conformance tests
         run: cargo test --workspace --all-targets --all-features --locked
+
+  klaint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Klaint and test dependencies
+        run: python -m pip install -e "services/klaint[dev]"
+      - name: Run Klaint security, resolution, and simulation suites
+        run: python -m pytest services/klaint/tests -v

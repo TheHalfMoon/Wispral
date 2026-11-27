@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wispral-klaint"
+version = "0.2.0"
+description = "Klaint (part of Wispral by Halfmoon) - self-hostable enterprise verified customer-resolution platform"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "The Wispral Authors (Halfmoon)" }
+]
+dependencies = [
+    "pydantic>=2.7,<3.0",
+    "cryptography>=42.0",
+    "jsonschema>=4.21",
+]
+
+[project.optional-dependencies]
+# Core runtime footprint stays well below the <120 MB dependency budget using stdlib + pydantic + cryptography + jsonschema + sqlite3.
+fastapi = [
+    "fastapi>=0.115,<1.0",
+    "uvicorn>=0.30,<1.0",
+]
+parlant = [
+    "parlant>=4.0.2,<5.0",
+]
+postgres = [
+    "psycopg[binary]>=3.2,<4.0",
+]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+klaint = "klaint.cli:main"
+klaint-server = "klaint.server.app:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["klaint*"]
+
+[tool.setuptools.package-data]
+"klaint.ui" = ["static/*", "templates/*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-p no:cacheprovider"
