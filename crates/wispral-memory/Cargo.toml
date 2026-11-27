@@ -1,0 +1,14 @@
+[package]
+name = "wispral-memory"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Wispral Core local-first privacy-scoped user memory (dictionary, corrections, snippets, app profiles, TTL history, inspect/delete/export)"
+
+[dependencies]
+serde.workspace = true
+thiserror.workspace = true
+wispral-arabic = { path = "../wispral-arabic" }
+wispral-journal = { path = "../wispral-journal" }

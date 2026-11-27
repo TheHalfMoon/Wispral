@@ -1,0 +1,12 @@
+[package]
+name = "wispral-audio"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Wispral Core deterministic audio ring buffer, resampling, G.711 codecs, DSP filtering, ducking, VAD/endpointing, and bounded WAV I/O"
+
+[dependencies]
+serde.workspace = true
+thiserror.workspace = true

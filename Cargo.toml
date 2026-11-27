@@ -5,6 +5,12 @@ members = [
     "crates/wispral-journal",
     "crates/wispral-policy",
     "crates/wispral-arabic",
+    "crates/wispral-audio",
+    "crates/wispral-adaptive",
+    "crates/wispral-context",
+    "crates/wispral-memory",
+    "crates/wispral-speech",
+    "crates/wispral-live",
 ]
 
 [workspace.package]

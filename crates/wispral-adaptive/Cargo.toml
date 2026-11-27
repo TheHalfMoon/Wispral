@@ -1,0 +1,18 @@
+[package]
+name = "wispral-adaptive"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Wispral Core CAS model cache (reparse-point safe), OS-locked memory lease manager, and zero-silent-cloud adaptive mode router"
+
+[dependencies]
+hex.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+wispral-arabic = { path = "../wispral-arabic" }
+wispral-contracts = { path = "../wispral-contracts" }
+wispral-journal = { path = "../wispral-journal" }
