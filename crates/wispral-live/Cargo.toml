@@ -1,0 +1,14 @@
+[package]
+name = "wispral-live"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Wispral Live pure full-duplex voice turn, barge-in, T0..T6 audio-boundary latency, and 4-level cancellation state machine"
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+wispral-contracts = { path = "../wispral-contracts" }
+wispral-journal = { path = "../wispral-journal" }

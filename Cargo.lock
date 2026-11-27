@@ -699,11 +699,41 @@ dependencies = [
 ]
 
 [[package]]
+name = "wispral-adaptive"
+version = "0.1.0"
+dependencies = [
+ "hex",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror",
+ "wispral-arabic",
+ "wispral-contracts",
+ "wispral-journal",
+]
+
+[[package]]
 name = "wispral-arabic"
 version = "0.1.0"
 dependencies = [
  "serde",
  "unicode-normalization",
+]
+
+[[package]]
+name = "wispral-audio"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "wispral-context"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "wispral-arabic",
 ]
 
 [[package]]
@@ -736,11 +766,43 @@ dependencies = [
 ]
 
 [[package]]
+name = "wispral-live"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "wispral-contracts",
+ "wispral-journal",
+]
+
+[[package]]
+name = "wispral-memory"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "thiserror",
+ "wispral-arabic",
+ "wispral-journal",
+]
+
+[[package]]
 name = "wispral-policy"
 version = "0.1.0"
 dependencies = [
  "serde",
  "thiserror",
+]
+
+[[package]]
+name = "wispral-speech"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "sha2",
+ "thiserror",
+ "wispral-arabic",
+ "wispral-audio",
 ]
 
 [[package]]
