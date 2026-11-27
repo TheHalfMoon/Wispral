@@ -1,0 +1,16 @@
+[package]
+name = "omalla-sdk"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+license = "Apache-2.0"
+description = "Official pure-Rust SDK for Omalla (Wispral by Halfmoon): typed models, RFC 8785 JCS args_digest, webhook HMAC verifier, and HTTP client."
+publish = false
+
+[lib]
+name = "omalla_sdk"
+path = "src/lib.rs"
+
+[dependencies]
+
+[workspace]

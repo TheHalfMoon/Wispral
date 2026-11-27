@@ -1,0 +1,31 @@
+Omalla
+Copyright 2026 Omalla contributors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+--------------------------------------------------------------------------------
+
+Third-party notices
+
+No third-party source code is copied into this repository. Donor projects are
+used as references, protocol specifications or optional external services. The
+repositories, SPDX licences and revisions examined are recorded in
+docs/SOURCE_INVENTORY.md.
+
+Omalla's runtime dependencies are declared in package.json and their licences
+are checked by `npm run audit:licenses`. The SIP compose skeletons under
+deploy/sip/ reference container images whose own licences apply; they are not
+distributed with Omalla.
+
+Model weights are not distributed with Omalla. Any model downloaded by an
+operator carries its own licence, separate from this repository.

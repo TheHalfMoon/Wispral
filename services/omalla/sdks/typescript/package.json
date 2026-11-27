@@ -1,0 +1,20 @@
+{
+  "name": "@omalla/typescript-sdk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Official Omalla TypeScript SDK (Wispral by Halfmoon)",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@omalla/core": "0.1.0",
+    "@omalla/sdk": "0.1.0"
+  }
+}

@@ -75,3 +75,42 @@ jobs:
         run: python -m pip install -e "services/klaint[dev]"
       - name: Run Klaint security, resolution, and simulation suites
         run: python -m pytest services/klaint/tests -v
+
+  omalla:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: services/omalla/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Install Omalla Node dependencies
+        working-directory: services/omalla
+        run: npm ci
+      - name: Build, typecheck, OpenAPI, license, and TS test suites
+        working-directory: services/omalla
+        run: |
+          npm run build
+          npm run typecheck
+          npm test
+          npm run openapi:check
+          npm run audit:licenses
+          npm run check:docs
+      - name: Run Omalla Python SDK tests
+        working-directory: services/omalla
+        run: |
+          python -m pip install -e "sdks/python[dev]"
+          npm run test:python
+          python -m pytest sdks/python/tests/test_client.py -v
+      - name: Run Omalla Rust SDK format, clippy, and unit tests
+        run: |
+          cargo fmt --manifest-path services/omalla/sdks/rust/Cargo.toml -- --check
+          cargo clippy --manifest-path services/omalla/sdks/rust/Cargo.toml --all-targets -- -D warnings
+          cargo test --manifest-path services/omalla/sdks/rust/Cargo.toml
