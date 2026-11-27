@@ -9,7 +9,6 @@ description = "Wispral Core local-first privacy-scoped user memory (dictionary, 
 
 [dependencies]
 serde.workspace = true
-serde_json.workspace = true
 thiserror.workspace = true
 wispral-arabic = { path = "../wispral-arabic" }
 wispral-journal = { path = "../wispral-journal" }

@@ -4,7 +4,7 @@
 //! normalization, and deterministic secret/password redaction without pulling any
 //! OS GUI or network dependencies into `Wispral Core`.
 
-use std::collections::{BTreeSet, HashMap};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::path::Path;
 
 use serde::{Deserialize, Serialize};
@@ -132,9 +132,19 @@ pub fn redact_sensitive_text(input: &str) -> String {
         return "[REDACTED_PRIVATE_KEY]".to_owned();
     }
     let mut out = Vec::new();
+    let mut prev_is_bearer = false;
     for token in input.split_inclusive(char::is_whitespace) {
         let trimmed = token.trim_end_matches(char::is_whitespace);
         let ws = &token[trimmed.len()..];
+        let clean_lower = trimmed
+            .trim_matches(&['"', '\'', ',', ';', ':', '(', ')'][..])
+            .to_ascii_lowercase();
+        if prev_is_bearer && !trimmed.is_empty() {
+            out.push(format!("[REDACTED_SECRET]{ws}"));
+            prev_is_bearer = false;
+            continue;
+        }
+        prev_is_bearer = clean_lower == "bearer";
         if looks_like_secret_token(trimmed) {
             out.push(format!("[REDACTED_SECRET]{ws}"));
         } else {
@@ -162,6 +172,7 @@ fn looks_like_secret_token(tok: &str) -> bool {
         || clean.starts_with("github_pat_")
         || clean.starts_with("xoxb-")
         || (clean.starts_with("AKIA") && clean.len() >= 16)
+        || (clean.starts_with("eyJ") && clean.matches('.').count() >= 2 && clean.len() >= 20)
 }
 
 /// Multilingual/Arabic-aware glossary replacer that maps spoken aliases (e.g. `"وسبر سايد"` or `"ecra"`)
@@ -186,7 +197,7 @@ impl GlossaryMatcher {
             return text.to_owned();
         }
         let analyzed = tokenize_proclitic_aware(text);
-        let mut replacements: HashMap<String, String> = HashMap::new();
+        let mut replacements: BTreeMap<String, String> = BTreeMap::new();
         for tok in analyzed {
             if let Some(canon) = self.entries.get(&tok.match_key) {
                 replacements.insert(tok.surface, canon.clone());
@@ -200,11 +211,66 @@ impl GlossaryMatcher {
                 }
             }
         }
-        let mut current = text.to_owned();
-        for (from, to) in replacements {
-            current = current.replace(&from, &to);
+        if replacements.is_empty() {
+            return text.to_owned();
         }
-        current
+        let is_punct = |c: char| {
+            c.is_ascii_punctuation() || matches!(c, '،' | '؛' | '؟' | '«' | '»' | '“' | '”' | '’')
+        };
+        let segments: Vec<&str> = text.split_inclusive(char::is_whitespace).collect();
+        let mut out = String::with_capacity(text.len() + 16);
+        let mut i = 0usize;
+        while i < segments.len() {
+            let trimmed = segments[i].trim_end_matches(char::is_whitespace);
+            let ws = &segments[i][trimmed.len()..];
+            let s = trimmed
+                .char_indices()
+                .find(|&(_, c)| !is_punct(c))
+                .map_or(trimmed.len(), |(idx, _)| idx);
+            let e = trimmed[s..]
+                .char_indices()
+                .rev()
+                .find(|&(_, c)| !is_punct(c))
+                .map_or(s, |(idx, c)| s + idx + c.len_utf8());
+            let (lead, core, trail) = (&trimmed[..s], &trimmed[s..e], &trimmed[e..]);
+
+            if core.ends_with('\u{0640}') && i + 1 < segments.len() {
+                let next_trim = segments[i + 1].trim_end_matches(char::is_whitespace);
+                let next_ws = &segments[i + 1][next_trim.len()..];
+                let ns = next_trim
+                    .char_indices()
+                    .find(|&(_, c)| !is_punct(c))
+                    .map_or(next_trim.len(), |(idx, _)| idx);
+                let ne = next_trim[ns..]
+                    .char_indices()
+                    .rev()
+                    .find(|&(_, c)| !is_punct(c))
+                    .map_or(ns, |(idx, c)| ns + idx + c.len_utf8());
+                let (nlead, ncore, ntrail) =
+                    (&next_trim[..ns], &next_trim[ns..ne], &next_trim[ne..]);
+                let combined = format!("{core} {ncore}");
+                if let Some(rep) = replacements.get(&combined) {
+                    out.push_str(lead);
+                    out.push_str(nlead);
+                    out.push_str(rep);
+                    out.push_str(ntrail);
+                    out.push_str(next_ws);
+                    i += 2;
+                    continue;
+                }
+            }
+
+            if let Some(rep) = replacements.get(core) {
+                out.push_str(lead);
+                out.push_str(rep);
+                out.push_str(trail);
+                out.push_str(ws);
+            } else {
+                out.push_str(segments[i]);
+            }
+            i += 1;
+        }
+        out
     }
 }
 
@@ -214,19 +280,20 @@ mod tests {
 
     #[test]
     fn redactor_strips_secrets_and_glossary_matches_arabic_proclitic_code_terms() {
-        let raw = "Deploy with OPENAI_API_KEY=sk-proj-1234567890abcdef and token ghp_secret999999";
+        let raw = "Deploy with OPENAI_API_KEY=sk-proj-1234567890abcdef, Authorization: Bearer opaque_tok_999, and token ghp_secret999999";
         let clean = redact_sensitive_text(raw);
         assert!(!clean.contains("sk-proj"));
+        assert!(!clean.contains("opaque_tok_999"));
         assert!(!clean.contains("ghp_secret"));
         assert_eq!(
             clean,
-            "Deploy with [REDACTED_SECRET] and token [REDACTED_SECRET]"
+            "Deploy with [REDACTED_SECRET] Authorization: Bearer [REDACTED_SECRET] and token [REDACTED_SECRET]"
         );
 
         let mut g = GlossaryMatcher::new();
         g.insert_alias("ecra", "Ecra");
         g.insert_alias("وسبرال", "Wispral");
-        let fixed = g.apply("افتح مشروع ecra في بوسبرال");
-        assert_eq!(fixed, "افتح مشروع Ecra في بـ Wispral");
+        let fixed = g.apply("افتح مشروع ecra في بوسبرال ولا تغيّر spacecraft");
+        assert_eq!(fixed, "افتح مشروع Ecra في بـ Wispral ولا تغيّر spacecraft");
     }
 }

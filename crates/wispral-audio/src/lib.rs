@@ -437,7 +437,10 @@ pub fn decode_wav_pcm16_bounded(
             bytes[offset + 7],
         ]) as usize;
         offset += 8;
-        if offset + chunk_len > bytes.len() {
+        let Some(chunk_end) = offset.checked_add(chunk_len) else {
+            return Err(AudioError::InvalidWav("chunk length overflow"));
+        };
+        if chunk_end > bytes.len() {
             return Err(AudioError::InvalidWav("truncated WAV chunk"));
         }
         if chunk_id == b"fmt " {
@@ -457,10 +460,13 @@ pub fn decode_wav_pcm16_bounded(
             ]);
             bits_per_sample = u16::from_le_bytes([bytes[offset + 14], bytes[offset + 15]]);
         } else if chunk_id == b"data" {
-            data_slice = Some(&bytes[offset..offset + chunk_len]);
+            data_slice = Some(&bytes[offset..chunk_end]);
             break;
         }
-        offset += chunk_len + (chunk_len % 2);
+        let Some(next_offset) = chunk_end.checked_add(chunk_len % 2) else {
+            return Err(AudioError::InvalidWav("chunk padding overflow"));
+        };
+        offset = next_offset;
     }
 
     if channels == 0 || bits_per_sample != 16 || !(8000..=96000).contains(&sample_rate) {

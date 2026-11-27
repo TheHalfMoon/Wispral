@@ -9,6 +9,5 @@ description = "Wispral Live pure full-duplex voice turn, barge-in, T0..T6 audio-
 
 [dependencies]
 serde.workspace = true
-serde_json.workspace = true
 wispral-contracts = { path = "../wispral-contracts" }
 wispral-journal = { path = "../wispral-journal" }

@@ -170,6 +170,17 @@ impl ModelCasStore {
                 "only admitted manifests can be registered for active routing".into(),
             ));
         }
+        if manifest.revision.is_empty()
+            || manifest.revision.contains("..")
+            || !manifest
+                .revision
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'.' | b'_' | b'-'))
+        {
+            return Err(AdaptiveError::InvalidManifest(
+                "manifest.revision contains forbidden path characters".into(),
+            ));
+        }
         let safe_id: String = manifest
             .model_id
             .chars()
@@ -533,6 +544,15 @@ mod tests {
         let chosen = select_model(&with_compact, &req).unwrap();
         assert_eq!(chosen.model_id, "local-compact-ar");
         assert!(chosen.offline);
+
+        // Revision traversal must be rejected
+        let cas = ModelCasStore::open(&dir).unwrap();
+        let mut bad_rev = sample_manifest("local-compact-ar", true, 512, true, "chunked");
+        bad_rev.revision = "../escape".into();
+        assert!(matches!(
+            cas.register_manifest(&bad_rev),
+            Err(AdaptiveError::InvalidManifest(_))
+        ));
         let _ = std::fs::remove_dir_all(&dir);
     }
 }

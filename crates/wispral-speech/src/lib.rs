@@ -250,6 +250,19 @@ impl SubprocessWhisperCpp {
                 self.binary_path.display().to_string(),
             ));
         }
+        if let Some(l) = language {
+            if l.is_empty()
+                || l.starts_with('-')
+                || l.len() > 32
+                || !l
+                    .bytes()
+                    .all(|b| b.is_ascii_alphanumeric() || b == b'-' || b == b'_')
+            {
+                return Err(SpeechError::SubprocessFailed(
+                    "invalid language argument".into(),
+                ));
+            }
+        }
         let mut cmd = Command::new(&self.binary_path);
         cmd.arg("-m")
             .arg(&self.model_path)
