@@ -1,0 +1,234 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://wispral.invalid/contracts/v1/export_provenance.schema.json",
+ "title": "Audio export provenance sidecar (<artifact>.provenance.json, v1.1)",
+ "description": "Cryptographically signed sidecar emitted atomically alongside rendered/exported voice artifacts in WisprStudio (and optional Omalla/Klaint voice renders). Binds the output audio SHA-256, model identity, stock catalog voice or active consent_epoch, and verified offline DSP watermark.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "schema_version",
+  "export_id",
+  "product",
+  "artifact_sha256",
+  "duration_ms",
+  "sample_rate_hz",
+  "voice_mode",
+  "model",
+  "watermark",
+  "created_at",
+  "signature"
+ ],
+ "properties": {
+  "schema_version": {
+   "const": 1
+  },
+  "export_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "project_id": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 128
+  },
+  "product": {
+   "enum": [
+    "wisprstudio",
+    "klaint",
+    "omalla"
+   ]
+  },
+  "artifact_sha256": {
+   "type": "string",
+   "pattern": "^sha256:[0-9a-f]{64}$"
+  },
+  "duration_ms": {
+   "type": "integer",
+   "minimum": 1
+  },
+  "sample_rate_hz": {
+   "type": "integer",
+   "enum": [
+    8000,
+    16000,
+    22050,
+    24000,
+    32000,
+    44100,
+    48000
+   ]
+  },
+  "voice_mode": {
+   "enum": [
+    "stock_catalog",
+    "authorized_clone"
+   ]
+  },
+  "stock_voice_catalog_id": {
+   "type": "string",
+   "pattern": "^catalog:[A-Za-z0-9._:-]{1,120}$"
+  },
+  "consent_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "consent_epoch": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "voice_id": {
+   "type": "string",
+   "minLength": 8,
+   "maxLength": 128
+  },
+  "model": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "model_id",
+    "revision",
+    "artifact_sha256"
+   ],
+   "properties": {
+    "model_id": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 128
+    },
+    "revision": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 128
+    },
+    "artifact_sha256": {
+     "oneOf": [
+      {
+       "type": "string",
+       "pattern": "^[0-9a-f]{64}$"
+      },
+      {
+       "const": "PROVIDER_MANAGED_DIGEST_UNAVAILABLE"
+      }
+     ]
+    }
+   }
+  },
+  "watermark": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "embedded",
+    "scheme",
+    "payload_digest",
+    "roundtrip_verified"
+   ],
+   "properties": {
+    "embedded": {
+     "const": true
+    },
+    "scheme": {
+     "enum": [
+      "wispral-qim-v1"
+     ]
+    },
+    "payload_digest": {
+     "type": "string",
+     "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "roundtrip_verified": {
+     "const": true
+    }
+   }
+  },
+  "created_at": {
+   "type": "string",
+   "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$"
+  },
+  "signature": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "alg",
+    "key_id",
+    "value"
+   ],
+   "properties": {
+    "alg": {
+     "const": "ed25519"
+    },
+    "key_id": {
+     "type": "string",
+     "pattern": "^[A-Za-z0-9:._-]{3,64}$"
+    },
+    "value": {
+     "type": "string",
+     "pattern": "^[A-Za-z0-9_-]{86}$"
+    }
+   }
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "voice_mode": {
+      "const": "stock_catalog"
+     }
+    },
+    "required": [
+     "voice_mode"
+    ]
+   },
+   "then": {
+    "required": [
+     "stock_voice_catalog_id"
+    ],
+    "not": {
+     "anyOf": [
+      {
+       "required": [
+        "consent_id"
+       ]
+      },
+      {
+       "required": [
+        "consent_epoch"
+       ]
+      },
+      {
+       "required": [
+        "voice_id"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "voice_mode": {
+      "const": "authorized_clone"
+     }
+    },
+    "required": [
+     "voice_mode"
+    ]
+   },
+   "then": {
+    "required": [
+     "consent_id",
+     "consent_epoch",
+     "voice_id"
+    ],
+    "not": {
+     "required": [
+      "stock_voice_catalog_id"
+     ]
+    }
+   }
+  }
+ ]
+}

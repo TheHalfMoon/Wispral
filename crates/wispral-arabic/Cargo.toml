@@ -1,0 +1,12 @@
+[package]
+name = "wispral-arabic"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Wispral Core Arabic-first and multilingual normalization, proclitic tokenization, bidi isolation, and code-switch entity preservation"
+
+[dependencies]
+serde.workspace = true
+unicode-normalization.workspace = true

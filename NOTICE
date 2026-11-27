@@ -1,11 +1,50 @@
 Wispral
-Copyright 2026 the Wispral authors (repository owner: TheHalfMoon)
+Copyright 2026 Halfmoon / the Wispral authors (repository owner: TheHalfMoon)
 
 This product is licensed under the Apache License, Version 2.0 (see LICENSE).
 
-Third-party code included in this repository:
+Third-party and authorized founder code included or adapted in this repository:
 
 - research/klaint-spike/harness/fake_provider.py adapts `_FakeReactGenerator`
   from Parlant's tests/core/nlp/test_react.py
   (https://github.com/emcie-co/parlant, commit 2a463ccd10eaf0d70d42731705f4f00ef066bee8).
   Copyright 2026 Emcie Co Ltd. Licensed under the Apache License, Version 2.0.
+
+- crates/wispral-journal/src/lib.rs copies and adapts the append-only fsync'd
+  intent journal from TheHalfMoon/Orcel crates/orcel-journal/src/lib.rs
+  (https://github.com/TheHalfMoon/Orcel, commit f0b78e6544cf6ea9c2457a6b6f483490c7bd0f6f /
+  local checkout 2ea25facbf1d06cbefe6f86ba6d3775547bd69f2).
+  Copyright 2026 TheHalfMoon. Licensed under the Apache License, Version 2.0.
+  Note: Orcel's three FSL-1.1-MIT files (`crates/orceld/src/app_api.rs`,
+  `crates/orcel-approval/src/linux.rs`, `crates/orcel-approval/src/presence_unix.rs`)
+  are strictly excluded and never copied into Wispral.
+
+- crates/wispral-journal/src/resume.rs includes the tool-call journal resume
+  classification ported via TheHalfMoon/Orcel crates/orcel-journal/src/resume.rs
+  from BuilderIO/agent-native packages/core/src/agent/tool-call-journal.ts
+  (https://github.com/BuilderIO/agent-native, commit 9c277b79cb87eb27da538e572dd710986e2fa06d,
+  blob be77f428f557b2e777665bfacd0d6dd51a58ff1d).
+  Copyright (c) Builder.io. Licensed under the MIT License:
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+
+- crates/wispral-policy adapts the monotone narrowing verdict lattice and
+  bounded JSON preflight concepts from TheHalfMoon/Sentrdel
+  (commit f5747319a50831ef7cee983d253c0ca5503c9a64).
+  Copyright 2026 TheHalfMoon. Licensed under the Apache License, Version 2.0.

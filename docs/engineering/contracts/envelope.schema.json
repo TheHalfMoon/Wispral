@@ -77,6 +77,8 @@
       "inbox",
       "voice_webrtc",
       "telephony",
+      "sip",
+      "websocket_audio",
       "api"
      ]
     }
@@ -151,6 +153,7 @@
       "wisprside",
       "wisprstudio",
       "klaint",
+      "omalla",
       "core"
      ]
     },

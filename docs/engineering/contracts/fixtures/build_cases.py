@@ -10,6 +10,7 @@ import copy
 import hashlib
 import json
 import pathlib
+import unicodedata
 
 H = "sha256:" + "a" * 64
 HX = "b" * 64
@@ -32,6 +33,16 @@ DELETE = object()
 UNSIGNED_CONSENT_FIELDS = ("status", "revoked_at", "scope_note")
 
 
+def _nfc(val):
+    if isinstance(val, str):
+        return unicodedata.normalize("NFC", val)
+    if isinstance(val, list):
+        return [_nfc(x) for x in val]
+    if isinstance(val, dict):
+        return {unicodedata.normalize("NFC", k): _nfc(v) for k, v in val.items()}
+    return val
+
+
 def bound_digest(record):
     """SHA-256 of the canonical JSON of every signed consent field: the record minus its lifecycle fields,
     plus the attestation minus bound_fields_digest and signature (absent optional fields as null)."""
@@ -39,7 +50,7 @@ def bound_digest(record):
                                          "valid_from", "valid_until", "evidence_digest", "consent_epoch", "watermark_required",
                                          "reference_artifact_digest", "speaker_match")}
     fields["attestation"] = {k: v for k, v in record["attestation"].items() if k not in ("bound_fields_digest", "signature")}
-    return "sha256:" + hashlib.sha256(json.dumps(fields, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
+    return "sha256:" + hashlib.sha256(json.dumps(_nfc(fields), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
 
 
 def attest(record):
@@ -277,6 +288,46 @@ add("effect_intent", "invalid_capability_tool_substituted", "invalid", mutate(IN
 add("effect_intent", "invalid_capability_args_substituted", "invalid", mutate(INTENT, ["dispatch", "args_digest"], "sha256:" + "9" * 64), "the capability binds the exact arguments", layer="runtime")
 add("effect_intent", "invalid_capability_ttl_over_60s", "invalid", mutate(INTENT, ["capability", "expires_at"], "2026-11-08T10:05:00Z"), "capabilities live at most 60 seconds", layer="runtime")
 add("effect_intent", "invalid_capability_expires_before_issue", "invalid", mutate(INTENT, ["capability", "expires_at"], "2026-11-08T09:59:00Z"), "expiry follows issue", layer="runtime")
+
+# ---- v1.1 ecosystem extensions (Omalla, Wayland copy_fallback, streaming_mode, network_manifest, export_provenance)
+add("envelope", "valid_omalla_sip_envelope", "valid", mutate(mutate(TENANT_ENVELOPE, ["principal_scope", "channel"], "sip"), ["source"], {"product": "omalla", "component": "sip_gateway"}))
+add("consent_record", "valid_omalla_product_scope", "valid", {**COMMERCIAL, "products": ["klaint", "omalla"]})
+add("delivery_outcome", "valid_wayland_copy_fallback_refused", "valid", {**DELIVERY, "platform": "linux_wayland", "outcome": "refused", "refusal_reason": "wayland_copy_fallback", "method": "none", "chars_delivered": 0, "focus_revalidated_before_delivery": False})
+add("model_manifest", "valid_streaming_mode_duplex", "valid", {**MANIFEST, "streaming_mode": "full_duplex"})
+add("effect_intent", "valid_omalla_gateway_dispatch", "valid", {**STUDIO_INTENT, "owner": "omalla_gateway", "action_class": "reversible_write", "idempotency_key": "acme:call:outbound-9912:v1", "dispatch": {"tool": "telephony.dial", "args_digest": H}})
+add("effect_intent", "invalid_omalla_gateway_without_dispatch", "invalid", {**STUDIO_INTENT, "owner": "omalla_gateway", "action_class": "reversible_write", "idempotency_key": "acme:call:outbound-9912:v1"}, "omalla gateway intents declare dispatch")
+
+NET_OFFLINE = {
+    "schema_version": 1, "product": "wisprside", "surface": "desktop_core",
+    "mode": "offline_strict", "allowed_hosts": [],
+    "forbid_auto_download": True, "forbid_default_telemetry": True, "ssrf_block_private_ips": True,
+}
+add("network_manifest", "valid_side_offline_strict", "valid", NET_OFFLINE)
+add("network_manifest", "valid_studio_loopback_only", "valid", {**NET_OFFLINE, "product": "wisprstudio", "surface": "fastapi_sidecar", "mode": "loopback_only", "loopback_ports": [8000]})
+add("network_manifest", "valid_omalla_allowlisted", "valid", {**NET_OFFLINE, "product": "omalla", "surface": "carrier_webhooks", "mode": "allowlisted_hosts", "allowed_hosts": ["api.telnyx.com", "api.twilio.com"]})
+add("network_manifest", "invalid_offline_with_allowed_hosts", "invalid", mutate(NET_OFFLINE, ["allowed_hosts"], ["api.openai.com"]), "offline_strict forbids external hosts")
+add("network_manifest", "invalid_telemetry_enabled_by_default", "invalid", mutate(NET_OFFLINE, ["forbid_default_telemetry"], False), "default telemetry is forbidden")
+add("network_manifest", "invalid_allowlisted_empty_hosts", "invalid", {**NET_OFFLINE, "mode": "allowlisted_hosts"}, "allowlisted_hosts requires at least one host")
+
+EXPORT_PROV = {
+    "schema_version": 1, "export_id": "exp-0000001", "project_id": "proj-01", "product": "wisprstudio",
+    "artifact_sha256": H, "duration_ms": 4200, "sample_rate_hz": 24000,
+    "voice_mode": "authorized_clone", "consent_id": "consent-0001", "consent_epoch": 1, "voice_id": "voice-00001",
+    "model": {"model_id": "kokoro-82m", "revision": "v1.0", "artifact_sha256": HX},
+    "watermark": {"embedded": True, "scheme": "wispral-qim-v1", "payload_digest": H, "roundtrip_verified": True},
+    "created_at": "2026-11-27T12:00:00Z", "signature": SIGNATURE,
+}
+add("export_provenance", "valid_authorized_clone_export", "valid", EXPORT_PROV)
+add("export_provenance", "valid_stock_catalog_export", "valid", {k: v for k, v in EXPORT_PROV.items() if k not in ("consent_id", "consent_epoch", "voice_id")} | {"voice_mode": "stock_catalog", "stock_voice_catalog_id": "catalog:kokoro:af_heart"})
+add("export_provenance", "invalid_clone_without_consent", "invalid", mutate(EXPORT_PROV, ["consent_id"], DELETE), "authorized clone export cites consent_id")
+add("export_provenance", "invalid_unverified_watermark", "invalid", mutate(EXPORT_PROV, ["watermark", "roundtrip_verified"], False), "export requires roundtrip-verified watermark")
+add("export_provenance", "invalid_stock_with_consent_epoch", "invalid", {**EXPORT_PROV, "voice_mode": "stock_catalog", "stock_voice_catalog_id": "catalog:kokoro:af_heart"}, "stock and clone fields are mutually exclusive")
+add("export_provenance", "invalid_stock_with_voice_id_only", "invalid", {k: v for k, v in EXPORT_PROV.items() if k not in ("consent_id", "consent_epoch")} | {"voice_mode": "stock_catalog", "stock_voice_catalog_id": "catalog:kokoro:af_heart"}, "stock_catalog forbids voice_id")
+add("export_provenance", "invalid_model_digest_shape", "invalid", mutate(EXPORT_PROV, ["model", "artifact_sha256"], "not-a-hex-digest"), "export provenance validates model artifact_sha256")
+add("network_manifest", "invalid_host_url_instead_of_hostname", "invalid", {**NET_OFFLINE, "mode": "allowlisted_hosts", "allowed_hosts": ["https://api.example.com/path"]}, "allowed_hosts accepts hostnames only")
+add("network_manifest", "invalid_port_zero", "invalid", {**NET_OFFLINE, "mode": "loopback_only", "loopback_ports": [0]}, "loopback_ports must be >= 1")
+add("effect_intent", "invalid_malformed_tool_name", "invalid", mutate(INTENT, ["dispatch", "tool"], "Refunds/Create;rm"), "dispatch.tool matches safe identifier pattern")
+add("envelope", "invalid_explicit_null_optional_field", "invalid", {**ENVELOPE, "turn_id": None}, "optional contract properties forbid explicit null")
 
 ALLOW_MONEY = {**VERDICT, "verdict_id": "verdict-0002", "candidate_decision": "ALLOW", "enforced_decision": "ALLOW", "layers": [{"source": "base", "decision": "ALLOW"}]}
 BUNDLES = [
