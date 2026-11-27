@@ -265,9 +265,9 @@ Before any child becomes `VERIFIED`:
 
 ## Product-code gate
 
-No Rust product implementation, Cargo workspace, permanent speech engine integration, ACP production client, PTY adapter, TUI, installer, or release is authorized until `000G` selects a bounded first implementation Grain and that Grain independently satisfies readiness.
+Under Constitution 2.0.0 (`0df0b19`, PR #158, Governance item 8), the 2026-11-27 Master Founder Execution Directive authorizes bounded product implementation across `Wispral Core` (`crates/wispral-*`), `WisprSide` (`TheHalfMoon/wisprside`), `WisprStudio` (`TheHalfMoon/wisprstudio`), `Klaint` (`services/klaint/`), and `Omalla` (`services/omalla/`) through reviewed, test-qualified pull requests tracked in `docs/canonical/EXECUTION_REGISTRY.md`.
 
-The public-corpus amendment and canonical chronology remediation do not weaken this gate. Under Constitution 1.0.0 (Governance item 8), this gate and the 000G decision are the only route to product code, and the 000E and 000F research Grains do not weaken it.
+Historical `000B2` benchmark-lane readiness files and frozen blobs remain untouched and govern only that historical benchmark lane.
 
 ## Historical B2R01 recovery reconciliation — superseded predecessor record
 
@@ -480,3 +480,9 @@ It opens exactly these five research Grains, defined in `research/wispral-world-
 - Research authority carries no product-code, installer, release or distribution authority.
 - Creating a fork repository needs the founder's decision on its location and visibility.
 - Until the founder's outbound-licence decision is recorded, no `COPY` or `ADAPT` packet may land code.
+
+## Platform frontier — Ecosystem Execution v2
+
+**Authority:** Constitution 2.0.0 (`0df0b19`, PR #158) and the 2026-11-27 Master Founder Execution Directive; supersedes the research-only restriction in `## Platform frontier — research Grains 000E and 000F` above.
+
+Executable product and infrastructure Waves 1–7 (`Wispral Core`, `Wispral Connect`, `WisprSide`, `WisprStudio`, `Klaint`, `Omalla`, and `WispralBench`) are governed by `docs/architecture/WISPRAL_ECOSYSTEM_ARCHITECTURE_V2.md` and tracked live in `docs/canonical/EXECUTION_REGISTRY.md`. The `000B2` benchmark lane remains independent and untouched.
