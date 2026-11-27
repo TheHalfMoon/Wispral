@@ -396,35 +396,24 @@ B2R17 alone is the next bounded unit: execute candidate cell 1 (`moonshine-compa
 
 ## Current product thesis
 
-Wispral is a modular voice platform (Constitution 1.0.0). It has three products on one shared authority, provenance and resource core:
+Wispral (by Halfmoon) is a modular, independent voice intelligence ecosystem (Constitution 2.0.0). It comprises shared infrastructure and four independently installable products:
 
-- **WisprSide**: cross-application dictation, with optional developer-agent control;
-- **WisprStudio**: voice production;
-- **Klaint**: customer dialogue agents.
+- **Wispral Core**: shared voice intelligence contracts, policy, journal, Arabic/multilingual normalization, audio/DSP, adaptive model routing, context, memory, duplex turn/cancellation primitives, `Wispral Connect` (`wispral` CLI/MCP), and `WispralBench`;
+- **WisprSide**: local-first cross-application voice typing, intelligent writing and editing, and optional developer-agent control;
+- **WisprStudio**: local-first professional AI voice and audio production;
+- **Klaint**: self-hostable enterprise customer-service and verified customer-resolution agents;
+- **Omalla**: self-hostable programmable real-time voice-agent, WebRTC/WebSocket, workflow, and telephony infrastructure.
 
-> A person should be able to speak, think aloud without accidentally authorizing action, resolve meaning against bounded and authorized context, interrupt and correct immediately, and keep visible authority boundaries over every system Wispral acts on.
+> A person, developer, creator, or organization should be able to speak, think aloud without accidentally authorizing action, resolve meaning against bounded and authorized context, interrupt and correct immediately, and keep visible deterministic authority boundaries over every system Wispral acts on.
 
-This thesis is a program direction, not a benchmark result, compatibility claim or product readiness claim.
+This thesis defines program architecture and product boundaries; individual engineering outcomes are tracked with explicit evidence states in `docs/canonical/EXECUTION_REGISTRY.md`.
 
 ## Current architecture posture
 
-- Rust remains the preferred runtime for core contracts, concurrency and policy. No production Cargo workspace is authorized yet.
-- Donor-led baselines are the working hypothesis for each product's surface (invariant A12). None is selected. As of 2026-11-10 the 000E research Grains have measured them, with evidence under `research/wispral-world-class/evidence/` and `research/klaint-spike/`:
-  - the WisprSide donor baseline (`SD-M0`) passes its suites on Linux and Windows, with debug and release builds recorded on Windows, and is `VERIFYING`;
-  - the WisprStudio donor baseline (`ST-D00`) is recorded and is `BLOCKED`, because its network condition fails;
-  - the Klaint dialogue spike (`KT-01`) is recorded and is `BLOCKED`, because the engine's tool server accepts a forged customer identity.
-
-  The three surfaces are:
-  - a desktop dictation fork for WisprSide;
-  - a desktop production fork for WisprStudio;
-  - a wrapped dialogue service for Klaint.
-- Isolated donor-native or Python workers are permitted only with evidenced dependency closure and stop behaviour (invariant A11).
-- ACP is the leading structured integration candidate for optional developer-agent control, classified `PARTIAL` / `MODERATE` by 000A rather than selected as unconditional `PRIMARY`.
-- A PTY compatibility path matters only for optional developer-agent compatibility (000D).
-- Local streaming speech recognition remains first-class, but no engine or model configuration is selected.
-- Context resolution, whether repository, application, project or tenant knowledge, remains a hypothesis to be measured.
-- `COMMAND` and `ASIDE` remain separate semantic concepts; the exact interaction/classification contract remains unselected.
-- Push-to-talk remains the preferred first reliable capture hypothesis. Hands-free and full-duplex behaviour require later evidence.
+- Rust owns `Wispral Core` (`crates/wispral-*`), `Wispral Connect`, `WispralBench`, and `WisprSide`'s desktop backend (`TheHalfMoon/wisprside`, MIT).
+- Bounded multi-language runtimes are retained where donor evidence justifies them: Python `>=3.11` + Electron (`TheHalfMoon/wisprstudio`, strictly isolated under `AGPL-3.0-only`); Python `>=3.12` FastAPI + out-of-process `klaint-broker` + per-tenant SQLite/Postgres (`services/klaint/`, Apache-2.0); and Node 24 TypeScript Fastify + `node:sqlite` WAL + pure-TS WebRTC/WS/SIP/RTP/SRTP + TS/Python/Rust SDKs (`services/omalla/`, Apache-2.0).
+- Baseline measurements (`SD-M0`, `ST-D00`, `KT-01`, `D:\Klaint-REA-20261118`, `D:\Omalla-REA`, and local `omalla` v0.1.0 RC) and the three-agent Google EGM architectural audit are locked into `docs/architecture/WISPRAL_ECOSYSTEM_ARCHITECTURE_V2.md`.
+- `COMMAND` and `ASIDE` remain distinct semantic channels, and push-to-talk remains the reliability baseline alongside qualified real-time duplex paths.
 
 ## Explicit non-claims
 
@@ -449,11 +438,9 @@ Wispral does NOT currently claim:
 
 ## Product-code gate
 
-No Rust product implementation, Cargo workspace, permanent speech-engine integration, ACP production client, PTY adapter, TUI, installer, or release is authorized until Specification 000 synthesis reaches `000G`, selects a bounded first implementation Grain from reproducible evidence, and that Grain independently satisfies readiness.
+Under Constitution 2.0.0 (`0df0b19`, PR #158, Governance item 8), the 2026-11-27 Master Founder Execution Directive opens bounded product implementation across `TheHalfMoon/Wispral` (`crates/wispral-*`, `services/klaint/`, `services/omalla/`), `TheHalfMoon/wisprside`, and `TheHalfMoon/wisprstudio` through reviewed, test-qualified pull requests tracked in `docs/canonical/EXECUTION_REGISTRY.md`.
 
-Verified 000A, verified 000B1, canonical B2 entry preparation, canonical B2 authority structure, canonical participant policy/materials, the canonical public-corpus B2 methodology, canonical qualification-chronology remediation, canonical public readiness, canonical B2P01 provenance, canonical B2P02 archive-byte verification, canonical B2P03 deterministic subset selection, canonical B2P04 subset-manifest freeze, and canonical B2P05 candidate revalidation do not weaken this gate.
-
-Under Constitution 1.0.0 (Governance item 8), this gate and the 000G decision are the only route to product code. The 000E and 000F research Grains do not weaken it.
+Historical `000B2` benchmark-lane readiness files and frozen artifacts remain untouched and continue to govern only that historical benchmark lane.
 
 ## Canonical B2R07 recovery reconciliation — predecessor authority
 
@@ -535,3 +522,13 @@ The canonical B2R06 primary capture remains GitHub Actions run `34041046129`, jo
 **Active recovery unit:** `B2R07`
 
 ATTEMPT-001 remains historical and ineligible for comparative scoring. ATTEMPT-002 remains canonically frozen with freeze digest `600a286747ef2e1503a48c4138b6e405665ccd6586904ef65b3638b49974bcc8`. `primary_decode_entry_open=true` only for the active recovery unit B2R07. B2R07 alone is authorized after this reconciliation becomes canonical: execute candidate cell 3 (`whispercpp-compact`) against the identical frozen P0 public-human audio using the unchanged frozen C0 contract, while preserving raw transcripts, failures, runtime observations, exact run identity, frozen input identities, and all claim guards. B2R08 and every later ATTEMPT-002 candidate cell remain unauthorized until B2R07 is separately qualified, merged, post-merge verified, and reconciled.
+
+## Platform frontier — Ecosystem Execution v2
+
+**Authority:** Constitution 2.0.0 (`0df0b19`, PR #158) and the 2026-11-27 Master Founder Execution Directive.
+
+This appended platform frontier supersedes the earlier `000E`/`000F`-only research restriction for non-B2 platform implementation while leaving the `000B2` benchmark lane untouched:
+
+- Canonical architecture & EGM lock-in specification: `docs/architecture/WISPRAL_ECOSYSTEM_ARCHITECTURE_V2.md`.
+- Live multi-wave implementation, review, and qualification ledger: `docs/canonical/EXECUTION_REGISTRY.md`.
+- Outbound license boundaries remain strictly enforced: `TheHalfMoon/Wispral` (`Apache-2.0`), `TheHalfMoon/wisprside` (`MIT`), and `TheHalfMoon/wisprstudio` (`AGPL-3.0-only`, strictly isolated).

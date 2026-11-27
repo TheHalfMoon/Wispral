@@ -195,6 +195,16 @@
      "$type": "color",
      "$value": "#F07CC0"
     }
+   },
+   "iris": {
+    "700": {
+     "$type": "color",
+     "$value": "#7E22CE"
+    },
+    "300": {
+     "$type": "color",
+     "$value": "#D8B4FE"
+    }
    }
   },
   "space": {
@@ -377,7 +387,8 @@
    "focus.ring": "{primitive.color.graphite.900}",
    "bg.selected": "{primitive.color.indigo.50}",
    "text.disabled": "{primitive.color.graphite.400}",
-   "border.input": "{primitive.color.graphite.500}"
+   "border.input": "{primitive.color.graphite.500}",
+   "accent.omalla": "{primitive.color.iris.700}"
   },
   "dark": {
    "bg.canvas": "{primitive.color.graphite.950}",
@@ -406,7 +417,8 @@
    "focus.ring": "{primitive.color.paper.0}",
    "bg.selected": "{primitive.color.indigo.900}",
    "text.disabled": "{primitive.color.graphite.500}",
-   "border.input": "{primitive.color.graphite.400}"
+   "border.input": "{primitive.color.graphite.400}",
+   "accent.omalla": "{primitive.color.iris.300}"
   },
   "highContrast": {
    "$description": "Under forced-colors every semantic token maps to a CSS system colour. Colour cannot distinguish states here, so every state also carries its own glyph, label and announcement (live = level meter, danger = stop glyph, attention = shield glyph, success = check). Focus and live never share a mapping.",
@@ -436,7 +448,8 @@
    "accent.wisp": "LinkText",
    "accent.side": "LinkText",
    "accent.klaint": "LinkText",
-   "accent.studio.fg": "LinkText"
+   "accent.studio.fg": "LinkText",
+   "accent.omalla": "LinkText"
   }
  },
  "contrastRequirements": {
@@ -676,6 +689,21 @@
     "accent.studio.fg",
     "bg.surface",
     "text"
+   ],
+   [
+    "accent.omalla",
+    "bg.canvas",
+    "text"
+   ],
+   [
+    "accent.omalla",
+    "bg.surface",
+    "text"
+   ],
+   [
+    "accent.omalla",
+    "bg.sunken",
+    "text"
    ]
   ]
  },
@@ -692,7 +720,8 @@
    "accent.wisp",
    "accent.side",
    "accent.klaint",
-   "accent.studio.fg"
+   "accent.studio.fg",
+   "accent.omalla"
   ],
   "states": [
    "state.live.solid",
