@@ -1,0 +1,22 @@
+[package]
+name = "wispral-bench"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "WispralBench reproducible speech, Arabic/code-switch, contract, policy/security, audio, and duplex latency benchmark runner"
+
+[dependencies]
+chrono.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+wispral-adaptive = { path = "../wispral-adaptive" }
+wispral-arabic = { path = "../wispral-arabic" }
+wispral-audio = { path = "../wispral-audio" }
+wispral-context = { path = "../wispral-context" }
+wispral-contracts = { path = "../wispral-contracts" }
+wispral-journal = { path = "../wispral-journal" }
+wispral-live = { path = "../wispral-live" }
+wispral-policy = { path = "../wispral-policy" }
+wispral-speech = { path = "../wispral-speech" }

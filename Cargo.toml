@@ -11,6 +11,8 @@ members = [
     "crates/wispral-memory",
     "crates/wispral-speech",
     "crates/wispral-live",
+    "crates/wispral-bench",
+    "crates/wispral-cli",
 ]
 
 [workspace.package]
@@ -23,6 +25,7 @@ rust-version = "1.82"
 [workspace.dependencies]
 base64 = "0.22"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+clap = { version = "4.5", features = ["derive"] }
 ed25519-dalek = { version = "2.1", default-features = false, features = ["std", "rand_core"] }
 fs4 = "1.1"
 hex = "0.4"
