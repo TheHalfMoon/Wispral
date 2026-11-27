@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Klaint Studio — Wispral by Halfmoon</title>
+  <link rel="stylesheet" href="/static/studio.css">
+</head>
+<body>
+  <div id="studio-app" class="studio-shell">
+    <aside class="sidebar" aria-label="Klaint Studio Navigation">
+      <div>
+        <div class="brand-header">
+          <span class="brand-mark"><span class="brand-dot" aria-hidden="true"></span> Klaint Studio</span>
+        </div>
+        <div class="brand-sub">Wispral by Halfmoon · Quiet Signal <span class="ltr-code">#1F7A65</span></div>
+      </div>
+
+      <nav class="nav-list">
+        <button type="button" class="nav-btn active" data-view="overview" data-i18n="overview">Overview</button>
+        <button type="button" class="nav-btn" data-view="inbox" data-i18n="inbox">Conversations &amp; Inbox</button>
+        <button type="button" class="nav-btn" data-view="procedures" data-i18n="procedures">Procedures (SOPs)</button>
+        <button type="button" class="nav-btn" data-view="knowledge" data-i18n="knowledge">Knowledge (Cited RAG)</button>
+        <button type="button" class="nav-btn" data-view="approvals" data-i18n="approvals">Approvals Queue</button>
+        <button type="button" class="nav-btn" data-view="audit" data-i18n="audit">Audit &amp; Simulation</button>
+      </nav>
+
+      <div>
+        <a class="btn" href="/widget">Open Customer Widget ↗</a>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="health-banner" role="status">
+          <span aria-hidden="true">●</span>
+          <span>Broker Subprocess &amp; Commitment Output Gate Active (BLOCK Mode)</span>
+        </div>
+        <form id="studio-auth-form" class="form-row" aria-label="Operator Session Sign-In">
+          <input id="auth-api-key-input" type="password" class="input-field" placeholder="Tenant API Key" required>
+          <input id="auth-operator-id-input" type="text" class="input-field" placeholder="operator_id (e.g. op_sara)" required>
+          <button type="submit" id="auth-login-btn" class="btn btn-primary">Sign In / Switch Operator</button>
+          <span id="auth-operator-badge" class="ltr-code">signed-out</span>
+        </form>
+        <div>
+          <button type="button" id="lang-toggle-btn" class="btn">العربية (RTL)</button>
+        </div>
+      </header>
+      <div id="studio-error-banner" class="takeover-banner" role="alert" hidden></div>
+
+      <!-- 1. Overview (Analytics) -->
+      <section id="view-overview" class="view-section" aria-labelledby="h-overview">
+        <h1 id="h-overview" data-i18n="overview">Overview</h1>
+        <div class="grid-cards">
+          <div class="panel">
+            <div class="metric-label">Verified First-Contact Resolution (FCR)</div>
+            <div id="m-fcr" class="metric-value">0.0%</div>
+          </div>
+          <div class="panel">
+            <div class="metric-label">Recontact Rate</div>
+            <div id="m-recontact" class="metric-value">0.0%</div>
+          </div>
+          <div class="panel">
+            <div class="metric-label">Policy Compliance Rate</div>
+            <div id="m-compliance" class="metric-value">100.0%</div>
+          </div>
+          <div class="panel">
+            <div class="metric-label">Turn Latency (p50 / p95)</div>
+            <div id="m-latency" class="metric-value">0 / 0 ms</div>
+          </div>
+        </div>
+        <div class="panel">
+          <h2>Language &amp; Dialect Breakdown (Zero Fabricated CSAT)</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Variety</th>
+                <th>Conversations</th>
+                <th>Turns</th>
+                <th>FCR</th>
+                <th>p95 Latency</th>
+              </tr>
+            </thead>
+            <tbody id="lang-breakdown-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 2. Conversations & Inbox + Why Explainability Panel -->
+      <section id="view-inbox" class="view-section" hidden aria-labelledby="h-inbox">
+        <h1 id="h-inbox" data-i18n="inbox">Conversations &amp; Inbox</h1>
+        <div id="why-explainability-panel" class="why-drawer" aria-live="polite">
+          <h2 data-i18n="whyTitle">Why Explainability Panel</h2>
+          <div id="why-panel-content" dir="auto">Select any turn below to inspect its 8-stage trace, matched SOP rules, RAG citations, capability digest, and ledger receipt ID.</div>
+        </div>
+        <div id="conversations-list"></div>
+      </section>
+
+      <!-- 3. Procedures (SOP Draft Editor, 4-Eyes Approval, 1-Click Rollback) -->
+      <section id="view-procedures" class="view-section" hidden aria-labelledby="h-procedures">
+        <h1 id="h-procedures" data-i18n="procedures">Procedures (SOPs)</h1>
+        <div class="panel">
+          <h3>Create New SOP Draft</h3>
+          <form id="create-sop-draft-form" class="form-row">
+            <select id="sop-domain-select" class="input-field" aria-label="SOP Domain">
+              <option value="refund">refund</option>
+              <option value="shipping_delay">shipping_delay</option>
+              <option value="booking_change">booking_change</option>
+              <option value="account_recovery">account_recovery</option>
+              <option value="escalation">escalation</option>
+            </select>
+            <input id="sop-title-input" class="input-field" dir="auto" placeholder="SOP Title" required>
+            <input id="sop-nl-input" class="input-field" dir="auto" placeholder="Plain-language rule (e.g. Auto-allow refunds up to 6000 cents within 30 days)" required>
+            <button type="submit" id="create-sop-draft-btn" class="btn btn-primary">Create SOP Draft</button>
+          </form>
+        </div>
+        <div class="panel">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Domain</th>
+                <th>Status</th>
+                <th>Author / 4-Eyes Approver</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="procedures-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 4. Knowledge (Hybrid FTS5 + RRF Cited Search) -->
+      <section id="view-knowledge" class="view-section" hidden aria-labelledby="h-knowledge">
+        <h1 id="h-knowledge" data-i18n="knowledge">Knowledge (Cited RAG)</h1>
+        <div class="panel">
+          <form id="rag-search-form" class="form-row">
+            <input id="rag-query-input" class="input-field" dir="auto" placeholder="Search English or Arabic policies (SUPPORTED / CONFIRMED_NEGATIVE / UNAVAILABLE)..." required>
+            <button type="submit" class="btn btn-primary">Cited Search</button>
+          </form>
+          <div id="rag-search-output" dir="auto"></div>
+          <h3>Tenant Knowledge Documents</h3>
+          <ul id="knowledge-docs-list"></ul>
+        </div>
+      </section>
+
+      <!-- 5. Approvals Queue -->
+      <section id="view-approvals" class="view-section" hidden aria-labelledby="h-approvals">
+        <h1 id="h-approvals" data-i18n="approvals">Approvals Queue</h1>
+        <div id="approvals-list"></div>
+      </section>
+
+      <!-- 6. Audit & tau2 Simulation -->
+      <section id="view-audit" class="view-section" hidden aria-labelledby="h-audit">
+        <h1 id="h-audit" data-i18n="audit">Audit &amp; Simulation</h1>
+        <div class="panel">
+          <div class="form-row">
+            <button type="button" id="verify-audit-btn" class="btn btn-primary" data-i18n="verifyChain">Verify SHA-256 Audit Chain</button>
+            <button type="button" id="export-audit-json-btn" class="btn">Export Audit JSON</button>
+            <button type="button" id="export-audit-csv-btn" class="btn">Export Audit CSV</button>
+            <button type="button" id="run-sim-btn" class="btn" data-i18n="runSim">Run tau2 Simulation Suite</button>
+          </div>
+          <div id="audit-verify-status" class="ltr-code"></div>
+          <div id="sim-run-status"></div>
+        </div>
+        <div class="panel">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Seq</th>
+                <th>Event</th>
+                <th>Actor</th>
+                <th>SHA-256 Entry Digest</th>
+              </tr>
+            </thead>
+            <tbody id="audit-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/static/studio.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Klaint Customer Support — Accessible Chat Widget</title>
+  <link rel="stylesheet" href="/static/studio.css">
+</head>
+<body>
+  <main class="widget-container" aria-label="Klaint Customer Support Chat">
+    <header class="widget-header">
+      <div>
+        <strong>Klaint Support</strong>
+        <span id="handoff-badge" style="font-size:0.8rem;margin-inline-start:8px;">AI Assistant</span>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button type="button" id="widget-lang-btn" class="btn" style="padding:4px 8px;font-size:0.78rem;">العربية</button>
+        <button type="button" id="talk-to-person-btn" class="btn" style="padding:4px 8px;font-size:0.78rem;">Talk to a person</button>
+      </div>
+    </header>
+
+    <div id="widget-disclosure" class="widget-disclosure" role="note" dir="auto">
+      You are speaking with an AI assistant powered by Klaint (Wispral). You can reach a human specialist at any time using “Talk to a person”.
+    </div>
+
+    <section id="widget-messages" class="widget-messages" role="log" aria-live="polite"></section>
+
+    <form id="widget-form" style="display:flex;gap:8px;padding:12px;border-top:1px solid var(--border-default);">
+      <label for="widget-input" style="position:absolute;left:-9999px;">Message</label>
+      <input id="widget-input" class="input-field" dir="auto" style="flex:1;" placeholder="Type in English or العربية..." required>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </main>
+
+  <script>
+  (function () {
+    "use strict";
+    let lang = "en";
+    let customerToken = "";
+
+    async function initSession() {
+      const res = await fetch("/api/v1/widget/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ language: lang })
+      });
+      const data = await res.json();
+      customerToken = data.customer_token || "";
+    }
+
+    function addBubble(text, cls) {
+      const log = document.getElementById("widget-messages");
+      const div = document.createElement("div");
+      div.className = "msg-bubble " + cls;
+      div.setAttribute("dir", "auto");
+      div.textContent = text;
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    document.getElementById("widget-lang-btn").addEventListener("click", function () {
+      lang = lang === "en" ? "ar" : "en";
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+      document.getElementById("widget-lang-btn").textContent = lang === "ar" ? "English" : "العربية";
+      document.getElementById("talk-to-person-btn").textContent = lang === "ar" ? "التحدث مع موظف" : "Talk to a person";
+      document.getElementById("widget-disclosure").textContent = lang === "ar"
+        ? "أنت تتحدث مع مساعد ذكي من Klaint (Wispral). يمكنك طلب التحدث مع موظف بشري في أي وقت."
+        : "You are speaking with an AI assistant powered by Klaint (Wispral). You can reach a human specialist at any time using “Talk to a person”.";
+    });
+
+    document.getElementById("widget-form").addEventListener("submit", async function (ev) {
+      ev.preventDefault();
+      if (!customerToken) await initSession();
+      const input = document.getElementById("widget-input");
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = "";
+      addBubble(text, "msg-customer");
+      const res = await fetch("/api/v1/widget/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Klaint-Customer-Token": customerToken },
+        body: JSON.stringify({ message: text })
+      });
+      const data = await res.json();
+      addBubble(data.assistant_text || data.error || "...", "msg-agent");
+      if (data.resolution_status === "escalated" || data.resolution_status === "awaiting_approval") {
+        document.getElementById("handoff-badge").textContent = lang === "ar" ? "ينضم أحد المختصين" : "A team member is joining";
+      }
+    });
+
+    document.getElementById("talk-to-person-btn").addEventListener("click", async function () {
+      if (!customerToken) await initSession();
+      const res = await fetch("/api/v1/widget/escalate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Klaint-Customer-Token": customerToken },
+        body: "{}"
+      });
+      const data = await res.json();
+      document.getElementById("handoff-badge").textContent = lang === "ar" ? "ينضم أحد المختصين" : "A team member is joining";
+      addBubble(data.message || "Connecting you with a specialist.", "msg-agent");
+    });
+  })();
+  </script>
+</body>
+</html>
